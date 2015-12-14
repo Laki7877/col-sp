@@ -1,0 +1,997 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ColspModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Global_Category">
+          <Key>
+            <PropertyRef Name="category_id" />
+          </Key>
+          <Property Name="category_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name_en" Type="nvarchar" MaxLength="50" />
+          <Property Name="name_th" Type="nvarchar" MaxLength="50" />
+          <Property Name="url_key_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="url_key_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="status" Type="bit" />
+          <Property Name="lft" Type="int" Nullable="false" />
+          <Property Name="rgt" Type="int" Nullable="false" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Local_Category">
+          <Key>
+            <PropertyRef Name="category_id" />
+          </Key>
+          <Property Name="category_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name_en" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="name_th" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="url_key_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="url_key_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="product_count" Type="int" Nullable="false" />
+          <Property Name="shop" Type="int" Nullable="false" />
+          <Property Name="status" Type="bit" Nullable="false" />
+          <Property Name="lft" Type="int" Nullable="false" />
+          <Property Name="rgt" Type="int" Nullable="false" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="permission_id" />
+          </Key>
+          <Property Name="permission_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="permission_name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="product_id" />
+          </Key>
+          <Property Name="product_id" Type="int" Nullable="false" />
+          <Property Name="global_cat_id" Type="int" Nullable="false" />
+          <Property Name="local_cat_id" Type="int" />
+          <Property Name="shop_id" Type="int" Nullable="false" />
+          <Property Name="seller_id" Type="int" Nullable="false" />
+          <Property Name="brand_name_en" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="brand_name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="product_name_en" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="product_name_th" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="sku" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="upc" Type="nvarchar" MaxLength="50" />
+          <Property Name="original_price" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="sale_price" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="description_en" Type="nvarchar" MaxLength="500" />
+          <Property Name="description_th" Type="nvarchar" MaxLength="500" />
+          <Property Name="stock" Type="int" />
+          <Property Name="safty_stock" Type="int" />
+        </EntityType>
+        <EntityType Name="Product_Tag">
+          <Key>
+            <PropertyRef Name="product_id" />
+            <PropertyRef Name="tag_id" />
+          </Key>
+          <Property Name="product_id" Type="int" Nullable="false" />
+          <Property Name="tag_id" Type="int" Nullable="false" />
+          <Property Name="status" Type="int" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="role_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="role_name_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="role_name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Role_Permission_Map">
+          <Key>
+            <PropertyRef Name="role_id" />
+            <PropertyRef Name="permission_id" />
+          </Key>
+          <Property Name="role_id" Type="int" Nullable="false" />
+          <Property Name="permission_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Shop">
+          <Key>
+            <PropertyRef Name="shop_id" />
+          </Key>
+          <Property Name="shop_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="shop_owner" Type="int" />
+          <Property Name="shop_name_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="shop_name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="tag_id" />
+          </Key>
+          <Property Name="tag_id" Type="int" Nullable="false" />
+          <Property Name="tag_name" Type="nvarchar" MaxLength="100" />
+          <Property Name="count" Type="int" />
+          <Property Name="status" Type="bit" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pwd" Type="nvarchar" MaxLength="100" />
+          <Property Name="pwd_last_chg" Type="nchar" MaxLength="10" />
+          <Property Name="email" Type="nchar" MaxLength="100" />
+          <Property Name="name_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="mobile" Type="char" MaxLength="20" />
+          <Property Name="phone" Type="char" MaxLength="20" />
+          <Property Name="fax" Type="char" MaxLength="10" />
+          <Property Name="status" Type="bit" />
+          <Property Name="login_fail_count" Type="int" />
+          <Property Name="last_login_dt" Type="datetime" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="User_Group">
+          <Key>
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="group_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="group_name_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="group_name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="User_Group_Map">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="User_Group_Role_Map">
+          <Key>
+            <PropertyRef Name="group_id" />
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="role_id" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Local_Category_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Local_Category" Type="Self.Local_Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="shop_id" />
+            </Principal>
+            <Dependent Role="Local_Category">
+              <PropertyRef Name="shop" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Global_Cat">
+          <End Role="Global_Category" Type="Self.Global_Category" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Global_Category">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="global_cat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Local_Cat">
+          <End Role="Local_Category" Type="Self.Local_Category" Multiplicity="0..1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Local_Category">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="local_cat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="shop_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="shop_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Tag_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Product_Tag" Type="Self.Product_Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="product_id" />
+            </Principal>
+            <Dependent Role="Product_Tag">
+              <PropertyRef Name="product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Tag_Tag">
+          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+          <End Role="Product_Tag" Type="Self.Product_Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="tag_id" />
+            </Principal>
+            <Dependent Role="Product_Tag">
+              <PropertyRef Name="tag_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="seller_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Role_Permission_Map_Permission">
+          <End Role="Permission" Type="Self.Permission" Multiplicity="1" />
+          <End Role="Role_Permission_Map" Type="Self.Role_Permission_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="permission_id" />
+            </Principal>
+            <Dependent Role="Role_Permission_Map">
+              <PropertyRef Name="permission_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Role_Permission_Map_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="Role_Permission_Map" Type="Self.Role_Permission_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="role_id" />
+            </Principal>
+            <Dependent Role="Role_Permission_Map">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Shop_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Shop">
+              <PropertyRef Name="shop_owner" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Group_Map_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User_Group_Map" Type="Self.User_Group_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="User_Group_Map">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Group_Map_UserGroup">
+          <End Role="User_Group" Type="Self.User_Group" Multiplicity="1" />
+          <End Role="User_Group_Map" Type="Self.User_Group_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="User_Group_Map">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Group_Role_Map_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="User_Group_Role_Map" Type="Self.User_Group_Role_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="role_id" />
+            </Principal>
+            <Dependent Role="User_Group_Role_Map">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Group_Role_Map_User_Group">
+          <End Role="User_Group" Type="Self.User_Group" Multiplicity="1" />
+          <End Role="User_Group_Role_Map" Type="Self.User_Group_Role_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="User_Group_Role_Map">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ColspModelStoreContainer">
+          <EntitySet Name="Global_Category" EntityType="Self.Global_Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Local_Category" EntityType="Self.Local_Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product_Tag" EntityType="Self.Product_Tag" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role_Permission_Map" EntityType="Self.Role_Permission_Map" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Group" EntityType="Self.User_Group" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Group_Map" EntityType="Self.User_Group_Map" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Group_Role_Map" EntityType="Self.User_Group_Role_Map" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Local_Category_Shop" Association="Self.FK_Local_Category_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="Local_Category" EntitySet="Local_Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Global_Cat" Association="Self.FK_Product_Global_Cat">
+            <End Role="Global_Category" EntitySet="Global_Category" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Local_Cat" Association="Self.FK_Product_Local_Cat">
+            <End Role="Local_Category" EntitySet="Local_Category" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Shop" Association="Self.FK_Product_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Tag_Product" Association="Self.FK_Product_Tag_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Product_Tag" EntitySet="Product_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Tag_Tag" Association="Self.FK_Product_Tag_Tag">
+            <End Role="Tag" EntitySet="Tag" />
+            <End Role="Product_Tag" EntitySet="Product_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_User" Association="Self.FK_Product_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Role_Permission_Map_Permission" Association="Self.FK_Role_Permission_Map_Permission">
+            <End Role="Permission" EntitySet="Permission" />
+            <End Role="Role_Permission_Map" EntitySet="Role_Permission_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Role_Permission_Map_Role" Association="Self.FK_Role_Permission_Map_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="Role_Permission_Map" EntitySet="Role_Permission_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shop_User" Association="Self.FK_Shop_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Shop" EntitySet="Shop" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Group_Map_User" Association="Self.FK_User_Group_Map_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="User_Group_Map" EntitySet="User_Group_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Group_Map_UserGroup" Association="Self.FK_User_Group_Map_UserGroup">
+            <End Role="User_Group" EntitySet="User_Group" />
+            <End Role="User_Group_Map" EntitySet="User_Group_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Group_Role_Map_Role" Association="Self.FK_User_Group_Role_Map_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="User_Group_Role_Map" EntitySet="User_Group_Role_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Group_Role_Map_User_Group" Association="Self.FK_User_Group_Role_Map_User_Group">
+            <End Role="User_Group" EntitySet="User_Group" />
+            <End Role="User_Group_Role_Map" EntitySet="User_Group_Role_Map" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ColspModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Global_Category">
+          <Key>
+            <PropertyRef Name="category_id" />
+          </Key>
+          <Property Name="category_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name_en" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="name_th" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="url_key_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="url_key_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="lft" Type="Int32" Nullable="false" />
+          <Property Name="rgt" Type="Int32" Nullable="false" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_Product_Global_Cat" FromRole="Global_Category" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Local_Category">
+          <Key>
+            <PropertyRef Name="category_id" />
+          </Key>
+          <Property Name="category_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name_en" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name_th" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="url_key_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="url_key_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="product_count" Type="Int32" Nullable="false" />
+          <Property Name="shop" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="Boolean" Nullable="false" />
+          <Property Name="lft" Type="Int32" Nullable="false" />
+          <Property Name="rgt" Type="Int32" Nullable="false" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop1" Relationship="Self.FK_Local_Category_Shop" FromRole="Local_Category" ToRole="Shop" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_Product_Local_Cat" FromRole="Local_Category" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="permission_id" />
+          </Key>
+          <Property Name="permission_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="permission_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Roles" Relationship="Self.Role_Permission_Map" FromRole="Permission" ToRole="Role" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="product_id" />
+          </Key>
+          <Property Name="product_id" Type="Int32" Nullable="false" />
+          <Property Name="global_cat_id" Type="Int32" Nullable="false" />
+          <Property Name="local_cat_id" Type="Int32" />
+          <Property Name="shop_id" Type="Int32" Nullable="false" />
+          <Property Name="seller_id" Type="Int32" Nullable="false" />
+          <Property Name="brand_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="brand_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="product_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="product_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="original_price" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="sale_price" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="description_en" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="description_th" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="stock" Type="Int32" />
+          <Property Name="safty_stock" Type="Int32" />
+          <NavigationProperty Name="Global_Category" Relationship="Self.FK_Product_Global_Cat" FromRole="Product" ToRole="Global_Category" />
+          <NavigationProperty Name="Local_Category" Relationship="Self.FK_Product_Local_Cat" FromRole="Product" ToRole="Local_Category" />
+          <NavigationProperty Name="Shop" Relationship="Self.FK_Product_Shop" FromRole="Product" ToRole="Shop" />
+          <NavigationProperty Name="Product_Tag" Relationship="Self.FK_Product_Tag_Product" FromRole="Product" ToRole="Product_Tag" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Product_User" FromRole="Product" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Product_Tag">
+          <Key>
+            <PropertyRef Name="product_id" />
+            <PropertyRef Name="tag_id" />
+          </Key>
+          <Property Name="product_id" Type="Int32" Nullable="false" />
+          <Property Name="tag_id" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="Int32" />
+          <NavigationProperty Name="Product" Relationship="Self.FK_Product_Tag_Product" FromRole="Product_Tag" ToRole="Product" />
+          <NavigationProperty Name="Tag" Relationship="Self.FK_Product_Tag_Tag" FromRole="Product_Tag" ToRole="Tag" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="role_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="role_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="role_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Permissions" Relationship="Self.Role_Permission_Map" FromRole="Role" ToRole="Permission" />
+          <NavigationProperty Name="User_Group" Relationship="Self.User_Group_Role_Map" FromRole="Role" ToRole="User_Group" />
+        </EntityType>
+        <EntityType Name="Shop">
+          <Key>
+            <PropertyRef Name="shop_id" />
+          </Key>
+          <Property Name="shop_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="shop_owner" Type="Int32" />
+          <Property Name="shop_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="shop_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Local_Category" Relationship="Self.FK_Local_Category_Shop" FromRole="Shop" ToRole="Local_Category" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_Product_Shop" FromRole="Shop" ToRole="Product" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Shop_User" FromRole="Shop" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="tag_id" />
+          </Key>
+          <Property Name="tag_id" Type="Int32" Nullable="false" />
+          <Property Name="tag_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="count" Type="Int32" />
+          <Property Name="status" Type="Boolean" />
+          <NavigationProperty Name="Product_Tag" Relationship="Self.FK_Product_Tag_Tag" FromRole="Tag" ToRole="Product_Tag" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pwd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="pwd_last_chg" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="mobile" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+          <Property Name="phone" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+          <Property Name="fax" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="login_fail_count" Type="Int32" />
+          <Property Name="last_login_dt" Type="DateTime" Precision="3" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_Product_User" FromRole="User" ToRole="Product" />
+          <NavigationProperty Name="Shops" Relationship="Self.FK_Shop_User" FromRole="User" ToRole="Shop" />
+          <NavigationProperty Name="User_Group_Map" Relationship="Self.FK_User_Group_Map_User" FromRole="User" ToRole="User_Group_Map" />
+        </EntityType>
+        <EntityType Name="User_Group">
+          <Key>
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="group_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="group_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="group_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="User_Group_Map" Relationship="Self.FK_User_Group_Map_UserGroup" FromRole="User_Group" ToRole="User_Group_Map" />
+          <NavigationProperty Name="Roles" Relationship="Self.User_Group_Role_Map" FromRole="User_Group" ToRole="Role" />
+        </EntityType>
+        <EntityType Name="User_Group_Map">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="User" Relationship="Self.FK_User_Group_Map_User" FromRole="User_Group_Map" ToRole="User" />
+          <NavigationProperty Name="User_Group" Relationship="Self.FK_User_Group_Map_UserGroup" FromRole="User_Group_Map" ToRole="User_Group" />
+        </EntityType>
+        <Association Name="FK_Product_Global_Cat">
+          <End Role="Global_Category" Type="Self.Global_Category" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Global_Category">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="global_cat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Local_Category_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Local_Category" Type="Self.Local_Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="shop_id" />
+            </Principal>
+            <Dependent Role="Local_Category">
+              <PropertyRef Name="shop" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Local_Cat">
+          <End Role="Local_Category" Type="Self.Local_Category" Multiplicity="0..1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Local_Category">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="local_cat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="shop_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="shop_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Tag_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Product_Tag" Type="Self.Product_Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="product_id" />
+            </Principal>
+            <Dependent Role="Product_Tag">
+              <PropertyRef Name="product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="seller_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Tag_Tag">
+          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+          <End Role="Product_Tag" Type="Self.Product_Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="tag_id" />
+            </Principal>
+            <Dependent Role="Product_Tag">
+              <PropertyRef Name="tag_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Shop_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Shop">
+              <PropertyRef Name="shop_owner" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Group_Map_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User_Group_Map" Type="Self.User_Group_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="User_Group_Map">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Group_Map_UserGroup">
+          <End Role="User_Group" Type="Self.User_Group" Multiplicity="1" />
+          <End Role="User_Group_Map" Type="Self.User_Group_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="User_Group_Map">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Role_Permission_Map">
+          <End Role="Permission" Type="Self.Permission" Multiplicity="*" />
+          <End Role="Role" Type="Self.Role" Multiplicity="*" />
+        </Association>
+        <Association Name="User_Group_Role_Map">
+          <End Role="Role" Type="Self.Role" Multiplicity="*" />
+          <End Role="User_Group" Type="Self.User_Group" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="ColspEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Global_Category" EntityType="Self.Global_Category" />
+          <EntitySet Name="Local_Category" EntityType="Self.Local_Category" />
+          <EntitySet Name="Permissions" EntityType="Self.Permission" />
+          <EntitySet Name="Products" EntityType="Self.Product" />
+          <EntitySet Name="Product_Tag" EntityType="Self.Product_Tag" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
+          <EntitySet Name="Shops" EntityType="Self.Shop" />
+          <EntitySet Name="Tags" EntityType="Self.Tag" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="User_Group" EntityType="Self.User_Group" />
+          <EntitySet Name="User_Group_Map" EntityType="Self.User_Group_Map" />
+          <AssociationSet Name="FK_Product_Global_Cat" Association="Self.FK_Product_Global_Cat">
+            <End Role="Global_Category" EntitySet="Global_Category" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Local_Category_Shop" Association="Self.FK_Local_Category_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="Local_Category" EntitySet="Local_Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Local_Cat" Association="Self.FK_Product_Local_Cat">
+            <End Role="Local_Category" EntitySet="Local_Category" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Shop" Association="Self.FK_Product_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Tag_Product" Association="Self.FK_Product_Tag_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Product_Tag" EntitySet="Product_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_User" Association="Self.FK_Product_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Tag_Tag" Association="Self.FK_Product_Tag_Tag">
+            <End Role="Tag" EntitySet="Tags" />
+            <End Role="Product_Tag" EntitySet="Product_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shop_User" Association="Self.FK_Shop_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Shop" EntitySet="Shops" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Group_Map_User" Association="Self.FK_User_Group_Map_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="User_Group_Map" EntitySet="User_Group_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Group_Map_UserGroup" Association="Self.FK_User_Group_Map_UserGroup">
+            <End Role="User_Group" EntitySet="User_Group" />
+            <End Role="User_Group_Map" EntitySet="User_Group_Map" />
+          </AssociationSet>
+          <AssociationSet Name="Role_Permission_Map" Association="Self.Role_Permission_Map">
+            <End Role="Permission" EntitySet="Permissions" />
+            <End Role="Role" EntitySet="Roles" />
+          </AssociationSet>
+          <AssociationSet Name="User_Group_Role_Map" Association="Self.User_Group_Role_Map">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User_Group" EntitySet="User_Group" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ColspModelStoreContainer" CdmEntityContainer="ColspEntities">
+          <EntitySetMapping Name="Global_Category">
+            <EntityTypeMapping TypeName="ColspModel.Global_Category">
+              <MappingFragment StoreEntitySet="Global_Category">
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
+                <ScalarProperty Name="name_en" ColumnName="name_en" />
+                <ScalarProperty Name="name_th" ColumnName="name_th" />
+                <ScalarProperty Name="url_key_en" ColumnName="url_key_en" />
+                <ScalarProperty Name="url_key_th" ColumnName="url_key_th" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="lft" ColumnName="lft" />
+                <ScalarProperty Name="rgt" ColumnName="rgt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Local_Category">
+            <EntityTypeMapping TypeName="ColspModel.Local_Category">
+              <MappingFragment StoreEntitySet="Local_Category">
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
+                <ScalarProperty Name="name_en" ColumnName="name_en" />
+                <ScalarProperty Name="name_th" ColumnName="name_th" />
+                <ScalarProperty Name="url_key_en" ColumnName="url_key_en" />
+                <ScalarProperty Name="url_key_th" ColumnName="url_key_th" />
+                <ScalarProperty Name="product_count" ColumnName="product_count" />
+                <ScalarProperty Name="shop" ColumnName="shop" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="lft" ColumnName="lft" />
+                <ScalarProperty Name="rgt" ColumnName="rgt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Permissions">
+            <EntityTypeMapping TypeName="ColspModel.Permission">
+              <MappingFragment StoreEntitySet="Permission">
+                <ScalarProperty Name="permission_id" ColumnName="permission_id" />
+                <ScalarProperty Name="permission_name" ColumnName="permission_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="ColspModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
+                <ScalarProperty Name="global_cat_id" ColumnName="global_cat_id" />
+                <ScalarProperty Name="local_cat_id" ColumnName="local_cat_id" />
+                <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+                <ScalarProperty Name="seller_id" ColumnName="seller_id" />
+                <ScalarProperty Name="brand_name_en" ColumnName="brand_name_en" />
+                <ScalarProperty Name="brand_name_th" ColumnName="brand_name_th" />
+                <ScalarProperty Name="product_name_en" ColumnName="product_name_en" />
+                <ScalarProperty Name="product_name_th" ColumnName="product_name_th" />
+                <ScalarProperty Name="sku" ColumnName="sku" />
+                <ScalarProperty Name="upc" ColumnName="upc" />
+                <ScalarProperty Name="original_price" ColumnName="original_price" />
+                <ScalarProperty Name="sale_price" ColumnName="sale_price" />
+                <ScalarProperty Name="description_en" ColumnName="description_en" />
+                <ScalarProperty Name="description_th" ColumnName="description_th" />
+                <ScalarProperty Name="stock" ColumnName="stock" />
+                <ScalarProperty Name="safty_stock" ColumnName="safty_stock" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Product_Tag">
+            <EntityTypeMapping TypeName="ColspModel.Product_Tag">
+              <MappingFragment StoreEntitySet="Product_Tag">
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
+                <ScalarProperty Name="tag_id" ColumnName="tag_id" />
+                <ScalarProperty Name="status" ColumnName="status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="ColspModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="role_name_en" ColumnName="role_name_en" />
+                <ScalarProperty Name="role_name_th" ColumnName="role_name_th" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Shops">
+            <EntityTypeMapping TypeName="ColspModel.Shop">
+              <MappingFragment StoreEntitySet="Shop">
+                <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+                <ScalarProperty Name="shop_owner" ColumnName="shop_owner" />
+                <ScalarProperty Name="shop_name_en" ColumnName="shop_name_en" />
+                <ScalarProperty Name="shop_name_th" ColumnName="shop_name_th" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tags">
+            <EntityTypeMapping TypeName="ColspModel.Tag">
+              <MappingFragment StoreEntitySet="Tag">
+                <ScalarProperty Name="tag_id" ColumnName="tag_id" />
+                <ScalarProperty Name="tag_name" ColumnName="tag_name" />
+                <ScalarProperty Name="count" ColumnName="count" />
+                <ScalarProperty Name="status" ColumnName="status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ColspModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="pwd" ColumnName="pwd" />
+                <ScalarProperty Name="pwd_last_chg" ColumnName="pwd_last_chg" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="name_en" ColumnName="name_en" />
+                <ScalarProperty Name="name_th" ColumnName="name_th" />
+                <ScalarProperty Name="mobile" ColumnName="mobile" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="fax" ColumnName="fax" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="login_fail_count" ColumnName="login_fail_count" />
+                <ScalarProperty Name="last_login_dt" ColumnName="last_login_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Group">
+            <EntityTypeMapping TypeName="ColspModel.User_Group">
+              <MappingFragment StoreEntitySet="User_Group">
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="group_name_en" ColumnName="group_name_en" />
+                <ScalarProperty Name="group_name_th" ColumnName="group_name_th" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Group_Map">
+            <EntityTypeMapping TypeName="ColspModel.User_Group_Map">
+              <MappingFragment StoreEntitySet="User_Group_Map">
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Role_Permission_Map" TypeName="ColspModel.Role_Permission_Map" StoreEntitySet="Role_Permission_Map">
+            <EndProperty Name="Permission">
+              <ScalarProperty Name="permission_id" ColumnName="permission_id" />
+            </EndProperty>
+            <EndProperty Name="Role">
+              <ScalarProperty Name="role_id" ColumnName="role_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="User_Group_Role_Map" TypeName="ColspModel.User_Group_Role_Map" StoreEntitySet="User_Group_Role_Map">
+            <EndProperty Name="Role">
+              <ScalarProperty Name="role_id" ColumnName="role_id" />
+            </EndProperty>
+            <EndProperty Name="User_Group">
+              <ScalarProperty Name="group_id" ColumnName="group_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

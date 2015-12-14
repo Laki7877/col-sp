@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5cf822ecd79d4e9ab66170a38ae612e2" Name="Diagram1">
+        <EntityTypeShape EntityType="ColspModel.Global_Category" Width="1.5" PointX="5.25" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Local_Category" Width="1.5" PointX="5.25" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Permission" Width="1.5" PointX="1.5" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Product" Width="1.5" PointX="7.5" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Product_Tag" Width="1.5" PointX="9.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Role" Width="1.5" PointX="1.5" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Shop" Width="1.5" PointX="3" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Tag" Width="1.5" PointX="7.5" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.User" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.User_Group" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.User_Group_Map" Width="1.5" PointX="3" PointY="6.875" IsExpanded="true" />
+        <AssociationConnector Association="ColspModel.FK_Product_Global_Cat" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_Local_Category_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_Product_Local_Cat" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_Product_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_Product_Tag_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_Product_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_Product_Tag_Tag" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_Shop_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_User_Group_Map_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.FK_User_Group_Map_UserGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.Role_Permission_Map" ManuallyRouted="false" />
+        <AssociationConnector Association="ColspModel.User_Group_Role_Map" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
