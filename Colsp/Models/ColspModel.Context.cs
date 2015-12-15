@@ -36,6 +36,7 @@ namespace Colsp.Models
         public virtual DbSet<Product_Attribute> Product_Attribute { get; set; }
         public virtual DbSet<Product_Tag> Product_Tag { get; set; }
         public virtual DbSet<Product_Variant> Product_Variant { get; set; }
+        public virtual DbSet<Related_Product> Related_Product { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
