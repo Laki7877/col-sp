@@ -4,7 +4,69 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ColspModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ColspModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Attribute">
+          <Key>
+            <PropertyRef Name="attribute_id" />
+          </Key>
+          <Property Name="attribute_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="attribute_name_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="attribute_name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="variant_status" Type="bit" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Attribute_Set">
+          <Key>
+            <PropertyRef Name="attribute_set_id" />
+          </Key>
+          <Property Name="attribute_set_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="attribute_set_name_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="attribute_set_name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Attribute_Set_Map">
+          <Key>
+            <PropertyRef Name="attribute_set_id" />
+            <PropertyRef Name="attribute_id" />
+          </Key>
+          <Property Name="attribute_set_id" Type="int" Nullable="false" />
+          <Property Name="attribute_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attribute_Value">
+          <Key>
+            <PropertyRef Name="attribute_value_id" />
+          </Key>
+          <Property Name="attribute_value_id" Type="int" Nullable="false" />
+          <Property Name="attribute_value_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="attribute_value_th" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Attribute_Value_Map">
+          <Key>
+            <PropertyRef Name="attribute_id" />
+            <PropertyRef Name="attribute_value_id" />
+          </Key>
+          <Property Name="attribute_id" Type="int" Nullable="false" />
+          <Property Name="attribute_value_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category_Attribute_Set_Map">
+          <Key>
+            <PropertyRef Name="category_id" />
+            <PropertyRef Name="attribute_set_id" />
+          </Key>
+          <Property Name="category_id" Type="int" Nullable="false" />
+          <Property Name="attribute_set_id" Type="int" Nullable="false" />
+          <Property Name="status" Type="bit" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
         <EntityType Name="Global_Category">
           <Key>
             <PropertyRef Name="category_id" />
@@ -52,7 +114,7 @@
           <Key>
             <PropertyRef Name="product_id" />
           </Key>
-          <Property Name="product_id" Type="int" Nullable="false" />
+          <Property Name="product_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="global_cat_id" Type="int" Nullable="false" />
           <Property Name="local_cat_id" Type="int" />
           <Property Name="shop_id" Type="int" Nullable="false" />
@@ -61,14 +123,40 @@
           <Property Name="brand_name_th" Type="nvarchar" MaxLength="100" />
           <Property Name="product_name_en" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="product_name_th" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="uid" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pid" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="sku" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="upc" Type="nvarchar" MaxLength="50" />
-          <Property Name="original_price" Type="decimal" Precision="18" Scale="4" Nullable="false" />
-          <Property Name="sale_price" Type="decimal" Precision="18" Scale="4" />
-          <Property Name="description_en" Type="nvarchar" MaxLength="500" />
-          <Property Name="description_th" Type="nvarchar" MaxLength="500" />
+          <Property Name="original_price" Type="money" Nullable="false" />
+          <Property Name="sale_price" Type="money" />
+          <Property Name="description_full_en" Type="nvarchar" MaxLength="500" />
+          <Property Name="description_short_en" Type="nvarchar" MaxLength="500" />
+          <Property Name="description_full_th" Type="nvarchar" MaxLength="500" />
+          <Property Name="description_short_th" Type="nvarchar" MaxLength="500" />
           <Property Name="stock" Type="int" />
           <Property Name="safty_stock" Type="int" />
+          <Property Name="video_link" Type="nvarchar" MaxLength="2083" />
+          <Property Name="shipping_method" Type="char" MaxLength="10" />
+          <Property Name="length" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="height" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="width" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="dimenstion_unit" Type="char" MaxLength="10" />
+          <Property Name="weight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="dimenstion_weight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Product_Attribute">
+          <Key>
+            <PropertyRef Name="product_id" />
+            <PropertyRef Name="attribute_id" />
+          </Key>
+          <Property Name="product_id" Type="int" Nullable="false" />
+          <Property Name="attribute_id" Type="int" Nullable="false" />
+          <Property Name="value_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="value_th" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Product_Tag">
           <Key>
@@ -78,6 +166,42 @@
           <Property Name="product_id" Type="int" Nullable="false" />
           <Property Name="tag_id" Type="int" Nullable="false" />
           <Property Name="status" Type="int" />
+        </EntityType>
+        <EntityType Name="Product_Variant">
+          <Key>
+            <PropertyRef Name="product_id" />
+            <PropertyRef Name="variant_id" />
+          </Key>
+          <Property Name="product_id" Type="int" Nullable="false" />
+          <Property Name="variant_id" Type="int" Nullable="false" />
+          <Property Name="value_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="value_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="product_name_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="product_name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="uid" Type="nvarchar" MaxLength="50" />
+          <Property Name="pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="sku" Type="nvarchar" MaxLength="50" />
+          <Property Name="upc" Type="nvarchar" MaxLength="50" />
+          <Property Name="original_price" Type="money" />
+          <Property Name="sale_price" Type="money" />
+          <Property Name="description_full_en" Type="nvarchar" MaxLength="500" />
+          <Property Name="description_short_en" Type="nvarchar" MaxLength="500" />
+          <Property Name="description_full_th" Type="nvarchar" MaxLength="500" />
+          <Property Name="description_short_th" Type="nvarchar" MaxLength="500" />
+          <Property Name="stock" Type="int" />
+          <Property Name="safty_stock" Type="int" />
+          <Property Name="video_link" Type="nvarchar" MaxLength="2083" />
+          <Property Name="shipping_method" Type="char" MaxLength="10" />
+          <Property Name="length" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="height" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="width" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="dimenstion_unit" Type="char" MaxLength="10" />
+          <Property Name="weight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="dimenstion_weight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="created_dt" Type="datetime" />
+          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
+          <Property Name="updated_dt" Type="datetime" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -175,6 +299,66 @@
           <Property Name="group_id" Type="int" Nullable="false" />
           <Property Name="role_id" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Attribute_Set_Map_Attribute">
+          <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+          <End Role="Attribute_Set_Map" Type="Self.Attribute_Set_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="attribute_id" />
+            </Principal>
+            <Dependent Role="Attribute_Set_Map">
+              <PropertyRef Name="attribute_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attribute_Set_Map_Attribute_Set">
+          <End Role="Attribute_Set" Type="Self.Attribute_Set" Multiplicity="1" />
+          <End Role="Attribute_Set_Map" Type="Self.Attribute_Set_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute_Set">
+              <PropertyRef Name="attribute_set_id" />
+            </Principal>
+            <Dependent Role="Attribute_Set_Map">
+              <PropertyRef Name="attribute_set_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attribute_Value_Map_Attribute">
+          <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+          <End Role="Attribute_Value_Map" Type="Self.Attribute_Value_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="attribute_id" />
+            </Principal>
+            <Dependent Role="Attribute_Value_Map">
+              <PropertyRef Name="attribute_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attribute_Value_Map_Attribute_Value">
+          <End Role="Attribute_Value" Type="Self.Attribute_Value" Multiplicity="1" />
+          <End Role="Attribute_Value_Map" Type="Self.Attribute_Value_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute_Value">
+              <PropertyRef Name="attribute_value_id" />
+            </Principal>
+            <Dependent Role="Attribute_Value_Map">
+              <PropertyRef Name="attribute_value_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Category_Attribute_Set_Map_Category">
+          <End Role="Global_Category" Type="Self.Global_Category" Multiplicity="1" />
+          <End Role="Category_Attribute_Set_Map" Type="Self.Category_Attribute_Set_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Global_Category">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="Category_Attribute_Set_Map">
+              <PropertyRef Name="category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Local_Category_Shop">
           <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
           <End Role="Local_Category" Type="Self.Local_Category" Multiplicity="*" />
@@ -184,6 +368,30 @@
             </Principal>
             <Dependent Role="Local_Category">
               <PropertyRef Name="shop" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Attribute_Attribute">
+          <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+          <End Role="Product_Attribute" Type="Self.Product_Attribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="attribute_id" />
+            </Principal>
+            <Dependent Role="Product_Attribute">
+              <PropertyRef Name="attribute_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Attribute_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Product_Attribute" Type="Self.Product_Attribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="product_id" />
+            </Principal>
+            <Dependent Role="Product_Attribute">
+              <PropertyRef Name="product_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -256,6 +464,30 @@
             </Principal>
             <Dependent Role="Product">
               <PropertyRef Name="seller_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Variant_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Product_Variant" Type="Self.Product_Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="product_id" />
+            </Principal>
+            <Dependent Role="Product_Variant">
+              <PropertyRef Name="product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Variant_Variant">
+          <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+          <End Role="Product_Variant" Type="Self.Product_Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="attribute_id" />
+            </Principal>
+            <Dependent Role="Product_Variant">
+              <PropertyRef Name="variant_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -344,11 +576,19 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="ColspModelStoreContainer">
+          <EntitySet Name="Attribute" EntityType="Self.Attribute" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attribute_Set" EntityType="Self.Attribute_Set" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attribute_Set_Map" EntityType="Self.Attribute_Set_Map" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attribute_Value" EntityType="Self.Attribute_Value" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attribute_Value_Map" EntityType="Self.Attribute_Value_Map" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category_Attribute_Set_Map" EntityType="Self.Category_Attribute_Set_Map" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Global_Category" EntityType="Self.Global_Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Local_Category" EntityType="Self.Local_Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product_Attribute" EntityType="Self.Product_Attribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product_Tag" EntityType="Self.Product_Tag" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product_Variant" EntityType="Self.Product_Variant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role_Permission_Map" EntityType="Self.Role_Permission_Map" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
@@ -357,9 +597,37 @@
           <EntitySet Name="User_Group" EntityType="Self.User_Group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Group_Map" EntityType="Self.User_Group_Map" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Group_Role_Map" EntityType="Self.User_Group_Role_Map" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Attribute_Set_Map_Attribute" Association="Self.FK_Attribute_Set_Map_Attribute">
+            <End Role="Attribute" EntitySet="Attribute" />
+            <End Role="Attribute_Set_Map" EntitySet="Attribute_Set_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attribute_Set_Map_Attribute_Set" Association="Self.FK_Attribute_Set_Map_Attribute_Set">
+            <End Role="Attribute_Set" EntitySet="Attribute_Set" />
+            <End Role="Attribute_Set_Map" EntitySet="Attribute_Set_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attribute_Value_Map_Attribute" Association="Self.FK_Attribute_Value_Map_Attribute">
+            <End Role="Attribute" EntitySet="Attribute" />
+            <End Role="Attribute_Value_Map" EntitySet="Attribute_Value_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attribute_Value_Map_Attribute_Value" Association="Self.FK_Attribute_Value_Map_Attribute_Value">
+            <End Role="Attribute_Value" EntitySet="Attribute_Value" />
+            <End Role="Attribute_Value_Map" EntitySet="Attribute_Value_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Category_Attribute_Set_Map_Category" Association="Self.FK_Category_Attribute_Set_Map_Category">
+            <End Role="Global_Category" EntitySet="Global_Category" />
+            <End Role="Category_Attribute_Set_Map" EntitySet="Category_Attribute_Set_Map" />
+          </AssociationSet>
           <AssociationSet Name="FK_Local_Category_Shop" Association="Self.FK_Local_Category_Shop">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="Local_Category" EntitySet="Local_Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Attribute_Attribute" Association="Self.FK_Product_Attribute_Attribute">
+            <End Role="Attribute" EntitySet="Attribute" />
+            <End Role="Product_Attribute" EntitySet="Product_Attribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Attribute_Product" Association="Self.FK_Product_Attribute_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Product_Attribute" EntitySet="Product_Attribute" />
           </AssociationSet>
           <AssociationSet Name="FK_Product_Global_Cat" Association="Self.FK_Product_Global_Cat">
             <End Role="Global_Category" EntitySet="Global_Category" />
@@ -384,6 +652,14 @@
           <AssociationSet Name="FK_Product_User" Association="Self.FK_Product_User">
             <End Role="User" EntitySet="User" />
             <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Variant_Product" Association="Self.FK_Product_Variant_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Product_Variant" EntitySet="Product_Variant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Variant_Variant" Association="Self.FK_Product_Variant_Variant">
+            <End Role="Attribute" EntitySet="Attribute" />
+            <End Role="Product_Variant" EntitySet="Product_Variant" />
           </AssociationSet>
           <AssociationSet Name="FK_Role_Permission_Map_Permission" Association="Self.FK_Role_Permission_Map_Permission">
             <End Role="Permission" EntitySet="Permission" />
@@ -414,11 +690,158 @@
             <End Role="User_Group_Role_Map" EntitySet="User_Group_Role_Map" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ColspModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ColspEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Attributes" EntityType="ColspModel.Attribute" />
+          <EntitySet Name="Attribute_Set" EntityType="ColspModel.Attribute_Set" />
+          <EntitySet Name="Attribute_Value" EntityType="ColspModel.Attribute_Value" />
+          <EntitySet Name="Category_Attribute_Set_Map" EntityType="ColspModel.Category_Attribute_Set_Map" />
+          <EntitySet Name="Global_Category" EntityType="ColspModel.Global_Category" />
+          <EntitySet Name="Local_Category" EntityType="ColspModel.Local_Category" />
+          <EntitySet Name="Permissions" EntityType="ColspModel.Permission" />
+          <EntitySet Name="Products" EntityType="ColspModel.Product" />
+          <EntitySet Name="Product_Attribute" EntityType="ColspModel.Product_Attribute" />
+          <EntitySet Name="Product_Tag" EntityType="ColspModel.Product_Tag" />
+          <EntitySet Name="Product_Variant" EntityType="ColspModel.Product_Variant" />
+          <EntitySet Name="Roles" EntityType="ColspModel.Role" />
+          <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
+          <EntitySet Name="Tags" EntityType="ColspModel.Tag" />
+          <EntitySet Name="Users" EntityType="ColspModel.User" />
+          <EntitySet Name="User_Group" EntityType="ColspModel.User_Group" />
+          <EntitySet Name="User_Group_Map" EntityType="ColspModel.User_Group_Map" />
+          <AssociationSet Name="FK_Product_Attribute_Attribute" Association="ColspModel.FK_Product_Attribute_Attribute">
+            <End Role="Attribute" EntitySet="Attributes" />
+            <End Role="Product_Attribute" EntitySet="Product_Attribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Variant_Variant" Association="ColspModel.FK_Product_Variant_Variant">
+            <End Role="Attribute" EntitySet="Attributes" />
+            <End Role="Product_Variant" EntitySet="Product_Variant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Category_Attribute_Set_Map_Category" Association="ColspModel.FK_Category_Attribute_Set_Map_Category">
+            <End Role="Global_Category" EntitySet="Global_Category" />
+            <End Role="Category_Attribute_Set_Map" EntitySet="Category_Attribute_Set_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Global_Cat" Association="ColspModel.FK_Product_Global_Cat">
+            <End Role="Global_Category" EntitySet="Global_Category" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Local_Category_Shop" Association="ColspModel.FK_Local_Category_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="Local_Category" EntitySet="Local_Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Local_Cat" Association="ColspModel.FK_Product_Local_Cat">
+            <End Role="Local_Category" EntitySet="Local_Category" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Attribute_Product" Association="ColspModel.FK_Product_Attribute_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Product_Attribute" EntitySet="Product_Attribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Shop" Association="ColspModel.FK_Product_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Tag_Product" Association="ColspModel.FK_Product_Tag_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Product_Tag" EntitySet="Product_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_User" Association="ColspModel.FK_Product_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Variant_Product" Association="ColspModel.FK_Product_Variant_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Product_Variant" EntitySet="Product_Variant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Tag_Tag" Association="ColspModel.FK_Product_Tag_Tag">
+            <End Role="Tag" EntitySet="Tags" />
+            <End Role="Product_Tag" EntitySet="Product_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shop_User" Association="ColspModel.FK_Shop_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Shop" EntitySet="Shops" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Group_Map_User" Association="ColspModel.FK_User_Group_Map_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="User_Group_Map" EntitySet="User_Group_Map" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Group_Map_UserGroup" Association="ColspModel.FK_User_Group_Map_UserGroup">
+            <End Role="User_Group" EntitySet="User_Group" />
+            <End Role="User_Group_Map" EntitySet="User_Group_Map" />
+          </AssociationSet>
+          <AssociationSet Name="Attribute_Set_Map" Association="ColspModel.Attribute_Set_Map">
+            <End Role="Attribute" EntitySet="Attributes" />
+            <End Role="Attribute_Set" EntitySet="Attribute_Set" />
+          </AssociationSet>
+          <AssociationSet Name="Attribute_Value_Map" Association="ColspModel.Attribute_Value_Map">
+            <End Role="Attribute" EntitySet="Attributes" />
+            <End Role="Attribute_Value" EntitySet="Attribute_Value" />
+          </AssociationSet>
+          <AssociationSet Name="Role_Permission_Map" Association="ColspModel.Role_Permission_Map">
+            <End Role="Permission" EntitySet="Permissions" />
+            <End Role="Role" EntitySet="Roles" />
+          </AssociationSet>
+          <AssociationSet Name="User_Group_Role_Map" Association="ColspModel.User_Group_Role_Map">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User_Group" EntitySet="User_Group" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Attribute">
+          <Key>
+            <PropertyRef Name="attribute_id" />
+          </Key>
+          <Property Name="attribute_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="attribute_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="attribute_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="variant_status" Type="Boolean" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Product_Attribute" Relationship="ColspModel.FK_Product_Attribute_Attribute" FromRole="Attribute" ToRole="Product_Attribute" />
+          <NavigationProperty Name="Product_Variant" Relationship="ColspModel.FK_Product_Variant_Variant" FromRole="Attribute" ToRole="Product_Variant" />
+          <NavigationProperty Name="Attribute_Set" Relationship="ColspModel.Attribute_Set_Map" FromRole="Attribute" ToRole="Attribute_Set" />
+          <NavigationProperty Name="Attribute_Value" Relationship="ColspModel.Attribute_Value_Map" FromRole="Attribute" ToRole="Attribute_Value" />
+        </EntityType>
+        <EntityType Name="Attribute_Set">
+          <Key>
+            <PropertyRef Name="attribute_set_id" />
+          </Key>
+          <Property Name="attribute_set_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="attribute_set_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="attribute_set_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Attributes" Relationship="ColspModel.Attribute_Set_Map" FromRole="Attribute_Set" ToRole="Attribute" />
+        </EntityType>
+        <EntityType Name="Attribute_Value">
+          <Key>
+            <PropertyRef Name="attribute_value_id" />
+          </Key>
+          <Property Name="attribute_value_id" Type="Int32" Nullable="false" />
+          <Property Name="attribute_value_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="attribute_value_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Attributes" Relationship="ColspModel.Attribute_Value_Map" FromRole="Attribute_Value" ToRole="Attribute" />
+        </EntityType>
+        <EntityType Name="Category_Attribute_Set_Map">
+          <Key>
+            <PropertyRef Name="category_id" />
+            <PropertyRef Name="attribute_set_id" />
+          </Key>
+          <Property Name="category_id" Type="Int32" Nullable="false" />
+          <Property Name="attribute_set_id" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Global_Category" Relationship="ColspModel.FK_Category_Attribute_Set_Map_Category" FromRole="Category_Attribute_Set_Map" ToRole="Global_Category" />
+        </EntityType>
         <EntityType Name="Global_Category">
           <Key>
             <PropertyRef Name="category_id" />
@@ -435,15 +858,16 @@
           <Property Name="created_dt" Type="DateTime" Precision="3" />
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="updated_dt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_Product_Global_Cat" FromRole="Global_Category" ToRole="Product" />
+          <NavigationProperty Name="Category_Attribute_Set_Map" Relationship="ColspModel.FK_Category_Attribute_Set_Map_Category" FromRole="Global_Category" ToRole="Category_Attribute_Set_Map" />
+          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_Global_Cat" FromRole="Global_Category" ToRole="Product" />
         </EntityType>
         <EntityType Name="Local_Category">
           <Key>
             <PropertyRef Name="category_id" />
           </Key>
           <Property Name="category_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name_en" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="name_th" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name_en" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="name_th" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="url_key_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="url_key_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="product_count" Type="Int32" Nullable="false" />
@@ -455,8 +879,8 @@
           <Property Name="created_dt" Type="DateTime" Precision="3" />
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="updated_dt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Shop1" Relationship="Self.FK_Local_Category_Shop" FromRole="Local_Category" ToRole="Shop" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_Product_Local_Cat" FromRole="Local_Category" ToRole="Product" />
+          <NavigationProperty Name="Shop1" Relationship="ColspModel.FK_Local_Category_Shop" FromRole="Local_Category" ToRole="Shop" />
+          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_Local_Cat" FromRole="Local_Category" ToRole="Product" />
         </EntityType>
         <EntityType Name="Permission">
           <Key>
@@ -464,34 +888,64 @@
           </Key>
           <Property Name="permission_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="permission_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Roles" Relationship="Self.Role_Permission_Map" FromRole="Permission" ToRole="Role" />
+          <NavigationProperty Name="Roles" Relationship="ColspModel.Role_Permission_Map" FromRole="Permission" ToRole="Role" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
             <PropertyRef Name="product_id" />
           </Key>
-          <Property Name="product_id" Type="Int32" Nullable="false" />
+          <Property Name="product_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="global_cat_id" Type="Int32" Nullable="false" />
           <Property Name="local_cat_id" Type="Int32" />
           <Property Name="shop_id" Type="Int32" Nullable="false" />
           <Property Name="seller_id" Type="Int32" Nullable="false" />
-          <Property Name="brand_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="brand_name_en" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="brand_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="product_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="product_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="product_name_en" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="product_name_th" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="uid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="sku" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="original_price" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
-          <Property Name="sale_price" Type="Decimal" Precision="18" Scale="4" />
-          <Property Name="description_en" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="description_th" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="original_price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="sale_price" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="description_full_en" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="description_short_en" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="description_full_th" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="description_short_th" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="stock" Type="Int32" />
           <Property Name="safty_stock" Type="Int32" />
-          <NavigationProperty Name="Global_Category" Relationship="Self.FK_Product_Global_Cat" FromRole="Product" ToRole="Global_Category" />
-          <NavigationProperty Name="Local_Category" Relationship="Self.FK_Product_Local_Cat" FromRole="Product" ToRole="Local_Category" />
-          <NavigationProperty Name="Shop" Relationship="Self.FK_Product_Shop" FromRole="Product" ToRole="Shop" />
-          <NavigationProperty Name="Product_Tag" Relationship="Self.FK_Product_Tag_Product" FromRole="Product" ToRole="Product_Tag" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Product_User" FromRole="Product" ToRole="User" />
+          <Property Name="video_link" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+          <Property Name="shipping_method" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="length" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="height" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="width" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="dimenstion_unit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="weight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="dimenstion_weight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Global_Category" Relationship="ColspModel.FK_Product_Global_Cat" FromRole="Product" ToRole="Global_Category" />
+          <NavigationProperty Name="Local_Category" Relationship="ColspModel.FK_Product_Local_Cat" FromRole="Product" ToRole="Local_Category" />
+          <NavigationProperty Name="Product_Attribute" Relationship="ColspModel.FK_Product_Attribute_Product" FromRole="Product" ToRole="Product_Attribute" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_Product_Shop" FromRole="Product" ToRole="Shop" />
+          <NavigationProperty Name="Product_Tag" Relationship="ColspModel.FK_Product_Tag_Product" FromRole="Product" ToRole="Product_Tag" />
+          <NavigationProperty Name="User" Relationship="ColspModel.FK_Product_User" FromRole="Product" ToRole="User" />
+          <NavigationProperty Name="Product_Variant" Relationship="ColspModel.FK_Product_Variant_Product" FromRole="Product" ToRole="Product_Variant" />
+        </EntityType>
+        <EntityType Name="Product_Attribute">
+          <Key>
+            <PropertyRef Name="product_id" />
+            <PropertyRef Name="attribute_id" />
+          </Key>
+          <Property Name="product_id" Type="Int32" Nullable="false" />
+          <Property Name="attribute_id" Type="Int32" Nullable="false" />
+          <Property Name="value_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="value_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Attribute" Relationship="ColspModel.FK_Product_Attribute_Attribute" FromRole="Product_Attribute" ToRole="Attribute" />
+          <NavigationProperty Name="Product" Relationship="ColspModel.FK_Product_Attribute_Product" FromRole="Product_Attribute" ToRole="Product" />
         </EntityType>
         <EntityType Name="Product_Tag">
           <Key>
@@ -501,8 +955,46 @@
           <Property Name="product_id" Type="Int32" Nullable="false" />
           <Property Name="tag_id" Type="Int32" Nullable="false" />
           <Property Name="status" Type="Int32" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_Product_Tag_Product" FromRole="Product_Tag" ToRole="Product" />
-          <NavigationProperty Name="Tag" Relationship="Self.FK_Product_Tag_Tag" FromRole="Product_Tag" ToRole="Tag" />
+          <NavigationProperty Name="Product" Relationship="ColspModel.FK_Product_Tag_Product" FromRole="Product_Tag" ToRole="Product" />
+          <NavigationProperty Name="Tag" Relationship="ColspModel.FK_Product_Tag_Tag" FromRole="Product_Tag" ToRole="Tag" />
+        </EntityType>
+        <EntityType Name="Product_Variant">
+          <Key>
+            <PropertyRef Name="product_id" />
+            <PropertyRef Name="variant_id" />
+          </Key>
+          <Property Name="product_id" Type="Int32" Nullable="false" />
+          <Property Name="variant_id" Type="Int32" Nullable="false" />
+          <Property Name="value_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="value_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="product_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="product_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="original_price" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="sale_price" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="description_full_en" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="description_short_en" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="description_full_th" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="description_short_th" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="stock" Type="Int32" />
+          <Property Name="safty_stock" Type="Int32" />
+          <Property Name="video_link" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+          <Property Name="shipping_method" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="length" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="height" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="width" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="dimenstion_unit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="weight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="dimenstion_weight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="created_dt" Type="DateTime" Precision="3" />
+          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="updated_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Attribute" Relationship="ColspModel.FK_Product_Variant_Variant" FromRole="Product_Variant" ToRole="Attribute" />
+          <NavigationProperty Name="Product" Relationship="ColspModel.FK_Product_Variant_Product" FromRole="Product_Variant" ToRole="Product" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -515,8 +1007,8 @@
           <Property Name="created_dt" Type="DateTime" Precision="3" />
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="updated_dt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Permissions" Relationship="Self.Role_Permission_Map" FromRole="Role" ToRole="Permission" />
-          <NavigationProperty Name="User_Group" Relationship="Self.User_Group_Role_Map" FromRole="Role" ToRole="User_Group" />
+          <NavigationProperty Name="Permissions" Relationship="ColspModel.Role_Permission_Map" FromRole="Role" ToRole="Permission" />
+          <NavigationProperty Name="User_Group" Relationship="ColspModel.User_Group_Role_Map" FromRole="Role" ToRole="User_Group" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
@@ -530,9 +1022,9 @@
           <Property Name="created_dt" Type="DateTime" Precision="3" />
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="updated_dt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Local_Category" Relationship="Self.FK_Local_Category_Shop" FromRole="Shop" ToRole="Local_Category" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_Product_Shop" FromRole="Shop" ToRole="Product" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Shop_User" FromRole="Shop" ToRole="User" />
+          <NavigationProperty Name="Local_Category" Relationship="ColspModel.FK_Local_Category_Shop" FromRole="Shop" ToRole="Local_Category" />
+          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_Shop" FromRole="Shop" ToRole="Product" />
+          <NavigationProperty Name="User" Relationship="ColspModel.FK_Shop_User" FromRole="Shop" ToRole="User" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -542,14 +1034,14 @@
           <Property Name="tag_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="count" Type="Int32" />
           <Property Name="status" Type="Boolean" />
-          <NavigationProperty Name="Product_Tag" Relationship="Self.FK_Product_Tag_Tag" FromRole="Tag" ToRole="Product_Tag" />
+          <NavigationProperty Name="Product_Tag" Relationship="ColspModel.FK_Product_Tag_Tag" FromRole="Tag" ToRole="Product_Tag" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="user_id" />
           </Key>
           <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="pwd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="pwd_last_chg" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="email" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
@@ -565,9 +1057,9 @@
           <Property Name="created_dt" Type="DateTime" Precision="3" />
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="updated_dt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_Product_User" FromRole="User" ToRole="Product" />
-          <NavigationProperty Name="Shops" Relationship="Self.FK_Shop_User" FromRole="User" ToRole="Shop" />
-          <NavigationProperty Name="User_Group_Map" Relationship="Self.FK_User_Group_Map_User" FromRole="User" ToRole="User_Group_Map" />
+          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_User" FromRole="User" ToRole="Product" />
+          <NavigationProperty Name="Shops" Relationship="ColspModel.FK_Shop_User" FromRole="User" ToRole="Shop" />
+          <NavigationProperty Name="User_Group_Map" Relationship="ColspModel.FK_User_Group_Map_User" FromRole="User" ToRole="User_Group_Map" />
         </EntityType>
         <EntityType Name="User_Group">
           <Key>
@@ -580,8 +1072,8 @@
           <Property Name="created_dt" Type="DateTime" Precision="3" />
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="updated_dt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="User_Group_Map" Relationship="Self.FK_User_Group_Map_UserGroup" FromRole="User_Group" ToRole="User_Group_Map" />
-          <NavigationProperty Name="Roles" Relationship="Self.User_Group_Role_Map" FromRole="User_Group" ToRole="Role" />
+          <NavigationProperty Name="User_Group_Map" Relationship="ColspModel.FK_User_Group_Map_UserGroup" FromRole="User_Group" ToRole="User_Group_Map" />
+          <NavigationProperty Name="Roles" Relationship="ColspModel.User_Group_Role_Map" FromRole="User_Group" ToRole="Role" />
         </EntityType>
         <EntityType Name="User_Group_Map">
           <Key>
@@ -594,12 +1086,48 @@
           <Property Name="created_dt" Type="DateTime" Precision="3" />
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="updated_dt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="User" Relationship="Self.FK_User_Group_Map_User" FromRole="User_Group_Map" ToRole="User" />
-          <NavigationProperty Name="User_Group" Relationship="Self.FK_User_Group_Map_UserGroup" FromRole="User_Group_Map" ToRole="User_Group" />
+          <NavigationProperty Name="User" Relationship="ColspModel.FK_User_Group_Map_User" FromRole="User_Group_Map" ToRole="User" />
+          <NavigationProperty Name="User_Group" Relationship="ColspModel.FK_User_Group_Map_UserGroup" FromRole="User_Group_Map" ToRole="User_Group" />
         </EntityType>
+        <Association Name="FK_Product_Attribute_Attribute">
+          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="1" />
+          <End Type="ColspModel.Product_Attribute" Role="Product_Attribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="attribute_id" />
+            </Principal>
+            <Dependent Role="Product_Attribute">
+              <PropertyRef Name="attribute_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Variant_Variant">
+          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="1" />
+          <End Type="ColspModel.Product_Variant" Role="Product_Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="attribute_id" />
+            </Principal>
+            <Dependent Role="Product_Variant">
+              <PropertyRef Name="variant_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Category_Attribute_Set_Map_Category">
+          <End Type="ColspModel.Global_Category" Role="Global_Category" Multiplicity="1" />
+          <End Type="ColspModel.Category_Attribute_Set_Map" Role="Category_Attribute_Set_Map" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Global_Category">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="Category_Attribute_Set_Map">
+              <PropertyRef Name="category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Product_Global_Cat">
-          <End Role="Global_Category" Type="Self.Global_Category" Multiplicity="1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <End Type="ColspModel.Global_Category" Role="Global_Category" Multiplicity="1" />
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Global_Category">
               <PropertyRef Name="category_id" />
@@ -610,8 +1138,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Local_Category_Shop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
-          <End Role="Local_Category" Type="Self.Local_Category" Multiplicity="*" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.Local_Category" Role="Local_Category" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
               <PropertyRef Name="shop_id" />
@@ -622,8 +1150,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_Local_Cat">
-          <End Role="Local_Category" Type="Self.Local_Category" Multiplicity="0..1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <End Type="ColspModel.Local_Category" Role="Local_Category" Multiplicity="0..1" />
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Local_Category">
               <PropertyRef Name="category_id" />
@@ -633,9 +1161,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Product_Attribute_Product">
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="ColspModel.Product_Attribute" Role="Product_Attribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="product_id" />
+            </Principal>
+            <Dependent Role="Product_Attribute">
+              <PropertyRef Name="product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Product_Shop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
               <PropertyRef Name="shop_id" />
@@ -646,8 +1186,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_Tag_Product">
-          <End Role="Product" Type="Self.Product" Multiplicity="1" />
-          <End Role="Product_Tag" Type="Self.Product_Tag" Multiplicity="*" />
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="ColspModel.Product_Tag" Role="Product_Tag" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
               <PropertyRef Name="product_id" />
@@ -658,8 +1198,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <End Type="ColspModel.User" Role="User" Multiplicity="1" />
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="user_id" />
@@ -669,9 +1209,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Product_Variant_Product">
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="ColspModel.Product_Variant" Role="Product_Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="product_id" />
+            </Principal>
+            <Dependent Role="Product_Variant">
+              <PropertyRef Name="product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Product_Tag_Tag">
-          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
-          <End Role="Product_Tag" Type="Self.Product_Tag" Multiplicity="*" />
+          <End Type="ColspModel.Tag" Role="Tag" Multiplicity="1" />
+          <End Type="ColspModel.Product_Tag" Role="Product_Tag" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tag">
               <PropertyRef Name="tag_id" />
@@ -682,8 +1234,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Shop_User">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Shop" Type="Self.Shop" Multiplicity="*" />
+          <End Type="ColspModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="user_id" />
@@ -694,8 +1246,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_User_Group_Map_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
-          <End Role="User_Group_Map" Type="Self.User_Group_Map" Multiplicity="*" />
+          <End Type="ColspModel.User" Role="User" Multiplicity="1" />
+          <End Type="ColspModel.User_Group_Map" Role="User_Group_Map" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="user_id" />
@@ -706,8 +1258,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_User_Group_Map_UserGroup">
-          <End Role="User_Group" Type="Self.User_Group" Multiplicity="1" />
-          <End Role="User_Group_Map" Type="Self.User_Group_Map" Multiplicity="*" />
+          <End Type="ColspModel.User_Group" Role="User_Group" Multiplicity="1" />
+          <End Type="ColspModel.User_Group_Map" Role="User_Group_Map" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User_Group">
               <PropertyRef Name="group_id" />
@@ -717,258 +1269,332 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="Attribute_Set_Map">
+          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="*" />
+          <End Type="ColspModel.Attribute_Set" Role="Attribute_Set" Multiplicity="*" />
+        </Association>
+        <Association Name="Attribute_Value_Map">
+          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="*" />
+          <End Type="ColspModel.Attribute_Value" Role="Attribute_Value" Multiplicity="*" />
+        </Association>
         <Association Name="Role_Permission_Map">
-          <End Role="Permission" Type="Self.Permission" Multiplicity="*" />
-          <End Role="Role" Type="Self.Role" Multiplicity="*" />
+          <End Type="ColspModel.Permission" Role="Permission" Multiplicity="*" />
+          <End Type="ColspModel.Role" Role="Role" Multiplicity="*" />
         </Association>
         <Association Name="User_Group_Role_Map">
-          <End Role="Role" Type="Self.Role" Multiplicity="*" />
-          <End Role="User_Group" Type="Self.User_Group" Multiplicity="*" />
+          <End Type="ColspModel.Role" Role="Role" Multiplicity="*" />
+          <End Type="ColspModel.User_Group" Role="User_Group" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="ColspEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Global_Category" EntityType="Self.Global_Category" />
-          <EntitySet Name="Local_Category" EntityType="Self.Local_Category" />
-          <EntitySet Name="Permissions" EntityType="Self.Permission" />
-          <EntitySet Name="Products" EntityType="Self.Product" />
-          <EntitySet Name="Product_Tag" EntityType="Self.Product_Tag" />
-          <EntitySet Name="Roles" EntityType="Self.Role" />
-          <EntitySet Name="Shops" EntityType="Self.Shop" />
-          <EntitySet Name="Tags" EntityType="Self.Tag" />
-          <EntitySet Name="Users" EntityType="Self.User" />
-          <EntitySet Name="User_Group" EntityType="Self.User_Group" />
-          <EntitySet Name="User_Group_Map" EntityType="Self.User_Group_Map" />
-          <AssociationSet Name="FK_Product_Global_Cat" Association="Self.FK_Product_Global_Cat">
-            <End Role="Global_Category" EntitySet="Global_Category" />
-            <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Local_Category_Shop" Association="Self.FK_Local_Category_Shop">
-            <End Role="Shop" EntitySet="Shops" />
-            <End Role="Local_Category" EntitySet="Local_Category" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_Local_Cat" Association="Self.FK_Product_Local_Cat">
-            <End Role="Local_Category" EntitySet="Local_Category" />
-            <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_Shop" Association="Self.FK_Product_Shop">
-            <End Role="Shop" EntitySet="Shops" />
-            <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_Tag_Product" Association="Self.FK_Product_Tag_Product">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="Product_Tag" EntitySet="Product_Tag" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_User" Association="Self.FK_Product_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_Tag_Tag" Association="Self.FK_Product_Tag_Tag">
-            <End Role="Tag" EntitySet="Tags" />
-            <End Role="Product_Tag" EntitySet="Product_Tag" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Shop_User" Association="Self.FK_Shop_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Shop" EntitySet="Shops" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Group_Map_User" Association="Self.FK_User_Group_Map_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="User_Group_Map" EntitySet="User_Group_Map" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Group_Map_UserGroup" Association="Self.FK_User_Group_Map_UserGroup">
-            <End Role="User_Group" EntitySet="User_Group" />
-            <End Role="User_Group_Map" EntitySet="User_Group_Map" />
-          </AssociationSet>
-          <AssociationSet Name="Role_Permission_Map" Association="Self.Role_Permission_Map">
-            <End Role="Permission" EntitySet="Permissions" />
-            <End Role="Role" EntitySet="Roles" />
-          </AssociationSet>
-          <AssociationSet Name="User_Group_Role_Map" Association="Self.User_Group_Role_Map">
-            <End Role="Role" EntitySet="Roles" />
-            <End Role="User_Group" EntitySet="User_Group" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ColspModelStoreContainer" CdmEntityContainer="ColspEntities">
+          <EntitySetMapping Name="Attributes">
+            <EntityTypeMapping TypeName="ColspModel.Attribute">
+              <MappingFragment StoreEntitySet="Attribute">
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="variant_status" ColumnName="variant_status" />
+                <ScalarProperty Name="attribute_name_th" ColumnName="attribute_name_th" />
+                <ScalarProperty Name="attribute_name_en" ColumnName="attribute_name_en" />
+                <ScalarProperty Name="attribute_id" ColumnName="attribute_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attribute_Set">
+            <EntityTypeMapping TypeName="ColspModel.Attribute_Set">
+              <MappingFragment StoreEntitySet="Attribute_Set">
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="attribute_set_name_th" ColumnName="attribute_set_name_th" />
+                <ScalarProperty Name="attribute_set_name_en" ColumnName="attribute_set_name_en" />
+                <ScalarProperty Name="attribute_set_id" ColumnName="attribute_set_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attribute_Value">
+            <EntityTypeMapping TypeName="ColspModel.Attribute_Value">
+              <MappingFragment StoreEntitySet="Attribute_Value">
+                <ScalarProperty Name="attribute_value_th" ColumnName="attribute_value_th" />
+                <ScalarProperty Name="attribute_value_en" ColumnName="attribute_value_en" />
+                <ScalarProperty Name="attribute_value_id" ColumnName="attribute_value_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Category_Attribute_Set_Map">
+            <EntityTypeMapping TypeName="ColspModel.Category_Attribute_Set_Map">
+              <MappingFragment StoreEntitySet="Category_Attribute_Set_Map">
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="attribute_set_id" ColumnName="attribute_set_id" />
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Global_Category">
             <EntityTypeMapping TypeName="ColspModel.Global_Category">
               <MappingFragment StoreEntitySet="Global_Category">
-                <ScalarProperty Name="category_id" ColumnName="category_id" />
-                <ScalarProperty Name="name_en" ColumnName="name_en" />
-                <ScalarProperty Name="name_th" ColumnName="name_th" />
-                <ScalarProperty Name="url_key_en" ColumnName="url_key_en" />
-                <ScalarProperty Name="url_key_th" ColumnName="url_key_th" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="lft" ColumnName="lft" />
-                <ScalarProperty Name="rgt" ColumnName="rgt" />
-                <ScalarProperty Name="created_by" ColumnName="created_by" />
-                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
-                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
                 <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="rgt" ColumnName="rgt" />
+                <ScalarProperty Name="lft" ColumnName="lft" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="url_key_th" ColumnName="url_key_th" />
+                <ScalarProperty Name="url_key_en" ColumnName="url_key_en" />
+                <ScalarProperty Name="name_th" ColumnName="name_th" />
+                <ScalarProperty Name="name_en" ColumnName="name_en" />
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Local_Category">
             <EntityTypeMapping TypeName="ColspModel.Local_Category">
               <MappingFragment StoreEntitySet="Local_Category">
-                <ScalarProperty Name="category_id" ColumnName="category_id" />
-                <ScalarProperty Name="name_en" ColumnName="name_en" />
-                <ScalarProperty Name="name_th" ColumnName="name_th" />
-                <ScalarProperty Name="url_key_en" ColumnName="url_key_en" />
-                <ScalarProperty Name="url_key_th" ColumnName="url_key_th" />
-                <ScalarProperty Name="product_count" ColumnName="product_count" />
-                <ScalarProperty Name="shop" ColumnName="shop" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="lft" ColumnName="lft" />
-                <ScalarProperty Name="rgt" ColumnName="rgt" />
-                <ScalarProperty Name="created_by" ColumnName="created_by" />
-                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
-                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
                 <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="rgt" ColumnName="rgt" />
+                <ScalarProperty Name="lft" ColumnName="lft" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="shop" ColumnName="shop" />
+                <ScalarProperty Name="product_count" ColumnName="product_count" />
+                <ScalarProperty Name="url_key_th" ColumnName="url_key_th" />
+                <ScalarProperty Name="url_key_en" ColumnName="url_key_en" />
+                <ScalarProperty Name="name_th" ColumnName="name_th" />
+                <ScalarProperty Name="name_en" ColumnName="name_en" />
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Permissions">
             <EntityTypeMapping TypeName="ColspModel.Permission">
               <MappingFragment StoreEntitySet="Permission">
-                <ScalarProperty Name="permission_id" ColumnName="permission_id" />
                 <ScalarProperty Name="permission_name" ColumnName="permission_name" />
+                <ScalarProperty Name="permission_id" ColumnName="permission_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="ColspModel.Product">
               <MappingFragment StoreEntitySet="Product">
-                <ScalarProperty Name="product_id" ColumnName="product_id" />
-                <ScalarProperty Name="global_cat_id" ColumnName="global_cat_id" />
-                <ScalarProperty Name="local_cat_id" ColumnName="local_cat_id" />
-                <ScalarProperty Name="shop_id" ColumnName="shop_id" />
-                <ScalarProperty Name="seller_id" ColumnName="seller_id" />
-                <ScalarProperty Name="brand_name_en" ColumnName="brand_name_en" />
-                <ScalarProperty Name="brand_name_th" ColumnName="brand_name_th" />
-                <ScalarProperty Name="product_name_en" ColumnName="product_name_en" />
-                <ScalarProperty Name="product_name_th" ColumnName="product_name_th" />
-                <ScalarProperty Name="sku" ColumnName="sku" />
-                <ScalarProperty Name="upc" ColumnName="upc" />
-                <ScalarProperty Name="original_price" ColumnName="original_price" />
-                <ScalarProperty Name="sale_price" ColumnName="sale_price" />
-                <ScalarProperty Name="description_en" ColumnName="description_en" />
-                <ScalarProperty Name="description_th" ColumnName="description_th" />
-                <ScalarProperty Name="stock" ColumnName="stock" />
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="dimenstion_weight" ColumnName="dimenstion_weight" />
+                <ScalarProperty Name="weight" ColumnName="weight" />
+                <ScalarProperty Name="dimenstion_unit" ColumnName="dimenstion_unit" />
+                <ScalarProperty Name="width" ColumnName="width" />
+                <ScalarProperty Name="height" ColumnName="height" />
+                <ScalarProperty Name="length" ColumnName="length" />
+                <ScalarProperty Name="shipping_method" ColumnName="shipping_method" />
+                <ScalarProperty Name="video_link" ColumnName="video_link" />
                 <ScalarProperty Name="safty_stock" ColumnName="safty_stock" />
+                <ScalarProperty Name="stock" ColumnName="stock" />
+                <ScalarProperty Name="description_short_th" ColumnName="description_short_th" />
+                <ScalarProperty Name="description_full_th" ColumnName="description_full_th" />
+                <ScalarProperty Name="description_short_en" ColumnName="description_short_en" />
+                <ScalarProperty Name="description_full_en" ColumnName="description_full_en" />
+                <ScalarProperty Name="sale_price" ColumnName="sale_price" />
+                <ScalarProperty Name="original_price" ColumnName="original_price" />
+                <ScalarProperty Name="upc" ColumnName="upc" />
+                <ScalarProperty Name="sku" ColumnName="sku" />
+                <ScalarProperty Name="pid" ColumnName="pid" />
+                <ScalarProperty Name="uid" ColumnName="uid" />
+                <ScalarProperty Name="product_name_th" ColumnName="product_name_th" />
+                <ScalarProperty Name="product_name_en" ColumnName="product_name_en" />
+                <ScalarProperty Name="brand_name_th" ColumnName="brand_name_th" />
+                <ScalarProperty Name="brand_name_en" ColumnName="brand_name_en" />
+                <ScalarProperty Name="seller_id" ColumnName="seller_id" />
+                <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+                <ScalarProperty Name="local_cat_id" ColumnName="local_cat_id" />
+                <ScalarProperty Name="global_cat_id" ColumnName="global_cat_id" />
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Product_Attribute">
+            <EntityTypeMapping TypeName="ColspModel.Product_Attribute">
+              <MappingFragment StoreEntitySet="Product_Attribute">
+                <ScalarProperty Name="value_th" ColumnName="value_th" />
+                <ScalarProperty Name="value_en" ColumnName="value_en" />
+                <ScalarProperty Name="attribute_id" ColumnName="attribute_id" />
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Product_Tag">
             <EntityTypeMapping TypeName="ColspModel.Product_Tag">
               <MappingFragment StoreEntitySet="Product_Tag">
-                <ScalarProperty Name="product_id" ColumnName="product_id" />
-                <ScalarProperty Name="tag_id" ColumnName="tag_id" />
                 <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="tag_id" ColumnName="tag_id" />
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Product_Variant">
+            <EntityTypeMapping TypeName="ColspModel.Product_Variant">
+              <MappingFragment StoreEntitySet="Product_Variant">
+                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="dimenstion_weight" ColumnName="dimenstion_weight" />
+                <ScalarProperty Name="weight" ColumnName="weight" />
+                <ScalarProperty Name="dimenstion_unit" ColumnName="dimenstion_unit" />
+                <ScalarProperty Name="width" ColumnName="width" />
+                <ScalarProperty Name="height" ColumnName="height" />
+                <ScalarProperty Name="length" ColumnName="length" />
+                <ScalarProperty Name="shipping_method" ColumnName="shipping_method" />
+                <ScalarProperty Name="video_link" ColumnName="video_link" />
+                <ScalarProperty Name="safty_stock" ColumnName="safty_stock" />
+                <ScalarProperty Name="stock" ColumnName="stock" />
+                <ScalarProperty Name="description_short_th" ColumnName="description_short_th" />
+                <ScalarProperty Name="description_full_th" ColumnName="description_full_th" />
+                <ScalarProperty Name="description_short_en" ColumnName="description_short_en" />
+                <ScalarProperty Name="description_full_en" ColumnName="description_full_en" />
+                <ScalarProperty Name="sale_price" ColumnName="sale_price" />
+                <ScalarProperty Name="original_price" ColumnName="original_price" />
+                <ScalarProperty Name="upc" ColumnName="upc" />
+                <ScalarProperty Name="sku" ColumnName="sku" />
+                <ScalarProperty Name="pid" ColumnName="pid" />
+                <ScalarProperty Name="uid" ColumnName="uid" />
+                <ScalarProperty Name="product_name_th" ColumnName="product_name_th" />
+                <ScalarProperty Name="product_name_en" ColumnName="product_name_en" />
+                <ScalarProperty Name="value_th" ColumnName="value_th" />
+                <ScalarProperty Name="value_en" ColumnName="value_en" />
+                <ScalarProperty Name="variant_id" ColumnName="variant_id" />
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Roles">
             <EntityTypeMapping TypeName="ColspModel.Role">
               <MappingFragment StoreEntitySet="Role">
-                <ScalarProperty Name="role_id" ColumnName="role_id" />
-                <ScalarProperty Name="role_name_en" ColumnName="role_name_en" />
-                <ScalarProperty Name="role_name_th" ColumnName="role_name_th" />
-                <ScalarProperty Name="created_by" ColumnName="created_by" />
-                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
-                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
                 <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="role_name_th" ColumnName="role_name_th" />
+                <ScalarProperty Name="role_name_en" ColumnName="role_name_en" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Shops">
             <EntityTypeMapping TypeName="ColspModel.Shop">
               <MappingFragment StoreEntitySet="Shop">
-                <ScalarProperty Name="shop_id" ColumnName="shop_id" />
-                <ScalarProperty Name="shop_owner" ColumnName="shop_owner" />
-                <ScalarProperty Name="shop_name_en" ColumnName="shop_name_en" />
-                <ScalarProperty Name="shop_name_th" ColumnName="shop_name_th" />
-                <ScalarProperty Name="created_by" ColumnName="created_by" />
-                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
-                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
                 <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="shop_name_th" ColumnName="shop_name_th" />
+                <ScalarProperty Name="shop_name_en" ColumnName="shop_name_en" />
+                <ScalarProperty Name="shop_owner" ColumnName="shop_owner" />
+                <ScalarProperty Name="shop_id" ColumnName="shop_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Tags">
             <EntityTypeMapping TypeName="ColspModel.Tag">
               <MappingFragment StoreEntitySet="Tag">
-                <ScalarProperty Name="tag_id" ColumnName="tag_id" />
-                <ScalarProperty Name="tag_name" ColumnName="tag_name" />
-                <ScalarProperty Name="count" ColumnName="count" />
                 <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="count" ColumnName="count" />
+                <ScalarProperty Name="tag_name" ColumnName="tag_name" />
+                <ScalarProperty Name="tag_id" ColumnName="tag_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="ColspModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="user_id" ColumnName="user_id" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="pwd" ColumnName="pwd" />
-                <ScalarProperty Name="pwd_last_chg" ColumnName="pwd_last_chg" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="name_en" ColumnName="name_en" />
-                <ScalarProperty Name="name_th" ColumnName="name_th" />
-                <ScalarProperty Name="mobile" ColumnName="mobile" />
-                <ScalarProperty Name="phone" ColumnName="phone" />
-                <ScalarProperty Name="fax" ColumnName="fax" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="login_fail_count" ColumnName="login_fail_count" />
-                <ScalarProperty Name="last_login_dt" ColumnName="last_login_dt" />
-                <ScalarProperty Name="created_by" ColumnName="created_by" />
-                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
-                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
                 <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="last_login_dt" ColumnName="last_login_dt" />
+                <ScalarProperty Name="login_fail_count" ColumnName="login_fail_count" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="fax" ColumnName="fax" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="mobile" ColumnName="mobile" />
+                <ScalarProperty Name="name_th" ColumnName="name_th" />
+                <ScalarProperty Name="name_en" ColumnName="name_en" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="pwd_last_chg" ColumnName="pwd_last_chg" />
+                <ScalarProperty Name="pwd" ColumnName="pwd" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="User_Group">
             <EntityTypeMapping TypeName="ColspModel.User_Group">
               <MappingFragment StoreEntitySet="User_Group">
-                <ScalarProperty Name="group_id" ColumnName="group_id" />
-                <ScalarProperty Name="group_name_en" ColumnName="group_name_en" />
-                <ScalarProperty Name="group_name_th" ColumnName="group_name_th" />
-                <ScalarProperty Name="created_by" ColumnName="created_by" />
-                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
-                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
                 <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="group_name_th" ColumnName="group_name_th" />
+                <ScalarProperty Name="group_name_en" ColumnName="group_name_en" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="User_Group_Map">
             <EntityTypeMapping TypeName="ColspModel.User_Group_Map">
               <MappingFragment StoreEntitySet="User_Group_Map">
-                <ScalarProperty Name="user_id" ColumnName="user_id" />
-                <ScalarProperty Name="group_id" ColumnName="group_id" />
-                <ScalarProperty Name="created_by" ColumnName="created_by" />
-                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
-                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
                 <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="Attribute_Set_Map" TypeName="ColspModel.Attribute_Set_Map" StoreEntitySet="Attribute_Set_Map">
+            <EndProperty Name="Attribute_Set">
+              <ScalarProperty Name="attribute_set_id" ColumnName="attribute_set_id" />
+            </EndProperty>
+            <EndProperty Name="Attribute">
+              <ScalarProperty Name="attribute_id" ColumnName="attribute_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="Attribute_Value_Map" TypeName="ColspModel.Attribute_Value_Map" StoreEntitySet="Attribute_Value_Map">
+            <EndProperty Name="Attribute_Value">
+              <ScalarProperty Name="attribute_value_id" ColumnName="attribute_value_id" />
+            </EndProperty>
+            <EndProperty Name="Attribute">
+              <ScalarProperty Name="attribute_id" ColumnName="attribute_id" />
+            </EndProperty>
+          </AssociationSetMapping>
           <AssociationSetMapping Name="Role_Permission_Map" TypeName="ColspModel.Role_Permission_Map" StoreEntitySet="Role_Permission_Map">
+            <EndProperty Name="Role">
+              <ScalarProperty Name="role_id" ColumnName="role_id" />
+            </EndProperty>
             <EndProperty Name="Permission">
               <ScalarProperty Name="permission_id" ColumnName="permission_id" />
             </EndProperty>
-            <EndProperty Name="Role">
-              <ScalarProperty Name="role_id" ColumnName="role_id" />
-            </EndProperty>
           </AssociationSetMapping>
           <AssociationSetMapping Name="User_Group_Role_Map" TypeName="ColspModel.User_Group_Role_Map" StoreEntitySet="User_Group_Role_Map">
-            <EndProperty Name="Role">
-              <ScalarProperty Name="role_id" ColumnName="role_id" />
-            </EndProperty>
             <EndProperty Name="User_Group">
               <ScalarProperty Name="group_id" ColumnName="group_id" />
+            </EndProperty>
+            <EndProperty Name="Role">
+              <ScalarProperty Name="role_id" ColumnName="role_id" />
             </EndProperty>
           </AssociationSetMapping>
         </EntityContainerMapping>

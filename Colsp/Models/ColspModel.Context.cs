@@ -25,11 +25,17 @@ namespace Colsp.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Attribute> Attributes { get; set; }
+        public virtual DbSet<Attribute_Set> Attribute_Set { get; set; }
+        public virtual DbSet<Attribute_Value> Attribute_Value { get; set; }
+        public virtual DbSet<Category_Attribute_Set_Map> Category_Attribute_Set_Map { get; set; }
         public virtual DbSet<Global_Category> Global_Category { get; set; }
         public virtual DbSet<Local_Category> Local_Category { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Product_Attribute> Product_Attribute { get; set; }
         public virtual DbSet<Product_Tag> Product_Tag { get; set; }
+        public virtual DbSet<Product_Variant> Product_Variant { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }

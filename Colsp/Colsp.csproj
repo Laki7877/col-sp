@@ -144,6 +144,18 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Attribute.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Attribute_Set.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Attribute_Value.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Category_Attribute_Set_Map.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ColspModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -171,7 +183,13 @@
     <Compile Include="Models\Product.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Product_Attribute.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Product_Tag.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Product_Variant.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Role.cs">
