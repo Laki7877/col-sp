@@ -9,14 +9,16 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Colsp.Models;
+using Colsp.Filters;
 
 namespace Colsp.Controllers
 {
-    public class UsersController : ApiController
-    {
-        private ColspEntities db = new ColspEntities();
+	public class UsersController : ApiController
+	{
+		private ColspEntities db = new ColspEntities();
 
-        // GET: api/Users
+		// GET: api/Users
+		[ClaimsAuthorize(Permission = "GetUsers")]
         public IQueryable<User> GetUsers()
         {
             return db.Users;
