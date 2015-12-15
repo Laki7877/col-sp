@@ -146,6 +146,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CacheHelper.cs" />
+    <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Models\ColspModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
