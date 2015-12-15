@@ -144,7 +144,7 @@ namespace Colsp.Filters
 			using (var db = new ColspEntities())
 			{
 				// TODO: salt the password
-				var user = db.Users.Where(u => u.username.Equals(username) && u.pwd.Equals(password));
+				var user = db.Users.Where(u => u.username.Equals(username) && u.pwd.Equals(password)).FirstOrDefault();
 				if (user == null)
 				{
 					return null;
