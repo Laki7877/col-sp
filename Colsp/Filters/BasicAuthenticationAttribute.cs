@@ -6,9 +6,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Filters;
+using System.Linq;
 using Colsp.Results;
 using Colsp.Helpers;
 using Colsp.Models;
+using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace Colsp.Filters
 {
@@ -30,7 +33,6 @@ namespace Colsp.Filters
 			// Check for auth
 			if (authorization == null)
 			{
-				context.ErrorResult = new AuthenticationFailureResult("Missing credentials", request);
 				return;
 			}
 
@@ -49,7 +51,7 @@ namespace Colsp.Filters
 			}
 
 			// Check for existing cache
-			var cachedPrincipal = CacheHelper.Get(authorization.Parameter);
+			object cachedPrincipal = null; // CacheHelper.Get(authorization.Parameter);
             if (cachedPrincipal != null)
 			{
 				context.Principal = (IPrincipal)cachedPrincipal;
@@ -139,12 +141,21 @@ namespace Colsp.Filters
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			using (ColspEntities db = new ColspEntities())
+			using (var db = new ColspEntities())
 			{
+				// TODO: salt the password
+				var user = db.Users.Where(u => u.username.Equals(username) && u.pwd.Equals(password));
+				if (user == null)
+				{
+					return null;
+				}
 
+				// TODO: get permissions from db somehow..
+				var claims = new List<Claim> { new Claim("Permission", "GetUsers") };
+				var identity = new ClaimsIdentity(claims, "Basic");
+
+				return new ClaimsPrincipal(identity);
 			}
-
-			return null;
 		}
 	}
 }
