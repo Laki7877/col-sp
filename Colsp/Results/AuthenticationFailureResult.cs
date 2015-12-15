@@ -1,7 +1,4 @@
-﻿/*
-	Handle authentication failure response
-*/
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -10,6 +7,7 @@ using System.Web.Http;
 
 namespace Colsp.Results
 {
+	// Handle authentication failure http response
 	public class AuthenticationFailureResult : IHttpActionResult
 	{
 		public string ReasonPhrase { get; private set; }
