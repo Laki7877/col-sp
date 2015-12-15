@@ -24,8 +24,9 @@ namespace Colsp.Controllers
             return db.Users;
         }
 
-        // GET: api/Users/5
-        [ResponseType(typeof(User))]
+		// GET: api/Users/5
+		[ClaimsAuthorize(Permission = "GetUser")]
+		[ResponseType(typeof(User))]
         public IHttpActionResult GetUser(int id)
         {
             User user = db.Users.Find(id);
