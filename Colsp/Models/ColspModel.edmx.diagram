@@ -5,29 +5,42 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="5cf822ecd79d4e9ab66170a38ae612e2" Name="Diagram1">
-        <EntityTypeShape EntityType="ColspModel.Global_Category" Width="1.5" PointX="5.25" PointY="7.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Local_Category" Width="1.5" PointX="5.25" PointY="12.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Permission" Width="1.5" PointX="1.5" PointY="20.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Product" Width="1.5" PointX="7.5" PointY="8.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Product_Tag" Width="1.5" PointX="9.75" PointY="10" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Role" Width="1.5" PointX="1.5" PointY="16.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Shop" Width="1.5" PointX="3" PointY="12.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Tag" Width="1.5" PointX="7.5" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.User" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.User_Group" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.User_Group_Map" Width="1.5" PointX="3" PointY="6.875" IsExpanded="true" />
-        <AssociationConnector Association="ColspModel.FK_Product_Global_Cat" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_Local_Category_Shop" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_Product_Local_Cat" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_Product_Shop" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_Product_Tag_Product" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_Product_User" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_Product_Tag_Tag" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_Shop_User" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_User_Group_Map_User" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.FK_User_Group_Map_UserGroup" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.Role_Permission_Map" ManuallyRouted="false" />
-        <AssociationConnector Association="ColspModel.User_Group_Role_Map" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="7.5" PointY="6.375" />
+        <EntityTypeShape EntityType="ColspModel.Attribute_Set" Width="1.5" PointX="9.75" PointY="5.5" />
+        <EntityTypeShape EntityType="ColspModel.Attribute_Value" Width="1.5" PointX="9.75" PointY="2.75" />
+        <EntityTypeShape EntityType="ColspModel.Category_Attribute_Set_Map" Width="1.5" PointX="7.5" PointY="2.75" />
+        <EntityTypeShape EntityType="ColspModel.Global_Category" Width="1.5" PointX="5.25" PointY="10.125" />
+        <EntityTypeShape EntityType="ColspModel.Local_Category" Width="1.5" PointX="5.25" PointY="14.75" />
+        <EntityTypeShape EntityType="ColspModel.Permission" Width="1.5" PointX="1.5" PointY="0.75" />
+        <EntityTypeShape EntityType="ColspModel.Product" Width="1.5" PointX="7.5" PointY="10.625" />
+        <EntityTypeShape EntityType="ColspModel.Product_Attribute" Width="1.5" PointX="9.75" PointY="10.875" />
+        <EntityTypeShape EntityType="ColspModel.Product_Tag" Width="1.5" PointX="9.75" PointY="14" />
+        <EntityTypeShape EntityType="ColspModel.Product_Variant" Width="1.5" PointX="12.75" PointY="11.375" />
+        <EntityTypeShape EntityType="ColspModel.Role" Width="1.5" PointX="1.5" PointY="3.125" />
+        <EntityTypeShape EntityType="ColspModel.Shop" Width="1.5" PointX="3" PointY="15.25" />
+        <EntityTypeShape EntityType="ColspModel.Tag" Width="1.5" PointX="7.5" PointY="21" />
+        <EntityTypeShape EntityType="ColspModel.User" Width="1.5" PointX="0.75" PointY="11.125" />
+        <EntityTypeShape EntityType="ColspModel.User_Group" Width="1.5" PointX="0.75" PointY="7.125" />
+        <EntityTypeShape EntityType="ColspModel.User_Group_Map" Width="1.5" PointX="3" PointY="11.25" />
+        <AssociationConnector Association="ColspModel.FK_Product_Attribute_Attribute" />
+        <AssociationConnector Association="ColspModel.FK_Product_Variant_Variant" />
+        <AssociationConnector Association="ColspModel.FK_Category_Attribute_Set_Map_Category" />
+        <AssociationConnector Association="ColspModel.FK_Product_Global_Cat" />
+        <AssociationConnector Association="ColspModel.FK_Local_Category_Shop" />
+        <AssociationConnector Association="ColspModel.FK_Product_Local_Cat" />
+        <AssociationConnector Association="ColspModel.FK_Product_Attribute_Product" />
+        <AssociationConnector Association="ColspModel.FK_Product_Shop" />
+        <AssociationConnector Association="ColspModel.FK_Product_Tag_Product" />
+        <AssociationConnector Association="ColspModel.FK_Product_User" />
+        <AssociationConnector Association="ColspModel.FK_Product_Variant_Product" />
+        <AssociationConnector Association="ColspModel.FK_Product_Tag_Tag" />
+        <AssociationConnector Association="ColspModel.FK_Shop_User" />
+        <AssociationConnector Association="ColspModel.FK_User_Group_Map_User" />
+        <AssociationConnector Association="ColspModel.FK_User_Group_Map_UserGroup" />
+        <AssociationConnector Association="ColspModel.Attribute_Set_Map" />
+        <AssociationConnector Association="ColspModel.Attribute_Value_Map" />
+        <AssociationConnector Association="ColspModel.Role_Permission_Map" />
+        <AssociationConnector Association="ColspModel.User_Group_Role_Map" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

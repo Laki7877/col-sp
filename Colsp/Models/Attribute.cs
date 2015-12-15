@@ -12,31 +12,33 @@ namespace Colsp.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Global_Category
+    public partial class Attribute
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Global_Category()
+        public Attribute()
         {
-            this.Category_Attribute_Set_Map = new HashSet<Category_Attribute_Set_Map>();
-            this.Products = new HashSet<Product>();
+            this.Product_Attribute = new HashSet<Product_Attribute>();
+            this.Product_Variant = new HashSet<Product_Variant>();
+            this.Attribute_Set = new HashSet<Attribute_Set>();
+            this.Attribute_Value = new HashSet<Attribute_Value>();
         }
     
-        public int category_id { get; set; }
-        public string name_en { get; set; }
-        public string name_th { get; set; }
-        public string url_key_en { get; set; }
-        public string url_key_th { get; set; }
-        public Nullable<bool> status { get; set; }
-        public int lft { get; set; }
-        public int rgt { get; set; }
+        public int attribute_id { get; set; }
+        public string attribute_name_en { get; set; }
+        public string attribute_name_th { get; set; }
+        public Nullable<bool> variant_status { get; set; }
         public string created_by { get; set; }
         public Nullable<System.DateTime> created_dt { get; set; }
         public string updated_by { get; set; }
         public Nullable<System.DateTime> updated_dt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Category_Attribute_Set_Map> Category_Attribute_Set_Map { get; set; }
+        public virtual ICollection<Product_Attribute> Product_Attribute { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Product_Variant> Product_Variant { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Attribute_Set> Attribute_Set { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Attribute_Value> Attribute_Value { get; set; }
     }
 }

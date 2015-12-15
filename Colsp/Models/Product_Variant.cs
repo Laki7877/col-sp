@@ -12,30 +12,19 @@ namespace Colsp.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Product
+    public partial class Product_Variant
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Product()
-        {
-            this.Product_Attribute = new HashSet<Product_Attribute>();
-            this.Product_Tag = new HashSet<Product_Tag>();
-            this.Product_Variant = new HashSet<Product_Variant>();
-        }
-    
         public int product_id { get; set; }
-        public int global_cat_id { get; set; }
-        public Nullable<int> local_cat_id { get; set; }
-        public int shop_id { get; set; }
-        public int seller_id { get; set; }
-        public string brand_name_en { get; set; }
-        public string brand_name_th { get; set; }
+        public int variant_id { get; set; }
+        public string value_en { get; set; }
+        public string value_th { get; set; }
         public string product_name_en { get; set; }
         public string product_name_th { get; set; }
         public string uid { get; set; }
         public string pid { get; set; }
         public string sku { get; set; }
         public string upc { get; set; }
-        public decimal original_price { get; set; }
+        public Nullable<decimal> original_price { get; set; }
         public Nullable<decimal> sale_price { get; set; }
         public string description_full_en { get; set; }
         public string description_short_en { get; set; }
@@ -56,15 +45,7 @@ namespace Colsp.Models
         public string updated_by { get; set; }
         public Nullable<System.DateTime> updated_dt { get; set; }
     
-        public virtual Global_Category Global_Category { get; set; }
-        public virtual Local_Category Local_Category { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Attribute> Product_Attribute { get; set; }
-        public virtual Shop Shop { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Tag> Product_Tag { get; set; }
-        public virtual User User { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Variant> Product_Variant { get; set; }
+        public virtual Attribute Attribute { get; set; }
+        public virtual Product Product { get; set; }
     }
 }
