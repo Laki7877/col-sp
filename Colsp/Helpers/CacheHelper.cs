@@ -5,7 +5,7 @@ namespace Colsp.Helpers
 {
 	public static class CacheHelper
 	{
-		public static object GetValue(string key)
+		public static object Get(string key)
 		{
 			var memoryCache = MemoryCache.Default;
 			return memoryCache.Get(key);
