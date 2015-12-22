@@ -7,31 +7,36 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Entities.Models
+namespace Colsp.Api.Entities
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class User_Group
+    public partial class Global_Category
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User_Group()
+        public Global_Category()
         {
-            this.User_Group_Map = new HashSet<User_Group_Map>();
-            this.Permissions = new HashSet<Permission>();
+            this.Category_Attribute_Set_Map = new HashSet<Category_Attribute_Set_Map>();
+            this.Products = new HashSet<Product>();
         }
     
-        public int group_id { get; set; }
-        public string group_name_en { get; set; }
-        public string group_name_th { get; set; }
+        public int category_id { get; set; }
+        public string name_en { get; set; }
+        public string name_th { get; set; }
+        public string url_key_en { get; set; }
+        public string url_key_th { get; set; }
+        public Nullable<bool> status { get; set; }
+        public int lft { get; set; }
+        public int rgt { get; set; }
         public string created_by { get; set; }
         public Nullable<System.DateTime> created_dt { get; set; }
         public string updated_by { get; set; }
         public Nullable<System.DateTime> updated_dt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User_Group_Map> User_Group_Map { get; set; }
+        public virtual ICollection<Category_Attribute_Set_Map> Category_Attribute_Set_Map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Permission> Permissions { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

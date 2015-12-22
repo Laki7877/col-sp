@@ -7,9 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Filters;
 using System.Linq;
-using Colsp.Results;
-using Colsp.Helpers;
-using Colsp.Api.Models;
+using Colsp.Api.Commons;
+using Colsp.Api.Entities;
 using System.Security.Claims;
 using System.Collections.Generic;
 

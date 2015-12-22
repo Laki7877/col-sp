@@ -84,6 +84,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
@@ -95,6 +104,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -104,12 +121,12 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Models\ColspModel.Context.tt">
+    <Content Include="ColspModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ColspModel.edmx</DependentUpon>
       <LastGenOutput>ColspModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\ColspModel.tt">
+    <Content Include="ColspModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ColspModel.edmx</DependentUpon>
       <LastGenOutput>ColspModel.cs</LastGenOutput>
@@ -117,11 +134,11 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EntityDeploy Include="Models\ColspModel.edmx">
+    <EntityDeploy Include="ColspModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ColspModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\ColspModel.edmx.diagram">
+    <Content Include="ColspModel.edmx.diagram">
       <DependentUpon>ColspModel.edmx</DependentUpon>
     </Content>
     <Content Include="packages.config" />
@@ -138,70 +155,70 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Attribute.cs">
+    <Compile Include="Attribute.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Attribute_Set.cs">
+    <Compile Include="Attribute_Set.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Attribute_Value.cs">
+    <Compile Include="Attribute_Value.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Category_Attribute_Set_Map.cs">
+    <Compile Include="Category_Attribute_Set_Map.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ColspModel.Context.cs">
+    <Compile Include="ColspModel.Context.cs">
       <DependentUpon>ColspModel.Context.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Models\ColspModel.cs">
+    <Compile Include="ColspModel.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Models\ColspModel.Designer.cs">
+    <Compile Include="ColspModel.Designer.cs">
       <DependentUpon>ColspModel.edmx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Models\Global_Category.cs">
+    <Compile Include="Global_Category.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Local_Category.cs">
+    <Compile Include="Local_Category.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Permission.cs">
+    <Compile Include="Permission.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Product.cs">
+    <Compile Include="Product.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Product_Attribute.cs">
+    <Compile Include="Product_Attribute.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Product_Tag.cs">
+    <Compile Include="Product_Tag.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Product_Variant.cs">
+    <Compile Include="Product_Variant.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Related_Product.cs">
+    <Compile Include="Related_Product.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Shop.cs">
+    <Compile Include="Shop.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Tag.cs">
+    <Compile Include="Tag.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\User.cs">
+    <Compile Include="User.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\User_Group.cs">
+    <Compile Include="User_Group.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\User_Group_Map.cs">
+    <Compile Include="User_Group_Map.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

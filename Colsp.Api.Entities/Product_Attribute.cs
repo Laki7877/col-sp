@@ -7,14 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Entities.Models
+namespace Colsp.Api.Entities
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Related_Product
+    public partial class Product_Attribute
     {
-        public string uid_1 { get; set; }
-        public string uid_2 { get; set; }
+        public int product_id { get; set; }
+        public int attribute_id { get; set; }
+        public string value_en { get; set; }
+        public string value_th { get; set; }
+    
+        public virtual Attribute Attribute { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

@@ -7,23 +7,25 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Entities.Models
+namespace Colsp.Api.Entities
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Permission
+    public partial class Tag
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Permission()
+        public Tag()
         {
-            this.User_Group = new HashSet<User_Group>();
+            this.Product_Tag = new HashSet<Product_Tag>();
         }
     
-        public int permission_id { get; set; }
-        public string permission_name { get; set; }
+        public int tag_id { get; set; }
+        public string tag_name { get; set; }
+        public Nullable<int> count { get; set; }
+        public Nullable<bool> status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User_Group> User_Group { get; set; }
+        public virtual ICollection<Product_Tag> Product_Tag { get; set; }
     }
 }

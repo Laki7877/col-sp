@@ -7,36 +7,44 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Entities.Models
+namespace Colsp.Api.Entities
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Local_Category
+    public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Local_Category()
+        public User()
         {
             this.Products = new HashSet<Product>();
+            this.Shops = new HashSet<Shop>();
+            this.User_Group_Map = new HashSet<User_Group_Map>();
         }
     
-        public int category_id { get; set; }
+        public int user_id { get; set; }
+        public string username { get; set; }
+        public string pwd { get; set; }
+        public string pwd_last_chg { get; set; }
+        public string email { get; set; }
         public string name_en { get; set; }
         public string name_th { get; set; }
-        public string url_key_en { get; set; }
-        public string url_key_th { get; set; }
-        public int product_count { get; set; }
-        public int shop { get; set; }
-        public bool status { get; set; }
-        public int lft { get; set; }
-        public int rgt { get; set; }
+        public string mobile { get; set; }
+        public string phone { get; set; }
+        public string fax { get; set; }
+        public Nullable<bool> status { get; set; }
+        public Nullable<int> login_fail_count { get; set; }
+        public Nullable<System.DateTime> last_login_dt { get; set; }
         public string created_by { get; set; }
         public Nullable<System.DateTime> created_dt { get; set; }
         public string updated_by { get; set; }
         public Nullable<System.DateTime> updated_dt { get; set; }
     
-        public virtual Shop Shop1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shop> Shops { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User_Group_Map> User_Group_Map { get; set; }
     }
 }

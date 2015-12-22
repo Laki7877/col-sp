@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Entities.Models
+namespace Colsp.Api.Entities
 {
     using System;
     using System.Collections.Generic;

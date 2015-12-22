@@ -7,28 +7,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Entities.Models
+namespace Colsp.Api.Entities
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Attribute_Set
+    public partial class Category_Attribute_Set_Map
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Attribute_Set()
-        {
-            this.Attributes = new HashSet<Attribute>();
-        }
-    
+        public int category_id { get; set; }
         public int attribute_set_id { get; set; }
-        public string attribute_set_name_en { get; set; }
-        public string attribute_set_name_th { get; set; }
+        public Nullable<bool> status { get; set; }
         public string created_by { get; set; }
         public Nullable<System.DateTime> created_dt { get; set; }
         public string updated_by { get; set; }
         public Nullable<System.DateTime> updated_dt { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Attribute> Attributes { get; set; }
+        public virtual Global_Category Global_Category { get; set; }
     }
 }

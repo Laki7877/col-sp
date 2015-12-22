@@ -7,25 +7,24 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Entities.Models
+namespace Colsp.Api.Entities
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Tag
+    public partial class Attribute_Value
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Tag()
+        public Attribute_Value()
         {
-            this.Product_Tag = new HashSet<Product_Tag>();
+            this.Attributes = new HashSet<Attribute>();
         }
     
-        public int tag_id { get; set; }
-        public string tag_name { get; set; }
-        public Nullable<int> count { get; set; }
-        public Nullable<bool> status { get; set; }
+        public int attribute_value_id { get; set; }
+        public string attribute_value_en { get; set; }
+        public string attribute_value_th { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Tag> Product_Tag { get; set; }
+        public virtual ICollection<Attribute> Attributes { get; set; }
     }
 }
