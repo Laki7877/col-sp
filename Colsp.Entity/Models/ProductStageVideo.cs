@@ -15,7 +15,7 @@ namespace Colsp.Entity.Models
     public partial class ProductStageVideo
     {
         public int VideoId { get; set; }
-        public string Uid { get; set; }
+        public string Pid { get; set; }
         public string VideoUrlEn { get; set; }
         public string VideoUrlTh { get; set; }
         public Nullable<int> Position { get; set; }

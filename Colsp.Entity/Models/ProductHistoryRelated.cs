@@ -14,8 +14,8 @@ namespace Colsp.Entity.Models
     
     public partial class ProductHistoryRelated
     {
-        public string Uid1 { get; set; }
-        public string Uid2 { get; set; }
+        public string Pid1 { get; set; }
+        public string Pid2 { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

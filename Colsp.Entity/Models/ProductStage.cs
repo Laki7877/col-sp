@@ -32,7 +32,6 @@ namespace Colsp.Entity.Models
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public Nullable<int> BrandId { get; set; }
-        public string Uid { get; set; }
         public string Pid { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
