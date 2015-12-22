@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Models
+namespace Colsp.Api.Models
 {
     using System;
     using System.Collections.Generic;
