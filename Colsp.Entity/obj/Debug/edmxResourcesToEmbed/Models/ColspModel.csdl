@@ -1,0 +1,1962 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ColspModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Attribute">
+    <Key>
+      <PropertyRef Name="AttributeId" />
+    </Key>
+    <Property Name="AttributeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AttributeNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="AttributeNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="VariantStatus" Type="Boolean" />
+    <Property Name="DataType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="DataValidation" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+    <Property Name="ShowAdminFlag" Type="Boolean" />
+    <Property Name="ShowGlobalSearchFlag" Type="Boolean" />
+    <Property Name="ShowLocalSearchFlag" Type="Boolean" />
+    <Property Name="ShowGlobalFilterFlag" Type="Boolean" />
+    <Property Name="ShowLocalFilterFlag" Type="Boolean" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="AllowHtmlFlag" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AttributeSetMaps" Relationship="Self.FKAttributeSetMapAttribute" FromRole="Attribute" ToRole="AttributeSetMap" />
+    <NavigationProperty Name="AttributeValueMaps" Relationship="Self.FKAttributeValueMapAttribute" FromRole="Attribute" ToRole="AttributeValueMap" />
+    <NavigationProperty Name="ProductAttributes" Relationship="Self.FKProductAttributeAttribute" FromRole="Attribute" ToRole="ProductAttribute" />
+    <NavigationProperty Name="ProductHistoryAttributes" Relationship="Self.FKProductHistoryAttributeAttribute" FromRole="Attribute" ToRole="ProductHistoryAttribute" />
+    <NavigationProperty Name="ProductHistoryVariants" Relationship="Self.FKProductHistoryVariantVariant" FromRole="Attribute" ToRole="ProductHistoryVariant" />
+    <NavigationProperty Name="ProductStageAttributes" Relationship="Self.FKProductStageAttributeAttribute" FromRole="Attribute" ToRole="ProductStageAttribute" />
+    <NavigationProperty Name="ProductStageVariants" Relationship="Self.FKProductStageVariantVariant" FromRole="Attribute" ToRole="ProductStageVariant" />
+    <NavigationProperty Name="ProductVariants" Relationship="Self.FKProductVariantVariant" FromRole="Attribute" ToRole="ProductVariant" />
+  </EntityType>
+  <EntityType Name="AttributeSet">
+    <Key>
+      <PropertyRef Name="AttributeSetId" />
+    </Key>
+    <Property Name="AttributeSetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AttributeSetNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="AttributeSetNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AttributeSetMaps" Relationship="Self.FKAttributeSetMapAttributeSet" FromRole="AttributeSet" ToRole="AttributeSetMap" />
+    <NavigationProperty Name="CategoryAttributeSetMaps" Relationship="Self.FKCategoryAttributeSetMapAttributeSet" FromRole="AttributeSet" ToRole="CategoryAttributeSetMap" />
+  </EntityType>
+  <EntityType Name="AttributeSetMap">
+    <Key>
+      <PropertyRef Name="AttributeSetId" />
+      <PropertyRef Name="AttributeId" />
+    </Key>
+    <Property Name="AttributeSetId" Type="Int32" Nullable="false" />
+    <Property Name="AttributeId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Attribute" Relationship="Self.FKAttributeSetMapAttribute" FromRole="AttributeSetMap" ToRole="Attribute" />
+    <NavigationProperty Name="AttributeSet" Relationship="Self.FKAttributeSetMapAttributeSet" FromRole="AttributeSetMap" ToRole="AttributeSet" />
+  </EntityType>
+  <EntityType Name="AttributeValue">
+    <Key>
+      <PropertyRef Name="AttributeValueId" />
+    </Key>
+    <Property Name="AttributeValueId" Type="Int32" Nullable="false" />
+    <Property Name="AttributeValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="AttributeValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AttributeValueMaps" Relationship="Self.FKAttributeValueMapAttributeValue" FromRole="AttributeValue" ToRole="AttributeValueMap" />
+  </EntityType>
+  <EntityType Name="AttributeValueMap">
+    <Key>
+      <PropertyRef Name="AttributeId" />
+      <PropertyRef Name="AttributeValueId" />
+    </Key>
+    <Property Name="AttributeId" Type="Int32" Nullable="false" />
+    <Property Name="AttributeValueId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Attribute" Relationship="Self.FKAttributeValueMapAttribute" FromRole="AttributeValueMap" ToRole="Attribute" />
+    <NavigationProperty Name="AttributeValue" Relationship="Self.FKAttributeValueMapAttributeValue" FromRole="AttributeValueMap" ToRole="AttributeValue" />
+  </EntityType>
+  <EntityType Name="Brand">
+    <Key>
+      <PropertyRef Name="BrandId" />
+    </Key>
+    <Property Name="BrandId" Type="Int32" Nullable="false" />
+    <Property Name="BrandNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="BrandNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ThumbnailEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ThumbnailTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Products" Relationship="Self.FKProductBrand" FromRole="Brand" ToRole="Product" />
+    <NavigationProperty Name="ProductHistories" Relationship="Self.FKProductHistoryBrand" FromRole="Brand" ToRole="ProductHistory" />
+    <NavigationProperty Name="ProductStages" Relationship="Self.FKProductStageBrand" FromRole="Brand" ToRole="ProductStage" />
+  </EntityType>
+  <EntityType Name="CategoryAttributeSetMap">
+    <Key>
+      <PropertyRef Name="CategoryId" />
+      <PropertyRef Name="AttributeSetId" />
+    </Key>
+    <Property Name="CategoryId" Type="Int32" Nullable="false" />
+    <Property Name="AttributeSetId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AttributeSet" Relationship="Self.FKCategoryAttributeSetMapAttributeSet" FromRole="CategoryAttributeSetMap" ToRole="AttributeSet" />
+    <NavigationProperty Name="GlobalCategory" Relationship="Self.FKCategoryAttributeSetMapCategory" FromRole="CategoryAttributeSetMap" ToRole="GlobalCategory" />
+  </EntityType>
+  <EntityType Name="GlobalCategory">
+    <Key>
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NameTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductCount" Type="Int32" />
+    <Property Name="Lft" Type="Int32" />
+    <Property Name="Rgt" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="CategoryAttributeSetMaps" Relationship="Self.FKCategoryAttributeSetMapCategory" FromRole="GlobalCategory" ToRole="CategoryAttributeSetMap" />
+    <NavigationProperty Name="Products" Relationship="Self.FKProductGlobalCat" FromRole="GlobalCategory" ToRole="Product" />
+    <NavigationProperty Name="ProductGlobalCatMaps" Relationship="Self.FKProductGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductGlobalCatMap" />
+    <NavigationProperty Name="ProductHistories" Relationship="Self.FKProductHistoryGlobalCat" FromRole="GlobalCategory" ToRole="ProductHistory" />
+    <NavigationProperty Name="ProductHistoryGlobalCatMaps" Relationship="Self.FKProductHistoryGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductHistoryGlobalCatMap" />
+    <NavigationProperty Name="ProductStages" Relationship="Self.FKProductStageGlobalCat" FromRole="GlobalCategory" ToRole="ProductStage" />
+    <NavigationProperty Name="ProductStageGlobalCatMaps" Relationship="Self.FKProductStageGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductStageGlobalCatMap" />
+  </EntityType>
+  <EntityType Name="Inventory">
+    <Key>
+      <PropertyRef Name="Uid" />
+    </Key>
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Quantity" Type="Int32" />
+    <Property Name="QuantityOutStock" Type="Int32" />
+    <Property Name="MinQuantity" Type="Int32" />
+    <Property Name="MaxQuantity" Type="Int32" />
+    <Property Name="UseDecimal" Type="Boolean" />
+    <Property Name="SaftyStockSeller" Type="Int32" />
+    <Property Name="SaftyStockAdmin" Type="Int32" />
+    <Property Name="StockAvailable" Type="Int32" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="LocalCategory">
+    <Key>
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NameTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductCount" Type="Int32" />
+    <Property Name="Shop" Type="Int32" />
+    <Property Name="Lft" Type="Int32" />
+    <Property Name="Rgt" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Shop1" Relationship="Self.FKLocalCategoryShop" FromRole="LocalCategory" ToRole="Shop" />
+    <NavigationProperty Name="ProductHistories" Relationship="Self.FKProductHistoryLocalCat" FromRole="LocalCategory" ToRole="ProductHistory" />
+    <NavigationProperty Name="ProductHistoryLocalCatMaps" Relationship="Self.FKProductHistoryLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductHistoryLocalCatMap" />
+    <NavigationProperty Name="Products" Relationship="Self.FKProductLocalCat" FromRole="LocalCategory" ToRole="Product" />
+    <NavigationProperty Name="ProductLocalCatMaps" Relationship="Self.FKProductLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductLocalCatMap" />
+    <NavigationProperty Name="ProductStages" Relationship="Self.FKProductStageLocalCat" FromRole="LocalCategory" ToRole="ProductStage" />
+    <NavigationProperty Name="ProductStageLocalCatMaps" Relationship="Self.FKProductStageLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductStageLocalCatMap" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="ProductId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GlobalCatId" Type="Int32" />
+    <Property Name="LocalCatId" Type="Int32" />
+    <Property Name="ShopId" Type="Int32" />
+    <Property Name="SellerId" Type="Int32" />
+    <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="BrandId" Type="Int32" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Stock" Type="Int32" />
+    <Property Name="SaftyStock" Type="Int32" />
+    <Property Name="ShippingId" Type="Int32" />
+    <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="UrlEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UrlTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="BoostWeight" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+    <Property Name="EffectiveTime" Type="Time" Precision="7" />
+    <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+    <Property Name="ExpiryTime" Type="Time" Precision="7" />
+    <Property Name="ControlFlag1" Type="Boolean" />
+    <Property Name="ControlFlag2" Type="Boolean" />
+    <Property Name="ControlFlag3" Type="Boolean" />
+    <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Brand" Relationship="Self.FKProductBrand" FromRole="Product" ToRole="Brand" />
+    <NavigationProperty Name="GlobalCategory" Relationship="Self.FKProductGlobalCat" FromRole="Product" ToRole="GlobalCategory" />
+    <NavigationProperty Name="LocalCategory" Relationship="Self.FKProductLocalCat" FromRole="Product" ToRole="LocalCategory" />
+    <NavigationProperty Name="ProductAttributes" Relationship="Self.FKProductAttributeProduct" FromRole="Product" ToRole="ProductAttribute" />
+    <NavigationProperty Name="ProductGlobalCatMaps" Relationship="Self.FKProductGlobalCatMapProduct" FromRole="Product" ToRole="ProductGlobalCatMap" />
+    <NavigationProperty Name="ProductLocalCatMaps" Relationship="Self.FKProductLocalCatMapProduct" FromRole="Product" ToRole="ProductLocalCatMap" />
+    <NavigationProperty Name="Shipping" Relationship="Self.FKProductShipping" FromRole="Product" ToRole="Shipping" />
+    <NavigationProperty Name="Shop" Relationship="Self.FKProductShop" FromRole="Product" ToRole="Shop" />
+    <NavigationProperty Name="ProductTags" Relationship="Self.FKProductTagProduct" FromRole="Product" ToRole="ProductTag" />
+    <NavigationProperty Name="User" Relationship="Self.FKProductUser" FromRole="Product" ToRole="User" />
+    <NavigationProperty Name="ProductVariants" Relationship="Self.FKProductVariantProduct" FromRole="Product" ToRole="ProductVariant" />
+  </EntityType>
+  <EntityType Name="ProductAttribute">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="AttributeId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="AttributeId" Type="Int32" Nullable="false" />
+    <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Attribute" Relationship="Self.FKProductAttributeAttribute" FromRole="ProductAttribute" ToRole="Attribute" />
+    <NavigationProperty Name="Product" Relationship="Self.FKProductAttributeProduct" FromRole="ProductAttribute" ToRole="Product" />
+  </EntityType>
+  <EntityType Name="ProductGlobalCatMap">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="CategoryId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="GlobalCategory" Relationship="Self.FKProductGlobalCatMapGlobalCategory" FromRole="ProductGlobalCatMap" ToRole="GlobalCategory" />
+    <NavigationProperty Name="Product" Relationship="Self.FKProductGlobalCatMapProduct" FromRole="ProductGlobalCatMap" ToRole="Product" />
+  </EntityType>
+  <EntityType Name="ProductHistory">
+    <Key>
+      <PropertyRef Name="ProductId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GlobalCatId" Type="Int32" />
+    <Property Name="LocalCatId" Type="Int32" />
+    <Property Name="ShopId" Type="Int32" />
+    <Property Name="SellerId" Type="Int32" />
+    <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="BrandId" Type="Int32" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Stock" Type="Int32" />
+    <Property Name="SaftyStock" Type="Int32" />
+    <Property Name="ShippingId" Type="Int32" />
+    <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="UrlEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UrlTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="BoostWeight" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+    <Property Name="EffectiveTime" Type="Time" Precision="7" />
+    <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+    <Property Name="ExpiryTime" Type="Time" Precision="7" />
+    <Property Name="ControlFlag1" Type="Boolean" />
+    <Property Name="ControlFlag2" Type="Boolean" />
+    <Property Name="ControlFlag3" Type="Boolean" />
+    <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Brand" Relationship="Self.FKProductHistoryBrand" FromRole="ProductHistory" ToRole="Brand" />
+    <NavigationProperty Name="GlobalCategory" Relationship="Self.FKProductHistoryGlobalCat" FromRole="ProductHistory" ToRole="GlobalCategory" />
+    <NavigationProperty Name="LocalCategory" Relationship="Self.FKProductHistoryLocalCat" FromRole="ProductHistory" ToRole="LocalCategory" />
+    <NavigationProperty Name="ProductHistoryAttributes" Relationship="Self.FKProductHistoryAttributeProduct" FromRole="ProductHistory" ToRole="ProductHistoryAttribute" />
+    <NavigationProperty Name="ProductHistoryGlobalCatMaps" Relationship="Self.FKProductHistoryGlobalCatMapProduct" FromRole="ProductHistory" ToRole="ProductHistoryGlobalCatMap" />
+    <NavigationProperty Name="ProductHistoryLocalCatMaps" Relationship="Self.FKProductHistoryLocalCatMapProduct" FromRole="ProductHistory" ToRole="ProductHistoryLocalCatMap" />
+    <NavigationProperty Name="Shipping" Relationship="Self.FKProductHistoryShipping" FromRole="ProductHistory" ToRole="Shipping" />
+    <NavigationProperty Name="Shop" Relationship="Self.FKProductHistoryShop" FromRole="ProductHistory" ToRole="Shop" />
+    <NavigationProperty Name="ProductHistoryTags" Relationship="Self.FKProductHistoryTagProduct" FromRole="ProductHistory" ToRole="ProductHistoryTag" />
+    <NavigationProperty Name="User" Relationship="Self.FKProductHistoryUser" FromRole="ProductHistory" ToRole="User" />
+    <NavigationProperty Name="ProductHistoryVariants" Relationship="Self.FKProductHistoryVariantProduct" FromRole="ProductHistory" ToRole="ProductHistoryVariant" />
+  </EntityType>
+  <EntityType Name="ProductHistoryAttribute">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="AttributeId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="AttributeId" Type="Int32" Nullable="false" />
+    <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Attribute" Relationship="Self.FKProductHistoryAttributeAttribute" FromRole="ProductHistoryAttribute" ToRole="Attribute" />
+    <NavigationProperty Name="ProductHistory" Relationship="Self.FKProductHistoryAttributeProduct" FromRole="ProductHistoryAttribute" ToRole="ProductHistory" />
+  </EntityType>
+  <EntityType Name="ProductHistoryGlobalCatMap">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="CategoryId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="GlobalCategory" Relationship="Self.FKProductHistoryGlobalCatMapGlobalCategory" FromRole="ProductHistoryGlobalCatMap" ToRole="GlobalCategory" />
+    <NavigationProperty Name="ProductHistory" Relationship="Self.FKProductHistoryGlobalCatMapProduct" FromRole="ProductHistoryGlobalCatMap" ToRole="ProductHistory" />
+  </EntityType>
+  <EntityType Name="ProductHistoryImage">
+    <Key>
+      <PropertyRef Name="ImageId" />
+    </Key>
+    <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ImageUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="ImageUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="Int32" />
+    <Property Name="FeatureFlag" Type="Boolean" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductHistoryLocalCatMap">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="CategoryId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="LocalCategory" Relationship="Self.FKProductHistoryLocalCatMapLocalCategory" FromRole="ProductHistoryLocalCatMap" ToRole="LocalCategory" />
+    <NavigationProperty Name="ProductHistory" Relationship="Self.FKProductHistoryLocalCatMapProduct" FromRole="ProductHistoryLocalCatMap" ToRole="ProductHistory" />
+  </EntityType>
+  <EntityType Name="ProductHistoryRelated">
+    <Key>
+      <PropertyRef Name="Uid1" />
+      <PropertyRef Name="Uid2" />
+    </Key>
+    <Property Name="Uid1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Uid2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductHistoryTag">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="TagId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="TagId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="ProductHistory" Relationship="Self.FKProductHistoryTagProduct" FromRole="ProductHistoryTag" ToRole="ProductHistory" />
+    <NavigationProperty Name="Tag" Relationship="Self.FKProductHistoryTagTag" FromRole="ProductHistoryTag" ToRole="Tag" />
+  </EntityType>
+  <EntityType Name="ProductHistoryVariant">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="VariantId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="VariantId" Type="Int32" Nullable="false" />
+    <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Stock" Type="Int32" />
+    <Property Name="SaftyStock" Type="Int32" />
+    <Property Name="VideoLink" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="ShippingMethod" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Attribute" Relationship="Self.FKProductHistoryVariantVariant" FromRole="ProductHistoryVariant" ToRole="Attribute" />
+    <NavigationProperty Name="ProductHistory" Relationship="Self.FKProductHistoryVariantProduct" FromRole="ProductHistoryVariant" ToRole="ProductHistory" />
+  </EntityType>
+  <EntityType Name="ProductHistoryVideo">
+    <Key>
+      <PropertyRef Name="VideoId" />
+    </Key>
+    <Property Name="VideoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="VideoUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductImage">
+    <Key>
+      <PropertyRef Name="ImageId" />
+    </Key>
+    <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ImageUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="ImageUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="Int32" />
+    <Property Name="FeatureFlag" Type="Boolean" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductLocalCatMap">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="CategoryId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="LocalCategory" Relationship="Self.FKProductLocalCatMapLocalCategory" FromRole="ProductLocalCatMap" ToRole="LocalCategory" />
+    <NavigationProperty Name="Product" Relationship="Self.FKProductLocalCatMapProduct" FromRole="ProductLocalCatMap" ToRole="Product" />
+  </EntityType>
+  <EntityType Name="ProductRelated">
+    <Key>
+      <PropertyRef Name="Uid1" />
+      <PropertyRef Name="Uid2" />
+    </Key>
+    <Property Name="Uid1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Uid2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductStage">
+    <Key>
+      <PropertyRef Name="ProductId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GlobalCatId" Type="Int32" />
+    <Property Name="LocalCatId" Type="Int32" />
+    <Property Name="ShopId" Type="Int32" />
+    <Property Name="SellerId" Type="Int32" />
+    <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="BrandId" Type="Int32" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Stock" Type="Int32" />
+    <Property Name="SaftyStock" Type="Int32" />
+    <Property Name="ShippingId" Type="Int32" />
+    <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="UrlEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UrlTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="BoostWeight" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+    <Property Name="EffectiveTime" Type="Time" Precision="7" />
+    <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+    <Property Name="ExpiryTime" Type="Time" Precision="7" />
+    <Property Name="ControlFlag1" Type="Boolean" />
+    <Property Name="ControlFlag2" Type="Boolean" />
+    <Property Name="ControlFlag3" Type="Boolean" />
+    <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Brand" Relationship="Self.FKProductStageBrand" FromRole="ProductStage" ToRole="Brand" />
+    <NavigationProperty Name="GlobalCategory" Relationship="Self.FKProductStageGlobalCat" FromRole="ProductStage" ToRole="GlobalCategory" />
+    <NavigationProperty Name="LocalCategory" Relationship="Self.FKProductStageLocalCat" FromRole="ProductStage" ToRole="LocalCategory" />
+    <NavigationProperty Name="ProductStageAttributes" Relationship="Self.FKProductStageAttributeProduct" FromRole="ProductStage" ToRole="ProductStageAttribute" />
+    <NavigationProperty Name="ProductStageGlobalCatMaps" Relationship="Self.FKProductStageGlobalCatMapProduct" FromRole="ProductStage" ToRole="ProductStageGlobalCatMap" />
+    <NavigationProperty Name="ProductStageLocalCatMaps" Relationship="Self.FKProductStageLocalCatMapProduct" FromRole="ProductStage" ToRole="ProductStageLocalCatMap" />
+    <NavigationProperty Name="Shipping" Relationship="Self.FKProductStageShipping" FromRole="ProductStage" ToRole="Shipping" />
+    <NavigationProperty Name="Shop" Relationship="Self.FKProductStageShop" FromRole="ProductStage" ToRole="Shop" />
+    <NavigationProperty Name="ProductStageTags" Relationship="Self.FKProductStageTagProduct" FromRole="ProductStage" ToRole="ProductStageTag" />
+    <NavigationProperty Name="User" Relationship="Self.FKProductStageUser" FromRole="ProductStage" ToRole="User" />
+    <NavigationProperty Name="ProductStageVariants" Relationship="Self.FKProductStageVariantProduct" FromRole="ProductStage" ToRole="ProductStageVariant" />
+  </EntityType>
+  <EntityType Name="ProductStageAttribute">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="AttributeId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="AttributeId" Type="Int32" Nullable="false" />
+    <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Attribute" Relationship="Self.FKProductStageAttributeAttribute" FromRole="ProductStageAttribute" ToRole="Attribute" />
+    <NavigationProperty Name="ProductStage" Relationship="Self.FKProductStageAttributeProduct" FromRole="ProductStageAttribute" ToRole="ProductStage" />
+  </EntityType>
+  <EntityType Name="ProductStageGlobalCatMap">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="CategoryId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="GlobalCategory" Relationship="Self.FKProductStageGlobalCatMapGlobalCategory" FromRole="ProductStageGlobalCatMap" ToRole="GlobalCategory" />
+    <NavigationProperty Name="ProductStage" Relationship="Self.FKProductStageGlobalCatMapProduct" FromRole="ProductStageGlobalCatMap" ToRole="ProductStage" />
+  </EntityType>
+  <EntityType Name="ProductStageImage">
+    <Key>
+      <PropertyRef Name="ImageId" />
+    </Key>
+    <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ImageUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="ImageUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="Int32" />
+    <Property Name="FeatureFlag" Type="Boolean" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductStageLocalCatMap">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="CategoryId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="LocalCategory" Relationship="Self.FKProductStageLocalCatMapLocalCategory" FromRole="ProductStageLocalCatMap" ToRole="LocalCategory" />
+    <NavigationProperty Name="ProductStage" Relationship="Self.FKProductStageLocalCatMapProduct" FromRole="ProductStageLocalCatMap" ToRole="ProductStage" />
+  </EntityType>
+  <EntityType Name="ProductStageRelated">
+    <Key>
+      <PropertyRef Name="Uid1" />
+      <PropertyRef Name="Uid2" />
+    </Key>
+    <Property Name="Uid1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Uid2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductStageTag">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="TagId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="TagId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="ProductStage" Relationship="Self.FKProductStageTagProduct" FromRole="ProductStageTag" ToRole="ProductStage" />
+    <NavigationProperty Name="Tag" Relationship="Self.FKProductStageTagTag" FromRole="ProductStageTag" ToRole="Tag" />
+  </EntityType>
+  <EntityType Name="ProductStageVariant">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="VariantId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="VariantId" Type="Int32" Nullable="false" />
+    <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Stock" Type="Int32" />
+    <Property Name="SaftyStock" Type="Int32" />
+    <Property Name="VideoLink" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="ShippingMethod" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Attribute" Relationship="Self.FKProductStageVariantVariant" FromRole="ProductStageVariant" ToRole="Attribute" />
+    <NavigationProperty Name="ProductStage" Relationship="Self.FKProductStageVariantProduct" FromRole="ProductStageVariant" ToRole="ProductStage" />
+  </EntityType>
+  <EntityType Name="ProductStageVideo">
+    <Key>
+      <PropertyRef Name="VideoId" />
+    </Key>
+    <Property Name="VideoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="VideoUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductTag">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="TagId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="TagId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Product" Relationship="Self.FKProductTagProduct" FromRole="ProductTag" ToRole="Product" />
+    <NavigationProperty Name="Tag" Relationship="Self.FKProductTagTag" FromRole="ProductTag" ToRole="Tag" />
+  </EntityType>
+  <EntityType Name="ProductVariant">
+    <Key>
+      <PropertyRef Name="ProductId" />
+      <PropertyRef Name="VariantId" />
+    </Key>
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="VariantId" Type="Int32" Nullable="false" />
+    <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Stock" Type="Int32" />
+    <Property Name="SaftyStock" Type="Int32" />
+    <Property Name="VideoLink" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="ShippingMethod" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Attribute" Relationship="Self.FKProductVariantVariant" FromRole="ProductVariant" ToRole="Attribute" />
+    <NavigationProperty Name="Product" Relationship="Self.FKProductVariantProduct" FromRole="ProductVariant" ToRole="Product" />
+  </EntityType>
+  <EntityType Name="ProductVideo">
+    <Key>
+      <PropertyRef Name="VideoId" />
+    </Key>
+    <Property Name="VideoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="VideoUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Shipping">
+    <Key>
+      <PropertyRef Name="ShippingId" />
+    </Key>
+    <Property Name="ShippingId" Type="Int32" Nullable="false" />
+    <Property Name="ShippingMethodEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ShippingMethodTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Products" Relationship="Self.FKProductShipping" FromRole="Shipping" ToRole="Product" />
+    <NavigationProperty Name="ProductHistories" Relationship="Self.FKProductHistoryShipping" FromRole="Shipping" ToRole="ProductHistory" />
+    <NavigationProperty Name="ProductStages" Relationship="Self.FKProductStageShipping" FromRole="Shipping" ToRole="ProductStage" />
+  </EntityType>
+  <EntityType Name="Shop">
+    <Key>
+      <PropertyRef Name="ShopId" />
+    </Key>
+    <Property Name="ShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShopOwner" Type="Int32" />
+    <Property Name="ShopNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ShopNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="LocalCategories" Relationship="Self.FKLocalCategoryShop" FromRole="Shop" ToRole="LocalCategory" />
+    <NavigationProperty Name="Products" Relationship="Self.FKProductShop" FromRole="Shop" ToRole="Product" />
+    <NavigationProperty Name="ProductHistories" Relationship="Self.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
+    <NavigationProperty Name="ProductStages" Relationship="Self.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
+    <NavigationProperty Name="User" Relationship="Self.FKShopUser" FromRole="Shop" ToRole="User" />
+    <NavigationProperty Name="UserShops" Relationship="Self.FKUserShopShop" FromRole="Shop" ToRole="UserShop" />
+  </EntityType>
+  <EntityType Name="Tag">
+    <Key>
+      <PropertyRef Name="TagId" />
+    </Key>
+    <Property Name="TagId" Type="Int32" Nullable="false" />
+    <Property Name="TagName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Count" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="ProductHistoryTags" Relationship="Self.FKProductHistoryTagTag" FromRole="Tag" ToRole="ProductHistoryTag" />
+    <NavigationProperty Name="ProductStageTags" Relationship="Self.FKProductStageTagTag" FromRole="Tag" ToRole="ProductStageTag" />
+    <NavigationProperty Name="ProductTags" Relationship="Self.FKProductTagTag" FromRole="Tag" ToRole="ProductTag" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="PasswordLastChg" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="NameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="NameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Mobile" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+    <Property Name="Phone" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+    <Property Name="Fax" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Status" Type="Boolean" />
+    <Property Name="LoginFailCount" Type="Int32" />
+    <Property Name="LastLoginDt" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Products" Relationship="Self.FKProductUser" FromRole="User" ToRole="Product" />
+    <NavigationProperty Name="ProductHistories" Relationship="Self.FKProductHistoryUser" FromRole="User" ToRole="ProductHistory" />
+    <NavigationProperty Name="ProductStages" Relationship="Self.FKProductStageUser" FromRole="User" ToRole="ProductStage" />
+    <NavigationProperty Name="Shops" Relationship="Self.FKShopUser" FromRole="User" ToRole="Shop" />
+    <NavigationProperty Name="UserGroupMaps" Relationship="Self.FKUserGroupMapUser" FromRole="User" ToRole="UserGroupMap" />
+    <NavigationProperty Name="UserShops" Relationship="Self.FKUserShopUser" FromRole="User" ToRole="UserShop" />
+  </EntityType>
+  <EntityType Name="UserGroup">
+    <Key>
+      <PropertyRef Name="GroupId" />
+    </Key>
+    <Property Name="GroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GroupNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="GroupNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="UserGroupMaps" Relationship="Self.FKUserGroupMapUserGroup" FromRole="UserGroup" ToRole="UserGroupMap" />
+    <NavigationProperty Name="UserPermissions" Relationship="Self.UserGroupPermissionMap" FromRole="UserGroup" ToRole="UserPermission" />
+  </EntityType>
+  <EntityType Name="UserGroupMap">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="GroupId" />
+    </Key>
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="GroupId" Type="Int32" Nullable="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="User" Relationship="Self.FKUserGroupMapUser" FromRole="UserGroupMap" ToRole="User" />
+    <NavigationProperty Name="UserGroup" Relationship="Self.FKUserGroupMapUserGroup" FromRole="UserGroupMap" ToRole="UserGroup" />
+  </EntityType>
+  <EntityType Name="UserPermission">
+    <Key>
+      <PropertyRef Name="PermissionId" />
+    </Key>
+    <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PermissionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="UserGroups" Relationship="Self.UserGroupPermissionMap" FromRole="UserPermission" ToRole="UserGroup" />
+  </EntityType>
+  <EntityType Name="UserShop">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="ShopId" />
+    </Key>
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="ShopId" Type="Int32" Nullable="false" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Shop" Relationship="Self.FKUserShopShop" FromRole="UserShop" ToRole="Shop" />
+    <NavigationProperty Name="User" Relationship="Self.FKUserShopUser" FromRole="UserShop" ToRole="User" />
+  </EntityType>
+  <Association Name="FKAttributeSetMapAttribute">
+    <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+    <End Role="AttributeSetMap" Type="Self.AttributeSetMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Attribute">
+        <PropertyRef Name="AttributeId" />
+      </Principal>
+      <Dependent Role="AttributeSetMap">
+        <PropertyRef Name="AttributeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKAttributeValueMapAttribute">
+    <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+    <End Role="AttributeValueMap" Type="Self.AttributeValueMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Attribute">
+        <PropertyRef Name="AttributeId" />
+      </Principal>
+      <Dependent Role="AttributeValueMap">
+        <PropertyRef Name="AttributeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductAttributeAttribute">
+    <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+    <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Attribute">
+        <PropertyRef Name="AttributeId" />
+      </Principal>
+      <Dependent Role="ProductAttribute">
+        <PropertyRef Name="AttributeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryAttributeAttribute">
+    <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+    <End Role="ProductHistoryAttribute" Type="Self.ProductHistoryAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Attribute">
+        <PropertyRef Name="AttributeId" />
+      </Principal>
+      <Dependent Role="ProductHistoryAttribute">
+        <PropertyRef Name="AttributeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryVariantVariant">
+    <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+    <End Role="ProductHistoryVariant" Type="Self.ProductHistoryVariant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Attribute">
+        <PropertyRef Name="AttributeId" />
+      </Principal>
+      <Dependent Role="ProductHistoryVariant">
+        <PropertyRef Name="VariantId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageAttributeAttribute">
+    <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+    <End Role="ProductStageAttribute" Type="Self.ProductStageAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Attribute">
+        <PropertyRef Name="AttributeId" />
+      </Principal>
+      <Dependent Role="ProductStageAttribute">
+        <PropertyRef Name="AttributeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageVariantVariant">
+    <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+    <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Attribute">
+        <PropertyRef Name="AttributeId" />
+      </Principal>
+      <Dependent Role="ProductStageVariant">
+        <PropertyRef Name="VariantId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductVariantVariant">
+    <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
+    <End Role="ProductVariant" Type="Self.ProductVariant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Attribute">
+        <PropertyRef Name="AttributeId" />
+      </Principal>
+      <Dependent Role="ProductVariant">
+        <PropertyRef Name="VariantId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKAttributeSetMapAttributeSet">
+    <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1" />
+    <End Role="AttributeSetMap" Type="Self.AttributeSetMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AttributeSet">
+        <PropertyRef Name="AttributeSetId" />
+      </Principal>
+      <Dependent Role="AttributeSetMap">
+        <PropertyRef Name="AttributeSetId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKCategoryAttributeSetMapAttributeSet">
+    <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1" />
+    <End Role="CategoryAttributeSetMap" Type="Self.CategoryAttributeSetMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AttributeSet">
+        <PropertyRef Name="AttributeSetId" />
+      </Principal>
+      <Dependent Role="CategoryAttributeSetMap">
+        <PropertyRef Name="AttributeSetId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKAttributeValueMapAttributeValue">
+    <End Role="AttributeValue" Type="Self.AttributeValue" Multiplicity="1" />
+    <End Role="AttributeValueMap" Type="Self.AttributeValueMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AttributeValue">
+        <PropertyRef Name="AttributeValueId" />
+      </Principal>
+      <Dependent Role="AttributeValueMap">
+        <PropertyRef Name="AttributeValueId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductBrand">
+    <End Role="Brand" Type="Self.Brand" Multiplicity="0..1" />
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Brand">
+        <PropertyRef Name="BrandId" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="BrandId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryBrand">
+    <End Role="Brand" Type="Self.Brand" Multiplicity="0..1" />
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Brand">
+        <PropertyRef Name="BrandId" />
+      </Principal>
+      <Dependent Role="ProductHistory">
+        <PropertyRef Name="BrandId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageBrand">
+    <End Role="Brand" Type="Self.Brand" Multiplicity="0..1" />
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Brand">
+        <PropertyRef Name="BrandId" />
+      </Principal>
+      <Dependent Role="ProductStage">
+        <PropertyRef Name="BrandId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKCategoryAttributeSetMapCategory">
+    <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+    <End Role="CategoryAttributeSetMap" Type="Self.CategoryAttributeSetMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GlobalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="CategoryAttributeSetMap">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductGlobalCat">
+    <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="0..1" />
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GlobalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="GlobalCatId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductGlobalCatMapGlobalCategory">
+    <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+    <End Role="ProductGlobalCatMap" Type="Self.ProductGlobalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GlobalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductGlobalCatMap">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryGlobalCat">
+    <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="0..1" />
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GlobalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductHistory">
+        <PropertyRef Name="GlobalCatId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryGlobalCatMapGlobalCategory">
+    <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+    <End Role="ProductHistoryGlobalCatMap" Type="Self.ProductHistoryGlobalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GlobalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductHistoryGlobalCatMap">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageGlobalCat">
+    <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="0..1" />
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GlobalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductStage">
+        <PropertyRef Name="GlobalCatId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageGlobalCatMapGlobalCategory">
+    <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+    <End Role="ProductStageGlobalCatMap" Type="Self.ProductStageGlobalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GlobalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductStageGlobalCatMap">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKLocalCategoryShop">
+    <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+    <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shop">
+        <PropertyRef Name="ShopId" />
+      </Principal>
+      <Dependent Role="LocalCategory">
+        <PropertyRef Name="Shop" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryLocalCat">
+    <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="0..1" />
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LocalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductHistory">
+        <PropertyRef Name="LocalCatId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryLocalCatMapLocalCategory">
+    <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1" />
+    <End Role="ProductHistoryLocalCatMap" Type="Self.ProductHistoryLocalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LocalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductHistoryLocalCatMap">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductLocalCat">
+    <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="0..1" />
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LocalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="LocalCatId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductLocalCatMapLocalCategory">
+    <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1" />
+    <End Role="ProductLocalCatMap" Type="Self.ProductLocalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LocalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductLocalCatMap">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageLocalCat">
+    <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="0..1" />
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LocalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductStage">
+        <PropertyRef Name="LocalCatId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageLocalCatMapLocalCategory">
+    <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1" />
+    <End Role="ProductStageLocalCatMap" Type="Self.ProductStageLocalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LocalCategory">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ProductStageLocalCatMap">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductAttributeProduct">
+    <End Role="Product" Type="Self.Product" Multiplicity="1" />
+    <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductAttribute">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductGlobalCatMapProduct">
+    <End Role="Product" Type="Self.Product" Multiplicity="1" />
+    <End Role="ProductGlobalCatMap" Type="Self.ProductGlobalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductGlobalCatMap">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductLocalCatMapProduct">
+    <End Role="Product" Type="Self.Product" Multiplicity="1" />
+    <End Role="ProductLocalCatMap" Type="Self.ProductLocalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductLocalCatMap">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductShipping">
+    <End Role="Shipping" Type="Self.Shipping" Multiplicity="0..1" />
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shipping">
+        <PropertyRef Name="ShippingId" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="ShippingId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductShop">
+    <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shop">
+        <PropertyRef Name="ShopId" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="ShopId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductTagProduct">
+    <End Role="Product" Type="Self.Product" Multiplicity="1" />
+    <End Role="ProductTag" Type="Self.ProductTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductTag">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductUser">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="SellerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductVariantProduct">
+    <End Role="Product" Type="Self.Product" Multiplicity="1" />
+    <End Role="ProductVariant" Type="Self.ProductVariant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductVariant">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryAttributeProduct">
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="1" />
+    <End Role="ProductHistoryAttribute" Type="Self.ProductHistoryAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductHistory">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductHistoryAttribute">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryGlobalCatMapProduct">
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="1" />
+    <End Role="ProductHistoryGlobalCatMap" Type="Self.ProductHistoryGlobalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductHistory">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductHistoryGlobalCatMap">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryLocalCatMapProduct">
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="1" />
+    <End Role="ProductHistoryLocalCatMap" Type="Self.ProductHistoryLocalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductHistory">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductHistoryLocalCatMap">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryShipping">
+    <End Role="Shipping" Type="Self.Shipping" Multiplicity="0..1" />
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shipping">
+        <PropertyRef Name="ShippingId" />
+      </Principal>
+      <Dependent Role="ProductHistory">
+        <PropertyRef Name="ShippingId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryShop">
+    <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shop">
+        <PropertyRef Name="ShopId" />
+      </Principal>
+      <Dependent Role="ProductHistory">
+        <PropertyRef Name="ShopId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryTagProduct">
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="1" />
+    <End Role="ProductHistoryTag" Type="Self.ProductHistoryTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductHistory">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductHistoryTag">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryUser">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="ProductHistory">
+        <PropertyRef Name="SellerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryVariantProduct">
+    <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="1" />
+    <End Role="ProductHistoryVariant" Type="Self.ProductHistoryVariant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductHistory">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductHistoryVariant">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductHistoryTagTag">
+    <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+    <End Role="ProductHistoryTag" Type="Self.ProductHistoryTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="TagId" />
+      </Principal>
+      <Dependent Role="ProductHistoryTag">
+        <PropertyRef Name="TagId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageAttributeProduct">
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+    <End Role="ProductStageAttribute" Type="Self.ProductStageAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductStage">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductStageAttribute">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageGlobalCatMapProduct">
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+    <End Role="ProductStageGlobalCatMap" Type="Self.ProductStageGlobalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductStage">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductStageGlobalCatMap">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageLocalCatMapProduct">
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+    <End Role="ProductStageLocalCatMap" Type="Self.ProductStageLocalCatMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductStage">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductStageLocalCatMap">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageShipping">
+    <End Role="Shipping" Type="Self.Shipping" Multiplicity="0..1" />
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shipping">
+        <PropertyRef Name="ShippingId" />
+      </Principal>
+      <Dependent Role="ProductStage">
+        <PropertyRef Name="ShippingId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageShop">
+    <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shop">
+        <PropertyRef Name="ShopId" />
+      </Principal>
+      <Dependent Role="ProductStage">
+        <PropertyRef Name="ShopId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageTagProduct">
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+    <End Role="ProductStageTag" Type="Self.ProductStageTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductStage">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductStageTag">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageUser">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="ProductStage">
+        <PropertyRef Name="SellerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageVariantProduct">
+    <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+    <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductStage">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductStageVariant">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductStageTagTag">
+    <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+    <End Role="ProductStageTag" Type="Self.ProductStageTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="TagId" />
+      </Principal>
+      <Dependent Role="ProductStageTag">
+        <PropertyRef Name="TagId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKProductTagTag">
+    <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+    <End Role="ProductTag" Type="Self.ProductTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="TagId" />
+      </Principal>
+      <Dependent Role="ProductTag">
+        <PropertyRef Name="TagId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKShopUser">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Shop" Type="Self.Shop" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Shop">
+        <PropertyRef Name="ShopOwner" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKUserShopShop">
+    <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+    <End Role="UserShop" Type="Self.UserShop" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shop">
+        <PropertyRef Name="ShopId" />
+      </Principal>
+      <Dependent Role="UserShop">
+        <PropertyRef Name="ShopId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKUserGroupMapUser">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="UserGroupMap" Type="Self.UserGroupMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserGroupMap">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKUserShopUser">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="UserShop" Type="Self.UserShop" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserShop">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKUserGroupMapUserGroup">
+    <End Role="UserGroup" Type="Self.UserGroup" Multiplicity="1" />
+    <End Role="UserGroupMap" Type="Self.UserGroupMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserGroup">
+        <PropertyRef Name="GroupId" />
+      </Principal>
+      <Dependent Role="UserGroupMap">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UserGroupPermissionMap">
+    <End Role="UserGroup" Type="Self.UserGroup" Multiplicity="*" />
+    <End Role="UserPermission" Type="Self.UserPermission" Multiplicity="*" />
+  </Association>
+  <EntityContainer Name="ColspEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Attributes" EntityType="Self.Attribute" />
+    <EntitySet Name="AttributeSets" EntityType="Self.AttributeSet" />
+    <EntitySet Name="AttributeSetMaps" EntityType="Self.AttributeSetMap" />
+    <EntitySet Name="AttributeValues" EntityType="Self.AttributeValue" />
+    <EntitySet Name="AttributeValueMaps" EntityType="Self.AttributeValueMap" />
+    <EntitySet Name="Brands" EntityType="Self.Brand" />
+    <EntitySet Name="CategoryAttributeSetMaps" EntityType="Self.CategoryAttributeSetMap" />
+    <EntitySet Name="GlobalCategories" EntityType="Self.GlobalCategory" />
+    <EntitySet Name="Inventories" EntityType="Self.Inventory" />
+    <EntitySet Name="LocalCategories" EntityType="Self.LocalCategory" />
+    <EntitySet Name="Products" EntityType="Self.Product" />
+    <EntitySet Name="ProductAttributes" EntityType="Self.ProductAttribute" />
+    <EntitySet Name="ProductGlobalCatMaps" EntityType="Self.ProductGlobalCatMap" />
+    <EntitySet Name="ProductHistories" EntityType="Self.ProductHistory" />
+    <EntitySet Name="ProductHistoryAttributes" EntityType="Self.ProductHistoryAttribute" />
+    <EntitySet Name="ProductHistoryGlobalCatMaps" EntityType="Self.ProductHistoryGlobalCatMap" />
+    <EntitySet Name="ProductHistoryImages" EntityType="Self.ProductHistoryImage" />
+    <EntitySet Name="ProductHistoryLocalCatMaps" EntityType="Self.ProductHistoryLocalCatMap" />
+    <EntitySet Name="ProductHistoryRelateds" EntityType="Self.ProductHistoryRelated" />
+    <EntitySet Name="ProductHistoryTags" EntityType="Self.ProductHistoryTag" />
+    <EntitySet Name="ProductHistoryVariants" EntityType="Self.ProductHistoryVariant" />
+    <EntitySet Name="ProductHistoryVideos" EntityType="Self.ProductHistoryVideo" />
+    <EntitySet Name="ProductImages" EntityType="Self.ProductImage" />
+    <EntitySet Name="ProductLocalCatMaps" EntityType="Self.ProductLocalCatMap" />
+    <EntitySet Name="ProductRelateds" EntityType="Self.ProductRelated" />
+    <EntitySet Name="ProductStages" EntityType="Self.ProductStage" />
+    <EntitySet Name="ProductStageAttributes" EntityType="Self.ProductStageAttribute" />
+    <EntitySet Name="ProductStageGlobalCatMaps" EntityType="Self.ProductStageGlobalCatMap" />
+    <EntitySet Name="ProductStageImages" EntityType="Self.ProductStageImage" />
+    <EntitySet Name="ProductStageLocalCatMaps" EntityType="Self.ProductStageLocalCatMap" />
+    <EntitySet Name="ProductStageRelateds" EntityType="Self.ProductStageRelated" />
+    <EntitySet Name="ProductStageTags" EntityType="Self.ProductStageTag" />
+    <EntitySet Name="ProductStageVariants" EntityType="Self.ProductStageVariant" />
+    <EntitySet Name="ProductStageVideos" EntityType="Self.ProductStageVideo" />
+    <EntitySet Name="ProductTags" EntityType="Self.ProductTag" />
+    <EntitySet Name="ProductVariants" EntityType="Self.ProductVariant" />
+    <EntitySet Name="ProductVideos" EntityType="Self.ProductVideo" />
+    <EntitySet Name="Shippings" EntityType="Self.Shipping" />
+    <EntitySet Name="Shops" EntityType="Self.Shop" />
+    <EntitySet Name="Tags" EntityType="Self.Tag" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="UserGroups" EntityType="Self.UserGroup" />
+    <EntitySet Name="UserGroupMaps" EntityType="Self.UserGroupMap" />
+    <EntitySet Name="UserPermissions" EntityType="Self.UserPermission" />
+    <EntitySet Name="UserShops" EntityType="Self.UserShop" />
+    <AssociationSet Name="FKAttributeSetMapAttribute" Association="Self.FKAttributeSetMapAttribute">
+      <End Role="Attribute" EntitySet="Attributes" />
+      <End Role="AttributeSetMap" EntitySet="AttributeSetMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKAttributeValueMapAttribute" Association="Self.FKAttributeValueMapAttribute">
+      <End Role="Attribute" EntitySet="Attributes" />
+      <End Role="AttributeValueMap" EntitySet="AttributeValueMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductAttributeAttribute" Association="Self.FKProductAttributeAttribute">
+      <End Role="Attribute" EntitySet="Attributes" />
+      <End Role="ProductAttribute" EntitySet="ProductAttributes" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryAttributeAttribute" Association="Self.FKProductHistoryAttributeAttribute">
+      <End Role="Attribute" EntitySet="Attributes" />
+      <End Role="ProductHistoryAttribute" EntitySet="ProductHistoryAttributes" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryVariantVariant" Association="Self.FKProductHistoryVariantVariant">
+      <End Role="Attribute" EntitySet="Attributes" />
+      <End Role="ProductHistoryVariant" EntitySet="ProductHistoryVariants" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageAttributeAttribute" Association="Self.FKProductStageAttributeAttribute">
+      <End Role="Attribute" EntitySet="Attributes" />
+      <End Role="ProductStageAttribute" EntitySet="ProductStageAttributes" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageVariantVariant" Association="Self.FKProductStageVariantVariant">
+      <End Role="Attribute" EntitySet="Attributes" />
+      <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductVariantVariant" Association="Self.FKProductVariantVariant">
+      <End Role="Attribute" EntitySet="Attributes" />
+      <End Role="ProductVariant" EntitySet="ProductVariants" />
+    </AssociationSet>
+    <AssociationSet Name="FKAttributeSetMapAttributeSet" Association="Self.FKAttributeSetMapAttributeSet">
+      <End Role="AttributeSet" EntitySet="AttributeSets" />
+      <End Role="AttributeSetMap" EntitySet="AttributeSetMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKCategoryAttributeSetMapAttributeSet" Association="Self.FKCategoryAttributeSetMapAttributeSet">
+      <End Role="AttributeSet" EntitySet="AttributeSets" />
+      <End Role="CategoryAttributeSetMap" EntitySet="CategoryAttributeSetMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKAttributeValueMapAttributeValue" Association="Self.FKAttributeValueMapAttributeValue">
+      <End Role="AttributeValue" EntitySet="AttributeValues" />
+      <End Role="AttributeValueMap" EntitySet="AttributeValueMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductBrand" Association="Self.FKProductBrand">
+      <End Role="Brand" EntitySet="Brands" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryBrand" Association="Self.FKProductHistoryBrand">
+      <End Role="Brand" EntitySet="Brands" />
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageBrand" Association="Self.FKProductStageBrand">
+      <End Role="Brand" EntitySet="Brands" />
+      <End Role="ProductStage" EntitySet="ProductStages" />
+    </AssociationSet>
+    <AssociationSet Name="FKCategoryAttributeSetMapCategory" Association="Self.FKCategoryAttributeSetMapCategory">
+      <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+      <End Role="CategoryAttributeSetMap" EntitySet="CategoryAttributeSetMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductGlobalCat" Association="Self.FKProductGlobalCat">
+      <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductGlobalCatMapGlobalCategory" Association="Self.FKProductGlobalCatMapGlobalCategory">
+      <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+      <End Role="ProductGlobalCatMap" EntitySet="ProductGlobalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryGlobalCat" Association="Self.FKProductHistoryGlobalCat">
+      <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryGlobalCatMapGlobalCategory" Association="Self.FKProductHistoryGlobalCatMapGlobalCategory">
+      <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+      <End Role="ProductHistoryGlobalCatMap" EntitySet="ProductHistoryGlobalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageGlobalCat" Association="Self.FKProductStageGlobalCat">
+      <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+      <End Role="ProductStage" EntitySet="ProductStages" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageGlobalCatMapGlobalCategory" Association="Self.FKProductStageGlobalCatMapGlobalCategory">
+      <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+      <End Role="ProductStageGlobalCatMap" EntitySet="ProductStageGlobalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKLocalCategoryShop" Association="Self.FKLocalCategoryShop">
+      <End Role="Shop" EntitySet="Shops" />
+      <End Role="LocalCategory" EntitySet="LocalCategories" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryLocalCat" Association="Self.FKProductHistoryLocalCat">
+      <End Role="LocalCategory" EntitySet="LocalCategories" />
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryLocalCatMapLocalCategory" Association="Self.FKProductHistoryLocalCatMapLocalCategory">
+      <End Role="LocalCategory" EntitySet="LocalCategories" />
+      <End Role="ProductHistoryLocalCatMap" EntitySet="ProductHistoryLocalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductLocalCat" Association="Self.FKProductLocalCat">
+      <End Role="LocalCategory" EntitySet="LocalCategories" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductLocalCatMapLocalCategory" Association="Self.FKProductLocalCatMapLocalCategory">
+      <End Role="LocalCategory" EntitySet="LocalCategories" />
+      <End Role="ProductLocalCatMap" EntitySet="ProductLocalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageLocalCat" Association="Self.FKProductStageLocalCat">
+      <End Role="LocalCategory" EntitySet="LocalCategories" />
+      <End Role="ProductStage" EntitySet="ProductStages" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageLocalCatMapLocalCategory" Association="Self.FKProductStageLocalCatMapLocalCategory">
+      <End Role="LocalCategory" EntitySet="LocalCategories" />
+      <End Role="ProductStageLocalCatMap" EntitySet="ProductStageLocalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductAttributeProduct" Association="Self.FKProductAttributeProduct">
+      <End Role="Product" EntitySet="Products" />
+      <End Role="ProductAttribute" EntitySet="ProductAttributes" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductGlobalCatMapProduct" Association="Self.FKProductGlobalCatMapProduct">
+      <End Role="Product" EntitySet="Products" />
+      <End Role="ProductGlobalCatMap" EntitySet="ProductGlobalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductLocalCatMapProduct" Association="Self.FKProductLocalCatMapProduct">
+      <End Role="Product" EntitySet="Products" />
+      <End Role="ProductLocalCatMap" EntitySet="ProductLocalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductShipping" Association="Self.FKProductShipping">
+      <End Role="Shipping" EntitySet="Shippings" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductShop" Association="Self.FKProductShop">
+      <End Role="Shop" EntitySet="Shops" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductTagProduct" Association="Self.FKProductTagProduct">
+      <End Role="Product" EntitySet="Products" />
+      <End Role="ProductTag" EntitySet="ProductTags" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductUser" Association="Self.FKProductUser">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductVariantProduct" Association="Self.FKProductVariantProduct">
+      <End Role="Product" EntitySet="Products" />
+      <End Role="ProductVariant" EntitySet="ProductVariants" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryAttributeProduct" Association="Self.FKProductHistoryAttributeProduct">
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+      <End Role="ProductHistoryAttribute" EntitySet="ProductHistoryAttributes" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryGlobalCatMapProduct" Association="Self.FKProductHistoryGlobalCatMapProduct">
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+      <End Role="ProductHistoryGlobalCatMap" EntitySet="ProductHistoryGlobalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryLocalCatMapProduct" Association="Self.FKProductHistoryLocalCatMapProduct">
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+      <End Role="ProductHistoryLocalCatMap" EntitySet="ProductHistoryLocalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryShipping" Association="Self.FKProductHistoryShipping">
+      <End Role="Shipping" EntitySet="Shippings" />
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryShop" Association="Self.FKProductHistoryShop">
+      <End Role="Shop" EntitySet="Shops" />
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryTagProduct" Association="Self.FKProductHistoryTagProduct">
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+      <End Role="ProductHistoryTag" EntitySet="ProductHistoryTags" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryUser" Association="Self.FKProductHistoryUser">
+      <End Role="User" EntitySet="Users" />
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryVariantProduct" Association="Self.FKProductHistoryVariantProduct">
+      <End Role="ProductHistory" EntitySet="ProductHistories" />
+      <End Role="ProductHistoryVariant" EntitySet="ProductHistoryVariants" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductHistoryTagTag" Association="Self.FKProductHistoryTagTag">
+      <End Role="Tag" EntitySet="Tags" />
+      <End Role="ProductHistoryTag" EntitySet="ProductHistoryTags" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageAttributeProduct" Association="Self.FKProductStageAttributeProduct">
+      <End Role="ProductStage" EntitySet="ProductStages" />
+      <End Role="ProductStageAttribute" EntitySet="ProductStageAttributes" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageGlobalCatMapProduct" Association="Self.FKProductStageGlobalCatMapProduct">
+      <End Role="ProductStage" EntitySet="ProductStages" />
+      <End Role="ProductStageGlobalCatMap" EntitySet="ProductStageGlobalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageLocalCatMapProduct" Association="Self.FKProductStageLocalCatMapProduct">
+      <End Role="ProductStage" EntitySet="ProductStages" />
+      <End Role="ProductStageLocalCatMap" EntitySet="ProductStageLocalCatMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageShipping" Association="Self.FKProductStageShipping">
+      <End Role="Shipping" EntitySet="Shippings" />
+      <End Role="ProductStage" EntitySet="ProductStages" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageShop" Association="Self.FKProductStageShop">
+      <End Role="Shop" EntitySet="Shops" />
+      <End Role="ProductStage" EntitySet="ProductStages" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageTagProduct" Association="Self.FKProductStageTagProduct">
+      <End Role="ProductStage" EntitySet="ProductStages" />
+      <End Role="ProductStageTag" EntitySet="ProductStageTags" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageUser" Association="Self.FKProductStageUser">
+      <End Role="User" EntitySet="Users" />
+      <End Role="ProductStage" EntitySet="ProductStages" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageVariantProduct" Association="Self.FKProductStageVariantProduct">
+      <End Role="ProductStage" EntitySet="ProductStages" />
+      <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductStageTagTag" Association="Self.FKProductStageTagTag">
+      <End Role="Tag" EntitySet="Tags" />
+      <End Role="ProductStageTag" EntitySet="ProductStageTags" />
+    </AssociationSet>
+    <AssociationSet Name="FKProductTagTag" Association="Self.FKProductTagTag">
+      <End Role="Tag" EntitySet="Tags" />
+      <End Role="ProductTag" EntitySet="ProductTags" />
+    </AssociationSet>
+    <AssociationSet Name="FKShopUser" Association="Self.FKShopUser">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Shop" EntitySet="Shops" />
+    </AssociationSet>
+    <AssociationSet Name="FKUserShopShop" Association="Self.FKUserShopShop">
+      <End Role="Shop" EntitySet="Shops" />
+      <End Role="UserShop" EntitySet="UserShops" />
+    </AssociationSet>
+    <AssociationSet Name="FKUserGroupMapUser" Association="Self.FKUserGroupMapUser">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserGroupMap" EntitySet="UserGroupMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FKUserShopUser" Association="Self.FKUserShopUser">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserShop" EntitySet="UserShops" />
+    </AssociationSet>
+    <AssociationSet Name="FKUserGroupMapUserGroup" Association="Self.FKUserGroupMapUserGroup">
+      <End Role="UserGroup" EntitySet="UserGroups" />
+      <End Role="UserGroupMap" EntitySet="UserGroupMaps" />
+    </AssociationSet>
+    <AssociationSet Name="UserGroupPermissionMap" Association="Self.UserGroupPermissionMap">
+      <End Role="UserGroup" EntitySet="UserGroups" />
+      <End Role="UserPermission" EntitySet="UserPermissions" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
