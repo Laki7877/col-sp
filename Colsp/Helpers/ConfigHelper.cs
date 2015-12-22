@@ -19,20 +19,35 @@ namespace Colsp.Helpers
 
 		#endregion
 
-		#region Cache Expiration
-		[ConfigurationProperty("cacheExpiration")]
-		public CacheExpirationElement CacheExpiration
+		#region Cache
+		[ConfigurationProperty("cache")]
+		public CacheElement Cache
 		{
 			get
 			{
-				return (CacheExpirationElement)this["cacheExpiration"];
+				return (CacheElement)this["cache"];
 			}	
 			set
 			{
-				this["cacheExpiration"] = value;
+				this["cache"] = value;
 			}
 		}
-		public class CacheExpirationElement : ConfigurationElement
+		public class CacheElement : ConfigurationElement
+		{
+			[ConfigurationProperty("expire")]
+			public CacheExpireElement Expire
+			{
+				get
+				{
+					return (CacheExpireElement)this["expire"];
+				}
+				set
+				{
+					this["expire"] = value;
+				}
+			}
+		}
+		public class CacheExpireElement : ConfigurationElement
 		{
 			[ConfigurationProperty("value", DefaultValue = 30.0, IsRequired = true)]
 			public double Value

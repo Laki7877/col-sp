@@ -51,7 +51,7 @@ namespace Colsp.Filters
 			}
 
 			// Check for existing cache
-			object cachedPrincipal = null; // CacheHelper.Get(authorization.Parameter);
+			object cachedPrincipal = CacheHelper.Get(authorization.Parameter);
             if (cachedPrincipal != null)
 			{
 				context.Principal = (IPrincipal)cachedPrincipal;

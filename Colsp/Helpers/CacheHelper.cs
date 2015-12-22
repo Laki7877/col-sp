@@ -14,7 +14,7 @@ namespace Colsp.Helpers
 		public static bool Add(string key, object value)
 		{
 			var memoryCache = MemoryCache.Default;
-			return memoryCache.Add(key, value, DateTimeOffset.UtcNow.AddMinutes(ConfigHelper.Settings.CacheExpiration.Value));
+			return memoryCache.Add(key, value, DateTimeOffset.UtcNow.AddMinutes(ConfigHelper.Settings.Cache.Expire.Value));
 		}
 
 		public static void Delete(string key)

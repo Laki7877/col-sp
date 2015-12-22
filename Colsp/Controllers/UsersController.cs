@@ -10,6 +10,8 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Colsp.Models;
 using Colsp.Filters;
+using Colsp.Helpers;
+using System.Security.Claims;
 
 namespace Colsp.Controllers
 {
@@ -18,12 +20,11 @@ namespace Colsp.Controllers
 		private ColspEntities db = new ColspEntities();
 
 		// GET: api/Users
-		[ClaimsAuthorize(Permission = "GetUsers")]
+		[ClaimsAuthorize(Permission = "ListUser")]
         public IQueryable<User> GetUsers()
         {
             return db.Users;
         }
-
 		// GET: api/Users/5
 		[ClaimsAuthorize(Permission = "GetUser")]
 		[ResponseType(typeof(User))]
@@ -38,8 +39,9 @@ namespace Colsp.Controllers
             return Ok(user);
         }
 
-        // PUT: api/Users/5
-        [ResponseType(typeof(void))]
+		// PUT: api/Users/5
+		[ClaimsAuthorize(Permission = "UpdateUser")]
+		[ResponseType(typeof(void))]
         public IHttpActionResult PutUser(int id, User user)
         {
             if (!ModelState.IsValid)
@@ -73,8 +75,9 @@ namespace Colsp.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Users
-        [ResponseType(typeof(User))]
+		// POST: api/Users
+		[ClaimsAuthorize(Permission = "AddUser")]
+		[ResponseType(typeof(User))]
         public IHttpActionResult PostUser(User user)
         {
             if (!ModelState.IsValid)
@@ -88,8 +91,9 @@ namespace Colsp.Controllers
             return CreatedAtRoute("DefaultApi", new { id = user.user_id }, user);
         }
 
-        // DELETE: api/Users/5
-        [ResponseType(typeof(User))]
+		// DELETE: api/Users/5
+		[ClaimsAuthorize(Permission = "DeleteUser ")]
+		[ResponseType(typeof(User))]
         public IHttpActionResult DeleteUser(int id)
         {
             User user = db.Users.Find(id);
@@ -112,7 +116,6 @@ namespace Colsp.Controllers
             }
             base.Dispose(disposing);
         }
-
         private bool UserExists(int id)
         {
             return db.Users.Count(e => e.user_id == id) > 0;
