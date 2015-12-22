@@ -158,13 +158,22 @@
     <Compile Include="Attribute.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Attribute_Set.cs">
+    <Compile Include="AttributeSet.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Attribute_Value.cs">
+    <Compile Include="AttributeSetMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Category_Attribute_Set_Map.cs">
+    <Compile Include="AttributeValue.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttributeValueMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Brand.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CategoryAttributeSetMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ColspModel.Context.cs">
@@ -182,28 +191,97 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Global_Category.cs">
+    <Compile Include="GlobalCategory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Local_Category.cs">
+    <Compile Include="Inventory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Permission.cs">
+    <Compile Include="LocalCategory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Product.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Product_Attribute.cs">
+    <Compile Include="ProductAttribute.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Product_Tag.cs">
+    <Compile Include="ProductGlobalCatMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Product_Variant.cs">
+    <Compile Include="ProductHistory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Related_Product.cs">
+    <Compile Include="ProductHistoryAttribute.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductHistoryGlobalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductHistoryImage.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductHistoryLocalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductHistoryRelated.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductHistoryTag.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductHistoryVariant.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductHistoryVideo.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductImage.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductLocalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductRelated.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStage.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStageAttribute.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStageGlobalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStageImage.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStageLocalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStageRelated.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStageTag.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStageVariant.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductStageVideo.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductTag.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductVariant.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductVideo.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Shipping.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Shop.cs">
@@ -215,13 +293,19 @@
     <Compile Include="User.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="User_Group.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="User_Group_Map.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserGroup.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserGroupMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserPermission.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserShop.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

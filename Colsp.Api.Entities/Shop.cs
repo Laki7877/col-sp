@@ -17,23 +17,33 @@ namespace Colsp.Api.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Shop()
         {
-            this.Local_Category = new HashSet<Local_Category>();
+            this.LocalCategories = new HashSet<LocalCategory>();
             this.Products = new HashSet<Product>();
+            this.ProductHistories = new HashSet<ProductHistory>();
+            this.ProductStages = new HashSet<ProductStage>();
+            this.UserShops = new HashSet<UserShop>();
         }
     
-        public int shop_id { get; set; }
-        public Nullable<int> shop_owner { get; set; }
-        public string shop_name_en { get; set; }
-        public string shop_name_th { get; set; }
-        public string created_by { get; set; }
-        public Nullable<System.DateTime> created_dt { get; set; }
-        public string updated_by { get; set; }
-        public Nullable<System.DateTime> updated_dt { get; set; }
+        public int ShopId { get; set; }
+        public Nullable<int> ShopOwner { get; set; }
+        public string ShopNameEn { get; set; }
+        public string ShopNameTh { get; set; }
+        public string Status { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Local_Category> Local_Category { get; set; }
+        public virtual ICollection<LocalCategory> LocalCategories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductHistory> ProductHistories { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStage> ProductStages { get; set; }
         public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserShop> UserShops { get; set; }
     }
 }

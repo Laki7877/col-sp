@@ -50,7 +50,7 @@ namespace Colsp.Api.Commons
 			}
 
 			// Check for existing cache
-			object cachedPrincipal = CacheHelper.Get(authorization.Parameter);
+			object cachedPrincipal = null; //CacheHelper.Get(authorization.Parameter);
             if (cachedPrincipal != null)
 			{
 				context.Principal = (IPrincipal)cachedPrincipal;
@@ -143,14 +143,14 @@ namespace Colsp.Api.Commons
 			using (var db = new ColspEntities())
 			{
 				// TODO: salt the 
-				var user = await Task.Run<User>(() => db.Users.Where(u => u.username.Equals(username) && u.pwd.Equals(password)).FirstOrDefault());
+				var user = await Task.Run<User>(() => db.Users.Where(u => u.Username.Equals(username) && u.Password.Equals(password)).FirstOrDefault());
 				if (user == null)
 				{
 					return null;
 				}
 
 				// TODO: get permissions from db somehow..
-				var claims = new List<Claim> { new Claim("Permission", "GetUsers") };
+				var claims = new List<Claim> { new Claim("Permission", "ListUser") };
 				var identity = new ClaimsIdentity(claims, "Basic");
 
 				return new ClaimsPrincipal(identity);

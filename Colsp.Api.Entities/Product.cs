@@ -17,67 +17,75 @@ namespace Colsp.Api.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
-            this.Product_Attribute = new HashSet<Product_Attribute>();
-            this.Product_Tag = new HashSet<Product_Tag>();
-            this.Product_Variant = new HashSet<Product_Variant>();
+            this.ProductAttributes = new HashSet<ProductAttribute>();
+            this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
+            this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
+            this.ProductTags = new HashSet<ProductTag>();
+            this.ProductVariants = new HashSet<ProductVariant>();
         }
     
-        public int product_id { get; set; }
-        public Nullable<int> global_cat_id { get; set; }
-        public Nullable<int> local_cat_id { get; set; }
-        public Nullable<int> shop_id { get; set; }
-        public Nullable<int> seller_id { get; set; }
-        public string brand_name_en { get; set; }
-        public string brand_name_th { get; set; }
-        public string product_name_en { get; set; }
-        public string product_name_th { get; set; }
-        public string uid { get; set; }
-        public string pid { get; set; }
-        public string sku { get; set; }
-        public string upc { get; set; }
-        public decimal original_price { get; set; }
-        public Nullable<decimal> sale_price { get; set; }
-        public string description_full_en { get; set; }
-        public string description_short_en { get; set; }
-        public string description_full_th { get; set; }
-        public string description_short_th { get; set; }
-        public Nullable<int> stock { get; set; }
-        public Nullable<int> safty_stock { get; set; }
-        public string shipping_method { get; set; }
-        public Nullable<decimal> length { get; set; }
-        public Nullable<decimal> height { get; set; }
-        public Nullable<decimal> width { get; set; }
-        public string dimenstion_unit { get; set; }
-        public Nullable<decimal> weight { get; set; }
-        public Nullable<decimal> dimenstion_weight { get; set; }
-        public string meta_title { get; set; }
-        public string meta_description { get; set; }
-        public string meta_key { get; set; }
-        public string url_en { get; set; }
-        public string url_th { get; set; }
-        public string boost_weight { get; set; }
-        public Nullable<System.DateTime> effective_date { get; set; }
-        public Nullable<System.TimeSpan> effective_time { get; set; }
-        public Nullable<System.DateTime> expiry_date { get; set; }
-        public Nullable<System.TimeSpan> expiry_time { get; set; }
-        public Nullable<bool> control_flag1 { get; set; }
-        public Nullable<bool> control_flag2 { get; set; }
-        public Nullable<bool> control_flag3 { get; set; }
-        public string remark { get; set; }
-        public string created_by { get; set; }
-        public Nullable<System.DateTime> created_dt { get; set; }
-        public string updated_by { get; set; }
-        public Nullable<System.DateTime> updated_dt { get; set; }
+        public int ProductId { get; set; }
+        public Nullable<int> GlobalCatId { get; set; }
+        public Nullable<int> LocalCatId { get; set; }
+        public Nullable<int> ShopId { get; set; }
+        public Nullable<int> SellerId { get; set; }
+        public string ProductNameEn { get; set; }
+        public string ProductNameTh { get; set; }
+        public Nullable<int> BrandId { get; set; }
+        public string Uid { get; set; }
+        public string Pid { get; set; }
+        public string Sku { get; set; }
+        public string Upc { get; set; }
+        public Nullable<decimal> OriginalPrice { get; set; }
+        public Nullable<decimal> SalePrice { get; set; }
+        public string DescriptionFullEn { get; set; }
+        public string DescriptionShortEn { get; set; }
+        public string DescriptionFullTh { get; set; }
+        public string DescriptionShortTh { get; set; }
+        public Nullable<int> Stock { get; set; }
+        public Nullable<int> SaftyStock { get; set; }
+        public Nullable<int> ShippingId { get; set; }
+        public Nullable<decimal> Length { get; set; }
+        public Nullable<decimal> Height { get; set; }
+        public Nullable<decimal> Width { get; set; }
+        public string DimenstionUnit { get; set; }
+        public Nullable<decimal> Weight { get; set; }
+        public Nullable<decimal> DimenstionWeight { get; set; }
+        public string MetaTitle { get; set; }
+        public string MetaDescription { get; set; }
+        public string MetaKey { get; set; }
+        public string UrlEn { get; set; }
+        public string UrlTh { get; set; }
+        public string BoostWeight { get; set; }
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+        public Nullable<bool> ControlFlag1 { get; set; }
+        public Nullable<bool> ControlFlag2 { get; set; }
+        public Nullable<bool> ControlFlag3 { get; set; }
+        public string Remark { get; set; }
+        public string Status { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual Global_Category Global_Category { get; set; }
-        public virtual Local_Category Local_Category { get; set; }
+        public virtual Brand Brand { get; set; }
+        public virtual GlobalCategory GlobalCategory { get; set; }
+        public virtual LocalCategory LocalCategory { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Attribute> Product_Attribute { get; set; }
+        public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        public virtual Shipping Shipping { get; set; }
         public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Tag> Product_Tag { get; set; }
+        public virtual ICollection<ProductTag> ProductTags { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Variant> Product_Variant { get; set; }
+        public virtual ICollection<ProductVariant> ProductVariants { get; set; }
     }
 }

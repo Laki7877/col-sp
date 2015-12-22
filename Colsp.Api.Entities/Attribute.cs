@@ -17,28 +17,49 @@ namespace Colsp.Api.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Attribute()
         {
-            this.Product_Attribute = new HashSet<Product_Attribute>();
-            this.Product_Variant = new HashSet<Product_Variant>();
-            this.Attribute_Set = new HashSet<Attribute_Set>();
-            this.Attribute_Value = new HashSet<Attribute_Value>();
+            this.AttributeSetMaps = new HashSet<AttributeSetMap>();
+            this.AttributeValueMaps = new HashSet<AttributeValueMap>();
+            this.ProductAttributes = new HashSet<ProductAttribute>();
+            this.ProductHistoryAttributes = new HashSet<ProductHistoryAttribute>();
+            this.ProductHistoryVariants = new HashSet<ProductHistoryVariant>();
+            this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
+            this.ProductStageVariants = new HashSet<ProductStageVariant>();
+            this.ProductVariants = new HashSet<ProductVariant>();
         }
     
-        public int attribute_id { get; set; }
-        public string attribute_name_en { get; set; }
-        public string attribute_name_th { get; set; }
-        public Nullable<bool> variant_status { get; set; }
-        public string created_by { get; set; }
-        public Nullable<System.DateTime> created_dt { get; set; }
-        public string updated_by { get; set; }
-        public Nullable<System.DateTime> updated_dt { get; set; }
+        public int AttributeId { get; set; }
+        public string AttributeNameEn { get; set; }
+        public string AttributeNameTh { get; set; }
+        public Nullable<bool> VariantStatus { get; set; }
+        public string DataType { get; set; }
+        public string DataValidation { get; set; }
+        public Nullable<bool> ShowAdminFlag { get; set; }
+        public Nullable<bool> ShowGlobalSearchFlag { get; set; }
+        public Nullable<bool> ShowLocalSearchFlag { get; set; }
+        public Nullable<bool> ShowGlobalFilterFlag { get; set; }
+        public Nullable<bool> ShowLocalFilterFlag { get; set; }
+        public string Status { get; set; }
+        public string AllowHtmlFlag { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Attribute> Product_Attribute { get; set; }
+        public virtual ICollection<AttributeSetMap> AttributeSetMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Variant> Product_Variant { get; set; }
+        public virtual ICollection<AttributeValueMap> AttributeValueMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Attribute_Set> Attribute_Set { get; set; }
+        public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Attribute_Value> Attribute_Value { get; set; }
+        public virtual ICollection<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductHistoryVariant> ProductHistoryVariants { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageVariant> ProductStageVariants { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductVariant> ProductVariants { get; set; }
     }
 }

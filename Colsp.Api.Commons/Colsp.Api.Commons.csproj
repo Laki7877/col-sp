@@ -110,6 +110,7 @@
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Helpers\PermissionHelper.cs" />
+    <Compile Include="Helpers\QueryHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Results\AuthenticationFailureResult.cs" />
   </ItemGroup>

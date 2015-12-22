@@ -26,21 +26,49 @@ namespace Colsp.Api.Entities
         }
     
         public virtual DbSet<Attribute> Attributes { get; set; }
-        public virtual DbSet<Attribute_Set> Attribute_Set { get; set; }
-        public virtual DbSet<Attribute_Value> Attribute_Value { get; set; }
-        public virtual DbSet<Category_Attribute_Set_Map> Category_Attribute_Set_Map { get; set; }
-        public virtual DbSet<Global_Category> Global_Category { get; set; }
-        public virtual DbSet<Local_Category> Local_Category { get; set; }
-        public virtual DbSet<Permission> Permissions { get; set; }
+        public virtual DbSet<AttributeSet> AttributeSets { get; set; }
+        public virtual DbSet<AttributeSetMap> AttributeSetMaps { get; set; }
+        public virtual DbSet<AttributeValue> AttributeValues { get; set; }
+        public virtual DbSet<AttributeValueMap> AttributeValueMaps { get; set; }
+        public virtual DbSet<Brand> Brands { get; set; }
+        public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
+        public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
+        public virtual DbSet<Inventory> Inventories { get; set; }
+        public virtual DbSet<LocalCategory> LocalCategories { get; set; }
         public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<Product_Attribute> Product_Attribute { get; set; }
-        public virtual DbSet<Product_Tag> Product_Tag { get; set; }
-        public virtual DbSet<Product_Variant> Product_Variant { get; set; }
-        public virtual DbSet<Related_Product> Related_Product { get; set; }
+        public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
+        public virtual DbSet<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductHistory> ProductHistories { get; set; }
+        public virtual DbSet<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
+        public virtual DbSet<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryImage> ProductHistoryImages { get; set; }
+        public virtual DbSet<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryRelated> ProductHistoryRelateds { get; set; }
+        public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
+        public virtual DbSet<ProductHistoryVariant> ProductHistoryVariants { get; set; }
+        public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
+        public virtual DbSet<ProductImage> ProductImages { get; set; }
+        public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
+        public virtual DbSet<ProductStage> ProductStages { get; set; }
+        public virtual DbSet<ProductStageAttribute> ProductStageAttributes { get; set; }
+        public virtual DbSet<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductStageImage> ProductStageImages { get; set; }
+        public virtual DbSet<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
+        public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
+        public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
+        public virtual DbSet<ProductStageVariant> ProductStageVariants { get; set; }
+        public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
+        public virtual DbSet<ProductTag> ProductTags { get; set; }
+        public virtual DbSet<ProductVariant> ProductVariants { get; set; }
+        public virtual DbSet<ProductVideo> ProductVideos { get; set; }
+        public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<User_Group> User_Group { get; set; }
-        public virtual DbSet<User_Group_Map> User_Group_Map { get; set; }
+        public virtual DbSet<UserGroup> UserGroups { get; set; }
+        public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
+        public virtual DbSet<UserPermission> UserPermissions { get; set; }
+        public virtual DbSet<UserShop> UserShops { get; set; }
     }
 }

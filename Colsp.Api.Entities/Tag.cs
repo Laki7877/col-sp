@@ -17,15 +17,25 @@ namespace Colsp.Api.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Tag()
         {
-            this.Product_Tag = new HashSet<Product_Tag>();
+            this.ProductHistoryTags = new HashSet<ProductHistoryTag>();
+            this.ProductStageTags = new HashSet<ProductStageTag>();
+            this.ProductTags = new HashSet<ProductTag>();
         }
     
-        public int tag_id { get; set; }
-        public string tag_name { get; set; }
-        public Nullable<int> count { get; set; }
-        public Nullable<bool> status { get; set; }
+        public int TagId { get; set; }
+        public string TagName { get; set; }
+        public Nullable<int> Count { get; set; }
+        public string Status { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product_Tag> Product_Tag { get; set; }
+        public virtual ICollection<ProductHistoryTag> ProductHistoryTags { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageTag> ProductStageTags { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductTag> ProductTags { get; set; }
     }
 }

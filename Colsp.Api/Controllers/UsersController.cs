@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Colsp.Api.Entities;
 using Colsp.Api.Commons;
+using Colsp.Api.Models;
 using System.Security.Claims;
 
 namespace Colsp.Controllers
@@ -20,9 +21,9 @@ namespace Colsp.Controllers
 
 		// GET: api/Users
 		[ClaimsAuthorize(Permission = "ListUser")]
-        public IQueryable<User> GetUsers()
+        public IQueryable<User> GetUsers([FromUri] UserRequest request)
         {
-            return db.Users;
+			return QueryHelper.ChainPaginatedQuery<User>(db.Users, request._order, request._offset, request._limit, request._direction == "DESC" ? true : false);
         }
 		// GET: api/Users/5
 		[ClaimsAuthorize(Permission = "GetUser")]
@@ -48,7 +49,7 @@ namespace Colsp.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != user.user_id)
+            if (id != user.UserId)
             {
                 return BadRequest();
             }
@@ -87,7 +88,7 @@ namespace Colsp.Controllers
             db.Users.Add(user);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = user.user_id }, user);
+            return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
         }
 
 		// DELETE: api/Users/5
@@ -117,7 +118,7 @@ namespace Colsp.Controllers
         }
         private bool UserExists(int id)
         {
-            return db.Users.Count(e => e.user_id == id) > 0;
+            return db.Users.Count(e => e.UserId == id) > 0;
         }
     }
 }
