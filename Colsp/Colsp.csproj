@@ -151,13 +151,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-<<<<<<< HEAD
-=======
     <Compile Include="Helpers\CacheHelper.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\EncryptionHelper.cs" />
+    <Compile Include="Helpers\PermissionHelper.cs" />
     <Compile Include="Results\AuthenticationFailureResult.cs" />
->>>>>>> auth
     <Compile Include="Models\Attribute.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -206,12 +204,9 @@
     <Compile Include="Models\Product_Variant.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-<<<<<<< HEAD
-=======
     <Compile Include="Models\Related_Product.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
->>>>>>> auth
     <Compile Include="Models\Role.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
