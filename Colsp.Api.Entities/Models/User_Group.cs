@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Models
+namespace Colsp.Api.Entities.Models
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Colsp.Api.Models
         public User_Group()
         {
             this.User_Group_Map = new HashSet<User_Group_Map>();
-            this.Roles = new HashSet<Role>();
+            this.Permissions = new HashSet<Permission>();
         }
     
         public int group_id { get; set; }
@@ -32,6 +32,6 @@ namespace Colsp.Api.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User_Group_Map> User_Group_Map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Role> Roles { get; set; }
+        public virtual ICollection<Permission> Permissions { get; set; }
     }
 }

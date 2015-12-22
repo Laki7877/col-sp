@@ -7,31 +7,28 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Models
+namespace Colsp.Api.Entities.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Role
+    public partial class Attribute_Set
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Role()
+        public Attribute_Set()
         {
-            this.Permissions = new HashSet<Permission>();
-            this.User_Group = new HashSet<User_Group>();
+            this.Attributes = new HashSet<Attribute>();
         }
     
-        public int role_id { get; set; }
-        public string role_name_en { get; set; }
-        public string role_name_th { get; set; }
+        public int attribute_set_id { get; set; }
+        public string attribute_set_name_en { get; set; }
+        public string attribute_set_name_th { get; set; }
         public string created_by { get; set; }
         public Nullable<System.DateTime> created_dt { get; set; }
         public string updated_by { get; set; }
         public Nullable<System.DateTime> updated_dt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Permission> Permissions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User_Group> User_Group { get; set; }
+        public virtual ICollection<Attribute> Attributes { get; set; }
     }
 }

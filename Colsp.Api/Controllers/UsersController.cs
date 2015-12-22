@@ -8,9 +8,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Colsp.Api.Models;
-using Colsp.Filters;
-using Colsp.Helpers;
+using Colsp.Api.Entities.Models;
+using Colsp.Api.Commons;
 using System.Security.Claims;
 
 namespace Colsp.Controllers

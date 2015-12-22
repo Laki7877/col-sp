@@ -7,36 +7,33 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Models
+namespace Colsp.Api.Entities.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Global_Category
+    public partial class Shop
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Global_Category()
+        public Shop()
         {
-            this.Category_Attribute_Set_Map = new HashSet<Category_Attribute_Set_Map>();
+            this.Local_Category = new HashSet<Local_Category>();
             this.Products = new HashSet<Product>();
         }
     
-        public int category_id { get; set; }
-        public string name_en { get; set; }
-        public string name_th { get; set; }
-        public string url_key_en { get; set; }
-        public string url_key_th { get; set; }
-        public Nullable<bool> status { get; set; }
-        public int lft { get; set; }
-        public int rgt { get; set; }
+        public int shop_id { get; set; }
+        public Nullable<int> shop_owner { get; set; }
+        public string shop_name_en { get; set; }
+        public string shop_name_th { get; set; }
         public string created_by { get; set; }
         public Nullable<System.DateTime> created_dt { get; set; }
         public string updated_by { get; set; }
         public Nullable<System.DateTime> updated_dt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Category_Attribute_Set_Map> Category_Attribute_Set_Map { get; set; }
+        public virtual ICollection<Local_Category> Local_Category { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
+        public virtual User User { get; set; }
     }
 }

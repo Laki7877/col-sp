@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Models
+namespace Colsp.Api.Entities.Models
 {
     using System;
     using System.Collections.Generic;
@@ -23,10 +23,10 @@ namespace Colsp.Api.Models
         }
     
         public int product_id { get; set; }
-        public int global_cat_id { get; set; }
+        public Nullable<int> global_cat_id { get; set; }
         public Nullable<int> local_cat_id { get; set; }
-        public int shop_id { get; set; }
-        public int seller_id { get; set; }
+        public Nullable<int> shop_id { get; set; }
+        public Nullable<int> seller_id { get; set; }
         public string brand_name_en { get; set; }
         public string brand_name_th { get; set; }
         public string product_name_en { get; set; }
@@ -43,7 +43,6 @@ namespace Colsp.Api.Models
         public string description_short_th { get; set; }
         public Nullable<int> stock { get; set; }
         public Nullable<int> safty_stock { get; set; }
-        public string video_link { get; set; }
         public string shipping_method { get; set; }
         public Nullable<decimal> length { get; set; }
         public Nullable<decimal> height { get; set; }
@@ -51,6 +50,20 @@ namespace Colsp.Api.Models
         public string dimenstion_unit { get; set; }
         public Nullable<decimal> weight { get; set; }
         public Nullable<decimal> dimenstion_weight { get; set; }
+        public string meta_title { get; set; }
+        public string meta_description { get; set; }
+        public string meta_key { get; set; }
+        public string url_en { get; set; }
+        public string url_th { get; set; }
+        public string boost_weight { get; set; }
+        public Nullable<System.DateTime> effective_date { get; set; }
+        public Nullable<System.TimeSpan> effective_time { get; set; }
+        public Nullable<System.DateTime> expiry_date { get; set; }
+        public Nullable<System.TimeSpan> expiry_time { get; set; }
+        public Nullable<bool> control_flag1 { get; set; }
+        public Nullable<bool> control_flag2 { get; set; }
+        public Nullable<bool> control_flag3 { get; set; }
+        public string remark { get; set; }
         public string created_by { get; set; }
         public Nullable<System.DateTime> created_dt { get; set; }
         public string updated_by { get; set; }

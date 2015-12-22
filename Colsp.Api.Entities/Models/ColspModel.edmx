@@ -115,17 +115,17 @@
             <PropertyRef Name="product_id" />
           </Key>
           <Property Name="product_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="global_cat_id" Type="int" Nullable="false" />
+          <Property Name="global_cat_id" Type="int" />
           <Property Name="local_cat_id" Type="int" />
-          <Property Name="shop_id" Type="int" Nullable="false" />
-          <Property Name="seller_id" Type="int" Nullable="false" />
-          <Property Name="brand_name_en" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="shop_id" Type="int" />
+          <Property Name="seller_id" Type="int" />
+          <Property Name="brand_name_en" Type="nvarchar" MaxLength="100" />
           <Property Name="brand_name_th" Type="nvarchar" MaxLength="100" />
-          <Property Name="product_name_en" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="product_name_th" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="uid" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="pid" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="sku" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="product_name_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="product_name_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="uid" Type="nvarchar" MaxLength="50" />
+          <Property Name="pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="sku" Type="nvarchar" MaxLength="50" />
           <Property Name="upc" Type="nvarchar" MaxLength="50" />
           <Property Name="original_price" Type="money" Nullable="false" />
           <Property Name="sale_price" Type="money" />
@@ -135,7 +135,6 @@
           <Property Name="description_short_th" Type="nvarchar" MaxLength="500" />
           <Property Name="stock" Type="int" />
           <Property Name="safty_stock" Type="int" />
-          <Property Name="video_link" Type="nvarchar" MaxLength="2083" />
           <Property Name="shipping_method" Type="char" MaxLength="10" />
           <Property Name="length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="height" Type="decimal" Precision="10" Scale="2" />
@@ -143,6 +142,20 @@
           <Property Name="dimenstion_unit" Type="char" MaxLength="10" />
           <Property Name="weight" Type="decimal" Precision="10" Scale="2" />
           <Property Name="dimenstion_weight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="meta_title" Type="nvarchar" MaxLength="100" />
+          <Property Name="meta_description" Type="nvarchar" MaxLength="500" />
+          <Property Name="meta_key" Type="nvarchar" MaxLength="500" />
+          <Property Name="url_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="url_th" Type="nvarchar" MaxLength="100" />
+          <Property Name="boost_weight" Type="nvarchar" MaxLength="100" />
+          <Property Name="effective_date" Type="date" />
+          <Property Name="effective_time" Type="time" Precision="7" />
+          <Property Name="expiry_date" Type="date" />
+          <Property Name="expiry_time" Type="time" Precision="7" />
+          <Property Name="control_flag1" Type="bit" />
+          <Property Name="control_flag2" Type="bit" />
+          <Property Name="control_flag3" Type="bit" />
+          <Property Name="remark" Type="nvarchar" MaxLength="500" />
           <Property Name="created_by" Type="nvarchar" MaxLength="50" />
           <Property Name="created_dt" Type="datetime" />
           <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
@@ -203,25 +216,13 @@
           <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
           <Property Name="updated_dt" Type="datetime" />
         </EntityType>
-        <EntityType Name="Role">
+        <EntityType Name="Related_Product">
           <Key>
-            <PropertyRef Name="role_id" />
+            <PropertyRef Name="uid_1" />
+            <PropertyRef Name="uid_2" />
           </Key>
-          <Property Name="role_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="role_name_en" Type="nvarchar" MaxLength="100" />
-          <Property Name="role_name_th" Type="nvarchar" MaxLength="100" />
-          <Property Name="created_by" Type="nvarchar" MaxLength="50" />
-          <Property Name="created_dt" Type="datetime" />
-          <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
-          <Property Name="updated_dt" Type="datetime" />
-        </EntityType>
-        <EntityType Name="Role_Permission_Map">
-          <Key>
-            <PropertyRef Name="role_id" />
-            <PropertyRef Name="permission_id" />
-          </Key>
-          <Property Name="role_id" Type="int" Nullable="false" />
-          <Property Name="permission_id" Type="int" Nullable="false" />
+          <Property Name="uid_1" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="uid_2" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
@@ -291,13 +292,13 @@
           <Property Name="updated_by" Type="nvarchar" MaxLength="50" />
           <Property Name="updated_dt" Type="datetime" />
         </EntityType>
-        <EntityType Name="User_Group_Role_Map">
+        <EntityType Name="User_Group_Permission_Map">
           <Key>
             <PropertyRef Name="group_id" />
-            <PropertyRef Name="role_id" />
+            <PropertyRef Name="permission_id" />
           </Key>
           <Property Name="group_id" Type="int" Nullable="false" />
-          <Property Name="role_id" Type="int" Nullable="false" />
+          <Property Name="permission_id" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_Attribute_Set_Map_Attribute">
           <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
@@ -396,7 +397,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_Global_Cat">
-          <End Role="Global_Category" Type="Self.Global_Category" Multiplicity="1" />
+          <End Role="Global_Category" Type="Self.Global_Category" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Global_Category">
@@ -420,7 +421,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_Shop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -456,7 +457,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -488,30 +489,6 @@
             </Principal>
             <Dependent Role="Product_Variant">
               <PropertyRef Name="variant_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Role_Permission_Map_Permission">
-          <End Role="Permission" Type="Self.Permission" Multiplicity="1" />
-          <End Role="Role_Permission_Map" Type="Self.Role_Permission_Map" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Permission">
-              <PropertyRef Name="permission_id" />
-            </Principal>
-            <Dependent Role="Role_Permission_Map">
-              <PropertyRef Name="permission_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Role_Permission_Map_Role">
-          <End Role="Role" Type="Self.Role" Multiplicity="1" />
-          <End Role="Role_Permission_Map" Type="Self.Role_Permission_Map" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Role">
-              <PropertyRef Name="role_id" />
-            </Principal>
-            <Dependent Role="Role_Permission_Map">
-              <PropertyRef Name="role_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -551,26 +528,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_User_Group_Role_Map_Role">
-          <End Role="Role" Type="Self.Role" Multiplicity="1" />
-          <End Role="User_Group_Role_Map" Type="Self.User_Group_Role_Map" Multiplicity="*" />
+        <Association Name="FK_User_Group_Permission_Map_Permission">
+          <End Role="Permission" Type="Self.Permission" Multiplicity="1" />
+          <End Role="User_Group_Permission_Map" Type="Self.User_Group_Permission_Map" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Role">
-              <PropertyRef Name="role_id" />
+            <Principal Role="Permission">
+              <PropertyRef Name="permission_id" />
             </Principal>
-            <Dependent Role="User_Group_Role_Map">
-              <PropertyRef Name="role_id" />
+            <Dependent Role="User_Group_Permission_Map">
+              <PropertyRef Name="permission_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_User_Group_Role_Map_User_Group">
+        <Association Name="FK_User_Group_Permission_Map_User_Group">
           <End Role="User_Group" Type="Self.User_Group" Multiplicity="1" />
-          <End Role="User_Group_Role_Map" Type="Self.User_Group_Role_Map" Multiplicity="*" />
+          <End Role="User_Group_Permission_Map" Type="Self.User_Group_Permission_Map" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User_Group">
               <PropertyRef Name="group_id" />
             </Principal>
-            <Dependent Role="User_Group_Role_Map">
+            <Dependent Role="User_Group_Permission_Map">
               <PropertyRef Name="group_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -589,14 +566,13 @@
           <EntitySet Name="Product_Attribute" EntityType="Self.Product_Attribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product_Tag" EntityType="Self.Product_Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product_Variant" EntityType="Self.Product_Variant" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Role_Permission_Map" EntityType="Self.Role_Permission_Map" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Related_Product" EntityType="Self.Related_Product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Group" EntityType="Self.User_Group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Group_Map" EntityType="Self.User_Group_Map" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="User_Group_Role_Map" EntityType="Self.User_Group_Role_Map" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Group_Permission_Map" EntityType="Self.User_Group_Permission_Map" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Attribute_Set_Map_Attribute" Association="Self.FK_Attribute_Set_Map_Attribute">
             <End Role="Attribute" EntitySet="Attribute" />
             <End Role="Attribute_Set_Map" EntitySet="Attribute_Set_Map" />
@@ -661,14 +637,6 @@
             <End Role="Attribute" EntitySet="Attribute" />
             <End Role="Product_Variant" EntitySet="Product_Variant" />
           </AssociationSet>
-          <AssociationSet Name="FK_Role_Permission_Map_Permission" Association="Self.FK_Role_Permission_Map_Permission">
-            <End Role="Permission" EntitySet="Permission" />
-            <End Role="Role_Permission_Map" EntitySet="Role_Permission_Map" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Role_Permission_Map_Role" Association="Self.FK_Role_Permission_Map_Role">
-            <End Role="Role" EntitySet="Role" />
-            <End Role="Role_Permission_Map" EntitySet="Role_Permission_Map" />
-          </AssociationSet>
           <AssociationSet Name="FK_Shop_User" Association="Self.FK_Shop_User">
             <End Role="User" EntitySet="User" />
             <End Role="Shop" EntitySet="Shop" />
@@ -681,13 +649,13 @@
             <End Role="User_Group" EntitySet="User_Group" />
             <End Role="User_Group_Map" EntitySet="User_Group_Map" />
           </AssociationSet>
-          <AssociationSet Name="FK_User_Group_Role_Map_Role" Association="Self.FK_User_Group_Role_Map_Role">
-            <End Role="Role" EntitySet="Role" />
-            <End Role="User_Group_Role_Map" EntitySet="User_Group_Role_Map" />
+          <AssociationSet Name="FK_User_Group_Permission_Map_Permission" Association="Self.FK_User_Group_Permission_Map_Permission">
+            <End Role="Permission" EntitySet="Permission" />
+            <End Role="User_Group_Permission_Map" EntitySet="User_Group_Permission_Map" />
           </AssociationSet>
-          <AssociationSet Name="FK_User_Group_Role_Map_User_Group" Association="Self.FK_User_Group_Role_Map_User_Group">
+          <AssociationSet Name="FK_User_Group_Permission_Map_User_Group" Association="Self.FK_User_Group_Permission_Map_User_Group">
             <End Role="User_Group" EntitySet="User_Group" />
-            <End Role="User_Group_Role_Map" EntitySet="User_Group_Role_Map" />
+            <End Role="User_Group_Permission_Map" EntitySet="User_Group_Permission_Map" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -706,7 +674,7 @@
           <EntitySet Name="Product_Attribute" EntityType="ColspModel.Product_Attribute" />
           <EntitySet Name="Product_Tag" EntityType="ColspModel.Product_Tag" />
           <EntitySet Name="Product_Variant" EntityType="ColspModel.Product_Variant" />
-          <EntitySet Name="Roles" EntityType="ColspModel.Role" />
+          <EntitySet Name="Related_Product" EntityType="ColspModel.Related_Product" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
           <EntitySet Name="Tags" EntityType="ColspModel.Tag" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
@@ -780,12 +748,8 @@
             <End Role="Attribute" EntitySet="Attributes" />
             <End Role="Attribute_Value" EntitySet="Attribute_Value" />
           </AssociationSet>
-          <AssociationSet Name="Role_Permission_Map" Association="ColspModel.Role_Permission_Map">
+          <AssociationSet Name="User_Group_Permission_Map" Association="ColspModel.User_Group_Permission_Map">
             <End Role="Permission" EntitySet="Permissions" />
-            <End Role="Role" EntitySet="Roles" />
-          </AssociationSet>
-          <AssociationSet Name="User_Group_Role_Map" Association="ColspModel.User_Group_Role_Map">
-            <End Role="Role" EntitySet="Roles" />
             <End Role="User_Group" EntitySet="User_Group" />
           </AssociationSet>
         </EntityContainer>
@@ -888,24 +852,24 @@
           </Key>
           <Property Name="permission_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="permission_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Roles" Relationship="ColspModel.Role_Permission_Map" FromRole="Permission" ToRole="Role" />
+          <NavigationProperty Name="User_Group" Relationship="ColspModel.User_Group_Permission_Map" FromRole="Permission" ToRole="User_Group" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
             <PropertyRef Name="product_id" />
           </Key>
           <Property Name="product_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="global_cat_id" Type="Int32" Nullable="false" />
+          <Property Name="global_cat_id" Type="Int32" />
           <Property Name="local_cat_id" Type="Int32" />
-          <Property Name="shop_id" Type="Int32" Nullable="false" />
-          <Property Name="seller_id" Type="Int32" Nullable="false" />
-          <Property Name="brand_name_en" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="shop_id" Type="Int32" />
+          <Property Name="seller_id" Type="Int32" />
+          <Property Name="brand_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="brand_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="product_name_en" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="product_name_th" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="uid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="sku" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="product_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="product_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="original_price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="sale_price" Type="Decimal" Precision="19" Scale="4" />
@@ -915,7 +879,6 @@
           <Property Name="description_short_th" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="stock" Type="Int32" />
           <Property Name="safty_stock" Type="Int32" />
-          <Property Name="video_link" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="shipping_method" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="height" Type="Decimal" Precision="10" Scale="2" />
@@ -923,6 +886,20 @@
           <Property Name="dimenstion_unit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="weight" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="dimenstion_weight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="meta_title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="meta_description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="meta_key" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="url_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="url_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="boost_weight" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="effective_date" Type="DateTime" Precision="0" />
+          <Property Name="effective_time" Type="Time" Precision="7" />
+          <Property Name="expiry_date" Type="DateTime" Precision="0" />
+          <Property Name="expiry_time" Type="Time" Precision="7" />
+          <Property Name="control_flag1" Type="Boolean" />
+          <Property Name="control_flag2" Type="Boolean" />
+          <Property Name="control_flag3" Type="Boolean" />
+          <Property Name="remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="created_dt" Type="DateTime" Precision="3" />
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -996,19 +973,13 @@
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FK_Product_Variant_Variant" FromRole="Product_Variant" ToRole="Attribute" />
           <NavigationProperty Name="Product" Relationship="ColspModel.FK_Product_Variant_Product" FromRole="Product_Variant" ToRole="Product" />
         </EntityType>
-        <EntityType Name="Role">
+        <EntityType Name="Related_Product">
           <Key>
-            <PropertyRef Name="role_id" />
+            <PropertyRef Name="uid_1" />
+            <PropertyRef Name="uid_2" />
           </Key>
-          <Property Name="role_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="role_name_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="role_name_th" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="created_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="created_dt" Type="DateTime" Precision="3" />
-          <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="updated_dt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Permissions" Relationship="ColspModel.Role_Permission_Map" FromRole="Role" ToRole="Permission" />
-          <NavigationProperty Name="User_Group" Relationship="ColspModel.User_Group_Role_Map" FromRole="Role" ToRole="User_Group" />
+          <Property Name="uid_1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="uid_2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
@@ -1073,7 +1044,7 @@
           <Property Name="updated_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="updated_dt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="User_Group_Map" Relationship="ColspModel.FK_User_Group_Map_UserGroup" FromRole="User_Group" ToRole="User_Group_Map" />
-          <NavigationProperty Name="Roles" Relationship="ColspModel.User_Group_Role_Map" FromRole="User_Group" ToRole="Role" />
+          <NavigationProperty Name="Permissions" Relationship="ColspModel.User_Group_Permission_Map" FromRole="User_Group" ToRole="Permission" />
         </EntityType>
         <EntityType Name="User_Group_Map">
           <Key>
@@ -1126,7 +1097,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_Global_Cat">
-          <End Type="ColspModel.Global_Category" Role="Global_Category" Multiplicity="1" />
+          <End Type="ColspModel.Global_Category" Role="Global_Category" Multiplicity="0..1" />
           <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Global_Category">
@@ -1174,7 +1145,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_Shop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
           <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -1198,7 +1169,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product_User">
-          <End Type="ColspModel.User" Role="User" Multiplicity="1" />
+          <End Type="ColspModel.User" Role="User" Multiplicity="0..1" />
           <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -1277,15 +1248,11 @@
           <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="*" />
           <End Type="ColspModel.Attribute_Value" Role="Attribute_Value" Multiplicity="*" />
         </Association>
-        <Association Name="Role_Permission_Map">
+        <Association Name="User_Group_Permission_Map">
           <End Type="ColspModel.Permission" Role="Permission" Multiplicity="*" />
-          <End Type="ColspModel.Role" Role="Role" Multiplicity="*" />
-        </Association>
-        <Association Name="User_Group_Role_Map">
-          <End Type="ColspModel.Role" Role="Role" Multiplicity="*" />
           <End Type="ColspModel.User_Group" Role="User_Group" Multiplicity="*" />
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -1393,6 +1360,20 @@
                 <ScalarProperty Name="updated_by" ColumnName="updated_by" />
                 <ScalarProperty Name="created_dt" ColumnName="created_dt" />
                 <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="remark" ColumnName="remark" />
+                <ScalarProperty Name="control_flag3" ColumnName="control_flag3" />
+                <ScalarProperty Name="control_flag2" ColumnName="control_flag2" />
+                <ScalarProperty Name="control_flag1" ColumnName="control_flag1" />
+                <ScalarProperty Name="expiry_time" ColumnName="expiry_time" />
+                <ScalarProperty Name="expiry_date" ColumnName="expiry_date" />
+                <ScalarProperty Name="effective_time" ColumnName="effective_time" />
+                <ScalarProperty Name="effective_date" ColumnName="effective_date" />
+                <ScalarProperty Name="boost_weight" ColumnName="boost_weight" />
+                <ScalarProperty Name="url_th" ColumnName="url_th" />
+                <ScalarProperty Name="url_en" ColumnName="url_en" />
+                <ScalarProperty Name="meta_key" ColumnName="meta_key" />
+                <ScalarProperty Name="meta_description" ColumnName="meta_description" />
+                <ScalarProperty Name="meta_title" ColumnName="meta_title" />
                 <ScalarProperty Name="dimenstion_weight" ColumnName="dimenstion_weight" />
                 <ScalarProperty Name="weight" ColumnName="weight" />
                 <ScalarProperty Name="dimenstion_unit" ColumnName="dimenstion_unit" />
@@ -1400,7 +1381,6 @@
                 <ScalarProperty Name="height" ColumnName="height" />
                 <ScalarProperty Name="length" ColumnName="length" />
                 <ScalarProperty Name="shipping_method" ColumnName="shipping_method" />
-                <ScalarProperty Name="video_link" ColumnName="video_link" />
                 <ScalarProperty Name="safty_stock" ColumnName="safty_stock" />
                 <ScalarProperty Name="stock" ColumnName="stock" />
                 <ScalarProperty Name="description_short_th" ColumnName="description_short_th" />
@@ -1480,16 +1460,11 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Roles">
-            <EntityTypeMapping TypeName="ColspModel.Role">
-              <MappingFragment StoreEntitySet="Role">
-                <ScalarProperty Name="updated_dt" ColumnName="updated_dt" />
-                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
-                <ScalarProperty Name="created_dt" ColumnName="created_dt" />
-                <ScalarProperty Name="created_by" ColumnName="created_by" />
-                <ScalarProperty Name="role_name_th" ColumnName="role_name_th" />
-                <ScalarProperty Name="role_name_en" ColumnName="role_name_en" />
-                <ScalarProperty Name="role_id" ColumnName="role_id" />
+          <EntitySetMapping Name="Related_Product">
+            <EntityTypeMapping TypeName="ColspModel.Related_Product">
+              <MappingFragment StoreEntitySet="Related_Product">
+                <ScalarProperty Name="uid_2" ColumnName="uid_2" />
+                <ScalarProperty Name="uid_1" ColumnName="uid_1" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1581,20 +1556,12 @@
               <ScalarProperty Name="attribute_id" ColumnName="attribute_id" />
             </EndProperty>
           </AssociationSetMapping>
-          <AssociationSetMapping Name="Role_Permission_Map" TypeName="ColspModel.Role_Permission_Map" StoreEntitySet="Role_Permission_Map">
-            <EndProperty Name="Role">
-              <ScalarProperty Name="role_id" ColumnName="role_id" />
-            </EndProperty>
-            <EndProperty Name="Permission">
-              <ScalarProperty Name="permission_id" ColumnName="permission_id" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <AssociationSetMapping Name="User_Group_Role_Map" TypeName="ColspModel.User_Group_Role_Map" StoreEntitySet="User_Group_Role_Map">
+          <AssociationSetMapping Name="User_Group_Permission_Map" TypeName="ColspModel.User_Group_Permission_Map" StoreEntitySet="User_Group_Permission_Map">
             <EndProperty Name="User_Group">
               <ScalarProperty Name="group_id" ColumnName="group_id" />
             </EndProperty>
-            <EndProperty Name="Role">
-              <ScalarProperty Name="role_id" ColumnName="role_id" />
+            <EndProperty Name="Permission">
+              <ScalarProperty Name="permission_id" ColumnName="permission_id" />
             </EndProperty>
           </AssociationSetMapping>
         </EntityContainerMapping>

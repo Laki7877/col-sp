@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Web.Http;
-using Colsp.Filters;
+using Colsp.Api.Commons;
 
 namespace Colsp
 {

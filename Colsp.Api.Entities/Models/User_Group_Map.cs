@@ -7,18 +7,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Colsp.Api.Models
+namespace Colsp.Api.Entities.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Product_Tag
+    public partial class User_Group_Map
     {
-        public int product_id { get; set; }
-        public int tag_id { get; set; }
-        public Nullable<int> status { get; set; }
+        public int user_id { get; set; }
+        public int group_id { get; set; }
+        public string created_by { get; set; }
+        public Nullable<System.DateTime> created_dt { get; set; }
+        public string updated_by { get; set; }
+        public Nullable<System.DateTime> updated_dt { get; set; }
     
-        public virtual Product Product { get; set; }
-        public virtual Tag Tag { get; set; }
+        public virtual User User { get; set; }
+        public virtual User_Group User_Group { get; set; }
     }
 }
