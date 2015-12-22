@@ -8,26 +8,22 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Colsp.Api.Entities;
-using Colsp.Api.Commons;
-using Colsp.Api.Models;
-using System.Security.Claims;
+using Colsp.Entity.Models;
 
-namespace Colsp.Controllers
+namespace Colsp.Api.Controllers
 {
-	public class UsersController : ApiController
-	{
-		private ColspEntities db = new ColspEntities();
+    public class UsersController : ApiController
+    {
+        private ColspEntities db = new ColspEntities();
 
-		// GET: api/Users
-		[ClaimsAuthorize(Permission = "ListUser")]
-        public IQueryable<User> GetUsers([FromUri] UserRequest request)
+        // GET: api/Users
+        public IQueryable<User> GetUsers()
         {
-			return QueryHelper.ChainPaginatedQuery<User>(db.Users, request._order, request._offset, request._limit, request._direction == "DESC" ? true : false);
+            return db.Users;
         }
-		// GET: api/Users/5
-		[ClaimsAuthorize(Permission = "GetUser")]
-		[ResponseType(typeof(User))]
+
+        // GET: api/Users/5
+        [ResponseType(typeof(User))]
         public IHttpActionResult GetUser(int id)
         {
             User user = db.Users.Find(id);
@@ -39,9 +35,8 @@ namespace Colsp.Controllers
             return Ok(user);
         }
 
-		// PUT: api/Users/5
-		[ClaimsAuthorize(Permission = "UpdateUser")]
-		[ResponseType(typeof(void))]
+        // PUT: api/Users/5
+        [ResponseType(typeof(void))]
         public IHttpActionResult PutUser(int id, User user)
         {
             if (!ModelState.IsValid)
@@ -75,9 +70,8 @@ namespace Colsp.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-		// POST: api/Users
-		[ClaimsAuthorize(Permission = "AddUser")]
-		[ResponseType(typeof(User))]
+        // POST: api/Users
+        [ResponseType(typeof(User))]
         public IHttpActionResult PostUser(User user)
         {
             if (!ModelState.IsValid)
@@ -91,9 +85,8 @@ namespace Colsp.Controllers
             return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
         }
 
-		// DELETE: api/Users/5
-		[ClaimsAuthorize(Permission = "DeleteUser ")]
-		[ResponseType(typeof(User))]
+        // DELETE: api/Users/5
+        [ResponseType(typeof(User))]
         public IHttpActionResult DeleteUser(int id)
         {
             User user = db.Users.Find(id);
@@ -116,6 +109,7 @@ namespace Colsp.Controllers
             }
             base.Dispose(disposing);
         }
+
         private bool UserExists(int id)
         {
             return db.Users.Count(e => e.UserId == id) > 0;
