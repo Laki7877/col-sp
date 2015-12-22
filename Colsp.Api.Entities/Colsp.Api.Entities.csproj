@@ -121,6 +121,13 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Colsp.mdf" />
+    <Content Include="App_Data\Colsp_log.ldf">
+      <DependentUpon>Colsp.mdf</DependentUpon>
+    </Content>
+    <Content Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ColspModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ColspModel.edmx</DependentUpon>
@@ -131,9 +138,7 @@
       <DependentUpon>ColspModel.edmx</DependentUpon>
       <LastGenOutput>ColspModel.cs</LastGenOutput>
     </Content>
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="packages.config" />
     <EntityDeploy Include="ColspModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ColspModel.Designer.cs</LastGenOutput>
@@ -141,7 +146,6 @@
     <Content Include="ColspModel.edmx.diagram">
       <DependentUpon>ColspModel.edmx</DependentUpon>
     </Content>
-    <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -177,19 +181,19 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ColspModel.Context.cs">
-      <DependentUpon>ColspModel.Context.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>ColspModel.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="ColspModel.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ColspModel.Designer.cs">
-      <DependentUpon>ColspModel.edmx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>ColspModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="GlobalCategory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
@@ -281,6 +285,7 @@
     <Compile Include="ProductVideo.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shipping.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -293,7 +298,6 @@
     <Compile Include="User.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserGroup.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

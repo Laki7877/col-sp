@@ -125,10 +125,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Colsp.mdf" />
-    <Content Include="App_Data\Colsp_log.ldf">
-      <DependentUpon>Colsp.mdf</DependentUpon>
-    </Content>
     <Content Include="Global.asax" />
     <Content Include="scripts\ai.0.15.0-build58334.js" />
     <Content Include="scripts\ai.0.15.0-build58334.min.js" />
@@ -170,6 +166,9 @@
       <Project>{75b679f2-e7de-489a-87a9-efa96cbaab6d}</Project>
       <Name>Colsp.Api.Models</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

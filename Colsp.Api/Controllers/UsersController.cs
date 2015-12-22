@@ -23,7 +23,8 @@ namespace Colsp.Controllers
 		[ClaimsAuthorize(Permission = "ListUser")]
         public IQueryable<User> GetUsers([FromUri] UserRequest request)
         {
-			return QueryHelper.ChainPaginatedQuery<User>(db.Users, request._order, request._offset, request._limit, request._direction == "DESC" ? true : false);
+			return db.Users;
+			//return QueryHelper.ChainPaginatedQuery<User>(db.Users, request._order, request._offset, request._limit, request._direction == "DESC" ? true : false);
         }
 		// GET: api/Users/5
 		[ClaimsAuthorize(Permission = "GetUser")]
