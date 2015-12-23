@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7e4940fdef704cd480f8dc60a82d7b89" Name="Diagram1">
+      <Diagram DiagramId="7e4940fdef704cd480f8dc60a82d7b89" Name="Diagram1" ZoomLevel="100">
         <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="12" PointY="16.25" />
         <EntityTypeShape EntityType="ColspModel.AttributeSet" Width="1.5" PointX="6.75" PointY="53.625" />
         <EntityTypeShape EntityType="ColspModel.AttributeSetMap" Width="1.5" PointX="17.25" PointY="35" />
