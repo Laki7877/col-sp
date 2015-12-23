@@ -12,14 +12,18 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductVideo
+    public partial class Inventory_History
     {
-        public int VideoId { get; set; }
+        public int HistoryId { get; set; }
         public string Pid { get; set; }
-        public string VideoUrlEn { get; set; }
-        public string VideoUrlTh { get; set; }
-        public Nullable<int> Position { get; set; }
-        public string Status { get; set; }
+        public Nullable<int> Quantity { get; set; }
+        public Nullable<int> QuantityOutStock { get; set; }
+        public Nullable<int> MinQuantity { get; set; }
+        public Nullable<int> MaxQuantity { get; set; }
+        public Nullable<bool> UseDecimal { get; set; }
+        public Nullable<int> SaftyStockSeller { get; set; }
+        public Nullable<int> SaftyStockAdmin { get; set; }
+        public Nullable<int> StockAvailable { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }

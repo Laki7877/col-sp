@@ -34,6 +34,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
+        public virtual DbSet<Inventory_History> Inventory_History { get; set; }
         public virtual DbSet<LocalCategory> LocalCategories { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }

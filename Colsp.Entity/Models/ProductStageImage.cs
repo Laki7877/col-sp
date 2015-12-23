@@ -15,7 +15,7 @@ namespace Colsp.Entity.Models
     public partial class ProductStageImage
     {
         public int ImageId { get; set; }
-        public string Uid { get; set; }
+        public string Pid { get; set; }
         public string ImageUrlEn { get; set; }
         public string ImageUrlTh { get; set; }
         public Nullable<int> Position { get; set; }

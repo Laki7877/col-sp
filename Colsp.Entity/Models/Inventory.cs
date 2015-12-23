@@ -14,7 +14,7 @@ namespace Colsp.Entity.Models
     
     public partial class Inventory
     {
-        public string Uid { get; set; }
+        public string Pid { get; set; }
         public Nullable<int> Quantity { get; set; }
         public Nullable<int> QuantityOutStock { get; set; }
         public Nullable<int> MinQuantity { get; set; }
