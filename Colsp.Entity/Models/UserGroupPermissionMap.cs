@@ -12,18 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class UserPermission
+    public partial class UserGroupPermissionMap
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public UserPermission()
-        {
-            this.UserGroupPermissionMaps = new HashSet<UserGroupPermissionMap>();
-        }
-    
+        public int GroupId { get; set; }
         public int PermissionId { get; set; }
-        public string PermissionName { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
+        public virtual UserGroup UserGroup { get; set; }
+        public virtual UserPermission UserPermission { get; set; }
     }
 }

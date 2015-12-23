@@ -829,6 +829,10 @@
           </Key>
           <Property Name="GroupId" Type="int" Nullable="false" />
           <Property Name="PermissionId" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="UserPermission">
           <Key>
@@ -1939,6 +1943,7 @@
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
           <EntitySet Name="UserGroupMaps" EntityType="ColspModel.UserGroupMap" />
+          <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
           <EntitySet Name="UserPermissions" EntityType="ColspModel.UserPermission" />
           <EntitySet Name="UserShops" EntityType="ColspModel.UserShop" />
           <AssociationSet Name="FKAttributeSetMapAttribute" Association="ColspModel.FKAttributeSetMapAttribute">
@@ -2181,9 +2186,13 @@
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupMap" EntitySet="UserGroupMaps" />
           </AssociationSet>
-          <AssociationSet Name="UserGroupPermissionMap" Association="ColspModel.UserGroupPermissionMap">
+          <AssociationSet Name="FKUserGroupPermissionMapUserGroup" Association="ColspModel.FKUserGroupPermissionMapUserGroup">
             <End Role="UserGroup" EntitySet="UserGroups" />
+            <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FKUserGroupPermissionMapUserPermission" Association="ColspModel.FKUserGroupPermissionMapUserPermission">
             <End Role="UserPermission" EntitySet="UserPermissions" />
+            <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Attribute">
@@ -3106,7 +3115,7 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="UserGroupMaps" Relationship="ColspModel.FKUserGroupMapUserGroup" FromRole="UserGroup" ToRole="UserGroupMap" />
-          <NavigationProperty Name="UserPermissions" Relationship="ColspModel.UserGroupPermissionMap" FromRole="UserGroup" ToRole="UserPermission" />
+          <NavigationProperty Name="UserGroupPermissionMaps" Relationship="ColspModel.FKUserGroupPermissionMapUserGroup" FromRole="UserGroup" ToRole="UserGroupPermissionMap" />
         </EntityType>
         <EntityType Name="UserGroupMap">
           <Key>
@@ -3122,13 +3131,27 @@
           <NavigationProperty Name="User" Relationship="ColspModel.FKUserGroupMapUser" FromRole="UserGroupMap" ToRole="User" />
           <NavigationProperty Name="UserGroup" Relationship="ColspModel.FKUserGroupMapUserGroup" FromRole="UserGroupMap" ToRole="UserGroup" />
         </EntityType>
+        <EntityType Name="UserGroupPermissionMap">
+          <Key>
+            <PropertyRef Name="GroupId" />
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="GroupId" Type="Int32" Nullable="false" />
+          <Property Name="PermissionId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserGroup" Relationship="ColspModel.FKUserGroupPermissionMapUserGroup" FromRole="UserGroupPermissionMap" ToRole="UserGroup" />
+          <NavigationProperty Name="UserPermission" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="UserGroupPermissionMap" ToRole="UserPermission" />
+        </EntityType>
         <EntityType Name="UserPermission">
           <Key>
             <PropertyRef Name="PermissionId" />
           </Key>
           <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PermissionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="UserGroups" Relationship="ColspModel.UserGroupPermissionMap" FromRole="UserPermission" ToRole="UserGroup" />
+          <NavigationProperty Name="UserGroupPermissionMaps" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="UserPermission" ToRole="UserGroupPermissionMap" />
         </EntityType>
         <EntityType Name="UserShop">
           <Key>
@@ -3864,11 +3887,31 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="UserGroupPermissionMap">
-          <End Type="ColspModel.UserGroup" Role="UserGroup" Multiplicity="*" />
-          <End Type="ColspModel.UserPermission" Role="UserPermission" Multiplicity="*" />
+        <Association Name="FKUserGroupPermissionMapUserGroup">
+          <End Type="ColspModel.UserGroup" Role="UserGroup" Multiplicity="1" />
+          <End Type="ColspModel.UserGroupPermissionMap" Role="UserGroupPermissionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserGroup">
+              <PropertyRef Name="GroupId" />
+            </Principal>
+            <Dependent Role="UserGroupPermissionMap">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
-      </Schema>
+        <Association Name="FKUserGroupPermissionMapUserPermission">
+          <End Type="ColspModel.UserPermission" Role="UserPermission" Multiplicity="1" />
+          <End Type="ColspModel.UserGroupPermissionMap" Role="UserGroupPermissionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPermission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="UserGroupPermissionMap">
+              <PropertyRef Name="PermissionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -4713,6 +4756,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="UserGroupPermissionMaps">
+            <EntityTypeMapping TypeName="ColspModel.UserGroupPermissionMap">
+              <MappingFragment StoreEntitySet="UserGroupPermissionMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="UserPermissions">
             <EntityTypeMapping TypeName="ColspModel.UserPermission">
               <MappingFragment StoreEntitySet="UserPermission">
@@ -4733,14 +4788,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="UserGroupPermissionMap" TypeName="ColspModel.UserGroupPermissionMap" StoreEntitySet="UserGroupPermissionMap">
-            <EndProperty Name="UserPermission">
-              <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
-            </EndProperty>
-            <EndProperty Name="UserGroup">
-              <ScalarProperty Name="GroupId" ColumnName="GroupId" />
-            </EndProperty>
-          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
