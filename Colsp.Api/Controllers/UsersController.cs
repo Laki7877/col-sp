@@ -20,9 +20,10 @@ namespace Colsp.Api.Controllers
 		[ResponseType(typeof(PaginatedResponse<User>))]
         public IHttpActionResult GetUsers([FromUri] UserRequest request)
         {
+			request.DefaultOnNull();
 			var total = db.Users.Count();
-            var users = Query.ChainPaginationFilter(db.Users, request._order, request._offset, request._limit, request._direction.ToLower() == "desc" ? true : false);
-			var response = PaginatedResponse<User>.CreateResponse(users, request._offset, request._limit, total, request._order);
+            var users = Query.ChainPaginationFilter(db.Users, request._order, (int)request._offset, (int)request._limit, request._direction.ToLower() == "desc" ? true : false);
+			var response = PaginatedResponse<User>.CreateResponse(users, (int)request._offset, (int)request._limit, total, request._order);
 
 			return Ok(response);
         }

@@ -19,10 +19,10 @@ namespace Colsp.Model.Responses
 			response.order = order;
 			return response;
 		}
-		public int total;
-		public int offset;
-		public int limit;
-		public String order;
-		public IQueryable<DbModel> data;
+		public int total { get; set; }
+		public int offset { get; set; }
+		public int limit { get; set; }
+		public string order { get; set; }
+		public IQueryable<DbModel> data { get; set; }
 	}
 }

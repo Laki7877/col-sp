@@ -8,13 +8,19 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Requests
 {
-	public class PaginatedRequest
+	public class PaginatedRequest : Request
 	{
-		[DefaultValue(20)]
-		public int _limit;
-		[DefaultValue(0)]
-		public int _offset;
-		public String _order;
-		public String _direction;
+		public int? _limit { get; set; }
+		public int? _offset { get; set; }
+		public string _order { get; set; }
+		public string _direction { get; set; }
+
+		protected override void _DefaultOnNull()
+		{
+			_limit = GetValueOrDefault(_limit, 10);
+			_offset = GetValueOrDefault(_offset, 0);
+			_order = GetValueOrDefault(_order, "");
+			_direction = GetValueOrDefault(_direction, "asc");
+		}
 	}
 }
