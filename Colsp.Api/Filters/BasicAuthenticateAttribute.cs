@@ -141,14 +141,20 @@ namespace Colsp.Api.Filters
 
 			using (var db = new ColspEntities())
 			{
-				// TODO: salt the 
-				var user = await Task.Run<User>(() => db.Users.Where(u => u.Username.Equals(username) && u.Password.Equals(password)).FirstOrDefault());
-				if (user == null)
+				// TODO: salt the password
+				// Query authenticated user
+				var user = await Task.Run<User>( () =>
+						(from u in db.Users
+						where u.Username.Equals(username) && u.Password.Equals(password)
+						select u).FirstOrDefault()
+				);
+				if (user == null)											
 				{
 					return null;
 				}
 
-				// TODO: get permissions from db somehow..
+				// TODO: get permissions from db somehow
+
 				var claims = new List<Claim> { new Claim("Permission", "GetUsers") };
 				var identity = new ClaimsIdentity(claims, "Basic");
 

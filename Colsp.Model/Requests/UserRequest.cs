@@ -9,10 +9,11 @@ namespace Colsp.Model.Requests
 	public class UserRequest : PaginatedRequest
 	{
 		public string Name { get; set; }
-		protected override void _DefaultOnNull()
+		public override void DefaultOnNull()
 		{
 			Name = GetValueOrDefault(Name, "");
-			base._DefaultOnNull();
+			_order = GetValueOrDefault(_order, "UserId");
+			base.DefaultOnNull();
 		}
 	}
 }

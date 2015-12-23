@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Linq.Dynamic;
 
 namespace Colsp.Api.Services
 {
@@ -12,21 +13,9 @@ namespace Colsp.Api.Services
 			//It is equivalent to doing OrderBy(p => p.Name) which will order by Name,
 			//but dynamically at runtime
 
-			var type = typeof(DbModel);
-			var property = type.GetProperty(_order);
-			var parameter = Expression.Parameter(type, "p");
-			var propertyAccess = Expression.MakeMemberAccess(parameter, property);
-			Expression<Func<DbModel, string>> lambda = Expression.Lambda<Func<DbModel, string>>(propertyAccess, parameter);
-
-			iq = iq.OrderBy<DbModel, String>(lambda);
-
-			//Sorting and Limiting
-			//If use want the result in reverse order
-			if (_reverse != null && _reverse.Value == true)
-			{
-				iq = iq.OrderByDescending<DbModel, String>(lambda);
-			}
-
+			var _dir = _reverse == true ? "DESC" : "ASC";
+			iq = iq.OrderBy(_order + " " + _dir);
+				
 			return iq.Skip(_start).Take(_max);
 		}
 	}

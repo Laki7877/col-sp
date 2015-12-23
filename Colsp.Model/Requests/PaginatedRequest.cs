@@ -15,12 +15,13 @@ namespace Colsp.Model.Requests
 		public string _order { get; set; }
 		public string _direction { get; set; }
 
-		protected override void _DefaultOnNull()
+		public override void DefaultOnNull()
 		{
 			_limit = GetValueOrDefault(_limit, 10);
 			_offset = GetValueOrDefault(_offset, 0);
 			_order = GetValueOrDefault(_order, "");
 			_direction = GetValueOrDefault(_direction, "asc");
+			base.DefaultOnNull();
 		}
 	}
 }

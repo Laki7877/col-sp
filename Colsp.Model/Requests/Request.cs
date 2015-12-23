@@ -12,19 +12,11 @@ namespace Colsp.Model.Requests
 		{
 			return obj == null ? def : obj;
 		}
-		public bool Validate()
-		{
-			return _Validate();
-		}
-		public void DefaultOnNull()
-		{
-			_DefaultOnNull();
-		}
-		protected virtual bool _Validate()
+		public virtual bool Validate()
 		{
 			return false;
 		}
-		protected virtual void _DefaultOnNull()
+		public virtual void DefaultOnNull()
 		{
 
 		}
