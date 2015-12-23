@@ -18,7 +18,7 @@ namespace Colsp.Entity.Models
         public UserGroup()
         {
             this.UserGroupMaps = new HashSet<UserGroupMap>();
-            this.UserPermissions = new HashSet<UserPermission>();
+            this.UserGroupPermissionMaps = new HashSet<UserGroupPermissionMap>();
         }
     
         public int GroupId { get; set; }
@@ -32,6 +32,6 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserGroupMap> UserGroupMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPermission> UserPermissions { get; set; }
+        public virtual ICollection<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
     }
 }
