@@ -1,25 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Colsp.Entity.Models;
+using Colsp.Model.Requests;
+using Colsp.Model.Responses;
+using Colsp.Api.Filters;
+using Colsp.Api.Services;
 
 namespace Colsp.Api.Controllers
 {
-    public class UsersController : ApiController
+	public class UsersController : ApiController
     {
         private ColspEntities db = new ColspEntities();
 
         // GET: api/Users
-        public IQueryable<User> GetUsers()
+		[ResponseType(typeof(PaginatedResponse<User>))]
+        public IHttpActionResult GetUsers([FromUri] UserRequest request)
         {
-            return db.Users;
+			var total = db.Users.Count();
+            var users = Query.ChainPaginationFilter(db.Users, request._order, request._offset, request._limit, request._direction.ToLower() == "desc" ? true : false);
+			var response = PaginatedResponse<User>.CreateResponse(users, request._offset, request._limit, total, request._order);
+
+			return Ok(response);
         }
 
         // GET: api/Users/5

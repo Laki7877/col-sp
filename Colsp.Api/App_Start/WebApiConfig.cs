@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Colsp.Api.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -9,6 +10,11 @@ namespace Colsp.Api
     {
         public static void Register(HttpConfiguration config)
         {
+			// Setup authorization and authentication filters
+			config.Filters.Add(new BasicAuthenticateAttribute());
+			config.Filters.Add(new AuthorizeAttribute());
+
+			// Create web api routes
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
