@@ -167,7 +167,7 @@
     <Compile Include="Results\AuthenticationFailureResult.cs" />
     <Compile Include="Services\Cache.cs" />
     <Compile Include="Services\Config.cs" />
-    <Compile Include="Services\Query.cs" />
+    <Compile Include="Extensions\IQueryableExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colsp.Entity\Colsp.Entity.csproj">
