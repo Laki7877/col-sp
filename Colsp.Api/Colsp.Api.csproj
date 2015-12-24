@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\IPrincipalExtension.cs" />
     <Compile Include="Filters\ClaimsAuthorizeAttribute.cs" />
