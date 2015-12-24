@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Responses
 {
-	public class PaginatedResponse<DbModel>
+	public class PaginatedResponse
 	{
 		// Factory method
-		public static PaginatedResponse<DbModel> CreateResponse(IQueryable<DbModel> data, int offset, int limit, int total, String order)
+		public static PaginatedResponse CreateResponse(IQueryable data, int offset, int limit, int total, String order)
 		{
-			var response = new PaginatedResponse<DbModel>();
+			var response = new PaginatedResponse();
 			response.data = data;
 			response.offset = offset;
 			response.limit = limit;
@@ -23,6 +23,6 @@ namespace Colsp.Model.Responses
 		public int offset { get; set; }
 		public int limit { get; set; }
 		public string order { get; set; }
-		public IQueryable<DbModel> data { get; set; }
+		public IQueryable data { get; set; }
 	}
 }

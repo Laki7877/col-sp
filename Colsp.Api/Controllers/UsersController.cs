@@ -17,18 +17,36 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
 
         // GET: api/Users
-		[ResponseType(typeof(PaginatedResponse<User>))]
+		[ClaimsAuthorize(Permission = "ListUser")]
+		[ResponseType(typeof(PaginatedResponse))]
         public IHttpActionResult GetUsers([FromUri] UserRequest request)
         {
 			request.DefaultOnNull();
 			var total = db.Users.Count();
-            var users = Query.ChainPaginationFilter(db.Users, request._order, (int)request._offset, (int)request._limit, request._direction.ToLower() == "desc" ? true : false);
-			var response = PaginatedResponse<User>.CreateResponse(users, (int)request._offset, (int)request._limit, total, request._order);
+			var users = Query.ChainPaginationFilter(db.Users, request._order, (int)request._offset, (int)request._limit, request._direction.ToLower() == "desc" ? true : false)
+							.Select(u => new {
+								u.UserId,
+								u.Username,
+								u.Email,
+								u.NameEn,
+								u.NameTh,
+								u.Mobile,
+								u.Phone,
+								u.Fax,
+								u.Status,
+								u.LastLoginDt,
+								u.CreatedBy,
+								u.CreatedDt,
+								u.UpdatedBy,
+								u.UpdatedDt
+							});
+			var response = PaginatedResponse.CreateResponse(users, (int)request._offset, (int)request._limit, total, request._order);
 
 			return Ok(response);
         }
 
         // GET: api/Users/5
+		[ClaimsAuthorize(Permission = "GetUser")]
         [ResponseType(typeof(User))]
         public IHttpActionResult GetUser(int id)
         {
@@ -42,6 +60,7 @@ namespace Colsp.Api.Controllers
         }
 
         // PUT: api/Users/5
+		[ClaimsAuthorize(Permission = "UpdateUser")]
         [ResponseType(typeof(void))]
         public IHttpActionResult PutUser(int id, User user)
         {
@@ -77,6 +96,7 @@ namespace Colsp.Api.Controllers
         }
 
         // POST: api/Users
+		[ClaimsAuthorize(Permission = "AddUser")]
         [ResponseType(typeof(User))]
         public IHttpActionResult PostUser(User user)
         {
@@ -92,6 +112,7 @@ namespace Colsp.Api.Controllers
         }
 
         // DELETE: api/Users/5
+		[ClaimsAuthorize(Permission = "DeleteUser")]
         [ResponseType(typeof(User))]
         public IHttpActionResult DeleteUser(int id)
         {
