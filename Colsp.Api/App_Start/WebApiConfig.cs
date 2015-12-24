@@ -10,6 +10,10 @@ namespace Colsp.Api
     {
         public static void Register(HttpConfiguration config)
         {
+			// Json self reference handling
+			config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling
+				= Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
 			// Setup authorization and authentication filters
 			config.Filters.Add(new BasicAuthenticateAttribute());
 			config.Filters.Add(new AuthorizeAttribute());

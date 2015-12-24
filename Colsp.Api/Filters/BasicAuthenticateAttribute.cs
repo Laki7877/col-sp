@@ -154,7 +154,6 @@ namespace Colsp.Api.Filters
 				}
 
 				// TODO: get permissions from db somehow
-
 				var claims = new List<Claim> { new Claim("Permission", "GetUsers") };
 				var identity = new ClaimsIdentity(claims, "Basic");
 
