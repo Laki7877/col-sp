@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Colsp.Api.Results;
 using Colsp.Api.Services;
 using Colsp.Entity.Models;
+using Colsp.Api.Security;
 
 namespace Colsp.Api.Filters
 {
@@ -143,6 +144,25 @@ namespace Colsp.Api.Filters
 			{
 				// TODO: salt the password
 				// Query authenticated user-permission
+				var user = await Task.Run(() =>
+					db.Users.Where(u => u.Username.Equals(username) && u.Password.Equals(password))
+							.Select(u => new
+							{
+								u.UserId,
+								u.NameEn,
+								u.NameTh,
+								u.Email
+							})
+							.FirstOrDefault()
+				);
+
+				// Check for user
+				if (user == null)
+				{
+					return null;
+				}
+
+				// Get all permissions
 				var userPermissions = await Task.Run(() =>
 				   db.Users.Join(db.UserGroupMaps, u => u.UserId, g => g.GroupId, (u, g) => new { User = u, UserGroupMap = g })
 							.Join(db.UserGroups, a => a.UserGroupMap.GroupId, g => g.GroupId, (a, g) => new { User = a.User, UserGroup = g })
@@ -151,17 +171,10 @@ namespace Colsp.Api.Filters
 							.Where(u => u.User.Username.Equals(username) && u.User.Password.Equals(password))
 							.Select(a => new
 							{
-								Username = a.User.Username,
 								Permission = a.Permission.PermissionName
 							})
 							.ToList()
 				);
-
-				if (userPermissions.Count <= 0)											
-				{
-					return null;
-				}
-
 				
 				// Assign claims
 				var claims = new List<Claim>();
@@ -173,8 +186,9 @@ namespace Colsp.Api.Filters
 					}
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
+				var principal = new UsersPrincipal(identity, user.UserId, user.NameEn, user.NameTh, user.Email);
 
-				return new ClaimsPrincipal(identity);
+				return principal;
 			}
 		}
 	}
