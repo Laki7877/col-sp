@@ -8,7 +8,8 @@ using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using Colsp.Model.Responses;
 using Colsp.Api.Filters;
-using Colsp.Api.Services;
+using Colsp.Api.Extensions;
+using System;
 
 namespace Colsp.Api.Controllers
 {
@@ -22,25 +23,27 @@ namespace Colsp.Api.Controllers
         public IHttpActionResult GetUsers([FromUri] UserRequest request)
         {
 			request.DefaultOnNull();
-			var total = db.Users.Count();
-			var users = Query.ChainPaginationFilter(db.Users, request._order, (int)request._offset, (int)request._limit, request._direction.ToLower() == "desc" ? true : false)
-							.Select(u => new {
-								u.UserId,
-								u.Username,
-								u.Email,
-								u.NameEn,
-								u.NameTh,
-								u.Mobile,
-								u.Phone,
-								u.Fax,
-								u.Status,
-								u.LastLoginDt,
-								u.CreatedBy,
-								u.CreatedDt,
-								u.UpdatedBy,
-								u.UpdatedDt
-							});
-			var response = PaginatedResponse.CreateResponse(users, (int)request._offset, (int)request._limit, total, request._order);
+			var users = db.Users
+					.Where(u => u.Username.Contains(request.Name));
+			var total = users.Count();
+			var	pagedUsers = users.Paginate(request)
+									.Select(u => new {
+										u.UserId,
+										u.Username,
+										u.Email,
+										u.NameEn,
+										u.NameTh,
+										u.Mobile,
+										u.Phone,
+										u.Fax,
+										u.Status,
+										u.LastLoginDt,
+										u.CreatedBy,
+										u.CreatedDt,
+										u.UpdatedBy,
+										u.UpdatedDt
+									});
+			var response = PaginatedResponse.CreateResponse(pagedUsers, request, total);
 
 			return Ok(response);
         }
