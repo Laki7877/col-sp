@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Colsp.Model.Requests;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,10 @@ namespace Colsp.Model.Responses
 	public class PaginatedResponse
 	{
 		// Factory method
+		public static PaginatedResponse CreateResponse(IQueryable data, PaginatedRequest pagination, int total)
+		{
+			return CreateResponse(data, (int)pagination._offset, (int)pagination._limit, total, pagination._order);
+		}
 		public static PaginatedResponse CreateResponse(IQueryable data, int offset, int limit, int total, String order)
 		{
 			var response = new PaginatedResponse();
