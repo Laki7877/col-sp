@@ -142,19 +142,36 @@ namespace Colsp.Api.Filters
 			using (var db = new ColspEntities())
 			{
 				// TODO: salt the password
-				// Query authenticated user
-				var user = await Task.Run<User>( () =>
-						(from u in db.Users
-						where u.Username.Equals(username) && u.Password.Equals(password)
-						select u).FirstOrDefault()
+				// Query authenticated user-permission
+				var userPermissions = await Task.Run(() =>
+				   db.Users.Join(db.UserGroupMaps, u => u.UserId, g => g.GroupId, (u, g) => new { User = u, UserGroupMap = g })
+							.Join(db.UserGroups, a => a.UserGroupMap.GroupId, g => g.GroupId, (a, g) => new { User = a.User, UserGroup = g })
+							.Join(db.UserGroupPermissionMaps, a => a.UserGroup.GroupId, m => m.GroupId, (a, m) => new { User = a.User, UserGroupPermissionMap = m })
+							.Join(db.UserPermissions, a => a.UserGroupPermissionMap.PermissionId, p => p.PermissionId, (a, p) => new { User = a.User, Permission = p })
+							.Where(u => u.User.Username.Equals(username) && u.User.Password.Equals(password))
+							.Select(a => new
+							{
+								Username = a.User.Username,
+								Permission = a.Permission.PermissionName
+							})
+							.ToList()
 				);
-				if (user == null)											
+
+				if (userPermissions.Count <= 0)											
 				{
 					return null;
 				}
 
-				// TODO: get permissions from db somehow
-				var claims = new List<Claim> { new Claim("Permission", "GetUsers") };
+				
+				// Assign claims
+				var claims = new List<Claim>();
+				foreach (var item in userPermissions)
+				{
+					if (!claims.Exists(m => m.Value.Equals(item.Permission)))
+					{
+						claims.Add(new Claim("Permission", item.Permission));
+					}
+				}
 				var identity = new ClaimsIdentity(claims, "Basic");
 
 				return new ClaimsPrincipal(identity);
