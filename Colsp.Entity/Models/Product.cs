@@ -43,14 +43,14 @@ namespace Colsp.Entity.Models
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
         public Nullable<int> Stock { get; set; }
-        public Nullable<int> SaftyStock { get; set; }
+        public Nullable<int> SafetyStock { get; set; }
         public Nullable<int> ShippingId { get; set; }
         public Nullable<decimal> Length { get; set; }
         public Nullable<decimal> Height { get; set; }
         public Nullable<decimal> Width { get; set; }
-        public string DimenstionUnit { get; set; }
+        public string DimensionUnit { get; set; }
         public Nullable<decimal> Weight { get; set; }
-        public Nullable<decimal> DimenstionWeight { get; set; }
+        public string WeightUnit { get; set; }
         public string MetaTitle { get; set; }
         public string MetaDescription { get; set; }
         public string MetaKey { get; set; }

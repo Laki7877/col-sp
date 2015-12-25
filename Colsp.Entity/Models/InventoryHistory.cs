@@ -12,7 +12,7 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Inventory_History
+    public partial class InventoryHistory
     {
         public int HistoryId { get; set; }
         public string Pid { get; set; }
@@ -21,8 +21,8 @@ namespace Colsp.Entity.Models
         public Nullable<int> MinQuantity { get; set; }
         public Nullable<int> MaxQuantity { get; set; }
         public Nullable<bool> UseDecimal { get; set; }
-        public Nullable<int> SaftyStockSeller { get; set; }
-        public Nullable<int> SaftyStockAdmin { get; set; }
+        public Nullable<int> SafetyStockSeller { get; set; }
+        public Nullable<int> SafetyStockAdmin { get; set; }
         public Nullable<int> StockAvailable { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
