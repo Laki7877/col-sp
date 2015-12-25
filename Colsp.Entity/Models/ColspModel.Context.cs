@@ -18,6 +18,10 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
+<<<<<<< HEAD
+=======
+            this.Configuration.LazyLoadingEnabled = false;
+>>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -34,6 +38,10 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
+<<<<<<< HEAD
+=======
+        public virtual DbSet<InventoryHistory> InventoryHistories { get; set; }
+>>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
         public virtual DbSet<LocalCategory> LocalCategories { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
@@ -64,6 +72,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }

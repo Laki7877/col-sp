@@ -156,8 +156,8 @@
           <Property Name="MinQuantity" Type="int" />
           <Property Name="MaxQuantity" Type="int" />
           <Property Name="UseDecimal" Type="bit" />
-          <Property Name="SaftyStockSeller" Type="int" />
-          <Property Name="SaftyStockAdmin" Type="int" />
+          <Property Name="SafetyStockSeller" Type="int" />
+          <Property Name="SafetyStockAdmin" Type="int" />
           <Property Name="StockAvailable" Type="int" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -206,7 +206,7 @@
           <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="500" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
-          <Property Name="SaftyStock" Type="int" />
+          <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
@@ -284,14 +284,14 @@
           <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="500" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
-          <Property Name="SaftyStock" Type="int" />
+          <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionUnit" Type="char" MaxLength="10" />
+          <Property Name="DimensionUnit" Type="char" MaxLength="10" />
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionWeight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="WeightUnit" Type="char" MaxLength="10" />
           <Property Name="MetaTitle" Type="nvarchar" MaxLength="100" />
           <Property Name="MetaDescription" Type="nvarchar" MaxLength="500" />
           <Property Name="MetaKey" Type="nvarchar" MaxLength="500" />
@@ -510,14 +510,14 @@
           <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="500" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
-          <Property Name="SaftyStock" Type="int" />
+          <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionUnit" Type="char" MaxLength="10" />
+          <Property Name="DimensionUnit" Type="char" MaxLength="10" />
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionWeight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="WeightUnit" Type="char" MaxLength="10" />
           <Property Name="MetaTitle" Type="nvarchar" MaxLength="100" />
           <Property Name="MetaDescription" Type="nvarchar" MaxLength="500" />
           <Property Name="MetaKey" Type="nvarchar" MaxLength="500" />
@@ -1919,6 +1919,10 @@
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="Inventories" EntityType="ColspModel.Inventory" />
+<<<<<<< HEAD
+=======
+          <EntitySet Name="InventoryHistories" EntityType="ColspModel.InventoryHistory" />
+>>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
           <EntitySet Name="Products" EntityType="ColspModel.Product" />
           <EntitySet Name="ProductAttributes" EntityType="ColspModel.ProductAttribute" />
@@ -1949,6 +1953,7 @@
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
+          <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
           <EntitySet Name="Tags" EntityType="ColspModel.Tag" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
@@ -2374,6 +2379,28 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
+<<<<<<< HEAD
+=======
+        <EntityType Name="InventoryHistory">
+          <Key>
+            <PropertyRef Name="HistoryId" />
+          </Key>
+          <Property Name="HistoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="QuantityOutStock" Type="Int32" />
+          <Property Name="MinQuantity" Type="Int32" />
+          <Property Name="MaxQuantity" Type="Int32" />
+          <Property Name="UseDecimal" Type="Boolean" />
+          <Property Name="SafetyStockSeller" Type="Int32" />
+          <Property Name="SafetyStockAdmin" Type="Int32" />
+          <Property Name="StockAvailable" Type="Int32" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+        </EntityType>
+>>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
         <EntityType Name="LocalCategory">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -2423,12 +2450,18 @@
           <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
-          <Property Name="SaftyStock" Type="Int32" />
+          <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+<<<<<<< HEAD
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+=======
+          <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+>>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
           <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -2516,14 +2549,14 @@
           <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
-          <Property Name="SaftyStock" Type="Int32" />
+          <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -2765,14 +2798,14 @@
           <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
-          <Property Name="SaftyStock" Type="Int32" />
+          <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -3051,6 +3084,16 @@
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKShopUser" FromRole="Shop" ToRole="User" />
           <NavigationProperty Name="UserShops" Relationship="ColspModel.FKUserShopShop" FromRole="Shop" ToRole="UserShop" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -4085,6 +4128,29 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+<<<<<<< HEAD
+=======
+          <EntitySetMapping Name="InventoryHistories">
+            <EntityTypeMapping TypeName="ColspModel.InventoryHistory">
+              <MappingFragment StoreEntitySet="InventoryHistory">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="StockAvailable" ColumnName="StockAvailable" />
+                <ScalarProperty Name="SafetyStockAdmin" ColumnName="SafetyStockAdmin" />
+                <ScalarProperty Name="SafetyStockSeller" ColumnName="SafetyStockSeller" />
+                <ScalarProperty Name="UseDecimal" ColumnName="UseDecimal" />
+                <ScalarProperty Name="MaxQuantity" ColumnName="MaxQuantity" />
+                <ScalarProperty Name="MinQuantity" ColumnName="MinQuantity" />
+                <ScalarProperty Name="QuantityOutStock" ColumnName="QuantityOutStock" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="HistoryId" ColumnName="HistoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+>>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
           <EntitySetMapping Name="LocalCategories">
             <EntityTypeMapping TypeName="ColspModel.LocalCategory">
               <MappingFragment StoreEntitySet="LocalCategory">
@@ -4129,12 +4195,18 @@
                 <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
                 <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
                 <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
+<<<<<<< HEAD
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
+=======
+                <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="DimensionUnit" ColumnName="DimensionUnit" />
+>>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
-                <ScalarProperty Name="SaftyStock" ColumnName="SaftyStock" />
+                <ScalarProperty Name="SafetyStock" ColumnName="SafetyStock" />
                 <ScalarProperty Name="Stock" ColumnName="Stock" />
                 <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
                 <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />
@@ -4207,14 +4279,14 @@
                 <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
                 <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
                 <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
-                <ScalarProperty Name="DimenstionWeight" ColumnName="DimenstionWeight" />
+                <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
-                <ScalarProperty Name="DimenstionUnit" ColumnName="DimenstionUnit" />
+                <ScalarProperty Name="DimensionUnit" ColumnName="DimensionUnit" />
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
-                <ScalarProperty Name="SaftyStock" ColumnName="SaftyStock" />
+                <ScalarProperty Name="SafetyStock" ColumnName="SafetyStock" />
                 <ScalarProperty Name="Stock" ColumnName="Stock" />
                 <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
                 <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />
@@ -4437,14 +4509,14 @@
                 <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
                 <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
                 <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
-                <ScalarProperty Name="DimenstionWeight" ColumnName="DimenstionWeight" />
+                <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
-                <ScalarProperty Name="DimenstionUnit" ColumnName="DimenstionUnit" />
+                <ScalarProperty Name="DimensionUnit" ColumnName="DimensionUnit" />
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
-                <ScalarProperty Name="SaftyStock" ColumnName="SaftyStock" />
+                <ScalarProperty Name="SafetyStock" ColumnName="SafetyStock" />
                 <ScalarProperty Name="Stock" ColumnName="Stock" />
                 <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
                 <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />
@@ -4693,6 +4765,17 @@
                 <ScalarProperty Name="ShopNameEn" ColumnName="ShopNameEn" />
                 <ScalarProperty Name="ShopOwner" ColumnName="ShopOwner" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ColspModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
