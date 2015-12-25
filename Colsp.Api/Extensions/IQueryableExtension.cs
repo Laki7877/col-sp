@@ -15,8 +15,15 @@ namespace Colsp.Api.Extensions
 			//but dynamically at runtime
 			var _order = pagination._order; 
 			var _dir = pagination._direction.ToUpper().Equals("DESC") ? "DESC" : "ASC";
-			iq = iq.OrderBy(_order + " " + _dir);
-				
+
+			try {
+				iq = iq.OrderBy(_order + " " + _dir);
+			} catch (Exception)
+			{
+				pagination._order = null;
+				pagination.DefaultOnNull();
+				iq = iq.OrderBy(pagination._order + " " + _dir);
+			}
 			return iq.Skip((int)pagination._offset).Take((int)pagination._limit);
 		}
 	}

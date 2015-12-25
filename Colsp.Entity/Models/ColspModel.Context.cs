@@ -18,7 +18,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -66,7 +65,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
-        public virtual DbSet<ShopUerGroupMap> ShopUerGroupMaps { get; set; }
+        public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }

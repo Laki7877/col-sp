@@ -13,6 +13,11 @@ namespace Colsp.Api
 			// Json self reference handling
 			config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling
 				= Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+			config.Formatters.JsonFormatter.SerializerSettings.PreserveReferencesHandling
+				= Newtonsoft.Json.PreserveReferencesHandling.Objects;
+			config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling
+				= Newtonsoft.Json.NullValueHandling.Ignore;
+
 
 			// Setup authorization and authentication filters
 			config.Filters.Add(new BasicAuthenticateAttribute());

@@ -16,14 +16,14 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
 
         // GET: api/Products
-		[ClaimsAuthorize(Permission = "ListProduct, ListOwnedProduct")]
+		[ClaimsAuthorize(Permission = "ListProducts, ListOwnedProducts")]
 		[ResponseType(typeof(PaginatedResponse))]
         public IHttpActionResult GetProducts([FromUri] ProductRequest request)
         {
 			request.DefaultOnNull();
 			IQueryable<Product> products = null;
 			
-			if (User.HasPermission("ListProduct"))
+			if (User.HasPermission("ListProducts"))
 			{
 				// List all product
 				products = db.Products.Where( p => true);
@@ -36,10 +36,10 @@ namespace Colsp.Api.Controllers
 					products = products.Where(p => p.SellerId.Equals(request.SellerId));
 				}
 			}
-			else if (User.HasPermission("ListOwnedProduct"))
+			else if (User.HasPermission("ListOwnedProducts"))
 			{
 				// List only owned product
-				products = db.Products.Where(p => p.SellerId.Equals(User.UserId()));
+				products = db.Products.Where(p => User.ShopIds().Contains((int)p.ShopId));
 				if(request.Sku != null)
 				{
 					products = products.Where(p => p.Sku.Equals(request.Sku));
@@ -63,7 +63,7 @@ namespace Colsp.Api.Controllers
         }
 
         // GET: api/Products/5
-		[ClaimsAuthorize(Permission = "GetProduct, GetOwnedProduct")]
+		//[ClaimsAuthorize(Permission = "GetProduct, GetOwnedProduct")]
         [ResponseType(typeof(Product))]
         public IHttpActionResult GetProduct(int id)
         {
@@ -85,7 +85,7 @@ namespace Colsp.Api.Controllers
         }
 
 		// PUT: api/Products/5
-		[ClaimsAuthorize(Permission = "UpdateProduct")]
+		//[ClaimsAuthorize(Permission = "UpdateProduct")]
 		[ResponseType(typeof(void))]
         public IHttpActionResult PutProduct(int id, Product product)
         {
@@ -121,7 +121,7 @@ namespace Colsp.Api.Controllers
         }
 
 		// POST: api/Products
-		[ClaimsAuthorize(Permission = "AddProduct")]
+		//[ClaimsAuthorize(Permission = "AddProduct")]
 		[ResponseType(typeof(Product))]
         public IHttpActionResult PostProduct(Product product)
         {
@@ -137,7 +137,7 @@ namespace Colsp.Api.Controllers
         }
 
 		// DELETE: api/Products/5
-		[ClaimsAuthorize(Permission = "DeleteProduct")]
+		//[ClaimsAuthorize(Permission = "DeleteProduct")]
 		[ResponseType(typeof(Product))]
         public IHttpActionResult DeleteProduct(int id)
         {

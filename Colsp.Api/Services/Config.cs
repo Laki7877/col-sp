@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Web;
@@ -19,7 +20,8 @@ namespace Colsp.Api.Services
 		}
 		#endregion
 
-		#region Cache
+		#region List of Config
+
 		[ConfigurationProperty("cache")]
 		public CacheElement Cache
 		{
@@ -32,6 +34,10 @@ namespace Colsp.Api.Services
 				this["cache"] = value;
 			}
 		}
+
+		#endregion
+
+		#region Cache
 		public class CacheElement : ConfigurationElement
 		{
 			[ConfigurationProperty("use", DefaultValue = false, IsRequired = true)]

@@ -17,7 +17,7 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UserGroup()
         {
-            this.ShopUerGroupMaps = new HashSet<ShopUerGroupMap>();
+            this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
             this.UserGroupMaps = new HashSet<UserGroupMap>();
             this.UserGroupPermissionMaps = new HashSet<UserGroupPermissionMap>();
         }
@@ -31,7 +31,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ShopUerGroupMap> ShopUerGroupMaps { get; set; }
+        public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserGroupMap> UserGroupMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

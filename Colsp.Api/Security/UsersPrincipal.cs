@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace Colsp.Api.Security
@@ -9,9 +10,12 @@ namespace Colsp.Api.Security
 		public string NameEn { get; set; }
 		public string NameTh { get; set; }
 		public string Email { get; set; }
-		public UsersPrincipal(IIdentity identity, int userId, string nameEn, string nameTh, string email) : base(identity)
+		public List<int> Shops { get; set; }
+
+		public UsersPrincipal(IIdentity identity, int userId, string nameEn, string nameTh, string email, List<int> shops) : base(identity)
 		{
 			UserId = userId;
+			Shops = shops;
 			NameEn = nameEn;
 			NameTh = nameTh;
 			Email = email;

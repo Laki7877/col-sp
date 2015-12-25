@@ -151,7 +151,8 @@ namespace Colsp.Api.Filters
 								u.UserId,
 								u.NameEn,
 								u.NameTh,
-								u.Email
+								u.Email,
+								u.Shops
 							})
 							.FirstOrDefault()
 				);
@@ -186,7 +187,7 @@ namespace Colsp.Api.Filters
 					}
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
-				var principal = new UsersPrincipal(identity, user.UserId, user.NameEn, user.NameTh, user.Email);
+				var principal = new UsersPrincipal(identity, user.UserId, user.NameEn, user.NameTh, user.Email, user.Shops.Select(s => s.ShopId).ToList());
 
 				return principal;
 			}
