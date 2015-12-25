@@ -12,12 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagram
+    public partial class ShopUerGroupMap
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public int ShopId { get; set; }
+        public int GroupId { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
+    
+        public virtual Shop Shop { get; set; }
+        public virtual UserGroup UserGroup { get; set; }
     }
 }

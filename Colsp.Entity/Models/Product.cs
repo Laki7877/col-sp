@@ -65,6 +65,9 @@ namespace Colsp.Entity.Models
         public Nullable<bool> ControlFlag2 { get; set; }
         public Nullable<bool> ControlFlag3 { get; set; }
         public string Remark { get; set; }
+        public string InfoFlag { get; set; }
+        public string ImageFlag { get; set; }
+        public string OnlineFlag { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

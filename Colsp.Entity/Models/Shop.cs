@@ -21,6 +21,7 @@ namespace Colsp.Entity.Models
             this.Products = new HashSet<Product>();
             this.ProductHistories = new HashSet<ProductHistory>();
             this.ProductStages = new HashSet<ProductStage>();
+            this.ShopUerGroupMaps = new HashSet<ShopUerGroupMap>();
             this.UserShops = new HashSet<UserShop>();
         }
     
@@ -42,6 +43,8 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductHistory> ProductHistories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStage> ProductStages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopUerGroupMap> ShopUerGroupMaps { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserShop> UserShops { get; set; }
