@@ -18,6 +18,8 @@ namespace Colsp.Api
 			config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling
 				= Newtonsoft.Json.NullValueHandling.Ignore;
 
+			// Enable CORs
+			config.EnableCors();
 
 			// Setup authorization and authentication filters
 			config.Filters.Add(new BasicAuthenticateAttribute());
