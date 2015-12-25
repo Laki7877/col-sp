@@ -1919,7 +1919,6 @@
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="Inventories" EntityType="ColspModel.Inventory" />
-          <EntitySet Name="Inventory_History" EntityType="ColspModel.Inventory_History" />
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
           <EntitySet Name="Products" EntityType="ColspModel.Product" />
           <EntitySet Name="ProductAttributes" EntityType="ColspModel.ProductAttribute" />
@@ -2375,25 +2374,6 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Inventory_History">
-          <Key>
-            <PropertyRef Name="HistoryId" />
-          </Key>
-          <Property Name="HistoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="Int32" />
-          <Property Name="QuantityOutStock" Type="Int32" />
-          <Property Name="MinQuantity" Type="Int32" />
-          <Property Name="MaxQuantity" Type="Int32" />
-          <Property Name="UseDecimal" Type="Boolean" />
-          <Property Name="SaftyStockSeller" Type="Int32" />
-          <Property Name="SaftyStockAdmin" Type="Int32" />
-          <Property Name="StockAvailable" Type="Int32" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="LocalCategory">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -2448,9 +2428,7 @@
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />

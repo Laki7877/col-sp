@@ -48,9 +48,7 @@ namespace Colsp.Entity.Models
         public Nullable<decimal> Length { get; set; }
         public Nullable<decimal> Height { get; set; }
         public Nullable<decimal> Width { get; set; }
-        public string DimenstionUnit { get; set; }
         public Nullable<decimal> Weight { get; set; }
-        public Nullable<decimal> DimenstionWeight { get; set; }
         public string MetaTitle { get; set; }
         public string MetaDescription { get; set; }
         public string MetaKey { get; set; }
