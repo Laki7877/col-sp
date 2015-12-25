@@ -228,6 +228,9 @@
           <Property Name="ControlFlag2" Type="bit" />
           <Property Name="ControlFlag3" Type="bit" />
           <Property Name="Remark" Type="nvarchar" MaxLength="500" />
+          <Property Name="InfoFlag" Type="char" MaxLength="1" />
+          <Property Name="ImageFlag" Type="char" MaxLength="1" />
+          <Property Name="OnlineFlag" Type="char" MaxLength="1" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -306,6 +309,9 @@
           <Property Name="ControlFlag2" Type="bit" />
           <Property Name="ControlFlag3" Type="bit" />
           <Property Name="Remark" Type="nvarchar" MaxLength="500" />
+          <Property Name="InfoFlag" Type="char" MaxLength="1" />
+          <Property Name="ImageFlag" Type="char" MaxLength="1" />
+          <Property Name="OnlineFlag" Type="char" MaxLength="1" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -532,6 +538,9 @@
           <Property Name="ControlFlag2" Type="bit" />
           <Property Name="ControlFlag3" Type="bit" />
           <Property Name="Remark" Type="nvarchar" MaxLength="500" />
+          <Property Name="InfoFlag" Type="char" MaxLength="1" />
+          <Property Name="ImageFlag" Type="char" MaxLength="1" />
+          <Property Name="OnlineFlag" Type="char" MaxLength="1" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -763,15 +772,17 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
+        <EntityType Name="ShopUerGroupMap">
           <Key>
-            <PropertyRef Name="diagram_id" />
+            <PropertyRef Name="ShopId" />
+            <PropertyRef Name="GroupId" />
           </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="GroupId" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -863,6 +874,30 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <Association Name="FK_ShopUerGroupMap_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="ShopUerGroupMap" Type="Self.ShopUerGroupMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ShopUerGroupMap">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopUerGroupMap_UserGroup">
+          <End Role="UserGroup" Type="Self.UserGroup" Multiplicity="1" />
+          <End Role="ShopUerGroupMap" Type="Self.ShopUerGroupMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserGroup">
+              <PropertyRef Name="GroupId" />
+            </Principal>
+            <Dependent Role="ShopUerGroupMap">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKAttributeSetMapAttribute">
           <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
           <End Role="AttributeSetMap" Type="Self.AttributeSetMap" Multiplicity="*" />
@@ -1648,7 +1683,7 @@
           <EntitySet Name="ProductVideo" EntityType="Self.ProductVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopUerGroupMap" EntityType="Self.ShopUerGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
@@ -1656,6 +1691,14 @@
           <EntitySet Name="UserGroupPermissionMap" EntityType="Self.UserGroupPermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPermission" EntityType="Self.UserPermission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserShop" EntityType="Self.UserShop" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="Self.FK_ShopUerGroupMap_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ShopUerGroupMap" EntitySet="ShopUerGroupMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopUerGroupMap_UserGroup" Association="Self.FK_ShopUerGroupMap_UserGroup">
+            <End Role="UserGroup" EntitySet="UserGroup" />
+            <End Role="ShopUerGroupMap" EntitySet="ShopUerGroupMap" />
+          </AssociationSet>
           <AssociationSet Name="FKAttributeSetMapAttribute" Association="Self.FKAttributeSetMapAttribute">
             <End Role="Attribute" EntitySet="Attribute" />
             <End Role="AttributeSetMap" EntitySet="AttributeSetMap" />
@@ -1950,7 +1993,7 @@
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
-          <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
+          <EntitySet Name="ShopUerGroupMaps" EntityType="ColspModel.ShopUerGroupMap" />
           <EntitySet Name="Tags" EntityType="ColspModel.Tag" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
@@ -2178,6 +2221,10 @@
             <End Role="Tag" EntitySet="Tags" />
             <End Role="ProductTag" EntitySet="ProductTags" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="ColspModel.FK_ShopUerGroupMap_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ShopUerGroupMap" EntitySet="ShopUerGroupMaps" />
+          </AssociationSet>
           <AssociationSet Name="FKShopUser" Association="ColspModel.FKShopUser">
             <End Role="User" EntitySet="Users" />
             <End Role="Shop" EntitySet="Shops" />
@@ -2185,6 +2232,10 @@
           <AssociationSet Name="FKUserShopShop" Association="ColspModel.FKUserShopShop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="UserShop" EntitySet="UserShops" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopUerGroupMap_UserGroup" Association="ColspModel.FK_ShopUerGroupMap_UserGroup">
+            <End Role="UserGroup" EntitySet="UserGroups" />
+            <End Role="ShopUerGroupMap" EntitySet="ShopUerGroupMaps" />
           </AssociationSet>
           <AssociationSet Name="FKUserGroupMapUser" Association="ColspModel.FKUserGroupMapUser">
             <End Role="User" EntitySet="Users" />
@@ -2464,6 +2515,9 @@
           <Property Name="ControlFlag2" Type="Boolean" />
           <Property Name="ControlFlag3" Type="Boolean" />
           <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="InfoFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="ImageFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="OnlineFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -2557,6 +2611,9 @@
           <Property Name="ControlFlag2" Type="Boolean" />
           <Property Name="ControlFlag3" Type="Boolean" />
           <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="InfoFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="ImageFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="OnlineFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -2806,6 +2863,9 @@
           <Property Name="ControlFlag2" Type="Boolean" />
           <Property Name="ControlFlag3" Type="Boolean" />
           <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="InfoFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="ImageFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="OnlineFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -3068,18 +3128,23 @@
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
+          <NavigationProperty Name="ShopUerGroupMaps" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="Shop" ToRole="ShopUerGroupMap" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKShopUser" FromRole="Shop" ToRole="User" />
           <NavigationProperty Name="UserShops" Relationship="ColspModel.FKUserShopShop" FromRole="Shop" ToRole="UserShop" />
         </EntityType>
-        <EntityType Name="sysdiagram">
+        <EntityType Name="ShopUerGroupMap">
           <Key>
-            <PropertyRef Name="diagram_id" />
+            <PropertyRef Name="ShopId" />
+            <PropertyRef Name="GroupId" />
           </Key>
-          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="GroupId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="ShopUerGroupMap" ToRole="Shop" />
+          <NavigationProperty Name="UserGroup" Relationship="ColspModel.FK_ShopUerGroupMap_UserGroup" FromRole="ShopUerGroupMap" ToRole="UserGroup" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -3136,6 +3201,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ShopUerGroupMaps" Relationship="ColspModel.FK_ShopUerGroupMap_UserGroup" FromRole="UserGroup" ToRole="ShopUerGroupMap" />
           <NavigationProperty Name="UserGroupMaps" Relationship="ColspModel.FKUserGroupMapUserGroup" FromRole="UserGroup" ToRole="UserGroupMap" />
           <NavigationProperty Name="UserGroupPermissionMaps" Relationship="ColspModel.FKUserGroupPermissionMapUserGroup" FromRole="UserGroup" ToRole="UserGroupPermissionMap" />
         </EntityType>
@@ -3849,6 +3915,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopUerGroupMap_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.ShopUerGroupMap" Role="ShopUerGroupMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ShopUerGroupMap">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKShopUser">
           <End Type="ColspModel.User" Role="User" Multiplicity="0..1" />
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="*" />
@@ -3870,6 +3948,18 @@
             </Principal>
             <Dependent Role="UserShop">
               <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopUerGroupMap_UserGroup">
+          <End Type="ColspModel.UserGroup" Role="UserGroup" Multiplicity="1" />
+          <End Type="ColspModel.ShopUerGroupMap" Role="ShopUerGroupMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserGroup">
+              <PropertyRef Name="GroupId" />
+            </Principal>
+            <Dependent Role="ShopUerGroupMap">
+              <PropertyRef Name="GroupId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4135,6 +4225,9 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="OnlineFlag" ColumnName="OnlineFlag" />
+                <ScalarProperty Name="ImageFlag" ColumnName="ImageFlag" />
+                <ScalarProperty Name="InfoFlag" ColumnName="InfoFlag" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="ControlFlag3" ColumnName="ControlFlag3" />
                 <ScalarProperty Name="ControlFlag2" ColumnName="ControlFlag2" />
@@ -4215,6 +4308,9 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="OnlineFlag" ColumnName="OnlineFlag" />
+                <ScalarProperty Name="ImageFlag" ColumnName="ImageFlag" />
+                <ScalarProperty Name="InfoFlag" ColumnName="InfoFlag" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="ControlFlag3" ColumnName="ControlFlag3" />
                 <ScalarProperty Name="ControlFlag2" ColumnName="ControlFlag2" />
@@ -4445,6 +4541,9 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="OnlineFlag" ColumnName="OnlineFlag" />
+                <ScalarProperty Name="ImageFlag" ColumnName="ImageFlag" />
+                <ScalarProperty Name="InfoFlag" ColumnName="InfoFlag" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="ControlFlag3" ColumnName="ControlFlag3" />
                 <ScalarProperty Name="ControlFlag2" ColumnName="ControlFlag2" />
@@ -4718,14 +4817,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="ColspModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="definition" ColumnName="definition" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="name" ColumnName="name" />
+          <EntitySetMapping Name="ShopUerGroupMaps">
+            <EntityTypeMapping TypeName="ColspModel.ShopUerGroupMap">
+              <MappingFragment StoreEntitySet="ShopUerGroupMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
