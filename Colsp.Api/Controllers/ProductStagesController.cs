@@ -25,7 +25,7 @@ namespace Colsp.Api.Controllers
 		{
 			request.DefaultOnNull();
 			IQueryable<ProductStage> products = null;
-			
+
 			// List all product
 			products = db.ProductStages.Where(p => true);
 			if (request.Sku != null)
@@ -38,19 +38,24 @@ namespace Colsp.Api.Controllers
 			}
 
 			var total = products.Count();
-			var pagedProducts = products.Paginate(request)
-										.Select(p => new
-										{
-											p.ProductId,
-											p.ProductNameEn,
-											p.ProductNameTh,
-											p.OriginalPrice,
-											p.SalePrice,
-											p.Status,
-											p.ImageFlag,
-											p.InfoFlag,
-											Modified = p.UpdatedDt
-										});
+			var pagedProducts = products.GroupJoin(db.ProductStageImages,
+											p => p.Pid,
+											m => m.Pid,
+											(p, m) => new
+											{
+												p.ProductId,
+												p.ProductNameEn,
+												p.ProductNameTh,
+												p.OriginalPrice,
+												p.SalePrice,
+												p.Status,
+												p.ImageFlag,
+												p.InfoFlag,
+												Modified = p.UpdatedDt,
+												ImageUrl = m.FirstOrDefault().ImageUrlEn
+											}
+                                        )
+										.Paginate(request);
 			var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
 			return Ok(response);
 		}
