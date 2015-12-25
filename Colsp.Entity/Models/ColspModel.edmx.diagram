@@ -114,6 +114,8 @@
         <AssociationConnector Association="ColspModel.FKUserGroupMapUserGroup" />
         <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />
         <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserPermission" />
+        <EntityTypeShape EntityType="ColspModel.InventoryHistory" Width="1.5" PointX="7.375" PointY="8.75" />
+        <EntityTypeShape EntityType="ColspModel.sysdiagram" Width="1.5" PointX="9.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -26,7 +26,7 @@ namespace Colsp.Api.Controllers
 			var users = db.Users
 					.Where(u => u.Username.Contains(request.Name));
 			var total = users.Count();
-			var	pagedUsers = users.Paginate(request)
+			var	pagedUsers = users.Paginate(request)/*
 									.Select(u => new {
 										u.UserId,
 										u.Username,
@@ -42,7 +42,7 @@ namespace Colsp.Api.Controllers
 										u.CreatedDt,
 										u.UpdatedBy,
 										u.UpdatedDt
-									});
+									})*/;
 			var response = PaginatedResponse.CreateResponse(pagedUsers, request, total);
 
 			return Ok(response);

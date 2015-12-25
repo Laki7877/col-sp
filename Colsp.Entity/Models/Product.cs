@@ -70,6 +70,8 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string DimensionUnit { get; set; }
+        public string WeightUnit { get; set; }
     
         public virtual Brand Brand { get; set; }
         public virtual GlobalCategory GlobalCategory { get; set; }
