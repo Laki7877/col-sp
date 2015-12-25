@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Colsp.Api
 {
@@ -19,7 +20,7 @@ namespace Colsp.Api
 				= Newtonsoft.Json.NullValueHandling.Ignore;
 
 			// Enable CORs
-			config.EnableCors();
+			config.EnableCors(new EnableCorsAttribute("*","*","*"));
 
 			// Setup authorization and authentication filters
 			config.Filters.Add(new BasicAuthenticateAttribute());
