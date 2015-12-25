@@ -2206,8 +2206,6 @@
             <End Role="UserPermission" EntitySet="UserPermissions" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
-          <EntitySet Name="InventoryHistories" EntityType="ColspModel.InventoryHistory" />
-          <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
         </EntityContainer>
         <EntityType Name="Attribute">
           <Key>
@@ -2482,8 +2480,6 @@
           <NavigationProperty Name="ProductTags" Relationship="ColspModel.FKProductTagProduct" FromRole="Product" ToRole="ProductTag" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKProductUser" FromRole="Product" ToRole="User" />
           <NavigationProperty Name="ProductVariants" Relationship="ColspModel.FKProductVariantProduct" FromRole="Product" ToRole="ProductVariant" />
-          <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
         </EntityType>
         <EntityType Name="ProductAttribute">
           <Key>
@@ -3937,35 +3933,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="InventoryHistory">
-          <Key>
-            <PropertyRef Name="HistoryId" />
-          </Key>
-          <Property Name="HistoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="Int32" />
-          <Property Name="QuantityOutStock" Type="Int32" />
-          <Property Name="MinQuantity" Type="Int32" />
-          <Property Name="MaxQuantity" Type="Int32" />
-          <Property Name="UseDecimal" Type="Boolean" />
-          <Property Name="SaftyStockSeller" Type="Int32" />
-          <Property Name="SaftyStockAdmin" Type="Int32" />
-          <Property Name="StockAvailable" Type="Int32" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4864,8 +4831,8 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="StockAvailable" ColumnName="StockAvailable" />
-                <ScalarProperty Name="SaftyStockAdmin" ColumnName="SaftyStockAdmin" />
-                <ScalarProperty Name="SaftyStockSeller" ColumnName="SaftyStockSeller" />
+                <ScalarProperty Name="SafetyStockAdmin" ColumnName="SafetyStockAdmin" />
+                <ScalarProperty Name="SafetyStockSeller" ColumnName="SafetyStockSeller" />
                 <ScalarProperty Name="UseDecimal" ColumnName="UseDecimal" />
                 <ScalarProperty Name="MaxQuantity" ColumnName="MaxQuantity" />
                 <ScalarProperty Name="MinQuantity" ColumnName="MinQuantity" />
