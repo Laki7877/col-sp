@@ -1919,10 +1919,7 @@
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="Inventories" EntityType="ColspModel.Inventory" />
-<<<<<<< HEAD
-=======
           <EntitySet Name="InventoryHistories" EntityType="ColspModel.InventoryHistory" />
->>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
           <EntitySet Name="Products" EntityType="ColspModel.Product" />
           <EntitySet Name="ProductAttributes" EntityType="ColspModel.ProductAttribute" />
@@ -2379,8 +2376,6 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
-<<<<<<< HEAD
-=======
         <EntityType Name="InventoryHistory">
           <Key>
             <PropertyRef Name="HistoryId" />
@@ -2400,7 +2395,6 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
->>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
         <EntityType Name="LocalCategory">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -2455,13 +2449,9 @@
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
-<<<<<<< HEAD
-          <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
-=======
           <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
->>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
           <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -4128,8 +4118,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-<<<<<<< HEAD
-=======
           <EntitySetMapping Name="InventoryHistories">
             <EntityTypeMapping TypeName="ColspModel.InventoryHistory">
               <MappingFragment StoreEntitySet="InventoryHistory">
@@ -4150,7 +4138,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
->>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
           <EntitySetMapping Name="LocalCategories">
             <EntityTypeMapping TypeName="ColspModel.LocalCategory">
               <MappingFragment StoreEntitySet="LocalCategory">
@@ -4195,13 +4182,9 @@
                 <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
                 <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
                 <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
-<<<<<<< HEAD
-                <ScalarProperty Name="Weight" ColumnName="Weight" />
-=======
                 <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
                 <ScalarProperty Name="DimensionUnit" ColumnName="DimensionUnit" />
->>>>>>> d5dbc1256e03b0e3687e1dd7d1e5c39c3635d1b3
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
