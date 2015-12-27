@@ -43,6 +43,7 @@ namespace Colsp.Api.Controllers
 											m => m.Pid,
 											(p, m) => new
 											{
+												p.Sku,
 												p.ProductId,
 												p.ProductNameEn,
 												p.ProductNameTh,

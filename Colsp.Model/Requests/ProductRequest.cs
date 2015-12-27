@@ -8,8 +8,8 @@ namespace Colsp.Model.Requests
 {
 	public class ProductRequest : PaginatedRequest
 	{
-		public int? SellerId;
-		public string Sku; 
+		public int? SellerId { get; set; }
+		public string Sku { get; set; }
 		public override void DefaultOnNull()
 		{
 			SellerId = GetValueOrDefault(SellerId, null);
