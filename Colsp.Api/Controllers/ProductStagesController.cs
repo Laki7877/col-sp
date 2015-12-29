@@ -28,9 +28,11 @@ namespace Colsp.Api.Controllers
 
 			// List all product
 			products = db.ProductStages.Where(p => true);
-			if (request.Sku != null)
+			if (request.SearchText != null)
 			{
-				products = products.Where(p => p.Sku.Contains(request.Sku));
+				products = products.Where(p => p.Sku.Contains(request.SearchText) 
+                || p.ProductNameEn.Contains(request.SearchText) 
+                || p.ProductNameTh.Contains(request.SearchText) );
 			}
 			if (request.SellerId != null)
 			{

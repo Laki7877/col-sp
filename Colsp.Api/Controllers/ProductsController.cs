@@ -27,9 +27,9 @@ namespace Colsp.Api.Controllers
 			{
 				// List all product
 				products = db.Products.Where( p => true);
-				if(request.Sku != null)
+				if(request.SearchText != null)
 				{
-					products = products.Where(p => p.Sku.Equals(request.Sku));
+					products = products.Where(p => p.Sku.Equals(request.SearchText));
 				}
 				if(request.SellerId != null)
 				{
@@ -40,9 +40,9 @@ namespace Colsp.Api.Controllers
 			{
 				// List only owned product
 				products = db.Products.Where(p => User.ShopIds().Contains((int)p.ShopId));
-				if(request.Sku != null)
+				if(request.SearchText != null)
 				{
-					products = products.Where(p => p.Sku.Equals(request.Sku));
+					products = products.Where(p => p.Sku.Equals(request.SearchText));
 				}
 			}
 

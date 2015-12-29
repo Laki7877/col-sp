@@ -9,11 +9,11 @@ namespace Colsp.Model.Requests
 	public class ProductRequest : PaginatedRequest
 	{
 		public int? SellerId { get; set; }
-		public string Sku { get; set; }
+		public string SearchText { get; set; }
 		public override void DefaultOnNull()
 		{
 			SellerId = GetValueOrDefault(SellerId, null);
-			Sku = GetValueOrDefault(Sku, null);
+			SearchText = GetValueOrDefault(SearchText, null);
 			_order = GetValueOrDefault(_order, "ProductId");
 			base.DefaultOnNull();
 		}
