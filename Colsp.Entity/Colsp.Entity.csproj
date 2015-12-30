@@ -177,6 +177,9 @@
     <Compile Include="Models\GlobalCategory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GlobalCategoryPID.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Inventory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

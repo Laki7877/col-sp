@@ -116,6 +116,7 @@
           <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="NameEn" Type="nvarchar" MaxLength="50" />
           <Property Name="NameTh" Type="nvarchar" MaxLength="50" />
+          <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductCount" Type="int" />
@@ -126,6 +127,13 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="GlobalCategoryPID">
+          <Key>
+            <PropertyRef Name="CategoryAbbreviation" />
+          </Key>
+          <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="CurrentKey" Type="char" MaxLength="5" Nullable="false" />
         </EntityType>
         <EntityType Name="Inventory">
           <Key>
@@ -1651,6 +1659,7 @@
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GlobalCategoryPID" EntityType="Self.GlobalCategoryPID" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Inventory" EntityType="Self.Inventory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryHistory" EntityType="Self.InventoryHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCategory" EntityType="Self.LocalCategory" Schema="dbo" store:Type="Tables" />
@@ -1961,6 +1970,7 @@
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
+          <EntitySet Name="GlobalCategoryPIDs" EntityType="ColspModel.GlobalCategoryPID" />
           <EntitySet Name="Inventories" EntityType="ColspModel.Inventory" />
           <EntitySet Name="InventoryHistories" EntityType="ColspModel.InventoryHistory" />
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
@@ -2389,6 +2399,7 @@
           <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="NameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NameTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryAbbreviation" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductCount" Type="Int32" />
@@ -2406,6 +2417,13 @@
           <NavigationProperty Name="ProductHistoryGlobalCatMaps" Relationship="ColspModel.FKProductHistoryGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductHistoryGlobalCatMap" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageGlobalCat" FromRole="GlobalCategory" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageGlobalCatMaps" Relationship="ColspModel.FKProductStageGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductStageGlobalCatMap" />
+        </EntityType>
+        <EntityType Name="GlobalCategoryPID">
+          <Key>
+            <PropertyRef Name="CategoryAbbreviation" />
+          </Key>
+          <Property Name="CategoryAbbreviation" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CurrentKey" Type="String" Nullable="false" MaxLength="5" FixedLength="true" Unicode="false" />
         </EntityType>
         <EntityType Name="Inventory">
           <Key>
@@ -4029,7 +4047,7 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ColspModelStoreContainer" CdmEntityContainer="ColspEntities">
-        <EntitySetMapping Name="Attributes">
+          <EntitySetMapping Name="Attributes">
             <EntityTypeMapping TypeName="ColspModel.Attribute">
               <MappingFragment StoreEntitySet="Attribute">
                 <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
@@ -4150,9 +4168,18 @@
                 <ScalarProperty Name="ProductCount" ColumnName="ProductCount" />
                 <ScalarProperty Name="UrlKeyTh" ColumnName="UrlKeyTh" />
                 <ScalarProperty Name="UrlKeyEn" ColumnName="UrlKeyEn" />
+                <ScalarProperty Name="CategoryAbbreviation" ColumnName="CategoryAbbreviation" />
                 <ScalarProperty Name="NameTh" ColumnName="NameTh" />
                 <ScalarProperty Name="NameEn" ColumnName="NameEn" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GlobalCategoryPIDs">
+            <EntityTypeMapping TypeName="ColspModel.GlobalCategoryPID">
+              <MappingFragment StoreEntitySet="GlobalCategoryPID">
+                <ScalarProperty Name="CurrentKey" ColumnName="CurrentKey" />
+                <ScalarProperty Name="CategoryAbbreviation" ColumnName="CategoryAbbreviation" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

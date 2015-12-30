@@ -163,11 +163,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ProductStagesController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\IPrincipalExtension.cs" />
     <Compile Include="Filters\ClaimsAuthorizeAttribute.cs" />
+    <Compile Include="Helper\AutoGenerate.cs" />
     <Compile Include="Security\UsersPrincipal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

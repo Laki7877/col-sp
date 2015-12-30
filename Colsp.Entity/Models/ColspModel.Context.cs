@@ -18,6 +18,7 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
+            this.Configuration.LazyLoadingEnabled = true;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -33,6 +34,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
+        public virtual DbSet<GlobalCategoryPID> GlobalCategoryPIDs { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<InventoryHistory> InventoryHistories { get; set; }
         public virtual DbSet<LocalCategory> LocalCategories { get; set; }

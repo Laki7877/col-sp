@@ -19,6 +19,7 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
 
         // GET: api/GlobalCategoryPIDs
+        [ClaimsAuthorize(Permission = "Noone")]
         public IQueryable<GlobalCategoryPID> GetGlobalCategoryPIDs()
         {
             return db.GlobalCategoryPIDs;
@@ -40,6 +41,7 @@ namespace Colsp.Api.Controllers
 
         // PUT: api/GlobalCategoryPIDs/5
         [ResponseType(typeof(void))]
+        [ClaimsAuthorize(Permission = "Noone")]
         public IHttpActionResult PutGlobalCategoryPID(string id, GlobalCategoryPID globalCategoryPID)
         {
             if (!ModelState.IsValid)
