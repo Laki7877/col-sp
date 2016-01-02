@@ -30,12 +30,23 @@ namespace Colsp.Api.Controllers
         [ResponseType(typeof(GlobalCategoryPID))]
         public IHttpActionResult GetGlobalCategoryPID(string id)
         {
-            GlobalCategoryPID globalCategoryPID = db.GlobalCategoryPIDs.Find(id);
+            GlobalCategoryPID globalCategoryPID = null;
+            string PID = GlobalCatPIDCache.GetPID(id);
+            if (!String.IsNullOrEmpty(PID))
+            {
+                globalCategoryPID = new GlobalCategoryPID();
+                globalCategoryPID.CategoryAbbreviation = id;
+                globalCategoryPID.CurrentKey = AutoGenerate.NextPID(PID);
+                GlobalCatPIDCache.UpdateKey(globalCategoryPID.CategoryAbbreviation,globalCategoryPID.CurrentKey);
+                return Ok(globalCategoryPID);
+            }
+            globalCategoryPID = db.GlobalCategoryPIDs.Find(id);
             if (globalCategoryPID == null)
             {
                 return NotFound();
             }
             globalCategoryPID.CurrentKey = AutoGenerate.NextPID(globalCategoryPID.CurrentKey);
+            GlobalCatPIDCache.AddPID(globalCategoryPID.CategoryAbbreviation, globalCategoryPID.CurrentKey);
             return Ok(globalCategoryPID);
         }
 
@@ -76,6 +87,7 @@ namespace Colsp.Api.Controllers
         }
 
         // POST: api/GlobalCategoryPIDs
+        [ClaimsAuthorize(Permission = "Noone")]
         [ResponseType(typeof(GlobalCategoryPID))]
         public IHttpActionResult PostGlobalCategoryPID(GlobalCategoryPID globalCategoryPID)
         {
@@ -106,6 +118,7 @@ namespace Colsp.Api.Controllers
         }
 
         // DELETE: api/GlobalCategoryPIDs/5
+        [ClaimsAuthorize(Permission = "Noone")]
         [ResponseType(typeof(GlobalCategoryPID))]
         public IHttpActionResult DeleteGlobalCategoryPID(string id)
         {
