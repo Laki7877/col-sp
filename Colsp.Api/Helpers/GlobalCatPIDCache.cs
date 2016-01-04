@@ -9,10 +9,10 @@ namespace Colsp.Api.Helper
     {
         private static Dictionary<string, string> GlobalCatPID = new Dictionary<string, string>();
 
-        public static void AddPID(string CatCode, string PID)
+        public static void AddPID(string catCode, string pid)
         {
-            if (!GlobalCatPID.ContainsKey(CatCode)){
-                GlobalCatPID.Add(CatCode, PID);
+            if (!GlobalCatPID.ContainsKey(catCode)){
+                GlobalCatPID.Add(catCode, pid);
             }
         }
 
@@ -28,16 +28,16 @@ namespace Colsp.Api.Helper
             }
         }
 
-        public static Boolean ContainCatCode(string CatCode)
+        public static Boolean ContainCatCode(string catCode)
         {
-            return GlobalCatPID.ContainsKey(CatCode);
+            return GlobalCatPID.ContainsKey(catCode);
         }
 
-        public static void UpdateKey(string CatCode, string PID)
+        public static void UpdateKey(string catCode, string pid)
         {
-            if (GlobalCatPID.ContainsKey(CatCode))
+            if (GlobalCatPID.ContainsKey(catCode))
             {
-                GlobalCatPID[CatCode] = PID;
+                GlobalCatPID[catCode] = pid;
             }
         }
     }

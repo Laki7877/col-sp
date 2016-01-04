@@ -192,5 +192,11 @@ namespace Colsp.Api.Filters
 				return principal;
 			}
 		}
-	}
+
+        // Get username from Header
+        public static string Username(string authorizationParameter)
+        {
+            return ExtractUserNameAndPassword(authorizationParameter).Item1;
+        }
+    }
 }

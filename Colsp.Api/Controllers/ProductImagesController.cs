@@ -1,0 +1,221 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Description;
+using Colsp.Entity.Models;
+using System.Threading.Tasks;
+using Colsp.Api.Constants;
+using System.IO;
+using System.Configuration;
+using Colsp.Model.Responses;
+using System.Web;
+using System.Drawing;
+using Colsp.Api.Helpers;
+using System.Net.Http.Headers;
+using Colsp.Api.Services;
+using Colsp.Api.Filters;
+
+namespace Colsp.Api.Controllers
+{
+    public class ProductImagesController : ApiController
+    {
+        private ColspEntities db = new ColspEntities();
+        private readonly string root = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
+
+        [Route("api/ProductImages/Upload")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadFile()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.FORMAT_ERROR);
+                }
+
+                string tmpFolder = Path.Combine(root, ConfigurationManager.AppSettings[AppSettingKey.IMAGE_TMP_FOLDER]);
+                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                string ShopID = streamProvider.FormData[HttpParameterConstant.SHOP_ID];
+                if (String.IsNullOrEmpty(ShopID))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.MISSING_PARAMETER_ERROR);
+                }
+                string PID = streamProvider.FormData[HttpParameterConstant.PID];
+                if (String.IsNullOrEmpty(PID))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.MISSING_PARAMETER_ERROR);
+                }
+
+                int position = 0;
+                try
+                {
+                    position = Int32.Parse(streamProvider.FormData[HttpParameterConstant.POSITION]);
+                }
+                catch (Exception)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.MISSING_PARAMETER_ERROR);
+                }
+                string ShopPath = Path.Combine(root, ShopID);
+                ProductImage productImg = null;
+
+                if (streamProvider.FileData.Count > 1)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.FORMAT_ERROR);
+                }
+
+                //move from tmp to shop folder
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    if (string.IsNullOrEmpty(fileData.Headers.ContentDisposition.FileName))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.FORMAT_ERROR);
+                    }
+
+                    if (!Directory.Exists(ShopPath))
+                    {
+                        Directory.CreateDirectory(ShopPath);
+                    }
+                    string oldfileName = fileData.Headers.ContentDisposition.FileName;
+                    if (oldfileName.StartsWith("\"") && oldfileName.EndsWith("\""))
+                    {
+                        oldfileName = oldfileName.Trim('"');
+                    }
+                    string[] extSplit = oldfileName.Split('.');
+                    string ext = string.Empty;
+                    if (extSplit.Length > 0)
+                    {
+                        ext = extSplit[extSplit.Length - 1];
+                    }
+                    Size dimension = FileHelper.GetImageDimention(fileData.LocalFileName);
+                    string newfileName = Path.Combine(ShopPath, PID + "_" + dimension.Width + "x" + dimension.Height + "." + ext);
+                    newfileName = FileHelper.GetNextImageFileName(newfileName).FullName;
+
+                    productImg = new ProductImage();
+                    productImg.Pid = PID;
+                    productImg.Path = newfileName;
+                    productImg.ImageOriginName = oldfileName;
+                    productImg.ImageName = Path.GetFileName(newfileName);
+                    productImg.Position = position;
+                    productImg.CreatedBy = BasicAuthenticateAttribute.Username(Request.Headers.Authorization.Parameter);
+                    productImg.CreatedDt = DateTime.Now;
+
+                    db.ProductImages.Add(productImg);
+                    db.SaveChanges();
+
+                    File.Move(fileData.LocalFileName, newfileName);
+                }
+
+                return Request.CreateResponse(productImg);
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        [Route("api/ProductImages/GetImage")]
+        [HttpGet]
+        public HttpResponseMessage GetImage(string pid, int position)
+        {
+            try
+            {
+                var productImg = (from pi in db.ProductImages
+                                    where pi.Pid == pid && pi.Position == position
+                                   select pi).ToList();
+                if(productImg != null && productImg.Count > 0)
+                {
+                    ProductImage pImg = productImg[0];
+                    Image img = System.Drawing.Image.FromFile(pImg.Path);
+                    MemoryStream ms = new MemoryStream();
+                    img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    img.Dispose();
+                    HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                    result.Content = new ByteArrayContent(ms.ToArray());
+                    string[] fileSplit = pImg.ImageName.Split('.');
+                    string ext = string.Empty;
+                    if(fileSplit.Length > 1)
+                    {
+                        ext = fileSplit[1];
+                    }
+                    switch (ext.ToLower())
+                    {
+                        case "png":
+                            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+                            break;
+                        case "jpg":
+                            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                            break;
+                        case "jpeg":
+                            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                            break;
+                        case "gif":
+                            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/gif");
+                            break;
+                        case "svg":
+                            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/svg+xml");
+                            break;
+                        case "xml":
+                            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/svg+xml");
+                            break;
+                        default:
+                            break;
+                    }
+                    return result;
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                }
+                
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+            }
+            
+        }
+
+        [Route("api/ProductImages/DeleteImage")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteImage(string pid, int position)
+        {
+            try
+            {
+                var productImg = (from pi in db.ProductImages
+                                  where pi.Pid == pid && pi.Position == position
+                                  select pi).ToList();
+                if (productImg != null && productImg.Count > 0)
+                {
+                    db.ProductImages.Remove(productImg[0]);
+                    db.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                }
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}
