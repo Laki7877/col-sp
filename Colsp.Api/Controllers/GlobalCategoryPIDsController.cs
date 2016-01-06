@@ -32,7 +32,7 @@ namespace Colsp.Api.Controllers
                 globalCategoryPID.CategoryAbbreviation = catCode;
                 globalCategoryPID.CurrentKey = AutoGenerate.NextPID(PID);
                 GlobalCatPIDCache.UpdateKey(globalCategoryPID.CategoryAbbreviation,globalCategoryPID.CurrentKey);
-                return Request.CreateResponse(HttpStatusCode.OK,globalCategoryPID);
+                return Request.CreateResponse(HttpStatusCode.OK, string.Concat(catCode,globalCategoryPID));
             }
             globalCategoryPID = db.GlobalCategoryPIDs.Find(catCode);
             if (globalCategoryPID == null)
@@ -41,7 +41,7 @@ namespace Colsp.Api.Controllers
             }
             globalCategoryPID.CurrentKey = AutoGenerate.NextPID(globalCategoryPID.CurrentKey);
             GlobalCatPIDCache.AddPID(globalCategoryPID.CategoryAbbreviation, globalCategoryPID.CurrentKey);
-            return Request.CreateResponse(HttpStatusCode.OK, globalCategoryPID);
+            return Request.CreateResponse(HttpStatusCode.OK, string.Concat(catCode, globalCategoryPID));
         }
 
         protected override void Dispose(bool disposing)
