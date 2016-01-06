@@ -24,15 +24,15 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
                 var tmp = (from node in db.GlobalCategories
                            from parent in db.GlobalCategories
                            where node.Lft >= parent.Lft && node.Lft <= parent.Rgt
-                           group node by new { node.NameEn, node.Lft } into g
+                           group node by new { node.NameEn, node.Lft, node.CategoryAbbreviation } into g
                            orderby g.Key.Lft
                            select new
                            {
-                               g.Key.NameEn,
+                               NameEn = g.Key.NameEn,
+                               CategoryAbbreviation = g.Key.CategoryAbbreviation,
                                Depth = g.ToList().Count()
                            });
                 return Request.CreateResponse(tmp);
