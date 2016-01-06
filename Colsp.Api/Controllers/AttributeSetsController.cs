@@ -33,7 +33,13 @@ namespace Colsp.Api.Controllers
                                              select a,
                                 attr = from a in db.Attributes
                                        where a.Status.Equals(Constant.STATUS_ACTIVE)
-                                       select a
+                                       select a,
+                                attrValMap = from a in db.AttributeValueMaps
+                                             where a.Status.Equals(Constant.STATUS_ACTIVE)
+                                             select a,
+                                attrVal = from a in db.AttributeValues
+                                          where a.Status.Equals(Constant.STATUS_ACTIVE)
+                                          select a
                             }).AsEnumerable().Select(t => t.attrSet).ToList();
                 if (attributeSet != null && attributeSet.Count > 0)
                 {
