@@ -33,7 +33,7 @@ namespace Colsp.Api.Controllers
                            select new
                            {
                                g.Key.NameEn,
-                               Depth = g.ToList().Count()-1
+                               Depth = g.ToList().Count()
                            });
                 return Request.CreateResponse(tmp);
             }
