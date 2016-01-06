@@ -209,6 +209,66 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/ProductImages/DeleteImage")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteImageById(int id)
+        {
+            try
+            {
+                var ProductImg = db.ProductImages.Find(id);
+                if(ProductImg != null)
+                {
+                    db.ProductImages.Remove(ProductImg);
+                    db.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                }
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        [Route("api/ProductImages/ShiftPosition")]
+        [HttpGet]
+        public HttpResponseMessage ShiftPosition(string pid, int fromPos, int toPos)
+        {
+            try
+            {
+                var ProductImgs = (from img in db.ProductImages
+                                  where img.Pid == pid && img.Position == fromPos
+                                   select img).ToList();
+                if(ProductImgs != null && ProductImgs.Count > 0)
+                {
+                    ProductImgs[0].Position = toPos;
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                }
+
+                ProductImgs = (from img in db.ProductImages
+                                where img.Pid == pid && img.Position == toPos
+                                select img).ToList();
+                if(ProductImgs != null && ProductImgs.Count > 0)
+                {
+                    ProductImgs[0].Position = fromPos;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+            }
+
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
