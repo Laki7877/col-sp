@@ -26,7 +26,17 @@ namespace Colsp.Api.Extensions
 			}
 			return null;
 		}
-		public static List<int> ShopIds(this IPrincipal p)
+
+        public static string Email(this IPrincipal p)
+        {
+            if (p is UsersPrincipal)
+            {
+                return ((UsersPrincipal)p).Email;
+            }
+            return null;
+        }
+
+        public static List<int> ShopIds(this IPrincipal p)
 		{
 			if(p is UsersPrincipal)
 			{

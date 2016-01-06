@@ -163,13 +163,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Constants\AppSettingKey.cs" />
+    <Compile Include="Constants\HttpErrorMessage.cs" />
+    <Compile Include="Constants\HttpParameterConstant.cs" />
+    <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
+    <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ProductStagesController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\IPrincipalExtension.cs" />
     <Compile Include="Filters\ClaimsAuthorizeAttribute.cs" />
-    <Compile Include="Helper\AutoGenerate.cs" />
+    <Compile Include="Filters\ValidateMimeMultipartContentFilter.cs" />
+    <Compile Include="Helpers\AutoGenerate.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Helpers\GlobalCatPIDCache.cs" />
     <Compile Include="Security\UsersPrincipal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

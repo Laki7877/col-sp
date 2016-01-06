@@ -16,6 +16,9 @@ namespace Colsp.Entity.Models
     {
         public int ImageId { get; set; }
         public string Pid { get; set; }
+        public string Path { get; set; }
+        public string ImageName { get; set; }
+        public string ImageOriginName { get; set; }
         public string ImageUrlEn { get; set; }
         public string ImageUrlTh { get; set; }
         public Nullable<int> Position { get; set; }

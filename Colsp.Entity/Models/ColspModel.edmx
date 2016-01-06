@@ -466,6 +466,9 @@
           </Key>
           <Property Name="ImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="Path" Type="nvarchar" MaxLength="500" />
+          <Property Name="ImageName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ImageOriginName" Type="nvarchar" MaxLength="100" />
           <Property Name="ImageUrlEn" Type="nvarchar" MaxLength="2083" />
           <Property Name="ImageUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
@@ -589,6 +592,9 @@
           </Key>
           <Property Name="ImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="Path" Type="nvarchar" MaxLength="500" />
+          <Property Name="ImageName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ImageOriginName" Type="nvarchar" MaxLength="100" />
           <Property Name="ImageUrlEn" Type="nvarchar" MaxLength="2083" />
           <Property Name="ImageUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
@@ -2799,6 +2805,9 @@
           </Key>
           <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ImageName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ImageOriginName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ImageUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="ImageUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
@@ -2939,6 +2948,9 @@
           </Key>
           <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ImageName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ImageOriginName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ImageUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="ImageUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
@@ -4527,6 +4539,9 @@
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="ImageUrlTh" ColumnName="ImageUrlTh" />
                 <ScalarProperty Name="ImageUrlEn" ColumnName="ImageUrlEn" />
+                <ScalarProperty Name="ImageOriginName" ColumnName="ImageOriginName" />
+                <ScalarProperty Name="ImageName" ColumnName="ImageName" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ImageId" ColumnName="ImageId" />
               </MappingFragment>
@@ -4652,6 +4667,9 @@
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="ImageUrlTh" ColumnName="ImageUrlTh" />
                 <ScalarProperty Name="ImageUrlEn" ColumnName="ImageUrlEn" />
+                <ScalarProperty Name="ImageOriginName" ColumnName="ImageOriginName" />
+                <ScalarProperty Name="ImageName" ColumnName="ImageName" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ImageId" ColumnName="ImageId" />
               </MappingFragment>

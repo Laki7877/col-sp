@@ -1,25 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using System.Threading.Tasks;
 using Colsp.Api.Constants;
 using System.IO;
 using System.Configuration;
-using Colsp.Model.Responses;
 using System.Web;
 using System.Drawing;
 using Colsp.Api.Helpers;
 using System.Net.Http.Headers;
-using Colsp.Api.Services;
-using Colsp.Api.Filters;
+using Colsp.Api.Extensions;
 
 namespace Colsp.Api.Controllers
 {
@@ -104,7 +98,7 @@ namespace Colsp.Api.Controllers
                     productImg.ImageOriginName = oldfileName;
                     productImg.ImageName = Path.GetFileName(newfileName);
                     productImg.Position = position;
-                    productImg.CreatedBy = BasicAuthenticateAttribute.Username(Request.Headers.Authorization.Parameter);
+                    productImg.CreatedBy = this.User.Email();
                     productImg.CreatedDt = DateTime.Now;
 
                     db.ProductImages.Add(productImg);
@@ -229,7 +223,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }
         }
 
@@ -264,7 +258,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }
 
         }

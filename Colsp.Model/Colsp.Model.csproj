@@ -46,7 +46,11 @@
     <Compile Include="Requests\ProductRequest.cs" />
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\UserRequest.cs" />
+    <Compile Include="Responses\AttributeRespond.cs" />
+    <Compile Include="Responses\AttributeSetRespond.cs" />
+    <Compile Include="Responses\FileResult.cs" />
     <Compile Include="Responses\PaginatedResponse.cs" />
+    <Compile Include="Responses\ProductImageRespond.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
