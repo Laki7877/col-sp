@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Colsp.Entity.Models;
 using Colsp.Api.Constants;
+using System.Data.Entity;
 
 namespace Colsp.Api.Controllers
 {
@@ -12,20 +13,29 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-        [Route("api/AttributeSets/GetFromCat")]
+        [Route("api/AttributeSets/GetFromAttributeSetCat/{catId}")]
         [HttpGet]
         public HttpResponseMessage GetAttributeSetFromCat(int catId)
         {
             try
             {
-                var attributeSet = (from attrSet in db.AttributeSets.Include("AttributeSetMaps.Attribute")
-                                    join catMap in db.CategoryAttributeSetMaps on attrSet.AttributeSetId equals catMap.AttributeSetId
-                                    where catMap.CategoryId == catId
-                                    select attrSet).ToList();
-
-
-
-                if(attributeSet != null && attributeSet.Count > 0)
+                var attributeSet = (from cat in db.GlobalCategories
+                            join catMap in db.CategoryAttributeSetMaps on cat.CategoryId equals catMap.CategoryId
+                            join attrSet in db.AttributeSets on catMap.AttributeSetId equals attrSet.AttributeSetId
+                            where cat.CategoryId.Equals(catId) 
+                                    && cat.Status.Equals(Constant.STATUS_ACTIVE) 
+                                    && attrSet.Status.Equals(Constant.STATUS_ACTIVE)
+                            select new
+                            {
+                                attrSet,
+                                attrSetMap = from a in db.AttributeSetMaps
+                                             where a.Status.Equals(Constant.STATUS_ACTIVE)
+                                             select a,
+                                attr = from a in db.Attributes
+                                       where a.Status.Equals(Constant.STATUS_ACTIVE)
+                                       select a
+                            }).AsEnumerable().Select(t => t.attrSet).ToList();
+                if (attributeSet != null && attributeSet.Count > 0)
                 {
                     return Request.CreateResponse(attributeSet);
                 }
@@ -35,7 +45,7 @@ namespace Colsp.Api.Controllers
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }
@@ -54,5 +64,6 @@ namespace Colsp.Api.Controllers
         {
             return db.AttributeSets.Count(e => e.AttributeSetId == id) > 0;
         }
+
     }
 }

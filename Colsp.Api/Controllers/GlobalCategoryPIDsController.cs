@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Api.Helper;
 using Colsp.Api.Filters;
+using Colsp.Api.Constants;
 
 namespace Colsp.Api.Controllers
 {
@@ -18,120 +19,29 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-        // GET: api/GlobalCategoryPIDs
-        [ClaimsAuthorize(Permission = "Noone")]
-        public IQueryable<GlobalCategoryPID> GetGlobalCategoryPIDs()
-        {
-            return db.GlobalCategoryPIDs;
-        }
-
-        // GET: api/GlobalCategoryPIDs/5
+        [Route("api/GlobalCategoryPIDs/GetFromAttributeSetCatCode/{catCode}")]
         [ClaimsAuthorize(Permission = "AddProduct")]
-        [ResponseType(typeof(GlobalCategoryPID))]
-        public IHttpActionResult GetGlobalCategoryPID(string id)
+        [HttpGet]
+        public HttpResponseMessage GetGlobalCategoryPID(string catCode)
         {
             GlobalCategoryPID globalCategoryPID = null;
-            string PID = GlobalCatPIDCache.GetPID(id);
+            string PID = GlobalCatPIDCache.GetPID(catCode);
             if (!String.IsNullOrEmpty(PID))
             {
                 globalCategoryPID = new GlobalCategoryPID();
-                globalCategoryPID.CategoryAbbreviation = id;
+                globalCategoryPID.CategoryAbbreviation = catCode;
                 globalCategoryPID.CurrentKey = AutoGenerate.NextPID(PID);
                 GlobalCatPIDCache.UpdateKey(globalCategoryPID.CategoryAbbreviation,globalCategoryPID.CurrentKey);
-                return Ok(globalCategoryPID);
+                return Request.CreateResponse(HttpStatusCode.OK,globalCategoryPID);
             }
-            globalCategoryPID = db.GlobalCategoryPIDs.Find(id);
+            globalCategoryPID = db.GlobalCategoryPIDs.Find(catCode);
             if (globalCategoryPID == null)
             {
-                return NotFound();
+                return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
             }
             globalCategoryPID.CurrentKey = AutoGenerate.NextPID(globalCategoryPID.CurrentKey);
             GlobalCatPIDCache.AddPID(globalCategoryPID.CategoryAbbreviation, globalCategoryPID.CurrentKey);
-            return Ok(globalCategoryPID);
-        }
-
-        // PUT: api/GlobalCategoryPIDs/5
-        [ResponseType(typeof(void))]
-        [ClaimsAuthorize(Permission = "Noone")]
-        public IHttpActionResult PutGlobalCategoryPID(string id, GlobalCategoryPID globalCategoryPID)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != globalCategoryPID.CategoryAbbreviation)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(globalCategoryPID).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GlobalCategoryPIDExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST: api/GlobalCategoryPIDs
-        [ClaimsAuthorize(Permission = "Noone")]
-        [ResponseType(typeof(GlobalCategoryPID))]
-        public IHttpActionResult PostGlobalCategoryPID(GlobalCategoryPID globalCategoryPID)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.GlobalCategoryPIDs.Add(globalCategoryPID);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (GlobalCategoryPIDExists(globalCategoryPID.CategoryAbbreviation))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = globalCategoryPID.CategoryAbbreviation }, globalCategoryPID);
-        }
-
-        // DELETE: api/GlobalCategoryPIDs/5
-        [ClaimsAuthorize(Permission = "Noone")]
-        [ResponseType(typeof(GlobalCategoryPID))]
-        public IHttpActionResult DeleteGlobalCategoryPID(string id)
-        {
-            GlobalCategoryPID globalCategoryPID = db.GlobalCategoryPIDs.Find(id);
-            if (globalCategoryPID == null)
-            {
-                return NotFound();
-            }
-
-            db.GlobalCategoryPIDs.Remove(globalCategoryPID);
-            db.SaveChanges();
-
-            return Ok(globalCategoryPID);
+            return Request.CreateResponse(HttpStatusCode.OK, globalCategoryPID);
         }
 
         protected override void Dispose(bool disposing)

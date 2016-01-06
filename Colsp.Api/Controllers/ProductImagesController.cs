@@ -115,7 +115,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductImages/GetImage")]
+        [Route("api/ProductImages/GetImage/{pid}/{position}")]
         [HttpGet]
         public HttpResponseMessage GetImage(string pid, int position)
         {
@@ -128,11 +128,8 @@ namespace Colsp.Api.Controllers
                 {
                     ProductImage pImg = productImg[0];
                     Image img = System.Drawing.Image.FromFile(pImg.Path);
-                    MemoryStream ms = new MemoryStream();
-                    img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    img.Dispose();
+                    MemoryStream ms = new MemoryStream();                   
                     HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-                    result.Content = new ByteArrayContent(ms.ToArray());
                     string[] fileSplit = pImg.ImageName.Split('.');
                     string ext = string.Empty;
                     if(fileSplit.Length > 1)
@@ -142,26 +139,26 @@ namespace Colsp.Api.Controllers
                     switch (ext.ToLower())
                     {
                         case "png":
+                            img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                             result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
                             break;
                         case "jpg":
+                            img.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
                             result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
                             break;
                         case "jpeg":
+                            img.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
                             result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
                             break;
                         case "gif":
+                            img.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
                             result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/gif");
-                            break;
-                        case "svg":
-                            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/svg+xml");
-                            break;
-                        case "xml":
-                            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/svg+xml");
                             break;
                         default:
                             break;
                     }
+                    img.Dispose();
+                    result.Content = new ByteArrayContent(ms.ToArray());
                     return result;
                 }
                 else
@@ -177,7 +174,7 @@ namespace Colsp.Api.Controllers
             
         }
 
-        [Route("api/ProductImages/DeleteImage")]
+        [Route("api/ProductImages/DeleteImage/{pid}/{position}")]
         [HttpDelete]
         public HttpResponseMessage DeleteImage(string pid, int position)
         {
@@ -203,7 +200,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductImages/DeleteImage")]
+        [Route("api/ProductImages/DeleteImage/{id}")]
         [HttpDelete]
         public HttpResponseMessage DeleteImageById(int id)
         {
@@ -227,12 +224,14 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductImages/ShiftPosition")]
+        [Route("api/ProductImages/ShiftPosition/{pid}/{fromPos}/{toPos}")]
         [HttpGet]
         public HttpResponseMessage ShiftPosition(string pid, int fromPos, int toPos)
         {
             try
             {
+              
+
                 var ProductImgs = (from img in db.ProductImages
                                   where img.Pid == pid && img.Position == fromPos
                                    select img).ToList();

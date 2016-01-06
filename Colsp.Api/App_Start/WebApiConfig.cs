@@ -1,13 +1,11 @@
 ﻿using Colsp.Api.Constants;
 using Colsp.Api.Filters;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Http.Routing;
 
 namespace Colsp.Api
 {
@@ -38,7 +36,7 @@ namespace Colsp.Api
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-
+           
             //crearte folder for image
             string imgageRootPath = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
             string imageTmpFolder = ConfigurationManager.AppSettings[AppSettingKey.IMAGE_TMP_FOLDER];

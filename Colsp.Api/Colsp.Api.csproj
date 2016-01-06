@@ -164,8 +164,10 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Constants\AppSettingKey.cs" />
+    <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
     <Compile Include="Constants\HttpParameterConstant.cs" />
+    <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
     <Compile Include="Controllers\ProductImagesController.cs" />
