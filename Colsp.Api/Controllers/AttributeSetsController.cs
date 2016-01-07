@@ -43,7 +43,7 @@ namespace Colsp.Api.Controllers
                             }).AsEnumerable().Select(t => t.attrSet).ToList();
                 if (attributeSet != null && attributeSet.Count > 0)
                 {
-                    return Request.CreateResponse(attributeSet);
+                    return Request.CreateResponse(HttpStatusCode.OK,attributeSet);
                 }
                 else
                 {

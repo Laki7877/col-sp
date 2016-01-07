@@ -17,14 +17,13 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-
         [Route("api/GlobalCategories/GetGlobalCategory")]
         [HttpGet]
         public HttpResponseMessage GetGlobalCategory()
         {
             try
             {
-                var tmp = (from node in db.GlobalCategories
+                var globalCat = (from node in db.GlobalCategories
                            from parent in db.GlobalCategories
                            where node.Lft >= parent.Lft && node.Lft <= parent.Rgt
                            group node by new { node.NameEn, node.Lft, node.CategoryAbbreviation } into g
@@ -34,12 +33,19 @@ namespace Colsp.Api.Controllers
                                NameEn = g.Key.NameEn,
                                CategoryAbbreviation = g.Key.CategoryAbbreviation,
                                Depth = g.ToList().Count()
-                           });
-                return Request.CreateResponse(tmp);
+                           }).ToList();
+                if (globalCat != null && globalCat.Count > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, globalCat);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                }
+                
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                string tt = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }
         }

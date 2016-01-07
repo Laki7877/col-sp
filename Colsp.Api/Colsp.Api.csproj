@@ -169,8 +169,10 @@
     <Compile Include="Constants\HttpParameterConstant.cs" />
     <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
+    <Compile Include="Controllers\BrandsController.cs" />
     <Compile Include="Controllers\GlobalCategoriesController.cs" />
     <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
+    <Compile Include="Controllers\LocalCategoriesController.cs" />
     <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ProductStagesController.cs" />
