@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Responses
 {
-    class AttributeRespond
+    public class FileUploadRespond
     {
-        public int AttributeId;
-
+        public string tmpPath { get; set; }
+        
+        public string url { get; set; }
     }
 }

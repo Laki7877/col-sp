@@ -17,7 +17,6 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
-            this.ProductAttributes = new HashSet<ProductAttribute>();
             this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
             this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
             this.ProductTags = new HashSet<ProductTag>();
@@ -77,8 +76,6 @@ namespace Colsp.Entity.Models
         public virtual Brand Brand { get; set; }
         public virtual GlobalCategory GlobalCategory { get; set; }
         public virtual LocalCategory LocalCategory { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

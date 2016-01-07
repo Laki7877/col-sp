@@ -14,6 +14,7 @@ using System.Drawing;
 using Colsp.Api.Helpers;
 using System.Net.Http.Headers;
 using Colsp.Api.Extensions;
+using Colsp.Model.Responses;
 
 namespace Colsp.Api.Controllers
 {
@@ -22,6 +23,7 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
         private readonly string root = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
 
+        /*
         [Route("api/ProductImages/Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> UploadFile()
@@ -114,6 +116,56 @@ namespace Colsp.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }
         }
+        */
+
+
+        [Route("api/ProductImages")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadFile()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
+                }
+                string tmpFolder = Path.Combine(root, ConfigurationManager.AppSettings[AppSettingKey.IMAGE_TMP_FOLDER]);
+                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+             
+                FileUploadRespond fileUpload = new FileUploadRespond();
+                string fileName = string.Empty;
+                string ext = string.Empty;
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    fileName = fileData.LocalFileName;
+                    string tmp = fileData.Headers.ContentDisposition.FileName;
+                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+                    {
+                        tmp = tmp.Trim('"');
+                    }
+                    ext = Path.GetExtension(tmp);
+                    break;
+                }
+                //UriHelper uu = Request.GetRequestContext().Url;
+                
+                string newName = string.Concat(fileName,ext);
+                File.Move(fileName, newName);
+                fileUpload.tmpPath = newName;
+
+                var name = Path.GetFileName(newName);
+                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+                fileUpload.url = string.Concat(schema,"://",imageUrl, "/Images/Tmp/", name);
+
+                return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+            }
+        }
 
         [Route("api/ProductImages/GetImage/{pid}/{position}")]
         [HttpGet]
@@ -167,7 +219,7 @@ namespace Colsp.Api.Controllers
                 }
                 
             }
-            catch (Exception)
+            catch
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }
@@ -194,7 +246,7 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
                 }
             }
-            catch (Exception)
+            catch
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }
@@ -218,7 +270,7 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
                 }
             }
-            catch (Exception)
+            catch
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }
@@ -255,7 +307,7 @@ namespace Colsp.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK);
 
             }
-            catch (Exception)
+            catch
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
             }

@@ -14,7 +14,7 @@ namespace Colsp.Entity.Models
     
     public partial class ProductAttribute
     {
-        public int ProductId { get; set; }
+        public string Pid { get; set; }
         public int AttributeId { get; set; }
         public string ValueEn { get; set; }
         public string ValueTh { get; set; }
@@ -25,6 +25,5 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         public virtual Attribute Attribute { get; set; }
-        public virtual Product Product { get; set; }
     }
 }

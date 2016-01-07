@@ -6,6 +6,7 @@ using System.Web.Http;
 using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using Colsp.Api.Constants;
+using System.Collections.Generic;
 
 namespace Colsp.Api.Controllers
 {
@@ -13,28 +14,36 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-        [Route("api/Brands/")]
+        [Route("api/Brands")]
         [HttpGet]
         public HttpResponseMessage GetBrand([FromUri] BrandRequest request)
         {
             try
             {
-                request.DefaultOnNull();
+                
                 IQueryable<Brand> brand = null;
-
                 // List all brand
                 brand = db.Brands.Where(p => true);
-                if (request.SearchText != null)
-                {
-                    brand = brand.Where(b => b.BrandNameEn.Contains(request.SearchText)
-                    || b.BrandNameTh.Contains(request.SearchText));
-                }
-                if (request.BrandId != null)
-                {
-                    brand = brand.Where(p => p.BrandId.Equals(request.BrandId));
-                }
+                brand = brand.Where(b => b.Status.Equals(Constant.STATUS_ACTIVE));
 
-                return Request.CreateResponse(HttpStatusCode.OK, brand);
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, brand);
+                }
+                else
+                {
+                    request.DefaultOnNull();
+                    if (request.SearchText != null)
+                    {
+                        brand = brand.Where(b => b.BrandNameEn.Contains(request.SearchText)
+                        || b.BrandNameTh.Contains(request.SearchText));
+                    }
+                    if (request.BrandId != null)
+                    {
+                        brand = brand.Where(p => p.BrandId.Equals(request.BrandId));
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, brand);
+                }
             }
             catch (Exception)
             {

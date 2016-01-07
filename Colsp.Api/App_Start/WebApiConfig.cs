@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Routing;
+using System.Web.Routing;
 
 namespace Colsp.Api
 {
@@ -36,7 +37,10 @@ namespace Colsp.Api
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-           
+
+            //enable static image
+            config.Routes.IgnoreRoute("ImageRoute", "Images/{file}");
+
             //crearte folder for image
             string imgageRootPath = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
             string imageTmpFolder = ConfigurationManager.AppSettings[AppSettingKey.IMAGE_TMP_FOLDER];
