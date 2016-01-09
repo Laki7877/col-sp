@@ -6,7 +6,6 @@ using System.Web.Http;
 using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using Colsp.Api.Constants;
-using System.Collections.Generic;
 
 namespace Colsp.Api.Controllers
 {

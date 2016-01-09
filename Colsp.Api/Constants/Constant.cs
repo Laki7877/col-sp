@@ -12,5 +12,11 @@ namespace Colsp.Api.Constants
 
         public static readonly string DATA_TYPE_STRING = "ST";
         public static readonly string DATA_TYPE_LIST = "LT";
+
+        public static Dictionary<string, int?> STOCK_TYPE = new Dictionary<string, int?>() { {"Stock", 1 }, { "Pre-Order" , 2} };
+
+
+        public static readonly string PRODUCT_STATUS_DRAFT = "DF";
+        public static readonly string PRODUCT_STATUS_WAIT_FOR_APPROVAL = "WA";
     }
 }

@@ -14,8 +14,10 @@ namespace Colsp.Entity.Models
     
     public partial class ProductStageVariant
     {
-        public int ProductId { get; set; }
         public int VariantId { get; set; }
+        public int ProductId { get; set; }
+        public Nullable<int> Attribute1Id { get; set; }
+        public Nullable<int> Attribute2Id { get; set; }
         public string ValueEn { get; set; }
         public string ValueTh { get; set; }
         public string ProductNameEn { get; set; }
@@ -36,9 +38,9 @@ namespace Colsp.Entity.Models
         public Nullable<decimal> Length { get; set; }
         public Nullable<decimal> Height { get; set; }
         public Nullable<decimal> Width { get; set; }
-        public string DimenstionUnit { get; set; }
+        public string DimensionUnit { get; set; }
         public Nullable<decimal> Weight { get; set; }
-        public Nullable<decimal> DimenstionWeight { get; set; }
+        public string WeightUnit { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
@@ -46,6 +48,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         public virtual Attribute Attribute { get; set; }
+        public virtual Attribute Attribute1 { get; set; }
         public virtual ProductStage ProductStage { get; set; }
     }
 }

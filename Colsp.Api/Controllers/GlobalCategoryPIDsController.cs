@@ -19,30 +19,30 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-        [Route("api/GlobalCategoryPIDs/GetFromAttributeSetCatCode/{catCode}")]
-        [ClaimsAuthorize(Permission = "AddProduct")]
-        [HttpGet]
-        public HttpResponseMessage GetGlobalCategoryPID(string catCode)
-        {
-            GlobalCategoryPID globalCategoryPID = null;
-            string PID = GlobalCatPIDCache.GetPID(catCode);
-            if (!String.IsNullOrEmpty(PID))
-            {
-                globalCategoryPID = new GlobalCategoryPID();
-                globalCategoryPID.CategoryAbbreviation = catCode;
-                globalCategoryPID.CurrentKey = AutoGenerate.NextPID(PID);
-                GlobalCatPIDCache.UpdateKey(globalCategoryPID.CategoryAbbreviation,globalCategoryPID.CurrentKey);
-                return Request.CreateResponse(HttpStatusCode.OK, string.Concat(catCode,globalCategoryPID));
-            }
-            globalCategoryPID = db.GlobalCategoryPIDs.Find(catCode);
-            if (globalCategoryPID == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
-            }
-            globalCategoryPID.CurrentKey = AutoGenerate.NextPID(globalCategoryPID.CurrentKey);
-            GlobalCatPIDCache.AddPID(globalCategoryPID.CategoryAbbreviation, globalCategoryPID.CurrentKey);
-            return Request.CreateResponse(HttpStatusCode.OK, string.Concat(catCode, globalCategoryPID));
-        }
+        //[Route("api/GlobalCategoryPIDs/GetFromAttributeSetCatCode/{catCode}")]
+        //[ClaimsAuthorize(Permission = "AddProduct")]
+        //[HttpGet]
+        //public HttpResponseMessage GetGlobalCategoryPID(string catCode)
+        //{
+        //    GlobalCategoryPID globalCategoryPID = null;
+        //    string PID = GlobalCatPIDCache.GetPID(catCode);
+        //    if (!String.IsNullOrEmpty(PID))
+        //    {
+        //        globalCategoryPID = new GlobalCategoryPID();
+        //        globalCategoryPID.CategoryAbbreviation = catCode;
+        //        globalCategoryPID.CurrentKey = AutoGenerate.NextPID(PID);
+        //        GlobalCatPIDCache.UpdateKey(globalCategoryPID.CategoryAbbreviation,globalCategoryPID.CurrentKey);
+        //        return Request.CreateResponse(HttpStatusCode.OK, string.Concat(catCode,globalCategoryPID));
+        //    }
+        //    globalCategoryPID = db.GlobalCategoryPIDs.Find(catCode);
+        //    if (globalCategoryPID == null)
+        //    {
+        //        return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+        //    }
+        //    globalCategoryPID.CurrentKey = AutoGenerate.NextPID(globalCategoryPID.CurrentKey);
+        //    GlobalCatPIDCache.AddPID(globalCategoryPID.CategoryAbbreviation, globalCategoryPID.CurrentKey);
+        //    return Request.CreateResponse(HttpStatusCode.OK, string.Concat(catCode, globalCategoryPID));
+        //}
 
         protected override void Dispose(bool disposing)
         {

@@ -45,6 +45,7 @@
     <Compile Include="Requests\BrandRequest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />
+    <Compile Include="Requests\ProductStageRequest.cs" />
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\UserRequest.cs" />
     <Compile Include="Responses\FileUploadRespond.cs" />

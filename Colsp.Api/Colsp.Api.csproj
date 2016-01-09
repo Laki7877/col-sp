@@ -191,6 +191,7 @@
     <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
     <Compile Include="Constants\HttpParameterConstant.cs" />
+    <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
     <Compile Include="Controllers\GlobalCategoriesController.cs" />
     <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
@@ -198,13 +199,13 @@
     <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ProductStagesController.cs" />
+    <Compile Include="Controllers\ShopsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\IPrincipalExtension.cs" />
     <Compile Include="Filters\ClaimsAuthorizeAttribute.cs" />
     <Compile Include="Filters\ValidateMimeMultipartContentFilter.cs" />
     <Compile Include="Helpers\AutoGenerate.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
-    <Compile Include="Helpers\GlobalCatPIDCache.cs" />
     <Compile Include="Security\UsersPrincipal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

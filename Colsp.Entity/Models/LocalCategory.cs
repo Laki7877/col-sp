@@ -31,7 +31,7 @@ namespace Colsp.Entity.Models
         public string UrlKeyEn { get; set; }
         public string UrlKeyTh { get; set; }
         public Nullable<int> ProductCount { get; set; }
-        public Nullable<int> Shop { get; set; }
+        public Nullable<int> ShopId { get; set; }
         public Nullable<int> Lft { get; set; }
         public Nullable<int> Rgt { get; set; }
         public string Status { get; set; }
@@ -40,7 +40,7 @@ namespace Colsp.Entity.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual Shop Shop1 { get; set; }
+        public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistory> ProductHistories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

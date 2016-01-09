@@ -19,7 +19,6 @@ namespace Colsp.Entity.Models
         {
             this.ProductHistoryGlobalCatMaps = new HashSet<ProductHistoryGlobalCatMap>();
             this.ProductHistoryLocalCatMaps = new HashSet<ProductHistoryLocalCatMap>();
-            this.ProductHistoryTags = new HashSet<ProductHistoryTag>();
             this.ProductHistoryVariants = new HashSet<ProductHistoryVariant>();
         }
     
@@ -81,8 +80,6 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
         public virtual Shipping Shipping { get; set; }
         public virtual Shop Shop { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductHistoryTag> ProductHistoryTags { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistoryVariant> ProductHistoryVariants { get; set; }

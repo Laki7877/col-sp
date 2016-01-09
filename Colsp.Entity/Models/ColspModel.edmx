@@ -53,6 +53,19 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="AttributeSetTagMap">
+          <Key>
+            <PropertyRef Name="AttributeSetId" />
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="AttributeSetId" Type="int" Nullable="false" />
+          <Property Name="TagId" Type="int" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="AttributeValue">
           <Key>
             <PropertyRef Name="AttributeValueId" />
@@ -130,8 +143,9 @@
         </EntityType>
         <EntityType Name="GlobalCategoryPID">
           <Key>
-            <PropertyRef Name="CategoryAbbreviation" />
+            <PropertyRef Name="CategoryId" />
           </Key>
+          <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CurrentKey" Type="char" MaxLength="5" Nullable="false" />
         </EntityType>
@@ -182,7 +196,7 @@
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductCount" Type="int" />
-          <Property Name="Shop" Type="int" />
+          <Property Name="ShopId" Type="int" />
           <Property Name="Lft" Type="int" />
           <Property Name="Rgt" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
@@ -396,19 +410,6 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
-        <EntityType Name="ProductHistoryTag">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="TagId" />
-          </Key>
-          <Property Name="ProductId" Type="int" Nullable="false" />
-          <Property Name="TagId" Type="int" Nullable="false" />
-          <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="UpdatedDt" Type="datetime" />
-        </EntityType>
         <EntityType Name="ProductHistoryVariant">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -514,6 +515,7 @@
           <Property Name="LocalCatId" Type="int" />
           <Property Name="ShopId" Type="int" />
           <Property Name="SellerId" Type="int" />
+          <Property Name="AttributeSetId" Type="int" />
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="BrandId" Type="int" />
@@ -522,13 +524,15 @@
           <Property Name="Upc" Type="nvarchar" MaxLength="50" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="2000" />
           <Property Name="Stock" Type="int" />
           <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="500" />
+          <Property Name="PrepareDay" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" />
@@ -631,26 +635,14 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
-        <EntityType Name="ProductStageTag">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="TagId" />
-          </Key>
-          <Property Name="ProductId" Type="int" Nullable="false" />
-          <Property Name="TagId" Type="int" Nullable="false" />
-          <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="UpdatedDt" Type="datetime" />
-        </EntityType>
         <EntityType Name="ProductStageVariant">
           <Key>
-            <PropertyRef Name="ProductId" />
             <PropertyRef Name="VariantId" />
           </Key>
+          <Property Name="VariantId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProductId" Type="int" Nullable="false" />
-          <Property Name="VariantId" Type="int" Nullable="false" />
+          <Property Name="Attribute1Id" Type="int" />
+          <Property Name="Attribute2Id" Type="int" />
           <Property Name="ValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ValueTh" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="100" />
@@ -660,10 +652,10 @@
           <Property Name="Upc" Type="nvarchar" MaxLength="50" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="2000" />
           <Property Name="Stock" Type="int" />
           <Property Name="SaftyStock" Type="int" />
           <Property Name="VideoLink" Type="nvarchar" MaxLength="2083" />
@@ -671,9 +663,9 @@
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionUnit" Type="char" MaxLength="10" />
+          <Property Name="DimensionUnit" Type="char" MaxLength="10" />
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionWeight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="WeightUnit" Type="char" MaxLength="10" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -689,19 +681,6 @@
           <Property Name="VideoUrlEn" Type="nvarchar" MaxLength="2083" />
           <Property Name="VideoUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
-          <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="UpdatedDt" Type="datetime" />
-        </EntityType>
-        <EntityType Name="ProductTag">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="TagId" />
-          </Key>
-          <Property Name="ProductId" Type="int" Nullable="false" />
-          <Property Name="TagId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -802,7 +781,7 @@
           <Key>
             <PropertyRef Name="TagId" />
           </Key>
-          <Property Name="TagId" Type="int" Nullable="false" />
+          <Property Name="TagId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TagName" Type="nvarchar" MaxLength="100" />
           <Property Name="Count" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
@@ -888,6 +867,42 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <Association Name="FK_AttributeSetTagMap_AttributeSet">
+          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1" />
+          <End Role="AttributeSetTagMap" Type="Self.AttributeSetTagMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttributeSet">
+              <PropertyRef Name="AttributeSetId" />
+            </Principal>
+            <Dependent Role="AttributeSetTagMap">
+              <PropertyRef Name="AttributeSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AttributeSetTagMap_Tag">
+          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+          <End Role="AttributeSetTagMap" Type="Self.AttributeSetTagMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="TagId" />
+            </Principal>
+            <Dependent Role="AttributeSetTagMap">
+              <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStage_AttributeSet">
+          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="0..1" />
+          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttributeSet">
+              <PropertyRef Name="AttributeSetId" />
+            </Principal>
+            <Dependent Role="ProductStage">
+              <PropertyRef Name="AttributeSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShopUerGroupMap_Shop">
           <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
           <End Role="ShopUserGroupMap" Type="Self.ShopUserGroupMap" Multiplicity="*" />
@@ -992,7 +1007,7 @@
               <PropertyRef Name="ShopId" />
             </Principal>
             <Dependent Role="LocalCategory">
-              <PropertyRef Name="Shop" />
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1173,30 +1188,6 @@
             </Principal>
             <Dependent Role="ProductHistory">
               <PropertyRef Name="ShopId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductHistoryTagProduct">
-          <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="1" />
-          <End Role="ProductHistoryTag" Type="Self.ProductHistoryTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProductHistory">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductHistoryTag">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductHistoryTagTag">
-          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
-          <End Role="ProductHistoryTag" Type="Self.ProductHistoryTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tag">
-              <PropertyRef Name="TagId" />
-            </Principal>
-            <Dependent Role="ProductHistoryTag">
-              <PropertyRef Name="TagId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1416,30 +1407,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKProductStageTagProduct">
-          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
-          <End Role="ProductStageTag" Type="Self.ProductStageTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProductStage">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductStageTag">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductStageTagTag">
-          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
-          <End Role="ProductStageTag" Type="Self.ProductStageTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tag">
-              <PropertyRef Name="TagId" />
-            </Principal>
-            <Dependent Role="ProductStageTag">
-              <PropertyRef Name="TagId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKProductStageUser">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
@@ -1452,6 +1419,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FKProductStageVariantAttribute1">
+          <End Role="Attribute" Type="Self.Attribute" Multiplicity="0..1" />
+          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="AttributeId" />
+            </Principal>
+            <Dependent Role="ProductStageVariant">
+              <PropertyRef Name="Attribute1Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKProductStageVariantAttribute2">
+          <End Role="Attribute" Type="Self.Attribute" Multiplicity="0..1" />
+          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="AttributeId" />
+            </Principal>
+            <Dependent Role="ProductStageVariant">
+              <PropertyRef Name="Attribute2Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKProductStageVariantProduct">
           <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
           <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
@@ -1461,42 +1452,6 @@
             </Principal>
             <Dependent Role="ProductStageVariant">
               <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductStageVariantVariant">
-          <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
-          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Attribute">
-              <PropertyRef Name="AttributeId" />
-            </Principal>
-            <Dependent Role="ProductStageVariant">
-              <PropertyRef Name="VariantId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductTagProduct">
-          <End Role="Product" Type="Self.Product" Multiplicity="1" />
-          <End Role="ProductTag" Type="Self.ProductTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductTag">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductTagTag">
-          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
-          <End Role="ProductTag" Type="Self.ProductTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tag">
-              <PropertyRef Name="TagId" />
-            </Principal>
-            <Dependent Role="ProductTag">
-              <PropertyRef Name="TagId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1624,6 +1579,7 @@
           <EntitySet Name="Attribute" EntityType="Self.Attribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttributeSet" EntityType="Self.AttributeSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttributeSetMap" EntityType="Self.AttributeSetMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttributeSetTagMap" EntityType="Self.AttributeSetTagMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttributeValue" EntityType="Self.AttributeValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttributeValueMap" EntityType="Self.AttributeValueMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
@@ -1642,7 +1598,6 @@
           <EntitySet Name="ProductHistoryImage" EntityType="Self.ProductHistoryImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductHistoryLocalCatMap" EntityType="Self.ProductHistoryLocalCatMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductHistoryRelated" EntityType="Self.ProductHistoryRelated" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProductHistoryTag" EntityType="Self.ProductHistoryTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductHistoryVariant" EntityType="Self.ProductHistoryVariant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductHistoryVideo" EntityType="Self.ProductHistoryVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductImage" EntityType="Self.ProductImage" Schema="dbo" store:Type="Tables" />
@@ -1654,10 +1609,8 @@
           <EntitySet Name="ProductStageImage" EntityType="Self.ProductStageImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageLocalCatMap" EntityType="Self.ProductStageLocalCatMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageRelated" EntityType="Self.ProductStageRelated" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProductStageTag" EntityType="Self.ProductStageTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageVariant" EntityType="Self.ProductStageVariant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageVideo" EntityType="Self.ProductStageVideo" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProductTag" EntityType="Self.ProductTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductVariant" EntityType="Self.ProductVariant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductVideo" EntityType="Self.ProductVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
@@ -1670,6 +1623,18 @@
           <EntitySet Name="UserGroupPermissionMap" EntityType="Self.UserGroupPermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPermission" EntityType="Self.UserPermission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserShop" EntityType="Self.UserShop" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AttributeSetTagMap_AttributeSet" Association="Self.FK_AttributeSetTagMap_AttributeSet">
+            <End Role="AttributeSet" EntitySet="AttributeSet" />
+            <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AttributeSetTagMap_Tag" Association="Self.FK_AttributeSetTagMap_Tag">
+            <End Role="Tag" EntitySet="Tag" />
+            <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStage_AttributeSet" Association="Self.FK_ProductStage_AttributeSet">
+            <End Role="AttributeSet" EntitySet="AttributeSet" />
+            <End Role="ProductStage" EntitySet="ProductStage" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="Self.FK_ShopUerGroupMap_Shop">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMap" />
@@ -1766,14 +1731,6 @@
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductHistory" EntitySet="ProductHistory" />
           </AssociationSet>
-          <AssociationSet Name="FKProductHistoryTagProduct" Association="Self.FKProductHistoryTagProduct">
-            <End Role="ProductHistory" EntitySet="ProductHistory" />
-            <End Role="ProductHistoryTag" EntitySet="ProductHistoryTag" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductHistoryTagTag" Association="Self.FKProductHistoryTagTag">
-            <End Role="Tag" EntitySet="Tag" />
-            <End Role="ProductHistoryTag" EntitySet="ProductHistoryTag" />
-          </AssociationSet>
           <AssociationSet Name="FKProductHistoryUser" Association="Self.FKProductHistoryUser">
             <End Role="User" EntitySet="User" />
             <End Role="ProductHistory" EntitySet="ProductHistory" />
@@ -1846,33 +1803,21 @@
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductStage" EntitySet="ProductStage" />
           </AssociationSet>
-          <AssociationSet Name="FKProductStageTagProduct" Association="Self.FKProductStageTagProduct">
-            <End Role="ProductStage" EntitySet="ProductStage" />
-            <End Role="ProductStageTag" EntitySet="ProductStageTag" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductStageTagTag" Association="Self.FKProductStageTagTag">
-            <End Role="Tag" EntitySet="Tag" />
-            <End Role="ProductStageTag" EntitySet="ProductStageTag" />
-          </AssociationSet>
           <AssociationSet Name="FKProductStageUser" Association="Self.FKProductStageUser">
             <End Role="User" EntitySet="User" />
             <End Role="ProductStage" EntitySet="ProductStage" />
           </AssociationSet>
-          <AssociationSet Name="FKProductStageVariantProduct" Association="Self.FKProductStageVariantProduct">
-            <End Role="ProductStage" EntitySet="ProductStage" />
-            <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductStageVariantVariant" Association="Self.FKProductStageVariantVariant">
+          <AssociationSet Name="FKProductStageVariantAttribute1" Association="Self.FKProductStageVariantAttribute1">
             <End Role="Attribute" EntitySet="Attribute" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
           </AssociationSet>
-          <AssociationSet Name="FKProductTagProduct" Association="Self.FKProductTagProduct">
-            <End Role="Product" EntitySet="Product" />
-            <End Role="ProductTag" EntitySet="ProductTag" />
+          <AssociationSet Name="FKProductStageVariantAttribute2" Association="Self.FKProductStageVariantAttribute2">
+            <End Role="Attribute" EntitySet="Attribute" />
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
           </AssociationSet>
-          <AssociationSet Name="FKProductTagTag" Association="Self.FKProductTagTag">
-            <End Role="Tag" EntitySet="Tag" />
-            <End Role="ProductTag" EntitySet="ProductTag" />
+          <AssociationSet Name="FKProductStageVariantProduct" Association="Self.FKProductStageVariantProduct">
+            <End Role="ProductStage" EntitySet="ProductStage" />
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
           </AssociationSet>
           <AssociationSet Name="FKProductUser" Association="Self.FKProductUser">
             <End Role="User" EntitySet="User" />
@@ -1923,6 +1868,7 @@
           <EntitySet Name="Attributes" EntityType="ColspModel.Attribute" />
           <EntitySet Name="AttributeSets" EntityType="ColspModel.AttributeSet" />
           <EntitySet Name="AttributeSetMaps" EntityType="ColspModel.AttributeSetMap" />
+          <EntitySet Name="AttributeSetTagMaps" EntityType="ColspModel.AttributeSetTagMap" />
           <EntitySet Name="AttributeValues" EntityType="ColspModel.AttributeValue" />
           <EntitySet Name="AttributeValueMaps" EntityType="ColspModel.AttributeValueMap" />
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
@@ -1941,7 +1887,6 @@
           <EntitySet Name="ProductHistoryImages" EntityType="ColspModel.ProductHistoryImage" />
           <EntitySet Name="ProductHistoryLocalCatMaps" EntityType="ColspModel.ProductHistoryLocalCatMap" />
           <EntitySet Name="ProductHistoryRelateds" EntityType="ColspModel.ProductHistoryRelated" />
-          <EntitySet Name="ProductHistoryTags" EntityType="ColspModel.ProductHistoryTag" />
           <EntitySet Name="ProductHistoryVariants" EntityType="ColspModel.ProductHistoryVariant" />
           <EntitySet Name="ProductHistoryVideos" EntityType="ColspModel.ProductHistoryVideo" />
           <EntitySet Name="ProductImages" EntityType="ColspModel.ProductImage" />
@@ -1953,10 +1898,8 @@
           <EntitySet Name="ProductStageImages" EntityType="ColspModel.ProductStageImage" />
           <EntitySet Name="ProductStageLocalCatMaps" EntityType="ColspModel.ProductStageLocalCatMap" />
           <EntitySet Name="ProductStageRelateds" EntityType="ColspModel.ProductStageRelated" />
-          <EntitySet Name="ProductStageTags" EntityType="ColspModel.ProductStageTag" />
           <EntitySet Name="ProductStageVariants" EntityType="ColspModel.ProductStageVariant" />
           <EntitySet Name="ProductStageVideos" EntityType="ColspModel.ProductStageVideo" />
-          <EntitySet Name="ProductTags" EntityType="ColspModel.ProductTag" />
           <EntitySet Name="ProductVariants" EntityType="ColspModel.ProductVariant" />
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
@@ -1993,13 +1936,25 @@
             <End Role="Attribute" EntitySet="Attributes" />
             <End Role="ProductStageAttribute" EntitySet="ProductStageAttributes" />
           </AssociationSet>
-          <AssociationSet Name="FKProductStageVariantVariant" Association="ColspModel.FKProductStageVariantVariant">
+          <AssociationSet Name="FKProductStageVariantAttribute1" Association="ColspModel.FKProductStageVariantAttribute1">
+            <End Role="Attribute" EntitySet="Attributes" />
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
+          </AssociationSet>
+          <AssociationSet Name="FKProductStageVariantAttribute2" Association="ColspModel.FKProductStageVariantAttribute2">
             <End Role="Attribute" EntitySet="Attributes" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
           </AssociationSet>
           <AssociationSet Name="FKProductVariantVariant" Association="ColspModel.FKProductVariantVariant">
             <End Role="Attribute" EntitySet="Attributes" />
             <End Role="ProductVariant" EntitySet="ProductVariants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AttributeSetTagMap_AttributeSet" Association="ColspModel.FK_AttributeSetTagMap_AttributeSet">
+            <End Role="AttributeSet" EntitySet="AttributeSets" />
+            <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStage_AttributeSet" Association="ColspModel.FK_ProductStage_AttributeSet">
+            <End Role="AttributeSet" EntitySet="AttributeSets" />
+            <End Role="ProductStage" EntitySet="ProductStages" />
           </AssociationSet>
           <AssociationSet Name="FKAttributeSetMapAttributeSet" Association="ColspModel.FKAttributeSetMapAttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSets" />
@@ -2008,6 +1963,10 @@
           <AssociationSet Name="FKCategoryAttributeSetMapAttributeSet" Association="ColspModel.FKCategoryAttributeSetMapAttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSets" />
             <End Role="CategoryAttributeSetMap" EntitySet="CategoryAttributeSetMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AttributeSetTagMap_Tag" Association="ColspModel.FK_AttributeSetTagMap_Tag">
+            <End Role="Tag" EntitySet="Tags" />
+            <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMaps" />
           </AssociationSet>
           <AssociationSet Name="FKAttributeValueMapAttributeValue" Association="ColspModel.FKAttributeValueMapAttributeValue">
             <End Role="AttributeValue" EntitySet="AttributeValues" />
@@ -2097,10 +2056,6 @@
             <End Role="Shop" EntitySet="Shops" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
-          <AssociationSet Name="FKProductTagProduct" Association="ColspModel.FKProductTagProduct">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="ProductTag" EntitySet="ProductTags" />
-          </AssociationSet>
           <AssociationSet Name="FKProductUser" Association="ColspModel.FKProductUser">
             <End Role="User" EntitySet="Users" />
             <End Role="Product" EntitySet="Products" />
@@ -2125,10 +2080,6 @@
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductHistory" EntitySet="ProductHistories" />
           </AssociationSet>
-          <AssociationSet Name="FKProductHistoryTagProduct" Association="ColspModel.FKProductHistoryTagProduct">
-            <End Role="ProductHistory" EntitySet="ProductHistories" />
-            <End Role="ProductHistoryTag" EntitySet="ProductHistoryTags" />
-          </AssociationSet>
           <AssociationSet Name="FKProductHistoryUser" Association="ColspModel.FKProductHistoryUser">
             <End Role="User" EntitySet="Users" />
             <End Role="ProductHistory" EntitySet="ProductHistories" />
@@ -2136,10 +2087,6 @@
           <AssociationSet Name="FKProductHistoryVariantProduct" Association="ColspModel.FKProductHistoryVariantProduct">
             <End Role="ProductHistory" EntitySet="ProductHistories" />
             <End Role="ProductHistoryVariant" EntitySet="ProductHistoryVariants" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductHistoryTagTag" Association="ColspModel.FKProductHistoryTagTag">
-            <End Role="Tag" EntitySet="Tags" />
-            <End Role="ProductHistoryTag" EntitySet="ProductHistoryTags" />
           </AssociationSet>
           <AssociationSet Name="FKProductStageGlobalCatMapProduct" Association="ColspModel.FKProductStageGlobalCatMapProduct">
             <End Role="ProductStage" EntitySet="ProductStages" />
@@ -2157,10 +2104,6 @@
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductStage" EntitySet="ProductStages" />
           </AssociationSet>
-          <AssociationSet Name="FKProductStageTagProduct" Association="ColspModel.FKProductStageTagProduct">
-            <End Role="ProductStage" EntitySet="ProductStages" />
-            <End Role="ProductStageTag" EntitySet="ProductStageTags" />
-          </AssociationSet>
           <AssociationSet Name="FKProductStageUser" Association="ColspModel.FKProductStageUser">
             <End Role="User" EntitySet="Users" />
             <End Role="ProductStage" EntitySet="ProductStages" />
@@ -2168,14 +2111,6 @@
           <AssociationSet Name="FKProductStageVariantProduct" Association="ColspModel.FKProductStageVariantProduct">
             <End Role="ProductStage" EntitySet="ProductStages" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductStageTagTag" Association="ColspModel.FKProductStageTagTag">
-            <End Role="Tag" EntitySet="Tags" />
-            <End Role="ProductStageTag" EntitySet="ProductStageTags" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductTagTag" Association="ColspModel.FKProductTagTag">
-            <End Role="Tag" EntitySet="Tags" />
-            <End Role="ProductTag" EntitySet="ProductTags" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="ColspModel.FK_ShopUerGroupMap_Shop">
             <End Role="Shop" EntitySet="Shops" />
@@ -2241,7 +2176,8 @@
           <NavigationProperty Name="ProductHistoryAttributes" Relationship="ColspModel.FKProductHistoryAttributeAttribute" FromRole="Attribute" ToRole="ProductHistoryAttribute" />
           <NavigationProperty Name="ProductHistoryVariants" Relationship="ColspModel.FKProductHistoryVariantVariant" FromRole="Attribute" ToRole="ProductHistoryVariant" />
           <NavigationProperty Name="ProductStageAttributes" Relationship="ColspModel.FKProductStageAttributeAttribute" FromRole="Attribute" ToRole="ProductStageAttribute" />
-          <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantVariant" FromRole="Attribute" ToRole="ProductStageVariant" />
+          <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantAttribute1" FromRole="Attribute" ToRole="ProductStageVariant" />
+          <NavigationProperty Name="ProductStageVariants1" Relationship="ColspModel.FKProductStageVariantAttribute2" FromRole="Attribute" ToRole="ProductStageVariant" />
           <NavigationProperty Name="ProductVariants" Relationship="ColspModel.FKProductVariantVariant" FromRole="Attribute" ToRole="ProductVariant" />
         </EntityType>
         <EntityType Name="AttributeSet">
@@ -2256,6 +2192,8 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AttributeSetTagMaps" Relationship="ColspModel.FK_AttributeSetTagMap_AttributeSet" FromRole="AttributeSet" ToRole="AttributeSetTagMap" />
+          <NavigationProperty Name="ProductStages" Relationship="ColspModel.FK_ProductStage_AttributeSet" FromRole="AttributeSet" ToRole="ProductStage" />
           <NavigationProperty Name="AttributeSetMaps" Relationship="ColspModel.FKAttributeSetMapAttributeSet" FromRole="AttributeSet" ToRole="AttributeSetMap" />
           <NavigationProperty Name="CategoryAttributeSetMaps" Relationship="ColspModel.FKCategoryAttributeSetMapAttributeSet" FromRole="AttributeSet" ToRole="CategoryAttributeSetMap" />
         </EntityType>
@@ -2273,6 +2211,21 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKAttributeSetMapAttribute" FromRole="AttributeSetMap" ToRole="Attribute" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FKAttributeSetMapAttributeSet" FromRole="AttributeSetMap" ToRole="AttributeSet" />
+        </EntityType>
+        <EntityType Name="AttributeSetTagMap">
+          <Key>
+            <PropertyRef Name="AttributeSetId" />
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="AttributeSetId" Type="Int32" Nullable="false" />
+          <Property Name="TagId" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_AttributeSetTagMap_AttributeSet" FromRole="AttributeSetTagMap" ToRole="AttributeSet" />
+          <NavigationProperty Name="Tag" Relationship="ColspModel.FK_AttributeSetTagMap_Tag" FromRole="AttributeSetTagMap" ToRole="Tag" />
         </EntityType>
         <EntityType Name="AttributeValue">
           <Key>
@@ -2366,8 +2319,9 @@
         </EntityType>
         <EntityType Name="GlobalCategoryPID">
           <Key>
-            <PropertyRef Name="CategoryAbbreviation" />
+            <PropertyRef Name="CategoryId" />
           </Key>
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="CategoryAbbreviation" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CurrentKey" Type="String" Nullable="false" MaxLength="5" FixedLength="true" Unicode="false" />
         </EntityType>
@@ -2418,7 +2372,7 @@
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductCount" Type="Int32" />
-          <Property Name="Shop" Type="Int32" />
+          <Property Name="ShopId" Type="Int32" />
           <Property Name="Lft" Type="Int32" />
           <Property Name="Rgt" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -2426,7 +2380,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Shop1" Relationship="ColspModel.FKLocalCategoryShop" FromRole="LocalCategory" ToRole="Shop" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FKLocalCategoryShop" FromRole="LocalCategory" ToRole="Shop" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryLocalCat" FromRole="LocalCategory" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductHistoryLocalCatMaps" Relationship="ColspModel.FKProductHistoryLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductHistoryLocalCatMap" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductLocalCat" FromRole="LocalCategory" ToRole="Product" />
@@ -2494,7 +2448,6 @@
           <NavigationProperty Name="ProductLocalCatMaps" Relationship="ColspModel.FKProductLocalCatMapProduct" FromRole="Product" ToRole="ProductLocalCatMap" />
           <NavigationProperty Name="Shipping" Relationship="ColspModel.FKProductShipping" FromRole="Product" ToRole="Shipping" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKProductShop" FromRole="Product" ToRole="Shop" />
-          <NavigationProperty Name="ProductTags" Relationship="ColspModel.FKProductTagProduct" FromRole="Product" ToRole="ProductTag" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKProductUser" FromRole="Product" ToRole="User" />
           <NavigationProperty Name="ProductVariants" Relationship="ColspModel.FKProductVariantProduct" FromRole="Product" ToRole="ProductVariant" />
         </EntityType>
@@ -2588,7 +2541,6 @@
           <NavigationProperty Name="ProductHistoryLocalCatMaps" Relationship="ColspModel.FKProductHistoryLocalCatMapProduct" FromRole="ProductHistory" ToRole="ProductHistoryLocalCatMap" />
           <NavigationProperty Name="Shipping" Relationship="ColspModel.FKProductHistoryShipping" FromRole="ProductHistory" ToRole="Shipping" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKProductHistoryShop" FromRole="ProductHistory" ToRole="Shop" />
-          <NavigationProperty Name="ProductHistoryTags" Relationship="ColspModel.FKProductHistoryTagProduct" FromRole="ProductHistory" ToRole="ProductHistoryTag" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKProductHistoryUser" FromRole="ProductHistory" ToRole="User" />
           <NavigationProperty Name="ProductHistoryVariants" Relationship="ColspModel.FKProductHistoryVariantProduct" FromRole="ProductHistory" ToRole="ProductHistoryVariant" />
         </EntityType>
@@ -2666,21 +2618,6 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="ProductHistoryTag">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="TagId" />
-          </Key>
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="TagId" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ProductHistory" Relationship="ColspModel.FKProductHistoryTagProduct" FromRole="ProductHistoryTag" ToRole="ProductHistory" />
-          <NavigationProperty Name="Tag" Relationship="ColspModel.FKProductHistoryTagTag" FromRole="ProductHistoryTag" ToRole="Tag" />
         </EntityType>
         <EntityType Name="ProductHistoryVariant">
           <Key>
@@ -2791,6 +2728,7 @@
           <Property Name="LocalCatId" Type="Int32" />
           <Property Name="ShopId" Type="Int32" />
           <Property Name="SellerId" Type="Int32" />
+          <Property Name="AttributeSetId" Type="Int32" />
           <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="BrandId" Type="Int32" />
@@ -2799,13 +2737,15 @@
           <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
           <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
+          <Property Name="Tag" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="PrepareDay" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
@@ -2834,6 +2774,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_ProductStage_AttributeSet" FromRole="ProductStage" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FKProductStageBrand" FromRole="ProductStage" ToRole="Brand" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKProductStageGlobalCat" FromRole="ProductStage" ToRole="GlobalCategory" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductStageLocalCat" FromRole="ProductStage" ToRole="LocalCategory" />
@@ -2841,7 +2782,6 @@
           <NavigationProperty Name="ProductStageLocalCatMaps" Relationship="ColspModel.FKProductStageLocalCatMapProduct" FromRole="ProductStage" ToRole="ProductStageLocalCatMap" />
           <NavigationProperty Name="Shipping" Relationship="ColspModel.FKProductStageShipping" FromRole="ProductStage" ToRole="Shipping" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKProductStageShop" FromRole="ProductStage" ToRole="Shop" />
-          <NavigationProperty Name="ProductStageTags" Relationship="ColspModel.FKProductStageTagProduct" FromRole="ProductStage" ToRole="ProductStageTag" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKProductStageUser" FromRole="ProductStage" ToRole="User" />
           <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantProduct" FromRole="ProductStage" ToRole="ProductStageVariant" />
         </EntityType>
@@ -2923,28 +2863,14 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="ProductStageTag">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="TagId" />
-          </Key>
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="TagId" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ProductStage" Relationship="ColspModel.FKProductStageTagProduct" FromRole="ProductStageTag" ToRole="ProductStage" />
-          <NavigationProperty Name="Tag" Relationship="ColspModel.FKProductStageTagTag" FromRole="ProductStageTag" ToRole="Tag" />
-        </EntityType>
         <EntityType Name="ProductStageVariant">
           <Key>
-            <PropertyRef Name="ProductId" />
             <PropertyRef Name="VariantId" />
           </Key>
+          <Property Name="VariantId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="VariantId" Type="Int32" Nullable="false" />
+          <Property Name="Attribute1Id" Type="Int32" />
+          <Property Name="Attribute2Id" Type="Int32" />
           <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2954,10 +2880,10 @@
           <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
           <Property Name="SaftyStock" Type="Int32" />
           <Property Name="VideoLink" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
@@ -2965,15 +2891,16 @@
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductStageVariantVariant" FromRole="ProductStageVariant" ToRole="Attribute" />
+          <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductStageVariantAttribute1" FromRole="ProductStageVariant" ToRole="Attribute" />
+          <NavigationProperty Name="Attribute1" Relationship="ColspModel.FKProductStageVariantAttribute2" FromRole="ProductStageVariant" ToRole="Attribute" />
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FKProductStageVariantProduct" FromRole="ProductStageVariant" ToRole="ProductStage" />
         </EntityType>
         <EntityType Name="ProductStageVideo">
@@ -2990,21 +2917,6 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="ProductTag">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="TagId" />
-          </Key>
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="TagId" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Product" Relationship="ColspModel.FKProductTagProduct" FromRole="ProductTag" ToRole="Product" />
-          <NavigationProperty Name="Tag" Relationship="ColspModel.FKProductTagTag" FromRole="ProductTag" ToRole="Tag" />
         </EntityType>
         <EntityType Name="ProductVariant">
           <Key>
@@ -3114,7 +3026,7 @@
           <Key>
             <PropertyRef Name="TagId" />
           </Key>
-          <Property Name="TagId" Type="Int32" Nullable="false" />
+          <Property Name="TagId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TagName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Count" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -3122,9 +3034,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ProductHistoryTags" Relationship="ColspModel.FKProductHistoryTagTag" FromRole="Tag" ToRole="ProductHistoryTag" />
-          <NavigationProperty Name="ProductStageTags" Relationship="ColspModel.FKProductStageTagTag" FromRole="Tag" ToRole="ProductStageTag" />
-          <NavigationProperty Name="ProductTags" Relationship="ColspModel.FKProductTagTag" FromRole="Tag" ToRole="ProductTag" />
+          <NavigationProperty Name="AttributeSetTagMaps" Relationship="ColspModel.FK_AttributeSetTagMap_Tag" FromRole="Tag" ToRole="AttributeSetTagMap" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -3291,15 +3201,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKProductStageVariantVariant">
-          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="1" />
+        <Association Name="FKProductStageVariantAttribute1">
+          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="0..1" />
           <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Attribute">
               <PropertyRef Name="AttributeId" />
             </Principal>
             <Dependent Role="ProductStageVariant">
-              <PropertyRef Name="VariantId" />
+              <PropertyRef Name="Attribute1Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKProductStageVariantAttribute2">
+          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="AttributeId" />
+            </Principal>
+            <Dependent Role="ProductStageVariant">
+              <PropertyRef Name="Attribute2Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3312,6 +3234,30 @@
             </Principal>
             <Dependent Role="ProductVariant">
               <PropertyRef Name="VariantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AttributeSetTagMap_AttributeSet">
+          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="1" />
+          <End Type="ColspModel.AttributeSetTagMap" Role="AttributeSetTagMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttributeSet">
+              <PropertyRef Name="AttributeSetId" />
+            </Principal>
+            <Dependent Role="AttributeSetTagMap">
+              <PropertyRef Name="AttributeSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStage_AttributeSet">
+          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttributeSet">
+              <PropertyRef Name="AttributeSetId" />
+            </Principal>
+            <Dependent Role="ProductStage">
+              <PropertyRef Name="AttributeSetId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3336,6 +3282,18 @@
             </Principal>
             <Dependent Role="CategoryAttributeSetMap">
               <PropertyRef Name="AttributeSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AttributeSetTagMap_Tag">
+          <End Type="ColspModel.Tag" Role="Tag" Multiplicity="1" />
+          <End Type="ColspModel.AttributeSetTagMap" Role="AttributeSetTagMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="TagId" />
+            </Principal>
+            <Dependent Role="AttributeSetTagMap">
+              <PropertyRef Name="TagId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3479,7 +3437,7 @@
               <PropertyRef Name="ShopId" />
             </Principal>
             <Dependent Role="LocalCategory">
-              <PropertyRef Name="Shop" />
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3603,18 +3561,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKProductTagProduct">
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="1" />
-          <End Type="ColspModel.ProductTag" Role="ProductTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductTag">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKProductUser">
           <End Type="ColspModel.User" Role="User" Multiplicity="0..1" />
           <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
@@ -3687,18 +3633,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKProductHistoryTagProduct">
-          <End Type="ColspModel.ProductHistory" Role="ProductHistory" Multiplicity="1" />
-          <End Type="ColspModel.ProductHistoryTag" Role="ProductHistoryTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProductHistory">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductHistoryTag">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKProductHistoryUser">
           <End Type="ColspModel.User" Role="User" Multiplicity="0..1" />
           <End Type="ColspModel.ProductHistory" Role="ProductHistory" Multiplicity="*" />
@@ -3720,18 +3654,6 @@
             </Principal>
             <Dependent Role="ProductHistoryVariant">
               <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductHistoryTagTag">
-          <End Type="ColspModel.Tag" Role="Tag" Multiplicity="1" />
-          <End Type="ColspModel.ProductHistoryTag" Role="ProductHistoryTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tag">
-              <PropertyRef Name="TagId" />
-            </Principal>
-            <Dependent Role="ProductHistoryTag">
-              <PropertyRef Name="TagId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3783,18 +3705,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKProductStageTagProduct">
-          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1" />
-          <End Type="ColspModel.ProductStageTag" Role="ProductStageTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProductStage">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductStageTag">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKProductStageUser">
           <End Type="ColspModel.User" Role="User" Multiplicity="0..1" />
           <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="*" />
@@ -3816,30 +3726,6 @@
             </Principal>
             <Dependent Role="ProductStageVariant">
               <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductStageTagTag">
-          <End Type="ColspModel.Tag" Role="Tag" Multiplicity="1" />
-          <End Type="ColspModel.ProductStageTag" Role="ProductStageTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tag">
-              <PropertyRef Name="TagId" />
-            </Principal>
-            <Dependent Role="ProductStageTag">
-              <PropertyRef Name="TagId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductTagTag">
-          <End Type="ColspModel.Tag" Role="Tag" Multiplicity="1" />
-          <End Type="ColspModel.ProductTag" Role="ProductTag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tag">
-              <PropertyRef Name="TagId" />
-            </Principal>
-            <Dependent Role="ProductTag">
-              <PropertyRef Name="TagId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4007,6 +3893,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AttributeSetTagMaps">
+            <EntityTypeMapping TypeName="ColspModel.AttributeSetTagMap">
+              <MappingFragment StoreEntitySet="AttributeSetTagMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="TagId" ColumnName="TagId" />
+                <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AttributeValues">
             <EntityTypeMapping TypeName="ColspModel.AttributeValue">
               <MappingFragment StoreEntitySet="AttributeValue">
@@ -4090,6 +3989,7 @@
               <MappingFragment StoreEntitySet="GlobalCategoryPID">
                 <ScalarProperty Name="CurrentKey" ColumnName="CurrentKey" />
                 <ScalarProperty Name="CategoryAbbreviation" ColumnName="CategoryAbbreviation" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4142,7 +4042,7 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Rgt" ColumnName="Rgt" />
                 <ScalarProperty Name="Lft" ColumnName="Lft" />
-                <ScalarProperty Name="Shop" ColumnName="Shop" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="ProductCount" ColumnName="ProductCount" />
                 <ScalarProperty Name="UrlKeyTh" ColumnName="UrlKeyTh" />
                 <ScalarProperty Name="UrlKeyEn" ColumnName="UrlKeyEn" />
@@ -4360,19 +4260,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ProductHistoryTags">
-            <EntityTypeMapping TypeName="ColspModel.ProductHistoryTag">
-              <MappingFragment StoreEntitySet="ProductHistoryTag">
-                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="TagId" ColumnName="TagId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ProductHistoryVariants">
             <EntityTypeMapping TypeName="ColspModel.ProductHistoryVariant">
               <MappingFragment StoreEntitySet="ProductHistoryVariant">
@@ -4502,6 +4389,8 @@
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
+                <ScalarProperty Name="PrepareDay" ColumnName="PrepareDay" />
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
                 <ScalarProperty Name="SafetyStock" ColumnName="SafetyStock" />
                 <ScalarProperty Name="Stock" ColumnName="Stock" />
@@ -4517,6 +4406,7 @@
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
                 <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
+                <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
                 <ScalarProperty Name="SellerId" ColumnName="SellerId" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="LocalCatId" ColumnName="LocalCatId" />
@@ -4599,19 +4489,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ProductStageTags">
-            <EntityTypeMapping TypeName="ColspModel.ProductStageTag">
-              <MappingFragment StoreEntitySet="ProductStageTag">
-                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="TagId" ColumnName="TagId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ProductStageVariants">
             <EntityTypeMapping TypeName="ColspModel.ProductStageVariant">
               <MappingFragment StoreEntitySet="ProductStageVariant">
@@ -4620,9 +4497,9 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="DimenstionWeight" ColumnName="DimenstionWeight" />
+                <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
-                <ScalarProperty Name="DimenstionUnit" ColumnName="DimenstionUnit" />
+                <ScalarProperty Name="DimensionUnit" ColumnName="DimensionUnit" />
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
@@ -4643,8 +4520,10 @@
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
-                <ScalarProperty Name="VariantId" ColumnName="VariantId" />
+                <ScalarProperty Name="Attribute2Id" ColumnName="Attribute2Id" />
+                <ScalarProperty Name="Attribute1Id" ColumnName="Attribute1Id" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="VariantId" ColumnName="VariantId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4661,19 +4540,6 @@
                 <ScalarProperty Name="VideoUrlEn" ColumnName="VideoUrlEn" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="VideoId" ColumnName="VideoId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ProductTags">
-            <EntityTypeMapping TypeName="ColspModel.ProductTag">
-              <MappingFragment StoreEntitySet="ProductTag">
-                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="TagId" ColumnName="TagId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

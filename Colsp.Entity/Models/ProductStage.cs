@@ -19,7 +19,6 @@ namespace Colsp.Entity.Models
         {
             this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
             this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
-            this.ProductStageTags = new HashSet<ProductStageTag>();
             this.ProductStageVariants = new HashSet<ProductStageVariant>();
         }
     
@@ -28,6 +27,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> LocalCatId { get; set; }
         public Nullable<int> ShopId { get; set; }
         public Nullable<int> SellerId { get; set; }
+        public Nullable<int> AttributeSetId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public Nullable<int> BrandId { get; set; }
@@ -43,6 +43,8 @@ namespace Colsp.Entity.Models
         public Nullable<int> Stock { get; set; }
         public Nullable<int> SafetyStock { get; set; }
         public Nullable<int> ShippingId { get; set; }
+        public string Tag { get; set; }
+        public Nullable<decimal> PrepareDay { get; set; }
         public Nullable<decimal> Length { get; set; }
         public Nullable<decimal> Height { get; set; }
         public Nullable<decimal> Width { get; set; }
@@ -72,6 +74,7 @@ namespace Colsp.Entity.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        public virtual AttributeSet AttributeSet { get; set; }
         public virtual Brand Brand { get; set; }
         public virtual GlobalCategory GlobalCategory { get; set; }
         public virtual LocalCategory LocalCategory { get; set; }
@@ -81,8 +84,6 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
         public virtual Shipping Shipping { get; set; }
         public virtual Shop Shop { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageTag> ProductStageTags { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVariant> ProductStageVariants { get; set; }

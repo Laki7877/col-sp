@@ -29,6 +29,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Attribute> Attributes { get; set; }
         public virtual DbSet<AttributeSet> AttributeSets { get; set; }
         public virtual DbSet<AttributeSetMap> AttributeSetMaps { get; set; }
+        public virtual DbSet<AttributeSetTagMap> AttributeSetTagMaps { get; set; }
         public virtual DbSet<AttributeValue> AttributeValues { get; set; }
         public virtual DbSet<AttributeValueMap> AttributeValueMaps { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
@@ -47,7 +48,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductHistoryImage> ProductHistoryImages { get; set; }
         public virtual DbSet<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
         public virtual DbSet<ProductHistoryRelated> ProductHistoryRelateds { get; set; }
-        public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
         public virtual DbSet<ProductHistoryVariant> ProductHistoryVariants { get; set; }
         public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
         public virtual DbSet<ProductImage> ProductImages { get; set; }
@@ -59,10 +59,8 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageImage> ProductStageImages { get; set; }
         public virtual DbSet<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
         public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
-        public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVariant> ProductStageVariants { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
-        public virtual DbSet<ProductTag> ProductTags { get; set; }
         public virtual DbSet<ProductVariant> ProductVariants { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }

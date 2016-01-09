@@ -147,6 +147,9 @@
     <Compile Include="Models\AttributeSetMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AttributeSetTagMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AttributeValue.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -216,9 +219,6 @@
     <Compile Include="Models\ProductHistoryRelated.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ProductHistoryTag.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ProductHistoryVariant.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -252,16 +252,10 @@
     <Compile Include="Models\ProductStageRelated.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ProductStageTag.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ProductStageVariant.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageVideo.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ProductTag.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductVariant.cs">

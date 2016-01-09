@@ -1,0 +1,122 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Colsp.Model.Requests
+{
+    public class ProductStageRequest
+    {
+        public string Keywords { get; set; }
+        public AttributeSetRequest AttributeSet { get; set; }
+        public int? GlobalCategory { get; set; }
+        public List<CategoryRequest> GlobalCategories { get; set; }
+        public int? LocalCategory { get; set; }
+        public List<CategoryRequest> LocalCategories { get; set; }
+        public VariantRequest DefaultVariant { get; set; }
+        public List<AttributeRequest> MasterAttribute { get; set; }
+        public List<VariantRequest> Variants { get; set; }
+        public List<ImageRequest> MasterImages { get; set; }
+        public List<ImageRequest> MasterImages360 { get; set; }
+        public List<VideoLinkRequest> VideoLinks { get; set; }
+        public SEORequest SEO { get; set; }
+        //public string ProductNameTh { get; set; }
+        //public string ProductNameEn { get; set; }
+        //public string Sku { get; set; }
+        //public string Upc { get; set; }
+        public BrandRequest Brand { get; set; }
+        //public decimal? OriginalPrice { get; set; }
+        //public decimal? SalePrice { get; set; }
+        //public string DescriptionFullTh { get; set; }
+        //public string DescriptionFullEn { get; set; }
+        //public string DescriptionShortTh { get; set; }
+        //public string DescriptionShortEn { get; set; }
+        //public int? Quantity { get; set; }
+        //public int? SafetyStock { get; set; }
+        //public string StockType { get; set; }
+        public int? ShippingMethod { get; set; }
+        public decimal? PrepareDay { get; set; }
+        //public decimal? Length { get; set; }
+        //public decimal? Height { get; set; }
+        //public decimal? Width { get; set; }
+        //public string DimensionUnit { get; set; }
+        //public decimal? Weight { get; set; }
+        //public string WeightUnit { get; set; }
+        public List<string> RelatedProducts { get; set; }
+        public string EffectiveDate { get; set; }
+        public string EffectiveTime { get; set; }
+        public string ExpireDate { get; set; }
+        public string ExpireTime { get; set; }
+        public string Remark { get; set; }
+        public string Status { get; set; }
+        
+
+    }
+
+    public class CategoryRequest
+    {
+        public int CategoryId { get; set; }
+    }
+
+    public class VariantRequest
+    {
+        public string ProductNameTh { get; set; }
+        public string ProductNameEn { get; set; }
+        public string Sku { get; set; }
+        public string Upc { get; set; }
+        public AttributeRequest FirstAttribute { get; set; }
+        public AttributeRequest SecondAttribute { get; set; }
+        public string hash { get; set; }
+        public string text { get; set; }
+        public List<ImageRequest> Images { get; set; }
+        public string ValueEn { get; set; }
+        public string ValueTh { get; set; }
+        public string Display { get; set; }
+        public List<VideoLinkRequest> VideoLinks { get; set; }
+        public decimal? Length { get; set; }
+        public decimal? Height { get; set; }
+        public decimal? Width { get; set; }
+        public string DimensionUnit { get; set; }
+        public decimal? Weight { get; set; }
+        public string WeightUnit { get; set; }
+        public decimal? OriginalPrice { get; set; }
+        public decimal? SalePrice { get; set; }
+        public string DescriptionFullTh { get; set; }
+        public string DescriptionFullEn { get; set; }
+        public string DescriptionShortTh { get; set; }
+        public string DescriptionShortEn { get; set; }
+        public int? Quantity { get; set; }
+        public int? SafetyStock { get; set; }
+        public string StockType { get; set; }
+    }
+    public class AttributeRequest
+    {
+        public int AttributeId { get; set; }
+        public string ValueEn { get; set; }
+    }
+    
+    public class ImageRequest
+    {
+        public string tmpPath { get; set; }
+        public string url { get; set; }
+        public int position { get; set; }
+    }
+    public class VideoLinkRequest
+    {
+        public string Url { get; set; }
+    }
+    public class SEORequest
+    {
+        public string MetaTitle { get; set; }
+        public string MetaDescription { get; set; }
+        public string MetaKeywords { get; set; }
+        public string ProductUrlKeyTh { get; set; }
+        public string ProductUrlKeyEn { get; set; }
+        public string ProductBoostingWeight { get; set; }
+    }
+    public class AttributeSetRequest
+    {
+        public int? AttributeSetId { get; set; }
+    }
+}
