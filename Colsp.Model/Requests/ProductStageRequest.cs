@@ -50,6 +50,8 @@ namespace Colsp.Model.Requests
         public string ExpireTime { get; set; }
         public string Remark { get; set; }
         public string Status { get; set; }
+        public int? SellerId { get; set; }
+        public int? ShopId { get; set; }
         
 
     }

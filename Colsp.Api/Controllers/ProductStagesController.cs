@@ -182,6 +182,9 @@ namespace Colsp.Api.Controllers
                 stage.MetaKey = request.SEO.MetaKeywords;
                 stage.UrlEn = request.SEO.ProductUrlKeyEn;
                 stage.UrlTh = request.SEO.ProductUrlKeyTh;
+
+
+
                 #region Setup Effective Date & Time 
                 if (!string.IsNullOrEmpty(request.EffectiveDate))
                 {
@@ -235,6 +238,8 @@ namespace Colsp.Api.Controllers
 
                 stage.Remark = request.Remark;
                 stage.Status = request.Status;
+                stage.SellerId = request.SellerId;
+                stage.ShopId = request.ShopId;
                 string masterPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                 stage.Pid = masterPid;
 
@@ -267,16 +272,24 @@ namespace Colsp.Api.Controllers
 
                 #region Master Validation
 
+                if(stage.SellerId == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Seller is required");
+                }
+                if (stage.ShopId == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Shop is required");
+                }
                 if (string.IsNullOrEmpty(stage.Status))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Status is required");
                 }
+                if (stage.GlobalCatId == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Global category is required");
+                }
                 if (stage.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL))
                 {
-                    if (stage.GlobalCatId == null)
-                    {
-                        return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Global category is required");
-                    }
                     if (string.IsNullOrEmpty(stage.ProductNameTh))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Product Name (Thai) is required");
