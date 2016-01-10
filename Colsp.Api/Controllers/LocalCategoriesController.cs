@@ -39,12 +39,12 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
             }
             catch (Exception)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
 

@@ -7,11 +7,11 @@ namespace Colsp.Api.Constants
 {
     public static class HttpErrorMessage
     {
-        public static readonly string FORMAT_ERROR = "This request is not properly formatted";
-        public static readonly string MISSING_PARAMETER_ERROR = "Required parameter(s) is/are missing";
-        public static readonly string INTERNAL_SERVER_ERROR = "Internal server error. Please try again later";
-        public static readonly string NOT_FOUND = "Cannot find searching object";
-        public static readonly string DATE_FORMAT_ERROR = "Invalid date format";
-        public static readonly string TIME_FORMAT_ERROR = "Invalid time format";
+        public static readonly string FormatError = "This request is not properly formatted";
+        public static readonly string MissingParameterError = "Required parameter(s) is/are missing";
+        public static readonly string InternalServerError = "Internal server error. Please try again later";
+        public static readonly string NotFound = "Cannot find searching object";
+        public static readonly string DateFormatError = "Invalid date format";
+        public static readonly string TimeFormatError = "Invalid time format";
     }
 }

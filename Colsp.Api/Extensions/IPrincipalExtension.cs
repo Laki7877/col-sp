@@ -31,7 +31,7 @@ namespace Colsp.Api.Extensions
         {
             if (p is UsersPrincipal)
             {
-                return ((UsersPrincipal)p).Email;
+                return ((UsersPrincipal)p).Email.Trim();
             }
             return null;
         }

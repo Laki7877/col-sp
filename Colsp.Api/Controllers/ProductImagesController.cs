@@ -163,7 +163,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
 
@@ -215,13 +215,13 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
                 
             }
             catch
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             
         }
@@ -243,12 +243,12 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
             }
             catch
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
 
@@ -267,12 +267,12 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
             }
             catch
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
 
@@ -293,7 +293,7 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NOT_FOUND);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
 
                 ProductImgs = (from img in db.ProductImages
@@ -309,7 +309,7 @@ namespace Colsp.Api.Controllers
             }
             catch
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.INTERNAL_SERVER_ERROR);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
 
         }
