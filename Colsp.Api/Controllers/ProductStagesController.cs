@@ -144,8 +144,7 @@ namespace Colsp.Api.Controllers
                     response.ShopId = stage.ShopId;
                     response.DefaultVariant.Pid = stage.Pid;
 
-
-                    response.MasterAttribute = SetupAttributeResponse(db, stage.Pid);
+                    response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes.ToList());
                     #region Setup Inventory
                     var inventory = (from inv in db.Inventories
                                      where inv.Pid.Equals(stage.Pid)
@@ -157,9 +156,9 @@ namespace Colsp.Api.Controllers
                         response.DefaultVariant.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
                     }
                     #endregion
-                    response.MasterImages = SetupImgResponse(db, stage.Pid);
-                    response.MasterImages360 = SetupImg360Response(db, stage.Pid);
-                    response.VideoLinks = SetupVdoResponse(db, stage.Pid);
+                    response.DefaultVariant.Images = SetupImgResponse(db, stage.Pid);
+                    response.DefaultVariant.Images360 = SetupImg360Response(db, stage.Pid);
+                    response.DefaultVariant.VideoLinks = SetupVdoResponse(db, stage.Pid);
                     #region Setup Related GlobalCategories
                     var globalCatList = (from map in db.ProductStageGlobalCatMaps
                                         join cat in db.GlobalCategories on map.CategoryId equals cat.CategoryId
@@ -197,7 +196,59 @@ namespace Colsp.Api.Controllers
                         response.LocalCategories = catList;
                     }
                     #endregion
+                    var relatedList = db.ProductStageRelateds.Where(w => w.Pid1.Equals(stage.Pid)).ToList();
+                    if(relatedList != null && relatedList.Count > 0)
+                    {
+                        List<string> relate = new List<string>();
+                        foreach (ProductStageRelated r in relatedList)
+                        {
+                            relate.Add(r.Pid2);
+                        }
+                        response.RelatedProducts = relate;
+                    }
+                    List<VariantRequest> varList = new List<VariantRequest>();
+                    foreach(ProductStageVariant variantEntity in stage.ProductStageVariants)
+                    {
+                        VariantRequest varient = new VariantRequest();
+                        varient.Pid = variantEntity.Pid;
+                        varient.FirstAttribute.AttributeId = variantEntity.Attribute1Id;
+                        varient.SecondAttribute.AttributeId = variantEntity.Attribute1Id;
+                        varient.ValueEn = variantEntity.ValueEn;
 
+                        #region Setup Variant Inventory
+                        inventory = (from inv in db.Inventories
+                                         where inv.Pid.Equals(variantEntity.Pid)
+                                         select inv).SingleOrDefault();
+                        if (inventory != null)
+                        {
+                            varient.SafetyStock = inventory.SaftyStockSeller;
+                            varient.Quantity = inventory.Quantity;
+                            varient.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
+                        }
+                        #endregion
+
+
+                        varient.Images = SetupImgResponse(db, variantEntity.Pid);
+                        varient.VideoLinks = SetupVdoResponse(db, variantEntity.Pid);
+
+                        varient.ProductNameTh = variantEntity.ProductNameTh;
+                        varient.ProductNameEn = variantEntity.ProductNameEn;
+                        varient.Sku = variantEntity.Sku;
+                        varient.OriginalPrice = variantEntity.OriginalPrice;
+                        varient.SalePrice = variantEntity.SalePrice;
+                        varient.DescriptionFullTh = variantEntity.DescriptionFullTh;
+                        varient.DescriptionShortTh = variantEntity.DescriptionShortTh;
+                        varient.DescriptionFullEn = variantEntity.DescriptionFullEn;
+                        varient.DescriptionShortEn = variantEntity.DescriptionShortEn;
+                        varient.Length = variantEntity.Length;
+                        varient.Height = variantEntity.Height;
+                        varient.Width = variantEntity.Width;
+                        varient.Weight = variantEntity.Weight;
+                        varient.DimensionUnit = variantEntity.DimensionUnit;
+                        varient.WeightUnit = variantEntity.WeightUnit;
+                        varList.Add(varient);
+                    }
+                    response.Variants = varList;
                     return Request.CreateResponse(HttpStatusCode.OK, response);
                 }
                 else
@@ -382,16 +433,20 @@ namespace Colsp.Api.Controllers
                 Inventory masterInventory = new Inventory();
                 masterInventory.StockAvailable = request.DefaultVariant.Quantity;
                 masterInventory.SaftyStockSeller = request.DefaultVariant.SafetyStock;
-                if (Constant.STOCK_TYPE.ContainsKey(request.DefaultVariant.StockType))
+                if(request.DefaultVariant.StockType != null)
                 {
-                    masterInventory.StockAvailable = Constant.STOCK_TYPE[request.DefaultVariant.StockType];
+                    if (Constant.STOCK_TYPE.ContainsKey(request.DefaultVariant.StockType))
+                    {
+                        masterInventory.StockAvailable = Constant.STOCK_TYPE[request.DefaultVariant.StockType];
+                    }
                 }
+               
                 masterInventory.Pid = masterPid;
                 db.Inventories.Add(masterInventory);
                 #endregion
-                SetupImgEntity(db, request.MasterImages, masterPid,this.User.Email());
-                SetupImg360Entity(db, request.MasterImages360, masterPid, this.User.Email());
-                SetupVdoEntity(db, request.VideoLinks, masterPid, this.User.Email());
+                SetupImgEntity(db, request.DefaultVariant.Images, masterPid,this.User.Email());
+                SetupImg360Entity(db, request.DefaultVariant.Images360, masterPid, this.User.Email());
+                SetupVdoEntity(db, request.DefaultVariant.VideoLinks, masterPid, this.User.Email());
                 #region Setup Related GlobalCategories
                 if(request.GlobalCategories != null)
                 {
@@ -458,17 +513,18 @@ namespace Colsp.Api.Controllers
                     Inventory variantInventory = new Inventory();
                     variantInventory.StockAvailable = variantRq.Quantity;
                     variantInventory.SaftyStockSeller = variantRq.SafetyStock;
-                    if (Constant.STOCK_TYPE.ContainsKey(variantRq.StockType))
+                    if (variantRq.StockType != null)
                     {
-                        variantInventory.StockAvailable = Constant.STOCK_TYPE[variantRq.StockType];
+                        if (Constant.STOCK_TYPE.ContainsKey(variantRq.StockType))
+                        {
+                            variantInventory.StockAvailable = Constant.STOCK_TYPE[variantRq.StockType];
+                        }
                     }
+                    
                     variantInventory.Pid = variantPid;
                     db.Inventories.Add(variantInventory);
                     #endregion
                     
-
-                    varient.ValueEn = variantRq.ValueEn;
-
                     SetupImgEntity(db, variantRq.Images, variantPid,this.User.Email());
                     SetupVdoEntity(db, variantRq.VideoLinks, variantPid, this.User.Email());
                     
@@ -497,7 +553,7 @@ namespace Colsp.Api.Controllers
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-            catch
+            catch(Exception ex)
             {
                 #region Rollback
                 db.Dispose();
@@ -518,36 +574,25 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
       
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
             }
         }
 
-        private List<AttributeRequest> SetupAttributeResponse(ColspEntities db, string pid)
+        private List<AttributeRequest> SetupAttributeResponse(List<ProductStageAttribute> attriList)
         {
-            try
+            if (attriList != null && attriList.Count > 0)
             {
-                var attriList = (from attr in db.ProductStageAttributes
-                                where attr.Pid.Equals(pid) && attr.Status.Equals(Constant.STATUS_ACTIVE)
-                                orderby attr.Position
-                                select attr).ToList();
-                if(attriList != null && attriList.Count > 0)
+                List<AttributeRequest> newList = new List<AttributeRequest>();
+                foreach (ProductStageAttribute a in attriList)
                 {
-                    List<AttributeRequest> newList = new List<AttributeRequest>();
-                    foreach(ProductStageAttribute a in attriList)
-                    {
-                        AttributeRequest attr = new AttributeRequest();
-                        attr.AttributeId = a.AttributeId;
-                        attr.ValueEn = a.ValueEn;
-                        newList.Add(attr);
-                    }
-                    return newList;
+                    AttributeRequest attr = new AttributeRequest();
+                    attr.AttributeId = a.AttributeId;
+                    attr.ValueEn = a.ValueEn;
+                    newList.Add(attr);
                 }
-                else
-                {
-                    return null;
-                }
+                return newList;
             }
-            catch
+            else
             {
                 return null;
             }

@@ -15,7 +15,7 @@ namespace Colsp.Entity.Models
     public partial class ProductStageAttribute
     {
         public int ProductId { get; set; }
-        public int AttributeId { get; set; }
+        public int? AttributeId { get; set; }
         public string Pid { get; set; }
         public Nullable<int> Position { get; set; }
         public string ValueEn { get; set; }

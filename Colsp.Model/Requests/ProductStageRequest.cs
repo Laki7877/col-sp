@@ -17,9 +17,9 @@ namespace Colsp.Model.Requests
         public VariantRequest DefaultVariant { get; set; }
         public List<AttributeRequest> MasterAttribute { get; set; }
         public List<VariantRequest> Variants { get; set; }
-        public List<ImageRequest> MasterImages { get; set; }
-        public List<ImageRequest> MasterImages360 { get; set; }
-        public List<VideoLinkRequest> VideoLinks { get; set; }
+        //public List<ImageRequest> MasterImages { get; set; }
+        //public List<ImageRequest> MasterImages360 { get; set; }
+        //public List<VideoLinkRequest> VideoLinks { get; set; }
         public SEORequest SEO { get; set; }
         //public string ProductNameTh { get; set; }
         //public string ProductNameEn { get; set; }
@@ -83,6 +83,7 @@ namespace Colsp.Model.Requests
         public string hash { get; set; }
         public string text { get; set; }
         public List<ImageRequest> Images { get; set; }
+        public List<ImageRequest> Images360 { get; set; }
         public string ValueEn { get; set; }
         public string ValueTh { get; set; }
         public string Display { get; set; }
@@ -113,7 +114,7 @@ namespace Colsp.Model.Requests
     }
     public class AttributeRequest
     {
-        public int AttributeId { get; set; }
+        public int? AttributeId { get; set; }
         public string ValueEn { get; set; }
     }
     
