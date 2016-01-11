@@ -91,26 +91,26 @@ namespace Colsp.Api.Controllers
                 if(stage != null)
                 {
                     ProductStageRequest response = new ProductStageRequest();
-                    response.DefaultVariant.ProductNameTh = stage.ProductNameTh;
-                    response.DefaultVariant.ProductNameEn = stage.ProductNameEn;
-                    response.DefaultVariant.Sku = stage.Sku;
+                    response.MasterVariant.ProductNameTh = stage.ProductNameTh;
+                    response.MasterVariant.ProductNameEn = stage.ProductNameEn;
+                    response.MasterVariant.Sku = stage.Sku;
                     response.Brand.BrandId = stage.BrandId ;
-                    response.DefaultVariant.OriginalPrice = stage.OriginalPrice ;
-                    response.DefaultVariant.SalePrice = stage.SalePrice ;
-                    response.DefaultVariant.DescriptionFullTh = stage.DescriptionFullTh;
-                    response.DefaultVariant.DescriptionShortTh = stage.DescriptionShortTh;
-                    response.DefaultVariant.DescriptionFullEn = stage.DescriptionFullEn ;
-                    response.DefaultVariant.DescriptionShortEn = stage.DescriptionShortEn ;
+                    response.MasterVariant.OriginalPrice = stage.OriginalPrice ;
+                    response.MasterVariant.SalePrice = stage.SalePrice ;
+                    response.MasterVariant.DescriptionFullTh = stage.DescriptionFullTh;
+                    response.MasterVariant.DescriptionShortTh = stage.DescriptionShortTh;
+                    response.MasterVariant.DescriptionFullEn = stage.DescriptionFullEn ;
+                    response.MasterVariant.DescriptionShortEn = stage.DescriptionShortEn ;
                     response.AttributeSet.AttributeSetId = stage.AttributeSetId = response.AttributeSet.AttributeSetId;
                     response.Keywords = stage.Tag;
                     response.ShippingMethod = stage.ShippingId;
                     response.PrepareDay = stage.PrepareDay;
-                    response.DefaultVariant.Length = stage.Length;
-                    response.DefaultVariant.Height = stage.Height;
-                    response.DefaultVariant.Width = stage.Width;
-                    response.DefaultVariant.Weight = stage.Weight;
-                    response.DefaultVariant.DimensionUnit = stage.DimensionUnit;
-                    response.DefaultVariant.WeightUnit = stage.WeightUnit;
+                    response.MasterVariant.Length = stage.Length;
+                    response.MasterVariant.Height = stage.Height;
+                    response.MasterVariant.Width = stage.Width;
+                    response.MasterVariant.Weight = stage.Weight;
+                    response.MasterVariant.DimensionUnit = stage.DimensionUnit;
+                    response.MasterVariant.WeightUnit = stage.WeightUnit;
                     response.GlobalCategory = stage.GlobalCatId;
                     response.LocalCategory = stage.LocalCatId;
                     response.SEO.MetaTitle = stage.MetaTitle;
@@ -142,7 +142,7 @@ namespace Colsp.Api.Controllers
                     response.Status = stage.Status;
                     response.SellerId = stage.SellerId;
                     response.ShopId = stage.ShopId;
-                    response.DefaultVariant.Pid = stage.Pid;
+                    response.MasterVariant.Pid = stage.Pid;
 
                     response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes.ToList());
                     #region Setup Inventory
@@ -151,14 +151,14 @@ namespace Colsp.Api.Controllers
                                      select inv).SingleOrDefault();
                     if(inventory != null)
                     {
-                        response.DefaultVariant.SafetyStock = inventory.SaftyStockSeller;
-                        response.DefaultVariant.Quantity = inventory.Quantity;
-                        response.DefaultVariant.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
+                        response.MasterVariant.SafetyStock = inventory.SaftyStockSeller;
+                        response.MasterVariant.Quantity = inventory.Quantity;
+                        response.MasterVariant.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
                     }
                     #endregion
-                    response.DefaultVariant.Images = SetupImgResponse(db, stage.Pid);
-                    response.DefaultVariant.Images360 = SetupImg360Response(db, stage.Pid);
-                    response.DefaultVariant.VideoLinks = SetupVdoResponse(db, stage.Pid);
+                    response.MasterVariant.Images = SetupImgResponse(db, stage.Pid);
+                    response.MasterVariant.Images360 = SetupImg360Response(db, stage.Pid);
+                    response.MasterVariant.VideoLinks = SetupVdoResponse(db, stage.Pid);
                     #region Setup Related GlobalCategories
                     var globalCatList = (from map in db.ProductStageGlobalCatMaps
                                         join cat in db.GlobalCategories on map.CategoryId equals cat.CategoryId
@@ -271,26 +271,26 @@ namespace Colsp.Api.Controllers
             {
                 #region Setup Master Product
                 stage = new ProductStage();
-                stage.ProductNameTh = request.DefaultVariant.ProductNameTh;
-                stage.ProductNameEn = request.DefaultVariant.ProductNameEn;
-                stage.Sku = request.DefaultVariant.Sku;
+                stage.ProductNameTh = request.MasterVariant.ProductNameTh;
+                stage.ProductNameEn = request.MasterVariant.ProductNameEn;
+                stage.Sku = request.MasterVariant.Sku;
                 stage.BrandId = request.Brand.BrandId;
-                stage.OriginalPrice = request.DefaultVariant.OriginalPrice;
-                stage.SalePrice = request.DefaultVariant.SalePrice;
-                stage.DescriptionFullTh = request.DefaultVariant.DescriptionFullTh;
-                stage.DescriptionShortTh = request.DefaultVariant.DescriptionShortTh;
-                stage.DescriptionFullEn = request.DefaultVariant.DescriptionFullEn;
-                stage.DescriptionShortEn = request.DefaultVariant.DescriptionShortEn;
+                stage.OriginalPrice = request.MasterVariant.OriginalPrice;
+                stage.SalePrice = request.MasterVariant.SalePrice;
+                stage.DescriptionFullTh = request.MasterVariant.DescriptionFullTh;
+                stage.DescriptionShortTh = request.MasterVariant.DescriptionShortTh;
+                stage.DescriptionFullEn = request.MasterVariant.DescriptionFullEn;
+                stage.DescriptionShortEn = request.MasterVariant.DescriptionShortEn;
                 stage.AttributeSetId = request.AttributeSet.AttributeSetId;
                 stage.Tag = request.Keywords;
                 stage.ShippingId = request.ShippingMethod;
                 stage.PrepareDay = request.PrepareDay;
-                stage.Length = request.DefaultVariant.Length;
-                stage.Height = request.DefaultVariant.Height;
-                stage.Width = request.DefaultVariant.Width;
-                stage.Weight = request.DefaultVariant.Weight;
-                stage.DimensionUnit = request.DefaultVariant.DimensionUnit;
-                stage.WeightUnit = request.DefaultVariant.WeightUnit;
+                stage.Length = request.MasterVariant.Length;
+                stage.Height = request.MasterVariant.Height;
+                stage.Width = request.MasterVariant.Width;
+                stage.Weight = request.MasterVariant.Weight;
+                stage.DimensionUnit = request.MasterVariant.DimensionUnit;
+                stage.WeightUnit = request.MasterVariant.WeightUnit;
                 stage.GlobalCatId = request.GlobalCategory;
                 stage.LocalCatId = request.LocalCategory;
                 stage.MetaTitle = request.SEO.MetaTitle;
@@ -451,13 +451,13 @@ namespace Colsp.Api.Controllers
                 #endregion
                 #region Setup Inventory
                 Inventory masterInventory = new Inventory();
-                masterInventory.StockAvailable = request.DefaultVariant.Quantity;
-                masterInventory.SaftyStockSeller = request.DefaultVariant.SafetyStock;
-                if(request.DefaultVariant.StockType != null)
+                masterInventory.StockAvailable = request.MasterVariant.Quantity;
+                masterInventory.SaftyStockSeller = request.MasterVariant.SafetyStock;
+                if(request.MasterVariant.StockType != null)
                 {
-                    if (Constant.STOCK_TYPE.ContainsKey(request.DefaultVariant.StockType))
+                    if (Constant.STOCK_TYPE.ContainsKey(request.MasterVariant.StockType))
                     {
-                        masterInventory.StockAvailable = Constant.STOCK_TYPE[request.DefaultVariant.StockType];
+                        masterInventory.StockAvailable = Constant.STOCK_TYPE[request.MasterVariant.StockType];
                     }
                 }
                 masterInventory.Pid = masterPid;
@@ -466,13 +466,13 @@ namespace Colsp.Api.Controllers
                 db.Inventories.Add(masterInventory);
 
                 InventoryHistory masterInventoryHist = new InventoryHistory();
-                masterInventoryHist.StockAvailable = request.DefaultVariant.Quantity;
-                masterInventoryHist.SafetyStockSeller = request.DefaultVariant.SafetyStock;
-                if (request.DefaultVariant.StockType != null)
+                masterInventoryHist.StockAvailable = request.MasterVariant.Quantity;
+                masterInventoryHist.SafetyStockSeller = request.MasterVariant.SafetyStock;
+                if (request.MasterVariant.StockType != null)
                 {
-                    if (Constant.STOCK_TYPE.ContainsKey(request.DefaultVariant.StockType))
+                    if (Constant.STOCK_TYPE.ContainsKey(request.MasterVariant.StockType))
                     {
-                        masterInventoryHist.StockAvailable = Constant.STOCK_TYPE[request.DefaultVariant.StockType];
+                        masterInventoryHist.StockAvailable = Constant.STOCK_TYPE[request.MasterVariant.StockType];
                     }
                 }
                 masterInventoryHist.Pid = masterPid;
@@ -481,9 +481,9 @@ namespace Colsp.Api.Controllers
                 masterInventoryHist.CreatedDt = DateTime.Now;
                 db.InventoryHistories.Add(masterInventoryHist);
                 #endregion
-                SetupImgEntity(db, request.DefaultVariant.Images, masterPid,this.User.Email());
-                SetupImg360Entity(db, request.DefaultVariant.Images360, masterPid, this.User.Email());
-                SetupVdoEntity(db, request.DefaultVariant.VideoLinks, masterPid, this.User.Email());
+                SetupImgEntity(db, request.MasterVariant.Images, masterPid,this.User.Email());
+                SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, this.User.Email());
+                SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, this.User.Email());
                 #region Setup Related GlobalCategories
                 if(request.GlobalCategories != null)
                 {
@@ -538,13 +538,13 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Invalid variant format");
                     }
 
-                    ProductStageVariant varient = new ProductStageVariant();
+                    ProductStageVariant variant = new ProductStageVariant();
                     string variantPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
-                    varient.Pid = variantPid;
-                    varient.ProductId = stage.ProductId;
-                    varient.Attribute1Id = variantRq.FirstAttribute.AttributeId;
-                    varient.Attribute2Id = variantRq.SecondAttribute.AttributeId;
-                    varient.ValueEn = variantRq.ValueEn;
+                    variant.Pid = variantPid;
+                    variant.ProductId = stage.ProductId;
+                    variant.Attribute1Id = variantRq.FirstAttribute.AttributeId;
+                    variant.Attribute2Id = variantRq.SecondAttribute.AttributeId;
+                    variant.ValueEn = variantRq.ValueEn;
 
                     #region Setup Variant Inventory
                     Inventory variantInventory = new Inventory();
@@ -581,25 +581,26 @@ namespace Colsp.Api.Controllers
                     SetupImgEntity(db, variantRq.Images, variantPid,this.User.Email());
                     SetupVdoEntity(db, variantRq.VideoLinks, variantPid, this.User.Email());
                     
-                    varient.ProductNameTh = variantRq.ProductNameTh;
-                    varient.ProductNameEn = variantRq.ProductNameEn;
-                    varient.Sku = variantRq.Sku;
-                    varient.OriginalPrice = variantRq.OriginalPrice;
-                    varient.SalePrice = variantRq.SalePrice;
-                    varient.DescriptionFullTh = variantRq.DescriptionFullTh;
-                    varient.DescriptionShortTh = variantRq.DescriptionShortTh;
-                    varient.DescriptionFullEn = variantRq.DescriptionFullEn;
-                    varient.DescriptionShortEn = variantRq.DescriptionShortEn;
-                    varient.Length = variantRq.Length;
-                    varient.Height = variantRq.Height;
-                    varient.Width = variantRq.Width;
-                    varient.Weight = variantRq.Weight;
-                    varient.DimensionUnit = variantRq.DimensionUnit;
-                    varient.WeightUnit = variantRq.WeightUnit;
-                    varient.CreatedBy = this.User.Email();
-                    varient.CreatedDt = DateTime.Now;
+                    variant.ProductNameTh = variantRq.ProductNameTh;
+                    variant.ProductNameEn = variantRq.ProductNameEn;
+                    variant.Sku = variantRq.Sku;
+                    variant.OriginalPrice = variantRq.OriginalPrice;
+                    variant.SalePrice = variantRq.SalePrice;
+                    variant.DescriptionFullTh = variantRq.DescriptionFullTh;
+                    variant.DescriptionShortTh = variantRq.DescriptionShortTh;
+                    variant.DescriptionFullEn = variantRq.DescriptionFullEn;
+                    variant.DescriptionShortEn = variantRq.DescriptionShortEn;
+                    variant.Length = variantRq.Length;
+                    variant.Height = variantRq.Height;
+                    variant.Width = variantRq.Width;
+                    variant.Weight = variantRq.Weight;
+                    variant.DimensionUnit = variantRq.DimensionUnit;
+                    variant.WeightUnit = variantRq.WeightUnit;
+                    variant.DefaultVaraint = variantRq.DefaultVaraint;
+                    variant.CreatedBy = this.User.Email();
+                    variant.CreatedDt = DateTime.Now;
 
-                    db.ProductStageVariants.Add(varient);
+                    db.ProductStageVariants.Add(variant);
                 }
                 #endregion
 
@@ -651,26 +652,26 @@ namespace Colsp.Api.Controllers
                              }).AsEnumerable().Select(s => s.stg).SingleOrDefault();
                 if (stage != null)
                 {
-                    stage.ProductNameTh = request.DefaultVariant.ProductNameTh;
-                    stage.ProductNameEn = request.DefaultVariant.ProductNameEn;
-                    stage.Sku = request.DefaultVariant.Sku;
+                    stage.ProductNameTh = request.MasterVariant.ProductNameTh;
+                    stage.ProductNameEn = request.MasterVariant.ProductNameEn;
+                    stage.Sku = request.MasterVariant.Sku;
                     stage.BrandId = request.Brand.BrandId;
-                    stage.OriginalPrice = request.DefaultVariant.OriginalPrice;
-                    stage.SalePrice = request.DefaultVariant.SalePrice;
-                    stage.DescriptionFullTh = request.DefaultVariant.DescriptionFullTh;
-                    stage.DescriptionShortTh = request.DefaultVariant.DescriptionShortTh;
-                    stage.DescriptionFullEn = request.DefaultVariant.DescriptionFullEn;
-                    stage.DescriptionShortEn = request.DefaultVariant.DescriptionShortEn;
+                    stage.OriginalPrice = request.MasterVariant.OriginalPrice;
+                    stage.SalePrice = request.MasterVariant.SalePrice;
+                    stage.DescriptionFullTh = request.MasterVariant.DescriptionFullTh;
+                    stage.DescriptionShortTh = request.MasterVariant.DescriptionShortTh;
+                    stage.DescriptionFullEn = request.MasterVariant.DescriptionFullEn;
+                    stage.DescriptionShortEn = request.MasterVariant.DescriptionShortEn;
                     stage.AttributeSetId = request.AttributeSet.AttributeSetId;
                     stage.Tag = request.Keywords;
                     stage.ShippingId = request.ShippingMethod;
                     stage.PrepareDay = request.PrepareDay;
-                    stage.Length = request.DefaultVariant.Length;
-                    stage.Height = request.DefaultVariant.Height;
-                    stage.Width = request.DefaultVariant.Width;
-                    stage.Weight = request.DefaultVariant.Weight;
-                    stage.DimensionUnit = request.DefaultVariant.DimensionUnit;
-                    stage.WeightUnit = request.DefaultVariant.WeightUnit;
+                    stage.Length = request.MasterVariant.Length;
+                    stage.Height = request.MasterVariant.Height;
+                    stage.Width = request.MasterVariant.Width;
+                    stage.Weight = request.MasterVariant.Weight;
+                    stage.DimensionUnit = request.MasterVariant.DimensionUnit;
+                    stage.WeightUnit = request.MasterVariant.WeightUnit;
                     stage.GlobalCatId = request.GlobalCategory;
                     stage.LocalCatId = request.LocalCategory;
                     stage.MetaTitle = request.SEO.MetaTitle;
@@ -802,12 +803,12 @@ namespace Colsp.Api.Controllers
                     }
                     #endregion
                     #region Setup Inventory
-                    Inventory masterInventory = db.Inventories.Find(request.DefaultVariant.Pid);
+                    Inventory masterInventory = db.Inventories.Find(request.MasterVariant.Pid);
                     bool isNew = false;
                     if(masterInventory == null)
                     {
                         masterInventory = new Inventory();
-                        masterInventory.Pid = request.DefaultVariant.Pid;
+                        masterInventory.Pid = request.MasterVariant.Pid;
                         masterInventory.CreatedBy = this.User.Email();
                         masterInventory.CreatedDt = DateTime.Now;
                         isNew = true;
@@ -817,13 +818,13 @@ namespace Colsp.Api.Controllers
                         masterInventory.UpdatedBy = this.User.Email();
                         masterInventory.UpdatedDt = DateTime.Now;
                     }
-                    masterInventory.StockAvailable = request.DefaultVariant.Quantity;
-                    masterInventory.SaftyStockSeller = request.DefaultVariant.SafetyStock;
-                    if (request.DefaultVariant.StockType != null)
+                    masterInventory.StockAvailable = request.MasterVariant.Quantity;
+                    masterInventory.SaftyStockSeller = request.MasterVariant.SafetyStock;
+                    if (request.MasterVariant.StockType != null)
                     {
-                        if (Constant.STOCK_TYPE.ContainsKey(request.DefaultVariant.StockType))
+                        if (Constant.STOCK_TYPE.ContainsKey(request.MasterVariant.StockType))
                         {
-                            masterInventory.StockAvailable = Constant.STOCK_TYPE[request.DefaultVariant.StockType];
+                            masterInventory.StockAvailable = Constant.STOCK_TYPE[request.MasterVariant.StockType];
                         }
                     }
                     if (isNew)
@@ -832,16 +833,16 @@ namespace Colsp.Api.Controllers
                     }
 
                     InventoryHistory masterInventoryHist = new InventoryHistory();
-                    masterInventoryHist.StockAvailable = request.DefaultVariant.Quantity;
-                    masterInventoryHist.SafetyStockSeller = request.DefaultVariant.SafetyStock;
-                    if (request.DefaultVariant.StockType != null)
+                    masterInventoryHist.StockAvailable = request.MasterVariant.Quantity;
+                    masterInventoryHist.SafetyStockSeller = request.MasterVariant.SafetyStock;
+                    if (request.MasterVariant.StockType != null)
                     {
-                        if (Constant.STOCK_TYPE.ContainsKey(request.DefaultVariant.StockType))
+                        if (Constant.STOCK_TYPE.ContainsKey(request.MasterVariant.StockType))
                         {
-                            masterInventoryHist.StockAvailable = Constant.STOCK_TYPE[request.DefaultVariant.StockType];
+                            masterInventoryHist.StockAvailable = Constant.STOCK_TYPE[request.MasterVariant.StockType];
                         }
                     }
-                    masterInventoryHist.Pid = request.DefaultVariant.Pid;
+                    masterInventoryHist.Pid = request.MasterVariant.Pid;
                     masterInventoryHist.Description = "Edit product";
                     masterInventoryHist.CreatedBy = this.User.Email();
                     masterInventoryHist.CreatedDt = DateTime.Now;

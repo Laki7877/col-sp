@@ -14,7 +14,7 @@ namespace Colsp.Model.Requests
         public List<CategoryRequest> GlobalCategories { get; set; }
         public int? LocalCategory { get; set; }
         public List<CategoryRequest> LocalCategories { get; set; }
-        public VariantRequest DefaultVariant { get; set; }
+        public VariantRequest MasterVariant { get; set; }
         public List<AttributeRequest> MasterAttribute { get; set; }
         public List<VariantRequest> Variants { get; set; }
         //public List<ImageRequest> MasterImages { get; set; }
@@ -57,7 +57,7 @@ namespace Colsp.Model.Requests
         public ProductStageRequest()
         {
             AttributeSet = new AttributeSetRequest();
-            DefaultVariant = new VariantRequest();
+            MasterVariant = new VariantRequest();
             MasterAttribute = new List<AttributeRequest>();
             Variants = new List<VariantRequest>();
             SEO = new SEORequest();
@@ -110,6 +110,7 @@ namespace Colsp.Model.Requests
         public int? Quantity { get; set; }
         public int? SafetyStock { get; set; }
         public string StockType { get; set; }
+        public bool? DefaultVaraint { get; set; }
 
         public VariantRequest()
         {

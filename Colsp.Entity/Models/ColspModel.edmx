@@ -688,6 +688,7 @@
           <Property Name="DimensionUnit" Type="char" MaxLength="10" />
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="char" MaxLength="10" />
+          <Property Name="DefaultVaraint" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -2964,6 +2965,7 @@
           <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="DefaultVaraint" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -4604,6 +4606,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DefaultVaraint" ColumnName="DefaultVaraint" />
                 <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
                 <ScalarProperty Name="DimensionUnit" ColumnName="DimensionUnit" />

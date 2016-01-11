@@ -41,6 +41,7 @@ namespace Colsp.Entity.Models
         public string DimensionUnit { get; set; }
         public Nullable<decimal> Weight { get; set; }
         public string WeightUnit { get; set; }
+        public Nullable<bool> DefaultVaraint { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
