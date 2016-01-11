@@ -10,10 +10,13 @@ namespace Colsp.Model.Requests
 	{
 		public int? SellerId { get; set; }
 		public string SearchText { get; set; }
-		public override void DefaultOnNull()
+        public int? CategoryId { get; set; }
+
+        public override void DefaultOnNull()
 		{
 			SellerId = GetValueOrDefault(SellerId, null);
-			SearchText = GetValueOrDefault(SearchText, null);
+            CategoryId = GetValueOrDefault(CategoryId, null);
+            SearchText = GetValueOrDefault(SearchText, null);
 			_order = GetValueOrDefault(_order, "ProductId");
 			base.DefaultOnNull();
 		}

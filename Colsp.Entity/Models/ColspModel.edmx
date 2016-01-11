@@ -173,6 +173,7 @@
           </Key>
           <Property Name="HistoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Pid" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="100" />
           <Property Name="Quantity" Type="int" />
           <Property Name="QuantityOutStock" Type="int" />
           <Property Name="MinQuantity" Type="int" />
@@ -2394,6 +2395,7 @@
           </Key>
           <Property Name="HistoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Int32" />
           <Property Name="QuantityOutStock" Type="Int32" />
           <Property Name="MinQuantity" Type="Int32" />
@@ -4109,6 +4111,7 @@
                 <ScalarProperty Name="MinQuantity" ColumnName="MinQuantity" />
                 <ScalarProperty Name="QuantityOutStock" ColumnName="QuantityOutStock" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="HistoryId" ColumnName="HistoryId" />
               </MappingFragment>
