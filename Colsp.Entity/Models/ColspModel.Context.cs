@@ -74,5 +74,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserPermission> UserPermissions { get; set; }
         public virtual DbSet<UserShop> UserShops { get; set; }
+        public virtual DbSet<GlobalCategoryAbbrevation> GlobalCategoryAbbrevations { get; set; }
     }
 }

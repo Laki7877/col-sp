@@ -18,7 +18,7 @@ namespace Colsp.Api
 			config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling
 				= Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 			config.Formatters.JsonFormatter.SerializerSettings.PreserveReferencesHandling
-				= Newtonsoft.Json.PreserveReferencesHandling.Objects;
+				= Newtonsoft.Json.PreserveReferencesHandling.None;
 			config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling
 				= Newtonsoft.Json.NullValueHandling.Ignore;
 

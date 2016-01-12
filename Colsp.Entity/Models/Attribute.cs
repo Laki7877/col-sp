@@ -31,6 +31,8 @@ namespace Colsp.Entity.Models
         public int AttributeId { get; set; }
         public string AttributeNameEn { get; set; }
         public string AttributeNameTh { get; set; }
+        public string DisplayNameEn { get; set; }
+        public string DisplayNameTh { get; set; }
         public Nullable<bool> VariantStatus { get; set; }
         public string DataType { get; set; }
         public string DataValidation { get; set; }

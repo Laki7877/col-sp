@@ -43,5 +43,42 @@ namespace Colsp.Api.Helper
                 return null;
             }
         }
+
+        public static string NextCatAbbre(ColspEntities db)
+        {
+            var abbr = db.GlobalCategoryAbbrevations.Where(w => w.Active == true).SingleOrDefault();
+            if(abbr != null)
+            {
+                string abbrString = abbr.Abbrevation;
+                abbrString = abbrString.ToUpper();
+                var sb = new System.Text.StringBuilder(abbrString.Length);
+                sb.Length = abbrString.Length;
+
+                int carry = 1;
+                for (int i = abbrString.Length - 1; i >= 0; i--)
+                {
+                    int x = v(abbrString[i]) + carry;
+                    carry = x / 36;
+                    sb[i] = ch(x % 36);
+                }
+                if (carry > 0)
+                {
+                    abbrString = ch(carry) + sb.ToString();
+                }
+                else {
+                    abbrString = sb.ToString();
+                }
+                abbr.Abbrevation = abbrString;
+                return abbr.Abbrevation;
+            }
+            else
+            {
+                abbr = new GlobalCategoryAbbrevation();
+                abbr.Abbrevation = "01";
+                abbr.Active = true;
+                db.GlobalCategoryAbbrevations.Add(abbr);
+                return abbr.Abbrevation;
+            }
+        }
     }
 }

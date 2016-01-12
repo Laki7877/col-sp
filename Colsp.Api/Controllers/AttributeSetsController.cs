@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Api.Constants;
+using Colsp.Model.Requests;
+using Colsp.Api.Extensions;
+using Colsp.Model.Responses;
 
 namespace Colsp.Api.Controllers
 {
@@ -33,13 +31,55 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
                 
             }
             catch
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        [Route("api/AttributeSets")]
+        [HttpGet]
+        public HttpResponseMessage GetAttributeSets([FromUri] AttributeSetRequest request)
+        {
+            try
+            {
+                if(request == null)
+                {
+                    request = new AttributeSetRequest();
+                }
+                request.DefaultOnNull();
+                var attrSet = from atrS in db.AttributeSets
+                              select new
+                              {
+                                  atrS.AttributeSetId,
+                                  atrS.AttributeSetNameEn,
+                                  atrS.AttributeSetNameTh,
+                                  atrS.UpdatedDt,
+                                  AttributeCount = atrS.AttributeSetMaps.AsEnumerable().Count()
+                              };
+                if (request.SearchText != null)
+                {
+                    attrSet = attrSet.Where(a => a.AttributeSetNameEn.Contains(request.SearchText)
+                    || a.AttributeSetNameTh.Contains(request.SearchText));
+                }
+                var total = attrSet.Count();
+                if(request._limit == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, attrSet);
+                }
+                else
+                {
+                    var response = PaginatedResponse.CreateResponse(attrSet, request, total);
+                    return Request.CreateResponse(HttpStatusCode.OK, response);
+                }
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
 

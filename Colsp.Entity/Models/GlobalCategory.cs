@@ -29,6 +29,7 @@ namespace Colsp.Entity.Models
         public int CategoryId { get; set; }
         public string NameEn { get; set; }
         public string NameTh { get; set; }
+        public Nullable<decimal> Commission { get; set; }
         public string CategoryAbbreviation { get; set; }
         public string UrlKeyEn { get; set; }
         public string UrlKeyTh { get; set; }

@@ -29,6 +29,8 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopOwner { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
+        public string UrlKeyEn { get; set; }
+        public string UrlKeyTh { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

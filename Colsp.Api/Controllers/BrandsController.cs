@@ -46,7 +46,29 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        [Route("api/Brands/{brandId}")]
+        [HttpGet]
+        public HttpResponseMessage GetBrand(int brandId)
+        {
+            try
+            {
+                var brand = db.Brands.Find(brandId);
+                if(brand != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, brand);
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                }
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
 

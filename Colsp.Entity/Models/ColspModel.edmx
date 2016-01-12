@@ -12,6 +12,8 @@
           <Property Name="AttributeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="VariantStatus" Type="bit" />
           <Property Name="DataType" Type="char" MaxLength="2" />
           <Property Name="DataValidation" Type="char" MaxLength="3" />
@@ -129,6 +131,7 @@
           <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="NameEn" Type="nvarchar" MaxLength="50" />
           <Property Name="NameTh" Type="nvarchar" MaxLength="50" />
+          <Property Name="Commission" Type="decimal" Precision="10" Scale="2" />
           <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
@@ -140,6 +143,14 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="GlobalCategoryAbbrevation">
+          <Key>
+            <PropertyRef Name="GlobalCategoryAbbrevation" />
+          </Key>
+          <Property Name="GlobalCategoryAbbrevation" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Abbrevation" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="GlobalCategoryPID">
           <Key>
@@ -782,6 +793,8 @@
           <Property Name="ShopOwner" Type="int" />
           <Property Name="ShopNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ShopNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -1622,6 +1635,7 @@
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GlobalCategoryAbbrevation" EntityType="Self.GlobalCategoryAbbrevation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryPID" EntityType="Self.GlobalCategoryPID" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Inventory" EntityType="Self.Inventory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryHistory" EntityType="Self.InventoryHistory" Schema="dbo" store:Type="Tables" />
@@ -2195,6 +2209,7 @@
             <End Role="UserPermission" EntitySet="UserPermissions" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
+          <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
         </EntityContainer>
         <EntityType Name="Attribute">
           <Key>
@@ -2203,6 +2218,8 @@
           <Property Name="AttributeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AttributeNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="VariantStatus" Type="Boolean" />
           <Property Name="DataType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="DataValidation" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
@@ -2345,6 +2362,7 @@
           <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="NameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NameTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Commission" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CategoryAbbreviation" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -3067,6 +3085,8 @@
           <Property Name="ShopOwner" Type="Int32" />
           <Property Name="ShopNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ShopNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -3923,6 +3943,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="GlobalCategoryAbbrevation">
+          <Key>
+            <PropertyRef Name="GlobalCategoryAbbrevation1" />
+          </Key>
+          <Property Name="GlobalCategoryAbbrevation1" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Abbrevation" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3946,6 +3974,8 @@
                 <ScalarProperty Name="DataValidation" ColumnName="DataValidation" />
                 <ScalarProperty Name="DataType" ColumnName="DataType" />
                 <ScalarProperty Name="VariantStatus" ColumnName="VariantStatus" />
+                <ScalarProperty Name="DisplayNameTh" ColumnName="DisplayNameTh" />
+                <ScalarProperty Name="DisplayNameEn" ColumnName="DisplayNameEn" />
                 <ScalarProperty Name="AttributeNameTh" ColumnName="AttributeNameTh" />
                 <ScalarProperty Name="AttributeNameEn" ColumnName="AttributeNameEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
@@ -4064,6 +4094,7 @@
                 <ScalarProperty Name="UrlKeyTh" ColumnName="UrlKeyTh" />
                 <ScalarProperty Name="UrlKeyEn" ColumnName="UrlKeyEn" />
                 <ScalarProperty Name="CategoryAbbreviation" ColumnName="CategoryAbbreviation" />
+                <ScalarProperty Name="Commission" ColumnName="Commission" />
                 <ScalarProperty Name="NameTh" ColumnName="NameTh" />
                 <ScalarProperty Name="NameEn" ColumnName="NameEn" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
@@ -4727,6 +4758,8 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="UrlKeyTh" ColumnName="UrlKeyTh" />
+                <ScalarProperty Name="UrlKeyEn" ColumnName="UrlKeyEn" />
                 <ScalarProperty Name="ShopNameTh" ColumnName="ShopNameTh" />
                 <ScalarProperty Name="ShopNameEn" ColumnName="ShopNameEn" />
                 <ScalarProperty Name="ShopOwner" ColumnName="ShopOwner" />
@@ -4837,6 +4870,15 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GlobalCategoryAbbrevations">
+            <EntityTypeMapping TypeName="ColspModel.GlobalCategoryAbbrevation">
+              <MappingFragment StoreEntitySet="GlobalCategoryAbbrevation">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Abbrevation" ColumnName="Abbrevation" />
+                <ScalarProperty Name="GlobalCategoryAbbrevation1" ColumnName="GlobalCategoryAbbrevation" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -66,17 +66,7 @@ namespace Colsp.Model.Requests
 
     }
 
-    public class CategoryRequest
-    {
-        public int CategoryId { get; set; }
-        public string NameEn { get; set; }
-        public string NameTh { get; set; }
-        public string UrlKeyEn { get; set; }
-        public string Status { get; set; }
-        public int? Lft { get; set; }
-        public int? Rgt { get; set; }
-        public int? ShopId { get; set; }
-    }
+   
 
     public class VariantRequest
     {
@@ -111,6 +101,7 @@ namespace Colsp.Model.Requests
         public int? SafetyStock { get; set; }
         public string StockType { get; set; }
         public bool? DefaultVaraint { get; set; }
+        public int? VariantId { get; set; }
 
         public VariantRequest()
         {
@@ -120,11 +111,7 @@ namespace Colsp.Model.Requests
             VideoLinks = new List<VideoLinkRequest>();
         }
     }
-    public class AttributeRequest
-    {
-        public int? AttributeId { get; set; }
-        public string ValueEn { get; set; }
-    }
+    
     
     public class ImageRequest
     {
@@ -132,10 +119,12 @@ namespace Colsp.Model.Requests
         public string url { get; set; }
         public int? position { get; set; }
         public string ImageName { get; set; }
+        public int? ImageId;
     }
     public class VideoLinkRequest
     {
         public string Url { get; set; }
+        public int? VideoId { get; set; }
     }
     public class SEORequest
     {
@@ -146,8 +135,5 @@ namespace Colsp.Model.Requests
         public string ProductUrlKeyEn { get; set; }
         public string ProductBoostingWeight { get; set; }
     }
-    public class AttributeSetRequest
-    {
-        public int? AttributeSetId { get; set; }
-    }
+    
 }

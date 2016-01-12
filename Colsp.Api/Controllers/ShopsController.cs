@@ -26,7 +26,20 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var localCat = db.LocalCategories.Where(lc => lc.ShopId == shopId && lc.Status == Constant.STATUS_ACTIVE).ToList();
+                var localCat = (from cat in db.LocalCategories
+                                 where cat.ShopId == shopId
+                                 select new
+                                 {
+                                     cat.CategoryId,
+                                     cat.NameEn,
+                                     cat.NameTh,
+                                     cat.Lft,
+                                     cat.Rgt,
+                                     cat.UrlKeyEn,
+                                     cat.UrlKeyTh,
+                                     cat.Status,
+                                     ProductCount = cat.ProductStages.Count,
+                                 }).ToList();
                 if (localCat != null && localCat.Count > 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, localCat);
@@ -51,37 +64,37 @@ namespace Colsp.Api.Controllers
             {
                 if (shopId == 0 || this.User.ShopIds().Where(w => w == shopId).SingleOrDefault() == 0)
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Shop is invalid");
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid. Cannot find shop in session");
                 }
                 var catEnList = (from cat in db.LocalCategories
-                                 join proStg in db.ProductStages on cat.CategoryId equals proStg.LocalCatId
+                                 join proStg in db.ProductStages on cat.CategoryId equals proStg.LocalCatId into j
+                                 from j2 in j.DefaultIfEmpty()
                                  where cat.ShopId == shopId
-                                 group cat by cat into g
+                                 group j2 by cat into g
                                  select new
                                  {
                                      Category = g,
-                                     ProductCount = g.ToList().Count
+                                     ProductCount = g.Key.ProductStages.Count
                                  }).ToList();
 
-                //var catEnList = db.LocalCategories.Where(w =>w.ShopId == shopId).ToList();
 
                 foreach (CategoryRequest catRq in request)
                 {
                     if (catRq.Lft == null || catRq.Rgt == null || catRq.Lft >= catRq.Rgt)
                     {
-                        return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Category is invalid");
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node is not properly formated");
                     }
                     var validate = request.Where(w => w.Lft == catRq.Lft || w.Rgt == catRq.Rgt).ToList();
                     if (validate != null && validate.Count > 1)
                     {
-                        return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Category is invalid");
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
                     }
                     if (catRq.CategoryId != 0)
                     {
                         var catEn = catEnList.Where(w => w.Category.Key.CategoryId == catRq.CategoryId).Select(s => s.Category).SingleOrDefault();
                         if (catEn == null)
                         {
-                            return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Category is invalid");
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
                         }
                         else
                         {
@@ -104,29 +117,30 @@ namespace Colsp.Api.Controllers
                         catEn.NameEn = catRq.NameEn;
                         catEn.NameTh = catRq.NameTh;
                         catEn.UrlKeyEn = catRq.UrlKeyEn;
-                        catEn.ShopId = catRq.ShopId;
+                        catEn.ShopId = shopId;
                         catEn.Status = catRq.Status;
                         catEn.CreatedBy = this.User.Email();
                         catEn.CreatedDt = DateTime.Now;
                         db.LocalCategories.Add(catEn);
                     }
                 }
-                foreach(var cat in catEnList)
+                foreach (var cat in catEnList)
                 {
-                    if(cat.ProductCount != 0)
+                    if (cat.ProductCount != 0)
                     {
                         db.Dispose();
-                        return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Cannot delete category with product associated");
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete category " + cat.Category.Key.NameEn + " with product associated");
                     }
                     db.LocalCategories.Remove(cat.Category.Key);
                 }
                 db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
-            return Request.CreateResponse(HttpStatusCode.OK);
+            
         }
 
         [Route("api/Shops/{sellerId}/ProductStages")]

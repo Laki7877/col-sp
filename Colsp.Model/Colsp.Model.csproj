@@ -42,7 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Requests\AttributeRequest.cs" />
+    <Compile Include="Requests\AttributeSetRequest.cs" />
     <Compile Include="Requests\BrandRequest.cs" />
+    <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />
     <Compile Include="Requests\ProductStageRequest.cs" />

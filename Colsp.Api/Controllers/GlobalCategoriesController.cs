@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Api.Constants;
+using Colsp.Model.Requests;
+using Colsp.Api.Extensions;
+using Colsp.Api.Helper;
 
 namespace Colsp.Api.Controllers
 {
@@ -23,18 +23,22 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var globalCat = (from node in db.GlobalCategories
-                           from parent in db.GlobalCategories
-                           where node.Lft >= parent.Lft && node.Lft <= parent.Rgt
-                           group node by new { node.CategoryId, node.NameEn, node.Lft, node.CategoryAbbreviation } into g
-                           orderby g.Key.Lft
-                           select new
-                           {
-                               NameEn = g.Key.NameEn,
-                               CategoryId = g.Key.CategoryId,
-                               CategoryAbbreviation = g.Key.CategoryAbbreviation,
-                               Depth = g.ToList().Count()
-                           }).ToList();
+                var globalCat = (from cat in db.GlobalCategories
+                                select new
+                                {
+                                    cat.CategoryId,
+                                    cat.NameEn,
+                                    cat.NameTh,
+                                    cat.CategoryAbbreviation,
+                                    cat.Lft,
+                                    cat.Rgt,
+                                    cat.UrlKeyEn,
+                                    cat.UrlKeyTh,
+                                    cat.Status,
+                                    ProductCount = cat.ProductStages.Count,
+                                    AttributeSets = cat.CategoryAttributeSetMaps.AsEnumerable().Select(s=> new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn })
+                                }).ToList();
+
                 if (globalCat != null && globalCat.Count > 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, globalCat);
@@ -129,6 +133,160 @@ namespace Colsp.Api.Controllers
             catch (Exception)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        [Route("api/GlobalCategories")]
+        [HttpPut]
+        public HttpResponseMessage SaveChangeGlobalCategory(List<CategoryRequest> request)
+        {
+            try
+            {
+                var catEnList = (from cat in db.GlobalCategories
+                                 join proStg in db.ProductStages on cat.CategoryId equals proStg.GlobalCatId into j
+                                 from j2 in j.DefaultIfEmpty()
+                                 group j2 by cat into g
+                                 select new
+                                 {
+                                     Category = g,
+                                     ProductCount = g.Key.ProductStages.Count,
+                                     AttrSet = g.Key.CategoryAttributeSetMaps.AsEnumerable().DefaultIfEmpty()
+                                 }).ToList();
+
+                List<GlobalCategory> newCat = new List<GlobalCategory>();
+                List<Tuple<GlobalCategory, int>> insetMap = new List<Tuple<GlobalCategory, int>>();
+                foreach (CategoryRequest catRq in request)
+                {
+                    if (catRq.Lft == null || catRq.Rgt == null || catRq.Lft >= catRq.Rgt)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node is not properly formated");
+                    }
+                    var validate = request.Where(w => w.Lft == catRq.Lft || w.Rgt == catRq.Rgt).ToList();
+                    if (validate != null && validate.Count > 1)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
+                    }
+                    if (catRq.CategoryId != 0)
+                    {
+                        var catEn = catEnList.Where(w => w.Category.Key.CategoryId == catRq.CategoryId).Select(s => s.Category).SingleOrDefault();
+                        if (catEn == null)
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
+                        }
+                        else
+                        {
+                            catEn.Key.Lft = catRq.Lft;
+                            catEn.Key.Rgt = catRq.Rgt;
+                            catEn.Key.NameEn = catRq.NameEn;
+                            catEn.Key.NameTh = catRq.NameTh;
+                            catEn.Key.UrlKeyEn = catRq.UrlKeyEn;
+                            catEn.Key.Commission = catRq.Commission;
+                            catEn.Key.Status = catRq.Status;
+                            catEn.Key.UpdatedBy = this.User.Email();
+                            catEn.Key.UpdatedDt = DateTime.Now;
+                            catEnList.Remove(catEnList.Where(w => w.Category.Key.CategoryId == catEn.Key.CategoryId).SingleOrDefault());
+
+                            if (catRq.AttributeSets != null && catRq.AttributeSets.Count > 0)
+                            {
+                                var tmpList = catEn.Key.CategoryAttributeSetMaps.ToList();
+                                foreach (AttributeSetRequest attrMap in catRq.AttributeSets)
+                                {
+                                    bool addNew = false;
+                                    if (tmpList == null || tmpList.Count == 0)
+                                    {
+                                        addNew = true;
+                                    }
+                                    if (!addNew)
+                                    {
+                                        CategoryAttributeSetMap current = tmpList.Where(w => w.AttributeSetId == attrMap.AttributeSetId).SingleOrDefault();
+                                        if (current != null)
+                                        {
+                                            tmpList.Remove(current);
+                                        }
+                                        else
+                                        {
+                                            addNew = true;
+                                        }
+                                    }
+                                    if (addNew)
+                                    {
+                                        CategoryAttributeSetMap map = new CategoryAttributeSetMap();
+                                        map.AttributeSetId = attrMap.AttributeSetId.Value;
+                                        map.CategoryId = catEn.Key.CategoryId;
+                                        map.CreatedBy = this.User.Email();
+                                        map.CreatedDt = DateTime.Now;
+                                        db.CategoryAttributeSetMaps.Add(map);
+                                    }
+                                }
+                                if(tmpList != null && tmpList.Count > 0)
+                                {
+                                    db.CategoryAttributeSetMaps.RemoveRange(tmpList);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        GlobalCategory catEn = new GlobalCategory();
+                        string abbr = AutoGenerate.NextCatAbbre(db);
+                        catEn.CategoryAbbreviation = abbr;
+                        catEn.Lft = catRq.Lft;
+                        catEn.Rgt = catRq.Rgt;
+                        catEn.NameEn = catRq.NameEn;
+                        catEn.NameTh = catRq.NameTh;
+                        catEn.UrlKeyEn = catRq.UrlKeyEn;
+                        catEn.Status = catRq.Status;
+                        catEn.CreatedBy = this.User.Email();
+                        catEn.CreatedDt = DateTime.Now;
+                        if(catRq.AttributeSets != null && catRq.AttributeSets.Count > 0)
+                        {
+                            foreach (AttributeSetRequest mapRq in catRq.AttributeSets)
+                            {
+                                Tuple<GlobalCategory, int> insert = new Tuple<GlobalCategory, int>(catEn, mapRq.AttributeSetId.Value);
+                                insetMap.Add(insert);
+                            }
+                        }
+                        
+                        db.GlobalCategories.Add(catEn);
+                        newCat.Add(catEn);
+                    }
+                }
+                foreach (var cat in catEnList)
+                {
+                    if (cat.ProductCount != 0)
+                    {
+                        db.Dispose();
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete category " + cat.Category.Key.NameEn + " with product associated");
+                    }
+                    db.GlobalCategories.Remove(cat.Category.Key);
+                }
+                db.SaveChanges();
+                if(newCat != null)
+                {
+                    foreach (GlobalCategory cat in newCat)
+                    {
+                        GlobalCategoryPID catPid = new GlobalCategoryPID();
+                        catPid.CategoryId = cat.CategoryId;
+                        catPid.CategoryAbbreviation = cat.CategoryAbbreviation;
+                        catPid.CurrentKey = "00000";
+                        db.GlobalCategoryPIDs.Add(catPid);
+                    }
+                    foreach(Tuple<GlobalCategory, int> i in insetMap)
+                    {
+                        CategoryAttributeSetMap map = new CategoryAttributeSetMap();
+                        map.AttributeSetId = i.Item2;
+                        map.CategoryId = i.Item1.CategoryId;
+                        map.CreatedBy = this.User.Email();
+                        map.CreatedDt = DateTime.Now;
+                        db.CategoryAttributeSetMaps.Add(map);
+                    }
+                    db.SaveChanges();
+                }
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
         }
 
