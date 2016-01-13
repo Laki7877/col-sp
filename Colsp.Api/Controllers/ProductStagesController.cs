@@ -631,9 +631,9 @@ namespace Colsp.Api.Controllers
                              }).AsEnumerable().Select(s => s.stg).SingleOrDefault();
                 if (stage != null)
                 {
-                    if (!stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
+                    if (stage.Status == null || !stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,"Product is not allow");
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product is not allow");
                     }
                     #region Setup Master
                     HttpResponseMessage error = SetupProductStage(stage, request);
@@ -641,7 +641,7 @@ namespace Colsp.Api.Controllers
                     {
                         return error;
                     }
-                    stage.Status = request.Status;
+                    stage.Status = Constant.PRODUCT_STATUS_DRAFT;
                     stage.UpdatedBy = this.User.Email();
                     stage.UpdatedDt = DateTime.Now;
                     #region Setup Attribute
@@ -687,15 +687,14 @@ namespace Colsp.Api.Controllers
                            
                         }
                     }
+                    
                     if (attrList != null && attrList.Count > 0)
                     {
                         db.ProductStageAttributes.RemoveRange(attrList);
                     }
                     #endregion
-
                     SaveChangeInventory(db, stage.Pid, request.MasterVariant, this.User.Email());
                     SaveChangeInventoryHistory(db, stage.Pid, request.MasterVariant, this.User.Email());
-
                     SaveChangeImg(db, stage.Pid, request.MasterVariant.Images,this.User.Email());
                     SaveChangeImg360(db, stage.Pid, request.MasterVariant.Images360,this.User.Email());
                     SaveChangeVideoLinks(db, stage.Pid, request.MasterVariant.VideoLinks,this.User.Email());
@@ -704,6 +703,12 @@ namespace Colsp.Api.Controllers
                     SaveChangeLocalCat(db, stage.ProductId, request.LocalCategories, this.User.Email());
                     #endregion
                     #region Setup Variant
+                    List<ProductStageVariant> varList = null;
+                    if (stage.ProductStageVariants == null || stage.ProductStageVariants.Count == 0)
+                    {
+                        varList = stage.ProductStageVariants.ToList();
+                    }
+                    
                     foreach (VariantRequest var in request.Variants)
                     {
                         if (var.FirstAttribute == null ||
@@ -712,19 +717,19 @@ namespace Colsp.Api.Controllers
                             throw new Exception("Invalid variant format");
                         }
                         bool addNew = false;
-                        if (stage.ProductStageVariants == null || stage.ProductStageVariants.Count == 0)
+                        if (varList == null || varList.Count == 0)
                         {
                             addNew = true;
                         }
                         ProductStageVariant current = null;
                         if (!addNew)
                         {
-                            current = stage.ProductStageVariants.Where(w => w.VariantId == var.VariantId).SingleOrDefault();
+                            current = varList.Where(w => w.VariantId == var.VariantId).SingleOrDefault();
                             if (current != null)
                             {
                                 current.UpdatedBy = this.User.Email();
                                 current.UpdatedDt = DateTime.Now;
-                                stage.ProductStageVariants.Remove(current);
+                                varList.Remove(current);
                             }
                             else
                             {
@@ -771,9 +776,9 @@ namespace Colsp.Api.Controllers
                             db.ProductStageVariants.Add(current);
                         }
                     }
-                    if(stage.ProductStageVariants != null && stage.ProductStageVariants.Count > 0)
+                    if(varList != null && varList.Count > 0)
                     {
-                        db.ProductStageVariants.RemoveRange(stage.ProductStageVariants);
+                        db.ProductStageVariants.RemoveRange(varList);
                     }
                     #endregion
                     db.SaveChanges();
@@ -984,7 +989,8 @@ namespace Colsp.Api.Controllers
 
         private void SaveChangeGlobalCat(ColspEntities db, int ProductId, List<CategoryRequest> globalCategories,string email)
         {
-            var catList = db.ProductGlobalCatMaps.Where(w => w.ProductId == ProductId).ToList();
+
+            var catList = db.ProductStageGlobalCatMaps.Where(w => w.ProductId.Equals(ProductId)).ToList();
             if (globalCategories != null)
             {
                 foreach (CategoryRequest cat in globalCategories)
@@ -996,7 +1002,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (!addNew)
                     {
-                        ProductGlobalCatMap current = catList.Where(w => w.CategoryId == cat.CategoryId).SingleOrDefault();
+                        ProductStageGlobalCatMap current = catList.Where(w => w.CategoryId == cat.CategoryId).SingleOrDefault();
                         if (current != null)
                         {
                             catList.Remove(current);
@@ -1008,19 +1014,19 @@ namespace Colsp.Api.Controllers
                     }
                     if (addNew)
                     {
-                        ProductGlobalCatMap catEntity = new ProductGlobalCatMap();
+                        ProductStageGlobalCatMap catEntity = new ProductStageGlobalCatMap();
                         catEntity.CategoryId = cat.CategoryId;
                         catEntity.ProductId = ProductId;
                         catEntity.CreatedBy = email;
                         catEntity.Status = Constant.STATUS_ACTIVE;
                         catEntity.CreatedDt = DateTime.Now;
-                        db.ProductGlobalCatMaps.Add(catEntity);
+                        db.ProductStageGlobalCatMaps.Add(catEntity);
                     }
                 }
             }
             if (catList != null && catList.Count > 0)
             {
-                db.ProductGlobalCatMaps.RemoveRange(catList);
+                db.ProductStageGlobalCatMaps.RemoveRange(catList);
             }
         }
 
@@ -1038,7 +1044,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (!addNew)
                     {
-                        ProductStageRelated current = relateList.Where(w => w.Pid1 == pro).SingleOrDefault();
+                        ProductStageRelated current = relateList.Where(w => w.Pid2 == pro).SingleOrDefault();
                         if (current != null)
                         {
                             relateList.Remove(current);

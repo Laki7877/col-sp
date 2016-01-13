@@ -31,18 +31,22 @@ namespace Colsp.Entity.Models
         public int AttributeId { get; set; }
         public string AttributeNameEn { get; set; }
         public string AttributeNameTh { get; set; }
+        public string AttributeUnitEn { get; set; }
+        public string AttributeUnitTh { get; set; }
         public string DisplayNameEn { get; set; }
         public string DisplayNameTh { get; set; }
         public Nullable<bool> VariantStatus { get; set; }
         public string DataType { get; set; }
+        public string VariantDataType { get; set; }
         public string DataValidation { get; set; }
+        public string DefaultValue { get; set; }
         public Nullable<bool> ShowAdminFlag { get; set; }
         public Nullable<bool> ShowGlobalSearchFlag { get; set; }
         public Nullable<bool> ShowLocalSearchFlag { get; set; }
         public Nullable<bool> ShowGlobalFilterFlag { get; set; }
         public Nullable<bool> ShowLocalFilterFlag { get; set; }
         public string Status { get; set; }
-        public string AllowHtmlFlag { get; set; }
+        public Nullable<bool> AllowHtmlFlag { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }

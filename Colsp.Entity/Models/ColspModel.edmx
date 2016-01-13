@@ -12,18 +12,22 @@
           <Property Name="AttributeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="AttributeUnitEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="AttributeUnitTh" Type="nvarchar" MaxLength="100" />
           <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="VariantStatus" Type="bit" />
           <Property Name="DataType" Type="char" MaxLength="2" />
-          <Property Name="DataValidation" Type="char" MaxLength="3" />
+          <Property Name="VariantDataType" Type="char" MaxLength="2" />
+          <Property Name="DataValidation" Type="char" MaxLength="2" />
+          <Property Name="DefaultValue" Type="nvarchar" MaxLength="100" />
           <Property Name="ShowAdminFlag" Type="bit" />
           <Property Name="ShowGlobalSearchFlag" Type="bit" />
           <Property Name="ShowLocalSearchFlag" Type="bit" />
           <Property Name="ShowGlobalFilterFlag" Type="bit" />
           <Property Name="ShowLocalFilterFlag" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="AllowHtmlFlag" Type="nchar" MaxLength="10" />
+          <Property Name="AllowHtmlFlag" Type="bit" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
@@ -36,6 +40,8 @@
           <Property Name="AttributeSetId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeSetNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeSetNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="AttributeSetDescriptionEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="AttributeSetDescriptionTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -2220,18 +2226,22 @@
           <Property Name="AttributeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AttributeNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeUnitEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeUnitTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DisplayNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DisplayNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="VariantStatus" Type="Boolean" />
           <Property Name="DataType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="DataValidation" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="VariantDataType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="DataValidation" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="DefaultValue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ShowAdminFlag" Type="Boolean" />
           <Property Name="ShowGlobalSearchFlag" Type="Boolean" />
           <Property Name="ShowLocalSearchFlag" Type="Boolean" />
           <Property Name="ShowGlobalFilterFlag" Type="Boolean" />
           <Property Name="ShowLocalFilterFlag" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="AllowHtmlFlag" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="AllowHtmlFlag" Type="Boolean" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2253,6 +2263,8 @@
           <Property Name="AttributeSetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AttributeSetNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeSetNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSetDescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSetDescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -3975,11 +3987,15 @@
                 <ScalarProperty Name="ShowLocalSearchFlag" ColumnName="ShowLocalSearchFlag" />
                 <ScalarProperty Name="ShowGlobalSearchFlag" ColumnName="ShowGlobalSearchFlag" />
                 <ScalarProperty Name="ShowAdminFlag" ColumnName="ShowAdminFlag" />
+                <ScalarProperty Name="DefaultValue" ColumnName="DefaultValue" />
                 <ScalarProperty Name="DataValidation" ColumnName="DataValidation" />
+                <ScalarProperty Name="VariantDataType" ColumnName="VariantDataType" />
                 <ScalarProperty Name="DataType" ColumnName="DataType" />
                 <ScalarProperty Name="VariantStatus" ColumnName="VariantStatus" />
                 <ScalarProperty Name="DisplayNameTh" ColumnName="DisplayNameTh" />
                 <ScalarProperty Name="DisplayNameEn" ColumnName="DisplayNameEn" />
+                <ScalarProperty Name="AttributeUnitTh" ColumnName="AttributeUnitTh" />
+                <ScalarProperty Name="AttributeUnitEn" ColumnName="AttributeUnitEn" />
                 <ScalarProperty Name="AttributeNameTh" ColumnName="AttributeNameTh" />
                 <ScalarProperty Name="AttributeNameEn" ColumnName="AttributeNameEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
@@ -3994,6 +4010,8 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AttributeSetDescriptionTh" ColumnName="AttributeSetDescriptionTh" />
+                <ScalarProperty Name="AttributeSetDescriptionEn" ColumnName="AttributeSetDescriptionEn" />
                 <ScalarProperty Name="AttributeSetNameTh" ColumnName="AttributeSetNameTh" />
                 <ScalarProperty Name="AttributeSetNameEn" ColumnName="AttributeSetNameEn" />
                 <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />

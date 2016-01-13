@@ -8,6 +8,9 @@ using Colsp.Api.Constants;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
+using System;
+using System.Data.Entity;
+using System.Collections.Generic;
 
 namespace Colsp.Api.Controllers
 {
@@ -83,10 +86,42 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var attrSet = db.AttributeSets.Find(attributeSetId);
+                var attrSet = db.AttributeSets.Where(w=>w.AttributeSetId.Equals(attributeSetId)).Include("AttributeSetMaps.Attribute").SingleOrDefault();
                 if (attrSet != null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, attrSet);
+                    AttributeSetRequest response = new AttributeSetRequest();
+                    response.AttributeSetId = attrSet.AttributeSetId;
+                    response.AttributeSetNameEn = attrSet.AttributeSetNameEn;
+                    response.AttributeSetNameTh = attrSet.AttributeSetNameTh;
+                    response.AttributeSetDescriptionEn = attrSet.AttributeSetDescriptionEn;
+                    response.AttributeSetDescriptionTh = attrSet.AttributeSetDescriptionTh;
+                    if(attrSet.AttributeSetMaps != null && attrSet.AttributeSetMaps.Count > 0)
+                    {
+                        response.Attributes = new List<AttributeRequest>();
+                        foreach (AttributeSetMap map in attrSet.AttributeSetMaps)
+                        {
+                            AttributeRequest attr = new AttributeRequest();
+                            attr.AttributeNameEn = map.Attribute.AttributeNameEn;
+                            attr.AttributeNameTh = map.Attribute.AttributeNameTh;
+                            attr.AttributeUnitEn = map.Attribute.AttributeUnitEn;
+                            attr.AttributeUnitTh = map.Attribute.AttributeUnitTh;
+                            attr.DataType = map.Attribute.DataType;
+                            attr.DataValidation = map.Attribute.DataValidation;
+                            attr.DefaultValue = map.Attribute.DefaultValue;
+                            attr.DisplayNameEn = map.Attribute.DisplayNameEn;
+                            attr.DisplayNameTh = map.Attribute.DisplayNameTh;
+                            attr.ShowAdminFlag = map.Attribute.ShowAdminFlag;
+                            attr.ShowGlobalFilterFlag = map.Attribute.ShowGlobalFilterFlag;
+                            attr.ShowGlobalSearchFlag = map.Attribute.ShowGlobalSearchFlag;
+                            attr.ShowLocalFilterFlag = map.Attribute.ShowLocalFilterFlag;
+                            attr.ShowLocalSearchFlag = map.Attribute.ShowLocalSearchFlag;
+                            attr.VariantDataType = map.Attribute.VariantDataType;
+                            attr.VariantStatus = map.Attribute.VariantStatus;
+                            attr.AllowHtmlFlag = map.Attribute.AllowHtmlFlag;
+                            response.Attributes.Add(attr);
+                        }
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, response);
                 }
                 else
                 {
@@ -101,26 +136,58 @@ namespace Colsp.Api.Controllers
 
         [Route("api/AttributeSets")]
         [HttpPost]
-        public HttpResponseMessage AddAttributeSet(AttributeSet attributeSet)
+        public HttpResponseMessage AddAttributeSet(AttributeSetRequest request)
         {
+            AttributeSet set = null;
             try
             {
+                set = new AttributeSet();
+                set.AttributeSetNameEn = request.AttributeSetNameEn;
+                set.AttributeSetNameTh = request.AttributeSetNameTh;
+                set.AttributeSetDescriptionEn = request.AttributeSetDescriptionEn;
+                set.AttributeSetDescriptionTh = request.AttributeSetDescriptionTh;
                 #region Validation
-                if (string.IsNullOrEmpty(attributeSet.AttributeSetNameEn))
+                if (string.IsNullOrEmpty(set.AttributeSetNameEn))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameEn is required");
                 }
-                if (string.IsNullOrEmpty(attributeSet.AttributeSetNameTh))
+                if (string.IsNullOrEmpty(set.AttributeSetNameTh))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameTh is required");
                 }
                 #endregion
-                attributeSet = db.AttributeSets.Add(attributeSet);
+                set.Status = Constant.STATUS_ACTIVE;
+                set.CreatedBy = this.User.Email();
+                set.CreatedDt = DateTime.Now;
+                set = db.AttributeSets.Add(set);
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, attributeSet);
+                if(request.Attributes != null && request.Attributes.Count > 0)
+                {
+                    foreach (AttributeRequest attr in request.Attributes)
+                    {
+                        AttributeSetMap map = new AttributeSetMap();
+                        map.AttributeId = attr.AttributeId.Value;
+                        map.AttributeSetId = set.AttributeSetId;
+                        map.Status = Constant.STATUS_ACTIVE;
+                        map.CreatedBy = this.User.Email();
+                        map.CreatedDt = DateTime.Now;
+                        db.AttributeSetMaps.Add(map);
+                    }
+                }
+                db.SaveChanges();
+                return GetAttributeSets(set.AttributeSetId);
             }
             catch
             {
+                db.Dispose();
+                db = new ColspEntities();
+                #region Rollback
+                if (set != null)
+                {
+                    db.AttributeSets.Remove(set);
+                    db.SaveChanges();
+                }
+                #endregion
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }

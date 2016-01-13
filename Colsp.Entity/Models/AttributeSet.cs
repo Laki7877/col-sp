@@ -26,6 +26,8 @@ namespace Colsp.Entity.Models
         public int AttributeSetId { get; set; }
         public string AttributeSetNameEn { get; set; }
         public string AttributeSetNameTh { get; set; }
+        public string AttributeSetDescriptionEn { get; set; }
+        public string AttributeSetDescriptionTh { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
