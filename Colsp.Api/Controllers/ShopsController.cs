@@ -38,6 +38,8 @@ namespace Colsp.Api.Controllers
                                      cat.UrlKeyEn,
                                      cat.UrlKeyTh,
                                      cat.Status,
+                                     cat.UpdatedDt,
+                                     cat.CreatedDt,
                                      ProductCount = cat.ProductStages.Count,
                                  }).ToList();
                 if (localCat != null && localCat.Count > 0)

@@ -39,6 +39,25 @@ namespace Colsp.Api.Controllers
                 {
                     products = products.Where(p => p.SellerId.Equals(request.SellerId));
                 }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+                    if ("Draft".Equals(request._filter))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
+                    }
+                    else if("Approved".Equals(request._filter))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if("Not Approved".Equals(request._filter))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
+                    }
+                    else if("Wait for Approval".Equals(request._filter))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                    }
+                }
 
                 var total = products.Count();
                 var pagedProducts = products.GroupJoin(db.ProductStageImages,
@@ -55,7 +74,8 @@ namespace Colsp.Api.Controllers
                                                     p.Status,
                                                     p.ImageFlag,
                                                     p.InfoFlag,
-                                                    Modified = p.UpdatedDt,
+                                                    p.UpdatedDt,
+                                                    p.CreatedDt,
                                                     ImageUrl = m.FirstOrDefault().ImageUrlEn
                                                 }
                                             )
@@ -226,11 +246,10 @@ namespace Colsp.Api.Controllers
                         varient.VariantId = variantEntity.VariantId;
                         varient.Pid = variantEntity.Pid;
                         varient.FirstAttribute.AttributeId = variantEntity.Attribute1Id;
-                        varient.FirstAttribute.ValueEn = variantEntity.Attribute.AttributeNameEn;
-                        varient.SecondAttribute.AttributeId = variantEntity.Attribute1Id;
-                        varient.SecondAttribute.ValueEn = variantEntity.Attribute1.AttributeNameEn;
-                        varient.ValueEn = variantEntity.ValueEn;
-                        varient.DefaultVaraint = variantEntity.DefaultVaraint;
+                        varient.FirstAttribute.ValueEn = variantEntity.ValueEn1;
+                        varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
+                        varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
+                        varient.DefaultVariant = variantEntity.DefaultVaraint;
                         #region Setup Variant Inventory
                         inventory = (from inv in db.Inventories
                                          where inv.Pid.Equals(variantEntity.Pid)
@@ -294,108 +313,23 @@ namespace Colsp.Api.Controllers
 
                 #region Setup Master Product
                 stage = new ProductStage();
-                stage.ProductNameTh = request.MasterVariant.ProductNameTh;
-                stage.ProductNameEn = request.MasterVariant.ProductNameEn;
-                stage.Sku = request.MasterVariant.Sku;
-                stage.Upc = request.MasterVariant.Upc;
-                stage.BrandId = request.Brand.BrandId;
-                stage.OriginalPrice = request.MasterVariant.OriginalPrice;
-                stage.SalePrice = request.MasterVariant.SalePrice;
-                stage.DescriptionFullTh = request.MasterVariant.DescriptionFullTh;
-                stage.DescriptionShortTh = request.MasterVariant.DescriptionShortTh;
-                stage.DescriptionFullEn = request.MasterVariant.DescriptionFullEn;
-                stage.DescriptionShortEn = request.MasterVariant.DescriptionShortEn;
-                stage.AttributeSetId = request.AttributeSet.AttributeSetId;
-                stage.Tag = request.Keywords;
-                stage.ShippingId = request.ShippingMethod;
-                stage.PrepareDay = request.PrepareDay;
-                stage.Length = request.MasterVariant.Length;
-                stage.Height = request.MasterVariant.Height;
-                stage.Width = request.MasterVariant.Width;
-                stage.Weight = request.MasterVariant.Weight;
-                stage.DimensionUnit = request.MasterVariant.DimensionUnit;
-                stage.WeightUnit = request.MasterVariant.WeightUnit;
-                stage.GlobalCatId = request.GlobalCategory;
-                stage.LocalCatId = request.LocalCategory;
-                stage.MetaTitle = request.SEO.MetaTitle;
-                stage.MetaDescription = request.SEO.MetaDescription;
-                stage.MetaKey = request.SEO.MetaKeywords;
-                stage.UrlEn = request.SEO.ProductUrlKeyEn;
-                stage.UrlTh = request.SEO.ProductUrlKeyTh;
-                #region Setup Effective Date & Time 
-                if (!string.IsNullOrEmpty(request.EffectiveDate))
-                {
-                    try
-                    {
-                        stage.EffectiveDate = Convert.ToDateTime(request.EffectiveDate);
-                    }
-                    catch
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.DateFormatError);
-                    }
-                }
-                else
-                {
-                    stage.EffectiveDate = null;
-                }
-                if (!string.IsNullOrEmpty(request.EffectiveTime))
-                {
-                    try
-                    {
-                        stage.EffectiveTime = TimeSpan.Parse(request.EffectiveTime);
-                    }
-                    catch
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.TimeFormatError);
-                    }
-                }
-                else
-                {
-                    stage.EffectiveTime = null;
-                }
-                #endregion
-                #region Setup Expire Date & Time
-                if (!string.IsNullOrEmpty(request.ExpireDate))
-                {
-                    try
-                    {
-                        stage.ExpiryDate = Convert.ToDateTime(request.ExpireDate);
-                    }
-                    catch
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.DateFormatError);
-                    }
 
-                }
-                else
+                HttpResponseMessage error = SetupProductStage(stage, request);
+                if (error != null)
                 {
-                    stage.ExpiryDate = null;
+                    return error;
                 }
-                if (!string.IsNullOrEmpty(request.ExpireTime))
-                {
-                    try
-                    {
-                        stage.ExpiryTime = TimeSpan.Parse(request.ExpireTime);
-                    }
-                    catch
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.TimeFormatError);
-                    }
-                }
-                else
-                {
-                    stage.ExpiryTime = null;
-                }
-                #endregion
-                stage.Remark = request.Remark;
                 stage.Status = Constant.PRODUCT_STATUS_JUNK;
                 stage.SellerId = request.SellerId;
                 stage.ShopId = request.ShopId;
                 string masterPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                 stage.Pid = masterPid;
+
+                stage.OnlineFlag = false;
+
                 stage.CreatedBy = this.User.Email();
                 stage.CreatedDt = DateTime.Now;
-                #region Master Validation
+                #region Validation
                 if (stage.SellerId == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Seller is required");
@@ -459,7 +393,21 @@ namespace Colsp.Api.Controllers
                         return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Weight is required");
                     }
                 }
-                else if (!request.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
+                else if (request.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
+                {
+                    if (string.IsNullOrEmpty(stage.ProductNameTh) || string.IsNullOrEmpty(stage.ProductNameEn) || string.IsNullOrEmpty(stage.Sku) 
+                        || stage.OriginalPrice == null || stage.PrepareDay == null 
+                        || stage.Length == null || stage.Height == null || stage.Width == null || string.IsNullOrEmpty(stage.DimensionUnit)
+                        || stage.Weight == null || string.IsNullOrEmpty(stage.WeightUnit))
+                    {
+                        stage.InfoFlag = false;
+                    }
+                    else
+                    {
+                        stage.InfoFlag = true;
+                    }
+                }
+                else
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Status is invalid");
                 }
@@ -507,7 +455,7 @@ namespace Colsp.Api.Controllers
                 masterInventoryHist.CreatedDt = DateTime.Now;
                 db.InventoryHistories.Add(masterInventoryHist);
                 #endregion
-                SetupImgEntity(db, request.MasterVariant.Images, masterPid,this.User.Email());
+                stage.ImageFlag = SetupImgEntity(db, request.MasterVariant.Images, masterPid,this.User.Email());
                 SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, this.User.Email());
                 SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, this.User.Email());
                 #region Setup Related GlobalCategories
@@ -570,7 +518,8 @@ namespace Colsp.Api.Controllers
                     variant.ProductId = stage.ProductId;
                     variant.Attribute1Id = variantRq.FirstAttribute.AttributeId;
                     variant.Attribute2Id = variantRq.SecondAttribute.AttributeId;
-                    variant.ValueEn = variantRq.ValueEn;
+                    variant.ValueEn1 = variantRq.FirstAttribute.ValueEn;
+                    variant.ValueEn2 = variantRq.SecondAttribute.ValueEn;
 
                     #region Setup Variant Inventory
                     Inventory variantInventory = new Inventory();
@@ -623,7 +572,7 @@ namespace Colsp.Api.Controllers
                     variant.Weight = variantRq.Weight;
                     variant.DimensionUnit = variantRq.DimensionUnit;
                     variant.WeightUnit = variantRq.WeightUnit;
-                    variant.DefaultVaraint = variantRq.DefaultVaraint;
+                    variant.DefaultVaraint = variantRq.DefaultVariant;
                     variant.CreatedBy = this.User.Email();
                     variant.CreatedDt = DateTime.Now;
 
@@ -692,6 +641,7 @@ namespace Colsp.Api.Controllers
                     {
                         return error;
                     }
+                    stage.Status = request.Status;
                     stage.UpdatedBy = this.User.Email();
                     stage.UpdatedDt = DateTime.Now;
                     #region Setup Attribute
@@ -793,7 +743,7 @@ namespace Colsp.Api.Controllers
                         }
                         current.Attribute1Id = var.FirstAttribute.AttributeId;
                         current.Attribute2Id = var.SecondAttribute.AttributeId;
-                        current.ValueEn = var.ValueEn;
+                        current.ValueEn1 = var.ValueEn;
                         SaveChangeInventory(db, current.Pid, var, this.User.Email());
                         SaveChangeInventoryHistory(db, current.Pid, var, this.User.Email());
                         SaveChangeImg(db, current.Pid, var.Images, this.User.Email());
@@ -815,7 +765,7 @@ namespace Colsp.Api.Controllers
                         current.Weight = var.Weight;
                         current.DimensionUnit = var.DimensionUnit;
                         current.WeightUnit = var.WeightUnit;
-                        current.DefaultVaraint = var.DefaultVaraint;
+                        current.DefaultVaraint = var.DefaultVariant;
                         if (addNew)
                         {
                             db.ProductStageVariants.Add(current);
@@ -935,7 +885,7 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             stage.Remark = request.Remark;
-            stage.Status = request.Status;
+            
             return null;
         }
 
@@ -1389,9 +1339,9 @@ namespace Colsp.Api.Controllers
            
         }
 
-        private void SetupImgEntity(ColspEntities db,List<ImageRequest> imgs,string pid,string email)
+        private bool SetupImgEntity(ColspEntities db,List<ImageRequest> imgs,string pid,string email)
         {
-            if(imgs == null) { return; }
+            if(imgs == null) { return false; }
             int index = 0;
             bool featureImg = true;
             foreach (ImageRequest imgRq in imgs)
@@ -1408,6 +1358,7 @@ namespace Colsp.Api.Controllers
                 img.CreatedDt = DateTime.Now;
                 db.ProductStageImages.Add(img);
             }
+            return !featureImg;
         }
 
         private void SetupImg360Entity(ColspEntities db, List<ImageRequest> imgs, string pid, string email)

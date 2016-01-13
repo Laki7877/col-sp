@@ -100,7 +100,7 @@ namespace Colsp.Model.Requests
         public int? Quantity { get; set; }
         public int? SafetyStock { get; set; }
         public string StockType { get; set; }
-        public bool? DefaultVaraint { get; set; }
+        public bool? DefaultVariant { get; set; }
         public int? VariantId { get; set; }
 
         public VariantRequest()

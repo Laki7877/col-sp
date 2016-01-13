@@ -6,6 +6,8 @@ using System.Web.Http;
 using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using Colsp.Api.Constants;
+using Colsp.Model.Responses;
+using Colsp.Api.Extensions;
 
 namespace Colsp.Api.Controllers
 {
@@ -20,28 +22,30 @@ namespace Colsp.Api.Controllers
             try
             {
                 
-                IQueryable<Brand> brand = null;
+                IQueryable<Brand> brands = null;
                 // List all brand
-                brand = db.Brands.Where(p => true);
-                brand = brand.Where(b => b.Status.Equals(Constant.STATUS_ACTIVE));
+                brands = db.Brands.Where(p => true);
+                brands = brands.Where(b => b.Status.Equals(Constant.STATUS_ACTIVE));
 
                 if (request == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, brand);
+                    return Request.CreateResponse(HttpStatusCode.OK, brands);
                 }
                 else
                 {
                     request.DefaultOnNull();
                     if (request.SearchText != null)
                     {
-                        brand = brand.Where(b => b.BrandNameEn.Contains(request.SearchText)
+                        brands = brands.Where(b => b.BrandNameEn.Contains(request.SearchText)
                         || b.BrandNameTh.Contains(request.SearchText));
                     }
                     if (request.BrandId != null)
                     {
-                        brand = brand.Where(p => p.BrandId.Equals(request.BrandId));
+                        brands = brands.Where(p => p.BrandId.Equals(request.BrandId));
                     }
-                    return Request.CreateResponse(HttpStatusCode.OK, brand);
+                    var total = brands.Count();
+                    var response = PaginatedResponse.CreateResponse(brands.Paginate(request), request, total);
+                    return Request.CreateResponse(HttpStatusCode.OK, response);
                 }
             }
             catch (Exception)

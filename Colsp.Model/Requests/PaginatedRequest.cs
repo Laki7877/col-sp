@@ -14,6 +14,7 @@ namespace Colsp.Model.Requests
 		public int? _offset { get; set; }
 		public string _order { get; set; }
 		public string _direction { get; set; }
+        public string _filter { get; set; }
 
 		public override void DefaultOnNull()
 		{
@@ -21,7 +22,9 @@ namespace Colsp.Model.Requests
 			_offset = GetValueOrDefault(_offset, 0);
 			_order = GetValueOrDefault(_order, "");
 			_direction = GetValueOrDefault(_direction, "asc");
-			base.DefaultOnNull();
+            _filter = GetValueOrDefault(_filter, "");
+
+            base.DefaultOnNull();
 		}
 	}
 }

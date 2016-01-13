@@ -35,6 +35,8 @@ namespace Colsp.Api.Controllers
                                     cat.UrlKeyEn,
                                     cat.UrlKeyTh,
                                     cat.Status,
+                                    cat.UpdatedDt,
+                                    cat.CreatedDt,
                                     ProductCount = cat.ProductStages.Count,
                                     AttributeSets = cat.CategoryAttributeSetMaps.AsEnumerable().Select(s=> new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn })
                                 }).ToList();

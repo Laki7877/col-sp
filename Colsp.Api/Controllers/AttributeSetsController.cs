@@ -47,11 +47,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if(request == null)
-                {
-                    request = new AttributeSetRequest();
-                }
-                request.DefaultOnNull();
                 var attrSet = from atrS in db.AttributeSets
                               select new
                               {
@@ -59,23 +54,70 @@ namespace Colsp.Api.Controllers
                                   atrS.AttributeSetNameEn,
                                   atrS.AttributeSetNameTh,
                                   atrS.UpdatedDt,
+                                  atrS.CreatedDt,
                                   AttributeCount = atrS.AttributeSetMaps.AsEnumerable().Count()
                               };
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, attrSet);
+                }
+                request.DefaultOnNull();        
                 if (request.SearchText != null)
                 {
                     attrSet = attrSet.Where(a => a.AttributeSetNameEn.Contains(request.SearchText)
                     || a.AttributeSetNameTh.Contains(request.SearchText));
                 }
                 var total = attrSet.Count();
-                if(request._limit == 0)
+                var response = PaginatedResponse.CreateResponse(attrSet.Paginate(request), request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        [Route("api/AttributeSets/{attributeSetId}")]
+        [HttpGet]
+        public HttpResponseMessage GetAttributeSets(int attributeSetId)
+        {
+            try
+            {
+                var attrSet = db.AttributeSets.Find(attributeSetId);
+                if (attrSet != null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, attrSet);
                 }
                 else
                 {
-                    var response = PaginatedResponse.CreateResponse(attrSet, request, total);
-                    return Request.CreateResponse(HttpStatusCode.OK, response);
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        [Route("api/AttributeSets")]
+        [HttpPost]
+        public HttpResponseMessage AddAttributeSet(AttributeSet attributeSet)
+        {
+            try
+            {
+                #region Validation
+                if (string.IsNullOrEmpty(attributeSet.AttributeSetNameEn))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameEn is required");
+                }
+                if (string.IsNullOrEmpty(attributeSet.AttributeSetNameTh))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameTh is required");
+                }
+                #endregion
+                attributeSet = db.AttributeSets.Add(attributeSet);
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, attributeSet);
             }
             catch
             {

@@ -19,5 +19,7 @@ namespace Colsp.Api.Constants
         public static readonly string PRODUCT_STATUS_DRAFT = "DF";
         public static readonly string PRODUCT_STATUS_WAIT_FOR_APPROVAL = "WA";
         public static readonly string PRODUCT_STATUS_JUNK = "JU";
+        public static readonly string PRODUCT_STATUS_APPROVE = "AP";
+        public static readonly string PRODUCT_STATUS_NOT_APPROVE = "NP";
     }
 }

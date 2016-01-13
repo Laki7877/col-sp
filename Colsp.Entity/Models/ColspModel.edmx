@@ -528,22 +528,22 @@
           <Property Name="ShopId" Type="int" />
           <Property Name="SellerId" Type="int" />
           <Property Name="AttributeSetId" Type="int" />
-          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" />
+          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" />
           <Property Name="BrandId" Type="int" />
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" />
-          <Property Name="Sku" Type="nvarchar" MaxLength="50" />
-          <Property Name="Upc" Type="nvarchar" MaxLength="50" />
+          <Property Name="Pid" Type="char" MaxLength="10" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="300" />
+          <Property Name="Upc" Type="nvarchar" MaxLength="300" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
           <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="2000" />
-          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
           <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="2000" />
-          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
           <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
-          <Property Name="Tag" Type="nvarchar" MaxLength="500" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="1000" />
           <Property Name="PrepareDay" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
@@ -565,9 +565,9 @@
           <Property Name="ControlFlag2" Type="bit" />
           <Property Name="ControlFlag3" Type="bit" />
           <Property Name="Remark" Type="nvarchar" MaxLength="500" />
-          <Property Name="InfoFlag" Type="char" MaxLength="1" />
-          <Property Name="ImageFlag" Type="char" MaxLength="1" />
-          <Property Name="OnlineFlag" Type="char" MaxLength="1" />
+          <Property Name="InfoFlag" Type="bit" />
+          <Property Name="ImageFlag" Type="bit" />
+          <Property Name="OnlineFlag" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -676,8 +676,10 @@
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="Attribute1Id" Type="int" />
           <Property Name="Attribute2Id" Type="int" />
-          <Property Name="ValueEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="ValueTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="ValueEn1" Type="nvarchar" MaxLength="100" />
+          <Property Name="ValueTh1" Type="nvarchar" MaxLength="100" />
+          <Property Name="ValueEn2" Type="nvarchar" MaxLength="100" />
+          <Property Name="ValueTh2" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Pid" Type="nvarchar" MaxLength="50" />
@@ -1930,6 +1932,7 @@
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
+          <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
           <EntitySet Name="GlobalCategoryPIDs" EntityType="ColspModel.GlobalCategoryPID" />
           <EntitySet Name="Inventories" EntityType="ColspModel.Inventory" />
           <EntitySet Name="InventoryHistories" EntityType="ColspModel.InventoryHistory" />
@@ -2209,7 +2212,6 @@
             <End Role="UserPermission" EntitySet="UserPermissions" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
-          <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
         </EntityContainer>
         <EntityType Name="Attribute">
           <Key>
@@ -2381,6 +2383,14 @@
           <NavigationProperty Name="ProductHistoryGlobalCatMaps" Relationship="ColspModel.FKProductHistoryGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductHistoryGlobalCatMap" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageGlobalCat" FromRole="GlobalCategory" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageGlobalCatMaps" Relationship="ColspModel.FKProductStageGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductStageGlobalCatMap" />
+        </EntityType>
+        <EntityType Name="GlobalCategoryAbbrevation">
+          <Key>
+            <PropertyRef Name="GlobalCategoryAbbrevation1" />
+          </Key>
+          <Property Name="GlobalCategoryAbbrevation1" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Abbrevation" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="GlobalCategoryPID">
           <Key>
@@ -2795,22 +2805,22 @@
           <Property Name="ShopId" Type="Int32" />
           <Property Name="SellerId" Type="Int32" />
           <Property Name="AttributeSetId" Type="Int32" />
-          <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="BrandId" Type="Int32" />
-          <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Sku" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Upc" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="DescriptionFullEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionFullTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
           <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
-          <Property Name="Tag" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Tag" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="PrepareDay" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
@@ -2832,9 +2842,9 @@
           <Property Name="ControlFlag2" Type="Boolean" />
           <Property Name="ControlFlag3" Type="Boolean" />
           <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="InfoFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="ImageFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="OnlineFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="InfoFlag" Type="Boolean" />
+          <Property Name="ImageFlag" Type="Boolean" />
+          <Property Name="OnlineFlag" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -2960,8 +2970,10 @@
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="Attribute1Id" Type="Int32" />
           <Property Name="Attribute2Id" Type="Int32" />
-          <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ValueEn1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ValueTh1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ValueEn2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ValueTh2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3943,14 +3955,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="GlobalCategoryAbbrevation">
-          <Key>
-            <PropertyRef Name="GlobalCategoryAbbrevation1" />
-          </Key>
-          <Property Name="GlobalCategoryAbbrevation1" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Abbrevation" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="Active" Type="Boolean" Nullable="false" />
-        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4098,6 +4102,15 @@
                 <ScalarProperty Name="NameTh" ColumnName="NameTh" />
                 <ScalarProperty Name="NameEn" ColumnName="NameEn" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GlobalCategoryAbbrevations">
+            <EntityTypeMapping TypeName="ColspModel.GlobalCategoryAbbrevation">
+              <MappingFragment StoreEntitySet="GlobalCategoryAbbrevation">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Abbrevation" ColumnName="Abbrevation" />
+                <ScalarProperty Name="GlobalCategoryAbbrevation1" ColumnName="GlobalCategoryAbbrevation" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4659,8 +4672,10 @@
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
-                <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
-                <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
+                <ScalarProperty Name="ValueTh2" ColumnName="ValueTh2" />
+                <ScalarProperty Name="ValueEn2" ColumnName="ValueEn2" />
+                <ScalarProperty Name="ValueTh1" ColumnName="ValueTh1" />
+                <ScalarProperty Name="ValueEn1" ColumnName="ValueEn1" />
                 <ScalarProperty Name="Attribute2Id" ColumnName="Attribute2Id" />
                 <ScalarProperty Name="Attribute1Id" ColumnName="Attribute1Id" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
@@ -4870,15 +4885,6 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="GlobalCategoryAbbrevations">
-            <EntityTypeMapping TypeName="ColspModel.GlobalCategoryAbbrevation">
-              <MappingFragment StoreEntitySet="GlobalCategoryAbbrevation">
-                <ScalarProperty Name="Active" ColumnName="Active" />
-                <ScalarProperty Name="Abbrevation" ColumnName="Abbrevation" />
-                <ScalarProperty Name="GlobalCategoryAbbrevation1" ColumnName="GlobalCategoryAbbrevation" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

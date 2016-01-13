@@ -28,11 +28,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if(request == null)
-                {
-                    request = new AttributeRequest();
-                }
-                request.DefaultOnNull();
 
                 var attrList = from attr in db.Attributes
                                select new
@@ -40,11 +35,22 @@ namespace Colsp.Api.Controllers
                                    attr.AttributeId,
                                    attr.AttributeNameEn,
                                    attr.AttributeNameTh,
+                                   attr.DisplayNameEn,
+                                   attr.DisplayNameTh,
                                    attr.DataType,
                                    attr.Status,
+                                   attr.CreatedDt,
                                    attr.UpdatedDt,
                                    AttributeSetCount = attr.AttributeSetMaps.AsEnumerable().Count()
                                };
+
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, attrList);
+                }
+                request.DefaultOnNull();
+
+                
                 if (request.SearchText != null)
                 {
                     attrList = attrList.Where(a => a.AttributeNameEn.Contains(request.SearchText)
@@ -61,6 +67,27 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/Attributes/{attributeId}")]
+        [HttpGet]
+        public HttpResponseMessage GetAttribute(int attributeId)
+        {
+            try
+            {
+                var attr = db.Attributes.Find(attributeId);
+                if(attr != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, attr);
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                }
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
 
         [Route("api/Attributes")]
         [HttpPost]

@@ -18,8 +18,10 @@ namespace Colsp.Entity.Models
         public int ProductId { get; set; }
         public Nullable<int> Attribute1Id { get; set; }
         public Nullable<int> Attribute2Id { get; set; }
-        public string ValueEn { get; set; }
-        public string ValueTh { get; set; }
+        public string ValueEn1 { get; set; }
+        public string ValueTh1 { get; set; }
+        public string ValueEn2 { get; set; }
+        public string ValueTh2 { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public string Pid { get; set; }
