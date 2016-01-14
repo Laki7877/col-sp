@@ -11,6 +11,13 @@ namespace Colsp.Model.Requests
         public int? BrandId { get; set; }
         public string BrandNameEn { get; set; }
         public string SearchText { get; set; }
+        public string BrandNameTh { get; set; }
+        public string ThumbnailEn { get; set; }
+        public string ThumbnailTh { get; set; }
+        public string DescriptionEn { get; set; }
+        public string DescriptionTh { get; set; }
+        public ImageRequest BrandImage { get; set; }
+        public SEORequest SEO { get; set; }
         public override void DefaultOnNull()
         {
             BrandId = GetValueOrDefault(BrandId, null);

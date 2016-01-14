@@ -69,9 +69,29 @@ namespace Colsp.Api.Controllers
             }
             catch(Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
+
+        [Route("api/LocalCategories/{categoryId}")]
+        [HttpGet]
+        public HttpResponseMessage GetLocalCategory([FromUri] int categoryId)
+        {
+            try
+            {
+                var cat = db.LocalCategories.Find(categoryId);
+                if(cat == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, cat);
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
 
         protected override void Dispose(bool disposing)
         {

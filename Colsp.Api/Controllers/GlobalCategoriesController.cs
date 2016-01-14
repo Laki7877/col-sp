@@ -10,6 +10,7 @@ using Colsp.Api.Constants;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Api.Helper;
+using System.Data.Entity;
 
 namespace Colsp.Api.Controllers
 {
@@ -100,35 +101,19 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var attributeSet = (from cat in db.GlobalCategories
-                                    join catMap in db.CategoryAttributeSetMaps on cat.CategoryId equals catMap.CategoryId
-                                    join attrSet in db.AttributeSets on catMap.AttributeSetId equals attrSet.AttributeSetId
-                                    where cat.CategoryId.Equals(catId)
-                                            && cat.Status.Equals(Constant.STATUS_ACTIVE)
-                                            && attrSet.Status.Equals(Constant.STATUS_ACTIVE)
-                                    select new
-                                    {
-                                        attrSet,
-                                        attrSetMap = from a in db.AttributeSetMaps
-                                                     where a.Status.Equals(Constant.STATUS_ACTIVE)
-                                                     select a,
-                                        attr = from a in db.Attributes
-                                               where a.Status.Equals(Constant.STATUS_ACTIVE)
-                                               select a,
-                                        attrValMap = from a in db.AttributeValueMaps
-                                                     where a.Status.Equals(Constant.STATUS_ACTIVE)
-                                                     select a,
-                                        attrVal = from a in db.AttributeValues
-                                                  where a.Status.Equals(Constant.STATUS_ACTIVE)
-                                                  select a
-                                    }).AsEnumerable().Select(t => t.attrSet).ToList();
+
+                var attributeSet = db.AttributeSets
+                    .Include(i => i.CategoryAttributeSetMaps.Select(s=>s.GlobalCategory))
+                    .Include(i=>i.AttributeSetMaps.Select(s=>s.Attribute.AttributeValueMaps.Select(s1=>s1.AttributeValue)))
+                    .Include(i=>i.AttributeSetTagMaps.Select(s=>s.Tag))
+                    .Where(w=>w.CategoryAttributeSetMaps.Select(s=>s.CategoryId).Contains(catId)&&w.Status.Equals(Constant.STATUS_VISIBLE)).ToList();
                 if (attributeSet != null && attributeSet.Count > 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, attributeSet);
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    return Request.CreateResponse(HttpStatusCode.OK, new List<AttributeSet>(0));
                 }
 
             }

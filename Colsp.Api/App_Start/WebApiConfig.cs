@@ -49,6 +49,12 @@ namespace Colsp.Api
             {
                 Directory.CreateDirectory(rootImagePath);
             }
+            string branTmpPath = "Brand";
+            string rootBrandPath = Path.Combine(imgageRootPath, branTmpPath);
+            if (!Directory.Exists(rootBrandPath))
+            {
+                Directory.CreateDirectory(rootBrandPath);
+            }
         }
     }
 }

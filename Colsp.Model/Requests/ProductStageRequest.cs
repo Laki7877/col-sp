@@ -53,7 +53,11 @@ namespace Colsp.Model.Requests
         public int? SellerId { get; set; }
         public int? ShopId { get; set; }
         public int? ProductId { get; set; }
-        
+        public bool? InfoFlag { get; set; }
+        public bool? ImageFlag { get; set; }
+        public bool? OnlineFlag { get; set; }
+        public bool? Visibility { get; set; }
+
         public ProductStageRequest()
         {
             AttributeSet = new AttributeSetRequest();
@@ -65,8 +69,6 @@ namespace Colsp.Model.Requests
         }
 
     }
-
-   
 
     public class VariantRequest
     {
@@ -126,14 +128,6 @@ namespace Colsp.Model.Requests
         public string Url { get; set; }
         public int? VideoId { get; set; }
     }
-    public class SEORequest
-    {
-        public string MetaTitle { get; set; }
-        public string MetaDescription { get; set; }
-        public string MetaKeywords { get; set; }
-        public string ProductUrlKeyTh { get; set; }
-        public string ProductUrlKeyEn { get; set; }
-        public string ProductBoostingWeight { get; set; }
-    }
+    
     
 }

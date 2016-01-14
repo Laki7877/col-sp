@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Api.Constants;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
+
+
 
 namespace Colsp.Api.Controllers
 {
@@ -28,6 +28,7 @@ namespace Colsp.Api.Controllers
             {
 
                 var attrList = from attr in db.Attributes
+                               where !attr.Status.Equals(Constant.STATUS_REMOVE)
                                select new
                                {
                                    attr.AttributeId,
@@ -35,6 +36,7 @@ namespace Colsp.Api.Controllers
                                    attr.AttributeNameTh,
                                    attr.DisplayNameEn,
                                    attr.DisplayNameTh,
+                                   attr.VariantStatus,
                                    attr.DataType,
                                    attr.Status,
                                    attr.CreatedDt,
@@ -47,12 +49,30 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, attrList);
                 }
                 request.DefaultOnNull();
-
                 
-                if (request.SearchText != null)
+                if (!string.IsNullOrEmpty(request.SearchText))
                 {
                     attrList = attrList.Where(a => a.AttributeNameEn.Contains(request.SearchText)
                     || a.AttributeNameTh.Contains(request.SearchText));
+                }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+                    if ("Dropdown".Equals(request._filter))
+                    {
+                        attrList = attrList.Where(a => a.DataType.Equals("LT"));
+                    }
+                    else if ("Text".Equals(request._filter))
+                    {
+                        attrList = attrList.Where(a => a.DataType.Equals("ST"));
+                    }
+                    else if ("Variation".Equals(request._filter))
+                    {
+                        attrList = attrList.Where(a => a.VariantStatus==true);
+                    }
+                    else if ("No Variation".Equals(request._filter))
+                    {
+                        attrList = attrList.Where(a => a.VariantStatus == false);
+                    }
                 }
                 var total = attrList.Count();
                 var pagedAttribute = attrList.Paginate(request);
@@ -71,49 +91,12 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var attr = db.Attributes.Where(w => w.AttributeId.Equals(attributeId)).Include("AttributeValueMaps.AttributeValue").SingleOrDefault();
-                if(attr != null)
+                AttributeRequest attribute = GetAttibuteResponse(db, attributeId);
+                if(attribute == null)
                 {
-                    AttributeRequest attribute = new AttributeRequest();
-                    attribute.AttributeId = attr.AttributeId;
-                    attribute.AttributeNameEn = attr.AttributeNameEn;
-                    attribute.AttributeNameTh = attr.AttributeNameTh;
-                    attribute.AttributeUnitEn = attr.AttributeUnitEn;
-                    attribute.AttributeUnitTh = attr.AttributeUnitTh;
-                    attribute.DataType = attr.DataType;
-                    attribute.DataValidation = attr.DataValidation;
-                    attribute.DefaultValue = attr.DefaultValue;
-                    attribute.DisplayNameEn = attr.DisplayNameEn;
-                    attribute.DisplayNameTh = attr.DisplayNameTh;
-                    attribute.ShowAdminFlag = attr.ShowAdminFlag;
-                    attribute.ShowGlobalFilterFlag = attr.ShowGlobalFilterFlag;
-                    attribute.ShowGlobalSearchFlag = attr.ShowGlobalSearchFlag;
-                    attribute.ShowLocalFilterFlag = attr.ShowLocalFilterFlag;
-                    attribute.ShowLocalSearchFlag = attr.ShowLocalSearchFlag;
-                    attribute.VariantDataType = attr.VariantDataType;
-                    attribute.VariantStatus = attr.VariantStatus;
-                    attribute.AllowHtmlFlag = attr.AllowHtmlFlag;
-
-                    if(attr.AttributeValueMaps != null && attr.AttributeValueMaps.Count > 0)
-                    {
-                        attribute.AttributeValues = new List<AttributeValueRequest>();
-                        foreach (AttributeValueMap map in attr.AttributeValueMaps)
-                        {
-                            AttributeValueRequest val = new AttributeValueRequest();
-                            val.AttributeValueId = map.AttributeValue.AttributeValueId;
-                            val.AttributeValueEn = map.AttributeValue.AttributeValueEn;
-                            val.AttributeValueId = map.AttributeValue.AttributeValueId;
-                            val.AttributeValueTh = map.AttributeValue.AttributeValueTh;
-                            attribute.AttributeValues.Add(val);
-                        }
-                    }
-
-                    return Request.CreateResponse(HttpStatusCode.OK, attribute);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpStatusCode.NotFound);
                 }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, attribute);
             }
             catch(Exception e)
             {
@@ -195,17 +178,18 @@ namespace Colsp.Api.Controllers
             }
             catch
             {
-                db.Dispose();
-                db = new ColspEntities();
-                if(newList != null && newList.Count > 0)
-                {
-                    db.AttributeValues.RemoveRange(newList);
-                }
                 if(attribute != null)
                 {
+                    db.Dispose();
+                    db = new ColspEntities();
+                    if (newList != null && newList.Count > 0)
+                    {
+                        db.AttributeValues.RemoveRange(newList);
+                    }
                     db.Attributes.Remove(attribute);
+                    db.SaveChanges();
                 }
-                db.SaveChanges();
+                
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
@@ -214,6 +198,9 @@ namespace Colsp.Api.Controllers
         [HttpPut]
         public HttpResponseMessage EditAttribute([FromUri] int attributeId, AttributeRequest request)
         {
+
+            Entity.Models.Attribute attribute = null;
+            List<AttributeValue> newList = null;
             try
             {
 
@@ -231,79 +218,216 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeNameTh is required");
                 }
 
-                var attr = db.Attributes.Where(w=>w.AttributeId.Equals(attributeId)).Include("AttributeValueMaps.AttributeValue").SingleOrDefault();
-                if(attr == null)
+                attribute = db.Attributes.Where(w=>w.AttributeId.Equals(attributeId)).Include("AttributeValueMaps.AttributeValue").SingleOrDefault();
+                if(attribute == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
                 #endregion
 
-                attr.AttributeNameEn = request.AttributeNameEn;
-                attr.AttributeNameTh = request.AttributeNameTh;
-                attr.AttributeUnitEn = request.AttributeUnitEn;
-                attr.AttributeUnitTh = request.AttributeUnitTh;
-                attr.DataType = request.DataType;
-                attr.DataValidation = request.DataValidation;
-                attr.DefaultValue = request.DefaultValue;
-                attr.DisplayNameEn = request.DisplayNameEn;
-                attr.DisplayNameTh = request.DisplayNameTh;
-                attr.ShowAdminFlag = request.ShowAdminFlag;
-                attr.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
-                attr.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
-                attr.ShowLocalFilterFlag = request.ShowLocalFilterFlag;
-                attr.ShowLocalSearchFlag = request.ShowLocalSearchFlag;
-                attr.VariantDataType = request.VariantDataType;
-                attr.VariantStatus = request.VariantStatus;
-                attr.AllowHtmlFlag = request.AllowHtmlFlag;
-                attr.CreatedBy = this.User.Email();
-                attr.CreatedDt = DateTime.Now;
-                attr.Status = Constant.STATUS_ACTIVE;
-                List<AttributeValueMap> mapList = attr.AttributeValueMaps.ToList();
+                attribute.AttributeNameEn = request.AttributeNameEn;
+                attribute.AttributeNameTh = request.AttributeNameTh;
+                attribute.AttributeUnitEn = request.AttributeUnitEn;
+                attribute.AttributeUnitTh = request.AttributeUnitTh;
+                attribute.DataType = request.DataType;
+                attribute.DataValidation = request.DataValidation;
+                attribute.DefaultValue = request.DefaultValue;
+                attribute.DisplayNameEn = request.DisplayNameEn;
+                attribute.DisplayNameTh = request.DisplayNameTh;
+                attribute.ShowAdminFlag = request.ShowAdminFlag;
+                attribute.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
+                attribute.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
+                attribute.ShowLocalFilterFlag = request.ShowLocalFilterFlag;
+                attribute.ShowLocalSearchFlag = request.ShowLocalSearchFlag;
+                attribute.VariantDataType = request.VariantDataType;
+                attribute.VariantStatus = request.VariantStatus;
+                attribute.AllowHtmlFlag = request.AllowHtmlFlag;
+                attribute.CreatedBy = this.User.Email();
+                attribute.CreatedDt = DateTime.Now;
+                attribute.Status = Constant.STATUS_ACTIVE;
+               
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
                 {
-                    foreach(AttributeValueRequest valRq in request.AttributeValues)
+                    newList = new List<AttributeValue>();
+                    foreach (AttributeValueRequest valRq in request.AttributeValues)
                     {
-                        
-                        bool isNew = false;
-                        if (mapList == null || mapList.Count == 0)
+                        if(valRq.AttributeValueId != null)
                         {
-                            isNew = true;
+                            db.AttributeValueMaps.RemoveRange(
+                                db.AttributeValueMaps.Where(w=>w.AttributeId==attribute.AttributeId
+                                &&w.AttributeValueId==valRq.AttributeValueId));
                         }
-                        if (!isNew)
-                        {
-                            AttributeValueMap current = mapList.Where(w => w.AttributeValueId.Equals(valRq.AttributeValueId)).SingleOrDefault();
-                            if(current != null)
-                            {
-                                current.UpdatedBy = this.User.Email();
-                                current.UpdatedDt = DateTime.Now;
-                                mapList.Remove(current);
-                            }
-                            else
-                            {
-                                isNew = true;
-                            }
-                        }
-                        if (isNew)
-                        {
-                            AttributeValueMap map = new AttributeValueMap();
-                            map.AttributeId = attr.AttributeId;
-                            map.AttributeValueId = valRq.AttributeValueId.Value;
-                            map.CreatedBy = this.User.Email();
-                            map.CreatedDt = DateTime.Now;
-                            db.AttributeValueMaps.Add(map);
-                        }
+
+                        AttributeValue value = new AttributeValue();
+                        value.AttributeValueEn = valRq.AttributeValueEn;
+                        value.AttributeValueTh = valRq.AttributeValueTh;
+                        value.Status = Constant.STATUS_ACTIVE;
+                        value.CreatedBy = this.User.Email();
+                        value.CreatedDt = DateTime.Now;
+                        newList.Add(db.AttributeValues.Add(value));
                     }
                 }
-                if(mapList != null && mapList.Count > 0)
-                {
-                    db.AttributeValueMaps.RemoveRange(mapList);
-                }
                 db.SaveChanges();
-                return GetAttribute(attr.AttributeId);
+                if(newList != null && newList.Count > 0)
+                {
+                    foreach (AttributeValue val in newList)
+                    {
+                        AttributeValueMap map = new AttributeValueMap();
+                        map.AttributeId = attribute.AttributeId;
+                        map.AttributeValueId = val.AttributeValueId;
+                        map.CreatedBy = this.User.Email();
+                        map.CreatedDt = DateTime.Now;
+                        db.AttributeValueMaps.Add(map);
+                    }
+                    db.SaveChanges();
+                }
+                return GetAttribute(attribute.AttributeId);
             }
             catch
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        [Route("api/Attributes")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteAttribute(List<AttributeRequest> request)
+        {
+            try
+            {
+                if (request == null || request.Count == 0)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
+                }
+                var setList = db.Attributes.Include(i=>i.ProductStageAttributes)
+                    .Include(i=>i.ProductStageVariants)
+                    .Include(i=>i.ProductStageVariants1).ToList();
+                foreach (AttributeRequest setRq in request)
+                {
+                    var current = setList.Where(w => w.AttributeId.Equals(setRq.AttributeId)).SingleOrDefault();
+                    if (current == null)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    }
+                    if((current.ProductStageAttributes != null && current.ProductStageAttributes.Count > 0 )
+                        || (current.ProductStageVariants != null && current.ProductStageVariants.Count > 0)
+                        || (current.ProductStageVariants1!= null && current.ProductStageVariants1.Count > 0))
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,"Attribute has product or variant associate");
+                    }
+                    current.Status = Constant.STATUS_REMOVE;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        //duplicate
+        [Route("api/Attributes/{attributeId}")]
+        [HttpPost]
+        public HttpResponseMessage DuplicateAttribute(int attributeId)
+        {
+            try
+            {
+                AttributeRequest response = GetAttibuteResponse(db, attributeId);
+                if (response == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                }
+                else
+                {
+                    response.AttributeId = null;
+                    return AddAttribute(response);
+                }
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        [Route("api/Attributes/Visibility")]
+        [HttpPut]
+        public HttpResponseMessage VisibilityAttribute(List<AttributeRequest> request)
+        {
+            try
+            {
+                if (request == null || request.Count == 0)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
+                }
+                var setList = db.Attributes.ToList();
+                foreach (AttributeRequest setRq in request)
+                {
+                    if (!Constant.STATUS_VISIBLE.Equals(setRq.Status)
+                        && !Constant.STATUS_NOT_VISIBLE.Equals(setRq.Status))
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid status");
+                    }
+                    var current = setList.Where(w => w.AttributeId.Equals(setRq.AttributeId)).SingleOrDefault();
+                    if (current == null)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    }
+                    current.Status = setRq.Status;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        private AttributeRequest GetAttibuteResponse(ColspEntities db,int attributeId)
+        {
+            var attr = db.Attributes.Where(w => w.AttributeId.Equals(attributeId)).Include(i => i.AttributeValueMaps.Select(s => s.AttributeValue)).SingleOrDefault();
+            if (attr != null)
+            {
+                AttributeRequest attribute = new AttributeRequest();
+                attribute.AttributeId = attr.AttributeId;
+                attribute.AttributeNameEn = attr.AttributeNameEn;
+                attribute.AttributeNameTh = attr.AttributeNameTh;
+                attribute.AttributeUnitEn = attr.AttributeUnitEn;
+                attribute.AttributeUnitTh = attr.AttributeUnitTh;
+                attribute.DataType = attr.DataType;
+                attribute.DataValidation = attr.DataValidation;
+                attribute.DefaultValue = attr.DefaultValue;
+                attribute.DisplayNameEn = attr.DisplayNameEn;
+                attribute.DisplayNameTh = attr.DisplayNameTh;
+                attribute.ShowAdminFlag = attr.ShowAdminFlag;
+                attribute.ShowGlobalFilterFlag = attr.ShowGlobalFilterFlag;
+                attribute.ShowGlobalSearchFlag = attr.ShowGlobalSearchFlag;
+                attribute.ShowLocalFilterFlag = attr.ShowLocalFilterFlag;
+                attribute.ShowLocalSearchFlag = attr.ShowLocalSearchFlag;
+                attribute.VariantDataType = attr.VariantDataType;
+                attribute.VariantStatus = attr.VariantStatus;
+                attribute.AllowHtmlFlag = attr.AllowHtmlFlag;
+
+                if (attr.AttributeValueMaps != null && attr.AttributeValueMaps.Count > 0)
+                {
+                    attribute.AttributeValues = new List<AttributeValueRequest>();
+                    foreach (AttributeValueMap map in attr.AttributeValueMaps)
+                    {
+                        AttributeValueRequest val = new AttributeValueRequest();
+                        val.AttributeValueId = map.AttributeValue.AttributeValueId;
+                        val.AttributeValueEn = map.AttributeValue.AttributeValueEn;
+                        val.AttributeValueId = map.AttributeValue.AttributeValueId;
+                        val.AttributeValueTh = map.AttributeValue.AttributeValueTh;
+                        attribute.AttributeValues.Add(val);
+                    }
+                }
+
+                return attribute;
+            }
+            else
+            {
+                return null;
             }
         }
 

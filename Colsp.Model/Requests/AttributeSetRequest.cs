@@ -16,6 +16,7 @@ namespace Colsp.Model.Requests
         public string Status { get; set; }
         public List<AttributeRequest> Attributes { get; set; }
         public string SearchText { get; set; }
+        public List<TagRequest> Tags { get; set; }
 
         public override void DefaultOnNull()
         {

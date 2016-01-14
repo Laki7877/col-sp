@@ -55,6 +55,8 @@
           </Key>
           <Property Name="AttributeSetId" Type="int" Nullable="false" />
           <Property Name="AttributeId" Type="int" Nullable="false" />
+          <Property Name="Required" Type="bit" />
+          <Property Name="Filterable" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -107,8 +109,13 @@
           <Property Name="BrandId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BrandNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" />
-          <Property Name="ThumbnailEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="ThumbnailTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="Path" Type="nvarchar" MaxLength="500" />
+          <Property Name="PicUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="MetaTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="MetaDescription" Type="nvarchar" MaxLength="500" />
+          <Property Name="MetaKey" Type="nvarchar" MaxLength="500" />
+          <Property Name="UrlEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="UrlTh" Type="nvarchar" MaxLength="100" />
           <Property Name="DescriptionEn" Type="nvarchar" MaxLength="500" />
           <Property Name="DescriptionTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Status" Type="char" MaxLength="2" />
@@ -574,6 +581,7 @@
           <Property Name="InfoFlag" Type="bit" />
           <Property Name="ImageFlag" Type="bit" />
           <Property Name="OnlineFlag" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -708,6 +716,7 @@
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="char" MaxLength="10" />
           <Property Name="DefaultVaraint" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -784,7 +793,7 @@
           <Key>
             <PropertyRef Name="ShippingId" />
           </Key>
-          <Property Name="ShippingId" Type="int" Nullable="false" />
+          <Property Name="ShippingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ShippingMethodEn" Type="nvarchar" MaxLength="50" />
           <Property Name="ShippingMethodTh" Type="nvarchar" MaxLength="50" />
           <Property Name="Status" Type="char" MaxLength="2" />
@@ -1310,7 +1319,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductLocalCatMapProduct">
-          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ProductLocalCatMap" Type="Self.ProductLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
@@ -1394,7 +1405,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageGlobalCatMapProduct">
-          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ProductStageGlobalCatMap" Type="Self.ProductStageGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
@@ -1502,7 +1515,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageVariantProduct">
-          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
@@ -2282,6 +2297,8 @@
           </Key>
           <Property Name="AttributeSetId" Type="Int32" Nullable="false" />
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
+          <Property Name="Required" Type="Boolean" />
+          <Property Name="Filterable" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -2341,8 +2358,13 @@
           <Property Name="BrandId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="BrandNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="BrandNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ThumbnailEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ThumbnailTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="PicUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="UrlEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UrlTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -2857,6 +2879,7 @@
           <Property Name="InfoFlag" Type="Boolean" />
           <Property Name="ImageFlag" Type="Boolean" />
           <Property Name="OnlineFlag" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -3008,6 +3031,7 @@
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="DefaultVaraint" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -3089,7 +3113,7 @@
           <Key>
             <PropertyRef Name="ShippingId" />
           </Key>
-          <Property Name="ShippingId" Type="Int32" Nullable="false" />
+          <Property Name="ShippingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ShippingMethodEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ShippingMethodTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -3642,7 +3666,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductLocalCatMapProduct">
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductLocalCatMap" Role="ProductLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
@@ -3788,7 +3814,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageGlobalCatMapProduct">
-          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1" />
+          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductStageGlobalCatMap" Role="ProductStageGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
@@ -3848,7 +3876,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageVariantProduct">
-          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1" />
+          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
@@ -4026,6 +4056,8 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Filterable" ColumnName="Filterable" />
+                <ScalarProperty Name="Required" ColumnName="Required" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
                 <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
               </MappingFragment>
@@ -4081,8 +4113,13 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="DescriptionTh" ColumnName="DescriptionTh" />
                 <ScalarProperty Name="DescriptionEn" ColumnName="DescriptionEn" />
-                <ScalarProperty Name="ThumbnailTh" ColumnName="ThumbnailTh" />
-                <ScalarProperty Name="ThumbnailEn" ColumnName="ThumbnailEn" />
+                <ScalarProperty Name="UrlTh" ColumnName="UrlTh" />
+                <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
+                <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
+                <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
+                <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
+                <ScalarProperty Name="PicUrl" ColumnName="PicUrl" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
                 <ScalarProperty Name="BrandNameTh" ColumnName="BrandNameTh" />
                 <ScalarProperty Name="BrandNameEn" ColumnName="BrandNameEn" />
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
@@ -4515,6 +4552,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="OnlineFlag" ColumnName="OnlineFlag" />
                 <ScalarProperty Name="ImageFlag" ColumnName="ImageFlag" />
                 <ScalarProperty Name="InfoFlag" ColumnName="InfoFlag" />
@@ -4668,6 +4706,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="DefaultVaraint" ColumnName="DefaultVaraint" />
                 <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />

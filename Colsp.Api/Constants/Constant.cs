@@ -9,6 +9,9 @@ namespace Colsp.Api.Constants
     {
         public static readonly string STATUS_ACTIVE = "AT";
         public static readonly string STATUS_NOT_ACTIVE = "NA";
+        public static readonly string STATUS_REMOVE = "RM";
+        public static readonly string STATUS_VISIBLE = "VI";
+        public static readonly string STATUS_NOT_VISIBLE = "NV";
 
         public static readonly string DATA_TYPE_STRING = "ST";
         public static readonly string DATA_TYPE_LIST = "LT";
