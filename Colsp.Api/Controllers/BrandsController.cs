@@ -137,6 +137,7 @@ namespace Colsp.Api.Controllers
                 if(brand != null)
                 {
                     BrandRequest response = new BrandRequest();
+                    response.BrandId = brand.BrandId;
                     response.BrandNameEn = brand.BrandNameEn;
                     response.BrandNameTh = brand.BrandNameTh;
                     response.DescriptionEn = brand.DescriptionEn;
