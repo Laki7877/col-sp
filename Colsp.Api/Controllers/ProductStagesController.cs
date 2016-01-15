@@ -29,7 +29,7 @@ namespace Colsp.Api.Controllers
                 IQueryable<ProductStage> products = null;
 
                 // List all product
-                products = db.ProductStages.Where(p => true);
+                products = db.ProductStages.Where(p => !Constant.STATUS_REMOVE.Equals(p.Status));
                 if (request.SearchText != null)
                 {
                     products = products.Where(p => p.Sku.Contains(request.SearchText)
@@ -80,6 +80,7 @@ namespace Colsp.Api.Controllers
                                                     p.Visibility,
                                                     p.UpdatedDt,
                                                     p.CreatedDt,
+                                                    VariantCount = p.ProductStageVariants.Count,
                                                     ImageUrl = m.FirstOrDefault().ImageUrlEn
                                                 }
                                             )
@@ -172,7 +173,11 @@ namespace Colsp.Api.Controllers
                     response.ImageFlag = stage.ImageFlag;
                     response.OnlineFlag = stage.OnlineFlag;
                     response.Visibility = stage.Visibility;
-
+                    if(stage.ProductStageVariants != null)
+                    {
+                        response.VariantCount = stage.ProductStageVariants.Count;
+                    }
+                    response.VariantCount = stage.ProductStageVariants.Count;
                     response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes.ToList());
                     #region Setup Inventory
                     var inventory = (from inv in db.Inventories
@@ -628,15 +633,17 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product is invalid");
                 }
-                var stage = (from stg in db.ProductStages
-                             from var in db.ProductStageVariants.Where(w => w.ProductId==stg.ProductId).DefaultIfEmpty()
-                             where stg.ProductId==productId && stg.SellerId== request.SellerId
-                             select new
-                             {
-                                 stg,
-                                 var,
-                                 attrMap = from attr in db.ProductStageAttributes.Where(w => w.ProductId.Equals(stg.ProductId)).DefaultIfEmpty() select attr
-                             }).AsEnumerable().Select(s => s.stg).SingleOrDefault();
+                var stage = db.ProductStages.Where(w=>w.ProductId== productId).Include(i => i.ProductStageVariants)
+                    .Include(i => i.ProductStageAttributes).SingleOrDefault();
+                //var stage = (from stg in db.ProductStages
+                //             from var in db.ProductStageVariants.Where(w => w.ProductId==stg.ProductId).DefaultIfEmpty()
+                //             where stg.ProductId==productId && stg.SellerId== request.SellerId
+                //             select new
+                //             {
+                //                 stg,
+                //                 var,
+                //                 attrMap = from attr in db.ProductStageAttributes.Where(w => w.ProductId.Equals(stg.ProductId)).DefaultIfEmpty() select attr
+                //             }).AsEnumerable().Select(s => s.stg).SingleOrDefault();
                 if (stage != null)
                 {
                     if (stage.Status == null || !stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
@@ -879,6 +886,7 @@ namespace Colsp.Api.Controllers
             stage.ProductNameTh = request.MasterVariant.ProductNameTh;
             stage.ProductNameEn = request.MasterVariant.ProductNameEn;
             stage.Sku = request.MasterVariant.Sku;
+            stage.Upc = request.MasterVariant.Upc;
             stage.BrandId = request.Brand.BrandId;
             stage.OriginalPrice = request.MasterVariant.OriginalPrice;
             stage.SalePrice = request.MasterVariant.SalePrice;

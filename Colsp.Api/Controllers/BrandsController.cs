@@ -210,11 +210,14 @@ namespace Colsp.Api.Controllers
                 brand.BrandNameTh = request.BrandNameTh;
                 brand.DescriptionEn = request.DescriptionEn;
                 brand.DescriptionTh = request.DescriptionTh;
-                brand.MetaDescription = request.SEO.MetaDescription;
-                brand.MetaKey = request.SEO.MetaKeywords;
-                brand.MetaTitle = request.SEO.MetaTitle;
-                brand.UrlEn = request.SEO.ProductUrlKeyEn;
-                brand.UrlTh = request.SEO.ProductUrlKeyTh;
+                if(request.SEO != null)
+                {
+                    brand.MetaDescription = request.SEO.MetaDescription;
+                    brand.MetaKey = request.SEO.MetaKeywords;
+                    brand.MetaTitle = request.SEO.MetaTitle;
+                    brand.UrlEn = request.SEO.ProductUrlKeyEn;
+                    brand.UrlTh = request.SEO.ProductUrlKeyTh;
+                }
                 if(request.BrandImage != null)
                 {
                     brand.Path = request.BrandImage.tmpPath;
@@ -252,11 +255,14 @@ namespace Colsp.Api.Controllers
                     brand.BrandNameTh = request.BrandNameTh;
                     brand.DescriptionEn = request.DescriptionEn;
                     brand.DescriptionTh = request.DescriptionTh;
-                    brand.MetaDescription = request.SEO.MetaDescription;
-                    brand.MetaKey = request.SEO.MetaKeywords;
-                    brand.MetaTitle = request.SEO.MetaTitle;
-                    brand.UrlEn = request.SEO.ProductUrlKeyEn;
-                    brand.UrlTh = request.SEO.ProductUrlKeyTh;
+                    if(request.SEO != null)
+                    {
+                        brand.MetaDescription = request.SEO.MetaDescription;
+                        brand.MetaKey = request.SEO.MetaKeywords;
+                        brand.MetaTitle = request.SEO.MetaTitle;
+                        brand.UrlEn = request.SEO.ProductUrlKeyEn;
+                        brand.UrlTh = request.SEO.ProductUrlKeyTh;
+                    }
                     if (request.BrandImage != null)
                     {
                         brand.Path = request.BrandImage.tmpPath;

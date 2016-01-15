@@ -211,6 +211,7 @@ namespace Colsp.Api.Controllers
         [HttpPut]
         public HttpResponseMessage SaveAttributeSet([FromUri]int attributeSetId,AttributeSetRequest request)
         {
+            List<Tag> tagList = null;
             try
             {
                 if(request == null || attributeSetId == 0)
@@ -279,6 +280,40 @@ namespace Colsp.Api.Controllers
                     if(mapList != null && mapList.Count > 0)
                     {
                         db.AttributeSetMaps.RemoveRange(mapList);
+                    }
+                    if(attrSet.AttributeSetTagMaps != null)
+                    {
+                        db.AttributeSetTagMaps.RemoveRange(attrSet.AttributeSetTagMaps);
+                    }
+                    if (request.Tags != null && request.Tags.Count > 0)
+                    {
+                        tagList = new List<Tag>();
+                        foreach (TagRequest tagRq in request.Tags)
+                        {
+                            Tag tag = new Tag();
+                            tag.TagName = tagRq.TagName;
+                            tag.CreatedBy = this.User.Email();
+                            tag.CreatedDt = DateTime.Now;
+                            tag.UpdatedBy = this.User.Email();
+                            tag.UpdatedDt = DateTime.Now;
+                            db.Tags.Add(tag);
+                            tagList.Add(tag);
+                        }
+                    }
+                    db.SaveChanges();
+                    if (tagList != null && tagList.Count > 0)
+                    {
+                        foreach (Tag t in tagList)
+                        {
+                            AttributeSetTagMap map = new AttributeSetTagMap();
+                            map.TagId = t.TagId;
+                            map.AttributeSetId = attrSet.AttributeSetId;
+                            map.CreatedBy = this.User.Email();
+                            map.CreatedDt = DateTime.Now;
+                            map.UpdatedBy = this.User.Email();
+                            map.UpdatedDt = DateTime.Now;
+                            db.AttributeSetTagMaps.Add(map);
+                        }
                     }
                     db.SaveChanges();
                     return GetAttributeSets(attrSet.AttributeSetId);
@@ -395,6 +430,7 @@ namespace Colsp.Api.Controllers
                 response.AttributeSetNameTh = attrSet.AttributeSetNameTh;
                 response.AttributeSetDescriptionEn = attrSet.AttributeSetDescriptionEn;
                 response.AttributeSetDescriptionTh = attrSet.AttributeSetDescriptionTh;
+                response.Status = attrSet.Status;
                 if (attrSet.AttributeSetMaps != null && attrSet.AttributeSetMaps.Count > 0)
                 {
                     response.Attributes = new List<AttributeRequest>();
@@ -421,6 +457,7 @@ namespace Colsp.Api.Controllers
                         attr.AllowHtmlFlag = map.Attribute.AllowHtmlFlag;
                         attr.Required = map.Required;
                         attr.Filterable = map.Filterable;
+                        attr.Status = map.Attribute.Status;
                         response.Attributes.Add(attr);
                     }
                 }

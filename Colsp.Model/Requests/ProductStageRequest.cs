@@ -57,6 +57,7 @@ namespace Colsp.Model.Requests
         public bool? ImageFlag { get; set; }
         public bool? OnlineFlag { get; set; }
         public bool? Visibility { get; set; }
+        public int? VariantCount { get; set; }
 
         public ProductStageRequest()
         {

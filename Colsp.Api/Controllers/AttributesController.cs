@@ -408,6 +408,7 @@ namespace Colsp.Api.Controllers
                 attribute.VariantDataType = attr.VariantDataType;
                 attribute.VariantStatus = attr.VariantStatus;
                 attribute.AllowHtmlFlag = attr.AllowHtmlFlag;
+                attribute.Status = attr.Status;
 
                 if (attr.AttributeValueMaps != null && attr.AttributeValueMaps.Count > 0)
                 {

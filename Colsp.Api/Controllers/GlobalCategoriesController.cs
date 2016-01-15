@@ -38,6 +38,7 @@ namespace Colsp.Api.Controllers
                                     cat.Status,
                                     cat.UpdatedDt,
                                     cat.CreatedDt,
+                                    cat.Commission,
                                     ProductCount = cat.ProductStages.Count,
                                     AttributeSets = cat.CategoryAttributeSetMaps.AsEnumerable().Select(s=> new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn })
                                 }).ToList();
@@ -221,6 +222,7 @@ namespace Colsp.Api.Controllers
                         catEn.Rgt = catRq.Rgt;
                         catEn.NameEn = catRq.NameEn;
                         catEn.NameTh = catRq.NameTh;
+                        catEn.Commission = catRq.Commission;
                         catEn.UrlKeyEn = catRq.UrlKeyEn;
                         catEn.Status = catRq.Status;
                         catEn.CreatedBy = this.User.Email();
