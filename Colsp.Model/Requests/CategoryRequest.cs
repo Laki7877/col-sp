@@ -19,5 +19,10 @@ namespace Colsp.Model.Requests
         public string CategoryAbbreviation { get; set; }
         public List<AttributeSetRequest> AttributeSets { get; set; }
         public decimal? Commission { get; set; }
+
+        public CategoryRequest()
+        {
+            AttributeSets = new List<AttributeSetRequest>();
+        }
     }
 }

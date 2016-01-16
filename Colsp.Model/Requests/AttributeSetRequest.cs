@@ -18,6 +18,11 @@ namespace Colsp.Model.Requests
         public string SearchText { get; set; }
         public List<TagRequest> Tags { get; set; }
 
+        public AttributeSetRequest()
+        {
+            Attributes = new List<AttributeRequest>();
+        }
+
         public override void DefaultOnNull()
         {
             AttributeSetId = GetValueOrDefault(AttributeSetId, null);

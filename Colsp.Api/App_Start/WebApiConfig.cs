@@ -19,8 +19,8 @@ namespace Colsp.Api
 				= Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 			config.Formatters.JsonFormatter.SerializerSettings.PreserveReferencesHandling
 				= Newtonsoft.Json.PreserveReferencesHandling.None;
-			config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling
-				= Newtonsoft.Json.NullValueHandling.Ignore;
+			//config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling
+			//	= Newtonsoft.Json.NullValueHandling.Ignore;
 
 			// Enable CORs
 			config.EnableCors(new EnableCorsAttribute("*","*","*"));

@@ -34,6 +34,11 @@ namespace Colsp.Model.Requests
         public string ValueEn { get; set; }
         public string SearchText { get; set; }
 
+        public AttributeRequest()
+        {
+            AttributeValues = new List<AttributeValueRequest>();
+        }
+
         public override void DefaultOnNull()
         {
             AttributeId = GetValueOrDefault(AttributeId, null);

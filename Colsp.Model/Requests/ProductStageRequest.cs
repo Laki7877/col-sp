@@ -43,7 +43,7 @@ namespace Colsp.Model.Requests
         //public string DimensionUnit { get; set; }
         //public decimal? Weight { get; set; }
         //public string WeightUnit { get; set; }
-        public List<string> RelatedProducts { get; set; }
+        public List<VariantRequest> RelatedProducts { get; set; }
         public string EffectiveDate { get; set; }
         public string EffectiveTime { get; set; }
         public string ExpireDate { get; set; }
@@ -62,17 +62,21 @@ namespace Colsp.Model.Requests
         public ProductStageRequest()
         {
             AttributeSet = new AttributeSetRequest();
+            GlobalCategories = new List<CategoryRequest>();
+            LocalCategories = new List<CategoryRequest>();
             MasterVariant = new VariantRequest();
             MasterAttribute = new List<AttributeRequest>();
             Variants = new List<VariantRequest>();
             SEO = new SEORequest();
             Brand = new BrandRequest();
+            RelatedProducts = new List<VariantRequest>();
         }
 
     }
 
     public class VariantRequest
     {
+        public int? ProductId { get; set; }
         public string ProductNameTh { get; set; }
         public string ProductNameEn { get; set; }
         public string Pid { get; set; }
@@ -105,6 +109,7 @@ namespace Colsp.Model.Requests
         public string StockType { get; set; }
         public bool? DefaultVariant { get; set; }
         public int? VariantId { get; set; }
+        public bool? Visibility { get; set; }
 
         public VariantRequest()
         {

@@ -69,6 +69,7 @@ namespace Colsp.Api.Controllers
                                                 (p, m) => new
                                                 {
                                                     p.Sku,
+                                                    p.Pid,
                                                     p.ProductId,
                                                     p.ProductNameEn,
                                                     p.ProductNameTh,
@@ -230,16 +231,40 @@ namespace Colsp.Api.Controllers
                         response.LocalCategories = catList;
                     }
                     #endregion
-                    var relatedList = db.ProductStageRelateds.Where(w => w.Pid1.Equals(stage.Pid)).ToList();
+                    #region Setup Related Product
+                    var relatedList = db.ProductStageRelateds.Join(db.ProductStages,
+                        rel => rel.Pid2,
+                        stg => stg.Pid,
+                        (rel,stg) => new { RelatedProduct = rel, ProductStage = stg })
+                        .Where(w => w.RelatedProduct.Pid1.Equals(stage.Pid)).ToList();
                     if(relatedList != null && relatedList.Count > 0)
                     {
-                        List<string> relate = new List<string>();
-                        foreach (ProductStageRelated r in relatedList)
+                        List<VariantRequest> relate = new List<VariantRequest>();
+                        foreach (var r in relatedList)
                         {
-                            relate.Add(r.Pid2);
+                            VariantRequest va = new VariantRequest();
+                            va.Pid = r.ProductStage.Pid;
+                            va.ProductNameTh = r.ProductStage.ProductNameTh;
+                            va.ProductNameEn = r.ProductStage.ProductNameEn;
+                            va.Sku = r.ProductStage.Sku;
+                            va.Upc = r.ProductStage.Upc;
+                            va.OriginalPrice = r.ProductStage.OriginalPrice;
+                            va.SalePrice = r.ProductStage.SalePrice;
+                            va.DescriptionFullTh = r.ProductStage.DescriptionFullTh;
+                            va.DescriptionShortTh = r.ProductStage.DescriptionShortTh;
+                            va.DescriptionFullEn = r.ProductStage.DescriptionFullEn;
+                            va.DescriptionShortEn = r.ProductStage.DescriptionShortEn;
+                            va.Length = r.ProductStage.Length;
+                            va.Height = r.ProductStage.Height;
+                            va.Width = r.ProductStage.Width;
+                            va.Weight = r.ProductStage.Weight;
+                            va.DimensionUnit = r.ProductStage.DimensionUnit;
+                            va.WeightUnit = r.ProductStage.WeightUnit;
+                            relate.Add(va);
                         }
                         response.RelatedProducts = relate;
                     }
+                    #endregion
                     List<VariantRequest> varList = new List<VariantRequest>();
                     foreach(ProductStageVariant variantEntity in stage.ProductStageVariants)
                     {
@@ -283,6 +308,7 @@ namespace Colsp.Api.Controllers
                         varient.Weight = variantEntity.Weight;
                         varient.DimensionUnit = variantEntity.DimensionUnit;
                         varient.WeightUnit = variantEntity.WeightUnit;
+                        varient.Visibility = variantEntity.Visibility;
                         varList.Add(varient);
                     }
                     response.Variants = varList;
@@ -496,14 +522,16 @@ namespace Colsp.Api.Controllers
                 #region Setup Related Product
                 if (request.RelatedProducts != null)
                 {
-                    foreach (string pro in request.RelatedProducts)
+                    foreach (var pro in request.RelatedProducts)
                     {
                         if(pro == null ) { continue; }
                         ProductStageRelated relate = new ProductStageRelated();
                         relate.Pid1 = masterPid;
-                        relate.Pid2 = pro;
+                        relate.Pid2 = pro.Pid;
                         relate.CreatedBy = this.User.Email();
                         relate.CreatedDt = DateTime.Now;
+                        relate.UpdatedBy = this.User.Email();
+                        relate.UpdatedDt = DateTime.Now;
                         db.ProductStageRelateds.Add(relate);
                     }
                 }
@@ -586,6 +614,7 @@ namespace Colsp.Api.Controllers
                     variant.DimensionUnit = variantRq.DimensionUnit;
                     variant.WeightUnit = variantRq.WeightUnit;
                     variant.DefaultVaraint = variantRq.DefaultVariant;
+                    variant.Visibility = variantRq.Visibility;
                     variant.CreatedBy = this.User.Email();
                     variant.CreatedDt = DateTime.Now;
 
@@ -635,15 +664,6 @@ namespace Colsp.Api.Controllers
                 }
                 var stage = db.ProductStages.Where(w=>w.ProductId== productId).Include(i => i.ProductStageVariants)
                     .Include(i => i.ProductStageAttributes).SingleOrDefault();
-                //var stage = (from stg in db.ProductStages
-                //             from var in db.ProductStageVariants.Where(w => w.ProductId==stg.ProductId).DefaultIfEmpty()
-                //             where stg.ProductId==productId && stg.SellerId== request.SellerId
-                //             select new
-                //             {
-                //                 stg,
-                //                 var,
-                //                 attrMap = from attr in db.ProductStageAttributes.Where(w => w.ProductId.Equals(stg.ProductId)).DefaultIfEmpty() select attr
-                //             }).AsEnumerable().Select(s => s.stg).SingleOrDefault();
                 if (stage != null)
                 {
                     if (stage.Status == null || !stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
@@ -723,7 +743,7 @@ namespace Colsp.Api.Controllers
                     #endregion
                     #region Setup Variant
                     List<ProductStageVariant> varList = null;
-                    if (stage.ProductStageVariants == null || stage.ProductStageVariants.Count == 0)
+                    if (stage.ProductStageVariants != null && stage.ProductStageVariants.Count > 0)
                     {
                         varList = stage.ProductStageVariants.ToList();
                     }
@@ -746,7 +766,6 @@ namespace Colsp.Api.Controllers
                             current = varList.Where(w => w.VariantId == var.VariantId).SingleOrDefault();
                             if (current != null)
                             {
-                                
                                 varList.Remove(current);
                             }
                             else
@@ -796,6 +815,7 @@ namespace Colsp.Api.Controllers
                         current.Width = var.Width;
                         current.Weight = var.Weight;
                         current.DimensionUnit = var.DimensionUnit;
+                        current.Visibility = var.Visibility;
                         current.WeightUnit = var.WeightUnit;
                         current.DefaultVaraint = var.DefaultVariant;
                         current.UpdatedBy = this.User.Email();
@@ -1126,12 +1146,12 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeRelatedProduct(ColspEntities db, string pid, List<string> pidList,string email)
+        private void SaveChangeRelatedProduct(ColspEntities db, string pid, List<VariantRequest> pidList,string email)
         {
             var relateList = db.ProductStageRelateds.Where(w => w.Pid1 == pid).ToList();
             if (relateList != null)
             {
-                foreach (string pro in pidList)
+                foreach (var pro in pidList)
                 {
                     bool addNew = false;
                     if (relateList == null || relateList.Count == 0)
@@ -1140,7 +1160,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (!addNew)
                     {
-                        ProductStageRelated current = relateList.Where(w => w.Pid2 == pro).SingleOrDefault();
+                        ProductStageRelated current = relateList.Where(w => w.Pid2 == pro.Pid).SingleOrDefault();
                         if (current != null)
                         {
                             current.UpdatedBy = email;
@@ -1156,7 +1176,7 @@ namespace Colsp.Api.Controllers
                     {
                         ProductStageRelated proEntity = new ProductStageRelated();
                         proEntity.Pid1 = pid;
-                        proEntity.Pid1 = pro;
+                        proEntity.Pid2 = pro.Pid;
                         proEntity.Status = Constant.STATUS_ACTIVE;
                         proEntity.CreatedBy = email;
                         proEntity.CreatedDt = DateTime.Now;

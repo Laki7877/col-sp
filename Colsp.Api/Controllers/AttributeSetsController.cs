@@ -254,6 +254,10 @@ namespace Colsp.Api.Controllers
                                 AttributeSetMap current = mapList.Where(w => w.AttributeId == attrRq.AttributeId).SingleOrDefault();
                                 if (current != null)
                                 {
+                                    current.Required = attrRq.Required;
+                                    current.Filterable = attrRq.Filterable;
+                                    current.UpdatedBy = this.User.Email();
+                                    current.UpdatedDt = DateTime.Now;
                                     mapList.Remove(current);
                                 }
                                 else
