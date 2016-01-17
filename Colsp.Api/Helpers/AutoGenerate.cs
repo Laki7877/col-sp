@@ -19,21 +19,35 @@ namespace Colsp.Api.Helper
             {
                 string pid = CurrentPid.CurrentKey;
                 pid = pid.ToUpper();
-                var sb = new System.Text.StringBuilder(pid.Length);
-                sb.Length = pid.Length;
-
-                int carry = 1;
-                for (int i = pid.Length - 1; i >= 0; i--)
+                while (pid.Contains("0") 
+                    || pid.Contains("D") 
+                    || pid.Contains("E") 
+                    || pid.Contains("F") 
+                    || pid.Contains("G") 
+                    || pid.Contains("H") 
+                    || pid.Contains("I") 
+                    || pid.Contains("M") 
+                    || pid.Contains("N") 
+                    || pid.Contains("O") 
+                    || pid.Contains("S"))
                 {
-                    int x = v(pid[i]) + carry;
-                    carry = x / 36;
-                    sb[i] = ch(x % 36);
-                }
-                if (carry > 0) {
-                    pid = ch(carry) + sb.ToString();
-                }
-                else {
-                    pid = sb.ToString();
+                    var sb = new System.Text.StringBuilder(pid.Length);
+                    sb.Length = pid.Length;
+
+                    int carry = 1;
+                    for (int i = pid.Length - 1; i >= 0; i--)
+                    {
+                        int x = v(pid[i]) + carry;
+                        carry = x / 36;
+                        sb[i] = ch(x % 36);
+                    }
+                    if (carry > 0)
+                    {
+                        pid = ch(carry) + sb.ToString();
+                    }
+                    else {
+                        pid = sb.ToString();
+                    }
                 }
                 CurrentPid.CurrentKey = pid;
                 return string.Concat(CurrentPid.CategoryAbbreviation, pid);
@@ -51,22 +65,36 @@ namespace Colsp.Api.Helper
             {
                 string abbrString = abbr.Abbrevation;
                 abbrString = abbrString.ToUpper();
-                var sb = new System.Text.StringBuilder(abbrString.Length);
-                sb.Length = abbrString.Length;
 
-                int carry = 1;
-                for (int i = abbrString.Length - 1; i >= 0; i--)
+                while (abbrString.Contains("0")
+                    || abbrString.Contains("D")
+                    || abbrString.Contains("E")
+                    || abbrString.Contains("F")
+                    || abbrString.Contains("G")
+                    || abbrString.Contains("H")
+                    || abbrString.Contains("I")
+                    || abbrString.Contains("M")
+                    || abbrString.Contains("N")
+                    || abbrString.Contains("O")
+                    || abbrString.Contains("S"))
                 {
-                    int x = v(abbrString[i]) + carry;
-                    carry = x / 36;
-                    sb[i] = ch(x % 36);
-                }
-                if (carry > 0)
-                {
-                    abbrString = ch(carry) + sb.ToString();
-                }
-                else {
-                    abbrString = sb.ToString();
+                    var sb = new System.Text.StringBuilder(abbrString.Length);
+                    sb.Length = abbrString.Length;
+
+                    int carry = 1;
+                    for (int i = abbrString.Length - 1; i >= 0; i--)
+                    {
+                        int x = v(abbrString[i]) + carry;
+                        carry = x / 36;
+                        sb[i] = ch(x % 36);
+                    }
+                    if (carry > 0)
+                    {
+                        abbrString = ch(carry) + sb.ToString();
+                    }
+                    else {
+                        abbrString = sb.ToString();
+                    }
                 }
                 abbr.Abbrevation = abbrString;
                 return abbr.Abbrevation;

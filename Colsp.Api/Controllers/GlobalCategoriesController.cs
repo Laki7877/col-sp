@@ -39,7 +39,7 @@ namespace Colsp.Api.Controllers
                                     cat.UpdatedDt,
                                     cat.CreatedDt,
                                     cat.Commission,
-                                    ProductCount = cat.ProductStages.Count,
+                                    ProductCount = cat.ProductStages.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)),
                                     AttributeSets = cat.CategoryAttributeSetMaps.AsEnumerable().Select(s=> new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn })
                                 }).ToList();
 

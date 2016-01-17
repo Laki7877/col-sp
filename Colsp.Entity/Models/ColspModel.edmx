@@ -142,8 +142,8 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="NameEn" Type="nvarchar" MaxLength="50" />
-          <Property Name="NameTh" Type="nvarchar" MaxLength="50" />
+          <Property Name="NameEn" Type="nvarchar" MaxLength="200" />
+          <Property Name="NameTh" Type="nvarchar" MaxLength="200" />
           <Property Name="Commission" Type="decimal" Precision="10" Scale="2" />
           <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
@@ -2396,8 +2396,8 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NameTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NameEn" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="NameTh" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Commission" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CategoryAbbreviation" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
