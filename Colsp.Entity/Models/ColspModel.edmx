@@ -556,6 +556,7 @@
           <Property Name="Stock" Type="int" />
           <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
+          <Property Name="FeatureImgUrl" Type="nvarchar" MaxLength="2083" />
           <Property Name="Tag" Type="nvarchar" MaxLength="1000" />
           <Property Name="PrepareDay" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
@@ -2854,6 +2855,7 @@
           <Property Name="Stock" Type="Int32" />
           <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
+          <Property Name="FeatureImgUrl" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Tag" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="PrepareDay" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
@@ -4578,6 +4580,7 @@
                 <ScalarProperty Name="Length" ColumnName="Length" />
                 <ScalarProperty Name="PrepareDay" ColumnName="PrepareDay" />
                 <ScalarProperty Name="Tag" ColumnName="Tag" />
+                <ScalarProperty Name="FeatureImgUrl" ColumnName="FeatureImgUrl" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
                 <ScalarProperty Name="SafetyStock" ColumnName="SafetyStock" />
                 <ScalarProperty Name="Stock" ColumnName="Stock" />

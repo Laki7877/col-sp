@@ -25,11 +25,31 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                var products = (from p in db.ProductStages
+                          where !Constant.STATUS_REMOVE.Equals(p.Status)
+                          select new {
+                              p.Sku,
+                              p.Pid,
+                              p.Upc,
+                              p.ProductId,
+                              p.ProductNameEn,
+                              p.ProductNameTh,
+                              p.OriginalPrice,
+                              p.SalePrice,
+                              p.Status,
+                              p.ImageFlag,
+                              p.InfoFlag,
+                              p.Visibility,
+                              p.ProductStageVariants,
+                              p.SellerId,
+                              p.UpdatedDt,
+                              p.CreatedDt,
+                          }).Take(100);
+                if(request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, products);
+                }
                 request.DefaultOnNull();
-                IQueryable<ProductStage> products = null;
-
-                // List all product
-                products = db.ProductStages.Where(p => !Constant.STATUS_REMOVE.Equals(p.Status));
                 if (request.SearchText != null)
                 {
                     products = products.Where(p => p.Sku.Contains(request.SearchText)
@@ -44,24 +64,24 @@ namespace Colsp.Api.Controllers
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
-                    if ("Draft".Equals(request._filter))
+                    
+                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
-                    else if ("Approved".Equals(request._filter))
+                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
-                    else if ("Not Approved".Equals(request._filter))
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
                     }
-                    else if ("Wait for Approval".Equals(request._filter))
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
-
                 var total = products.Count();
                 var pagedProducts = products.GroupJoin(db.ProductStageImages,
                                                 p => p.Pid,
@@ -484,6 +504,7 @@ namespace Colsp.Api.Controllers
                 masterInventoryHist.CreatedDt = DateTime.Now;
                 db.InventoryHistories.Add(masterInventoryHist);
                 #endregion
+                //stage.
                 stage.ImageFlag = SetupImgEntity(db, request.MasterVariant.Images, masterPid, this.User.Email());
                 SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, this.User.Email());
                 SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, this.User.Email());
@@ -1477,9 +1498,10 @@ namespace Colsp.Api.Controllers
 
         }
 
-        private bool SetupImgEntity(ColspEntities db, List<ImageRequest> imgs, string pid, string email)
+        private string SetupImgEntity(ColspEntities db, List<ImageRequest> imgs, string pid, string email)
         {
-            if (imgs == null) { return false; }
+            if (imgs == null && imgs.Count > 0) { return null; }
+            string featureImgUrl = imgs[0].url;
             int index = 0;
             bool featureImg = true;
             foreach (ImageRequest imgRq in imgs)
@@ -1498,7 +1520,7 @@ namespace Colsp.Api.Controllers
                 img.UpdatedDt = DateTime.Now;
                 db.ProductStageImages.Add(img);
             }
-            return !featureImg;
+            return featureImgUrl;
         }
 
         private void SetupImg360Entity(ColspEntities db, List<ImageRequest> imgs, string pid, string email)
