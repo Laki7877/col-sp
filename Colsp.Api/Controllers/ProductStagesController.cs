@@ -40,8 +40,9 @@ namespace Colsp.Api.Controllers
                               p.ImageFlag,
                               p.InfoFlag,
                               p.Visibility,
-                              p.ProductStageVariants,
+                              VariantCount = p.ProductStageVariants.Count,
                               p.SellerId,
+                              ImageUrl = p.FeatureImgUrl,
                               p.UpdatedDt,
                               p.CreatedDt,
                           }).Take(100);
@@ -83,29 +84,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 var total = products.Count();
-                var pagedProducts = products.GroupJoin(db.ProductStageImages,
-                                                p => p.Pid,
-                                                m => m.Pid,
-                                                (p, m) => new
-                                                {
-                                                    p.Sku,
-                                                    p.Pid,
-                                                    p.ProductId,
-                                                    p.ProductNameEn,
-                                                    p.ProductNameTh,
-                                                    p.OriginalPrice,
-                                                    p.SalePrice,
-                                                    p.Status,
-                                                    p.ImageFlag,
-                                                    p.InfoFlag,
-                                                    p.Visibility,
-                                                    p.UpdatedDt,
-                                                    p.CreatedDt,
-                                                    VariantCount = p.ProductStageVariants.Count,
-                                                    ImageUrl = m.FirstOrDefault().ImageUrlEn
-                                                }
-                                            )
-                                            .Paginate(request);
+                var pagedProducts = products.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
@@ -504,8 +483,8 @@ namespace Colsp.Api.Controllers
                 masterInventoryHist.CreatedDt = DateTime.Now;
                 db.InventoryHistories.Add(masterInventoryHist);
                 #endregion
-                //stage.
-                stage.ImageFlag = SetupImgEntity(db, request.MasterVariant.Images, masterPid, this.User.Email());
+                stage.FeatureImgUrl = SetupImgEntity(db, request.MasterVariant.Images, masterPid, this.User.Email());
+                stage.ImageFlag = stage.FeatureImgUrl == null ? false : true;
                 SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, this.User.Email());
                 SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, this.User.Email());
                 #region Setup Related GlobalCategories
@@ -1500,7 +1479,7 @@ namespace Colsp.Api.Controllers
 
         private string SetupImgEntity(ColspEntities db, List<ImageRequest> imgs, string pid, string email)
         {
-            if (imgs == null && imgs.Count > 0) { return null; }
+            if (imgs == null || imgs.Count == 0) { return null; }
             string featureImgUrl = imgs[0].url;
             int index = 0;
             bool featureImg = true;
