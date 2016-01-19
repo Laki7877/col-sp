@@ -22,7 +22,7 @@ namespace Colsp.Api.Controllers
         [Route("api/ProductStages")]
         [HttpGet]
         public HttpResponseMessage GetProductStages([FromUri] ProductRequest request)
-		{
+        {
             try
             {
                 request.DefaultOnNull();
@@ -48,15 +48,15 @@ namespace Colsp.Api.Controllers
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
-                    else if("Approved".Equals(request._filter))
+                    else if ("Approved".Equals(request._filter))
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
-                    else if("Not Approved".Equals(request._filter))
+                    else if ("Not Approved".Equals(request._filter))
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
                     }
-                    else if("Wait for Approval".Equals(request._filter))
+                    else if ("Wait for Approval".Equals(request._filter))
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
@@ -93,8 +93,8 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
-			
-		}
+
+        }
 
         [Route("api/ProductStages/{productId}")]
         [HttpGet]
@@ -115,18 +115,18 @@ namespace Colsp.Api.Controllers
                     response.MasterVariant.ProductNameEn = stage.ProductNameEn;
                     response.MasterVariant.Sku = stage.Sku;
                     response.MasterVariant.Upc = stage.Upc;
-                    response.Brand.BrandId = stage.BrandId ;
+                    response.Brand.BrandId = stage.BrandId;
                     if (stage.Brand != null)
                     {
                         response.Brand.BrandId = stage.Brand.BrandId;
                         response.Brand.BrandNameEn = stage.Brand.BrandNameEn;
                     }
-                    response.MasterVariant.OriginalPrice = stage.OriginalPrice ;
+                    response.MasterVariant.OriginalPrice = stage.OriginalPrice;
                     response.MasterVariant.SalePrice = stage.SalePrice;
                     response.MasterVariant.DescriptionFullTh = stage.DescriptionFullTh;
                     response.MasterVariant.DescriptionShortTh = stage.DescriptionShortTh;
-                    response.MasterVariant.DescriptionFullEn = stage.DescriptionFullEn ;
-                    response.MasterVariant.DescriptionShortEn = stage.DescriptionShortEn ;
+                    response.MasterVariant.DescriptionFullEn = stage.DescriptionFullEn;
+                    response.MasterVariant.DescriptionShortEn = stage.DescriptionShortEn;
                     response.AttributeSet.AttributeSetId = stage.AttributeSetId;
                     response.Keywords = stage.Tag;
                     response.ShippingMethod = stage.ShippingId;
@@ -149,7 +149,7 @@ namespace Colsp.Api.Controllers
                     {
                         response.EffectiveDate = stage.EffectiveDate.Value.ToString("MMMM dd, yyyy");
                     }
-                    if(stage.EffectiveTime != null)
+                    if (stage.EffectiveTime != null)
                     {
                         response.EffectiveTime = stage.EffectiveTime.Value.ToString(@"hh\:mm");
                     }
@@ -159,7 +159,7 @@ namespace Colsp.Api.Controllers
                     {
                         response.ExpireDate = stage.ExpiryDate.Value.ToString("MMMM dd, yyyy");
                     }
-                    if(stage.ExpiryTime != null)
+                    if (stage.ExpiryTime != null)
                     {
                         response.ExpireTime = stage.ExpiryTime.Value.ToString(@"hh\:mm");
                     }
@@ -174,7 +174,7 @@ namespace Colsp.Api.Controllers
                     response.ImageFlag = stage.ImageFlag;
                     response.OnlineFlag = stage.OnlineFlag;
                     response.Visibility = stage.Visibility;
-                    if(stage.ProductStageVariants != null)
+                    if (stage.ProductStageVariants != null)
                     {
                         response.VariantCount = stage.ProductStageVariants.Count;
                     }
@@ -184,7 +184,7 @@ namespace Colsp.Api.Controllers
                     var inventory = (from inv in db.Inventories
                                      where inv.Pid.Equals(stage.Pid)
                                      select inv).SingleOrDefault();
-                    if(inventory != null)
+                    if (inventory != null)
                     {
                         response.MasterVariant.SafetyStock = inventory.SaftyStockSeller;
                         response.MasterVariant.Quantity = inventory.Quantity;
@@ -196,14 +196,14 @@ namespace Colsp.Api.Controllers
                     response.MasterVariant.VideoLinks = SetupVdoResponse(db, stage.Pid);
                     #region Setup Related GlobalCategories
                     var globalCatList = (from map in db.ProductStageGlobalCatMaps
-                                        join cat in db.GlobalCategories on map.CategoryId equals cat.CategoryId
-                                        where map.ProductId.Equals(stage.ProductId)
-                                        select map.GlobalCategory).ToList();
-                    
+                                         join cat in db.GlobalCategories on map.CategoryId equals cat.CategoryId
+                                         where map.ProductId.Equals(stage.ProductId)
+                                         select map.GlobalCategory).ToList();
+
                     if (globalCatList != null && globalCatList.Count > 0)
                     {
                         List<CategoryRequest> catList = new List<CategoryRequest>();
-                        foreach(GlobalCategory c in globalCatList)
+                        foreach (GlobalCategory c in globalCatList)
                         {
                             CategoryRequest cat = new CategoryRequest();
                             cat.CategoryId = c.CategoryId;
@@ -218,7 +218,7 @@ namespace Colsp.Api.Controllers
                                         join cat in db.LocalCategories on map.CategoryId equals cat.CategoryId
                                         where map.ProductId.Equals(stage.ProductId)
                                         select map.LocalCategory).ToList();
-                    if(localCatList != null && localCatList.Count > 0)
+                    if (localCatList != null && localCatList.Count > 0)
                     {
                         List<CategoryRequest> catList = new List<CategoryRequest>();
                         foreach (LocalCategory c in localCatList)
@@ -235,9 +235,9 @@ namespace Colsp.Api.Controllers
                     var relatedList = db.ProductStageRelateds.Join(db.ProductStages,
                         rel => rel.Pid2,
                         stg => stg.Pid,
-                        (rel,stg) => new { RelatedProduct = rel, ProductStage = stg })
+                        (rel, stg) => new { RelatedProduct = rel, ProductStage = stg })
                         .Where(w => w.RelatedProduct.Pid1.Equals(stage.Pid)).ToList();
-                    if(relatedList != null && relatedList.Count > 0)
+                    if (relatedList != null && relatedList.Count > 0)
                     {
                         List<VariantRequest> relate = new List<VariantRequest>();
                         foreach (var r in relatedList)
@@ -266,7 +266,7 @@ namespace Colsp.Api.Controllers
                     }
                     #endregion
                     List<VariantRequest> varList = new List<VariantRequest>();
-                    foreach(ProductStageVariant variantEntity in stage.ProductStageVariants)
+                    foreach (ProductStageVariant variantEntity in stage.ProductStageVariants)
                     {
                         VariantRequest varient = new VariantRequest();
                         varient.VariantId = variantEntity.VariantId;
@@ -278,8 +278,8 @@ namespace Colsp.Api.Controllers
                         varient.DefaultVariant = variantEntity.DefaultVaraint;
                         #region Setup Variant Inventory
                         inventory = (from inv in db.Inventories
-                                         where inv.Pid.Equals(variantEntity.Pid)
-                                         select inv).SingleOrDefault();
+                                     where inv.Pid.Equals(variantEntity.Pid)
+                                     select inv).SingleOrDefault();
                         if (inventory != null)
                         {
                             varient.SafetyStock = inventory.SaftyStockSeller;
@@ -319,12 +319,12 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
             }
         }
-        
+
         [Route("api/ProductStages")]
         [HttpPost]
         public HttpResponseMessage AddProduct(ProductStageRequest request)
@@ -365,7 +365,7 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    if(stage.SellerId != this.User.UserId())
+                    if (stage.SellerId != this.User.UserId())
                     {
                         return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Seller is invalid");
                     }
@@ -377,12 +377,12 @@ namespace Colsp.Api.Controllers
                 else
                 {
                     var shop = this.User.ShopIds().Where(w => w.Equals(stage.ShopId));
-                    if(shop == null || shop.Count() == 0)
+                    if (shop == null || shop.Count() == 0)
                     {
                         return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Shop is invalid");
                     }
                 }
-                
+
                 if (stage.GlobalCatId == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Global category is required");
@@ -424,8 +424,8 @@ namespace Colsp.Api.Controllers
                 }
                 else if (request.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
                 {
-                    if (string.IsNullOrEmpty(stage.ProductNameTh) || string.IsNullOrEmpty(stage.ProductNameEn) || string.IsNullOrEmpty(stage.Sku) 
-                        || stage.OriginalPrice == null || stage.PrepareDay == null 
+                    if (string.IsNullOrEmpty(stage.ProductNameTh) || string.IsNullOrEmpty(stage.ProductNameEn) || string.IsNullOrEmpty(stage.Sku)
+                        || stage.OriginalPrice == null || stage.PrepareDay == null
                         || stage.Length == null || stage.Height == null || stage.Width == null || string.IsNullOrEmpty(stage.DimensionUnit)
                         || stage.Weight == null || string.IsNullOrEmpty(stage.WeightUnit))
                     {
@@ -449,14 +449,14 @@ namespace Colsp.Api.Controllers
                 #region Setup Master Attribute
                 if (request.MasterAttribute != null)
                 {
-                   SetupAttributeEntity(db, request.MasterAttribute, stage.ProductId, masterPid, this.User.Email());
+                    SetupAttributeEntity(db, request.MasterAttribute, stage.ProductId, masterPid, this.User.Email());
                 }
                 #endregion
                 #region Setup Inventory
                 Inventory masterInventory = new Inventory();
                 masterInventory.Quantity = request.MasterVariant.Quantity;
                 masterInventory.SaftyStockSeller = request.MasterVariant.SafetyStock;
-                if(request.MasterVariant.StockType != null)
+                if (request.MasterVariant.StockType != null)
                 {
                     if (Constant.STOCK_TYPE.ContainsKey(request.MasterVariant.StockType))
                     {
@@ -484,11 +484,11 @@ namespace Colsp.Api.Controllers
                 masterInventoryHist.CreatedDt = DateTime.Now;
                 db.InventoryHistories.Add(masterInventoryHist);
                 #endregion
-                stage.ImageFlag = SetupImgEntity(db, request.MasterVariant.Images, masterPid,this.User.Email());
+                stage.ImageFlag = SetupImgEntity(db, request.MasterVariant.Images, masterPid, this.User.Email());
                 SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, this.User.Email());
                 SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, this.User.Email());
                 #region Setup Related GlobalCategories
-                if(request.GlobalCategories != null)
+                if (request.GlobalCategories != null)
                 {
                     foreach (CategoryRequest cat in request.GlobalCategories)
                     {
@@ -504,7 +504,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 #region Setup Related LocalCategories
-                if(request.LocalCategories != null)
+                if (request.LocalCategories != null)
                 {
                     foreach (CategoryRequest cat in request.LocalCategories)
                     {
@@ -524,7 +524,7 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (var pro in request.RelatedProducts)
                     {
-                        if(pro == null ) { continue; }
+                        if (pro == null) { continue; }
                         ProductStageRelated relate = new ProductStageRelated();
                         relate.Pid1 = masterPid;
                         relate.Pid2 = pro.Pid;
@@ -536,7 +536,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 #endregion
-                
+
                 #region Setup variant
                 foreach (VariantRequest variantRq in request.Variants)
                 {
@@ -550,17 +550,17 @@ namespace Colsp.Api.Controllers
                     string variantPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                     variant.Pid = variantPid;
                     variant.ProductId = stage.ProductId;
-                    if(variantRq.FirstAttribute != null && variantRq.FirstAttribute.AttributeId != null)
-                    { 
+                    if (variantRq.FirstAttribute != null && variantRq.FirstAttribute.AttributeId != null)
+                    {
                         variant.Attribute1Id = variantRq.FirstAttribute.AttributeId;
                         variant.ValueEn1 = variantRq.FirstAttribute.ValueEn;
                     }
-                    if(variantRq.SecondAttribute != null && variantRq.SecondAttribute.AttributeId != null)
+                    if (variantRq.SecondAttribute != null && variantRq.SecondAttribute.AttributeId != null)
                     {
                         variant.Attribute2Id = variantRq.SecondAttribute.AttributeId;
                         variant.ValueEn2 = variantRq.SecondAttribute.ValueEn;
                     }
-                    
+
 
                     #region Setup Variant Inventory
                     Inventory variantInventory = new Inventory();
@@ -573,7 +573,7 @@ namespace Colsp.Api.Controllers
                             variantInventory.StockAvailable = Constant.STOCK_TYPE[variantRq.StockType];
                         }
                     }
-                    
+
                     variantInventory.Pid = variantPid;
                     db.Inventories.Add(variantInventory);
 
@@ -594,9 +594,9 @@ namespace Colsp.Api.Controllers
                     db.InventoryHistories.Add(masterInventoryHist);
                     #endregion
 
-                    SetupImgEntity(db, variantRq.Images, variantPid,this.User.Email());
+                    SetupImgEntity(db, variantRq.Images, variantPid, this.User.Email());
                     SetupVdoEntity(db, variantRq.VideoLinks, variantPid, this.User.Email());
-                    
+
                     variant.ProductNameTh = variantRq.ProductNameTh;
                     variant.ProductNameEn = variantRq.ProductNameEn;
                     variant.Sku = variantRq.Sku;
@@ -624,7 +624,7 @@ namespace Colsp.Api.Controllers
                 db.SaveChanges();
                 return GetProductStage(stage.ProductId);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 #region Rollback
                 db.Dispose();
@@ -633,7 +633,7 @@ namespace Colsp.Api.Controllers
                 db.ProductStageGlobalCatMaps.RemoveRange(db.ProductStageGlobalCatMaps.Where(w => w.ProductId.Equals(stage.ProductId)));
                 db.ProductStageLocalCatMaps.RemoveRange(db.ProductStageLocalCatMaps.Where(w => w.ProductId.Equals(stage.ProductId)));
                 db.ProductStageVariants.RemoveRange(db.ProductStageVariants.Where(w => w.ProductId.Equals(stage.ProductId)));
-                db.ProductStages.RemoveRange(db.ProductStages.Where(w=>w.ProductId.Equals(stage.ProductId)));
+                db.ProductStages.RemoveRange(db.ProductStages.Where(w => w.ProductId.Equals(stage.ProductId)));
                 try
                 {
                     db.SaveChanges();
@@ -643,14 +643,14 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, wee);
                 }
                 #endregion
-      
+
                 return Request.CreateResponse(HttpStatusCode.OK, ex);
             }
         }
 
         [Route("api/ProductStages/{productId}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeProduct([FromUri]int productId,ProductStageRequest request)
+        public HttpResponseMessage SaveChangeProduct([FromUri]int productId, ProductStageRequest request)
         {
             try
             {
@@ -662,7 +662,7 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product is invalid");
                 }
-                var stage = db.ProductStages.Where(w=>w.ProductId== productId).Include(i => i.ProductStageVariants)
+                var stage = db.ProductStages.Where(w => w.ProductId == productId).Include(i => i.ProductStageVariants)
                     .Include(i => i.ProductStageAttributes).SingleOrDefault();
                 if (stage != null)
                 {
@@ -710,7 +710,7 @@ namespace Colsp.Api.Controllers
                                     addNew = true;
                                 }
                             }
-                            if(addNew)
+                            if (addNew)
                             {
                                 ProductStageAttribute attriEntity = new ProductStageAttribute();
                                 attriEntity.Position = index++;
@@ -723,10 +723,10 @@ namespace Colsp.Api.Controllers
                                 attriEntity.CreatedDt = DateTime.Now;
                                 db.ProductStageAttributes.Add(attriEntity);
                             }
-                           
+
                         }
                     }
-                    
+
                     if (attrList != null && attrList.Count > 0)
                     {
                         db.ProductStageAttributes.RemoveRange(attrList);
@@ -734,10 +734,10 @@ namespace Colsp.Api.Controllers
                     #endregion
                     SaveChangeInventory(db, stage.Pid, request.MasterVariant, this.User.Email());
                     SaveChangeInventoryHistory(db, stage.Pid, request.MasterVariant, this.User.Email());
-                    SaveChangeImg(db, stage.Pid, request.MasterVariant.Images,this.User.Email());
-                    SaveChangeImg360(db, stage.Pid, request.MasterVariant.Images360,this.User.Email());
-                    SaveChangeVideoLinks(db, stage.Pid, request.MasterVariant.VideoLinks,this.User.Email());
-                    SaveChangeRelatedProduct(db, stage.Pid, request.RelatedProducts,this.User.Email());
+                    SaveChangeImg(db, stage.Pid, request.MasterVariant.Images, this.User.Email());
+                    SaveChangeImg360(db, stage.Pid, request.MasterVariant.Images360, this.User.Email());
+                    SaveChangeVideoLinks(db, stage.Pid, request.MasterVariant.VideoLinks, this.User.Email());
+                    SaveChangeRelatedProduct(db, stage.Pid, request.RelatedProducts, this.User.Email());
                     SaveChangeGlobalCat(db, stage.ProductId, request.GlobalCategories, this.User.Email());
                     SaveChangeLocalCat(db, stage.ProductId, request.LocalCategories, this.User.Email());
                     #endregion
@@ -747,7 +747,7 @@ namespace Colsp.Api.Controllers
                     {
                         varList = stage.ProductStageVariants.ToList();
                     }
-                    
+
                     foreach (VariantRequest var in request.Variants)
                     {
                         if (var.FirstAttribute == null &&
@@ -784,17 +784,17 @@ namespace Colsp.Api.Controllers
                             current.CreatedDt = DateTime.Now;
                         }
 
-                        if(var.FirstAttribute != null && var.FirstAttribute.AttributeId != null)
+                        if (var.FirstAttribute != null && var.FirstAttribute.AttributeId != null)
                         {
                             current.Attribute1Id = var.FirstAttribute.AttributeId;
                             current.ValueEn1 = var.FirstAttribute.ValueEn;
                         }
-                        if(var.SecondAttribute != null && var.SecondAttribute.AttributeId != null)
+                        if (var.SecondAttribute != null && var.SecondAttribute.AttributeId != null)
                         {
                             current.Attribute2Id = var.SecondAttribute.AttributeId;
                             current.ValueEn2 = var.SecondAttribute.ValueEn;
                         }
-                        
+
                         SaveChangeInventory(db, current.Pid, var, this.User.Email());
                         SaveChangeInventoryHistory(db, current.Pid, var, this.User.Email());
                         SaveChangeImg(db, current.Pid, var.Images, this.User.Email());
@@ -825,7 +825,7 @@ namespace Colsp.Api.Controllers
                             db.ProductStageVariants.Add(current);
                         }
                     }
-                    if(varList != null && varList.Count > 0)
+                    if (varList != null && varList.Count > 0)
                     {
                         db.ProductStageVariants.RemoveRange(varList);
                     }
@@ -838,9 +838,9 @@ namespace Colsp.Api.Controllers
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Product is invalid");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.OK,e);
+                return Request.CreateResponse(HttpStatusCode.OK, e);
             }
         }
 
@@ -857,7 +857,7 @@ namespace Colsp.Api.Controllers
                 var proList = db.ProductStages.ToList();
                 foreach (ProductStageRequest proRq in request)
                 {
-                    
+
                     var current = proList.Where(w => w.ProductId.Equals(proRq.ProductId)).SingleOrDefault();
                     if (current == null)
                     {
@@ -886,9 +886,9 @@ namespace Colsp.Api.Controllers
                 foreach (ProductStageRequest proRq in request)
                 {
                     var pro = productList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
-                    if(pro == null)
+                    if (pro == null)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound,HttpErrorMessage.NotFound);
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                     }
                     pro.Status = Constant.STATUS_REMOVE;
                 }
@@ -997,7 +997,7 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             stage.Remark = request.Remark;
-            
+
             return null;
         }
 
@@ -1022,7 +1022,7 @@ namespace Colsp.Api.Controllers
             db.InventoryHistories.Add(masterInventoryHist);
         }
 
-        private void SaveChangeInventory(ColspEntities db, string pid, VariantRequest variant,string email)
+        private void SaveChangeInventory(ColspEntities db, string pid, VariantRequest variant, string email)
         {
             Inventory masterInventory = db.Inventories.Find(pid);
             bool isNew = false;
@@ -1079,7 +1079,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (addNew)
                     {
-                        if(cat == null) { continue; }
+                        if (cat == null) { continue; }
                         ProductStageLocalCatMap catEntity = new ProductStageLocalCatMap();
                         catEntity.CategoryId = cat.CategoryId;
                         catEntity.ProductId = ProductId;
@@ -1098,7 +1098,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeGlobalCat(ColspEntities db, int ProductId, List<CategoryRequest> globalCategories,string email)
+        private void SaveChangeGlobalCat(ColspEntities db, int ProductId, List<CategoryRequest> globalCategories, string email)
         {
 
             var catList = db.ProductStageGlobalCatMaps.Where(w => w.ProductId.Equals(ProductId)).ToList();
@@ -1127,7 +1127,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (addNew)
                     {
-                        if(cat == null) { continue; }
+                        if (cat == null) { continue; }
                         ProductStageGlobalCatMap catEntity = new ProductStageGlobalCatMap();
                         catEntity.CategoryId = cat.CategoryId;
                         catEntity.ProductId = ProductId;
@@ -1146,7 +1146,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeRelatedProduct(ColspEntities db, string pid, List<VariantRequest> pidList,string email)
+        private void SaveChangeRelatedProduct(ColspEntities db, string pid, List<VariantRequest> pidList, string email)
         {
             var relateList = db.ProductStageRelateds.Where(w => w.Pid1 == pid).ToList();
             if (relateList != null)
@@ -1192,7 +1192,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeVideoLinks(ColspEntities db, string pid, List<VideoLinkRequest> videoRequest,string email)
+        private void SaveChangeVideoLinks(ColspEntities db, string pid, List<VideoLinkRequest> videoRequest, string email)
         {
             var vdoList = db.ProductStageVideos.Where(w => w.Pid.Equals(pid)).ToList();
             if (videoRequest != null)
@@ -1241,7 +1241,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeImg360(ColspEntities db, string pid, List<ImageRequest> img360Request,string email)
+        private void SaveChangeImg360(ColspEntities db, string pid, List<ImageRequest> img360Request, string email)
         {
             var img360List = db.ProductStageImage360.Where(w => w.Pid.Equals(pid)).ToList();
             if (img360Request != null)
@@ -1290,7 +1290,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeImg(ColspEntities db, string pid,List<ImageRequest> imgRequest,string email)
+        private void SaveChangeImg(ColspEntities db, string pid, List<ImageRequest> imgRequest, string email)
         {
             var imgList = db.ProductStageImages.Where(w => w.Pid.Equals(pid)).ToList();
             if (imgRequest != null)
@@ -1364,9 +1364,9 @@ namespace Colsp.Api.Controllers
             try
             {
                 var vdos = (from vdo in db.ProductStageVideos
-                           where vdo.Pid.Equals(pid) && vdo.Status.Equals(Constant.STATUS_ACTIVE)
-                           orderby vdo.Position ascending
-                           select vdo).ToList();
+                            where vdo.Pid.Equals(pid) && vdo.Status.Equals(Constant.STATUS_ACTIVE)
+                            orderby vdo.Position ascending
+                            select vdo).ToList();
                 if (vdos != null && vdos.Count > 0)
                 {
                     List<VideoLinkRequest> newList = new List<VideoLinkRequest>();
@@ -1423,15 +1423,15 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private List<ImageRequest> SetupImgResponse(ColspEntities db,string pid)
+        private List<ImageRequest> SetupImgResponse(ColspEntities db, string pid)
         {
             try
             {
                 var imgs = (from img in db.ProductStageImages
-                           where img.Pid.Equals(pid) && img.Status.Equals(Constant.STATUS_ACTIVE)
-                           orderby img.Position ascending
+                            where img.Pid.Equals(pid) && img.Status.Equals(Constant.STATUS_ACTIVE)
+                            orderby img.Position ascending
                             select img).ToList();
-                if(imgs != null && imgs.Count > 0)
+                if (imgs != null && imgs.Count > 0)
                 {
                     List<ImageRequest> newList = new List<ImageRequest>();
                     foreach (ProductStageImage i in imgs)
@@ -1456,10 +1456,10 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupAttributeEntity(ColspEntities db,List<AttributeRequest> attrList, int productId ,string pid, string email)
+        private void SetupAttributeEntity(ColspEntities db, List<AttributeRequest> attrList, int productId, string pid, string email)
         {
             int index = 0;
-            foreach(AttributeRequest attr in attrList)
+            foreach (AttributeRequest attr in attrList)
             {
                 ProductStageAttribute attriEntity = new ProductStageAttribute();
                 attriEntity.Position = index++;
@@ -1474,12 +1474,12 @@ namespace Colsp.Api.Controllers
                 attriEntity.UpdatedDt = DateTime.Now;
                 db.ProductStageAttributes.Add(attriEntity);
             }
-           
+
         }
 
-        private bool SetupImgEntity(ColspEntities db,List<ImageRequest> imgs,string pid,string email)
+        private bool SetupImgEntity(ColspEntities db, List<ImageRequest> imgs, string pid, string email)
         {
-            if(imgs == null) { return false; }
+            if (imgs == null) { return false; }
             int index = 0;
             bool featureImg = true;
             foreach (ImageRequest imgRq in imgs)
@@ -1524,9 +1524,9 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupVdoEntity(ColspEntities db,List<VideoLinkRequest> vdos,string pid, string email)
+        private void SetupVdoEntity(ColspEntities db, List<VideoLinkRequest> vdos, string pid, string email)
         {
-            if(vdos == null) { return; }
+            if (vdos == null) { return; }
             int index = 0;
             foreach (VideoLinkRequest vdoRq in vdos)
             {
