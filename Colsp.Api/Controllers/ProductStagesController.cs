@@ -1210,6 +1210,7 @@ namespace Colsp.Api.Controllers
                         ProductStageVideo current = vdoList.Where(w => w.VideoId == vdo.VideoId).SingleOrDefault();
                         if (current != null)
                         {
+                            current.Position = index++;
                             current.VideoUrlEn = vdo.Url;
                             current.UpdatedBy = email;
                             current.UpdatedDt = DateTime.Now;
@@ -1259,6 +1260,7 @@ namespace Colsp.Api.Controllers
                         ProductStageImage360 current = img360List.Where(w => w.ImageId == img.ImageId).SingleOrDefault();
                         if (current != null)
                         {
+                            current.Position = index++;
                             current.UpdatedBy = email;
                             current.UpdatedDt = DateTime.Now;
                             img360List.Remove(current);
@@ -1311,6 +1313,8 @@ namespace Colsp.Api.Controllers
                         ProductStageImage current = imgList.Where(w => w.ImageId == img.ImageId).SingleOrDefault();
                         if (current != null)
                         {
+                            current.FeatureFlag = featureImg;
+                            current.Position = index++;
                             current.UpdatedBy = email;
                             current.UpdatedDt = DateTime.Now;
                             imgList.Remove(current);
