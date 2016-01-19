@@ -44,7 +44,6 @@ namespace Colsp.Api.Controllers
                               p.SellerId,
                               ImageUrl = p.FeatureImgUrl,
                               p.UpdatedDt,
-                              p.CreatedDt,
                           }).Take(100);
                 if(request == null)
                 {
