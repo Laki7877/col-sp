@@ -1197,10 +1197,10 @@ namespace Colsp.Api.Controllers
             var vdoList = db.ProductStageVideos.Where(w => w.Pid.Equals(pid)).ToList();
             if (videoRequest != null)
             {
+                int index = 0;
+                bool addNew = false;
                 foreach (VideoLinkRequest vdo in videoRequest)
                 {
-                    int index = 0;
-                    bool addNew = false;
                     if (vdoList == null || vdoList.Count == 0)
                     {
                         addNew = true;
@@ -1246,10 +1246,10 @@ namespace Colsp.Api.Controllers
             var img360List = db.ProductStageImage360.Where(w => w.Pid.Equals(pid)).ToList();
             if (img360Request != null)
             {
+                int index = 0;
+                bool addNew = false;
                 foreach (ImageRequest img in img360Request)
                 {
-                    int index = 0;
-                    bool addNew = false;
                     if (img360List == null || img360List.Count == 0)
                     {
                         addNew = true;
@@ -1298,10 +1298,10 @@ namespace Colsp.Api.Controllers
             string featureImgUrl = null;
             if (imgRequest != null && imgRequest.Count > 0)
             {
+                int index = 0;
+                bool addNew = false;
                 foreach (ImageRequest img in imgRequest)
                 {
-                    int index = 0;
-                    bool addNew = false;
                     if (imgList == null || imgList.Count == 0)
                     {
                         addNew = true;
