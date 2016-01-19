@@ -733,7 +733,8 @@ namespace Colsp.Api.Controllers
                     #endregion
                     SaveChangeInventory(db, stage.Pid, request.MasterVariant, this.User.Email());
                     SaveChangeInventoryHistory(db, stage.Pid, request.MasterVariant, this.User.Email());
-                    SaveChangeImg(db, stage.Pid, request.MasterVariant.Images, this.User.Email());
+                    stage.FeatureImgUrl = SaveChangeImg(db, stage.Pid, request.MasterVariant.Images, this.User.Email());
+                    stage.ImageFlag = stage.FeatureImgUrl == null ? false : true;
                     SaveChangeImg360(db, stage.Pid, request.MasterVariant.Images360, this.User.Email());
                     SaveChangeVideoLinks(db, stage.Pid, request.MasterVariant.VideoLinks, this.User.Email());
                     SaveChangeRelatedProduct(db, stage.Pid, request.RelatedProducts, this.User.Email());
@@ -1289,10 +1290,13 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeImg(ColspEntities db, string pid, List<ImageRequest> imgRequest, string email)
+        private string SaveChangeImg(ColspEntities db, string pid, List<ImageRequest> imgRequest, string email)
         {
+            
             var imgList = db.ProductStageImages.Where(w => w.Pid.Equals(pid)).ToList();
-            if (imgRequest != null)
+            bool featureImg = true;
+            string featureImgUrl = null;
+            if (imgRequest != null && imgRequest.Count > 0)
             {
                 foreach (ImageRequest img in imgRequest)
                 {
@@ -1320,6 +1324,7 @@ namespace Colsp.Api.Controllers
                     {
                         ProductStageImage imgEntity = new ProductStageImage();
                         imgEntity.Pid = pid;
+                        imgEntity.FeatureFlag = featureImg;
                         imgEntity.Position = index++;
                         imgEntity.Path = img.tmpPath;
                         imgEntity.ImageUrlEn = img.url;
@@ -1330,12 +1335,15 @@ namespace Colsp.Api.Controllers
                         imgEntity.UpdatedDt = DateTime.Now;
                         db.ProductStageImages.Add(imgEntity);
                     }
+                    featureImg = false;
                 }
+                featureImgUrl = imgRequest[0].url;
             }
             if (imgList != null && imgList.Count > 0)
             {
                 db.ProductStageImages.RemoveRange(imgList);
             }
+            return featureImgUrl;
         }
 
         private List<AttributeRequest> SetupAttributeResponse(List<ProductStageAttribute> attriList)
