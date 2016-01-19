@@ -75,11 +75,11 @@ namespace Colsp.Api.Controllers
                 if (!string.IsNullOrEmpty(request._filter))
                 {
                     //All VisibleNot Visible
-                    if (Constant.STATUS_VISIBLE.Equals(request._filter))
+                    if (string.Equals("Visible", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         attrSet = attrSet.Where(a => a.Status.Equals(Constant.STATUS_VISIBLE));
                     }
-                    else if(Constant.STATUS_NOT_VISIBLE.Equals(request._filter))
+                    else if(string.Equals("NotVisible", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         attrSet = attrSet.Where(a => a.Status.Equals(Constant.STATUS_NOT_VISIBLE));
                     }

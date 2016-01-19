@@ -12,8 +12,6 @@ using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 
-
-
 namespace Colsp.Api.Controllers
 {
     public class AttributesController : ApiController
@@ -56,19 +54,19 @@ namespace Colsp.Api.Controllers
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
-                    if ("Dropdown".Equals(request._filter))
+                    if (string.Equals("Dropdown", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         attrList = attrList.Where(a => a.DataType.Equals("LT"));
                     }
-                    else if ("Text".Equals(request._filter))
+                    else if (string.Equals("FreeText", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         attrList = attrList.Where(a => a.DataType.Equals("ST"));
                     }
-                    else if ("Variation".Equals(request._filter))
+                    else if (string.Equals("HasVariation", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         attrList = attrList.Where(a => a.VariantStatus==true);
                     }
-                    else if ("No Variation".Equals(request._filter))
+                    else if (string.Equals("NoVariation", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         attrList = attrList.Where(a => a.VariantStatus == false);
                     }
