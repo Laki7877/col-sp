@@ -19,6 +19,7 @@ namespace Colsp.Api.Helper
             {
                 string pid = CurrentPid.CurrentKey;
                 pid = pid.ToUpper();
+                pid = Generater(pid);
                 while (pid.Contains("0") 
                     || pid.Contains("D") 
                     || pid.Contains("E") 
@@ -31,23 +32,7 @@ namespace Colsp.Api.Helper
                     || pid.Contains("O") 
                     || pid.Contains("S"))
                 {
-                    var sb = new System.Text.StringBuilder(pid.Length);
-                    sb.Length = pid.Length;
-
-                    int carry = 1;
-                    for (int i = pid.Length - 1; i >= 0; i--)
-                    {
-                        int x = v(pid[i]) + carry;
-                        carry = x / 36;
-                        sb[i] = ch(x % 36);
-                    }
-                    if (carry > 0)
-                    {
-                        pid = ch(carry) + sb.ToString();
-                    }
-                    else {
-                        pid = sb.ToString();
-                    }
+                    pid = Generater(pid);
                 }
                 CurrentPid.CurrentKey = pid;
                 return string.Concat(CurrentPid.CategoryAbbreviation, pid);
@@ -58,6 +43,28 @@ namespace Colsp.Api.Helper
             }
         }
 
+        private static string Generater(string input)
+        {
+            var sb = new System.Text.StringBuilder(input.Length);
+            sb.Length = input.Length;
+
+            int carry = 1;
+            for (int i = input.Length - 1; i >= 0; i--)
+            {
+                int x = v(input[i]) + carry;
+                carry = x / 36;
+                sb[i] = ch(x % 36);
+            }
+            if (carry > 0)
+            {
+                input = ch(carry) + sb.ToString();
+            }
+            else {
+                input = sb.ToString();
+            }
+            return input;
+        }
+
         public static string NextCatAbbre(ColspEntities db)
         {
             var abbr = db.GlobalCategoryAbbrevations.Where(w => w.Active == true).SingleOrDefault();
@@ -65,7 +72,7 @@ namespace Colsp.Api.Helper
             {
                 string abbrString = abbr.Abbrevation;
                 abbrString = abbrString.ToUpper();
-
+                abbrString = Generater(abbrString);
                 while (abbrString.Contains("0")
                     || abbrString.Contains("D")
                     || abbrString.Contains("E")
@@ -78,23 +85,7 @@ namespace Colsp.Api.Helper
                     || abbrString.Contains("O")
                     || abbrString.Contains("S"))
                 {
-                    var sb = new System.Text.StringBuilder(abbrString.Length);
-                    sb.Length = abbrString.Length;
-
-                    int carry = 1;
-                    for (int i = abbrString.Length - 1; i >= 0; i--)
-                    {
-                        int x = v(abbrString[i]) + carry;
-                        carry = x / 36;
-                        sb[i] = ch(x % 36);
-                    }
-                    if (carry > 0)
-                    {
-                        abbrString = ch(carry) + sb.ToString();
-                    }
-                    else {
-                        abbrString = sb.ToString();
-                    }
+                    abbrString = Generater(abbrString);
                 }
                 abbr.Abbrevation = abbrString;
                 return abbr.Abbrevation;
