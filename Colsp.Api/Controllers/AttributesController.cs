@@ -39,9 +39,8 @@ namespace Colsp.Api.Controllers
                                    attr.VariantStatus,
                                    attr.DataType,
                                    attr.Status,
-                                   attr.CreatedDt,
                                    attr.UpdatedDt,
-                                   AttributeSetCount = attr.AttributeSetMaps.AsEnumerable().Count()
+                                   AttributeSetCount = attr.AttributeSetMaps.Count()
                                };
 
                 if (request == null)
@@ -132,6 +131,8 @@ namespace Colsp.Api.Controllers
                 attribute.AllowHtmlFlag = request.AllowHtmlFlag;
                 attribute.CreatedBy = this.User.Email();
                 attribute.CreatedDt = DateTime.Now;
+                attribute.UpdatedBy = this.User.Email();
+                attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
                 #region Validation
                 if (string.IsNullOrEmpty(attribute.AttributeNameEn))
@@ -157,6 +158,8 @@ namespace Colsp.Api.Controllers
                         value.Status = Constant.STATUS_ACTIVE;
                         value.CreatedBy = this.User.Email();
                         value.CreatedDt = DateTime.Now;
+                        value.UpdatedBy = this.User.Email();
+                        value.UpdatedDt = DateTime.Now;
                         newList.Add(db.AttributeValues.Add(value));
                     }
                     db.SaveChanges();
@@ -169,6 +172,8 @@ namespace Colsp.Api.Controllers
                             map.AttributeValueId = val.AttributeValueId;
                             map.CreatedBy = this.User.Email();
                             map.CreatedDt = DateTime.Now;
+                            map.UpdatedBy = this.User.Email();
+                            map.UpdatedDt = DateTime.Now;
                             db.AttributeValueMaps.Add(map);
                         }
                         db.SaveChanges();
@@ -196,7 +201,7 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Attributes/{attributeId}")]
         [HttpPut]
-        public HttpResponseMessage EditAttribute([FromUri] int attributeId, AttributeRequest request)
+        public HttpResponseMessage SaveChangeAttribute([FromUri] int attributeId, AttributeRequest request)
         {
 
             Entity.Models.Attribute attribute = null;
@@ -242,8 +247,8 @@ namespace Colsp.Api.Controllers
                 attribute.VariantDataType = request.VariantDataType;
                 attribute.VariantStatus = request.VariantStatus;
                 attribute.AllowHtmlFlag = request.AllowHtmlFlag;
-                attribute.CreatedBy = this.User.Email();
-                attribute.CreatedDt = DateTime.Now;
+                attribute.UpdatedBy = this.User.Email();
+                attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
                
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
@@ -264,6 +269,8 @@ namespace Colsp.Api.Controllers
                         value.Status = Constant.STATUS_ACTIVE;
                         value.CreatedBy = this.User.Email();
                         value.CreatedDt = DateTime.Now;
+                        value.UpdatedBy = this.User.Email();
+                        value.UpdatedDt = DateTime.Now;
                         newList.Add(db.AttributeValues.Add(value));
                     }
                 }
@@ -277,6 +284,8 @@ namespace Colsp.Api.Controllers
                         map.AttributeValueId = val.AttributeValueId;
                         map.CreatedBy = this.User.Email();
                         map.CreatedDt = DateTime.Now;
+                        map.UpdatedBy = this.User.Email();
+                        map.UpdatedDt = DateTime.Now;
                         db.AttributeValueMaps.Add(map);
                     }
                     db.SaveChanges();
