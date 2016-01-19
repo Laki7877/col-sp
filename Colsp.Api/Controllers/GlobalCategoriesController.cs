@@ -25,7 +25,8 @@ namespace Colsp.Api.Controllers
             try
             {
                 var globalCat = (from cat in db.GlobalCategories
-                                select new
+                                 orderby cat.Lft ascending
+                                 select new
                                 {
                                     cat.CategoryId,
                                     cat.NameEn,
