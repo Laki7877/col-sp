@@ -44,6 +44,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> Stock { get; set; }
         public Nullable<int> SafetyStock { get; set; }
         public Nullable<int> ShippingId { get; set; }
+        public string FeatureImgUrl { get; set; }
         public string Tag { get; set; }
         public Nullable<decimal> PrepareDay { get; set; }
         public Nullable<decimal> Length { get; set; }
