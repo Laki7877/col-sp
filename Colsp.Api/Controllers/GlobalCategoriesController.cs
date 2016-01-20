@@ -191,6 +191,8 @@ namespace Colsp.Api.Controllers
                                         CategoryAttributeSetMap current = tmpList.Where(w => w.AttributeSetId == attrMap.AttributeSetId).SingleOrDefault();
                                         if (current != null)
                                         {
+                                            current.UpdatedBy = this.User.Email();
+                                            current.UpdatedDt = DateTime.Now;
                                             tmpList.Remove(current);
                                         }
                                         else
@@ -205,6 +207,8 @@ namespace Colsp.Api.Controllers
                                         map.CategoryId = catEn.Key.CategoryId;
                                         map.CreatedBy = this.User.Email();
                                         map.CreatedDt = DateTime.Now;
+                                        map.UpdatedBy = this.User.Email();
+                                        map.UpdatedDt = DateTime.Now;
                                         db.CategoryAttributeSetMaps.Add(map);
                                     }
                                 }
@@ -230,7 +234,9 @@ namespace Colsp.Api.Controllers
                         catEn.Status = catRq.Status;
                         catEn.CreatedBy = this.User.Email();
                         catEn.CreatedDt = DateTime.Now;
-                        if(catRq.AttributeSets != null && catRq.AttributeSets.Count > 0)
+                        catEn.UpdatedBy = this.User.Email();
+                        catEn.UpdatedDt = DateTime.Now;
+                        if (catRq.AttributeSets != null && catRq.AttributeSets.Count > 0)
                         {
                             foreach (AttributeSetRequest mapRq in catRq.AttributeSets)
                             {
