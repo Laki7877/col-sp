@@ -151,6 +151,7 @@
           <Property Name="ProductCount" Type="int" />
           <Property Name="Lft" Type="int" />
           <Property Name="Rgt" Type="int" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -2406,6 +2407,7 @@
           <Property Name="ProductCount" Type="Int32" />
           <Property Name="Lft" Type="Int32" />
           <Property Name="Rgt" Type="Int32" />
+          <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -4149,6 +4151,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Rgt" ColumnName="Rgt" />
                 <ScalarProperty Name="Lft" ColumnName="Lft" />
                 <ScalarProperty Name="ProductCount" ColumnName="ProductCount" />
