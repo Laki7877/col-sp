@@ -170,6 +170,7 @@ namespace Colsp.Api.Controllers
                             catEn.Key.NameTh = catRq.NameTh;
                             catEn.Key.UrlKeyEn = catRq.UrlKeyEn;
                             catEn.Key.Commission = catRq.Commission;
+                            catEn.Key.Visibility = catRq.Visibility;
                             catEn.Key.Status = catRq.Status;
                             catEn.Key.UpdatedBy = this.User.Email();
                             catEn.Key.UpdatedDt = DateTime.Now;
@@ -225,6 +226,7 @@ namespace Colsp.Api.Controllers
                         catEn.NameTh = catRq.NameTh;
                         catEn.Commission = catRq.Commission;
                         catEn.UrlKeyEn = catRq.UrlKeyEn;
+                        catEn.Visibility = catRq.Visibility;
                         catEn.Status = catRq.Status;
                         catEn.CreatedBy = this.User.Email();
                         catEn.CreatedDt = DateTime.Now;
