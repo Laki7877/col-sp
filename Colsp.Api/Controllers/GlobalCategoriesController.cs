@@ -260,7 +260,7 @@ namespace Colsp.Api.Controllers
                         GlobalCategoryPID catPid = new GlobalCategoryPID();
                         catPid.CategoryId = cat.CategoryId;
                         catPid.CategoryAbbreviation = cat.CategoryAbbreviation;
-                        catPid.CurrentKey = "00000";
+                        catPid.CurrentKey = "11111";
                         db.GlobalCategoryPIDs.Add(catPid);
                     }
                     foreach(Tuple<GlobalCategory, int> i in insetMap)

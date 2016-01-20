@@ -93,7 +93,7 @@ namespace Colsp.Api.Helper
             else
             {
                 abbr = new GlobalCategoryAbbrevation();
-                abbr.Abbrevation = "01";
+                abbr.Abbrevation = "11";
                 abbr.Active = true;
                 db.GlobalCategoryAbbrevations.Add(abbr);
                 return abbr.Abbrevation;
