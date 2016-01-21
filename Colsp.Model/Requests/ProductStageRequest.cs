@@ -58,6 +58,7 @@ namespace Colsp.Model.Requests
         public bool? OnlineFlag { get; set; }
         public bool? Visibility { get; set; }
         public int? VariantCount { get; set; }
+        public ControlFlag ControlFlags { get; set; }
 
         public ProductStageRequest()
         {
@@ -70,6 +71,7 @@ namespace Colsp.Model.Requests
             SEO = new SEORequest();
             Brand = new BrandRequest();
             RelatedProducts = new List<VariantRequest>();
+            ControlFlags = new ControlFlag();
         }
 
     }
@@ -135,5 +137,12 @@ namespace Colsp.Model.Requests
         public int? VideoId { get; set; }
     }
     
-    
+    public class ControlFlag
+    {
+        public bool? Flag1 { get; set; }
+        public bool? Flag2 { get; set; }
+        public bool? Flag3 { get; set; }
+    }
+
+
 }

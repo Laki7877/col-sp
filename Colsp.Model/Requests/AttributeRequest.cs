@@ -33,6 +33,7 @@ namespace Colsp.Model.Requests
         public List<AttributeValueRequest> AttributeValues { get; set; }
         public string ValueEn { get; set; }
         public string SearchText { get; set; }
+        public int? ProductCount { get; set; }
 
         public AttributeRequest()
         {

@@ -109,6 +109,30 @@ namespace Colsp.Api.Controllers
             List<AttributeValue> newList = null;
             try
             {
+
+                #region Validation
+                if (string.IsNullOrEmpty(request.AttributeNameEn))
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "AttributeNameEn is required");
+                }
+                if (string.IsNullOrEmpty(request.AttributeNameTh))
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "AttributeNameTh is required");
+                }
+                if (!string.IsNullOrEmpty(request.DataType))
+                {
+                    if (request.DataType.Equals("LT")
+                        && (request.AttributeValues == null || request.AttributeValues.Count == 0))
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "DataType is required");
+                    }
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "DataType Dropdown should have at least 1 value");
+                }
+                #endregion
+
                 attribute = new Entity.Models.Attribute();
                 attribute.AttributeNameEn = request.AttributeNameEn;
                 attribute.AttributeNameTh = request.AttributeNameTh;
@@ -132,16 +156,7 @@ namespace Colsp.Api.Controllers
                 attribute.UpdatedBy = this.User.Email();
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
-                #region Validation
-                if (string.IsNullOrEmpty(attribute.AttributeNameEn))
-                { 
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeNameEn is required");
-                }
-                if (string.IsNullOrEmpty(attribute.AttributeNameTh))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeNameTh is required");
-                }
-                #endregion
+               
 
                 attribute = db.Attributes.Add(attribute);
                 db.SaveChanges();
@@ -208,25 +223,33 @@ namespace Colsp.Api.Controllers
             {
 
                 #region Validation
-                if (request.AttributeId.Equals(0))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Attribute is invalid");
-                }
                 if (string.IsNullOrEmpty(request.AttributeNameEn))
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeNameEn is required");
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "AttributeNameEn is required");
                 }
                 if (string.IsNullOrEmpty(request.AttributeNameTh))
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeNameTh is required");
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "AttributeNameTh is required");
                 }
+                if (!string.IsNullOrEmpty(request.DataType))
+                {
+                    if (request.DataType.Equals("LT")
+                        && (request.AttributeValues == null || request.AttributeValues.Count == 0))
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "DataType is required");
+                    }
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "DataType Dropdown should have at least 1 value");
+                }
+                #endregion
 
-                attribute = db.Attributes.Where(w=>w.AttributeId.Equals(attributeId)).Include("AttributeValueMaps.AttributeValue").SingleOrDefault();
+                attribute = db.Attributes.Where(w=>w.AttributeId.Equals(attributeId)).Include(i=>i.AttributeValueMaps.Select(s=>s.AttributeValue)).SingleOrDefault();
                 if(attribute == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
-                #endregion
 
                 attribute.AttributeNameEn = request.AttributeNameEn;
                 attribute.AttributeNameTh = request.AttributeNameTh;
@@ -306,9 +329,11 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
                 }
-                var setList = db.Attributes.Include(i=>i.ProductStageAttributes)
+                var setList = db.Attributes
+                    .Include(i=>i.ProductStageAttributes)
                     .Include(i=>i.ProductStageVariants)
-                    .Include(i=>i.ProductStageVariants1).ToList();
+                    .Include(i=>i.ProductStageVariants1)
+                    .Include(i=>i.AttributeValueMaps).ToList();
                 foreach (AttributeRequest setRq in request)
                 {
                     var current = setList.Where(w => w.AttributeId.Equals(setRq.AttributeId)).SingleOrDefault();
@@ -321,6 +346,10 @@ namespace Colsp.Api.Controllers
                         || (current.ProductStageVariants1!= null && current.ProductStageVariants1.Count > 0))
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,"Attribute has product or variant associate");
+                    }
+                    if (current.AttributeValueMaps != null && current.AttributeValueMaps.Count > 0)
+                    {
+
                     }
                     current.Status = Constant.STATUS_REMOVE;
                 }

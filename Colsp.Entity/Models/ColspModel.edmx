@@ -42,6 +42,7 @@
           <Property Name="AttributeSetNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeSetDescriptionEn" Type="nvarchar" MaxLength="500" />
           <Property Name="AttributeSetDescriptionTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -225,6 +226,7 @@
           <Property Name="ShopId" Type="int" />
           <Property Name="Lft" Type="int" />
           <Property Name="Rgt" Type="int" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -240,22 +242,25 @@
           <Property Name="LocalCatId" Type="int" />
           <Property Name="ShopId" Type="int" />
           <Property Name="SellerId" Type="int" />
-          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="AttributeSetId" Type="int" />
+          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" />
+          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" />
           <Property Name="BrandId" Type="int" />
-          <Property Name="Uid" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" />
-          <Property Name="Sku" Type="nvarchar" MaxLength="50" />
-          <Property Name="Upc" Type="nvarchar" MaxLength="50" />
+          <Property Name="Pid" Type="char" MaxLength="10" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="300" />
+          <Property Name="Upc" Type="nvarchar" MaxLength="300" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="2000" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="2000" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
           <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
+          <Property Name="FeatureImgUrl" Type="nvarchar" MaxLength="2083" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="1000" />
+          <Property Name="PrepareDay" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" />
@@ -276,9 +281,10 @@
           <Property Name="ControlFlag2" Type="bit" />
           <Property Name="ControlFlag3" Type="bit" />
           <Property Name="Remark" Type="nvarchar" MaxLength="500" />
-          <Property Name="InfoFlag" Type="char" MaxLength="1" />
-          <Property Name="ImageFlag" Type="char" MaxLength="1" />
-          <Property Name="OnlineFlag" Type="char" MaxLength="1" />
+          <Property Name="InfoFlag" Type="bit" />
+          <Property Name="ImageFlag" Type="bit" />
+          <Property Name="OnlineFlag" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -322,21 +328,25 @@
           <Property Name="LocalCatId" Type="int" />
           <Property Name="ShopId" Type="int" />
           <Property Name="SellerId" Type="int" />
-          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="AttributeSetId" Type="int" />
+          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" />
+          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" />
           <Property Name="BrandId" Type="int" />
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" />
-          <Property Name="Sku" Type="nvarchar" MaxLength="50" />
-          <Property Name="Upc" Type="nvarchar" MaxLength="50" />
+          <Property Name="Pid" Type="char" MaxLength="10" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="300" />
+          <Property Name="Upc" Type="nvarchar" MaxLength="300" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="2000" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="2000" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
           <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
+          <Property Name="FeatureImgUrl" Type="nvarchar" MaxLength="2083" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="1000" />
+          <Property Name="PrepareDay" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" />
@@ -357,9 +367,10 @@
           <Property Name="ControlFlag2" Type="bit" />
           <Property Name="ControlFlag3" Type="bit" />
           <Property Name="Remark" Type="nvarchar" MaxLength="500" />
-          <Property Name="InfoFlag" Type="char" MaxLength="1" />
-          <Property Name="ImageFlag" Type="char" MaxLength="1" />
-          <Property Name="OnlineFlag" Type="char" MaxLength="1" />
+          <Property Name="InfoFlag" Type="bit" />
+          <Property Name="ImageFlag" Type="bit" />
+          <Property Name="OnlineFlag" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -699,6 +710,8 @@
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="SellerId" Type="int" />
           <Property Name="Sku" Type="nvarchar" MaxLength="50" />
           <Property Name="Upc" Type="nvarchar" MaxLength="50" />
           <Property Name="OriginalPrice" Type="money" />
@@ -943,6 +956,42 @@
             </Principal>
             <Dependent Role="AttributeSetTagMap">
               <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GlobalCategoryPID_GlobalCategory">
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+          <End Role="GlobalCategoryPID" Type="Self.GlobalCategoryPID" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="GlobalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="GlobalCategoryPID">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_AttributeSet">
+          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="0..1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttributeSet">
+              <PropertyRef Name="AttributeSetId" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="AttributeSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductHistory_AttributeSet">
+          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="0..1" />
+          <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttributeSet">
+              <PropertyRef Name="AttributeSetId" />
+            </Principal>
+            <Dependent Role="ProductHistory">
+              <PropertyRef Name="AttributeSetId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1530,6 +1579,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FKProductStageVariantShop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageVariant">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKProductStageVariantUser">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="ProductStageVariant">
+              <PropertyRef Name="SellerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKProductUser">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
@@ -1707,6 +1780,18 @@
           <AssociationSet Name="FK_AttributeSetTagMap_Tag" Association="Self.FK_AttributeSetTagMap_Tag">
             <End Role="Tag" EntitySet="Tag" />
             <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GlobalCategoryPID_GlobalCategory" Association="Self.FK_GlobalCategoryPID_GlobalCategory">
+            <End Role="GlobalCategory" EntitySet="GlobalCategory" />
+            <End Role="GlobalCategoryPID" EntitySet="GlobalCategoryPID" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_AttributeSet" Association="Self.FK_Product_AttributeSet">
+            <End Role="AttributeSet" EntitySet="AttributeSet" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductHistory_AttributeSet" Association="Self.FK_ProductHistory_AttributeSet">
+            <End Role="AttributeSet" EntitySet="AttributeSet" />
+            <End Role="ProductHistory" EntitySet="ProductHistory" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductStage_AttributeSet" Association="Self.FK_ProductStage_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
@@ -1900,6 +1985,14 @@
             <End Role="ProductStage" EntitySet="ProductStage" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
           </AssociationSet>
+          <AssociationSet Name="FKProductStageVariantShop" Association="Self.FKProductStageVariantShop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
+          </AssociationSet>
+          <AssociationSet Name="FKProductStageVariantUser" Association="Self.FKProductStageVariantUser">
+            <End Role="User" EntitySet="User" />
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
+          </AssociationSet>
           <AssociationSet Name="FKProductUser" Association="Self.FKProductUser">
             <End Role="User" EntitySet="User" />
             <End Role="Product" EntitySet="Product" />
@@ -2035,6 +2128,14 @@
             <End Role="AttributeSet" EntitySet="AttributeSets" />
             <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMaps" />
           </AssociationSet>
+          <AssociationSet Name="FK_Product_AttributeSet" Association="ColspModel.FK_Product_AttributeSet">
+            <End Role="AttributeSet" EntitySet="AttributeSets" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductHistory_AttributeSet" Association="ColspModel.FK_ProductHistory_AttributeSet">
+            <End Role="AttributeSet" EntitySet="AttributeSets" />
+            <End Role="ProductHistory" EntitySet="ProductHistories" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProductStage_AttributeSet" Association="ColspModel.FK_ProductStage_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSets" />
             <End Role="ProductStage" EntitySet="ProductStages" />
@@ -2070,6 +2171,10 @@
           <AssociationSet Name="FKCategoryAttributeSetMapCategory" Association="ColspModel.FKCategoryAttributeSetMapCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="CategoryAttributeSetMap" EntitySet="CategoryAttributeSetMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GlobalCategoryPID_GlobalCategory" Association="ColspModel.FK_GlobalCategoryPID_GlobalCategory">
+            <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+            <End Role="GlobalCategoryPID" EntitySet="GlobalCategoryPIDs" />
           </AssociationSet>
           <AssociationSet Name="FKProductGlobalCat" Association="ColspModel.FKProductGlobalCat">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
@@ -2199,6 +2304,14 @@
             <End Role="ProductStage" EntitySet="ProductStages" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
           </AssociationSet>
+          <AssociationSet Name="FKProductStageVariantShop" Association="ColspModel.FKProductStageVariantShop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
+          </AssociationSet>
+          <AssociationSet Name="FKProductStageVariantUser" Association="ColspModel.FKProductStageVariantUser">
+            <End Role="User" EntitySet="Users" />
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="ColspModel.FK_ShopUerGroupMap_Shop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMaps" />
@@ -2282,12 +2395,15 @@
           <Property Name="AttributeSetNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeSetDescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="AttributeSetDescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSetTagMaps" Relationship="ColspModel.FK_AttributeSetTagMap_AttributeSet" FromRole="AttributeSet" ToRole="AttributeSetTagMap" />
+          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_AttributeSet" FromRole="AttributeSet" ToRole="Product" />
+          <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FK_ProductHistory_AttributeSet" FromRole="AttributeSet" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FK_ProductStage_AttributeSet" FromRole="AttributeSet" ToRole="ProductStage" />
           <NavigationProperty Name="AttributeSetMaps" Relationship="ColspModel.FKAttributeSetMapAttributeSet" FromRole="AttributeSet" ToRole="AttributeSetMap" />
           <NavigationProperty Name="CategoryAttributeSetMaps" Relationship="ColspModel.FKCategoryAttributeSetMapAttributeSet" FromRole="AttributeSet" ToRole="CategoryAttributeSetMap" />
@@ -2414,6 +2530,7 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CategoryAttributeSetMaps" Relationship="ColspModel.FKCategoryAttributeSetMapCategory" FromRole="GlobalCategory" ToRole="CategoryAttributeSetMap" />
+          <NavigationProperty Name="GlobalCategoryPID" Relationship="ColspModel.FK_GlobalCategoryPID_GlobalCategory" FromRole="GlobalCategory" ToRole="GlobalCategoryPID" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductGlobalCat" FromRole="GlobalCategory" ToRole="Product" />
           <NavigationProperty Name="ProductGlobalCatMaps" Relationship="ColspModel.FKProductGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductGlobalCatMap" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryGlobalCat" FromRole="GlobalCategory" ToRole="ProductHistory" />
@@ -2436,6 +2553,7 @@
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="CategoryAbbreviation" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CurrentKey" Type="String" Nullable="false" MaxLength="5" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_GlobalCategoryPID_GlobalCategory" FromRole="GlobalCategoryPID" ToRole="GlobalCategory" />
         </EntityType>
         <EntityType Name="Inventory">
           <Key>
@@ -2488,6 +2606,7 @@
           <Property Name="ShopId" Type="Int32" />
           <Property Name="Lft" Type="Int32" />
           <Property Name="Rgt" Type="Int32" />
+          <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -2510,22 +2629,25 @@
           <Property Name="LocalCatId" Type="Int32" />
           <Property Name="ShopId" Type="Int32" />
           <Property Name="SellerId" Type="Int32" />
-          <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSetId" Type="Int32" />
+          <Property Name="ProductNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="BrandId" Type="Int32" />
-          <Property Name="Uid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Sku" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Upc" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
           <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
+          <Property Name="FeatureImgUrl" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+          <Property Name="Tag" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="PrepareDay" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
@@ -2546,14 +2668,16 @@
           <Property Name="ControlFlag2" Type="Boolean" />
           <Property Name="ControlFlag3" Type="Boolean" />
           <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="InfoFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="ImageFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="OnlineFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="InfoFlag" Type="Boolean" />
+          <Property Name="ImageFlag" Type="Boolean" />
+          <Property Name="OnlineFlag" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_Product_AttributeSet" FromRole="Product" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FKProductBrand" FromRole="Product" ToRole="Brand" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKProductGlobalCat" FromRole="Product" ToRole="GlobalCategory" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductLocalCat" FromRole="Product" ToRole="LocalCategory" />
@@ -2604,21 +2728,25 @@
           <Property Name="LocalCatId" Type="Int32" />
           <Property Name="ShopId" Type="Int32" />
           <Property Name="SellerId" Type="Int32" />
-          <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSetId" Type="Int32" />
+          <Property Name="ProductNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="BrandId" Type="Int32" />
-          <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Sku" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Upc" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
           <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
+          <Property Name="FeatureImgUrl" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+          <Property Name="Tag" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="PrepareDay" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
@@ -2639,14 +2767,16 @@
           <Property Name="ControlFlag2" Type="Boolean" />
           <Property Name="ControlFlag3" Type="Boolean" />
           <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="InfoFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="ImageFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="OnlineFlag" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="InfoFlag" Type="Boolean" />
+          <Property Name="ImageFlag" Type="Boolean" />
+          <Property Name="OnlineFlag" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_ProductHistory_AttributeSet" FromRole="ProductHistory" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FKProductHistoryBrand" FromRole="ProductHistory" ToRole="Brand" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKProductHistoryGlobalCat" FromRole="ProductHistory" ToRole="GlobalCategory" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductHistoryLocalCat" FromRole="ProductHistory" ToRole="LocalCategory" />
@@ -3016,6 +3146,8 @@
           <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="SellerId" Type="Int32" />
           <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
@@ -3044,6 +3176,8 @@
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductStageVariantAttribute1" FromRole="ProductStageVariant" ToRole="Attribute" />
           <NavigationProperty Name="Attribute1" Relationship="ColspModel.FKProductStageVariantAttribute2" FromRole="ProductStageVariant" ToRole="Attribute" />
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FKProductStageVariantProduct" FromRole="ProductStageVariant" ToRole="ProductStage" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FKProductStageVariantShop" FromRole="ProductStageVariant" ToRole="Shop" />
+          <NavigationProperty Name="User" Relationship="ColspModel.FKProductStageVariantUser" FromRole="ProductStageVariant" ToRole="User" />
         </EntityType>
         <EntityType Name="ProductStageVideo">
           <Key>
@@ -3148,6 +3282,7 @@
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
+          <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantShop" FromRole="Shop" ToRole="ProductStageVariant" />
           <NavigationProperty Name="ShopUserGroupMaps" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="Shop" ToRole="ShopUserGroupMap" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKShopUser" FromRole="Shop" ToRole="User" />
           <NavigationProperty Name="UserShops" Relationship="ColspModel.FKUserShopShop" FromRole="Shop" ToRole="UserShop" />
@@ -3204,6 +3339,7 @@
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductUser" FromRole="User" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryUser" FromRole="User" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageUser" FromRole="User" ToRole="ProductStage" />
+          <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantUser" FromRole="User" ToRole="ProductStageVariant" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FKShopUser" FromRole="User" ToRole="Shop" />
           <NavigationProperty Name="UserGroupMaps" Relationship="ColspModel.FKUserGroupMapUser" FromRole="User" ToRole="UserGroupMap" />
           <NavigationProperty Name="UserShops" Relationship="ColspModel.FKUserShopUser" FromRole="User" ToRole="UserShop" />
@@ -3393,6 +3529,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Product_AttributeSet">
+          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="0..1" />
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttributeSet">
+              <PropertyRef Name="AttributeSetId" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="AttributeSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductHistory_AttributeSet">
+          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductHistory" Role="ProductHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttributeSet">
+              <PropertyRef Name="AttributeSetId" />
+            </Principal>
+            <Dependent Role="ProductHistory">
+              <PropertyRef Name="AttributeSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ProductStage_AttributeSet">
           <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="0..1" />
           <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="*" />
@@ -3497,6 +3657,18 @@
               <PropertyRef Name="CategoryId" />
             </Principal>
             <Dependent Role="CategoryAttributeSetMap">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GlobalCategoryPID_GlobalCategory">
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1" />
+          <End Type="ColspModel.GlobalCategoryPID" Role="GlobalCategoryPID" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="GlobalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="GlobalCategoryPID">
               <PropertyRef Name="CategoryId" />
             </Dependent>
           </ReferentialConstraint>
@@ -3893,6 +4065,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FKProductStageVariantShop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageVariant">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKProductStageVariantUser">
+          <End Type="ColspModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="ProductStageVariant">
+              <PropertyRef Name="SellerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShopUerGroupMap_Shop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ShopUserGroupMap" Role="ShopUserGroupMap" Multiplicity="*" />
@@ -4044,6 +4240,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="AttributeSetDescriptionTh" ColumnName="AttributeSetDescriptionTh" />
                 <ScalarProperty Name="AttributeSetDescriptionEn" ColumnName="AttributeSetDescriptionEn" />
                 <ScalarProperty Name="AttributeSetNameTh" ColumnName="AttributeSetNameTh" />
@@ -4231,6 +4428,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Rgt" ColumnName="Rgt" />
                 <ScalarProperty Name="Lft" ColumnName="Lft" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
@@ -4251,6 +4449,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="OnlineFlag" ColumnName="OnlineFlag" />
                 <ScalarProperty Name="ImageFlag" ColumnName="ImageFlag" />
                 <ScalarProperty Name="InfoFlag" ColumnName="InfoFlag" />
@@ -4274,6 +4473,9 @@
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
+                <ScalarProperty Name="PrepareDay" ColumnName="PrepareDay" />
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
+                <ScalarProperty Name="FeatureImgUrl" ColumnName="FeatureImgUrl" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
                 <ScalarProperty Name="SafetyStock" ColumnName="SafetyStock" />
                 <ScalarProperty Name="Stock" ColumnName="Stock" />
@@ -4286,10 +4488,10 @@
                 <ScalarProperty Name="Upc" ColumnName="Upc" />
                 <ScalarProperty Name="Sku" ColumnName="Sku" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
-                <ScalarProperty Name="Uid" ColumnName="Uid" />
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
                 <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
+                <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
                 <ScalarProperty Name="SellerId" ColumnName="SellerId" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="LocalCatId" ColumnName="LocalCatId" />
@@ -4334,6 +4536,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="OnlineFlag" ColumnName="OnlineFlag" />
                 <ScalarProperty Name="ImageFlag" ColumnName="ImageFlag" />
                 <ScalarProperty Name="InfoFlag" ColumnName="InfoFlag" />
@@ -4357,6 +4560,9 @@
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
+                <ScalarProperty Name="PrepareDay" ColumnName="PrepareDay" />
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
+                <ScalarProperty Name="FeatureImgUrl" ColumnName="FeatureImgUrl" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
                 <ScalarProperty Name="SafetyStock" ColumnName="SafetyStock" />
                 <ScalarProperty Name="Stock" ColumnName="Stock" />
@@ -4372,6 +4578,7 @@
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
                 <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
+                <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
                 <ScalarProperty Name="SellerId" ColumnName="SellerId" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="LocalCatId" ColumnName="LocalCatId" />
@@ -4732,6 +4939,8 @@
                 <ScalarProperty Name="OriginalPrice" ColumnName="OriginalPrice" />
                 <ScalarProperty Name="Upc" ColumnName="Upc" />
                 <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="SellerId" ColumnName="SellerId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />

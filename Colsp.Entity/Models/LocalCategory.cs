@@ -34,6 +34,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopId { get; set; }
         public Nullable<int> Lft { get; set; }
         public Nullable<int> Rgt { get; set; }
+        public Nullable<bool> Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

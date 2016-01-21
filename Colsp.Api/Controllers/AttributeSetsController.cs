@@ -51,12 +51,12 @@ namespace Colsp.Api.Controllers
             try
             {
                 var attrSet = from atrS in db.AttributeSets
-                              where !atrS.Status.Equals(Constant.STATUS_REMOVE)
                               select new
                               {
                                   atrS.AttributeSetId,
                                   atrS.AttributeSetNameEn,
                                   atrS.AttributeSetNameTh,
+                                  atrS.Visibility,
                                   atrS.Status,
                                   atrS.UpdatedDt,
                                   atrS.CreatedDt,
@@ -64,6 +64,7 @@ namespace Colsp.Api.Controllers
                               };
                 if (request == null)
                 {
+                    attrSet = attrSet.Where(w => w.Visibility == true);
                     return Request.CreateResponse(HttpStatusCode.OK, attrSet);
                 }
                 request.DefaultOnNull();        
@@ -132,7 +133,8 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameEn is required");
                 }
                 #endregion
-                set.Status = Constant.STATUS_VISIBLE;
+                set.Visibility = request.Visibility;
+                set.Status = Constant.STATUS_ACTIVE;
                 set.CreatedBy = this.User.Email();
                 set.CreatedDt = DateTime.Now;
                 set.UpdatedBy = this.User.Email();
@@ -219,7 +221,9 @@ namespace Colsp.Api.Controllers
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
                 }
                 var attrSet = db.AttributeSets.Where(w => w.AttributeSetId.Equals(attributeSetId))
-                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute))
+                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes))
+                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants ))
+                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants1 ))
                     .Include(i => i.AttributeSetTagMaps.Select(s => s.Tag))
                     .SingleOrDefault();
                 if(attrSet != null)
@@ -234,7 +238,8 @@ namespace Colsp.Api.Controllers
                         return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameEn is required");
                     }
                     #endregion
-                    attrSet.Status = request.Status;
+                    attrSet.Visibility = request.Visibility;
+                    attrSet.Status = Constant.STATUS_ACTIVE;
                     attrSet.UpdatedBy = this.User.Email();
                     attrSet.UpdatedDt = DateTime.Now;
 
@@ -283,6 +288,16 @@ namespace Colsp.Api.Controllers
                     }
                     if(mapList != null && mapList.Count > 0)
                     {
+                        foreach(AttributeSetMap map in mapList)
+                        {
+                            if((map.Attribute.ProductStageAttributes != null && map.Attribute.ProductStageAttributes.Count > 0)
+                                || (map.Attribute.ProductStageVariants != null && map.Attribute.ProductStageVariants.Count > 0)
+                                || (map.Attribute.ProductStageVariants1 != null && map.Attribute.ProductStageVariants1.Count > 0))
+                            {
+                                db.Dispose();
+                                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete attribute maping " + map.Attribute.AttributeNameEn + " in attribute set " + attrSet.AttributeSetNameEn + " with product associated");
+                            }
+                        }
                         db.AttributeSetMaps.RemoveRange(mapList);
                     }
                     if(attrSet.AttributeSetTagMaps != null)
@@ -370,17 +385,16 @@ namespace Colsp.Api.Controllers
                 var setList = db.AttributeSets.ToList();
                 foreach (AttributeSetRequest setRq in request)
                 {
-                    if(!Constant.STATUS_VISIBLE.Equals(setRq.Status) 
-                        && !Constant.STATUS_NOT_VISIBLE.Equals(setRq.Status))
+                    if(setRq.Visibility == null)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,"Invalid status");
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid visibility");
                     }
                     var current = setList.Where(w => w.AttributeSetId.Equals(setRq.AttributeSetId)).SingleOrDefault();
                     if (current == null)
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                     }
-                    current.Status = setRq.Status;
+                    current.Visibility = setRq.Visibility;
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -401,15 +415,40 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
                 }
-                var setList = db.AttributeSets.ToList();
+                var setList = db.AttributeSets
+                    .Include(i=>i.ProductStages)
+                    .Include(i=>i.Products)
+                    .Include(i=>i.ProductHistories)
+                    .Include(i=>i.AttributeSetMaps)
+                    .Include(i=>i.AttributeSetTagMaps)
+                    .Include(i=>i.CategoryAttributeSetMaps)
+                    .ToList();
                 foreach (AttributeSetRequest setRq in request)
                 {
                     var current = setList.Where(w => w.AttributeSetId.Equals(setRq.AttributeSetId)).SingleOrDefault();
                     if (current == null)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound,"Cannot find arrtibute set " + setRq.AttributeSetNameEn);
                     }
-                    current.Status = Constant.STATUS_REMOVE;
+                    if((current.ProductHistories != null && current.ProductHistories.Count > 0 )
+                        || (current.ProductStages != null && current.ProductStages.Count > 0)
+                        || (current.Products != null && current.Products.Count > 0))
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with product associated");
+                    }
+                    if(current.AttributeSetMaps != null && current.AttributeSetMaps.Count > 0)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with attribute associated");
+                    }
+                    if(current.AttributeSetTagMaps != null && current.AttributeSetTagMaps.Count > 0)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with tag associated");
+                    }
+                    if(current.CategoryAttributeSetMaps !=  null && current.CategoryAttributeSetMaps.Count > 0)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with global category associated");
+                    }
+                    db.AttributeSets.Remove(current);
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -423,7 +462,9 @@ namespace Colsp.Api.Controllers
         private AttributeSetRequest GetAttributeSetResponse(ColspEntities db, int attributeSetId)
         {
             var attrSet = db.AttributeSets.Where(w => w.AttributeSetId.Equals(attributeSetId))
-                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute))
+                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes))
+                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants))
+                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants1))
                      .Include(i => i.AttributeSetTagMaps.Select(s => s.Tag))
                      .SingleOrDefault();
             if (attrSet != null)
@@ -434,6 +475,7 @@ namespace Colsp.Api.Controllers
                 response.AttributeSetNameTh = attrSet.AttributeSetNameTh;
                 response.AttributeSetDescriptionEn = attrSet.AttributeSetDescriptionEn;
                 response.AttributeSetDescriptionTh = attrSet.AttributeSetDescriptionTh;
+                response.Visibility = attrSet.Visibility;
                 response.Status = attrSet.Status;
                 if (attrSet.AttributeSetMaps != null && attrSet.AttributeSetMaps.Count > 0)
                 {
@@ -461,6 +503,9 @@ namespace Colsp.Api.Controllers
                         attr.AllowHtmlFlag = map.Attribute.AllowHtmlFlag;
                         attr.Required = map.Required;
                         attr.Filterable = map.Filterable;
+                        attr.ProductCount = (map.Attribute.ProductStageAttributes != null ? map.Attribute.ProductStageAttributes.Count : 0)
+                                            + (map.Attribute.ProductStageVariants != null ? map.Attribute.ProductStageVariants.Count : 0)
+                                            + (map.Attribute.ProductStageVariants1 != null ? map.Attribute.ProductStageVariants1.Count : 0);
                         attr.Status = map.Attribute.Status;
                         response.Attributes.Add(attr);
                     }

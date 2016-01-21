@@ -37,6 +37,7 @@ namespace Colsp.Api.Controllers
                                      cat.Rgt,
                                      cat.UrlKeyEn,
                                      cat.UrlKeyTh,
+                                     cat.Visibility,
                                      cat.Status,
                                      cat.UpdatedDt,
                                      cat.CreatedDt,
@@ -105,7 +106,8 @@ namespace Colsp.Api.Controllers
                             catEn.Key.NameEn = catRq.NameEn;
                             catEn.Key.NameTh = catRq.NameTh;
                             catEn.Key.UrlKeyEn = catRq.UrlKeyEn;
-                            catEn.Key.Status = catRq.Status;
+                            catEn.Key.Visibility = catRq.Visibility;
+                            catEn.Key.Status = Constant.STATUS_ACTIVE;
                             catEn.Key.UpdatedBy = this.User.Email();
                             catEn.Key.UpdatedDt = DateTime.Now;
                             catEnList.Remove(catEnList.Where(w => w.Category.Key.CategoryId == catEn.Key.CategoryId).SingleOrDefault());
@@ -120,7 +122,8 @@ namespace Colsp.Api.Controllers
                         catEn.NameTh = catRq.NameTh;
                         catEn.UrlKeyEn = catRq.UrlKeyEn;
                         catEn.ShopId = shopId;
-                        catEn.Status = catRq.Status;
+                        catEn.Visibility = catRq.Visibility;
+                        catEn.Status = Constant.STATUS_ACTIVE;
                         catEn.CreatedBy = this.User.Email();
                         catEn.CreatedDt = DateTime.Now;
                         db.LocalCategories.Add(catEn);
@@ -195,7 +198,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
         }
-
 
         protected override void Dispose(bool disposing)
         {

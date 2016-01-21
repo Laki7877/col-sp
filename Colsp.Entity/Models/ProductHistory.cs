@@ -27,6 +27,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> LocalCatId { get; set; }
         public Nullable<int> ShopId { get; set; }
         public Nullable<int> SellerId { get; set; }
+        public Nullable<int> AttributeSetId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public Nullable<int> BrandId { get; set; }
@@ -42,6 +43,9 @@ namespace Colsp.Entity.Models
         public Nullable<int> Stock { get; set; }
         public Nullable<int> SafetyStock { get; set; }
         public Nullable<int> ShippingId { get; set; }
+        public string FeatureImgUrl { get; set; }
+        public string Tag { get; set; }
+        public Nullable<decimal> PrepareDay { get; set; }
         public Nullable<decimal> Length { get; set; }
         public Nullable<decimal> Height { get; set; }
         public Nullable<decimal> Width { get; set; }
@@ -62,15 +66,17 @@ namespace Colsp.Entity.Models
         public Nullable<bool> ControlFlag2 { get; set; }
         public Nullable<bool> ControlFlag3 { get; set; }
         public string Remark { get; set; }
-        public string InfoFlag { get; set; }
-        public string ImageFlag { get; set; }
-        public string OnlineFlag { get; set; }
+        public Nullable<bool> InfoFlag { get; set; }
+        public Nullable<bool> ImageFlag { get; set; }
+        public Nullable<bool> OnlineFlag { get; set; }
+        public Nullable<bool> Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        public virtual AttributeSet AttributeSet { get; set; }
         public virtual Brand Brand { get; set; }
         public virtual GlobalCategory GlobalCategory { get; set; }
         public virtual LocalCategory LocalCategory { get; set; }

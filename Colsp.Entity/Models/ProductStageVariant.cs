@@ -25,6 +25,8 @@ namespace Colsp.Entity.Models
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public string Pid { get; set; }
+        public Nullable<int> ShopId { get; set; }
+        public Nullable<int> SellerId { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
         public Nullable<decimal> OriginalPrice { get; set; }
@@ -54,5 +56,7 @@ namespace Colsp.Entity.Models
         public virtual Attribute Attribute { get; set; }
         public virtual Attribute Attribute1 { get; set; }
         public virtual ProductStage ProductStage { get; set; }
+        public virtual Shop Shop { get; set; }
+        public virtual User User { get; set; }
     }
 }

@@ -231,7 +231,7 @@ namespace Colsp.Api.Controllers
                 brand.UpdatedDt = DateTime.Now;
                 db.Brands.Add(brand);
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return GetBrand(brand.BrandId); ;
             }
             catch
             {
