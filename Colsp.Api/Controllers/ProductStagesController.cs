@@ -12,6 +12,7 @@ using Colsp.Model.Requests;
 using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -43,6 +44,10 @@ namespace Colsp.Api.Controllers
                               VariantCount = p.ProductStageVariants.Count,
                               p.SellerId,
                               ImageUrl = p.FeatureImgUrl,
+                              p.GlobalCatId,
+                              p.LocalCatId,
+                              p.AttributeSetId,
+                              p.ProductStageAttributes,
                               p.UpdatedDt,
                           }).Take(100);
                 if(request == null)
@@ -50,6 +55,22 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, products);
                 }
                 request.DefaultOnNull();
+                if(request.GlobalCatId != null)
+                {
+                    products = products.Where(p => p.GlobalCatId == request.GlobalCatId);
+                }
+                if(request.LocalCatId != null)
+                {
+                    products = products.Where(p => p.LocalCatId == request.LocalCatId);
+                }
+                if(request.AttributeSetId != null)
+                {
+                    products = products.Where(p => p.LocalCatId == request.LocalCatId);
+                }
+                if(request.AttributeId != null)
+                {
+                    products = products.Where(p=>p.ProductStageAttributes.All(a=>a.AttributeId==request.AttributeId));
+                }
                 if (request.SearchText != null)
                 {
                     products = products.Where(p => p.Sku.Contains(request.SearchText)
@@ -343,11 +364,7 @@ namespace Colsp.Api.Controllers
                 #region Setup Master Product
                 stage = new ProductStage();
 
-                HttpResponseMessage error = SetupProductStage(stage, request);
-                if (error != null)
-                {
-                    return error;
-                }
+                SetupProductStage(db,stage, request);
                 stage.Status = Constant.PRODUCT_STATUS_JUNK;
                 stage.SellerId = request.SellerId;
                 stage.ShopId = request.ShopId;
@@ -361,95 +378,71 @@ namespace Colsp.Api.Controllers
                 stage.UpdatedBy = this.User.Email();
                 stage.UpdatedDt = DateTime.Now;
                 #region Validation
-                if (stage.SellerId == null)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Seller is required");
-                }
-                else
-                {
-                    if (stage.SellerId != this.User.UserId())
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Seller is invalid");
-                    }
-                }
-                if (stage.ShopId == null)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is required");
-                }
-                else
-                {
-                    var shop = this.User.ShopIds().Where(w => w.Equals(stage.ShopId)).SingleOrDefault();
-                    if (shop == 0)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid");
-                    }
-                }
-
-                if (stage.GlobalCatId == null)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Global category is required");
-                }
-                if (string.IsNullOrEmpty(request.Status))
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Status is required");
-                }
-                else if (request.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL))
-                {
-                    if (string.IsNullOrEmpty(stage.ProductNameTh))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product Name (Thai) is required");
-                    }
-                    if (string.IsNullOrEmpty(stage.ProductNameEn))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product Name (English) is required");
-                    }
-                    if (string.IsNullOrEmpty(stage.Sku))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "SKU is required");
-                    }
-                    //else
-                    //{
-                    //    var pro = db.ProductStages.Where(w=> w.Sku.Equals(stage.Sku) && w.ShopId == stage.ShopId).ToList();
-                    //    if(pro != null && pro.Count > 0)
-                    //    {
-                    //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "SKU is duplicated");
-                    //    }
-                    //}
-                    if (stage.OriginalPrice == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Original Price is required");
-                    }
-                    if (stage.PrepareDay == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Preparation Time is required");
-                    }
-                    if (stage.Length == null || stage.Height == null || stage.Width == null || string.IsNullOrEmpty(stage.DimensionUnit))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Package Dimension is required");
-                    }
-                    if (stage.Weight == null || string.IsNullOrEmpty(stage.WeightUnit))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Weight is required");
-                    }
-                }
-                else if (request.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
-                {
-                    if (string.IsNullOrEmpty(stage.ProductNameTh) || string.IsNullOrEmpty(stage.ProductNameEn) || string.IsNullOrEmpty(stage.Sku)
-                        || stage.OriginalPrice == null || stage.PrepareDay == null
-                        || stage.Length == null || stage.Height == null || stage.Width == null || string.IsNullOrEmpty(stage.DimensionUnit)
-                        || stage.Weight == null || string.IsNullOrEmpty(stage.WeightUnit))
-                    {
-                        stage.InfoFlag = false;
-                    }
-                    else
-                    {
-                        stage.InfoFlag = true;
-                    }
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Status is invalid");
-                }
+                //if (stage.GlobalCatId == null)
+                //{
+                //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Global category is required");
+                //}
+                //if (string.IsNullOrEmpty(request.Status))
+                //{
+                //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Status is required");
+                //}
+                //else if (request.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL))
+                //{
+                //    //if (string.IsNullOrEmpty(stage.ProductNameTh))
+                //    //{
+                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product Name (Thai) is required");
+                //    //}
+                //    //if (string.IsNullOrEmpty(stage.ProductNameEn))
+                //    //{
+                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product Name (English) is required");
+                //    //}
+                //    //if (string.IsNullOrEmpty(stage.Sku))
+                //    //{
+                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "SKU is required");
+                //    //}
+                //    ////else
+                //    ////{
+                //    ////    var pro = db.ProductStages.Where(w=> w.Sku.Equals(stage.Sku) && w.ShopId == stage.ShopId).ToList();
+                //    ////    if(pro != null && pro.Count > 0)
+                //    ////    {
+                //    ////        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "SKU is duplicated");
+                //    ////    }
+                //    ////}
+                //    //if (stage.OriginalPrice == null)
+                //    //{
+                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Original Price is required");
+                //    //}
+                //    //if (stage.PrepareDay == null)
+                //    //{
+                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Preparation Time is required");
+                //    //}
+                //    //if (stage.Length == null || stage.Height == null || stage.Width == null || string.IsNullOrEmpty(stage.DimensionUnit))
+                //    //{
+                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Package Dimension is required");
+                //    //}
+                //    //if (stage.Weight == null || string.IsNullOrEmpty(stage.WeightUnit))
+                //    //{
+                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Weight is required");
+                //    //}
+                //}
+                //else if (request.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
+                //{
+                //    if (string.IsNullOrEmpty(stage.ProductNameTh) || string.IsNullOrEmpty(stage.ProductNameEn) || string.IsNullOrEmpty(stage.Sku)
+                //        || stage.OriginalPrice == null || stage.PrepareDay == null
+                //        || stage.Length == null || stage.Height == null || stage.Width == null || string.IsNullOrEmpty(stage.DimensionUnit)
+                //        || stage.Weight == null || string.IsNullOrEmpty(stage.WeightUnit))
+                //    {
+                //        stage.InfoFlag = false;
+                //    }
+                //    else
+                //    {
+                //        stage.InfoFlag = true;
+                //    }
+                //}
+                //else
+                //{
+                //    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Status is invalid");
+                //}
                 //if (request.Variants != null && request.Variants.Count > 0)
                 //{
                 //    List<string> sku = new List<string>();
@@ -575,6 +568,7 @@ namespace Colsp.Api.Controllers
                         string variantPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                         variant.Pid = variantPid;
                         variant.ProductId = stage.ProductId;
+                        variant.Status = request.Status;
                         if (variantRq.FirstAttribute != null && variantRq.FirstAttribute.AttributeId != null)
                         {
                             variant.Attribute1Id = variantRq.FirstAttribute.AttributeId;
@@ -621,27 +615,9 @@ namespace Colsp.Api.Controllers
 
                         SetupImgEntity(db, variantRq.Images, variantPid, this.User.Email());
                         SetupVdoEntity(db, variantRq.VideoLinks, variantPid, this.User.Email());
-
-                        variant.ProductNameTh = variantRq.ProductNameTh;
-                        variant.ProductNameEn = variantRq.ProductNameEn;
-                        variant.Sku = variantRq.Sku;
-                        variant.Upc = variantRq.Upc;
-                        variant.OriginalPrice = variantRq.OriginalPrice;
-                        variant.SalePrice = variantRq.SalePrice;
-                        variant.DescriptionFullTh = variantRq.DescriptionFullTh;
-                        variant.DescriptionShortTh = variantRq.DescriptionShortTh;
-                        variant.DescriptionFullEn = variantRq.DescriptionFullEn;
-                        variant.DescriptionShortEn = variantRq.DescriptionShortEn;
-                        variant.Length = variantRq.Length;
-                        variant.Height = variantRq.Height;
-                        variant.Width = variantRq.Width;
-                        variant.Weight = variantRq.Weight;
-                        variant.DimensionUnit = variantRq.DimensionUnit;
-                        variant.WeightUnit = variantRq.WeightUnit;
-                        variant.DefaultVaraint = variantRq.DefaultVariant;
+                        SetupProductStageVariant(variant, variantRq);
                         variant.ShopId = stage.ShopId;
                         variant.SellerId = stage.SellerId;
-                        variant.Visibility = variantRq.Visibility;
                         variant.CreatedBy = this.User.Email();
                         variant.CreatedDt = DateTime.Now;
                         db.ProductStageVariants.Add(variant);
@@ -656,23 +632,26 @@ namespace Colsp.Api.Controllers
             {
                 #region Rollback
                 db.Dispose();
-                db = new ColspEntities();
-                db.ProductStageAttributes.RemoveRange(db.ProductStageAttributes.Where(w => w.ProductId.Equals(stage.ProductId)));
-                db.ProductStageGlobalCatMaps.RemoveRange(db.ProductStageGlobalCatMaps.Where(w => w.ProductId.Equals(stage.ProductId)));
-                db.ProductStageLocalCatMaps.RemoveRange(db.ProductStageLocalCatMaps.Where(w => w.ProductId.Equals(stage.ProductId)));
-                db.ProductStageVariants.RemoveRange(db.ProductStageVariants.Where(w => w.ProductId.Equals(stage.ProductId)));
-                db.ProductStages.RemoveRange(db.ProductStages.Where(w => w.ProductId.Equals(stage.ProductId)));
-                try
+                if(stage != null && stage.ProductId > 0)
                 {
-                    db.SaveChanges();
-                }
-                catch (Exception wee)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, wee);
+                    db = new ColspEntities();
+                    db.ProductStageAttributes.RemoveRange(db.ProductStageAttributes.Where(w => w.ProductId.Equals(stage.ProductId)));
+                    db.ProductStageGlobalCatMaps.RemoveRange(db.ProductStageGlobalCatMaps.Where(w => w.ProductId.Equals(stage.ProductId)));
+                    db.ProductStageLocalCatMaps.RemoveRange(db.ProductStageLocalCatMaps.Where(w => w.ProductId.Equals(stage.ProductId)));
+                    db.ProductStageVariants.RemoveRange(db.ProductStageVariants.Where(w => w.ProductId.Equals(stage.ProductId)));
+                    db.ProductStages.RemoveRange(db.ProductStages.Where(w => w.ProductId.Equals(stage.ProductId)));
+                    try
+                    {
+                        db.SaveChanges();
+                    }
+                    catch (Exception wee)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK, wee);
+                    }
                 }
                 #endregion
 
-                return Request.CreateResponse(HttpStatusCode.OK, ex);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
             }
         }
 
@@ -700,11 +679,7 @@ namespace Colsp.Api.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product is not allow");
                     }
                     #region Setup Master
-                    HttpResponseMessage error = SetupProductStage(stage, request);
-                    if (error != null)
-                    {
-                        return error;
-                    }
+                    SetupProductStage(db,stage, request);
                     if (string.IsNullOrEmpty(request.Status))
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Status is required");
@@ -829,25 +804,7 @@ namespace Colsp.Api.Controllers
                         SaveChangeInventoryHistory(db, current.Pid, var, this.User.Email());
                         SaveChangeImg(db, current.Pid, var.Images, this.User.Email());
                         SaveChangeVideoLinks(db, current.Pid, var.VideoLinks, this.User.Email());
-
-                        current.ProductNameTh = var.ProductNameTh;
-                        current.ProductNameEn = var.ProductNameEn;
-                        current.Sku = var.Sku;
-                        current.Upc = var.Upc;
-                        current.OriginalPrice = var.OriginalPrice;
-                        current.SalePrice = var.SalePrice;
-                        current.DescriptionFullTh = var.DescriptionFullTh;
-                        current.DescriptionShortTh = var.DescriptionShortTh;
-                        current.DescriptionFullEn = var.DescriptionFullEn;
-                        current.DescriptionShortEn = var.DescriptionShortEn;
-                        current.Length = var.Length;
-                        current.Height = var.Height;
-                        current.Width = var.Width;
-                        current.Weight = var.Weight;
-                        current.DimensionUnit = var.DimensionUnit;
-                        current.Visibility = var.Visibility;
-                        current.WeightUnit = var.WeightUnit;
-                        current.DefaultVaraint = var.DefaultVariant;
+                        SetupProductStageVariant(current, var);
                         current.UpdatedBy = this.User.Email();
                         current.UpdatedDt = DateTime.Now;
                         if (addNew)
@@ -893,7 +850,7 @@ namespace Colsp.Api.Controllers
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                     }
-                    current.Visibility = proRq.Visibility;
+                    current.Visibility = proRq.Visibility.Value;
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -924,10 +881,10 @@ namespace Colsp.Api.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Cannot delete product that is not draft");
                     }
                     db.ProductStages.Remove(pro);
-                    //db.ProductStageImages.RemoveRange(db.ProductStageImages.Where(w=>w.Pid.Equals(pro.Pid)));
-                    //db.ProductStageImage360.RemoveRange(db.ProductStageImage360.Where(w => w.Pid.Equals(pro.Pid)));
-                    //db.ProductStageVideos.RemoveRange(db.ProductStageVideos.Where(w => w.Pid.Equals(pro.Pid)));
-                    //db.Inventories.RemoveRange(db.Inventories.Where(w => w.Pid.Equals(pro.Pid)));
+                    db.ProductStageImages.RemoveRange(db.ProductStageImages.Where(w => w.Pid.Equals(pro.Pid)));
+                    db.ProductStageImage360.RemoveRange(db.ProductStageImage360.Where(w => w.Pid.Equals(pro.Pid)));
+                    db.ProductStageVideos.RemoveRange(db.ProductStageVideos.Where(w => w.Pid.Equals(pro.Pid)));
+                    db.Inventories.RemoveRange(db.Inventories.Where(w => w.Pid.Equals(pro.Pid)));
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -938,37 +895,159 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private HttpResponseMessage SetupProductStage(ProductStage stage, ProductStageRequest request)
+        private void SetupProductStageVariant(ProductStageVariant variant, VariantRequest variantRq)
         {
-            stage.ProductNameTh = request.MasterVariant.ProductNameTh;
-            stage.ProductNameEn = request.MasterVariant.ProductNameEn;
-            stage.Sku = request.MasterVariant.Sku;
-            stage.Upc = request.MasterVariant.Upc;
-            stage.BrandId = request.Brand.BrandId;
-            stage.OriginalPrice = request.MasterVariant.OriginalPrice;
-            stage.SalePrice = request.MasterVariant.SalePrice;
-            stage.DescriptionFullTh = request.MasterVariant.DescriptionFullTh;
-            stage.DescriptionShortTh = request.MasterVariant.DescriptionShortTh;
-            stage.DescriptionFullEn = request.MasterVariant.DescriptionFullEn;
-            stage.DescriptionShortEn = request.MasterVariant.DescriptionShortEn;
-            stage.AttributeSetId = request.AttributeSet.AttributeSetId;
-            stage.Tag = request.Keywords;
-            stage.ShippingId = request.ShippingMethod;
-            stage.PrepareDay = request.PrepareDay;
-            stage.Length = request.MasterVariant.Length;
-            stage.Height = request.MasterVariant.Height;
-            stage.Width = request.MasterVariant.Width;
-            stage.Weight = request.MasterVariant.Weight;
+            variant.ProductNameTh = Validation.ValidateString(variantRq.ProductNameTh, "Variation Product Name (Thai)", true, 300, true);
+            variant.ProductNameEn = Validation.ValidateString(variantRq.ProductNameEn, "Variation Product Name (English)", true, 300, true);
+            variant.Sku = Validation.ValidateString(variantRq.Sku, "Variation SKU", false, 300, true);
+            variant.Upc = Validation.ValidateString(variantRq.Upc, "Variation UPC", false, 300, true);
+            variant.OriginalPrice = Validation.ValidatDecimal(variantRq.OriginalPrice, "Variation Original Price", true, 20, 2, true).Value;
+            variant.SalePrice = Validation.ValidatDecimal(variantRq.SalePrice, "Variation Sale Price", false, 20, 2, true);
+           
+            variant.DescriptionFullTh = Validation.ValidateString(variantRq.DescriptionFullTh, "Variation Description (Thai)", false, 2000, false);
+            variant.DescriptionShortTh = Validation.ValidateString(variantRq.DescriptionShortTh, "Variation Short Description (Thai)", false, 500, true);
+            variant.DescriptionFullEn = Validation.ValidateString(variantRq.DescriptionFullEn, "Variation Description (English)", false, 2000, false);
+            variant.DescriptionShortEn = Validation.ValidateString(variantRq.DescriptionShortEn, "Variation Short Description (English)", false, 500, true);
+            if (Constant.PRODUCT_STATUS_DRAFT.Equals(variant.Status))
+            {
+                var tmp = Validation.ValidatDecimal(variantRq.Length, "Length", true, 5, 2, true);
+                variant.Length = tmp != null ? tmp.Value : 0;
+                tmp = Validation.ValidatDecimal(variantRq.Height, "Height", true, 5, 2, true);
+                variant.Height = tmp != null ? tmp.Value : 0;
+                tmp = Validation.ValidatDecimal(variantRq.Width, "Width", true, 5, 2, true);
+                variant.Width = tmp != null ? tmp.Value : 0;
+                tmp = Validation.ValidatDecimal(variantRq.Weight, "Weight", true, 5, 2, true);
+                variant.Weight = tmp != null ? tmp.Value : 0;
+            }
+            else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(variant.Status))
+            {
+                if (variant.SalePrice != null
+                    && variant.OriginalPrice > variant.SalePrice)
+                {
+                    throw new Exception("Variation Sale price must be lower than the original price");
+                }
+                variant.Length = Validation.ValidatDecimal(variantRq.Length, "Length", true, 5, 2, true).Value;
+                variant.Height = Validation.ValidatDecimal(variantRq.Height, "Height", true, 5, 2, true).Value;
+                variant.Width = Validation.ValidatDecimal(variantRq.Width, "Width", true, 5, 2, true).Value;
+                variant.Weight = Validation.ValidatDecimal(variantRq.Weight, "Weight", true, 5, 2, true).Value;
+            }
+            else
+            {
+                throw new Exception("Invalid status");
+            }
+            variant.DimensionUnit = variantRq.DimensionUnit;
+            variant.WeightUnit = variantRq.WeightUnit;
+            variant.DefaultVaraint = variantRq.DefaultVariant;
+            variant.Visibility = variantRq.Visibility.Value;
+        }
+
+        private void SetupProductStage(ColspEntities db, ProductStage stage, ProductStageRequest request)
+        {
+            stage.ProductNameTh = Validation.ValidateString(request.MasterVariant.ProductNameTh, "Product Name (Thai)", true,300,true);
+            stage.ProductNameEn = Validation.ValidateString(request.MasterVariant.ProductNameEn, "Product Name (English)", true, 300, true);
+            stage.Sku = Validation.ValidateString(request.MasterVariant.Sku, "SKU", false, 300, true); 
+            stage.Upc = Validation.ValidateString(request.MasterVariant.Upc, "UPC", false, 300, true);
+            if(request.Brand != null && request.Brand.BrandId != null && request.Brand.BrandId != 0)
+            {
+                var brand = db.Brands.Find(request.Brand.BrandId);
+                if(brand == null)
+                {
+                    throw new Exception("Cannot find specific brand");
+                }
+                stage.BrandId = brand.BrandId;
+            }
+            stage.OriginalPrice = Validation.ValidatDecimal(request.MasterVariant.OriginalPrice, "Original Price",true,20,2,true).Value;
+            stage.SalePrice = Validation.ValidatDecimal(request.MasterVariant.SalePrice, "Sale Price", false, 20, 2, true);
+            
+            stage.DescriptionFullTh = Validation.ValidateString(request.MasterVariant.DescriptionFullTh, "Description (Thai)", false, 2000, false);
+            stage.DescriptionShortTh = Validation.ValidateString(request.MasterVariant.DescriptionShortTh, "Short Description (Thai)", false, 500, true);
+            stage.DescriptionFullEn = Validation.ValidateString(request.MasterVariant.DescriptionFullEn, "Description (English)", false, 2000, false);
+            stage.DescriptionShortEn = Validation.ValidateString(request.MasterVariant.DescriptionShortEn, "Short Description (English)", false, 500, true);
+            if (request.AttributeSet != null && request.AttributeSet.AttributeSetId != null && request.AttributeSet.AttributeSetId != 0)
+            {
+                var attributeSet = db.AttributeSets.Find(request.AttributeSet.AttributeSetId);
+                if (attributeSet == null)
+                {
+                    throw new Exception("Cannot find specific attribute set");
+                }
+                stage.AttributeSetId = attributeSet.AttributeSetId;
+            }
+            stage.Tag = Validation.ValidateTaging(request.Keywords, "Search Tag",false,false,20,30);
+            if (request.ShippingMethod != null && request.ShippingMethod != 0)
+            {
+                var shipping = db.Shippings.Find(request.ShippingMethod);
+                if (shipping == null)
+                {
+                    throw new Exception("Cannot find specific shipping");
+                }
+                stage.ShippingId = shipping.ShippingId;
+            }
+            if (Constant.PRODUCT_STATUS_DRAFT.Equals(request.Status))
+            {
+                var tmp = Validation.ValidatDecimal(request.PrepareDay, "Preparation Time", true, 5, 2, true);
+                stage.PrepareDay = tmp != null ? tmp.Value : 0;
+                tmp = Validation.ValidatDecimal(request.MasterVariant.Length, "Length", true, 5, 2, true);
+                stage.Length = tmp != null ? tmp.Value : 0;
+                tmp = Validation.ValidatDecimal(request.MasterVariant.Height, "Height", true, 5, 2, true);
+                stage.Height = tmp != null ? tmp.Value : 0;
+                tmp = Validation.ValidatDecimal(request.MasterVariant.Width, "Width", true, 5, 2, true);
+                stage.Width = tmp != null ? tmp.Value : 0;
+                tmp = Validation.ValidatDecimal(request.MasterVariant.Weight, "Weight", true, 5, 2, true);
+                stage.Weight = tmp != null ? tmp.Value : 0;
+            }else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(request.Status))
+            {
+                if (stage.SalePrice != null
+                && stage.OriginalPrice > stage.SalePrice)
+                {
+                    throw new Exception("Sale price must be lower than the original price");
+                }
+                stage.PrepareDay = Validation.ValidatDecimal(request.PrepareDay, "Preparation Time", true, 5, 2, true).Value;
+                stage.Length = Validation.ValidatDecimal(request.MasterVariant.Length, "Length", true, 5, 2, true).Value;
+                stage.Height = Validation.ValidatDecimal(request.MasterVariant.Height, "Height", true, 5, 2, true).Value;
+                stage.Width = Validation.ValidatDecimal(request.MasterVariant.Width, "Width", true, 5, 2, true).Value;
+                stage.Weight = Validation.ValidatDecimal(request.MasterVariant.Weight, "Weight", true, 5, 2, true).Value;
+            }
+            else
+            {
+                throw new Exception("Invalid status");
+            }
             stage.DimensionUnit = request.MasterVariant.DimensionUnit;
             stage.WeightUnit = request.MasterVariant.WeightUnit;
-            stage.GlobalCatId = request.GlobalCategory;
-            stage.LocalCatId = request.LocalCategory;
-            stage.MetaTitle = request.SEO.MetaTitle;
-            stage.MetaDescription = request.SEO.MetaDescription;
-            stage.MetaKey = request.SEO.MetaKeywords;
+            if(request.GlobalCategory != null && request.GlobalCategory != 0)
+            {
+                var globalCat = db.GlobalCategories.Find(request.GlobalCategory);
+                if (globalCat == null)
+                {
+                    throw new Exception("Cannot find specific global category");
+                }
+                stage.GlobalCatId = globalCat.CategoryId;
+            }
+            else
+            {
+                throw new Exception("Global category is required");
+            }
+            if (request.LocalCategory != null && request.LocalCategory != 0)
+            {
+                var localCat = db.LocalCategories.Find(request.LocalCategory);
+                if (localCat == null)
+                {
+                    throw new Exception("Cannot find specific local category");
+                }
+                stage.LocalCatId = localCat.CategoryId;
+            }
+            stage.MetaTitle = Validation.ValidateString(request.SEO.MetaTitle, "Meta Title", false, 60, false);
+            stage.MetaDescription = Validation.ValidateString(request.SEO.MetaDescription, "Meta Description", false, 150, false);
+            stage.MetaKey = Validation.ValidateTaging(request.SEO.MetaKeywords, "Search Tag", false, false, 20, 30);
+
             stage.UrlEn = request.SEO.ProductUrlKeyEn;
             stage.UrlTh = request.SEO.ProductUrlKeyTh;
             stage.BoostWeight = request.SEO.ProductBoostingWeight;
+            if (stage.BoostWeight != null 
+                && stage.BoostWeight < 1 
+                && stage.BoostWeight > 10000)
+            {
+                throw new Exception("Boost numbers from 1 to 10000 is allowed");
+            }
             stage.ControlFlag1 = request.ControlFlags.Flag1;
             stage.ControlFlag2 = request.ControlFlags.Flag2;
             stage.ControlFlag3 = request.ControlFlags.Flag3;
@@ -981,7 +1060,7 @@ namespace Colsp.Api.Controllers
                 }
                 catch
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.DateFormatError);
+                    throw new Exception("Invalid effective date format");
                 }
             }
             else
@@ -996,7 +1075,7 @@ namespace Colsp.Api.Controllers
                 }
                 catch
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.TimeFormatError);
+                    throw new Exception("Invalid effective time format");
                 }
             }
             else
@@ -1013,7 +1092,7 @@ namespace Colsp.Api.Controllers
                 }
                 catch
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.DateFormatError);
+                    throw new Exception("Invalid expiry date format");
                 }
 
             }
@@ -1029,7 +1108,7 @@ namespace Colsp.Api.Controllers
                 }
                 catch
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, HttpErrorMessage.TimeFormatError);
+                    throw new Exception("Invalid expire time format");
                 }
             }
             else
@@ -1037,9 +1116,8 @@ namespace Colsp.Api.Controllers
                 stage.ExpiryTime = null;
             }
             #endregion
-            stage.Remark = request.Remark;
-
-            return null;
+            
+            stage.Remark = Validation.ValidateString(request.Remark, "Remark", false, 2000, false);
         }
 
         private void SaveChangeInventoryHistory(ColspEntities db, string pid, VariantRequest variant, string email)

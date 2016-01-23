@@ -35,7 +35,7 @@ namespace Colsp.Api.Helper
                     pid = Generater(pid);
                 }
                 CurrentPid.CurrentKey = pid;
-                return string.Concat(CurrentPid.CategoryAbbreviation, pid);
+                return string.Concat(CurrentPid.CategoryAbbreviation, pid).Trim();
             }
             else
             {

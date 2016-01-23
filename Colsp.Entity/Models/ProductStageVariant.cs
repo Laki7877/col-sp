@@ -39,14 +39,14 @@ namespace Colsp.Entity.Models
         public Nullable<int> SaftyStock { get; set; }
         public string VideoLink { get; set; }
         public string ShippingMethod { get; set; }
-        public Nullable<decimal> Length { get; set; }
-        public Nullable<decimal> Height { get; set; }
-        public Nullable<decimal> Width { get; set; }
+        public decimal Length { get; set; }
+        public decimal Height { get; set; }
+        public decimal Width { get; set; }
         public string DimensionUnit { get; set; }
-        public Nullable<decimal> Weight { get; set; }
+        public decimal Weight { get; set; }
         public string WeightUnit { get; set; }
         public Nullable<bool> DefaultVaraint { get; set; }
-        public Nullable<bool> Visibility { get; set; }
+        public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
