@@ -922,7 +922,7 @@ namespace Colsp.Api.Controllers
             else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(variant.Status))
             {
                 if (variant.SalePrice != null
-                    && variant.OriginalPrice > variant.SalePrice)
+                    && variant.OriginalPrice < variant.SalePrice)
                 {
                     throw new Exception("Variation Sale price must be lower than the original price");
                 }
@@ -972,7 +972,7 @@ namespace Colsp.Api.Controllers
                 }
                 stage.AttributeSetId = attributeSet.AttributeSetId;
             }
-            stage.Tag = Validation.ValidateTaging(request.Keywords, "Search Tag",false,false,20,30);
+            
             if (request.ShippingMethod != null && request.ShippingMethod != 0)
             {
                 var shipping = db.Shippings.Find(request.ShippingMethod);
@@ -994,10 +994,13 @@ namespace Colsp.Api.Controllers
                 stage.Width = tmp != null ? tmp.Value : 0;
                 tmp = Validation.ValidatDecimal(request.MasterVariant.Weight, "Weight", true, 5, 2, true);
                 stage.Weight = tmp != null ? tmp.Value : 0;
-            }else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(request.Status))
+                stage.Tag = Validation.ValidateString(request.Keywords, "Search Tag", false, 630,false);
+                stage.MetaKey = Validation.ValidateString(request.SEO.MetaKeywords, "Meta Keywords", false, 630, false);
+            }
+            else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(request.Status))
             {
                 if (stage.SalePrice != null
-                && stage.OriginalPrice > stage.SalePrice)
+                    && stage.OriginalPrice < stage.SalePrice)
                 {
                     throw new Exception("Sale price must be lower than the original price");
                 }
@@ -1006,6 +1009,8 @@ namespace Colsp.Api.Controllers
                 stage.Height = Validation.ValidatDecimal(request.MasterVariant.Height, "Height", true, 5, 2, true).Value;
                 stage.Width = Validation.ValidatDecimal(request.MasterVariant.Width, "Width", true, 5, 2, true).Value;
                 stage.Weight = Validation.ValidatDecimal(request.MasterVariant.Weight, "Weight", true, 5, 2, true).Value;
+                stage.Tag = Validation.ValidateTaging(request.Keywords, "Search Tag", false, false, 20, 30);
+                stage.MetaKey = Validation.ValidateTaging(request.SEO.MetaKeywords, "Meta Keywords", false, false, 20, 30);
             }
             else
             {
@@ -1037,7 +1042,7 @@ namespace Colsp.Api.Controllers
             }
             stage.MetaTitle = Validation.ValidateString(request.SEO.MetaTitle, "Meta Title", false, 60, false);
             stage.MetaDescription = Validation.ValidateString(request.SEO.MetaDescription, "Meta Description", false, 150, false);
-            stage.MetaKey = Validation.ValidateTaging(request.SEO.MetaKeywords, "Search Tag", false, false, 20, 30);
+            
 
             stage.UrlEn = request.SEO.ProductUrlKeyEn;
             stage.UrlTh = request.SEO.ProductUrlKeyTh;
