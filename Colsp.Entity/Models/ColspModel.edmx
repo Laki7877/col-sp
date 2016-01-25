@@ -571,11 +571,11 @@
           <Property Name="FeatureImgUrl" Type="nvarchar" MaxLength="2083" />
           <Property Name="Tag" Type="nvarchar" MaxLength="630" />
           <Property Name="PrepareDay" Type="decimal" Precision="5" Scale="2" Nullable="false" />
-          <Property Name="Length" Type="decimal" Precision="5" Scale="2" Nullable="false" />
-          <Property Name="Height" Type="decimal" Precision="5" Scale="2" Nullable="false" />
-          <Property Name="Width" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="DimensionUnit" Type="char" MaxLength="10" />
-          <Property Name="Weight" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="WeightUnit" Type="char" MaxLength="10" />
           <Property Name="MetaTitle" Type="nvarchar" MaxLength="60" />
           <Property Name="MetaDescription" Type="nvarchar" MaxLength="150" />
@@ -724,11 +724,11 @@
           <Property Name="SaftyStock" Type="int" />
           <Property Name="VideoLink" Type="nvarchar" MaxLength="2083" />
           <Property Name="ShippingMethod" Type="char" MaxLength="10" />
-          <Property Name="Length" Type="decimal" Precision="5" Scale="2" Nullable="false" />
-          <Property Name="Height" Type="decimal" Precision="5" Scale="2" Nullable="false" />
-          <Property Name="Width" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="DimensionUnit" Type="char" MaxLength="10" />
-          <Property Name="Weight" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="WeightUnit" Type="char" MaxLength="10" />
           <Property Name="DefaultVaraint" Type="bit" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
@@ -2990,11 +2990,11 @@
           <Property Name="FeatureImgUrl" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Tag" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="PrepareDay" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
-          <Property Name="Length" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
-          <Property Name="Height" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
-          <Property Name="Width" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="Weight" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="Weight" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="MetaTitle" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
           <Property Name="MetaDescription" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -3160,11 +3160,11 @@
           <Property Name="SaftyStock" Type="Int32" />
           <Property Name="VideoLink" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="ShippingMethod" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="Length" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
-          <Property Name="Height" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
-          <Property Name="Width" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="Weight" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="Weight" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="DefaultVaraint" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />

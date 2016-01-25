@@ -804,6 +804,7 @@ namespace Colsp.Api.Controllers
                         SaveChangeInventoryHistory(db, current.Pid, var, this.User.Email());
                         SaveChangeImg(db, current.Pid, var.Images, this.User.Email());
                         SaveChangeVideoLinks(db, current.Pid, var.VideoLinks, this.User.Email());
+                        current.Status = stage.Status;
                         SetupProductStageVariant(current, var);
                         current.UpdatedBy = this.User.Email();
                         current.UpdatedDt = DateTime.Now;
@@ -901,8 +902,8 @@ namespace Colsp.Api.Controllers
             variant.ProductNameEn = Validation.ValidateString(variantRq.ProductNameEn, "Variation Product Name (English)", true, 300, true);
             variant.Sku = Validation.ValidateString(variantRq.Sku, "Variation SKU", false, 300, true);
             variant.Upc = Validation.ValidateString(variantRq.Upc, "Variation UPC", false, 300, true);
-            variant.OriginalPrice = Validation.ValidatDecimal(variantRq.OriginalPrice, "Variation Original Price", true, 20, 2, true).Value;
-            variant.SalePrice = Validation.ValidatDecimal(variantRq.SalePrice, "Variation Sale Price", false, 20, 2, true);
+            variant.OriginalPrice = Validation.ValidateDecimal(variantRq.OriginalPrice, "Variation Original Price", true, 20, 2, true).Value;
+            variant.SalePrice = Validation.ValidateDecimal(variantRq.SalePrice, "Variation Sale Price", false, 20, 2, true);
            
             variant.DescriptionFullTh = Validation.ValidateString(variantRq.DescriptionFullTh, "Variation Description (Thai)", false, 2000, false);
             variant.DescriptionShortTh = Validation.ValidateString(variantRq.DescriptionShortTh, "Variation Short Description (Thai)", false, 500, true);
@@ -910,14 +911,15 @@ namespace Colsp.Api.Controllers
             variant.DescriptionShortEn = Validation.ValidateString(variantRq.DescriptionShortEn, "Variation Short Description (English)", false, 500, true);
             if (Constant.PRODUCT_STATUS_DRAFT.Equals(variant.Status))
             {
-                var tmp = Validation.ValidatDecimal(variantRq.Length, "Length", true, 5, 2, true);
+                var tmp = Validation.ValidateDecimal(variantRq.Length, "Length", false, 11, 2, true);
                 variant.Length = tmp != null ? tmp.Value : 0;
-                tmp = Validation.ValidatDecimal(variantRq.Height, "Height", true, 5, 2, true);
+                tmp = Validation.ValidateDecimal(variantRq.Height, "Height", false, 11, 2, true);
                 variant.Height = tmp != null ? tmp.Value : 0;
-                tmp = Validation.ValidatDecimal(variantRq.Width, "Width", true, 5, 2, true);
+                tmp = Validation.ValidateDecimal(variantRq.Width, "Width", false, 11, 2, true);
                 variant.Width = tmp != null ? tmp.Value : 0;
-                tmp = Validation.ValidatDecimal(variantRq.Weight, "Weight", true, 5, 2, true);
+                tmp = Validation.ValidateDecimal(variantRq.Weight, "Weight", false, 11, 2, true);
                 variant.Weight = tmp != null ? tmp.Value : 0;
+
             }
             else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(variant.Status))
             {
@@ -926,10 +928,10 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Variation Sale price must be lower than the original price");
                 }
-                variant.Length = Validation.ValidatDecimal(variantRq.Length, "Length", true, 5, 2, true).Value;
-                variant.Height = Validation.ValidatDecimal(variantRq.Height, "Height", true, 5, 2, true).Value;
-                variant.Width = Validation.ValidatDecimal(variantRq.Width, "Width", true, 5, 2, true).Value;
-                variant.Weight = Validation.ValidatDecimal(variantRq.Weight, "Weight", true, 5, 2, true).Value;
+                variant.Length = Validation.ValidateDecimal(variantRq.Length, "Length", true, 11, 2, true).Value;
+                variant.Height = Validation.ValidateDecimal(variantRq.Height, "Height", true,11, 2, true).Value;
+                variant.Width = Validation.ValidateDecimal(variantRq.Width, "Width", true, 5, 11, true).Value;
+                variant.Weight = Validation.ValidateDecimal(variantRq.Weight, "Weight", true, 11, 2, true).Value;
             }
             else
             {
@@ -956,8 +958,8 @@ namespace Colsp.Api.Controllers
                 }
                 stage.BrandId = brand.BrandId;
             }
-            stage.OriginalPrice = Validation.ValidatDecimal(request.MasterVariant.OriginalPrice, "Original Price",true,20,2,true).Value;
-            stage.SalePrice = Validation.ValidatDecimal(request.MasterVariant.SalePrice, "Sale Price", false, 20, 2, true);
+            stage.OriginalPrice = Validation.ValidateDecimal(request.MasterVariant.OriginalPrice, "Original Price",true,20,2,true).Value;
+            stage.SalePrice = Validation.ValidateDecimal(request.MasterVariant.SalePrice, "Sale Price", false, 20, 2, true);
             
             stage.DescriptionFullTh = Validation.ValidateString(request.MasterVariant.DescriptionFullTh, "Description (Thai)", false, 2000, false);
             stage.DescriptionShortTh = Validation.ValidateString(request.MasterVariant.DescriptionShortTh, "Short Description (Thai)", false, 500, true);
@@ -984,15 +986,15 @@ namespace Colsp.Api.Controllers
             }
             if (Constant.PRODUCT_STATUS_DRAFT.Equals(request.Status))
             {
-                var tmp = Validation.ValidatDecimal(request.PrepareDay, "Preparation Time", true, 5, 2, true);
+                var tmp = Validation.ValidateDecimal(request.PrepareDay, "Preparation Time", false, 5, 2, true);
                 stage.PrepareDay = tmp != null ? tmp.Value : 0;
-                tmp = Validation.ValidatDecimal(request.MasterVariant.Length, "Length", true, 5, 2, true);
+                tmp = Validation.ValidateDecimal(request.MasterVariant.Length, "Length", false, 11, 2, true);
                 stage.Length = tmp != null ? tmp.Value : 0;
-                tmp = Validation.ValidatDecimal(request.MasterVariant.Height, "Height", true, 5, 2, true);
+                tmp = Validation.ValidateDecimal(request.MasterVariant.Height, "Height", false, 11, 2, true);
                 stage.Height = tmp != null ? tmp.Value : 0;
-                tmp = Validation.ValidatDecimal(request.MasterVariant.Width, "Width", true, 5, 2, true);
+                tmp = Validation.ValidateDecimal(request.MasterVariant.Width, "Width", false, 11, 2, true);
                 stage.Width = tmp != null ? tmp.Value : 0;
-                tmp = Validation.ValidatDecimal(request.MasterVariant.Weight, "Weight", true, 5, 2, true);
+                tmp = Validation.ValidateDecimal(request.MasterVariant.Weight, "Weight", false, 11, 2, true);
                 stage.Weight = tmp != null ? tmp.Value : 0;
                 stage.Tag = Validation.ValidateString(request.Keywords, "Search Tag", false, 630,false);
                 stage.MetaKey = Validation.ValidateString(request.SEO.MetaKeywords, "Meta Keywords", false, 630, false);
@@ -1004,11 +1006,11 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Sale price must be lower than the original price");
                 }
-                stage.PrepareDay = Validation.ValidatDecimal(request.PrepareDay, "Preparation Time", true, 5, 2, true).Value;
-                stage.Length = Validation.ValidatDecimal(request.MasterVariant.Length, "Length", true, 5, 2, true).Value;
-                stage.Height = Validation.ValidatDecimal(request.MasterVariant.Height, "Height", true, 5, 2, true).Value;
-                stage.Width = Validation.ValidatDecimal(request.MasterVariant.Width, "Width", true, 5, 2, true).Value;
-                stage.Weight = Validation.ValidatDecimal(request.MasterVariant.Weight, "Weight", true, 5, 2, true).Value;
+                stage.PrepareDay = Validation.ValidateDecimal(request.PrepareDay, "Preparation Time", true, 5, 2, true).Value;
+                stage.Length = Validation.ValidateDecimal(request.MasterVariant.Length, "Length", true, 11, 2, true).Value;
+                stage.Height = Validation.ValidateDecimal(request.MasterVariant.Height, "Height", true, 11, 2, true).Value;
+                stage.Width = Validation.ValidateDecimal(request.MasterVariant.Width, "Width", true, 11, 2, true).Value;
+                stage.Weight = Validation.ValidateDecimal(request.MasterVariant.Weight, "Weight", true, 11, 2, true).Value;
                 stage.Tag = Validation.ValidateTaging(request.Keywords, "Search Tag", false, false, 20, 30);
                 stage.MetaKey = Validation.ValidateTaging(request.SEO.MetaKeywords, "Meta Keywords", false, false, 20, 30);
             }

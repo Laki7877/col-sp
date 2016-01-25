@@ -32,13 +32,17 @@ namespace Colsp.Api.Helpers
             return val;
         }
 
-        public static decimal? ValidatDecimal(decimal? val, string fieldName, bool required, int maxLenght, int decimalPlace,bool isPositive)
+        public static decimal? ValidateDecimal(decimal? val, string fieldName, bool required, int maxLenght, int decimalPlace,bool isPositive)
         {
             if(required && val == null)
             {
                 throw new Exception(fieldName + " is a required field");
             }
-            if(val == null) { return val; }
+            if(val == null)
+            {
+
+                return val;
+            }
             if(isPositive && decimal.Compare(val.Value,0) < 0)
             {
                 throw new Exception(fieldName + " cannot be less than 0");
