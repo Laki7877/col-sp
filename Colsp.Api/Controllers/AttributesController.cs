@@ -134,23 +134,7 @@ namespace Colsp.Api.Controllers
                 #endregion
 
                 attribute = new Entity.Models.Attribute();
-                attribute.AttributeNameEn = request.AttributeNameEn;
-                attribute.AttributeNameTh = request.AttributeNameTh;
-                attribute.AttributeUnitEn = request.AttributeUnitEn;
-                attribute.AttributeUnitTh = request.AttributeUnitTh;
-                attribute.DataType = request.DataType;
-                attribute.DataValidation = request.DataValidation;
-                attribute.DefaultValue = request.DefaultValue;
-                attribute.DisplayNameEn = request.DisplayNameEn;
-                attribute.DisplayNameTh = request.DisplayNameTh;
-                attribute.ShowAdminFlag = request.ShowAdminFlag;
-                attribute.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
-                attribute.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
-                attribute.ShowLocalFilterFlag = request.ShowLocalFilterFlag;
-                attribute.ShowLocalSearchFlag = request.ShowLocalSearchFlag;
-                attribute.VariantDataType = request.VariantDataType;
-                attribute.VariantStatus = request.VariantStatus;
-                attribute.AllowHtmlFlag = request.AllowHtmlFlag;
+                SetupAttribute(attribute, request);
                 attribute.CreatedBy = this.User.Email();
                 attribute.CreatedDt = DateTime.Now;
                 attribute.UpdatedBy = this.User.Email();
@@ -194,7 +178,7 @@ namespace Colsp.Api.Controllers
                 }
                 return GetAttribute(attribute.AttributeId);
             }
-            catch
+            catch (Exception e)
             {
                 if(attribute != null)
                 {
@@ -208,7 +192,7 @@ namespace Colsp.Api.Controllers
                     db.SaveChanges();
                 }
                 
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -466,6 +450,27 @@ namespace Colsp.Api.Controllers
             {
                 return null;
             }
+        }
+
+        private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request)
+        {
+            attribute.AttributeNameEn = request.AttributeNameEn;
+            attribute.AttributeNameTh = request.AttributeNameTh;
+            attribute.AttributeUnitEn = request.AttributeUnitEn;
+            attribute.AttributeUnitTh = request.AttributeUnitTh;
+            attribute.DataType = request.DataType;
+            attribute.DataValidation = request.DataValidation;
+            attribute.DefaultValue = request.DefaultValue;
+            attribute.DisplayNameEn = request.DisplayNameEn;
+            attribute.DisplayNameTh = request.DisplayNameTh;
+            attribute.ShowAdminFlag = request.ShowAdminFlag;
+            attribute.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
+            attribute.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
+            attribute.ShowLocalFilterFlag = request.ShowLocalFilterFlag;
+            attribute.ShowLocalSearchFlag = request.ShowLocalSearchFlag;
+            attribute.VariantDataType = request.VariantDataType;
+            attribute.VariantStatus = request.VariantStatus;
+            attribute.AllowHtmlFlag = request.AllowHtmlFlag;
         }
 
         protected override void Dispose(bool disposing)

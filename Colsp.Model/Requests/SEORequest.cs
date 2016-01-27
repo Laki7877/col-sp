@@ -13,6 +13,6 @@ namespace Colsp.Model.Requests
         public string MetaKeywords { get; set; }
         public string ProductUrlKeyTh { get; set; }
         public string ProductUrlKeyEn { get; set; }
-        public string ProductBoostingWeight { get; set; }
+        public int? ProductBoostingWeight { get; set; }
     }
 }

@@ -503,7 +503,7 @@
             <PropertyRef Name="ImageId" />
           </Key>
           <Property Name="ImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Path" Type="nvarchar" MaxLength="500" />
           <Property Name="ImageName" Type="nvarchar" MaxLength="100" />
           <Property Name="ImageOriginName" Type="nvarchar" MaxLength="100" />
@@ -535,8 +535,8 @@
             <PropertyRef Name="Pid1" />
             <PropertyRef Name="Pid2" />
           </Key>
-          <Property Name="Pid1" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Pid2" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Pid1" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="Pid2" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -553,36 +553,36 @@
           <Property Name="ShopId" Type="int" />
           <Property Name="SellerId" Type="int" />
           <Property Name="AttributeSetId" Type="int" />
-          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" />
-          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" />
+          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="BrandId" Type="int" />
-          <Property Name="Pid" Type="char" MaxLength="10" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Sku" Type="nvarchar" MaxLength="300" />
           <Property Name="Upc" Type="nvarchar" MaxLength="300" />
-          <Property Name="OriginalPrice" Type="money" />
+          <Property Name="OriginalPrice" Type="money" Nullable="false" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionFullEn" Type="nvarchar(max)" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionFullTh" Type="nvarchar(max)" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
           <Property Name="SafetyStock" Type="int" />
           <Property Name="ShippingId" Type="int" />
           <Property Name="FeatureImgUrl" Type="nvarchar" MaxLength="2083" />
-          <Property Name="Tag" Type="nvarchar" MaxLength="1000" />
-          <Property Name="PrepareDay" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="Width" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="630" />
+          <Property Name="PrepareDay" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="DimensionUnit" Type="char" MaxLength="10" />
-          <Property Name="Weight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="WeightUnit" Type="char" MaxLength="10" />
-          <Property Name="MetaTitle" Type="nvarchar" MaxLength="100" />
-          <Property Name="MetaDescription" Type="nvarchar" MaxLength="500" />
-          <Property Name="MetaKey" Type="nvarchar" MaxLength="500" />
-          <Property Name="UrlEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="UrlTh" Type="nvarchar" MaxLength="100" />
-          <Property Name="BoostWeight" Type="nvarchar" MaxLength="100" />
+          <Property Name="MetaTitle" Type="nvarchar" MaxLength="60" />
+          <Property Name="MetaDescription" Type="nvarchar" MaxLength="150" />
+          <Property Name="MetaKey" Type="nvarchar" MaxLength="630" />
+          <Property Name="UrlEn" Type="nvarchar" MaxLength="300" />
+          <Property Name="UrlTh" Type="nvarchar" MaxLength="300" />
+          <Property Name="BoostWeight" Type="int" />
           <Property Name="EffectiveDate" Type="date" />
           <Property Name="EffectiveTime" Type="time" Precision="7" />
           <Property Name="ExpiryDate" Type="date" />
@@ -591,10 +591,10 @@
           <Property Name="ControlFlag2" Type="bit" />
           <Property Name="ControlFlag3" Type="bit" />
           <Property Name="Remark" Type="nvarchar" MaxLength="500" />
-          <Property Name="InfoFlag" Type="bit" />
-          <Property Name="ImageFlag" Type="bit" />
-          <Property Name="OnlineFlag" Type="bit" />
-          <Property Name="Visibility" Type="bit" />
+          <Property Name="InfoFlag" Type="bit" Nullable="false" />
+          <Property Name="ImageFlag" Type="bit" Nullable="false" />
+          <Property Name="OnlineFlag" Type="bit" Nullable="false" />
+          <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -703,35 +703,35 @@
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="Attribute1Id" Type="int" />
           <Property Name="Attribute2Id" Type="int" />
-          <Property Name="ValueEn1" Type="nvarchar" MaxLength="100" />
-          <Property Name="ValueTh1" Type="nvarchar" MaxLength="100" />
-          <Property Name="ValueEn2" Type="nvarchar" MaxLength="100" />
-          <Property Name="ValueTh2" Type="nvarchar" MaxLength="100" />
-          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="100" />
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="ValueEn1" Type="nvarchar" MaxLength="300" />
+          <Property Name="ValueTh1" Type="nvarchar" MaxLength="300" />
+          <Property Name="ValueEn2" Type="nvarchar" MaxLength="300" />
+          <Property Name="ValueTh2" Type="nvarchar" MaxLength="300" />
+          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" />
+          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="ShopId" Type="int" />
           <Property Name="SellerId" Type="int" />
-          <Property Name="Sku" Type="nvarchar" MaxLength="50" />
-          <Property Name="Upc" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="300" />
+          <Property Name="Upc" Type="nvarchar" MaxLength="300" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="2000" />
-          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="2000" />
-          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="2000" />
-          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DescriptionFullEn" Type="nvarchar(max)" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullTh" Type="nvarchar(max)" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
           <Property Name="SaftyStock" Type="int" />
           <Property Name="VideoLink" Type="nvarchar" MaxLength="2083" />
           <Property Name="ShippingMethod" Type="char" MaxLength="10" />
-          <Property Name="Length" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="Height" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="Width" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="DimensionUnit" Type="char" MaxLength="10" />
-          <Property Name="Weight" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="WeightUnit" Type="char" MaxLength="10" />
           <Property Name="DefaultVaraint" Type="bit" />
-          <Property Name="Visibility" Type="bit" />
+          <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -743,7 +743,7 @@
             <PropertyRef Name="VideoId" />
           </Key>
           <Property Name="VideoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="Pid" Type="char" MaxLength="7" />
           <Property Name="VideoUrlEn" Type="nvarchar" MaxLength="2083" />
           <Property Name="VideoUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
@@ -794,7 +794,7 @@
             <PropertyRef Name="VideoId" />
           </Key>
           <Property Name="VideoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="Pid" Type="char" MaxLength="7" />
           <Property Name="VideoUrlEn" Type="nvarchar" MaxLength="2083" />
           <Property Name="VideoUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
@@ -2920,7 +2920,7 @@
             <PropertyRef Name="ImageId" />
           </Key>
           <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ImageName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ImageOriginName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2954,8 +2954,8 @@
             <PropertyRef Name="Pid1" />
             <PropertyRef Name="Pid2" />
           </Key>
-          <Property Name="Pid1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Pid2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid1" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="Pid2" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -2972,36 +2972,36 @@
           <Property Name="ShopId" Type="Int32" />
           <Property Name="SellerId" Type="Int32" />
           <Property Name="AttributeSetId" Type="Int32" />
-          <Property Name="ProductNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="ProductNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameTh" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="BrandId" Type="Int32" />
-          <Property Name="Pid" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Sku" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Upc" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="OriginalPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
           <Property Name="SafetyStock" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" />
           <Property Name="FeatureImgUrl" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
-          <Property Name="Tag" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="PrepareDay" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Tag" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="PrepareDay" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Weight" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="UrlEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="UrlTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BoostWeight" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitle" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescription" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKey" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="UrlEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="UrlTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BoostWeight" Type="Int32" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
           <Property Name="EffectiveTime" Type="Time" Precision="7" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
@@ -3010,10 +3010,10 @@
           <Property Name="ControlFlag2" Type="Boolean" />
           <Property Name="ControlFlag3" Type="Boolean" />
           <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="InfoFlag" Type="Boolean" />
-          <Property Name="ImageFlag" Type="Boolean" />
-          <Property Name="OnlineFlag" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="InfoFlag" Type="Boolean" Nullable="false" />
+          <Property Name="ImageFlag" Type="Boolean" Nullable="false" />
+          <Property Name="OnlineFlag" Type="Boolean" Nullable="false" />
+          <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -3139,35 +3139,35 @@
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="Attribute1Id" Type="Int32" />
           <Property Name="Attribute2Id" Type="Int32" />
-          <Property Name="ValueEn1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ValueTh1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ValueEn2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ValueTh2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ProductNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ProductNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ValueEn1" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ValueTh1" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ValueEn2" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ValueTh2" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="ShopId" Type="Int32" />
           <Property Name="SellerId" Type="Int32" />
-          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sku" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Upc" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
           <Property Name="SaftyStock" Type="Int32" />
           <Property Name="VideoLink" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="ShippingMethod" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="Length" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Height" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Width" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Weight" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="DefaultVaraint" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -3184,7 +3184,7 @@
             <PropertyRef Name="VideoId" />
           </Key>
           <Property Name="VideoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid" Type="String" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="VideoUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
@@ -3237,7 +3237,7 @@
             <PropertyRef Name="VideoId" />
           </Key>
           <Property Name="VideoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid" Type="String" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="VideoUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
