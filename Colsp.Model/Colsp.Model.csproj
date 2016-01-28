@@ -47,6 +47,7 @@
     <Compile Include="Requests\AttributeValueRequest.cs" />
     <Compile Include="Requests\BrandRequest.cs" />
     <Compile Include="Requests\CategoryRequest.cs" />
+    <Compile Include="Requests\ExcelRequest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />
     <Compile Include="Requests\ProductStageRequest.cs" />

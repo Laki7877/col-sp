@@ -13,12 +13,46 @@ using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
 using Colsp.Api.Helpers;
+using System.Web;
+using System.Threading.Tasks;
 
 namespace Colsp.Api.Controllers
 {
     public class ProductStagesController : ApiController
     {
         private ColspEntities db = new ColspEntities();
+        private readonly string root = HttpContext.Current.Server.MapPath("~/Excel");
+
+        [Route("api/ProductStages/Excel/Upload")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadExcelFile()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("Content Multimedia");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(root);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    //fileName = fileData.LocalFileName;
+                    //string tmp = fileData.Headers.ContentDisposition.FileName;
+                    //if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+                    //{
+                    //    tmp = tmp.Trim('"');
+                    //}
+                    //ext = Path.GetExtension(tmp);
+                    //break;
+                }
+                throw new Exception("todo");
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+            }
+        }
 
         [Route("api/ProductStages")]
         [HttpGet]
@@ -71,13 +105,17 @@ namespace Colsp.Api.Controllers
                 {
                     products = products.Where(p=>p.ProductStageAttributes.All(a=>a.AttributeId==request.AttributeId));
                 }
-                if (request.SearchText != null)
+                if (!string.IsNullOrEmpty(request.SearchText))
                 {
                     products = products.Where(p => p.Sku.Contains(request.SearchText)
                     || p.ProductNameEn.Contains(request.SearchText)
                     || p.ProductNameTh.Contains(request.SearchText)
                     || p.Pid.Contains(request.SearchText)
                     || p.Upc.Contains(request.SearchText));
+                }
+                if (!string.IsNullOrEmpty(request.Pid))
+                {
+                    products = products.Where(p => p.Pid.Equals(request.Pid));
                 }
                 if (request.SellerId != null)
                 {
@@ -108,9 +146,9 @@ namespace Colsp.Api.Controllers
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
             }
 
         }
@@ -339,12 +377,12 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    throw new Exception(HttpErrorMessage.NotFound);
                 }
             }
             catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
             }
         }
 
@@ -358,7 +396,7 @@ namespace Colsp.Api.Controllers
                 if (request.SellerId == null || request.SellerId == 0 || this.User.UserId() != request.SellerId
                     || this.User.ShopIds().Where(w => w == request.SellerId).SingleOrDefault() == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid. Cannot find shop in session");
+                    throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
 
                 #region Setup Master Product
@@ -644,9 +682,9 @@ namespace Colsp.Api.Controllers
                     {
                         db.SaveChanges();
                     }
-                    catch (Exception wee)
+                    catch (Exception ex1)
                     {
-                        return Request.CreateResponse(HttpStatusCode.OK, wee);
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex1);
                     }
                 }
                 #endregion
@@ -663,11 +701,11 @@ namespace Colsp.Api.Controllers
             {
                 if (request.SellerId == null || request.SellerId == 0 || this.User.ShopIds().Where(w => w == request.SellerId).SingleOrDefault() == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid. Cannot find shop in session");
+                    throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
                 if (productId == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product is invalid");
+                    throw new Exception("Product is invalid");
                 }
                 var stage = db.ProductStages.Where(w => w.ProductId == productId)
                     .Include(i => i.ProductStageVariants)
@@ -676,7 +714,7 @@ namespace Colsp.Api.Controllers
                 {
                     if (stage.Status == null || !stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product is not allow");
+                        throw new Exception("Product is not allow");
                     }
                     #region Setup Master
                     SetupProductStage(db,stage, request);
@@ -823,12 +861,12 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Product is invalid");
+                    throw new Exception("Product is invalid");
                 }
             }
             catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
             }
         }
 
@@ -840,7 +878,7 @@ namespace Colsp.Api.Controllers
             {
                 if (request == null || request.Count == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
+                    throw new Exception("Invalid request");
                 }
                 var proList = db.ProductStages.ToList();
                 foreach (ProductStageRequest proRq in request)
@@ -875,11 +913,11 @@ namespace Colsp.Api.Controllers
                     var pro = productList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
                     if (pro == null)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Cannot find deleted product");
+                        throw new Exception("Cannot find deleted product");
                     }
                     if (!Constant.PRODUCT_STATUS_DRAFT.Equals(pro.Status))
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Cannot delete product that is not draft");
+                        throw new Exception("Cannot delete product that is not draft");
                     }
                     db.ProductStages.Remove(pro);
                     db.ProductStageImages.RemoveRange(db.ProductStageImages.Where(w => w.Pid.Equals(pro.Pid)));

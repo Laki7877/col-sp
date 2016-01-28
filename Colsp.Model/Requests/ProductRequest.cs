@@ -15,6 +15,7 @@ namespace Colsp.Model.Requests
         public int? LocalCatId { get; set; }
         public int? AttributeSetId { get; set; }
         public int? AttributeId { get; set; }
+        public string Pid { get; set; }
 
         public override void DefaultOnNull()
 		{
@@ -25,6 +26,7 @@ namespace Colsp.Model.Requests
             AttributeSetId = GetValueOrDefault(AttributeSetId, null);
             AttributeId = GetValueOrDefault(AttributeId, null);
             SearchText = GetValueOrDefault(SearchText, null);
+            Pid = GetValueOrDefault(Pid, null);
 			_order = GetValueOrDefault(_order, "ProductId");
 			base.DefaultOnNull();
 		}
