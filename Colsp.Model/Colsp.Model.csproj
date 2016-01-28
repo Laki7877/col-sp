@@ -54,6 +54,7 @@
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\SEORequest.cs" />
     <Compile Include="Requests\TagRequest.cs" />
+    <Compile Include="Requests\UserPermissionRequest.cs" />
     <Compile Include="Requests\UserRequest.cs" />
     <Compile Include="Responses\FileUploadRespond.cs" />
     <Compile Include="Responses\PaginatedResponse.cs" />

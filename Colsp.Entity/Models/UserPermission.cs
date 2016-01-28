@@ -22,6 +22,8 @@ namespace Colsp.Entity.Models
     
         public int PermissionId { get; set; }
         public string PermissionName { get; set; }
+        public string PermissionRole { get; set; }
+        public string PermissionGroup { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }

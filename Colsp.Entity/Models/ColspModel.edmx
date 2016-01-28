@@ -921,7 +921,9 @@
             <PropertyRef Name="PermissionId" />
           </Key>
           <Property Name="PermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PermissionName" Type="nvarchar" MaxLength="50" />
+          <Property Name="PermissionName" Type="nvarchar" MaxLength="100" />
+          <Property Name="PermissionRole" Type="char" MaxLength="1" />
+          <Property Name="PermissionGroup" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="UserShop">
           <Key>
@@ -3392,7 +3394,9 @@
             <PropertyRef Name="PermissionId" />
           </Key>
           <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PermissionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PermissionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PermissionRole" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="PermissionGroup" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UserGroupPermissionMaps" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="UserPermission" ToRole="UserGroupPermissionMap" />
         </EntityType>
         <EntityType Name="UserShop">
@@ -5143,6 +5147,8 @@
           <EntitySetMapping Name="UserPermissions">
             <EntityTypeMapping TypeName="ColspModel.UserPermission">
               <MappingFragment StoreEntitySet="UserPermission">
+                <ScalarProperty Name="PermissionGroup" ColumnName="PermissionGroup" />
+                <ScalarProperty Name="PermissionRole" ColumnName="PermissionRole" />
                 <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
                 <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
               </MappingFragment>

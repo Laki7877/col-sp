@@ -159,226 +159,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var stage = db.ProductStages.Where(w => w.ProductId == productId)
-                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute))
-                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute1))
-                    .Include(i => i.ProductStageAttributes.Select(s => s.Attribute))
-                    .Include(i => i.Brand).SingleOrDefault();
-
-                if (stage != null)
-                {
-                    ProductStageRequest response = new ProductStageRequest();
-                    response.MasterVariant.ProductNameTh = stage.ProductNameTh;
-                    response.MasterVariant.ProductNameEn = stage.ProductNameEn;
-                    response.MasterVariant.Sku = stage.Sku;
-                    response.MasterVariant.Upc = stage.Upc;
-                    response.Brand.BrandId = stage.BrandId;
-                    if (stage.Brand != null)
-                    {
-                        response.Brand.BrandId = stage.Brand.BrandId;
-                        response.Brand.BrandNameEn = stage.Brand.BrandNameEn;
-                    }
-                    response.MasterVariant.OriginalPrice = stage.OriginalPrice;
-                    response.MasterVariant.SalePrice = stage.SalePrice;
-                    response.MasterVariant.DescriptionFullTh = stage.DescriptionFullTh;
-                    response.MasterVariant.DescriptionShortTh = stage.DescriptionShortTh;
-                    response.MasterVariant.DescriptionFullEn = stage.DescriptionFullEn;
-                    response.MasterVariant.DescriptionShortEn = stage.DescriptionShortEn;
-                    response.AttributeSet.AttributeSetId = stage.AttributeSetId;
-                    response.Keywords = stage.Tag;
-                    response.ShippingMethod = stage.ShippingId;
-                    response.PrepareDay = stage.PrepareDay;
-                    response.MasterVariant.Length = stage.Length;
-                    response.MasterVariant.Height = stage.Height;
-                    response.MasterVariant.Width = stage.Width;
-                    response.MasterVariant.Weight = stage.Weight;
-                    response.MasterVariant.DimensionUnit = stage.DimensionUnit;
-                    response.MasterVariant.WeightUnit = stage.WeightUnit;
-                    response.GlobalCategory = stage.GlobalCatId;
-                    response.LocalCategory = stage.LocalCatId;
-                    response.SEO.MetaTitle = stage.MetaTitle;
-                    response.SEO.MetaDescription = stage.MetaDescription;
-                    response.SEO.MetaKeywords = stage.MetaKey;
-                    response.SEO.ProductUrlKeyEn = stage.UrlEn;
-                    response.SEO.ProductUrlKeyTh = stage.UrlTh;
-                    response.SEO.ProductBoostingWeight = stage.BoostWeight;
-                    #region Setup Effective Date & Time 
-                    if (stage.EffectiveDate != null)
-                    {
-                        response.EffectiveDate = stage.EffectiveDate.Value.ToString("MMMM dd, yyyy");
-                    }
-                    if (stage.EffectiveTime != null)
-                    {
-                        response.EffectiveTime = stage.EffectiveTime.Value.ToString(@"hh\:mm");
-                    }
-                    #endregion
-                    #region Setup Expire Date & Time
-                    if (stage.ExpiryDate != null)
-                    {
-                        response.ExpireDate = stage.ExpiryDate.Value.ToString("MMMM dd, yyyy");
-                    }
-                    if (stage.ExpiryTime != null)
-                    {
-                        response.ExpireTime = stage.ExpiryTime.Value.ToString(@"hh\:mm");
-                    }
-                    #endregion
-                    response.ControlFlags.Flag1 = stage.ControlFlag1;
-                    response.ControlFlags.Flag2 = stage.ControlFlag2;
-                    response.ControlFlags.Flag3 = stage.ControlFlag3;
-                    response.Remark = stage.Remark;
-                    response.Status = stage.Status;
-                    response.SellerId = stage.SellerId;
-                    response.ShopId = stage.ShopId;
-                    response.MasterVariant.Pid = stage.Pid;
-                    response.ProductId = stage.ProductId;
-                    response.InfoFlag = stage.InfoFlag;
-                    response.ImageFlag = stage.ImageFlag;
-                    response.OnlineFlag = stage.OnlineFlag;
-                    response.Visibility = stage.Visibility;
-                    if (stage.ProductStageVariants != null)
-                    {
-                        response.VariantCount = stage.ProductStageVariants.Count;
-                    }
-                    response.VariantCount = stage.ProductStageVariants.Count;
-                    response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes.ToList());
-                    #region Setup Inventory
-                    var inventory = (from inv in db.Inventories
-                                     where inv.Pid.Equals(stage.Pid)
-                                     select inv).SingleOrDefault();
-                    if (inventory != null)
-                    {
-                        response.MasterVariant.SafetyStock = inventory.SaftyStockSeller;
-                        response.MasterVariant.Quantity = inventory.Quantity;
-                        response.MasterVariant.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
-                    }
-                    #endregion
-                    response.MasterVariant.Images = SetupImgResponse(db, stage.Pid);
-                    response.MasterVariant.Images360 = SetupImg360Response(db, stage.Pid);
-                    response.MasterVariant.VideoLinks = SetupVdoResponse(db, stage.Pid);
-                    #region Setup Related GlobalCategories
-                    var globalCatList = (from map in db.ProductStageGlobalCatMaps
-                                         join cat in db.GlobalCategories on map.CategoryId equals cat.CategoryId
-                                         where map.ProductId.Equals(stage.ProductId)
-                                         select map.GlobalCategory).ToList();
-
-                    if (globalCatList != null && globalCatList.Count > 0)
-                    {
-                        List<CategoryRequest> catList = new List<CategoryRequest>();
-                        foreach (GlobalCategory c in globalCatList)
-                        {
-                            CategoryRequest cat = new CategoryRequest();
-                            cat.CategoryId = c.CategoryId;
-                            cat.NameEn = c.NameEn;
-                            catList.Add(cat);
-                        }
-                        response.GlobalCategories = catList;
-                    }
-                    #endregion
-                    #region Setup Related LocalCategories
-                    var localCatList = (from map in db.ProductStageLocalCatMaps
-                                        join cat in db.LocalCategories on map.CategoryId equals cat.CategoryId
-                                        where map.ProductId.Equals(stage.ProductId)
-                                        select map.LocalCategory).ToList();
-                    if (localCatList != null && localCatList.Count > 0)
-                    {
-                        List<CategoryRequest> catList = new List<CategoryRequest>();
-                        foreach (LocalCategory c in localCatList)
-                        {
-                            CategoryRequest cat = new CategoryRequest();
-                            cat.CategoryId = c.CategoryId;
-                            cat.NameEn = c.NameEn;
-                            catList.Add(cat);
-                        }
-                        response.LocalCategories = catList;
-                    }
-                    #endregion
-                    #region Setup Related Product
-                    var relatedList = db.ProductStageRelateds.Join(db.ProductStages,
-                        rel => rel.Pid2,
-                        stg => stg.Pid,
-                        (rel, stg) => new { RelatedProduct = rel, ProductStage = stg })
-                        .Where(w => w.RelatedProduct.Pid1.Equals(stage.Pid)).ToList();
-                    if (relatedList != null && relatedList.Count > 0)
-                    {
-                        List<VariantRequest> relate = new List<VariantRequest>();
-                        foreach (var r in relatedList)
-                        {
-                            VariantRequest va = new VariantRequest();
-                            va.Pid = r.ProductStage.Pid;
-                            va.ProductNameTh = r.ProductStage.ProductNameTh;
-                            va.ProductNameEn = r.ProductStage.ProductNameEn;
-                            va.Sku = r.ProductStage.Sku;
-                            va.Upc = r.ProductStage.Upc;
-                            va.OriginalPrice = r.ProductStage.OriginalPrice;
-                            va.SalePrice = r.ProductStage.SalePrice;
-                            va.DescriptionFullTh = r.ProductStage.DescriptionFullTh;
-                            va.DescriptionShortTh = r.ProductStage.DescriptionShortTh;
-                            va.DescriptionFullEn = r.ProductStage.DescriptionFullEn;
-                            va.DescriptionShortEn = r.ProductStage.DescriptionShortEn;
-                            va.Length = r.ProductStage.Length;
-                            va.Height = r.ProductStage.Height;
-                            va.Width = r.ProductStage.Width;
-                            va.Weight = r.ProductStage.Weight;
-                            va.DimensionUnit = r.ProductStage.DimensionUnit;
-                            va.WeightUnit = r.ProductStage.WeightUnit;
-                            relate.Add(va);
-                        }
-                        response.RelatedProducts = relate;
-                    }
-                    #endregion
-                    List<VariantRequest> varList = new List<VariantRequest>();
-                    foreach (ProductStageVariant variantEntity in stage.ProductStageVariants)
-                    {
-                        VariantRequest varient = new VariantRequest();
-                        varient.VariantId = variantEntity.VariantId;
-                        varient.Pid = variantEntity.Pid;
-                        varient.FirstAttribute.AttributeId = variantEntity.Attribute1Id;
-                        varient.FirstAttribute.ValueEn = variantEntity.ValueEn1;
-                        varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
-                        varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
-                        varient.DefaultVariant = variantEntity.DefaultVaraint;
-                        #region Setup Variant Inventory
-                        inventory = (from inv in db.Inventories
-                                     where inv.Pid.Equals(variantEntity.Pid)
-                                     select inv).SingleOrDefault();
-                        if (inventory != null)
-                        {
-                            varient.SafetyStock = inventory.SaftyStockSeller;
-                            varient.Quantity = inventory.Quantity;
-                            varient.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
-                        }
-                        #endregion
-
-
-                        varient.Images = SetupImgResponse(db, variantEntity.Pid);
-                        varient.VideoLinks = SetupVdoResponse(db, variantEntity.Pid);
-
-                        varient.ProductNameTh = variantEntity.ProductNameTh;
-                        varient.ProductNameEn = variantEntity.ProductNameEn;
-                        varient.Sku = variantEntity.Sku;
-                        varient.Upc = variantEntity.Upc;
-                        varient.OriginalPrice = variantEntity.OriginalPrice;
-                        varient.SalePrice = variantEntity.SalePrice;
-                        varient.DescriptionFullTh = variantEntity.DescriptionFullTh;
-                        varient.DescriptionShortTh = variantEntity.DescriptionShortTh;
-                        varient.DescriptionFullEn = variantEntity.DescriptionFullEn;
-                        varient.DescriptionShortEn = variantEntity.DescriptionShortEn;
-                        varient.Length = variantEntity.Length;
-                        varient.Height = variantEntity.Height;
-                        varient.Width = variantEntity.Width;
-                        varient.Weight = variantEntity.Weight;
-                        varient.DimensionUnit = variantEntity.DimensionUnit;
-                        varient.WeightUnit = variantEntity.WeightUnit;
-                        varient.Visibility = variantEntity.Visibility;
-                        varList.Add(varient);
-                    }
-                    response.Variants = varList;
-                    return Request.CreateResponse(HttpStatusCode.OK, response);
-                }
-                else
-                {
-                    throw new Exception(HttpErrorMessage.NotFound);
-                }
+                var response = SetupProductStageRequestFromProductId(db,productId);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
             {
@@ -930,7 +712,258 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+            }
+        }
+
+        [Route("api/ProductStages/Publish")]
+        [HttpPost]
+        public HttpResponseMessage PublishProduct(List<ProductStageRequest> request)
+        {
+            try
+            {
+                foreach (ProductStageRequest rq in request)
+                {
+                    if(rq.ProductId == null) { throw new Exception("ProductId cannot be null"); }
+                    var stage = db.ProductStages.Find(rq.ProductId.Value);
+                    if (!stage.Equals(Constant.PRODUCT_STATUS_DRAFT))
+                    {
+                        throw new Exception("ProudctId " + rq.ProductId.Value + " is not drafted");
+                    }
+                    //if()
+
+                    stage.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, "Published success");
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+            }
+        }
+        
+        private ProductStageRequest SetupProductStageRequestFromProductId(ColspEntities db, int productId)
+        {
+            var stage = db.ProductStages.Where(w => w.ProductId == productId)
+                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute))
+                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute1))
+                    .Include(i => i.ProductStageAttributes.Select(s => s.Attribute))
+                    .Include(i => i.Brand).SingleOrDefault();
+
+            if (stage != null)
+            {
+                ProductStageRequest response = new ProductStageRequest();
+                response.MasterVariant.ProductNameTh = stage.ProductNameTh;
+                response.MasterVariant.ProductNameEn = stage.ProductNameEn;
+                response.MasterVariant.Sku = stage.Sku;
+                response.MasterVariant.Upc = stage.Upc;
+                response.Brand.BrandId = stage.BrandId;
+                if (stage.Brand != null)
+                {
+                    response.Brand.BrandId = stage.Brand.BrandId;
+                    response.Brand.BrandNameEn = stage.Brand.BrandNameEn;
+                }
+                response.MasterVariant.OriginalPrice = stage.OriginalPrice;
+                response.MasterVariant.SalePrice = stage.SalePrice;
+                response.MasterVariant.DescriptionFullTh = stage.DescriptionFullTh;
+                response.MasterVariant.DescriptionShortTh = stage.DescriptionShortTh;
+                response.MasterVariant.DescriptionFullEn = stage.DescriptionFullEn;
+                response.MasterVariant.DescriptionShortEn = stage.DescriptionShortEn;
+                response.AttributeSet.AttributeSetId = stage.AttributeSetId;
+                response.Keywords = stage.Tag;
+                response.ShippingMethod = stage.ShippingId;
+                response.PrepareDay = stage.PrepareDay;
+                response.MasterVariant.Length = stage.Length;
+                response.MasterVariant.Height = stage.Height;
+                response.MasterVariant.Width = stage.Width;
+                response.MasterVariant.Weight = stage.Weight;
+                response.MasterVariant.DimensionUnit = stage.DimensionUnit;
+                response.MasterVariant.WeightUnit = stage.WeightUnit;
+                response.GlobalCategory = stage.GlobalCatId;
+                response.LocalCategory = stage.LocalCatId;
+                response.SEO.MetaTitle = stage.MetaTitle;
+                response.SEO.MetaDescription = stage.MetaDescription;
+                response.SEO.MetaKeywords = stage.MetaKey;
+                response.SEO.ProductUrlKeyEn = stage.UrlEn;
+                response.SEO.ProductUrlKeyTh = stage.UrlTh;
+                response.SEO.ProductBoostingWeight = stage.BoostWeight;
+                #region Setup Effective Date & Time 
+                if (stage.EffectiveDate != null)
+                {
+                    response.EffectiveDate = stage.EffectiveDate.Value.ToString("MMMM dd, yyyy");
+                }
+                if (stage.EffectiveTime != null)
+                {
+                    response.EffectiveTime = stage.EffectiveTime.Value.ToString(@"hh\:mm");
+                }
+                #endregion
+                #region Setup Expire Date & Time
+                if (stage.ExpiryDate != null)
+                {
+                    response.ExpireDate = stage.ExpiryDate.Value.ToString("MMMM dd, yyyy");
+                }
+                if (stage.ExpiryTime != null)
+                {
+                    response.ExpireTime = stage.ExpiryTime.Value.ToString(@"hh\:mm");
+                }
+                #endregion
+                response.ControlFlags.Flag1 = stage.ControlFlag1;
+                response.ControlFlags.Flag2 = stage.ControlFlag2;
+                response.ControlFlags.Flag3 = stage.ControlFlag3;
+                response.Remark = stage.Remark;
+                response.Status = stage.Status;
+                response.SellerId = stage.SellerId;
+                response.ShopId = stage.ShopId;
+                response.MasterVariant.Pid = stage.Pid;
+                response.ProductId = stage.ProductId;
+                response.InfoFlag = stage.InfoFlag;
+                response.ImageFlag = stage.ImageFlag;
+                response.OnlineFlag = stage.OnlineFlag;
+                response.Visibility = stage.Visibility;
+                if (stage.ProductStageVariants != null)
+                {
+                    response.VariantCount = stage.ProductStageVariants.Count;
+                }
+                response.VariantCount = stage.ProductStageVariants.Count;
+                response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes.ToList());
+                #region Setup Inventory
+                var inventory = (from inv in db.Inventories
+                                 where inv.Pid.Equals(stage.Pid)
+                                 select inv).SingleOrDefault();
+                if (inventory != null)
+                {
+                    response.MasterVariant.SafetyStock = inventory.SaftyStockSeller;
+                    response.MasterVariant.Quantity = inventory.Quantity;
+                    response.MasterVariant.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
+                }
+                #endregion
+                response.MasterVariant.Images = SetupImgResponse(db, stage.Pid);
+                response.MasterVariant.Images360 = SetupImg360Response(db, stage.Pid);
+                response.MasterVariant.VideoLinks = SetupVdoResponse(db, stage.Pid);
+                #region Setup Related GlobalCategories
+                var globalCatList = (from map in db.ProductStageGlobalCatMaps
+                                     join cat in db.GlobalCategories on map.CategoryId equals cat.CategoryId
+                                     where map.ProductId.Equals(stage.ProductId)
+                                     select map.GlobalCategory).ToList();
+
+                if (globalCatList != null && globalCatList.Count > 0)
+                {
+                    List<CategoryRequest> catList = new List<CategoryRequest>();
+                    foreach (GlobalCategory c in globalCatList)
+                    {
+                        CategoryRequest cat = new CategoryRequest();
+                        cat.CategoryId = c.CategoryId;
+                        cat.NameEn = c.NameEn;
+                        catList.Add(cat);
+                    }
+                    response.GlobalCategories = catList;
+                }
+                #endregion
+                #region Setup Related LocalCategories
+                var localCatList = (from map in db.ProductStageLocalCatMaps
+                                    join cat in db.LocalCategories on map.CategoryId equals cat.CategoryId
+                                    where map.ProductId.Equals(stage.ProductId)
+                                    select map.LocalCategory).ToList();
+                if (localCatList != null && localCatList.Count > 0)
+                {
+                    List<CategoryRequest> catList = new List<CategoryRequest>();
+                    foreach (LocalCategory c in localCatList)
+                    {
+                        CategoryRequest cat = new CategoryRequest();
+                        cat.CategoryId = c.CategoryId;
+                        cat.NameEn = c.NameEn;
+                        catList.Add(cat);
+                    }
+                    response.LocalCategories = catList;
+                }
+                #endregion
+                #region Setup Related Product
+                var relatedList = db.ProductStageRelateds.Join(db.ProductStages,
+                    rel => rel.Pid2,
+                    stg => stg.Pid,
+                    (rel, stg) => new { RelatedProduct = rel, ProductStage = stg })
+                    .Where(w => w.RelatedProduct.Pid1.Equals(stage.Pid)).ToList();
+                if (relatedList != null && relatedList.Count > 0)
+                {
+                    List<VariantRequest> relate = new List<VariantRequest>();
+                    foreach (var r in relatedList)
+                    {
+                        VariantRequest va = new VariantRequest();
+                        va.Pid = r.ProductStage.Pid;
+                        va.ProductNameTh = r.ProductStage.ProductNameTh;
+                        va.ProductNameEn = r.ProductStage.ProductNameEn;
+                        va.Sku = r.ProductStage.Sku;
+                        va.Upc = r.ProductStage.Upc;
+                        va.OriginalPrice = r.ProductStage.OriginalPrice;
+                        va.SalePrice = r.ProductStage.SalePrice;
+                        va.DescriptionFullTh = r.ProductStage.DescriptionFullTh;
+                        va.DescriptionShortTh = r.ProductStage.DescriptionShortTh;
+                        va.DescriptionFullEn = r.ProductStage.DescriptionFullEn;
+                        va.DescriptionShortEn = r.ProductStage.DescriptionShortEn;
+                        va.Length = r.ProductStage.Length;
+                        va.Height = r.ProductStage.Height;
+                        va.Width = r.ProductStage.Width;
+                        va.Weight = r.ProductStage.Weight;
+                        va.DimensionUnit = r.ProductStage.DimensionUnit;
+                        va.WeightUnit = r.ProductStage.WeightUnit;
+                        relate.Add(va);
+                    }
+                    response.RelatedProducts = relate;
+                }
+                #endregion
+                List<VariantRequest> varList = new List<VariantRequest>();
+                foreach (ProductStageVariant variantEntity in stage.ProductStageVariants)
+                {
+                    VariantRequest varient = new VariantRequest();
+                    varient.VariantId = variantEntity.VariantId;
+                    varient.Pid = variantEntity.Pid;
+                    varient.FirstAttribute.AttributeId = variantEntity.Attribute1Id;
+                    varient.FirstAttribute.ValueEn = variantEntity.ValueEn1;
+                    varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
+                    varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
+                    varient.DefaultVariant = variantEntity.DefaultVaraint;
+                    #region Setup Variant Inventory
+                    inventory = (from inv in db.Inventories
+                                 where inv.Pid.Equals(variantEntity.Pid)
+                                 select inv).SingleOrDefault();
+                    if (inventory != null)
+                    {
+                        varient.SafetyStock = inventory.SaftyStockSeller;
+                        varient.Quantity = inventory.Quantity;
+                        varient.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
+                    }
+                    #endregion
+
+
+                    varient.Images = SetupImgResponse(db, variantEntity.Pid);
+                    varient.VideoLinks = SetupVdoResponse(db, variantEntity.Pid);
+
+                    varient.ProductNameTh = variantEntity.ProductNameTh;
+                    varient.ProductNameEn = variantEntity.ProductNameEn;
+                    varient.Sku = variantEntity.Sku;
+                    varient.Upc = variantEntity.Upc;
+                    varient.OriginalPrice = variantEntity.OriginalPrice;
+                    varient.SalePrice = variantEntity.SalePrice;
+                    varient.DescriptionFullTh = variantEntity.DescriptionFullTh;
+                    varient.DescriptionShortTh = variantEntity.DescriptionShortTh;
+                    varient.DescriptionFullEn = variantEntity.DescriptionFullEn;
+                    varient.DescriptionShortEn = variantEntity.DescriptionShortEn;
+                    varient.Length = variantEntity.Length;
+                    varient.Height = variantEntity.Height;
+                    varient.Width = variantEntity.Width;
+                    varient.Weight = variantEntity.Weight;
+                    varient.DimensionUnit = variantEntity.DimensionUnit;
+                    varient.WeightUnit = variantEntity.WeightUnit;
+                    varient.Visibility = variantEntity.Visibility;
+                    varList.Add(varient);
+                }
+                response.Variants = varList;
+                return response;
+            }
+            else
+            {
+                throw new Exception("Product " + productId + " not found");
             }
         }
 
