@@ -22,7 +22,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var userPermission = db.UserPermissions.Where(u => u.PermissionRole.Equals(PermissionRole));
+                var userPermission = db.UserPermissions.Where(u => u.Type.Equals(PermissionRole));
                 return Request.CreateResponse(HttpStatusCode.OK, userPermission);
             }
             catch (Exception e)
@@ -31,5 +31,14 @@ namespace Colsp.Api.Controllers
             }
         }
 
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

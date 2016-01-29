@@ -31,12 +31,16 @@ namespace Colsp.Entity.Models
         public string Password { get; set; }
         public string PasswordLastChg { get; set; }
         public string Email { get; set; }
+        public string EmployeeId { get; set; }
+        public string Position { get; set; }
+        public string Division { get; set; }
         public string NameEn { get; set; }
         public string NameTh { get; set; }
+        public string Type { get; set; }
         public string Mobile { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public string Status { get; set; }
         public Nullable<int> LoginFailCount { get; set; }
         public Nullable<System.DateTime> LastLoginDt { get; set; }
         public string CreatedBy { get; set; }

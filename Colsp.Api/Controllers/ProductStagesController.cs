@@ -15,6 +15,9 @@ using System.Data.Entity;
 using Colsp.Api.Helpers;
 using System.Web;
 using System.Threading.Tasks;
+using System.IO;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace Colsp.Api.Controllers
 {
@@ -50,7 +53,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -148,7 +151,7 @@ namespace Colsp.Api.Controllers
             }
             catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
 
         }
@@ -164,7 +167,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -466,7 +469,7 @@ namespace Colsp.Api.Controllers
                     }
                     catch (Exception ex1)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex1);
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex1.Message);
                     }
                 }
                 #endregion
@@ -648,7 +651,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -676,9 +679,33 @@ namespace Colsp.Api.Controllers
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        //duplicate
+        [Route("api/ProductStages/{productId}")]
+        [HttpPost]
+        public HttpResponseMessage DuplicateProductStage(int productId)
+        {
+            try
+            {
+                ProductStageRequest response = SetupProductStageRequestFromProductId(db, productId);
+                if (response == null)
+                {
+                    throw new Exception("Cannot find product with id " + productId);
+                }
+                else
+                {
+                    response.ProductId = null;
+                    return AddProduct(response);
+                }
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -712,7 +739,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -724,14 +751,16 @@ namespace Colsp.Api.Controllers
             {
                 foreach (ProductStageRequest rq in request)
                 {
-                    if(rq.ProductId == null) { throw new Exception("ProductId cannot be null"); }
+                    if(rq.ProductId == null) { throw new Exception("Product Id cannot be null"); }
                     var stage = db.ProductStages.Find(rq.ProductId.Value);
-                    if (!stage.Equals(Constant.PRODUCT_STATUS_DRAFT))
+                    if(stage == null)
+                    {
+                        throw new Exception("Cannot find Product with id " + rq.ProductId.Value );
+                    }
+                    if (!stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
                     {
                         throw new Exception("ProudctId " + rq.ProductId.Value + " is not drafted");
                     }
-                    //if()
-
                     stage.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
                 }
                 db.SaveChanges();
@@ -739,10 +768,121 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Export")]
+        [HttpPost]
+        public HttpResponseMessage ExportProduct(List<ProductStageRequest> request)
+        {
+            MemoryStream stream = null;
+            StreamWriter writer = null;
+            try
+            {
+                stream = new MemoryStream();
+                writer = new StreamWriter(stream);
+                string header = "SKU*,PID,Group ID,Product Status,Product Name (English)*,Product Name (Thai)*,Global Category (ID)*,Local Category (ID),Attribute Set (ID),Product Variation 1 (Option),Product Variation 1 (Value),Product Variation 2 (Option),Product Variation 2 (Value),Brand Name (ID)*,Original Price*,Sale Price,Description (Thai)*,Description (English)*,Short Description (Thai),Short Description (English),Stock Type*,Preparation Time*,Package Dimension - Lenght (mm)*,Package Dimension - Height (mm)*,Package Dimension - Width (mm)*,Weight (g)*,Inventory Amount,Safety Stock Amount";
+                writer.WriteLine(header);
+                StringBuilder sb = null;
+                foreach (ProductStageRequest rq in request)
+                {
+                    sb = new StringBuilder();
+                    if (rq.ProductId == null) { throw new Exception("Product Id cannot be null"); }
+                    var pro = db.ProductStages.Find(rq.ProductId.Value);
+                    if(pro == null)
+                    {
+                        throw new Exception("Cannot find Product with id " + rq.ProductId.Value);
+                    }
+                    sb.Append(pro.Sku); sb.Append(",");
+                    sb.Append(pro.Pid); sb.Append(",");
+                    sb.Append("<Group ID>"); sb.Append(",");
+                    sb.Append(pro.Status); sb.Append(",");
+                    sb.Append(pro.ProductNameEn); sb.Append(",");
+                    sb.Append(pro.ProductNameTh); sb.Append(",");
+                    sb.Append(pro.GlobalCatId); sb.Append(",");
+                    sb.Append(pro.LocalCatId); sb.Append(",");
+                    sb.Append(pro.AttributeSetId); sb.Append(",");
+                    sb.Append("Product Variation 1 (Option)"); sb.Append(",");
+                    sb.Append("Product Variation 1 (Value)"); sb.Append(",");
+                    sb.Append("Product Variation 2 (Option)"); sb.Append(",");
+                    sb.Append("Product Variation 2 (Value)"); sb.Append(",");
+                    sb.Append("Brand Name (ID)*"); sb.Append(",");
+                    sb.Append(pro.OriginalPrice); sb.Append(",");
+                    sb.Append(pro.SalePrice); sb.Append(",");
+                    if (!string.IsNullOrEmpty(pro.DescriptionFullTh))
+                    {
+                        if (pro.DescriptionFullTh.Contains("\""))
+                        {
+                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh.Replace("\"", "\"\""));
+                        }
+                        if (pro.DescriptionFullTh.Contains(","))
+                        {
+                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh);
+                        }
+                        if (pro.DescriptionFullTh.Contains(System.Environment.NewLine))
+                        {
+                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh);
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(pro.DescriptionFullEn))
+                    {
+                        if (pro.DescriptionFullEn.Contains("\""))
+                        {
+                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn.Replace("\"", "\"\""));
+                        }
+                        if (pro.DescriptionFullEn.Contains(","))
+                        {
+                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn);
+                        }
+                        if (pro.DescriptionFullEn.Contains(System.Environment.NewLine))
+                        {
+                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn);
+                        }
+                    }
+                    sb.Append("\"" + pro.DescriptionFullTh + "\""); sb.Append(",");
+                    sb.Append("\"" + pro.DescriptionFullEn + "\""); sb.Append(",");
+                    sb.Append(pro.DescriptionShortTh); sb.Append(",");
+                    sb.Append(pro.DescriptionShortEn); sb.Append(",");
+                    sb.Append("Stock Type*"); sb.Append(",");
+                    sb.Append(pro.PrepareDay);  sb.Append(",");
+                    sb.Append(pro.Length); sb.Append(",");
+                    sb.Append(pro.Height); sb.Append(",");
+                    sb.Append(pro.Width); sb.Append(",");
+                    sb.Append(pro.Weight); sb.Append(",");
+                    sb.Append("Inventory Amount"); sb.Append(",");
+                    sb.Append("Safety Stock Amount");
+
+                    writer.WriteLine(sb);
+                }
+                writer.Flush();
+                stream.Position = 0;
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StreamContent(stream);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream") {
+                    CharSet = Encoding.UTF8.WebName
+                };
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = "file.csv";
+                return result;
+            }
+            catch (Exception e)
+            {
+                if (writer != null)
+                {
+                    writer.Close();
+                    writer.Dispose();
+                }
+                if (stream != null)
+                {
+                    stream.Close();
+                    stream.Dispose();
+                }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
             }
         }
-        
+
         private ProductStageRequest SetupProductStageRequestFromProductId(ColspEntities db, int productId)
         {
             var stage = db.ProductStages.Where(w => w.ProductId == productId)

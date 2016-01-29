@@ -865,14 +865,18 @@
           <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Password" Type="nvarchar" MaxLength="100" />
-          <Property Name="PasswordLastChg" Type="nchar" MaxLength="10" />
-          <Property Name="Email" Type="nchar" MaxLength="100" />
+          <Property Name="PasswordLastChg" Type="nvarchar" MaxLength="100" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="EmployeeId" Type="nvarchar" MaxLength="100" />
+          <Property Name="Position" Type="nvarchar" MaxLength="100" />
+          <Property Name="Division" Type="nvarchar" MaxLength="100" />
           <Property Name="NameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="NameTh" Type="nvarchar" MaxLength="100" />
-          <Property Name="Mobile" Type="char" MaxLength="20" />
-          <Property Name="Phone" Type="char" MaxLength="20" />
-          <Property Name="Fax" Type="char" MaxLength="10" />
-          <Property Name="Status" Type="bit" />
+          <Property Name="Type" Type="char" MaxLength="1" />
+          <Property Name="Mobile" Type="nvarchar" MaxLength="20" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="20" />
+          <Property Name="Fax" Type="nvarchar" MaxLength="10" />
+          <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="LoginFailCount" Type="int" />
           <Property Name="LastLoginDt" Type="datetime" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
@@ -887,6 +891,8 @@
           <Property Name="GroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GroupNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="GroupNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="Type" Type="char" MaxLength="1" />
+          <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
@@ -922,7 +928,7 @@
           </Key>
           <Property Name="PermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PermissionName" Type="nvarchar" MaxLength="100" />
-          <Property Name="PermissionRole" Type="char" MaxLength="1" />
+          <Property Name="Type" Type="char" MaxLength="1" />
           <Property Name="PermissionGroup" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="UserShop">
@@ -3324,14 +3330,18 @@
           <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="PasswordLastChg" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="PasswordLastChg" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EmployeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Position" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Division" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="NameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="NameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Mobile" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
-          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
-          <Property Name="Fax" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="Status" Type="Boolean" />
+          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Mobile" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Fax" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="LoginFailCount" Type="Int32" />
           <Property Name="LastLoginDt" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3353,6 +3363,8 @@
           <Property Name="GroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="GroupNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="GroupNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3395,7 +3407,7 @@
           </Key>
           <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PermissionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="PermissionRole" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="PermissionGroup" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UserGroupPermissionMaps" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="UserPermission" ToRole="UserGroupPermissionMap" />
         </EntityType>
@@ -5097,8 +5109,12 @@
                 <ScalarProperty Name="Fax" ColumnName="Fax" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="NameTh" ColumnName="NameTh" />
                 <ScalarProperty Name="NameEn" ColumnName="NameEn" />
+                <ScalarProperty Name="Division" ColumnName="Division" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="PasswordLastChg" ColumnName="PasswordLastChg" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
@@ -5114,6 +5130,8 @@
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="GroupNameTh" ColumnName="GroupNameTh" />
                 <ScalarProperty Name="GroupNameEn" ColumnName="GroupNameEn" />
                 <ScalarProperty Name="GroupId" ColumnName="GroupId" />
@@ -5148,7 +5166,7 @@
             <EntityTypeMapping TypeName="ColspModel.UserPermission">
               <MappingFragment StoreEntitySet="UserPermission">
                 <ScalarProperty Name="PermissionGroup" ColumnName="PermissionGroup" />
-                <ScalarProperty Name="PermissionRole" ColumnName="PermissionRole" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
                 <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
               </MappingFragment>

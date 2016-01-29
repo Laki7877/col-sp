@@ -8,6 +8,7 @@ namespace Colsp.Model.Requests
 {
     public class UserPermissionRequest : PaginatedRequest
     {
-
+        public int? PermissionId { get; set; }
+        public string PermissionName { get; set; }
     }
 }

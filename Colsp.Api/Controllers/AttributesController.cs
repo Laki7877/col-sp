@@ -357,7 +357,7 @@ namespace Colsp.Api.Controllers
                 AttributeRequest response = GetAttibuteResponse(db, attributeId);
                 if (response == null)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    throw new Exception("Cannot find attribute with id " + attributeId);
                 }
                 else
                 {
@@ -365,9 +365,9 @@ namespace Colsp.Api.Controllers
                     return AddAttribute(response);
                 }
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,e.Message);
             }
         }
 
