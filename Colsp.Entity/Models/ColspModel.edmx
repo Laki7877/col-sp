@@ -863,10 +863,10 @@
             <PropertyRef Name="UserId" />
           </Key>
           <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" />
           <Property Name="Password" Type="nvarchar" MaxLength="100" />
           <Property Name="PasswordLastChg" Type="nvarchar" MaxLength="100" />
-          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="EmployeeId" Type="nvarchar" MaxLength="100" />
           <Property Name="Position" Type="nvarchar" MaxLength="100" />
           <Property Name="Division" Type="nvarchar" MaxLength="100" />
@@ -3328,10 +3328,10 @@
             <PropertyRef Name="UserId" />
           </Key>
           <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="PasswordLastChg" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="EmployeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Division" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />

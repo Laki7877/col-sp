@@ -30,7 +30,7 @@ namespace Colsp.Api.Controllers
                     s.GroupId,
                     s.GroupNameEn,
                     s.GroupNameTh,
-                    Permission = s.UserGroupPermissionMaps.Select(p=>p.UserPermission)
+                    Permission = s.UserGroupPermissionMaps.Select(p=>new { p.UserPermission.PermissionId, p.UserPermission.PermissionName })
                 });
                 if (request == null)
                 {

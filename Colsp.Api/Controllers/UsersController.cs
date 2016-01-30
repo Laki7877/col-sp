@@ -13,6 +13,7 @@ using System;
 using System.Net.Http;
 using Colsp.Api.Constants;
 using System.Collections.Generic;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -74,11 +75,16 @@ namespace Colsp.Api.Controllers
                         s.Position,
                         s.Division,
                         s.EmployeeId,
-                        UserGroup = s.UserGroupMaps.Select(ug=>ug.UserGroup)
+                        s.Type,
+                        UserGroup = s.UserGroupMaps.Select(ug => new { ug.UserGroup.GroupId, ug.UserGroup.GroupNameEn, ug.UserGroup.GroupNameTh, Permission = ug.UserGroup.UserGroupPermissionMaps.Select(p => new { p.UserPermission.PermissionId, p.UserPermission.PermissionName}) })
                     }).ToList();
                 if (usr == null || usr.Count == 0)
                 {
                     throw new Exception("User not found");
+                }
+                if (!usr[0].Type.Equals(Constant.USER_TYPE_ADMIN))
+                {
+                    throw new Exception("This user is not admin");
                 }
                 
                 return Request.CreateResponse(HttpStatusCode.OK, usr[0]);
@@ -97,12 +103,14 @@ namespace Colsp.Api.Controllers
             try
             {
                 usr = new User();
-                usr.Email = request.Email;
+                usr.Email = Validation.ValidateString(request.Email,"Email",true,100,false);
                 usr.NameEn = request.NameEn;
                 usr.NameTh = request.NameTh;
                 usr.Division = request.Division;
                 usr.Phone = request.Phone;
                 usr.Position = request.Position;
+                usr.Status = Constant.STATUS_ACTIVE;
+                usr.Type = Constant.USER_TYPE_ADMIN;
                 db.Users.Add(usr);
                 db.SaveChanges();
                 if(request.UserGroup != null)
@@ -124,7 +132,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                if(usr != null)
+                if(usr != null && usr.UserId != 0)
                 {
                     db.Dispose();
                     db = new ColspEntities();
