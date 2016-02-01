@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Requests
 {
-    public class CMSCollectionItemRequest
+    public class CMSBrandInShopRequest
     {
-        public int CMSId { get; set; }
         public string CMSNameEN { get; set; }
         public string CMSNameTH { get; set; }
         public string URLKey { get; set; }
@@ -28,17 +27,18 @@ namespace Colsp.Model.Requests
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> By { get; set; }
         public string IP { get; set; }
-        public List<CollectionItemList> CollectionItemList { get; set; }
-
+        public Nullable<int> BrandId { get; set; }
+        public string BrandNameEN { get; set; }
+        public string BrandNameTH { get; set; }
+        public string Path { get; set; }
+        public string PicUrl { get; set; }
+        public string MetaTitle { get; set; }
+        public string MetaDescription { get; set; }
+        public string MetaKey { get; set; }
+        public string UrlKey { get; set; }
+        public string BrandShortDescriptionEn { get; set; }
+        public string BrandLongDescriptionEn { get; set; }
+        public string BrandShortDescriptionTh { get; set; }
+        public string BrandLongDescriptionTh { get; set; }
     }
-    public class CollectionItemList {
-
-        public int CMSCollectionItemId { get; set; }
-        public string PId { get; set; }
-        public string ProductBoxBadge { get; set; }
-        public Nullable<int> Sequence { get; set; }
-        public Nullable<bool> Status { get; set; }
-    
-    }
-
 }
