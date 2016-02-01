@@ -11,6 +11,7 @@ using Colsp.Api.Constants;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -134,7 +135,7 @@ namespace Colsp.Api.Controllers
                 #endregion
 
                 attribute = new Entity.Models.Attribute();
-                SetupAttribute(attribute, request);
+                SetupAttribute(db,attribute, request);
                 attribute.CreatedBy = this.User.Email();
                 attribute.CreatedDt = DateTime.Now;
                 attribute.UpdatedBy = this.User.Email();
@@ -356,7 +357,7 @@ namespace Colsp.Api.Controllers
                 AttributeRequest response = GetAttibuteResponse(db, attributeId);
                 if (response == null)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    throw new Exception("Cannot find attribute with id " + attributeId);
                 }
                 else
                 {
@@ -364,9 +365,9 @@ namespace Colsp.Api.Controllers
                     return AddAttribute(response);
                 }
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,e.Message);
             }
         }
 
@@ -452,9 +453,10 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request)
+        private void SetupAttribute(ColspEntities db,Entity.Models.Attribute attribute, AttributeRequest request)
         {
-            attribute.AttributeNameEn = request.AttributeNameEn;
+            attribute.AttributeNameEn = Validation.ValidateString(request.AttributeNameEn, "Attribute Name (English)", true, 100, true);
+            //db.Attributes.Where(w => w.AttributeNameEn.Equals(attribute.AttributeNameEn));
             attribute.AttributeNameTh = request.AttributeNameTh;
             attribute.AttributeUnitEn = request.AttributeUnitEn;
             attribute.AttributeUnitTh = request.AttributeUnitTh;

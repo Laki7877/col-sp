@@ -20,6 +20,91 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
+        [Route("api/Shops")]
+        [HttpGet]
+        public HttpResponseMessage GetShop([FromUri] ShopRequest request)
+        {
+            try
+            {
+                var shopList = db.Shops.Include(i=>i.ShopType).Where(w=>!w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Select(s => new
+                    {
+                        s.ShopId,
+                        s.ShopNameEn,
+                        ShopType = new { s.ShopType.ShopTypeId, s.ShopType.ShopTypeNameEn },
+                        s.Status
+                    });
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, shopList);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.ShopNameEn))
+                {
+                    shopList = shopList.Where(a => a.ShopNameEn.Contains(request.ShopNameEn));
+                }
+                var total = shopList.Count();
+                var pagedUsers = shopList.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedUsers, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        
+
+        [Route("api/Shops/{shopId}/")]
+        [HttpGet]
+        public HttpResponseMessage GetShop(int shopId)
+        {
+            try
+            {
+                var shop = db.Shops.Include(i=>i.User.UserGroupMaps.Select(ug => ug.UserGroup)).Include(i=>i.ShopType)
+                    .Include(i=>i.UserShops.Select(s=>s.User.UserGroupMaps.Select(ug=>ug.UserGroup)))
+                    .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE) && w.UserShops.All(a=>!a.User.Status.Equals(Constant.STATUS_REMOVE)))
+                    .Select(s=>new
+                    {
+                        s.ShopId,
+                        s.ShopNameEn,
+                        ShopType = new { s.ShopType.ShopTypeId,s.ShopType.ShopTypeNameEn },
+                        s.Status,
+                        s.Commission,
+                        ShopOwner = new
+                        {
+                            s.User.UserId,
+                            s.User.NameEn,
+                            s.User.Email,
+                            s.User.Phone,
+                            s.User.Status,
+                            UserGroup = s.User.UserGroupMaps.Select(ug=>ug.UserGroup.GroupNameEn)
+                        },
+                        Users = s.UserShops.Select(u=> new
+                        {
+                            u.User.UserId,
+                            u.User.NameEn,
+                            u.User.Email,
+                            u.User.Status,
+                            UserGroup = u.User.UserGroupMaps.Select(ug=>ug.UserGroup.GroupNameEn)
+                        }),
+                    }).ToList();
+                if(shop == null || shop.Count == 0)
+                {
+                    throw new Exception("Cannot find shop");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, shop[0]);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+
+
+
         [Route("api/Shops/{shopId}/LocalCategories")]
         [HttpGet]
         public HttpResponseMessage GetCategoryFromShop(int shopId)

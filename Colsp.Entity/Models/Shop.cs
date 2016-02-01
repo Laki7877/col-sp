@@ -30,6 +30,8 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopOwner { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
+        public Nullable<decimal> Commission { get; set; }
+        public Nullable<int> ShopTypeId { get; set; }
         public string UrlKeyEn { get; set; }
         public string UrlKeyTh { get; set; }
         public string Status { get; set; }
@@ -48,6 +50,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStage> ProductStages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVariant> ProductStageVariants { get; set; }
+        public virtual ShopType ShopType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         public virtual User User { get; set; }

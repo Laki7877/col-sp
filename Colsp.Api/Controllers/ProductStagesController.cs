@@ -13,12 +13,100 @@ using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
 using Colsp.Api.Helpers;
+using System.Web;
+using System.Threading.Tasks;
+using System.IO;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace Colsp.Api.Controllers
 {
     public class ProductStagesController : ApiController
     {
         private ColspEntities db = new ColspEntities();
+        private readonly string root = HttpContext.Current.Server.MapPath("~/Excel");
+
+        [Route("api/ProductStages/All")]
+        [HttpGet]
+        public HttpResponseMessage GetProductAllStages([FromUri] ProductRequest request)
+        {
+            try
+            {
+                var products = (from stage in db.ProductStages
+                          join proImg in db.ProductStageImages on stage.Pid equals proImg.Pid into proImgJoin
+                          join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
+                          from varJ in varJoin.DefaultIfEmpty()
+                          join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
+                          select new
+                          {
+                              stage.ProductId,
+                              Sku = varJ != null ? varJ.Sku : stage.Sku,
+                              Upc = varJ != null ? varJ.Upc : stage.Upc,
+                              ProductNameEn = varJ != null ? varJ.ProductNameEn : stage.ProductNameEn,
+                              ProductNameTh = varJ != null ? varJ.ProductNameTh : stage.ProductNameTh,
+                              Pid = varJ != null ? varJ.Pid : stage.Pid,
+                              Status = varJ != null ? varJ.Status : stage.Status,
+                              MasterImg = proImgJoin.Select(s=>new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o=>o.Position),
+                              VariantImg = varImgJoin.Select(s => new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o => o.Position)
+                          });
+                if(request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, products);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    products = products.Where(p => p.Sku.Contains(request.SearchText)
+                    || p.ProductNameEn.Contains(request.SearchText)
+                    || p.ProductNameTh.Contains(request.SearchText)
+                    || p.Pid.Contains(request.SearchText)
+                    || p.Upc.Contains(request.SearchText));
+                }
+                if (!string.IsNullOrEmpty(request.Pid))
+                {
+                    products = products.Where(p => p.Pid.Equals(request.Pid));
+                }
+                var total = products.Count();
+                var pagedProducts = products.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Excel/Upload")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadExcelFile()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("Content Multimedia");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(root);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    //fileName = fileData.LocalFileName;
+                    //string tmp = fileData.Headers.ContentDisposition.FileName;
+                    //if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+                    //{
+                    //    tmp = tmp.Trim('"');
+                    //}
+                    //ext = Path.GetExtension(tmp);
+                    //break;
+                }
+                throw new Exception("todo");
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
 
         [Route("api/ProductStages")]
         [HttpGet]
@@ -71,13 +159,17 @@ namespace Colsp.Api.Controllers
                 {
                     products = products.Where(p=>p.ProductStageAttributes.All(a=>a.AttributeId==request.AttributeId));
                 }
-                if (request.SearchText != null)
+                if (!string.IsNullOrEmpty(request.SearchText))
                 {
                     products = products.Where(p => p.Sku.Contains(request.SearchText)
                     || p.ProductNameEn.Contains(request.SearchText)
                     || p.ProductNameTh.Contains(request.SearchText)
                     || p.Pid.Contains(request.SearchText)
                     || p.Upc.Contains(request.SearchText));
+                }
+                if (!string.IsNullOrEmpty(request.Pid))
+                {
+                    products = products.Where(p => p.Pid.Equals(request.Pid));
                 }
                 if (request.SellerId != null)
                 {
@@ -108,9 +200,9 @@ namespace Colsp.Api.Controllers
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
 
         }
@@ -121,230 +213,12 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var stage = db.ProductStages.Where(w => w.ProductId == productId)
-                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute))
-                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute1))
-                    .Include(i => i.ProductStageAttributes.Select(s => s.Attribute))
-                    .Include(i => i.Brand).SingleOrDefault();
-
-                if (stage != null)
-                {
-                    ProductStageRequest response = new ProductStageRequest();
-                    response.MasterVariant.ProductNameTh = stage.ProductNameTh;
-                    response.MasterVariant.ProductNameEn = stage.ProductNameEn;
-                    response.MasterVariant.Sku = stage.Sku;
-                    response.MasterVariant.Upc = stage.Upc;
-                    response.Brand.BrandId = stage.BrandId;
-                    if (stage.Brand != null)
-                    {
-                        response.Brand.BrandId = stage.Brand.BrandId;
-                        response.Brand.BrandNameEn = stage.Brand.BrandNameEn;
-                    }
-                    response.MasterVariant.OriginalPrice = stage.OriginalPrice;
-                    response.MasterVariant.SalePrice = stage.SalePrice;
-                    response.MasterVariant.DescriptionFullTh = stage.DescriptionFullTh;
-                    response.MasterVariant.DescriptionShortTh = stage.DescriptionShortTh;
-                    response.MasterVariant.DescriptionFullEn = stage.DescriptionFullEn;
-                    response.MasterVariant.DescriptionShortEn = stage.DescriptionShortEn;
-                    response.AttributeSet.AttributeSetId = stage.AttributeSetId;
-                    response.Keywords = stage.Tag;
-                    response.ShippingMethod = stage.ShippingId;
-                    response.PrepareDay = stage.PrepareDay;
-                    response.MasterVariant.Length = stage.Length;
-                    response.MasterVariant.Height = stage.Height;
-                    response.MasterVariant.Width = stage.Width;
-                    response.MasterVariant.Weight = stage.Weight;
-                    response.MasterVariant.DimensionUnit = stage.DimensionUnit;
-                    response.MasterVariant.WeightUnit = stage.WeightUnit;
-                    response.GlobalCategory = stage.GlobalCatId;
-                    response.LocalCategory = stage.LocalCatId;
-                    response.SEO.MetaTitle = stage.MetaTitle;
-                    response.SEO.MetaDescription = stage.MetaDescription;
-                    response.SEO.MetaKeywords = stage.MetaKey;
-                    response.SEO.ProductUrlKeyEn = stage.UrlEn;
-                    response.SEO.ProductUrlKeyTh = stage.UrlTh;
-                    response.SEO.ProductBoostingWeight = stage.BoostWeight;
-                    #region Setup Effective Date & Time 
-                    if (stage.EffectiveDate != null)
-                    {
-                        response.EffectiveDate = stage.EffectiveDate.Value.ToString("MMMM dd, yyyy");
-                    }
-                    if (stage.EffectiveTime != null)
-                    {
-                        response.EffectiveTime = stage.EffectiveTime.Value.ToString(@"hh\:mm");
-                    }
-                    #endregion
-                    #region Setup Expire Date & Time
-                    if (stage.ExpiryDate != null)
-                    {
-                        response.ExpireDate = stage.ExpiryDate.Value.ToString("MMMM dd, yyyy");
-                    }
-                    if (stage.ExpiryTime != null)
-                    {
-                        response.ExpireTime = stage.ExpiryTime.Value.ToString(@"hh\:mm");
-                    }
-                    #endregion
-                    response.ControlFlags.Flag1 = stage.ControlFlag1;
-                    response.ControlFlags.Flag2 = stage.ControlFlag2;
-                    response.ControlFlags.Flag3 = stage.ControlFlag3;
-                    response.Remark = stage.Remark;
-                    response.Status = stage.Status;
-                    response.SellerId = stage.SellerId;
-                    response.ShopId = stage.ShopId;
-                    response.MasterVariant.Pid = stage.Pid;
-                    response.ProductId = stage.ProductId;
-                    response.InfoFlag = stage.InfoFlag;
-                    response.ImageFlag = stage.ImageFlag;
-                    response.OnlineFlag = stage.OnlineFlag;
-                    response.Visibility = stage.Visibility;
-                    if (stage.ProductStageVariants != null)
-                    {
-                        response.VariantCount = stage.ProductStageVariants.Count;
-                    }
-                    response.VariantCount = stage.ProductStageVariants.Count;
-                    response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes.ToList());
-                    #region Setup Inventory
-                    var inventory = (from inv in db.Inventories
-                                     where inv.Pid.Equals(stage.Pid)
-                                     select inv).SingleOrDefault();
-                    if (inventory != null)
-                    {
-                        response.MasterVariant.SafetyStock = inventory.SaftyStockSeller;
-                        response.MasterVariant.Quantity = inventory.Quantity;
-                        response.MasterVariant.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
-                    }
-                    #endregion
-                    response.MasterVariant.Images = SetupImgResponse(db, stage.Pid);
-                    response.MasterVariant.Images360 = SetupImg360Response(db, stage.Pid);
-                    response.MasterVariant.VideoLinks = SetupVdoResponse(db, stage.Pid);
-                    #region Setup Related GlobalCategories
-                    var globalCatList = (from map in db.ProductStageGlobalCatMaps
-                                         join cat in db.GlobalCategories on map.CategoryId equals cat.CategoryId
-                                         where map.ProductId.Equals(stage.ProductId)
-                                         select map.GlobalCategory).ToList();
-
-                    if (globalCatList != null && globalCatList.Count > 0)
-                    {
-                        List<CategoryRequest> catList = new List<CategoryRequest>();
-                        foreach (GlobalCategory c in globalCatList)
-                        {
-                            CategoryRequest cat = new CategoryRequest();
-                            cat.CategoryId = c.CategoryId;
-                            cat.NameEn = c.NameEn;
-                            catList.Add(cat);
-                        }
-                        response.GlobalCategories = catList;
-                    }
-                    #endregion
-                    #region Setup Related LocalCategories
-                    var localCatList = (from map in db.ProductStageLocalCatMaps
-                                        join cat in db.LocalCategories on map.CategoryId equals cat.CategoryId
-                                        where map.ProductId.Equals(stage.ProductId)
-                                        select map.LocalCategory).ToList();
-                    if (localCatList != null && localCatList.Count > 0)
-                    {
-                        List<CategoryRequest> catList = new List<CategoryRequest>();
-                        foreach (LocalCategory c in localCatList)
-                        {
-                            CategoryRequest cat = new CategoryRequest();
-                            cat.CategoryId = c.CategoryId;
-                            cat.NameEn = c.NameEn;
-                            catList.Add(cat);
-                        }
-                        response.LocalCategories = catList;
-                    }
-                    #endregion
-                    #region Setup Related Product
-                    var relatedList = db.ProductStageRelateds.Join(db.ProductStages,
-                        rel => rel.Pid2,
-                        stg => stg.Pid,
-                        (rel, stg) => new { RelatedProduct = rel, ProductStage = stg })
-                        .Where(w => w.RelatedProduct.Pid1.Equals(stage.Pid)).ToList();
-                    if (relatedList != null && relatedList.Count > 0)
-                    {
-                        List<VariantRequest> relate = new List<VariantRequest>();
-                        foreach (var r in relatedList)
-                        {
-                            VariantRequest va = new VariantRequest();
-                            va.Pid = r.ProductStage.Pid;
-                            va.ProductNameTh = r.ProductStage.ProductNameTh;
-                            va.ProductNameEn = r.ProductStage.ProductNameEn;
-                            va.Sku = r.ProductStage.Sku;
-                            va.Upc = r.ProductStage.Upc;
-                            va.OriginalPrice = r.ProductStage.OriginalPrice;
-                            va.SalePrice = r.ProductStage.SalePrice;
-                            va.DescriptionFullTh = r.ProductStage.DescriptionFullTh;
-                            va.DescriptionShortTh = r.ProductStage.DescriptionShortTh;
-                            va.DescriptionFullEn = r.ProductStage.DescriptionFullEn;
-                            va.DescriptionShortEn = r.ProductStage.DescriptionShortEn;
-                            va.Length = r.ProductStage.Length;
-                            va.Height = r.ProductStage.Height;
-                            va.Width = r.ProductStage.Width;
-                            va.Weight = r.ProductStage.Weight;
-                            va.DimensionUnit = r.ProductStage.DimensionUnit;
-                            va.WeightUnit = r.ProductStage.WeightUnit;
-                            relate.Add(va);
-                        }
-                        response.RelatedProducts = relate;
-                    }
-                    #endregion
-                    List<VariantRequest> varList = new List<VariantRequest>();
-                    foreach (ProductStageVariant variantEntity in stage.ProductStageVariants)
-                    {
-                        VariantRequest varient = new VariantRequest();
-                        varient.VariantId = variantEntity.VariantId;
-                        varient.Pid = variantEntity.Pid;
-                        varient.FirstAttribute.AttributeId = variantEntity.Attribute1Id;
-                        varient.FirstAttribute.ValueEn = variantEntity.ValueEn1;
-                        varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
-                        varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
-                        varient.DefaultVariant = variantEntity.DefaultVaraint;
-                        #region Setup Variant Inventory
-                        inventory = (from inv in db.Inventories
-                                     where inv.Pid.Equals(variantEntity.Pid)
-                                     select inv).SingleOrDefault();
-                        if (inventory != null)
-                        {
-                            varient.SafetyStock = inventory.SaftyStockSeller;
-                            varient.Quantity = inventory.Quantity;
-                            varient.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
-                        }
-                        #endregion
-
-
-                        varient.Images = SetupImgResponse(db, variantEntity.Pid);
-                        varient.VideoLinks = SetupVdoResponse(db, variantEntity.Pid);
-
-                        varient.ProductNameTh = variantEntity.ProductNameTh;
-                        varient.ProductNameEn = variantEntity.ProductNameEn;
-                        varient.Sku = variantEntity.Sku;
-                        varient.Upc = variantEntity.Upc;
-                        varient.OriginalPrice = variantEntity.OriginalPrice;
-                        varient.SalePrice = variantEntity.SalePrice;
-                        varient.DescriptionFullTh = variantEntity.DescriptionFullTh;
-                        varient.DescriptionShortTh = variantEntity.DescriptionShortTh;
-                        varient.DescriptionFullEn = variantEntity.DescriptionFullEn;
-                        varient.DescriptionShortEn = variantEntity.DescriptionShortEn;
-                        varient.Length = variantEntity.Length;
-                        varient.Height = variantEntity.Height;
-                        varient.Width = variantEntity.Width;
-                        varient.Weight = variantEntity.Weight;
-                        varient.DimensionUnit = variantEntity.DimensionUnit;
-                        varient.WeightUnit = variantEntity.WeightUnit;
-                        varient.Visibility = variantEntity.Visibility;
-                        varList.Add(varient);
-                    }
-                    response.Variants = varList;
-                    return Request.CreateResponse(HttpStatusCode.OK, response);
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
-                }
+                var response = SetupProductStageRequestFromProductId(db,productId);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -358,7 +232,7 @@ namespace Colsp.Api.Controllers
                 if (request.SellerId == null || request.SellerId == 0 || this.User.UserId() != request.SellerId
                     || this.User.ShopIds().Where(w => w == request.SellerId).SingleOrDefault() == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid. Cannot find shop in session");
+                    throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
 
                 #region Setup Master Product
@@ -644,9 +518,9 @@ namespace Colsp.Api.Controllers
                     {
                         db.SaveChanges();
                     }
-                    catch (Exception wee)
+                    catch (Exception ex1)
                     {
-                        return Request.CreateResponse(HttpStatusCode.OK, wee);
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex1.Message);
                     }
                 }
                 #endregion
@@ -663,11 +537,11 @@ namespace Colsp.Api.Controllers
             {
                 if (request.SellerId == null || request.SellerId == 0 || this.User.ShopIds().Where(w => w == request.SellerId).SingleOrDefault() == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid. Cannot find shop in session");
+                    throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
                 if (productId == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product is invalid");
+                    throw new Exception("Product is invalid");
                 }
                 var stage = db.ProductStages.Where(w => w.ProductId == productId)
                     .Include(i => i.ProductStageVariants)
@@ -676,7 +550,7 @@ namespace Colsp.Api.Controllers
                 {
                     if (stage.Status == null || !stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product is not allow");
+                        throw new Exception("Product is not allow");
                     }
                     #region Setup Master
                     SetupProductStage(db,stage, request);
@@ -823,12 +697,12 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Product is invalid");
+                    throw new Exception("Product is invalid");
                 }
             }
             catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -840,7 +714,7 @@ namespace Colsp.Api.Controllers
             {
                 if (request == null || request.Count == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
+                    throw new Exception("Invalid request");
                 }
                 var proList = db.ProductStages.ToList();
                 foreach (ProductStageRequest proRq in request)
@@ -856,9 +730,33 @@ namespace Colsp.Api.Controllers
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        //duplicate
+        [Route("api/ProductStages/{productId}")]
+        [HttpPost]
+        public HttpResponseMessage DuplicateProductStage(int productId)
+        {
+            try
+            {
+                ProductStageRequest response = SetupProductStageRequestFromProductId(db, productId);
+                if (response == null)
+                {
+                    throw new Exception("Cannot find product with id " + productId);
+                }
+                else
+                {
+                    response.ProductId = null;
+                    return AddProduct(response);
+                }
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -875,11 +773,11 @@ namespace Colsp.Api.Controllers
                     var pro = productList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
                     if (pro == null)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Cannot find deleted product");
+                        throw new Exception("Cannot find deleted product");
                     }
                     if (!Constant.PRODUCT_STATUS_DRAFT.Equals(pro.Status))
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Cannot delete product that is not draft");
+                        throw new Exception("Cannot delete product that is not draft");
                     }
                     db.ProductStages.Remove(pro);
                     db.ProductStageImages.RemoveRange(db.ProductStageImages.Where(w => w.Pid.Equals(pro.Pid)));
@@ -892,7 +790,371 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Publish")]
+        [HttpPost]
+        public HttpResponseMessage PublishProduct(List<ProductStageRequest> request)
+        {
+            try
+            {
+                foreach (ProductStageRequest rq in request)
+                {
+                    if(rq.ProductId == null) { throw new Exception("Product Id cannot be null"); }
+                    var stage = db.ProductStages.Find(rq.ProductId.Value);
+                    if(stage == null)
+                    {
+                        throw new Exception("Cannot find Product with id " + rq.ProductId.Value );
+                    }
+                    if (!stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
+                    {
+                        throw new Exception("ProudctId " + rq.ProductId.Value + " is not drafted");
+                    }
+                    stage.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, "Published success");
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Export")]
+        [HttpPost]
+        public HttpResponseMessage ExportProduct(List<ProductStageRequest> request)
+        {
+            MemoryStream stream = null;
+            StreamWriter writer = null;
+            try
+            {
+                stream = new MemoryStream();
+                writer = new StreamWriter(stream);
+                string header = "SKU*,PID,Group ID,Product Status,Product Name (English)*,Product Name (Thai)*,Global Category (ID)*,Local Category (ID),Attribute Set (ID),Product Variation 1 (Option),Product Variation 1 (Value),Product Variation 2 (Option),Product Variation 2 (Value),Brand Name (ID)*,Original Price*,Sale Price,Description (Thai)*,Description (English)*,Short Description (Thai),Short Description (English),Stock Type*,Preparation Time*,Package Dimension - Lenght (mm)*,Package Dimension - Height (mm)*,Package Dimension - Width (mm)*,Weight (g)*,Inventory Amount,Safety Stock Amount";
+                writer.WriteLine(header);
+                StringBuilder sb = null;
+                foreach (ProductStageRequest rq in request)
+                {
+                    sb = new StringBuilder();
+                    if (rq.ProductId == null) { throw new Exception("Product Id cannot be null"); }
+                    var pro = db.ProductStages.Find(rq.ProductId.Value);
+                    if(pro == null)
+                    {
+                        throw new Exception("Cannot find Product with id " + rq.ProductId.Value);
+                    }
+                    sb.Append(pro.Sku); sb.Append(",");
+                    sb.Append(pro.Pid); sb.Append(",");
+                    sb.Append("<Group ID>"); sb.Append(",");
+                    sb.Append(pro.Status); sb.Append(",");
+                    sb.Append(pro.ProductNameEn); sb.Append(",");
+                    sb.Append(pro.ProductNameTh); sb.Append(",");
+                    sb.Append(pro.GlobalCatId); sb.Append(",");
+                    sb.Append(pro.LocalCatId); sb.Append(",");
+                    sb.Append(pro.AttributeSetId); sb.Append(",");
+                    sb.Append("Product Variation 1 (Option)"); sb.Append(",");
+                    sb.Append("Product Variation 1 (Value)"); sb.Append(",");
+                    sb.Append("Product Variation 2 (Option)"); sb.Append(",");
+                    sb.Append("Product Variation 2 (Value)"); sb.Append(",");
+                    sb.Append("Brand Name (ID)*"); sb.Append(",");
+                    sb.Append(pro.OriginalPrice); sb.Append(",");
+                    sb.Append(pro.SalePrice); sb.Append(",");
+                    if (!string.IsNullOrEmpty(pro.DescriptionFullTh))
+                    {
+                        if (pro.DescriptionFullTh.Contains("\""))
+                        {
+                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh.Replace("\"", "\"\""));
+                        }
+                        if (pro.DescriptionFullTh.Contains(","))
+                        {
+                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh);
+                        }
+                        if (pro.DescriptionFullTh.Contains(System.Environment.NewLine))
+                        {
+                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh);
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(pro.DescriptionFullEn))
+                    {
+                        if (pro.DescriptionFullEn.Contains("\""))
+                        {
+                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn.Replace("\"", "\"\""));
+                        }
+                        if (pro.DescriptionFullEn.Contains(","))
+                        {
+                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn);
+                        }
+                        if (pro.DescriptionFullEn.Contains(System.Environment.NewLine))
+                        {
+                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn);
+                        }
+                    }
+                    sb.Append("\"" + pro.DescriptionFullTh + "\""); sb.Append(",");
+                    sb.Append("\"" + pro.DescriptionFullEn + "\""); sb.Append(",");
+                    sb.Append(pro.DescriptionShortTh); sb.Append(",");
+                    sb.Append(pro.DescriptionShortEn); sb.Append(",");
+                    sb.Append("Stock Type*"); sb.Append(",");
+                    sb.Append(pro.PrepareDay);  sb.Append(",");
+                    sb.Append(pro.Length); sb.Append(",");
+                    sb.Append(pro.Height); sb.Append(",");
+                    sb.Append(pro.Width); sb.Append(",");
+                    sb.Append(pro.Weight); sb.Append(",");
+                    sb.Append("Inventory Amount"); sb.Append(",");
+                    sb.Append("Safety Stock Amount");
+
+                    writer.WriteLine(sb);
+                }
+                writer.Flush();
+                stream.Position = 0;
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StreamContent(stream);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream") {
+                    CharSet = Encoding.UTF8.WebName
+                };
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = "file.csv";
+                return result;
+            }
+            catch (Exception e)
+            {
+                if (writer != null)
+                {
+                    writer.Close();
+                    writer.Dispose();
+                }
+                if (stream != null)
+                {
+                    stream.Close();
+                    stream.Dispose();
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+            }
+        }
+
+        private ProductStageRequest SetupProductStageRequestFromProductId(ColspEntities db, int productId)
+        {
+            var stage = db.ProductStages.Where(w => w.ProductId == productId)
+                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute))
+                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute1))
+                    .Include(i => i.ProductStageAttributes.Select(s => s.Attribute))
+                    .Include(i => i.Brand).SingleOrDefault();
+
+            if (stage != null)
+            {
+                ProductStageRequest response = new ProductStageRequest();
+                response.MasterVariant.ProductNameTh = stage.ProductNameTh;
+                response.MasterVariant.ProductNameEn = stage.ProductNameEn;
+                response.MasterVariant.Sku = stage.Sku;
+                response.MasterVariant.Upc = stage.Upc;
+                response.Brand.BrandId = stage.BrandId;
+                if (stage.Brand != null)
+                {
+                    response.Brand.BrandId = stage.Brand.BrandId;
+                    response.Brand.BrandNameEn = stage.Brand.BrandNameEn;
+                }
+                response.MasterVariant.OriginalPrice = stage.OriginalPrice;
+                response.MasterVariant.SalePrice = stage.SalePrice;
+                response.MasterVariant.DescriptionFullTh = stage.DescriptionFullTh;
+                response.MasterVariant.DescriptionShortTh = stage.DescriptionShortTh;
+                response.MasterVariant.DescriptionFullEn = stage.DescriptionFullEn;
+                response.MasterVariant.DescriptionShortEn = stage.DescriptionShortEn;
+                response.AttributeSet.AttributeSetId = stage.AttributeSetId;
+                response.Keywords = stage.Tag;
+                response.ShippingMethod = stage.ShippingId;
+                response.PrepareDay = stage.PrepareDay;
+                response.MasterVariant.Length = stage.Length;
+                response.MasterVariant.Height = stage.Height;
+                response.MasterVariant.Width = stage.Width;
+                response.MasterVariant.Weight = stage.Weight;
+                response.MasterVariant.DimensionUnit = stage.DimensionUnit;
+                response.MasterVariant.WeightUnit = stage.WeightUnit;
+                response.GlobalCategory = stage.GlobalCatId;
+                response.LocalCategory = stage.LocalCatId;
+                response.SEO.MetaTitle = stage.MetaTitle;
+                response.SEO.MetaDescription = stage.MetaDescription;
+                response.SEO.MetaKeywords = stage.MetaKey;
+                response.SEO.ProductUrlKeyEn = stage.UrlEn;
+                response.SEO.ProductUrlKeyTh = stage.UrlTh;
+                response.SEO.ProductBoostingWeight = stage.BoostWeight;
+                #region Setup Effective Date & Time 
+                if (stage.EffectiveDate != null)
+                {
+                    response.EffectiveDate = stage.EffectiveDate.Value.ToString("MMMM dd, yyyy");
+                }
+                if (stage.EffectiveTime != null)
+                {
+                    response.EffectiveTime = stage.EffectiveTime.Value.ToString(@"hh\:mm");
+                }
+                #endregion
+                #region Setup Expire Date & Time
+                if (stage.ExpiryDate != null)
+                {
+                    response.ExpireDate = stage.ExpiryDate.Value.ToString("MMMM dd, yyyy");
+                }
+                if (stage.ExpiryTime != null)
+                {
+                    response.ExpireTime = stage.ExpiryTime.Value.ToString(@"hh\:mm");
+                }
+                #endregion
+                response.ControlFlags.Flag1 = stage.ControlFlag1;
+                response.ControlFlags.Flag2 = stage.ControlFlag2;
+                response.ControlFlags.Flag3 = stage.ControlFlag3;
+                response.Remark = stage.Remark;
+                response.Status = stage.Status;
+                response.SellerId = stage.SellerId;
+                response.ShopId = stage.ShopId;
+                response.MasterVariant.Pid = stage.Pid;
+                response.ProductId = stage.ProductId;
+                response.InfoFlag = stage.InfoFlag;
+                response.ImageFlag = stage.ImageFlag;
+                response.OnlineFlag = stage.OnlineFlag;
+                response.Visibility = stage.Visibility;
+                if (stage.ProductStageVariants != null)
+                {
+                    response.VariantCount = stage.ProductStageVariants.Count;
+                }
+                response.VariantCount = stage.ProductStageVariants.Count;
+                response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes.ToList());
+                #region Setup Inventory
+                var inventory = (from inv in db.Inventories
+                                 where inv.Pid.Equals(stage.Pid)
+                                 select inv).SingleOrDefault();
+                if (inventory != null)
+                {
+                    response.MasterVariant.SafetyStock = inventory.SaftyStockSeller;
+                    response.MasterVariant.Quantity = inventory.Quantity;
+                    response.MasterVariant.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
+                }
+                #endregion
+                response.MasterVariant.Images = SetupImgResponse(db, stage.Pid);
+                response.MasterVariant.Images360 = SetupImg360Response(db, stage.Pid);
+                response.MasterVariant.VideoLinks = SetupVdoResponse(db, stage.Pid);
+                #region Setup Related GlobalCategories
+                var globalCatList = (from map in db.ProductStageGlobalCatMaps
+                                     join cat in db.GlobalCategories on map.CategoryId equals cat.CategoryId
+                                     where map.ProductId.Equals(stage.ProductId)
+                                     select map.GlobalCategory).ToList();
+
+                if (globalCatList != null && globalCatList.Count > 0)
+                {
+                    List<CategoryRequest> catList = new List<CategoryRequest>();
+                    foreach (GlobalCategory c in globalCatList)
+                    {
+                        CategoryRequest cat = new CategoryRequest();
+                        cat.CategoryId = c.CategoryId;
+                        cat.NameEn = c.NameEn;
+                        catList.Add(cat);
+                    }
+                    response.GlobalCategories = catList;
+                }
+                #endregion
+                #region Setup Related LocalCategories
+                var localCatList = (from map in db.ProductStageLocalCatMaps
+                                    join cat in db.LocalCategories on map.CategoryId equals cat.CategoryId
+                                    where map.ProductId.Equals(stage.ProductId)
+                                    select map.LocalCategory).ToList();
+                if (localCatList != null && localCatList.Count > 0)
+                {
+                    List<CategoryRequest> catList = new List<CategoryRequest>();
+                    foreach (LocalCategory c in localCatList)
+                    {
+                        CategoryRequest cat = new CategoryRequest();
+                        cat.CategoryId = c.CategoryId;
+                        cat.NameEn = c.NameEn;
+                        catList.Add(cat);
+                    }
+                    response.LocalCategories = catList;
+                }
+                #endregion
+                #region Setup Related Product
+                var relatedList = db.ProductStageRelateds.Join(db.ProductStages,
+                    rel => rel.Pid2,
+                    stg => stg.Pid,
+                    (rel, stg) => new { RelatedProduct = rel, ProductStage = stg })
+                    .Where(w => w.RelatedProduct.Pid1.Equals(stage.Pid)).ToList();
+                if (relatedList != null && relatedList.Count > 0)
+                {
+                    List<VariantRequest> relate = new List<VariantRequest>();
+                    foreach (var r in relatedList)
+                    {
+                        VariantRequest va = new VariantRequest();
+                        va.Pid = r.ProductStage.Pid;
+                        va.ProductNameTh = r.ProductStage.ProductNameTh;
+                        va.ProductNameEn = r.ProductStage.ProductNameEn;
+                        va.Sku = r.ProductStage.Sku;
+                        va.Upc = r.ProductStage.Upc;
+                        va.OriginalPrice = r.ProductStage.OriginalPrice;
+                        va.SalePrice = r.ProductStage.SalePrice;
+                        va.DescriptionFullTh = r.ProductStage.DescriptionFullTh;
+                        va.DescriptionShortTh = r.ProductStage.DescriptionShortTh;
+                        va.DescriptionFullEn = r.ProductStage.DescriptionFullEn;
+                        va.DescriptionShortEn = r.ProductStage.DescriptionShortEn;
+                        va.Length = r.ProductStage.Length;
+                        va.Height = r.ProductStage.Height;
+                        va.Width = r.ProductStage.Width;
+                        va.Weight = r.ProductStage.Weight;
+                        va.DimensionUnit = r.ProductStage.DimensionUnit;
+                        va.WeightUnit = r.ProductStage.WeightUnit;
+                        relate.Add(va);
+                    }
+                    response.RelatedProducts = relate;
+                }
+                #endregion
+                List<VariantRequest> varList = new List<VariantRequest>();
+                foreach (ProductStageVariant variantEntity in stage.ProductStageVariants)
+                {
+                    VariantRequest varient = new VariantRequest();
+                    varient.VariantId = variantEntity.VariantId;
+                    varient.Pid = variantEntity.Pid;
+                    varient.FirstAttribute.AttributeId = variantEntity.Attribute1Id;
+                    varient.FirstAttribute.ValueEn = variantEntity.ValueEn1;
+                    varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
+                    varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
+                    varient.DefaultVariant = variantEntity.DefaultVaraint;
+                    #region Setup Variant Inventory
+                    inventory = (from inv in db.Inventories
+                                 where inv.Pid.Equals(variantEntity.Pid)
+                                 select inv).SingleOrDefault();
+                    if (inventory != null)
+                    {
+                        varient.SafetyStock = inventory.SaftyStockSeller;
+                        varient.Quantity = inventory.Quantity;
+                        varient.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
+                    }
+                    #endregion
+
+
+                    varient.Images = SetupImgResponse(db, variantEntity.Pid);
+                    varient.VideoLinks = SetupVdoResponse(db, variantEntity.Pid);
+
+                    varient.ProductNameTh = variantEntity.ProductNameTh;
+                    varient.ProductNameEn = variantEntity.ProductNameEn;
+                    varient.Sku = variantEntity.Sku;
+                    varient.Upc = variantEntity.Upc;
+                    varient.OriginalPrice = variantEntity.OriginalPrice;
+                    varient.SalePrice = variantEntity.SalePrice;
+                    varient.DescriptionFullTh = variantEntity.DescriptionFullTh;
+                    varient.DescriptionShortTh = variantEntity.DescriptionShortTh;
+                    varient.DescriptionFullEn = variantEntity.DescriptionFullEn;
+                    varient.DescriptionShortEn = variantEntity.DescriptionShortEn;
+                    varient.Length = variantEntity.Length;
+                    varient.Height = variantEntity.Height;
+                    varient.Width = variantEntity.Width;
+                    varient.Weight = variantEntity.Weight;
+                    varient.DimensionUnit = variantEntity.DimensionUnit;
+                    varient.WeightUnit = variantEntity.WeightUnit;
+                    varient.Visibility = variantEntity.Visibility;
+                    varList.Add(varient);
+                }
+                response.Variants = varList;
+                return response;
+            }
+            else
+            {
+                throw new Exception("Product " + productId + " not found");
             }
         }
 

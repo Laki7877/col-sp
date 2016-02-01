@@ -24,5 +24,10 @@ namespace Colsp.Api.Constants
         public static readonly string PRODUCT_STATUS_JUNK = "JU";
         public static readonly string PRODUCT_STATUS_APPROVE = "AP";
         public static readonly string PRODUCT_STATUS_NOT_APPROVE = "NP";
+
+
+        public static readonly string USER_TYPE_ADMIN = "A";
+        public static readonly string USER_TYPE_SELLER = "S";
+        public static readonly string SHOP_TYPE = "H";
     }
 }

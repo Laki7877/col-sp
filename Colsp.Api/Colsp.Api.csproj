@@ -199,10 +199,14 @@
     <Compile Include="Controllers\GlobalCategoriesController.cs" />
     <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
     <Compile Include="Controllers\LocalCategoriesController.cs" />
+    <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ProductStagesController.cs" />
     <Compile Include="Controllers\ShopsController.cs" />
+    <Compile Include="Controllers\ShopTypesController.cs" />
+    <Compile Include="Controllers\UserGroupsController.cs" />
+    <Compile Include="Controllers\UserPermissionsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\IPrincipalExtension.cs" />
     <Compile Include="Filters\ClaimsAuthorizeAttribute.cs" />
@@ -234,6 +238,9 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
