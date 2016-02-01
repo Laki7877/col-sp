@@ -9,6 +9,10 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Colsp.Entity.Models;
+using Colsp.Model.Requests;
+using Colsp.Api.Constants;
+using Colsp.Api.Extensions;
+using Colsp.Model.Responses;
 
 namespace Colsp.Api.Controllers
 {
@@ -16,20 +20,24 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-        [Route("api/UserPermissions/{PermissionRole}")]
-        [HttpGet]
-        public HttpResponseMessage GetUserPermissions(string PermissionRole)
-        {
-            try
-            {
-                var userPermission = db.UserPermissions.Where(u => u.Type.Equals(PermissionRole));
-                return Request.CreateResponse(HttpStatusCode.OK, userPermission);
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
-            }
-        }
+        //[Route("api/UserPermissions/Admin/{PermissionRole}")]
+        //[HttpGet]
+        //public HttpResponseMessage GetUserPermissions(string PermissionRole)
+        //{
+        //    try
+        //    {
+        //        var userPermission = db.Permissions.Where(u => u.Type.Equals(PermissionRole));
+        //        return Request.CreateResponse(HttpStatusCode.OK, userPermission);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+        //    }
+        //}
+
+        
+
+
 
 
         protected override void Dispose(bool disposing)

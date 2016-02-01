@@ -168,7 +168,7 @@ namespace Colsp.Api.Filters
 				   db.Users.Join(db.UserGroupMaps, u => u.UserId, g => g.GroupId, (u, g) => new { User = u, UserGroupMap = g })
 							.Join(db.UserGroups, a => a.UserGroupMap.GroupId, g => g.GroupId, (a, g) => new { User = a.User, UserGroup = g })
 							.Join(db.UserGroupPermissionMaps, a => a.UserGroup.GroupId, m => m.GroupId, (a, m) => new { User = a.User, UserGroupPermissionMap = m })
-							.Join(db.UserPermissions, a => a.UserGroupPermissionMap.PermissionId, p => p.PermissionId, (a, p) => new { User = a.User, Permission = p })
+							.Join(db.Permissions, a => a.UserGroupPermissionMap.PermissionId, p => p.PermissionId, (a, p) => new { User = a.User, Permission = p })
 							.Where(u => u.User.Username.Equals(username) && u.User.Password.Equals(password))
 							.Select(a => new
 							{

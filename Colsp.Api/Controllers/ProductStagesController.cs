@@ -26,6 +26,57 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
         private readonly string root = HttpContext.Current.Server.MapPath("~/Excel");
 
+        [Route("api/ProductStages/All")]
+        [HttpGet]
+        public HttpResponseMessage GetProductAllStages([FromUri] ProductRequest request)
+        {
+            try
+            {
+                var products = (from stage in db.ProductStages
+                          join proImg in db.ProductStageImages on stage.Pid equals proImg.Pid into proImgJoin
+                          join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
+                          from varJ in varJoin.DefaultIfEmpty()
+                          join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
+                          select new
+                          {
+                              stage.ProductId,
+                              Sku = varJ != null ? varJ.Sku : stage.Sku,
+                              Upc = varJ != null ? varJ.Upc : stage.Upc,
+                              ProductNameEn = varJ != null ? varJ.ProductNameEn : stage.ProductNameEn,
+                              ProductNameTh = varJ != null ? varJ.ProductNameTh : stage.ProductNameTh,
+                              Pid = varJ != null ? varJ.Pid : stage.Pid,
+                              Status = varJ != null ? varJ.Status : stage.Status,
+                              MasterImg = proImgJoin.Select(s=>new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o=>o.Position),
+                              VariantImg = varImgJoin.Select(s => new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o => o.Position)
+                          });
+                if(request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, products);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    products = products.Where(p => p.Sku.Contains(request.SearchText)
+                    || p.ProductNameEn.Contains(request.SearchText)
+                    || p.ProductNameTh.Contains(request.SearchText)
+                    || p.Pid.Contains(request.SearchText)
+                    || p.Upc.Contains(request.SearchText));
+                }
+                if (!string.IsNullOrEmpty(request.Pid))
+                {
+                    products = products.Where(p => p.Pid.Equals(request.Pid));
+                }
+                var total = products.Count();
+                var pagedProducts = products.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/ProductStages/Excel/Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> UploadExcelFile()

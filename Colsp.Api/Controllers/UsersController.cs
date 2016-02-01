@@ -35,6 +35,7 @@ namespace Colsp.Api.Controllers
                         s.NameEn,
                         s.NameTh,
                         s.Email,
+                        s.UpdatedDt,
                         UserGroup = s.UserGroupMaps.Select(ug=>ug.UserGroup.GroupNameEn)
                     });
                 if (request == null)
@@ -42,10 +43,10 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, userList);
                 }
                 request.DefaultOnNull();
-                if (!string.IsNullOrEmpty(request.NameEn))
+                if (!string.IsNullOrEmpty(request.SearchText))
                 {
-                    userList = userList.Where(a => a.NameEn.Contains(request.NameEn)
-                    || a.NameTh.Contains(request.NameEn));
+                    userList = userList.Where(a => a.NameEn.Contains(request.SearchText)
+                    || a.NameTh.Contains(request.SearchText));
                 }
                 var total = userList.Count();
                 var pagedUsers = userList.Paginate(request);
@@ -65,7 +66,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var usr = db.Users.Include(i=>i.UserGroupMaps.Select(s=>s.UserGroup))
-                    .Where(w => w.UserId == userId && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Where(w => w.UserId == userId && !w.Status.Equals(Constant.STATUS_REMOVE) && w.Type.Equals(Constant.USER_TYPE_ADMIN))
                     .Select(s=>new {
                         s.UserId,
                         s.Email,
@@ -75,16 +76,11 @@ namespace Colsp.Api.Controllers
                         s.Position,
                         s.Division,
                         s.EmployeeId,
-                        s.Type,
-                        UserGroup = s.UserGroupMaps.Select(ug => new { ug.UserGroup.GroupId, ug.UserGroup.GroupNameEn, ug.UserGroup.GroupNameTh, Permission = ug.UserGroup.UserGroupPermissionMaps.Select(p => new { p.UserPermission.PermissionId, p.UserPermission.PermissionName}) })
+                        UserGroup = s.UserGroupMaps.Select(ug => new { ug.UserGroup.GroupId, ug.UserGroup.GroupNameEn, ug.UserGroup.GroupNameTh, Permission = ug.UserGroup.UserGroupPermissionMaps.Select(p => new { p.Permission.PermissionId, p.Permission.PermissionName}) })
                     }).ToList();
                 if (usr == null || usr.Count == 0)
                 {
                     throw new Exception("User not found");
-                }
-                if (!usr[0].Type.Equals(Constant.USER_TYPE_ADMIN))
-                {
-                    throw new Exception("This user is not admin");
                 }
                 
                 return Request.CreateResponse(HttpStatusCode.OK, usr[0]);
@@ -111,6 +107,10 @@ namespace Colsp.Api.Controllers
                 usr.Position = request.Position;
                 usr.Status = Constant.STATUS_ACTIVE;
                 usr.Type = Constant.USER_TYPE_ADMIN;
+                usr.CreatedBy = this.User.Email();
+                usr.CreatedDt = DateTime.Now;
+                usr.UpdatedBy = this.User.Email();
+                usr.UpdatedDt = DateTime.Now;
                 db.Users.Add(usr);
                 db.SaveChanges();
                 if(request.UserGroup != null)
@@ -124,6 +124,10 @@ namespace Colsp.Api.Controllers
                         UserGroupMap map = new UserGroupMap();
                         map.UserId = usr.UserId;
                         map.GroupId = usrGrp.GroupId.Value;
+                        map.CreatedBy = this.User.Email();
+                        map.CreatedDt = DateTime.Now;
+                        map.UpdatedBy = this.User.Email();
+                        map.UpdatedDt = DateTime.Now;
                         db.UserGroupMaps.Add(map);
                     }
                     db.SaveChanges();
@@ -142,39 +146,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/Users/Admin")]
-        [HttpDelete]
-        public HttpResponseMessage DeleteUserAdmin(List<UserRequest> request)
-        {
-            try
-            {
-                
-                foreach (UserRequest userRq in request)
-                {
-                    if(userRq.UserId == null)
-                    {
-                        throw new Exception("User id cannot be null");
-                    }
-                    var usr = db.Users.Find(userRq.UserId.Value);
-                    if (usr == null)
-                    {
-                        throw new Exception("Cannot find user " + userRq.UserId.Value);
-                    }
-                    if (!usr.Type.Equals(Constant.USER_TYPE_ADMIN))
-                    {
-                        throw new Exception("Cannot deleted non admin user " + userRq.UserId.Value);
-                    }
-                    usr.Status = Constant.STATUS_REMOVE;
-                }
-                db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK);
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-            }
-        }
-
         [Route("api/Users/Admin/{userId}")]
         [HttpPut]
         public HttpResponseMessage SaveChangeUserAdmin([FromUri]int userId, UserRequest request)
@@ -182,7 +153,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var usr = db.Users.Find(userId);
-                if(usr == null || usr.Status.Equals(Constant.STATUS_REMOVE))
+                if (usr == null || usr.Status.Equals(Constant.STATUS_REMOVE))
                 {
                     throw new Exception("User not found");
                 }
@@ -196,7 +167,7 @@ namespace Colsp.Api.Controllers
                 usr.Division = request.Division;
                 usr.Phone = request.Phone;
                 usr.Position = request.Position;
-                var usrGrpList = db.UserGroupMaps.Where(w=>w.UserId== usr.UserId).ToList();
+                var usrGrpList = db.UserGroupMaps.Where(w => w.UserId == usr.UserId).ToList();
                 if (request.UserGroup != null && request.UserGroup.Count > 0)
                 {
                     bool addNew = false;
@@ -233,12 +204,45 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-                if(usrGrpList != null && usrGrpList.Count > 0)
+                if (usrGrpList != null && usrGrpList.Count > 0)
                 {
                     db.UserGroupMaps.RemoveRange(usrGrpList);
                 }
                 db.SaveChanges();
                 return GetUserAdmin(usr.UserId);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Users/Admin")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteUserAdmin(List<UserRequest> request)
+        {
+            try
+            {
+                
+                foreach (UserRequest userRq in request)
+                {
+                    if(userRq.UserId == null)
+                    {
+                        throw new Exception("User id cannot be null");
+                    }
+                    var usr = db.Users.Find(userRq.UserId.Value);
+                    if (usr == null)
+                    {
+                        throw new Exception("Cannot find user " + userRq.UserId.Value);
+                    }
+                    if (!usr.Type.Equals(Constant.USER_TYPE_ADMIN))
+                    {
+                        throw new Exception("Cannot deleted non admin user " + userRq.UserId.Value);
+                    }
+                    usr.Status = Constant.STATUS_REMOVE;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {

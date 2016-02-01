@@ -21,7 +21,7 @@ namespace Colsp.Entity.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        public virtual Permission Permission { get; set; }
         public virtual UserGroup UserGroup { get; set; }
-        public virtual UserPermission UserPermission { get; set; }
     }
 }

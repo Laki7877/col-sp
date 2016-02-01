@@ -8,7 +8,8 @@ namespace Colsp.Model.Requests
 {
 	public class UserRequest : PaginatedRequest
 	{
-		public string NameEn { get; set; }
+        public string SearchText { get; set; }
+        public string NameEn { get; set; }
         public string NameTh { get; set; }
         public int? UserId { get; set; }
         public string Email { get; set; }
@@ -21,7 +22,7 @@ namespace Colsp.Model.Requests
 
         public override void DefaultOnNull()
 		{
-			NameEn = GetValueOrDefault(NameEn, "");
+            SearchText = GetValueOrDefault(SearchText, "");
 			_order = GetValueOrDefault(_order, "UserId");
 			base.DefaultOnNull();
 		}

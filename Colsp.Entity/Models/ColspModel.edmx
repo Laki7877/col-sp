@@ -233,6 +233,15 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="PermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PermissionName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Type" Type="char" MaxLength="1" />
+          <Property Name="PermissionGroup" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="Product">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -825,9 +834,35 @@
           <Property Name="ShopOwner" Type="int" />
           <Property Name="ShopNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ShopNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="Commission" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="ShopTypeId" Type="int" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ShopType">
+          <Key>
+            <PropertyRef Name="ShopTypeId" />
+          </Key>
+          <Property Name="ShopTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopTypeNameEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShopTypeNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ShopTypePermissionMap">
+          <Key>
+            <PropertyRef Name="ShopTypeId" />
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="ShopTypeId" Type="int" Nullable="false" />
+          <Property Name="PermissionId" Type="int" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
@@ -921,15 +956,6 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
-        </EntityType>
-        <EntityType Name="UserPermission">
-          <Key>
-            <PropertyRef Name="PermissionId" />
-          </Key>
-          <Property Name="PermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PermissionName" Type="nvarchar" MaxLength="100" />
-          <Property Name="Type" Type="char" MaxLength="1" />
-          <Property Name="PermissionGroup" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="UserShop">
           <Key>
@@ -1026,6 +1052,42 @@
             </Principal>
             <Dependent Role="ProductStageAttribute">
               <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Shop_ShopType">
+          <End Role="ShopType" Type="Self.ShopType" Multiplicity="0..1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopType">
+              <PropertyRef Name="ShopTypeId" />
+            </Principal>
+            <Dependent Role="Shop">
+              <PropertyRef Name="ShopTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTypePermissionMap_Permission">
+          <End Role="Permission" Type="Self.Permission" Multiplicity="1" />
+          <End Role="ShopTypePermissionMap" Type="Self.ShopTypePermissionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="ShopTypePermissionMap">
+              <PropertyRef Name="PermissionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTypePermissionMap_ShopType">
+          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1" />
+          <End Role="ShopTypePermissionMap" Type="Self.ShopTypePermissionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopType">
+              <PropertyRef Name="ShopTypeId" />
+            </Principal>
+            <Dependent Role="ShopTypePermissionMap">
+              <PropertyRef Name="ShopTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1696,10 +1758,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserGroupPermissionMapUserPermission">
-          <End Role="UserPermission" Type="Self.UserPermission" Multiplicity="1" />
+          <End Role="Permission" Type="Self.Permission" Multiplicity="1" />
           <End Role="UserGroupPermissionMap" Type="Self.UserGroupPermissionMap" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="UserPermission">
+            <Principal Role="Permission">
               <PropertyRef Name="PermissionId" />
             </Principal>
             <Dependent Role="UserGroupPermissionMap">
@@ -1746,6 +1808,7 @@
           <EntitySet Name="Inventory" EntityType="Self.Inventory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryHistory" EntityType="Self.InventoryHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCategory" EntityType="Self.LocalCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductAttribute" EntityType="Self.ProductAttribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductGlobalCatMap" EntityType="Self.ProductGlobalCatMap" Schema="dbo" store:Type="Tables" />
@@ -1773,13 +1836,14 @@
           <EntitySet Name="ProductVideo" EntityType="Self.ProductVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopTypePermissionMap" EntityType="Self.ShopTypePermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopUserGroupMap" EntityType="Self.ShopUserGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroupMap" EntityType="Self.UserGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroupPermissionMap" EntityType="Self.UserGroupPermissionMap" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserPermission" EntityType="Self.UserPermission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserShop" EntityType="Self.UserShop" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_AttributeSetTagMap_AttributeSet" Association="Self.FK_AttributeSetTagMap_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
@@ -1808,6 +1872,18 @@
           <AssociationSet Name="FK_ProductStageAttribute_ProductStage" Association="Self.FK_ProductStageAttribute_ProductStage">
             <End Role="ProductStage" EntitySet="ProductStage" />
             <End Role="ProductStageAttribute" EntitySet="ProductStageAttribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shop_ShopType" Association="Self.FK_Shop_ShopType">
+            <End Role="ShopType" EntitySet="ShopType" />
+            <End Role="Shop" EntitySet="Shop" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTypePermissionMap_Permission" Association="Self.FK_ShopTypePermissionMap_Permission">
+            <End Role="Permission" EntitySet="Permission" />
+            <End Role="ShopTypePermissionMap" EntitySet="ShopTypePermissionMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTypePermissionMap_ShopType" Association="Self.FK_ShopTypePermissionMap_ShopType">
+            <End Role="ShopType" EntitySet="ShopType" />
+            <End Role="ShopTypePermissionMap" EntitySet="ShopTypePermissionMap" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="Self.FK_ShopUerGroupMap_Shop">
             <End Role="Shop" EntitySet="Shop" />
@@ -2030,7 +2106,7 @@
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMap" />
           </AssociationSet>
           <AssociationSet Name="FKUserGroupPermissionMapUserPermission" Association="Self.FKUserGroupPermissionMapUserPermission">
-            <End Role="UserPermission" EntitySet="UserPermission" />
+            <End Role="Permission" EntitySet="Permission" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMap" />
           </AssociationSet>
           <AssociationSet Name="FKUserShopShop" Association="Self.FKUserShopShop">
@@ -2061,6 +2137,7 @@
           <EntitySet Name="Inventories" EntityType="ColspModel.Inventory" />
           <EntitySet Name="InventoryHistories" EntityType="ColspModel.InventoryHistory" />
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
+          <EntitySet Name="Permissions" EntityType="ColspModel.Permission" />
           <EntitySet Name="Products" EntityType="ColspModel.Product" />
           <EntitySet Name="ProductAttributes" EntityType="ColspModel.ProductAttribute" />
           <EntitySet Name="ProductGlobalCatMaps" EntityType="ColspModel.ProductGlobalCatMap" />
@@ -2088,13 +2165,14 @@
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
+          <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
+          <EntitySet Name="ShopTypePermissionMaps" EntityType="ColspModel.ShopTypePermissionMap" />
           <EntitySet Name="ShopUserGroupMaps" EntityType="ColspModel.ShopUserGroupMap" />
           <EntitySet Name="Tags" EntityType="ColspModel.Tag" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
           <EntitySet Name="UserGroupMaps" EntityType="ColspModel.UserGroupMap" />
           <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
-          <EntitySet Name="UserPermissions" EntityType="ColspModel.UserPermission" />
           <EntitySet Name="UserShops" EntityType="ColspModel.UserShop" />
           <AssociationSet Name="FKAttributeSetMapAttribute" Association="ColspModel.FKAttributeSetMapAttribute">
             <End Role="Attribute" EntitySet="Attributes" />
@@ -2236,6 +2314,14 @@
             <End Role="LocalCategory" EntitySet="LocalCategories" />
             <End Role="ProductStageLocalCatMap" EntitySet="ProductStageLocalCatMaps" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShopTypePermissionMap_Permission" Association="ColspModel.FK_ShopTypePermissionMap_Permission">
+            <End Role="Permission" EntitySet="Permissions" />
+            <End Role="ShopTypePermissionMap" EntitySet="ShopTypePermissionMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FKUserGroupPermissionMapUserPermission" Association="ColspModel.FKUserGroupPermissionMapUserPermission">
+            <End Role="Permission" EntitySet="Permissions" />
+            <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
+          </AssociationSet>
           <AssociationSet Name="FKProductGlobalCatMapProduct" Association="ColspModel.FKProductGlobalCatMapProduct">
             <End Role="Product" EntitySet="Products" />
             <End Role="ProductGlobalCatMap" EntitySet="ProductGlobalCatMaps" />
@@ -2320,6 +2406,10 @@
             <End Role="User" EntitySet="Users" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
           </AssociationSet>
+          <AssociationSet Name="FK_Shop_ShopType" Association="ColspModel.FK_Shop_ShopType">
+            <End Role="ShopType" EntitySet="ShopTypes" />
+            <End Role="Shop" EntitySet="Shops" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="ColspModel.FK_ShopUerGroupMap_Shop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMaps" />
@@ -2331,6 +2421,10 @@
           <AssociationSet Name="FKUserShopShop" Association="ColspModel.FKUserShopShop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="UserShop" EntitySet="UserShops" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTypePermissionMap_ShopType" Association="ColspModel.FK_ShopTypePermissionMap_ShopType">
+            <End Role="ShopType" EntitySet="ShopTypes" />
+            <End Role="ShopTypePermissionMap" EntitySet="ShopTypePermissionMaps" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopUerGroupMap_UserGroup" Association="ColspModel.FK_ShopUerGroupMap_UserGroup">
             <End Role="UserGroup" EntitySet="UserGroups" />
@@ -2350,10 +2444,6 @@
           </AssociationSet>
           <AssociationSet Name="FKUserGroupPermissionMapUserGroup" Association="ColspModel.FKUserGroupPermissionMapUserGroup">
             <End Role="UserGroup" EntitySet="UserGroups" />
-            <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
-          </AssociationSet>
-          <AssociationSet Name="FKUserGroupPermissionMapUserPermission" Association="ColspModel.FKUserGroupPermissionMapUserPermission">
-            <End Role="UserPermission" EntitySet="UserPermissions" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
         </EntityContainer>
@@ -2627,6 +2717,17 @@
           <NavigationProperty Name="ProductLocalCatMaps" Relationship="ColspModel.FKProductLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductLocalCatMap" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageLocalCat" FromRole="LocalCategory" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageLocalCatMaps" Relationship="ColspModel.FKProductStageLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductStageLocalCatMap" />
+        </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PermissionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="PermissionGroup" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShopTypePermissionMaps" Relationship="ColspModel.FK_ShopTypePermissionMap_Permission" FromRole="Permission" ToRole="ShopTypePermissionMap" />
+          <NavigationProperty Name="UserGroupPermissionMaps" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="Permission" ToRole="UserGroupPermissionMap" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -3279,6 +3380,8 @@
           <Property Name="ShopOwner" Type="Int32" />
           <Property Name="ShopNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ShopNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Commission" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="ShopTypeId" Type="Int32" />
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -3291,9 +3394,38 @@
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantShop" FromRole="Shop" ToRole="ProductStageVariant" />
+          <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_Shop_ShopType" FromRole="Shop" ToRole="ShopType" />
           <NavigationProperty Name="ShopUserGroupMaps" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="Shop" ToRole="ShopUserGroupMap" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKShopUser" FromRole="Shop" ToRole="User" />
           <NavigationProperty Name="UserShops" Relationship="ColspModel.FKUserShopShop" FromRole="Shop" ToRole="UserShop" />
+        </EntityType>
+        <EntityType Name="ShopType">
+          <Key>
+            <PropertyRef Name="ShopTypeId" />
+          </Key>
+          <Property Name="ShopTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopTypeNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShopTypeNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shops" Relationship="ColspModel.FK_Shop_ShopType" FromRole="ShopType" ToRole="Shop" />
+          <NavigationProperty Name="ShopTypePermissionMaps" Relationship="ColspModel.FK_ShopTypePermissionMap_ShopType" FromRole="ShopType" ToRole="ShopTypePermissionMap" />
+        </EntityType>
+        <EntityType Name="ShopTypePermissionMap">
+          <Key>
+            <PropertyRef Name="ShopTypeId" />
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="ShopTypeId" Type="Int32" Nullable="false" />
+          <Property Name="PermissionId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Permission" Relationship="ColspModel.FK_ShopTypePermissionMap_Permission" FromRole="ShopTypePermissionMap" ToRole="Permission" />
+          <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_ShopTypePermissionMap_ShopType" FromRole="ShopTypePermissionMap" ToRole="ShopType" />
         </EntityType>
         <EntityType Name="ShopUserGroupMap">
           <Key>
@@ -3398,18 +3530,8 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Permission" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="UserGroupPermissionMap" ToRole="Permission" />
           <NavigationProperty Name="UserGroup" Relationship="ColspModel.FKUserGroupPermissionMapUserGroup" FromRole="UserGroupPermissionMap" ToRole="UserGroup" />
-          <NavigationProperty Name="UserPermission" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="UserGroupPermissionMap" ToRole="UserPermission" />
-        </EntityType>
-        <EntityType Name="UserPermission">
-          <Key>
-            <PropertyRef Name="PermissionId" />
-          </Key>
-          <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PermissionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="PermissionGroup" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="UserGroupPermissionMaps" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="UserPermission" ToRole="UserGroupPermissionMap" />
         </EntityType>
         <EntityType Name="UserShop">
           <Key>
@@ -3845,6 +3967,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopTypePermissionMap_Permission">
+          <End Type="ColspModel.Permission" Role="Permission" Multiplicity="1" />
+          <End Type="ColspModel.ShopTypePermissionMap" Role="ShopTypePermissionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="ShopTypePermissionMap">
+              <PropertyRef Name="PermissionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKUserGroupPermissionMapUserPermission">
+          <End Type="ColspModel.Permission" Role="Permission" Multiplicity="1" />
+          <End Type="ColspModel.UserGroupPermissionMap" Role="UserGroupPermissionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="UserGroupPermissionMap">
+              <PropertyRef Name="PermissionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKProductGlobalCatMapProduct">
           <End Type="ColspModel.Product" Role="Product" Multiplicity="1" />
           <End Type="ColspModel.ProductGlobalCatMap" Role="ProductGlobalCatMap" Multiplicity="*" />
@@ -4105,6 +4251,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Shop_ShopType">
+          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="0..1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopType">
+              <PropertyRef Name="ShopTypeId" />
+            </Principal>
+            <Dependent Role="Shop">
+              <PropertyRef Name="ShopTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShopUerGroupMap_Shop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ShopUserGroupMap" Role="ShopUserGroupMap" Multiplicity="*" />
@@ -4138,6 +4296,18 @@
             </Principal>
             <Dependent Role="UserShop">
               <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTypePermissionMap_ShopType">
+          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1" />
+          <End Type="ColspModel.ShopTypePermissionMap" Role="ShopTypePermissionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopType">
+              <PropertyRef Name="ShopTypeId" />
+            </Principal>
+            <Dependent Role="ShopTypePermissionMap">
+              <PropertyRef Name="ShopTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4198,18 +4368,6 @@
             </Principal>
             <Dependent Role="UserGroupPermissionMap">
               <PropertyRef Name="GroupId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKUserGroupPermissionMapUserPermission">
-          <End Type="ColspModel.UserPermission" Role="UserPermission" Multiplicity="1" />
-          <End Type="ColspModel.UserGroupPermissionMap" Role="UserGroupPermissionMap" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserPermission">
-              <PropertyRef Name="PermissionId" />
-            </Principal>
-            <Dependent Role="UserGroupPermissionMap">
-              <PropertyRef Name="PermissionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4454,6 +4612,16 @@
                 <ScalarProperty Name="NameTh" ColumnName="NameTh" />
                 <ScalarProperty Name="NameEn" ColumnName="NameEn" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Permissions">
+            <EntityTypeMapping TypeName="ColspModel.Permission">
+              <MappingFragment StoreEntitySet="Permission">
+                <ScalarProperty Name="PermissionGroup" ColumnName="PermissionGroup" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
+                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5063,10 +5231,37 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="UrlKeyTh" ColumnName="UrlKeyTh" />
                 <ScalarProperty Name="UrlKeyEn" ColumnName="UrlKeyEn" />
+                <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />
+                <ScalarProperty Name="Commission" ColumnName="Commission" />
                 <ScalarProperty Name="ShopNameTh" ColumnName="ShopNameTh" />
                 <ScalarProperty Name="ShopNameEn" ColumnName="ShopNameEn" />
                 <ScalarProperty Name="ShopOwner" ColumnName="ShopOwner" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShopTypes">
+            <EntityTypeMapping TypeName="ColspModel.ShopType">
+              <MappingFragment StoreEntitySet="ShopType">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ShopTypeNameTh" ColumnName="ShopTypeNameTh" />
+                <ScalarProperty Name="ShopTypeNameEn" ColumnName="ShopTypeNameEn" />
+                <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShopTypePermissionMaps">
+            <EntityTypeMapping TypeName="ColspModel.ShopTypePermissionMap">
+              <MappingFragment StoreEntitySet="ShopTypePermissionMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+                <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5159,16 +5354,6 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
                 <ScalarProperty Name="GroupId" ColumnName="GroupId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserPermissions">
-            <EntityTypeMapping TypeName="ColspModel.UserPermission">
-              <MappingFragment StoreEntitySet="UserPermission">
-                <ScalarProperty Name="PermissionGroup" ColumnName="PermissionGroup" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
-                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

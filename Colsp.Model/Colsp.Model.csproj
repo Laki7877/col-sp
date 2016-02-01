@@ -53,6 +53,8 @@
     <Compile Include="Requests\ProductStageRequest.cs" />
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\SEORequest.cs" />
+    <Compile Include="Requests\ShopRequest.cs" />
+    <Compile Include="Requests\ShopTypeRequest.cs" />
     <Compile Include="Requests\TagRequest.cs" />
     <Compile Include="Requests\UserGroupRequest.cs" />
     <Compile Include="Requests\UserPermissionRequest.cs" />
