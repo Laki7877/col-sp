@@ -39,7 +39,7 @@ namespace Colsp.Api.Controllers
 			else if (User.HasPermission("ListOwnedProducts"))
 			{
 				// List only owned product
-				products = db.Products.Where(p => User.ShopIds().Contains((int)p.ShopId));
+				//products = db.Products.Where(p => User.Shops().Cont;
 				if(request.SearchText != null)
 				{
 					products = products.Where(p => p.Sku.Equals(request.SearchText));
@@ -74,7 +74,7 @@ namespace Colsp.Api.Controllers
 			}
 			else if (User.HasPermission("GetOwnedProduct"))
 			{
-				product = db.Products.Where(p => p.SellerId.Equals(User.UserId()) && p.ProductId.Equals(id)).FirstOrDefault();
+				product = db.Products.Where(p => p.SellerId.Equals(this.User.UserRequest().UserId) && p.ProductId.Equals(id)).FirstOrDefault();
 			}
 			if (product == null)
             {

@@ -29,5 +29,7 @@ namespace Colsp.Api.Constants
         public static readonly string USER_TYPE_ADMIN = "A";
         public static readonly string USER_TYPE_SELLER = "S";
         public static readonly string SHOP_TYPE = "H";
+
+        public static int SHOP_OWNER_GROUP_ID = 13;
     }
 }

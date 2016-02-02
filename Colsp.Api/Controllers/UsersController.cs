@@ -14,12 +14,58 @@ using System.Net.Http;
 using Colsp.Api.Constants;
 using System.Collections.Generic;
 using Colsp.Api.Helpers;
+using Colsp.Api.Services;
+using System.Security.Principal;
+using System.Security.Claims;
 
 namespace Colsp.Api.Controllers
 {
 	public class UsersController : ApiController
     {
         private ColspEntities db = new ColspEntities();
+
+        [Route("api/Users/Seller")]
+        [HttpGet]
+        public HttpResponseMessage GetUserSeller([FromUri] UserRequest request)
+        {
+            try
+            {
+                var userList = db.Users
+                    .Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
+                    .Include(i=>i.UserShops)
+                    .Where(w => w.Type.Equals(Constant.USER_TYPE_SELLER) 
+                        && !w.Status.Equals(Constant.STATUS_REMOVE) 
+                        && w.UserShops.Any(a=>a.ShopId== this.User.FirstShop().ShopId))
+                    .Select(s => new
+                    {
+                        s.UserId,
+                        s.NameEn,
+                        s.NameTh,
+                        s.Email,
+                        s.UpdatedDt,
+                        UserGroup = s.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn)
+                    });
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, userList);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    userList = userList.Where(a => a.NameEn.Contains(request.SearchText)
+                    || a.NameTh.Contains(request.SearchText)
+                    || a.Email.Contains(request.SearchText));
+                }
+                var total = userList.Count();
+                var pagedUsers = userList.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedUsers, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
 
         [Route("api/Users/Admin")]
         [HttpGet]
@@ -46,7 +92,8 @@ namespace Colsp.Api.Controllers
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
                     userList = userList.Where(a => a.NameEn.Contains(request.SearchText)
-                    || a.NameTh.Contains(request.SearchText));
+                    || a.NameTh.Contains(request.SearchText)
+                    || a.Email.Contains(request.SearchText));
                 }
                 var total = userList.Count();
                 var pagedUsers = userList.Paginate(request);
@@ -100,16 +147,18 @@ namespace Colsp.Api.Controllers
             {
                 usr = new User();
                 usr.Email = Validation.ValidateString(request.Email,"Email",true,100,false);
+                usr.Password = request.Password;
                 usr.NameEn = request.NameEn;
                 usr.NameTh = request.NameTh;
                 usr.Division = request.Division;
                 usr.Phone = request.Phone;
                 usr.Position = request.Position;
+                usr.EmployeeId = request.EmployeeId;
                 usr.Status = Constant.STATUS_ACTIVE;
                 usr.Type = Constant.USER_TYPE_ADMIN;
-                usr.CreatedBy = this.User.Email();
+                usr.CreatedBy = this.User.UserRequest().Email;
                 usr.CreatedDt = DateTime.Now;
-                usr.UpdatedBy = this.User.Email();
+                usr.UpdatedBy = this.User.UserRequest().Email;
                 usr.UpdatedDt = DateTime.Now;
                 db.Users.Add(usr);
                 db.SaveChanges();
@@ -124,9 +173,9 @@ namespace Colsp.Api.Controllers
                         UserGroupMap map = new UserGroupMap();
                         map.UserId = usr.UserId;
                         map.GroupId = usrGrp.GroupId.Value;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.Email();
+                        map.UpdatedBy = this.User.UserRequest().Email;
                         map.UpdatedDt = DateTime.Now;
                         db.UserGroupMaps.Add(map);
                     }
@@ -138,8 +187,6 @@ namespace Colsp.Api.Controllers
             {
                 if(usr != null && usr.UserId != 0)
                 {
-                    db.Dispose();
-                    db = new ColspEntities();
                     db.Users.Remove(usr);
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
@@ -161,12 +208,19 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("This user is not admin");
                 }
-                usr.Email = request.Email;
+                usr.Email = Validation.ValidateString(request.Email, "Email", true, 100, false);
+                if (!string.IsNullOrEmpty(request.Password))
+                {
+                    usr.Password = request.Password;
+                }
                 usr.NameEn = request.NameEn;
                 usr.NameTh = request.NameTh;
                 usr.Division = request.Division;
                 usr.Phone = request.Phone;
                 usr.Position = request.Position;
+                usr.EmployeeId = request.EmployeeId;
+                usr.UpdatedBy = this.User.UserRequest().Email;
+                usr.UpdatedDt = DateTime.Now;
                 var usrGrpList = db.UserGroupMaps.Where(w => w.UserId == usr.UserId).ToList();
                 if (request.UserGroup != null && request.UserGroup.Count > 0)
                 {
@@ -182,7 +236,7 @@ namespace Colsp.Api.Controllers
                             UserGroupMap current = usrGrpList.Where(w => w.GroupId == grp.GroupId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = this.User.Email();
+                                current.UpdatedBy = this.User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 usrGrpList.Remove(current);
                             }
@@ -196,9 +250,9 @@ namespace Colsp.Api.Controllers
                             UserGroupMap map = new UserGroupMap();
                             map.UserId = usr.UserId;
                             map.GroupId = grp.GroupId.Value;
-                            map.CreatedBy = this.User.Email();
+                            map.CreatedBy = this.User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.Email();
+                            map.UpdatedBy = this.User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.UserGroupMaps.Add(map);
                         }
@@ -243,6 +297,27 @@ namespace Colsp.Api.Controllers
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Users/Login")]
+        [HttpGet]
+        public HttpResponseMessage LoginUser()
+        {
+            try
+            {
+                ClaimRequest claim = new ClaimRequest();
+                
+                var claimsIdentity = this.User.Identity as ClaimsIdentity;
+                claim.Permission = claimsIdentity.Claims
+                    .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
+                claim.Shop = this.User.Shops().Select(s=>new { s.ShopId, s.ShopNameEn }).ToList()[0];
+                claim.User = new { Email = this.User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
+                return Request.CreateResponse(HttpStatusCode.OK, claim);
             }
             catch (Exception e)
             {

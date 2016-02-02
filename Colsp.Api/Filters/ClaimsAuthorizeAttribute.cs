@@ -9,7 +9,8 @@ namespace Colsp.Api.Filters
 	public class ClaimsAuthorizeAttribute : AuthorizeAttribute
 	{
 		public string Permission { get; set; }
-		protected override bool IsAuthorized(HttpActionContext actionContext)
+
+        protected override bool IsAuthorized(HttpActionContext actionContext)
 		{
 			if (!(HttpContext.Current.User.Identity is ClaimsIdentity))
 			{

@@ -11,6 +11,7 @@ using Colsp.Api.Results;
 using Colsp.Api.Services;
 using Colsp.Entity.Models;
 using Colsp.Api.Security;
+using Colsp.Model.Requests;
 
 namespace Colsp.Api.Filters
 {
@@ -67,11 +68,11 @@ namespace Colsp.Api.Filters
 				return;
 			}
 
-			var userName = userNameAndPassword.Item1;
+			var email = userNameAndPassword.Item1;
 			var password = userNameAndPassword.Item2;
 
 			// Authenticate
-			IPrincipal principal = await AuthenticateAsync(userName, password, cancellationToken);
+			IPrincipal principal = await AuthenticateAsync(email, password, cancellationToken);
 
 			if (principal == null)
 			{
@@ -84,7 +85,8 @@ namespace Colsp.Api.Filters
 				context.Principal = principal;
 			}
 		}
-		// Challenge response
+		
+        // Challenge response
 		public Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
 		{
 			return Task.FromResult(0);
@@ -136,7 +138,7 @@ namespace Colsp.Api.Filters
 		}
 
 		// Authenticate with database
-		private async Task<IPrincipal> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
+		private async Task<IPrincipal> AuthenticateAsync(string email, string password, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -145,14 +147,15 @@ namespace Colsp.Api.Filters
 				// TODO: salt the password
 				// Query authenticated user-permission
 				var user = await Task.Run(() =>
-					db.Users.Where(u => u.Username.Equals(username) && u.Password.Equals(password))
+					db.Users.Where(u => u.Email.Equals(email) && u.Password.Equals(password))
 							.Select(u => new
 							{
 								u.UserId,
 								u.NameEn,
 								u.NameTh,
 								u.Email,
-								u.Shops
+								u.Shops,
+                                u.Type
 							})
 							.FirstOrDefault()
 				);
@@ -169,10 +172,11 @@ namespace Colsp.Api.Filters
 							.Join(db.UserGroups, a => a.UserGroupMap.GroupId, g => g.GroupId, (a, g) => new { User = a.User, UserGroup = g })
 							.Join(db.UserGroupPermissionMaps, a => a.UserGroup.GroupId, m => m.GroupId, (a, m) => new { User = a.User, UserGroupPermissionMap = m })
 							.Join(db.Permissions, a => a.UserGroupPermissionMap.PermissionId, p => p.PermissionId, (a, p) => new { User = a.User, Permission = p })
-							.Where(u => u.User.Username.Equals(username) && u.User.Password.Equals(password))
+							.Where(u => u.User.Username.Equals(email) && u.User.Password.Equals(password))
 							.Select(a => new
 							{
-								Permission = a.Permission.PermissionName
+								Permission = a.Permission.PermissionName,
+                                PermissionGroup = a.Permission.PermissionGroup
 							})
 							.ToList()
 				);
@@ -183,11 +187,14 @@ namespace Colsp.Api.Filters
 				{
 					if (!claims.Exists(m => m.Value.Equals(item.Permission)))
 					{
-						claims.Add(new Claim("Permission", item.Permission));
+                        Claim claim = new Claim("Permission", item.Permission, item.PermissionGroup, null);
+                        claims.Add(claim);
 					}
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
-				var principal = new UsersPrincipal(identity, user.UserId, user.NameEn, user.NameTh, user.Email, user.Shops.Select(s => s.ShopId).ToList());
+				var principal = new UsersPrincipal(identity,
+                    user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
+                    new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type });
 
 				return principal;
 			}

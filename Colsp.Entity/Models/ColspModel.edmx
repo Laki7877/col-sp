@@ -552,6 +552,21 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="ProductReview">
+          <Key>
+            <PropertyRef Name="ProudctReviewId" />
+          </Key>
+          <Property Name="ProudctReviewId" Type="int" Nullable="false" />
+          <Property Name="Rating" Type="decimal" Precision="3" Scale="1" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="500" />
+          <Property Name="BuyerId" Type="int" />
+          <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="ProductStage">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -851,6 +866,7 @@
           <Property Name="ShopTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ShopTypeNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ShopTypeNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
@@ -1080,7 +1096,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypePermissionMap_ShopType">
-          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1" />
+          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ShopTypePermissionMap" Type="Self.ShopTypePermissionMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShopType">
@@ -1722,7 +1740,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserGroupMapUser">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="UserGroupMap" Type="Self.UserGroupMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -1734,7 +1754,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserGroupMapUserGroup">
-          <End Role="UserGroup" Type="Self.UserGroup" Multiplicity="1" />
+          <End Role="UserGroup" Type="Self.UserGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="UserGroupMap" Type="Self.UserGroupMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserGroup">
@@ -1746,7 +1768,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserGroupPermissionMapUserGroup">
-          <End Role="UserGroup" Type="Self.UserGroup" Multiplicity="1" />
+          <End Role="UserGroup" Type="Self.UserGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="UserGroupPermissionMap" Type="Self.UserGroupPermissionMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserGroup">
@@ -1770,7 +1794,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserShopShop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="UserShop" Type="Self.UserShop" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -1782,7 +1808,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserShopUser">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="UserShop" Type="Self.UserShop" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -1823,6 +1851,7 @@
           <EntitySet Name="ProductImage" EntityType="Self.ProductImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductLocalCatMap" EntityType="Self.ProductLocalCatMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductRelated" EntityType="Self.ProductRelated" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductReview" EntityType="Self.ProductReview" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStage" EntityType="Self.ProductStage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageAttribute" EntityType="Self.ProductStageAttribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageGlobalCatMap" EntityType="Self.ProductStageGlobalCatMap" Schema="dbo" store:Type="Tables" />
@@ -2152,6 +2181,7 @@
           <EntitySet Name="ProductImages" EntityType="ColspModel.ProductImage" />
           <EntitySet Name="ProductLocalCatMaps" EntityType="ColspModel.ProductLocalCatMap" />
           <EntitySet Name="ProductRelateds" EntityType="ColspModel.ProductRelated" />
+          <EntitySet Name="ProductReviews" EntityType="ColspModel.ProductReview" />
           <EntitySet Name="ProductStages" EntityType="ColspModel.ProductStage" />
           <EntitySet Name="ProductStageAttributes" EntityType="ColspModel.ProductStageAttribute" />
           <EntitySet Name="ProductStageGlobalCatMaps" EntityType="ColspModel.ProductStageGlobalCatMap" />
@@ -3071,6 +3101,21 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="ProductReview">
+          <Key>
+            <PropertyRef Name="ProudctReviewId" />
+          </Key>
+          <Property Name="ProudctReviewId" Type="Int32" Nullable="false" />
+          <Property Name="Rating" Type="Decimal" Precision="3" Scale="1" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="BuyerId" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="ProductStage">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -3406,6 +3451,7 @@
           <Property Name="ShopTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ShopTypeNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ShopTypeNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4288,7 +4334,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserShopShop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.UserShop" Role="UserShop" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -4300,7 +4348,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypePermissionMap_ShopType">
-          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1" />
+          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ShopTypePermissionMap" Role="ShopTypePermissionMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShopType">
@@ -4324,7 +4374,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserGroupMapUser">
-          <End Type="ColspModel.User" Role="User" Multiplicity="1" />
+          <End Type="ColspModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.UserGroupMap" Role="UserGroupMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -4336,7 +4388,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserShopUser">
-          <End Type="ColspModel.User" Role="User" Multiplicity="1" />
+          <End Type="ColspModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.UserShop" Role="UserShop" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -4348,7 +4402,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserGroupMapUserGroup">
-          <End Type="ColspModel.UserGroup" Role="UserGroup" Multiplicity="1" />
+          <End Type="ColspModel.UserGroup" Role="UserGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.UserGroupMap" Role="UserGroupMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserGroup">
@@ -4360,7 +4416,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKUserGroupPermissionMapUserGroup">
-          <End Type="ColspModel.UserGroup" Role="UserGroup" Multiplicity="1" />
+          <End Type="ColspModel.UserGroup" Role="UserGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.UserGroupPermissionMap" Role="UserGroupPermissionMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserGroup">
@@ -4940,6 +4998,22 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ProductReviews">
+            <EntityTypeMapping TypeName="ColspModel.ProductReview">
+              <MappingFragment StoreEntitySet="ProductReview">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="BuyerId" ColumnName="BuyerId" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="ProudctReviewId" ColumnName="ProudctReviewId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ProductStages">
             <EntityTypeMapping TypeName="ColspModel.ProductStage">
               <MappingFragment StoreEntitySet="ProductStage">
@@ -5247,6 +5321,7 @@
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ShopTypeNameTh" ColumnName="ShopTypeNameTh" />
                 <ScalarProperty Name="ShopTypeNameEn" ColumnName="ShopTypeNameEn" />
                 <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />

@@ -240,6 +240,9 @@
     <Compile Include="Models\ProductRelated.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductReview.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ProductStage.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

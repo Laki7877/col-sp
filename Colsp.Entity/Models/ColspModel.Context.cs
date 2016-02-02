@@ -55,6 +55,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductImage> ProductImages { get; set; }
         public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
         public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
+        public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
         public virtual DbSet<ProductStageAttribute> ProductStageAttributes { get; set; }
         public virtual DbSet<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }

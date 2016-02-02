@@ -93,9 +93,9 @@ namespace Colsp.Api.Controllers
                 usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.Status = Constant.STATUS_ACTIVE;
                 usrGrp.Type = Constant.USER_TYPE_ADMIN;
-                usrGrp.CreatedBy = this.User.Email();
+                usrGrp.CreatedBy = this.User.UserRequest().Email;
                 usrGrp.CreatedDt = DateTime.Now;
-                usrGrp.UpdatedBy = this.User.Email();
+                usrGrp.UpdatedBy = this.User.UserRequest().Email;
                 usrGrp.UpdatedDt = DateTime.Now;
                 db.UserGroups.Add(usrGrp);
                 db.SaveChanges();
@@ -110,9 +110,9 @@ namespace Colsp.Api.Controllers
                         UserGroupPermissionMap map = new UserGroupPermissionMap();
                         map.PermissionId = perm.PermissionId.Value;
                         map.GroupId = usrGrp.GroupId;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.Email();
+                        map.UpdatedBy = this.User.UserRequest().Email;
                         map.UpdatedDt = DateTime.Now;
                         db.UserGroupPermissionMaps.Add(map);
                     }
@@ -126,6 +126,7 @@ namespace Colsp.Api.Controllers
                 {
                     db.UserGroups.Remove(usrGrp);
                 }
+                db.SaveChanges();
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -137,7 +138,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
                 foreach (UserGroupRequest userGrpRq in request)
                 {
                     if (userGrpRq.GroupId == null)
@@ -153,7 +153,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Cannot deleted non admin user " + userGrpRq.GroupId.Value);
                     }
-                    usrGrp.Status = Constant.STATUS_REMOVE;
+                    db.UserGroups.Remove(usrGrp);
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -197,7 +197,7 @@ namespace Colsp.Api.Controllers
                             var current = mapList.Where(w => w.PermissionId == permission.PermissionId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = this.User.Email();
+                                current.UpdatedBy = this.User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 mapList.Remove(current);
                             }
@@ -211,9 +211,9 @@ namespace Colsp.Api.Controllers
                             UserGroupPermissionMap map = new UserGroupPermissionMap();
                             map.GroupId = usrGrp.GroupId;
                             map.PermissionId = permission.PermissionId.Value;
-                            map.CreatedBy = this.User.Email();
+                            map.CreatedBy = this.User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.Email();
+                            map.UpdatedBy = this.User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.UserGroupPermissionMaps.Add(map);
                         }

@@ -135,9 +135,9 @@ namespace Colsp.Api.Controllers
                 #endregion
                 set.Visibility = request.Visibility;
                 set.Status = Constant.STATUS_ACTIVE;
-                set.CreatedBy = this.User.Email();
+                set.CreatedBy = this.User.UserRequest().Email;
                 set.CreatedDt = DateTime.Now;
-                set.UpdatedBy = this.User.Email();
+                set.UpdatedBy = this.User.UserRequest().Email;
                 set.UpdatedDt = DateTime.Now;
                 set = db.AttributeSets.Add(set);
                 db.SaveChanges();
@@ -151,9 +151,9 @@ namespace Colsp.Api.Controllers
                         map.Required = attr.Required;
                         map.Filterable = attr.Filterable;
                         map.Status = Constant.STATUS_ACTIVE;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.Email();
+                        map.UpdatedBy = this.User.UserRequest().Email;
                         map.UpdatedDt = DateTime.Now;
                         db.AttributeSetMaps.Add(map);
                     }
@@ -165,9 +165,9 @@ namespace Colsp.Api.Controllers
                     {
                         Tag tag = new Tag();
                         tag.TagName = tagRq.TagName;
-                        tag.CreatedBy = this.User.Email();
+                        tag.CreatedBy = this.User.UserRequest().Email;
                         tag.CreatedDt = DateTime.Now;
-                        tag.UpdatedBy = this.User.Email();
+                        tag.UpdatedBy = this.User.UserRequest().Email;
                         tag.UpdatedDt = DateTime.Now;
                         db.Tags.Add(tag);
                         tagList.Add(tag);
@@ -180,9 +180,9 @@ namespace Colsp.Api.Controllers
                         AttributeSetTagMap map = new AttributeSetTagMap();
                         map.TagId = t.TagId;
                         map.AttributeSetId = set.AttributeSetId;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.Email();
+                        map.UpdatedBy = this.User.UserRequest().Email;
                         map.UpdatedDt = DateTime.Now;
                         db.AttributeSetTagMaps.Add(map);
                     }
@@ -240,7 +240,7 @@ namespace Colsp.Api.Controllers
                     #endregion
                     attrSet.Visibility = request.Visibility;
                     attrSet.Status = Constant.STATUS_ACTIVE;
-                    attrSet.UpdatedBy = this.User.Email();
+                    attrSet.UpdatedBy = this.User.UserRequest().Email;
                     attrSet.UpdatedDt = DateTime.Now;
 
                     List<AttributeSetMap> mapList =  attrSet.AttributeSetMaps.ToList();
@@ -261,7 +261,7 @@ namespace Colsp.Api.Controllers
                                 {
                                     current.Required = attrRq.Required;
                                     current.Filterable = attrRq.Filterable;
-                                    current.UpdatedBy = this.User.Email();
+                                    current.UpdatedBy = this.User.UserRequest().Email;
                                     current.UpdatedDt = DateTime.Now;
                                     mapList.Remove(current);
                                 }
@@ -277,9 +277,9 @@ namespace Colsp.Api.Controllers
                                 map.Required = attrRq.Required;
                                 map.Filterable = attrRq.Filterable;
                                 map.AttributeSetId = attrSet.AttributeSetId;
-                                map.CreatedBy = this.User.Email();
+                                map.CreatedBy = this.User.UserRequest().Email;
                                 map.CreatedDt = DateTime.Now;
-                                map.UpdatedBy = this.User.Email();
+                                map.UpdatedBy = this.User.UserRequest().Email;
                                 map.UpdatedDt = DateTime.Now;
                                 db.AttributeSetMaps.Add(map);
                             }
@@ -311,9 +311,9 @@ namespace Colsp.Api.Controllers
                         {
                             Tag tag = new Tag();
                             tag.TagName = tagRq.TagName;
-                            tag.CreatedBy = this.User.Email();
+                            tag.CreatedBy = this.User.UserRequest().Email;
                             tag.CreatedDt = DateTime.Now;
-                            tag.UpdatedBy = this.User.Email();
+                            tag.UpdatedBy = this.User.UserRequest().Email;
                             tag.UpdatedDt = DateTime.Now;
                             db.Tags.Add(tag);
                             tagList.Add(tag);
@@ -327,9 +327,9 @@ namespace Colsp.Api.Controllers
                             AttributeSetTagMap map = new AttributeSetTagMap();
                             map.TagId = t.TagId;
                             map.AttributeSetId = attrSet.AttributeSetId;
-                            map.CreatedBy = this.User.Email();
+                            map.CreatedBy = this.User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.Email();
+                            map.UpdatedBy = this.User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.AttributeSetTagMaps.Add(map);
                         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Colsp.Model.Requests;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;
 
@@ -6,19 +7,14 @@ namespace Colsp.Api.Security
 {
 	public class UsersPrincipal : ClaimsPrincipal
 	{
-		public int UserId { get; set; }
-		public string NameEn { get; set; }
-		public string NameTh { get; set; }
-		public string Email { get; set; }
-		public List<int> Shops { get; set; }
+        public List<ShopRequest> Shops { get; set; }
+        public UserRequest User { get; set; }
 
-		public UsersPrincipal(IIdentity identity, int userId, string nameEn, string nameTh, string email, List<int> shops) : base(identity)
+        public UsersPrincipal(IIdentity identity, List<ShopRequest> shops, UserRequest user) : base(identity)
 		{
-			UserId = userId;
-			Shops = shops;
-			NameEn = nameEn;
-			NameTh = nameTh;
-			Email = email;
-		}
+            this = identity;
+            Shops = shops;
+            User = user;
+        }
 	}
 }
