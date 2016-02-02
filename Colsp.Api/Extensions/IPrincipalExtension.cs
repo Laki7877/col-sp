@@ -38,17 +38,17 @@ namespace Colsp.Api.Extensions
             return new List<ShopRequest>();
         }
 
-        public static ShopRequest FirstShop(this IPrincipal p)
+        public static ShopRequest ShopRequest(this IPrincipal p)
         {
             if (p is UsersPrincipal)
             {
-                var list =  ((UsersPrincipal)p).Shops;
-                if(list != null && list.Count > 0)
+                var list = ((UsersPrincipal)p).Shops;
+                if (list != null && list.Count > 0)
                 {
                     return list[0];
                 }
             }
-            return new ShopRequest();
+            return null;
         }
     }
 }

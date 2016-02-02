@@ -32,11 +32,13 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                int shopId = this.User.ShopRequest().ShopId.Value;
                 var products = (from stage in db.ProductStages
                           join proImg in db.ProductStageImages on stage.Pid equals proImg.Pid into proImgJoin
                           join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
                           from varJ in varJoin.DefaultIfEmpty()
                           join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
+                          where stage.ShopId == shopId 
                           select new
                           {
                               stage.ProductId,
@@ -116,9 +118,10 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                int shopId = this.User.ShopRequest().ShopId.Value;
                 var products = (from p in db.ProductStages
-                          where !Constant.STATUS_REMOVE.Equals(p.Status) && p.ShopId == this.User.FirstShop().ShopId
-                          select new {
+                          where !Constant.STATUS_REMOVE.Equals(p.Status) && p.ShopId == shopId
+                             select new {
                               p.Sku,
                               p.Pid,
                               p.Upc,
@@ -227,7 +230,7 @@ namespace Colsp.Api.Controllers
             ProductStage stage = null;
             try
             {
-                if (this.User.FirstShop().ShopId == 0)
+                if (this.User.ShopRequest().ShopId == 0)
                 {
                     throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
@@ -237,7 +240,7 @@ namespace Colsp.Api.Controllers
 
                 SetupProductStage(db,stage, request);
                 stage.Status = Constant.PRODUCT_STATUS_JUNK;
-                stage.ShopId = this.User.FirstShop().ShopId;
+                stage.ShopId = this.User.ShopRequest().ShopId.Value;
                 string masterPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                 stage.Pid = masterPid;
 
@@ -453,11 +456,12 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (this.User.FirstShop().ShopId == 0)
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                if (shopId == 0)
                 {
                     throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
-                var stage = db.ProductStages.Where(w => w.ProductId == productId && w.ShopId == this.User.FirstShop().ShopId)
+                var stage = db.ProductStages.Where(w => w.ProductId == productId && w.ShopId == shopId)
                     .Include(i => i.ProductStageVariants)
                     .Include(i => i.ProductStageAttributes).SingleOrDefault();
                 if (stage != null)
@@ -682,7 +686,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var productList = db.ProductStages.Where(w => w.ShopId == this.User.FirstShop().ShopId);
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var productList = db.ProductStages.Where(w => w.ShopId == shopId);
                 foreach (ProductStageRequest proRq in request)
                 {
                     var pro = productList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
@@ -851,7 +856,8 @@ namespace Colsp.Api.Controllers
 
         private ProductStageRequest SetupProductStageRequestFromProductId(ColspEntities db, int productId)
         {
-            var stage = db.ProductStages.Where(w => w.ProductId == productId && w.ShopId == this.User.FirstShop().ShopId)
+            int shopId = this.User.ShopRequest().ShopId.Value;
+            var stage = db.ProductStages.Where(w => w.ProductId == productId && w.ShopId == shopId)
                     .Include(i => i.ProductStageVariants.Select(s => s.Attribute))
                     .Include(i => i.ProductStageVariants.Select(s => s.Attribute1))
                     .Include(i => i.ProductStageAttributes.Select(s => s.Attribute))

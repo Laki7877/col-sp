@@ -12,7 +12,6 @@ namespace Colsp.Api.Security
 
         public UsersPrincipal(IIdentity identity, List<ShopRequest> shops, UserRequest user) : base(identity)
 		{
-            this = identity;
             Shops = shops;
             User = user;
         }

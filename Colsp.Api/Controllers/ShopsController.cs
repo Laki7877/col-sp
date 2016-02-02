@@ -63,8 +63,6 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopType = db.Shops.Where(s => s.ShopId == shopId).Select(s => s.ShopType).SingleOrDefault();
-
-
                 return Request.CreateResponse(HttpStatusCode.OK, shopType);
             }
             catch (Exception e)
@@ -341,14 +339,15 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (this.User.FirstShop().ShopId == 0)
+                int shopIdRq = this.User.ShopRequest().ShopId.Value;
+                if (shopIdRq == 0)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid. Cannot find shop in session");
                 }
                 var catEnList = (from cat in db.LocalCategories
                                  join proStg in db.ProductStages on cat.CategoryId equals proStg.LocalCatId into j
                                  from j2 in j.DefaultIfEmpty()
-                                 where cat.ShopId == this.User.FirstShop().ShopId
+                                 where cat.ShopId == shopIdRq
                                  group j2 by cat into g
                                  select new
                                  {

@@ -30,12 +30,13 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                int shopId = this.User.ShopRequest().ShopId.Value;
                 var userList = db.Users
                     .Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
                     .Include(i=>i.UserShops)
                     .Where(w => w.Type.Equals(Constant.USER_TYPE_SELLER) 
                         && !w.Status.Equals(Constant.STATUS_REMOVE) 
-                        && w.UserShops.Any(a=>a.ShopId== this.User.FirstShop().ShopId))
+                        && w.UserShops.Any(a=>a.ShopId== shopId))
                     .Select(s => new
                     {
                         s.UserId,

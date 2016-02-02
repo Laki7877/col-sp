@@ -155,8 +155,9 @@ namespace Colsp.Api.Filters
 								u.NameTh,
 								u.Email,
 								u.Shops,
-                                u.Type
-							})
+                                u.Type,
+                                Permission = u.UserGroupMaps.Select(um=>um.UserGroup.UserGroupPermissionMaps.Select(pm=>pm.Permission))
+                            })
 							.FirstOrDefault()
 				);
 
@@ -166,30 +167,22 @@ namespace Colsp.Api.Filters
 					return null;
 				}
 
-				// Get all permissions
-				var userPermissions = await Task.Run(() =>
-				   db.Users.Join(db.UserGroupMaps, u => u.UserId, g => g.GroupId, (u, g) => new { User = u, UserGroupMap = g })
-							.Join(db.UserGroups, a => a.UserGroupMap.GroupId, g => g.GroupId, (a, g) => new { User = a.User, UserGroup = g })
-							.Join(db.UserGroupPermissionMaps, a => a.UserGroup.GroupId, m => m.GroupId, (a, m) => new { User = a.User, UserGroupPermissionMap = m })
-							.Join(db.Permissions, a => a.UserGroupPermissionMap.PermissionId, p => p.PermissionId, (a, p) => new { User = a.User, Permission = p })
-							.Where(u => u.User.Username.Equals(email) && u.User.Password.Equals(password))
-							.Select(a => new
-							{
-								Permission = a.Permission.PermissionName,
-                                PermissionGroup = a.Permission.PermissionGroup
-							})
-							.ToList()
-				);
-				
-				// Assign claims
-				var claims = new List<Claim>();
-				foreach (var item in userPermissions)
+                // Get all permissions
+                var userPermissions = user.Permission;
+
+                // Assign claims
+                var claims = new List<Claim>();
+				foreach (var ug in userPermissions)
 				{
-					if (!claims.Exists(m => m.Value.Equals(item.Permission)))
-					{
-                        Claim claim = new Claim("Permission", item.Permission, item.PermissionGroup, null);
-                        claims.Add(claim);
-					}
+                    foreach (var p in ug)
+                    {
+                        if (!claims.Exists(m => m.Value.Equals(p.PermissionName)))
+                        {
+                            Claim claim = new Claim("Permission", p.PermissionName, p.PermissionGroup, null);
+                            claims.Add(claim);
+                        }
+                    }
+					
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
 				var principal = new UsersPrincipal(identity,
