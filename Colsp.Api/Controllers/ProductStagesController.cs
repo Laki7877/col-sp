@@ -135,7 +135,6 @@ namespace Colsp.Api.Controllers
                               p.InfoFlag,
                               p.Visibility,
                               VariantCount = p.ProductStageVariants.Count,
-                              p.SellerId,
                               ImageUrl = p.FeatureImgUrl,
                               p.GlobalCatId,
                               p.LocalCatId,
@@ -410,7 +409,6 @@ namespace Colsp.Api.Controllers
                         SetupVdoEntity(db, variantRq.VideoLinks, variantPid, this.User.UserRequest().Email);
                         SetupProductStageVariant(variant, variantRq);
                         variant.ShopId = stage.ShopId;
-                        variant.SellerId = stage.SellerId;
                         variant.CreatedBy = this.User.UserRequest().Email;
                         variant.CreatedDt = DateTime.Now;
                         variant.UpdatedBy = this.User.UserRequest().Email;
@@ -925,7 +923,6 @@ namespace Colsp.Api.Controllers
                 response.ControlFlags.Flag3 = stage.ControlFlag3;
                 response.Remark = stage.Remark;
                 response.Status = stage.Status;
-                response.SellerId = stage.SellerId;
                 response.ShopId = stage.ShopId;
                 response.MasterVariant.Pid = stage.Pid;
                 response.ProductId = stage.ProductId;

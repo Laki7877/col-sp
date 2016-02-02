@@ -423,56 +423,56 @@ namespace Colsp.Api.Controllers
             
         }
 
-        [Route("api/Shops/{sellerId}/ProductStages")]
-        [HttpGet]
-        public HttpResponseMessage GetProductStageFromShop([FromUri] ProductRequest request)
-        {
-            try
-            {
-                request.DefaultOnNull();
-                IQueryable<ProductStage> products = null;
+        //[Route("api/Shops/{sellerId}/ProductStages")]
+        //[HttpGet]
+        //public HttpResponseMessage GetProductStageFromShop([FromUri] ProductRequest request)
+        //{
+        //    try
+        //    {
+        //        request.DefaultOnNull();
+        //        IQueryable<ProductStage> products = null;
 
-                // List all product
-                products = db.ProductStages.Where(p => true);
-                if (request.SearchText != null)
-                {
-                    products = products.Where(p => p.Sku.Contains(request.SearchText)
-                    || p.ProductNameEn.Contains(request.SearchText)
-                    || p.ProductNameTh.Contains(request.SearchText));
-                }
-                if (request.SellerId != null)
-                {
-                    products = products.Where(p => p.SellerId==request.SellerId);
-                }
+        //        // List all product
+        //        products = db.ProductStages.Where(p => true);
+        //        if (request.SearchText != null)
+        //        {
+        //            products = products.Where(p => p.Sku.Contains(request.SearchText)
+        //            || p.ProductNameEn.Contains(request.SearchText)
+        //            || p.ProductNameTh.Contains(request.SearchText));
+        //        }
+        //        if (request.SellerId != null)
+        //        {
+        //            products = products.Where(p => p.SellerId==request.SellerId);
+        //        }
 
-                var total = products.Count();
-                var pagedProducts = products.GroupJoin(db.ProductStageImages,
-                                                p => p.Pid,
-                                                m => m.Pid,
-                                                (p, m) => new
-                                                {
-                                                    p.Sku,
-                                                    p.ProductId,
-                                                    p.ProductNameEn,
-                                                    p.ProductNameTh,
-                                                    p.OriginalPrice,
-                                                    p.SalePrice,
-                                                    p.Status,
-                                                    p.ImageFlag,
-                                                    p.InfoFlag,
-                                                    Modified = p.UpdatedDt,
-                                                    ImageUrl = m.FirstOrDefault().ImageUrlEn
-                                                }
-                                            )
-                                            .Paginate(request);
-                var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
-                return Request.CreateResponse(HttpStatusCode.OK, response);
-            }
-            catch
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
-            }
-        }
+        //        var total = products.Count();
+        //        var pagedProducts = products.GroupJoin(db.ProductStageImages,
+        //                                        p => p.Pid,
+        //                                        m => m.Pid,
+        //                                        (p, m) => new
+        //                                        {
+        //                                            p.Sku,
+        //                                            p.ProductId,
+        //                                            p.ProductNameEn,
+        //                                            p.ProductNameTh,
+        //                                            p.OriginalPrice,
+        //                                            p.SalePrice,
+        //                                            p.Status,
+        //                                            p.ImageFlag,
+        //                                            p.InfoFlag,
+        //                                            Modified = p.UpdatedDt,
+        //                                            ImageUrl = m.FirstOrDefault().ImageUrlEn
+        //                                        }
+        //                                    )
+        //                                    .Paginate(request);
+        //        var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+        //        return Request.CreateResponse(HttpStatusCode.OK, response);
+        //    }
+        //    catch
+        //    {
+        //        return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+        //    }
+        //}
 
         protected override void Dispose(bool disposing)
         {

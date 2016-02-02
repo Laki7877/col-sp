@@ -574,8 +574,7 @@
           <Property Name="ProductId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GlobalCatId" Type="int" />
           <Property Name="LocalCatId" Type="int" />
-          <Property Name="ShopId" Type="int" />
-          <Property Name="SellerId" Type="int" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="AttributeSetId" Type="int" />
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" Nullable="false" />
@@ -1606,7 +1605,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageShop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
           <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -1614,18 +1613,6 @@
             </Principal>
             <Dependent Role="ProductStage">
               <PropertyRef Name="ShopId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductStageUser">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="ProductStage">
-              <PropertyRef Name="SellerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2082,10 +2069,6 @@
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductStage" EntitySet="ProductStage" />
           </AssociationSet>
-          <AssociationSet Name="FKProductStageUser" Association="Self.FKProductStageUser">
-            <End Role="User" EntitySet="User" />
-            <End Role="ProductStage" EntitySet="ProductStage" />
-          </AssociationSet>
           <AssociationSet Name="FKProductStageVariantAttribute1" Association="Self.FKProductStageVariantAttribute1">
             <End Role="Attribute" EntitySet="Attribute" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
@@ -2418,10 +2401,6 @@
           </AssociationSet>
           <AssociationSet Name="FKProductStageShop" Association="ColspModel.FKProductStageShop">
             <End Role="Shop" EntitySet="Shops" />
-            <End Role="ProductStage" EntitySet="ProductStages" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductStageUser" Association="ColspModel.FKProductStageUser">
-            <End Role="User" EntitySet="Users" />
             <End Role="ProductStage" EntitySet="ProductStages" />
           </AssociationSet>
           <AssociationSet Name="FKProductStageVariantProduct" Association="ColspModel.FKProductStageVariantProduct">
@@ -3123,8 +3102,7 @@
           <Property Name="ProductId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="GlobalCatId" Type="Int32" />
           <Property Name="LocalCatId" Type="Int32" />
-          <Property Name="ShopId" Type="Int32" />
-          <Property Name="SellerId" Type="Int32" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="AttributeSetId" Type="Int32" />
           <Property Name="ProductNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameTh" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
@@ -3182,7 +3160,6 @@
           <NavigationProperty Name="ProductStageLocalCatMaps" Relationship="ColspModel.FKProductStageLocalCatMapProduct" FromRole="ProductStage" ToRole="ProductStageLocalCatMap" />
           <NavigationProperty Name="Shipping" Relationship="ColspModel.FKProductStageShipping" FromRole="ProductStage" ToRole="Shipping" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKProductStageShop" FromRole="ProductStage" ToRole="Shop" />
-          <NavigationProperty Name="User" Relationship="ColspModel.FKProductStageUser" FromRole="ProductStage" ToRole="User" />
           <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantProduct" FromRole="ProductStage" ToRole="ProductStageVariant" />
         </EntityType>
         <EntityType Name="ProductStageAttribute">
@@ -3528,7 +3505,6 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductUser" FromRole="User" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryUser" FromRole="User" ToRole="ProductHistory" />
-          <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageUser" FromRole="User" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantUser" FromRole="User" ToRole="ProductStageVariant" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FKShopUser" FromRole="User" ToRole="Shop" />
           <NavigationProperty Name="UserGroupMaps" Relationship="ColspModel.FKUserGroupMapUser" FromRole="User" ToRole="UserGroupMap" />
@@ -4236,7 +4212,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageShop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -4244,18 +4220,6 @@
             </Principal>
             <Dependent Role="ProductStage">
               <PropertyRef Name="ShopId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductStageUser">
-          <End Type="ColspModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="ProductStage">
-              <PropertyRef Name="SellerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5065,7 +5029,6 @@
                 <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
                 <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
-                <ScalarProperty Name="SellerId" ColumnName="SellerId" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="LocalCatId" ColumnName="LocalCatId" />
                 <ScalarProperty Name="GlobalCatId" ColumnName="GlobalCatId" />
