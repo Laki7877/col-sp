@@ -161,7 +161,7 @@ namespace Colsp.Api.Filters
 								u.NameEn,
 								u.NameTh,
 								u.Email,
-								Shops = u.UserShops,
+								Shops = u.UserShops.Select(s=>s.Shop),
                                 u.Type,
                                 Permission = u.UserGroupMaps.Select(um=>um.UserGroup.UserGroupPermissionMaps.Select(pm=>pm.Permission))
                             })
@@ -189,11 +189,10 @@ namespace Colsp.Api.Filters
                             claims.Add(claim);
                         }
                     }
-					
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
 				var principal = new UsersPrincipal(identity,
-                    user.Shops.Select(s => new ShopRequest { ShopId = s.Shop.ShopId, ShopNameEn = s.Shop.ShopNameEn }).ToList(),
+                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
                     new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type });
 
 				return principal;

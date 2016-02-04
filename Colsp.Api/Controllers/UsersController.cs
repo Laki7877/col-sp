@@ -519,7 +519,7 @@ namespace Colsp.Api.Controllers
                                 u.NameEn,
                                 u.NameTh,
                                 u.Email,
-                                Shops = u.UserShops,
+                                Shops = u.UserShops.Select(s=>s.Shop),
                                 u.Type,
                                 Permission = u.UserGroupMaps.Select(um => um.UserGroup.UserGroupPermissionMaps.Select(pm => pm.Permission))
                             })
@@ -550,7 +550,7 @@ namespace Colsp.Api.Controllers
                 }
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var principal = new UsersPrincipal(identity,
-                    user.Shops.Select(s => new ShopRequest { ShopId = s.Shop.ShopId, ShopNameEn = s.Shop.ShopNameEn }).ToList(),
+                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
                     this.User.UserRequest());
 
                 ClaimRequest claimRq = new ClaimRequest();
@@ -561,7 +561,72 @@ namespace Colsp.Api.Controllers
                 claimRq.User = this.User.UserRequest();
 
                 Cache.Delete(Request.Headers.Authorization.Parameter);
-                Cache.Add(Request.Headers.Authorization.Parameter, identity);
+                Cache.Add(Request.Headers.Authorization.Parameter, principal);
+                return Request.CreateResponse(HttpStatusCode.OK, claimRq);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Users/Admin/LogoutAs")]
+        [HttpGet]
+        public HttpResponseMessage LogoutAs()
+        {
+            try
+            {
+                string email = this.User.UserRequest().Email;
+                var user = db.Users.Where(u => u.Email == email)
+                            .Select(u => new
+                            {
+                                u.UserId,
+                                u.NameEn,
+                                u.NameTh,
+                                u.Email,
+                                Shops = u.UserShops.Select(s => s.Shop),
+                                u.Type,
+                                Permission = u.UserGroupMaps.Select(um => um.UserGroup.UserGroupPermissionMaps.Select(pm => pm.Permission))
+                            })
+                            .FirstOrDefault();
+
+                // Check for user
+                if (user == null)
+                {
+                    throw new Exception("Cannot find user with email " + email);
+                }
+
+                // Get all permissions
+                var userPermissions = user.Permission;
+
+                // Assign claims
+                var claims = new List<Claim>();
+                foreach (var userGroup in userPermissions)
+                {
+                    foreach (var p in userGroup)
+                    {
+                        if (!claims.Exists(m => m.Value.Equals(p.PermissionName)))
+                        {
+                            Claim claim = new Claim("Permission", p.PermissionName, p.PermissionGroup, null);
+                            claims.Add(claim);
+                        }
+                    }
+
+                }
+                var identity = new ClaimsIdentity(claims, "Basic");
+                var principal = new UsersPrincipal(identity,
+                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
+                    this.User.UserRequest());
+
+                ClaimRequest claimRq = new ClaimRequest();
+
+                var claimsIdentity = identity;
+                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
+                claimRq.Shop = principal.ShopRequest();
+                claimRq.User = this.User.UserRequest();
+
+                Cache.Delete(Request.Headers.Authorization.Parameter);
+                Cache.Add(Request.Headers.Authorization.Parameter, principal);
                 return Request.CreateResponse(HttpStatusCode.OK, claimRq);
             }
             catch (Exception e)

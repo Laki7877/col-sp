@@ -49,8 +49,8 @@ namespace Colsp.Api.Controllers
                               Pid = varJ != null ? varJ.Pid : stage.Pid,
                               VariantValue = varJ != null ? varJ.ValueEn1 + " , " + varJ.ValueEn2 : null,
                               Status = varJ != null ? varJ.Status : stage.Status,
-                              MasterImg = proImgJoin.Select(s=>new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o=>o.Position),
-                              VariantImg = varImgJoin.Select(s => new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o => o.Position),
+                              MasterImg = proImgJoin.Select(s=>new { s.ImageId, url = s.ImageUrlEn,s.Path,s.Position }).OrderBy(o=>o.Position),
+                              VariantImg = varImgJoin.Select(s => new { s.ImageId, url = s.ImageUrlEn,s.Path,s.Position }).OrderBy(o => o.Position),
                               IsVariant = varJ != null ? true : false
                           });
                 if(request == null)

@@ -79,6 +79,39 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/Permissions/Seller")]
+        [HttpGet]
+        public HttpResponseMessage GetSellerPermissions([FromUri] PermissionRequest request)
+        {
+            try
+            {
+                var permissionList = db.Permissions.Where(w => w.Type.Equals(Constant.USER_TYPE_SELLER))
+                    .Select(s => new
+                    {
+                        s.PermissionName,
+                        s.PermissionGroup,
+                        s.PermissionId
+                    }).OrderBy(o => o.PermissionId);
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, permissionList);
+                }
+                request.DefaultOnNull();
+
+                var total = permissionList.Count();
+                var pagedUsers = permissionList.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedUsers, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
