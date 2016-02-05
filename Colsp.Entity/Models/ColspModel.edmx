@@ -584,9 +584,9 @@
           <Property Name="Upc" Type="nvarchar" MaxLength="300" />
           <Property Name="OriginalPrice" Type="money" Nullable="false" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar(max)" />
+          <Property Name="DescriptionFullEn" Type="ntext" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="nvarchar(max)" />
+          <Property Name="DescriptionFullTh" Type="ntext" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
           <Property Name="SafetyStock" Type="int" />
@@ -660,6 +660,7 @@
           </Key>
           <Property Name="ImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShopId" Type="int" />
           <Property Name="Path" Type="nvarchar" MaxLength="500" />
           <Property Name="ImageName" Type="nvarchar" MaxLength="100" />
           <Property Name="ImageOriginName" Type="nvarchar" MaxLength="100" />
@@ -679,6 +680,7 @@
           </Key>
           <Property Name="ImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Pid" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShopId" Type="int" />
           <Property Name="Path" Type="nvarchar" MaxLength="500" />
           <Property Name="ImageName" Type="nvarchar" MaxLength="100" />
           <Property Name="ImageOriginName" Type="nvarchar" MaxLength="100" />
@@ -710,8 +712,9 @@
             <PropertyRef Name="Pid1" />
             <PropertyRef Name="Pid2" />
           </Key>
-          <Property Name="Pid1" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Pid2" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Pid1" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="Pid2" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="ShopId" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -767,6 +770,7 @@
           </Key>
           <Property Name="VideoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Pid" Type="char" MaxLength="7" />
+          <Property Name="ShopId" Type="int" />
           <Property Name="VideoUrlEn" Type="nvarchar" MaxLength="2083" />
           <Property Name="VideoUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
@@ -792,9 +796,9 @@
           <Property Name="Upc" Type="nvarchar" MaxLength="50" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullEn" Type="ntext" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullTh" Type="ntext" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
           <Property Name="SaftyStock" Type="int" />
@@ -1067,6 +1071,54 @@
             </Principal>
             <Dependent Role="ProductStageAttribute">
               <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageImage_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="ProductStageImage" Type="Self.ProductStageImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageImage">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageImage360_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="ProductStageImage360" Type="Self.ProductStageImage360" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageImage360">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageRelated_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="ProductStageRelated" Type="Self.ProductStageRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageRelated">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageVideo_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="ProductStageVideo" Type="Self.ProductStageVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageVideo">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1889,6 +1941,22 @@
             <End Role="ProductStage" EntitySet="ProductStage" />
             <End Role="ProductStageAttribute" EntitySet="ProductStageAttribute" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductStageImage_Shop" Association="Self.FK_ProductStageImage_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductStageImage" EntitySet="ProductStageImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageImage360_Shop" Association="Self.FK_ProductStageImage360_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductStageImage360" EntitySet="ProductStageImage360" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageRelated_Shop" Association="Self.FK_ProductStageRelated_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductStageRelated" EntitySet="ProductStageRelated" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageVideo_Shop" Association="Self.FK_ProductStageVideo_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductStageVideo" EntitySet="ProductStageVideo" />
+          </AssociationSet>
           <AssociationSet Name="FK_Shop_ShopType" Association="Self.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopType" />
             <End Role="Shop" EntitySet="Shop" />
@@ -2407,6 +2475,18 @@
             <End Role="ProductStage" EntitySet="ProductStages" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductStageImage_Shop" Association="ColspModel.FK_ProductStageImage_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductStageImage" EntitySet="ProductStageImages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageImage360_Shop" Association="ColspModel.FK_ProductStageImage360_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductStageImage360" EntitySet="ProductStageImage360" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageRelated_Shop" Association="ColspModel.FK_ProductStageRelated_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductStageRelated" EntitySet="ProductStageRelateds" />
+          </AssociationSet>
           <AssociationSet Name="FKProductStageVariantShop" Association="ColspModel.FKProductStageVariantShop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
@@ -2414,6 +2494,10 @@
           <AssociationSet Name="FKProductStageVariantUser" Association="ColspModel.FKProductStageVariantUser">
             <End Role="User" EntitySet="Users" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageVideo_Shop" Association="ColspModel.FK_ProductStageVideo_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductStageVideo" EntitySet="ProductStageVideos" />
           </AssociationSet>
           <AssociationSet Name="FK_Shop_ShopType" Association="ColspModel.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
@@ -3202,6 +3286,7 @@
           </Key>
           <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" />
           <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ImageName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ImageOriginName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -3214,6 +3299,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageImage_Shop" FromRole="ProductStageImage" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ProductStageImage360">
           <Key>
@@ -3221,6 +3307,7 @@
           </Key>
           <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Pid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" />
           <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ImageName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ImageOriginName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -3233,6 +3320,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageImage360_Shop" FromRole="ProductStageImage360" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ProductStageLocalCatMap">
           <Key>
@@ -3254,13 +3342,15 @@
             <PropertyRef Name="Pid1" />
             <PropertyRef Name="Pid2" />
           </Key>
-          <Property Name="Pid1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Pid2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid1" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="Pid2" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="ShopId" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageRelated_Shop" FromRole="ProductStageRelated" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ProductStageVariant">
           <Key>
@@ -3316,6 +3406,7 @@
           </Key>
           <Property Name="VideoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Pid" Type="String" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="ShopId" Type="Int32" />
           <Property Name="VideoUrlEn" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
@@ -3324,6 +3415,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageVideo_Shop" FromRole="ProductStageVideo" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ProductVariant">
           <Key>
@@ -3341,9 +3433,9 @@
           <Property Name="Upc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Stock" Type="Int32" />
           <Property Name="SaftyStock" Type="Int32" />
@@ -3415,7 +3507,11 @@
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
+          <NavigationProperty Name="ProductStageImages" Relationship="ColspModel.FK_ProductStageImage_Shop" FromRole="Shop" ToRole="ProductStageImage" />
+          <NavigationProperty Name="ProductStageImage360" Relationship="ColspModel.FK_ProductStageImage360_Shop" FromRole="Shop" ToRole="ProductStageImage360" />
+          <NavigationProperty Name="ProductStageRelateds" Relationship="ColspModel.FK_ProductStageRelated_Shop" FromRole="Shop" ToRole="ProductStageRelated" />
           <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantShop" FromRole="Shop" ToRole="ProductStageVariant" />
+          <NavigationProperty Name="ProductStageVideos" Relationship="ColspModel.FK_ProductStageVideo_Shop" FromRole="Shop" ToRole="ProductStageVideo" />
           <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_Shop_ShopType" FromRole="Shop" ToRole="ShopType" />
           <NavigationProperty Name="ShopUserGroupMaps" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="Shop" ToRole="ShopUserGroupMap" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKShopUser" FromRole="Shop" ToRole="User" />
@@ -4237,6 +4333,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductStageImage_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductStageImage" Role="ProductStageImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageImage">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageImage360_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductStageImage360" Role="ProductStageImage360" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageImage360">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageRelated_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductStageRelated" Role="ProductStageRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageRelated">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKProductStageVariantShop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
           <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
@@ -4258,6 +4390,18 @@
             </Principal>
             <Dependent Role="ProductStageVariant">
               <PropertyRef Name="SellerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageVideo_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductStageVideo" Role="ProductStageVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductStageVideo">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5081,6 +5225,7 @@
                 <ScalarProperty Name="ImageOriginName" ColumnName="ImageOriginName" />
                 <ScalarProperty Name="ImageName" ColumnName="ImageName" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ImageId" ColumnName="ImageId" />
               </MappingFragment>
@@ -5101,6 +5246,7 @@
                 <ScalarProperty Name="ImageOriginName" ColumnName="ImageOriginName" />
                 <ScalarProperty Name="ImageName" ColumnName="ImageName" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ImageId" ColumnName="ImageId" />
               </MappingFragment>
@@ -5127,6 +5273,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="Pid2" ColumnName="Pid2" />
                 <ScalarProperty Name="Pid1" ColumnName="Pid1" />
               </MappingFragment>
@@ -5187,6 +5334,7 @@
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="VideoUrlTh" ColumnName="VideoUrlTh" />
                 <ScalarProperty Name="VideoUrlEn" ColumnName="VideoUrlEn" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="VideoId" ColumnName="VideoId" />
               </MappingFragment>
