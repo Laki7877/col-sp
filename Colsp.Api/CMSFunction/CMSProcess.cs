@@ -74,7 +74,6 @@ namespace Colsp.Api.CMSFunction
             }
         }
 
-
         /// <summary>
         /// param as CMSId,list of CMSCollection
         /// </summary>
@@ -112,9 +111,7 @@ namespace Colsp.Api.CMSFunction
                         db.CMS.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
-                            //History Log
-                            CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                          
                             foreach (var item in Model.CollectionItemList)
                             {
                                 CMSCollectionItem cItem = new CMSCollectionItem();
@@ -128,7 +125,11 @@ namespace Colsp.Api.CMSFunction
                                 cItem.CreateIP = Model.IP;
                                 db.CMSCollectionItems.Add(cItem);
                                 db.SaveChanges();
+
+                                dbcxtransaction.Commit();
                                 //History Log
+                                CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                                 CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
                                 log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", (bool)cItem.Status, "Create", (int)cItem.CreateBy, cItem.CreateIP);
                             }
@@ -170,6 +171,7 @@ namespace Colsp.Api.CMSFunction
                                 cms.UpdateIP = model.IP;
                                 db.Entry(cms).State = EntityState.Modified;
                                 db.SaveChanges();
+                                dbcxtransaction.Commit();
                                 //History Log
                                 CMSHistoryLogClass log = new CMSHistoryLogClass();
                                 log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
@@ -229,10 +231,7 @@ namespace Colsp.Api.CMSFunction
                         db.CMS.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
-                            //History Log
-                            CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
-
+                            
                             CMSMainCategory cItem = new CMSMainCategory();
                             cItem.CMSId = cms.CMSId;//When saved has id.
                             cItem.CategoryId = Model.CategoryId;
@@ -242,7 +241,11 @@ namespace Colsp.Api.CMSFunction
                             cItem.CreateIP = Model.IP;
                             db.CMSMainCategories.Add(cItem);
                             db.SaveChanges();
+                            dbcxtransaction.Commit();
                             //History Log
+                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+
                             CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
                             log.LogCreateCMS(cItem.CMSMainCategoryId, "CMSCollectionItem", (bool)cItem.Status, "Create", (int)cItem.CreateBy, cItem.CreateIP);
 
@@ -296,9 +299,7 @@ namespace Colsp.Api.CMSFunction
                         db.CMS.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
-                            //History Log
-                            CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            
 
                             CMSBrandInShop bItem = new CMSBrandInShop();
                             bItem.CMSId = cms.CMSId;//When saved has id.
@@ -321,7 +322,9 @@ namespace Colsp.Api.CMSFunction
                             bItem.CreateIP = Model.IP;
                             db.CMSBrandInShops.Add(bItem);
                             db.SaveChanges();
-                            //History Log
+                            dbcxtransaction.Commit();
+                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                             CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
                             log.LogCreateCMS(bItem.CMSBrandInShopId, "CMSBrandInShop", (bool)bItem.Status, "Create", (int)bItem.CreateBy, bItem.CreateIP);
 
@@ -385,6 +388,7 @@ namespace Colsp.Api.CMSFunction
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
+                                dbcxtransaction.Commit();
                                 //History Log
                                 CMSHistoryLogClass log = new CMSHistoryLogClass();
                                 log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
@@ -438,9 +442,7 @@ namespace Colsp.Api.CMSFunction
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
-                                //History Log
-                                CMSHistoryLogClass log = new CMSHistoryLogClass();
-                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                               
                                 foreach (var item in Model.CollectionItemList)
                                 {
                                     var cItem = db.CMSCollectionItems.Where(c => c.CMSCollectionItemId == item.CMSCollectionItemId).FirstOrDefault();
@@ -456,7 +458,10 @@ namespace Colsp.Api.CMSFunction
                                         cItem.UpdateIP = Model.IP;
                                         db.Entry(cItem).State = EntityState.Modified;
                                         db.SaveChanges();
+                                        dbcxtransaction.Commit();
                                         //History Log
+                                        CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                        log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                         CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
                                         log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", (bool)cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
                                     }
