@@ -20,6 +20,7 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
+        #region Page List
         [Route("api/CMSShopList")]
         [HttpGet]
         public IHttpActionResult GetByShop([FromUri] CMSShopRequest request)
@@ -113,6 +114,8 @@ namespace Colsp.Api.Controllers
                 return Ok(CMSResult);
             }
         }
+        #endregion
+
 
         [Route("api/CMSStages")]
         [HttpPost]
@@ -278,38 +281,7 @@ namespace Colsp.Api.Controllers
 
 
         #endregion
-
-        [Route("api/CMSUpdateCollection")]
-        [HttpPost]
-        public HttpResponseMessage UpdateCMS(CMSCollectionItemRequest model)
-        {
-            try
-            {
-                if (model != null)
-                {
-                    int CMSId = 0;
-                    if (model.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
-                    {
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.EditCMS(model);
-                    }
-                    else if (model.CMSTypeId.Equals(Constant.CMS_TYPE_COLLECTION_PAGE))
-                    {
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.EditCMSCollectionItem(model);
-                    }
-                    return GetCollection(CMSId);
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
-            }
-        }
+        
 
         [Route("api/CMSSearchForAdd")]
         [HttpGet]
@@ -380,6 +352,41 @@ namespace Colsp.Api.Controllers
                 return Ok(request);
             }
         }
+
+
+        #region Edit/Update CMS
+        [Route("api/CMSEditStages")]
+        [HttpPost]
+        public HttpResponseMessage EditCMS(CMSCollectionItemRequest model)
+        {
+            try
+            {
+                if (model != null)
+                {
+                    int CMSId = 0;
+                    if (model.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.EditCMSStaticPage(model);
+                    }
+                    else if (model.CMSTypeId.Equals(Constant.CMS_TYPE_COLLECTION_PAGE))
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.EditCMSCollectionItem(model);
+                    }
+                    return GetCollection(CMSId);
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
+            }
+        }
+        #endregion
         protected override void Dispose(bool disposing)
         {
             if (disposing)

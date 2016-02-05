@@ -352,7 +352,7 @@ namespace Colsp.Api.CMSFunction
         /// <summary>
         /// param as cms class
         /// </summary>
-        public int EditCMS(CMSCollectionItemRequest Model)
+        public int EditCMSStaticPage(CMSCollectionItemRequest Model)
         {
             int result = 0;
             using (ColspEntities db = new ColspEntities())
