@@ -138,6 +138,172 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="CMS">
+          <Key>
+            <PropertyRef Name="CMSId" />
+          </Key>
+          <Property Name="CMSId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSNameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="CMSNameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="URLKey" Type="nvarchar" MaxLength="300" />
+          <Property Name="CMSTypeId" Type="int" />
+          <Property Name="CMSSortId" Type="int" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="CMSCount" Type="int" />
+          <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="500" />
+          <Property Name="LongDescriptionTH" Type="text" />
+          <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="500" />
+          <Property Name="LongDescriptionEN" Type="text" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="CMSStatusId" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSBrandInShop">
+          <Key>
+            <PropertyRef Name="CMSBrandInShopId" />
+          </Key>
+          <Property Name="CMSBrandInShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSId" Type="int" />
+          <Property Name="BrandId" Type="int" />
+          <Property Name="BrandNameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="BrandNameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="Path" Type="nvarchar" MaxLength="200" />
+          <Property Name="PicUrl" Type="nvarchar" MaxLength="200" />
+          <Property Name="MetaTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="MetaDescription" Type="nvarchar" MaxLength="500" />
+          <Property Name="MetaKey" Type="nvarchar" MaxLength="100" />
+          <Property Name="UrlKey" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShortDescriptionEn" Type="nvarchar" MaxLength="300" />
+          <Property Name="LongDescriptionEn" Type="text" />
+          <Property Name="ShortDescriptionTh" Type="nvarchar" MaxLength="300" />
+          <Property Name="LongDescriptionTh" Type="text" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSCollectionGroup">
+          <Key>
+            <PropertyRef Name="CMSCollectionGroupId" />
+          </Key>
+          <Property Name="CMSCollectionGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionGroupNameEH" Type="nvarchar" MaxLength="100" />
+          <Property Name="CMSCollectionGroupNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSCollectionItem">
+          <Key>
+            <PropertyRef Name="CMSCollectionItemId" />
+          </Key>
+          <Property Name="CMSCollectionItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSId" Type="int" />
+          <Property Name="PId" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="CMSCollectionGroupId" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSHistoryLog">
+          <Key>
+            <PropertyRef Name="CMSHistoryLogId" />
+          </Key>
+          <Property Name="CMSHistoryLogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ChangeId" Type="int" />
+          <Property Name="CMSTableLog" Type="nchar" MaxLength="10" />
+          <Property Name="TransactionLog" Type="nvarchar" MaxLength="50" />
+          <Property Name="DetailLog" Type="text" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSMainCategory">
+          <Key>
+            <PropertyRef Name="CMSMainCategoryId" />
+          </Key>
+          <Property Name="CMSMainCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSId" Type="int" />
+          <Property Name="CategoryId" Type="nchar" MaxLength="10" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSSort">
+          <Key>
+            <PropertyRef Name="CMSSortId" />
+          </Key>
+          <Property Name="CMSSortId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSSortNameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="CMSSortNameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSStatus">
+          <Key>
+            <PropertyRef Name="CMSStatusId" />
+          </Key>
+          <Property Name="CMSStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSStatusName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSType">
+          <Key>
+            <PropertyRef Name="CMSTypeId" />
+          </Key>
+          <Property Name="CMSTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSTypeNameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="CMSTypeNameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CMSTypeCode" Type="nvarchar" MaxLength="3" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="GlobalCategory">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -1817,6 +1983,15 @@
           <EntitySet Name="AttributeValueMap" EntityType="Self.AttributeValueMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMS" EntityType="Self.CMS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSBrandInShop" EntityType="Self.CMSBrandInShop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCollectionGroup" EntityType="Self.CMSCollectionGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCollectionItem" EntityType="Self.CMSCollectionItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSHistoryLog" EntityType="Self.CMSHistoryLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSMainCategory" EntityType="Self.CMSMainCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSSort" EntityType="Self.CMSSort" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSStatus" EntityType="Self.CMSStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSType" EntityType="Self.CMSType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryAbbrevation" EntityType="Self.GlobalCategoryAbbrevation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryPID" EntityType="Self.GlobalCategoryPID" Schema="dbo" store:Type="Tables" />
@@ -2143,6 +2318,15 @@
           <EntitySet Name="AttributeValueMaps" EntityType="ColspModel.AttributeValueMap" />
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
+          <EntitySet Name="CMS" EntityType="ColspModel.CM" />
+          <EntitySet Name="CMSBrandInShops" EntityType="ColspModel.CMSBrandInShop" />
+          <EntitySet Name="CMSCollectionGroups" EntityType="ColspModel.CMSCollectionGroup" />
+          <EntitySet Name="CMSCollectionItems" EntityType="ColspModel.CMSCollectionItem" />
+          <EntitySet Name="CMSHistoryLogs" EntityType="ColspModel.CMSHistoryLog" />
+          <EntitySet Name="CMSMainCategories" EntityType="ColspModel.CMSMainCategory" />
+          <EntitySet Name="CMSSorts" EntityType="ColspModel.CMSSort" />
+          <EntitySet Name="CMSStatus" EntityType="ColspModel.CMSStatu" />
+          <EntitySet Name="CMSTypes" EntityType="ColspModel.CMSType" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
           <EntitySet Name="GlobalCategoryPIDs" EntityType="ColspModel.GlobalCategoryPID" />
@@ -2615,6 +2799,172 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FKCategoryAttributeSetMapAttributeSet" FromRole="CategoryAttributeSetMap" ToRole="AttributeSet" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKCategoryAttributeSetMapCategory" FromRole="CategoryAttributeSetMap" ToRole="GlobalCategory" />
+        </EntityType>
+        <EntityType Name="CM">
+          <Key>
+            <PropertyRef Name="CMSId" />
+          </Key>
+          <Property Name="CMSId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSTypeId" Type="Int32" />
+          <Property Name="CMSSortId" Type="Int32" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="CMSCount" Type="Int32" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="CMSStatusId" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSBrandInShop">
+          <Key>
+            <PropertyRef Name="CMSBrandInShopId" />
+          </Key>
+          <Property Name="CMSBrandInShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSId" Type="Int32" />
+          <Property Name="BrandId" Type="Int32" />
+          <Property Name="BrandNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BrandNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PicUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKey" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UrlKey" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ShortDescriptionTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSCollectionGroup">
+          <Key>
+            <PropertyRef Name="CMSCollectionGroupId" />
+          </Key>
+          <Property Name="CMSCollectionGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionGroupNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSCollectionGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSCollectionItem">
+          <Key>
+            <PropertyRef Name="CMSCollectionItemId" />
+          </Key>
+          <Property Name="CMSCollectionItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSId" Type="Int32" />
+          <Property Name="PId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="CMSCollectionGroupId" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSHistoryLog">
+          <Key>
+            <PropertyRef Name="CMSHistoryLogId" />
+          </Key>
+          <Property Name="CMSHistoryLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChangeId" Type="Int32" />
+          <Property Name="CMSTableLog" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="TransactionLog" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DetailLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMainCategory">
+          <Key>
+            <PropertyRef Name="CMSMainCategoryId" />
+          </Key>
+          <Property Name="CMSMainCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSId" Type="Int32" />
+          <Property Name="CategoryId" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSSort">
+          <Key>
+            <PropertyRef Name="CMSSortId" />
+          </Key>
+          <Property Name="CMSSortId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSSortNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSSortNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSStatu">
+          <Key>
+            <PropertyRef Name="CMSStatusId" />
+          </Key>
+          <Property Name="CMSStatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSStatusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSType">
+          <Key>
+            <PropertyRef Name="CMSTypeId" />
+          </Key>
+          <Property Name="CMSTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSTypeNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSTypeNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CMSTypeCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="GlobalCategory">
           <Key>
@@ -4533,6 +4883,181 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS">
+            <EntityTypeMapping TypeName="ColspModel.CM">
+              <MappingFragment StoreEntitySet="CMS">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSStatusId" ColumnName="CMSStatusId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="CMSCount" ColumnName="CMSCount" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="CMSSortId" ColumnName="CMSSortId" />
+                <ScalarProperty Name="CMSTypeId" ColumnName="CMSTypeId" />
+                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
+                <ScalarProperty Name="CMSNameTH" ColumnName="CMSNameTH" />
+                <ScalarProperty Name="CMSNameEN" ColumnName="CMSNameEN" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSBrandInShops">
+            <EntityTypeMapping TypeName="ColspModel.CMSBrandInShop">
+              <MappingFragment StoreEntitySet="CMSBrandInShop">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LongDescriptionTh" ColumnName="LongDescriptionTh" />
+                <ScalarProperty Name="ShortDescriptionTh" ColumnName="ShortDescriptionTh" />
+                <ScalarProperty Name="LongDescriptionEn" ColumnName="LongDescriptionEn" />
+                <ScalarProperty Name="ShortDescriptionEn" ColumnName="ShortDescriptionEn" />
+                <ScalarProperty Name="UrlKey" ColumnName="UrlKey" />
+                <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
+                <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
+                <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
+                <ScalarProperty Name="PicUrl" ColumnName="PicUrl" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="BrandNameTH" ColumnName="BrandNameTH" />
+                <ScalarProperty Name="BrandNameEN" ColumnName="BrandNameEN" />
+                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+                <ScalarProperty Name="CMSBrandInShopId" ColumnName="CMSBrandInShopId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCollectionGroups">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionGroup">
+              <MappingFragment StoreEntitySet="CMSCollectionGroup">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSCollectionGroupNameTH" ColumnName="CMSCollectionGroupNameTH" />
+                <ScalarProperty Name="CMSCollectionGroupNameEH" ColumnName="CMSCollectionGroupNameEH" />
+                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCollectionItems">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionItem">
+              <MappingFragment StoreEntitySet="CMSCollectionItem">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="PId" ColumnName="PId" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+                <ScalarProperty Name="CMSCollectionItemId" ColumnName="CMSCollectionItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSHistoryLogs">
+            <EntityTypeMapping TypeName="ColspModel.CMSHistoryLog">
+              <MappingFragment StoreEntitySet="CMSHistoryLog">
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DetailLog" ColumnName="DetailLog" />
+                <ScalarProperty Name="TransactionLog" ColumnName="TransactionLog" />
+                <ScalarProperty Name="CMSTableLog" ColumnName="CMSTableLog" />
+                <ScalarProperty Name="ChangeId" ColumnName="ChangeId" />
+                <ScalarProperty Name="CMSHistoryLogId" ColumnName="CMSHistoryLogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMainCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSMainCategory">
+              <MappingFragment StoreEntitySet="CMSMainCategory">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+                <ScalarProperty Name="CMSMainCategoryId" ColumnName="CMSMainCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSSorts">
+            <EntityTypeMapping TypeName="ColspModel.CMSSort">
+              <MappingFragment StoreEntitySet="CMSSort">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSSortNameEN" ColumnName="CMSSortNameEN" />
+                <ScalarProperty Name="CMSSortNameTH" ColumnName="CMSSortNameTH" />
+                <ScalarProperty Name="CMSSortId" ColumnName="CMSSortId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSStatus">
+            <EntityTypeMapping TypeName="ColspModel.CMSStatu">
+              <MappingFragment StoreEntitySet="CMSStatus">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSStatusName" ColumnName="CMSStatusName" />
+                <ScalarProperty Name="CMSStatusId" ColumnName="CMSStatusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSTypes">
+            <EntityTypeMapping TypeName="ColspModel.CMSType">
+              <MappingFragment StoreEntitySet="CMSType">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CMSTypeCode" ColumnName="CMSTypeCode" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSTypeNameEN" ColumnName="CMSTypeNameEN" />
+                <ScalarProperty Name="CMSTypeNameTH" ColumnName="CMSTypeNameTH" />
+                <ScalarProperty Name="CMSTypeId" ColumnName="CMSTypeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
