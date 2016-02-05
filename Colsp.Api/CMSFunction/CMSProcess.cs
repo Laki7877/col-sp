@@ -56,7 +56,8 @@ namespace Colsp.Api.CMSFunction
                         db.CMS.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
-                            //History Log
+                            dbcxtransaction.Commit();
+                            ////History Log
                             CMSHistoryLogClass log = new CMSHistoryLogClass();
                             log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                             result = cms.CMSId;
