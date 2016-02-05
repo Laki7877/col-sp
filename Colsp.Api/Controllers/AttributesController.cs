@@ -136,9 +136,9 @@ namespace Colsp.Api.Controllers
 
                 attribute = new Entity.Models.Attribute();
                 SetupAttribute(db,attribute, request);
-                attribute.CreatedBy = this.User.Email();
+                attribute.CreatedBy = this.User.UserRequest().Email;
                 attribute.CreatedDt = DateTime.Now;
-                attribute.UpdatedBy = this.User.Email();
+                attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
                
@@ -154,9 +154,9 @@ namespace Colsp.Api.Controllers
                         value.AttributeValueEn = val.AttributeValueEn;
                         value.AttributeValueTh = val.AttributeValueTh;
                         value.Status = Constant.STATUS_ACTIVE;
-                        value.CreatedBy = this.User.Email();
+                        value.CreatedBy = this.User.UserRequest().Email;
                         value.CreatedDt = DateTime.Now;
-                        value.UpdatedBy = this.User.Email();
+                        value.UpdatedBy = this.User.UserRequest().Email;
                         value.UpdatedDt = DateTime.Now;
                         newList.Add(db.AttributeValues.Add(value));
                     }
@@ -168,9 +168,9 @@ namespace Colsp.Api.Controllers
                             AttributeValueMap map = new AttributeValueMap();
                             map.AttributeId = attribute.AttributeId;
                             map.AttributeValueId = val.AttributeValueId;
-                            map.CreatedBy = this.User.Email();
+                            map.CreatedBy = this.User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.Email();
+                            map.UpdatedBy = this.User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.AttributeValueMaps.Add(map);
                         }
@@ -253,7 +253,7 @@ namespace Colsp.Api.Controllers
                 attribute.VariantDataType = request.VariantDataType;
                 attribute.VariantStatus = request.VariantStatus;
                 attribute.AllowHtmlFlag = request.AllowHtmlFlag;
-                attribute.UpdatedBy = this.User.Email();
+                attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
                
@@ -273,9 +273,9 @@ namespace Colsp.Api.Controllers
                         value.AttributeValueEn = valRq.AttributeValueEn;
                         value.AttributeValueTh = valRq.AttributeValueTh;
                         value.Status = Constant.STATUS_ACTIVE;
-                        value.CreatedBy = this.User.Email();
+                        value.CreatedBy = this.User.UserRequest().Email;
                         value.CreatedDt = DateTime.Now;
-                        value.UpdatedBy = this.User.Email();
+                        value.UpdatedBy = this.User.UserRequest().Email;
                         value.UpdatedDt = DateTime.Now;
                         newList.Add(db.AttributeValues.Add(value));
                     }
@@ -288,9 +288,9 @@ namespace Colsp.Api.Controllers
                         AttributeValueMap map = new AttributeValueMap();
                         map.AttributeId = attribute.AttributeId;
                         map.AttributeValueId = val.AttributeValueId;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.Email();
+                        map.UpdatedBy = this.User.UserRequest().Email;
                         map.UpdatedDt = DateTime.Now;
                         db.AttributeValueMaps.Add(map);
                     }

@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Requests
 {
-    public class PermissionRequest : PaginatedRequest
+    public class ClaimRequest
     {
-        public int? PermissionId { get; set; }
-        public string PermissionName { get; set; }
-//test
+        public object Shop { get; set; }
+        public object Permission { get; set; }
+        public object User { get; set; }
+
     }
 }

@@ -225,9 +225,9 @@ namespace Colsp.Api.Controllers
                     brand.PicUrl = request.BrandImage.url;
                 }
                 brand.Status = Constant.STATUS_ACTIVE;
-                brand.CreatedBy = this.User.Email();
+                brand.CreatedBy = this.User.UserRequest().Email;
                 brand.CreatedDt = DateTime.Now;
-                brand.UpdatedBy = this.User.Email();
+                brand.UpdatedBy = this.User.UserRequest().Email;
                 brand.UpdatedDt = DateTime.Now;
                 db.Brands.Add(brand);
                 db.SaveChanges();
@@ -275,7 +275,7 @@ namespace Colsp.Api.Controllers
                         brand.PicUrl = null;
                     }
                     brand.Status = Constant.STATUS_ACTIVE;
-                    brand.UpdatedBy = this.User.Email();
+                    brand.UpdatedBy = this.User.UserRequest().Email;
                     brand.UpdatedDt = DateTime.Now;
                     db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK);

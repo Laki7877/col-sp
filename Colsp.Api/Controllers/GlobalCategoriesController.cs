@@ -172,7 +172,7 @@ namespace Colsp.Api.Controllers
                             catEn.Commission = catRq.Commission;
                             catEn.Visibility = catRq.Visibility;
                             catEn.Status = catRq.Status;
-                            catEn.UpdatedBy = this.User.Email();
+                            catEn.UpdatedBy = this.User.UserRequest().Email;
                             catEn.UpdatedDt = DateTime.Now;
                             catEnList.Remove(catEn);
 
@@ -191,7 +191,7 @@ namespace Colsp.Api.Controllers
                                         CategoryAttributeSetMap current = tmpList.Where(w => w.AttributeSetId == attrMap.AttributeSetId).SingleOrDefault();
                                         if (current != null)
                                         {
-                                            current.UpdatedBy = this.User.Email();
+                                            current.UpdatedBy = this.User.UserRequest().Email;
                                             current.UpdatedDt = DateTime.Now;
                                             tmpList.Remove(current);
                                         }
@@ -205,9 +205,9 @@ namespace Colsp.Api.Controllers
                                         CategoryAttributeSetMap map = new CategoryAttributeSetMap();
                                         map.AttributeSetId = attrMap.AttributeSetId.Value;
                                         map.CategoryId = catEn.CategoryId;
-                                        map.CreatedBy = this.User.Email();
+                                        map.CreatedBy = this.User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.Email();
+                                        map.UpdatedBy = this.User.UserRequest().Email;
                                         map.UpdatedDt = DateTime.Now;
                                         db.CategoryAttributeSetMaps.Add(map);
                                     }
@@ -243,9 +243,9 @@ namespace Colsp.Api.Controllers
                         catEn.UrlKeyEn = catRq.UrlKeyEn;
                         catEn.Visibility = catRq.Visibility;
                         catEn.Status = catRq.Status;
-                        catEn.CreatedBy = this.User.Email();
+                        catEn.CreatedBy = this.User.UserRequest().Email;
                         catEn.CreatedDt = DateTime.Now;
-                        catEn.UpdatedBy = this.User.Email();
+                        catEn.UpdatedBy = this.User.UserRequest().Email;
                         catEn.UpdatedDt = DateTime.Now;
                         if (catRq.AttributeSets != null && catRq.AttributeSets.Count > 0)
                         {
@@ -286,7 +286,7 @@ namespace Colsp.Api.Controllers
                         CategoryAttributeSetMap map = new CategoryAttributeSetMap();
                         map.AttributeSetId = i.Item2;
                         map.CategoryId = i.Item1.CategoryId;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
                         db.CategoryAttributeSetMaps.Add(map);
                     }

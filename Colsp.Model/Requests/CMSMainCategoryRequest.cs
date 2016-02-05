@@ -28,5 +28,7 @@ namespace Colsp.Model.Requests
         public Nullable<int> By { get; set; }
         public string IP { get; set; }
         public string CategoryId { get; set; }
+        public int? CMSStatusId { get; set; }
+        public int? Sequence { get; set; }
     }
 }

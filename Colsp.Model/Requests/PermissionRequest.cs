@@ -10,6 +10,12 @@ namespace Colsp.Model.Requests
     {
         public int? PermissionId { get; set; }
         public string PermissionName { get; set; }
-//test
+        public string PermissionGroup { get; set; }
+
+        public PermissionRequest(string PermissionName, string PermissionGroup)
+        {
+            this.PermissionName = PermissionName;
+            this.PermissionGroup = PermissionGroup;
+        }
     }
 }

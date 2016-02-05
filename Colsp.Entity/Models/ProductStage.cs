@@ -26,8 +26,7 @@ namespace Colsp.Entity.Models
         public int ProductId { get; set; }
         public Nullable<int> GlobalCatId { get; set; }
         public Nullable<int> LocalCatId { get; set; }
-        public Nullable<int> ShopId { get; set; }
-        public Nullable<int> SellerId { get; set; }
+        public int ShopId { get; set; }
         public Nullable<int> AttributeSetId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
@@ -89,7 +88,6 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
         public virtual Shipping Shipping { get; set; }
         public virtual Shop Shop { get; set; }
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVariant> ProductStageVariants { get; set; }
     }

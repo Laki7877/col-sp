@@ -20,6 +20,203 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
+        [Route("api/UserGroups/Seller")]
+        [HttpGet]
+        public HttpResponseMessage GetUserGroupSeller([FromUri] UserGroupRequest request)
+        {
+            try
+            {
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var userGroupList = db.UserGroups
+                    .Include(i => i.UserGroupPermissionMaps.Select(s => s.Permission))
+                    .Include(i => i.UserGroupMaps)
+                    .Where(w => w.Type.Equals(Constant.USER_TYPE_SELLER) 
+                            && !w.Status.Equals(Constant.STATUS_REMOVE)
+                            && w.ShopUserGroupMaps.Any(a => a.ShopId == shopId))
+                    .Select(s => new {
+                        s.GroupId,
+                        s.GroupNameEn,
+                        s.GroupNameTh,
+                        s.UpdatedDt,
+                        Permission = s.UserGroupPermissionMaps.Select(p => new { p.Permission.PermissionId, p.Permission.PermissionName }),
+                        UserCount = s.UserGroupMaps.Count
+                    });
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, userGroupList);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    userGroupList = userGroupList.Where(a => a.GroupNameEn.Contains(request.SearchText)
+                    || a.GroupNameTh.Contains(request.SearchText));
+                }
+                var total = userGroupList.Count();
+                var pagedUsers = userGroupList.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedUsers, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/UserGroups/Seller/{usergroupid}")]
+        [HttpGet]
+        public HttpResponseMessage GetUserGroupSeller(int usergroupid)
+        {
+            try
+            {
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var usrGrp = db.UserGroups.Include(i => i.UserGroupPermissionMaps.Select(s => s.Permission))
+                    .Where(w => w.GroupId == usergroupid && !w.Status.Equals(Constant.STATUS_REMOVE) 
+                        && w.Type.Equals(Constant.USER_TYPE_ADMIN)
+                        && w.ShopUserGroupMaps.Any(a => a.ShopId == shopId))
+                    .Select(s => new {
+                        s.GroupId,
+                        s.GroupNameEn,
+                        s.GroupNameTh,
+                        Permission = s.UserGroupPermissionMaps.Select(ug => ug.Permission)
+                    }).ToList();
+                if (usrGrp == null || usrGrp.Count == 0)
+                {
+                    throw new Exception("User group not found");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, usrGrp[0]);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/UserGroups/Seller")]
+        [HttpPost]
+        public HttpResponseMessage AddUserSeller(UserGroupRequest request)
+        {
+            UserGroup usrGrp = null;
+            try
+            {
+                usrGrp = new UserGroup();
+                usrGrp.GroupNameEn = request.GroupNameEn;
+                usrGrp.GroupNameTh = request.GroupNameTh;
+                usrGrp.Status = Constant.STATUS_ACTIVE;
+                usrGrp.Type = Constant.USER_TYPE_ADMIN;
+                usrGrp.CreatedBy = this.User.UserRequest().Email;
+                usrGrp.CreatedDt = DateTime.Now;
+                usrGrp.UpdatedBy = this.User.UserRequest().Email;
+                usrGrp.UpdatedDt = DateTime.Now;
+                db.UserGroups.Add(usrGrp);
+                db.SaveChanges();
+                if (request.Permission != null)
+                {
+                    foreach (PermissionRequest perm in request.Permission)
+                    {
+                        if (perm.PermissionId == null)
+                        {
+                            throw new Exception("Permission id is null");
+                        }
+                        UserGroupPermissionMap map = new UserGroupPermissionMap();
+                        map.PermissionId = perm.PermissionId.Value;
+                        map.GroupId = usrGrp.GroupId;
+                        map.CreatedBy = this.User.UserRequest().Email;
+                        map.CreatedDt = DateTime.Now;
+                        map.UpdatedBy = this.User.UserRequest().Email;
+                        map.UpdatedDt = DateTime.Now;
+                        db.UserGroupPermissionMaps.Add(map);
+                    }
+                    
+                }
+                ShopUserGroupMap shopMap = new ShopUserGroupMap();
+                shopMap.GroupId = usrGrp.GroupId;
+                shopMap.ShopId = this.User.ShopRequest().ShopId.Value;
+                shopMap.CreatedBy = this.User.UserRequest().Email;
+                shopMap.CreatedDt = DateTime.Now;
+                shopMap.UpdatedBy = this.User.UserRequest().Email;
+                shopMap.UpdatedDt = DateTime.Now;
+                db.ShopUserGroupMaps.Add(shopMap);
+                db.SaveChanges();
+                return GetUserGroupAdmin(usrGrp.GroupId);
+            }
+            catch (Exception e)
+            {
+                if (usrGrp != null && usrGrp.GroupId != 0)
+                {
+                    db.UserGroups.Remove(usrGrp);
+                }
+                db.SaveChanges();
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/UserGroups/Seller/{usergroupid}")]
+        [HttpPut]
+        public HttpResponseMessage SaveChangeUserSeller([FromUri]int usergroupid, UserGroupRequest request)
+        {
+            try
+            {
+                var usrGrp = db.UserGroups.Find(usergroupid);
+                if (usrGrp == null || usrGrp.Status.Equals(Constant.STATUS_REMOVE))
+                {
+                    throw new Exception("User group not found");
+                }
+                if (!usrGrp.Type.Equals(Constant.USER_TYPE_ADMIN))
+                {
+                    throw new Exception("This user group is not admin");
+                }
+                usrGrp.GroupNameTh = request.GroupNameTh;
+                usrGrp.GroupNameEn = request.GroupNameEn;
+                var mapList = db.UserGroupPermissionMaps.Where(w => w.GroupId == usrGrp.GroupId).ToList();
+                if (request.Permission != null && request.Permission.Count > 0)
+                {
+                    bool addNew = false;
+                    foreach (PermissionRequest permission in request.Permission)
+                    {
+                        if (mapList == null || mapList.Count == 0)
+                        {
+                            addNew = true;
+                        }
+                        if (!addNew)
+                        {
+                            var current = mapList.Where(w => w.PermissionId == permission.PermissionId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedDt = DateTime.Now;
+                                mapList.Remove(current);
+                            }
+                            else
+                            {
+                                addNew = true;
+                            }
+                        }
+                        if (addNew)
+                        {
+                            UserGroupPermissionMap map = new UserGroupPermissionMap();
+                            map.GroupId = usrGrp.GroupId;
+                            map.PermissionId = permission.PermissionId.Value;
+                            map.CreatedBy = this.User.UserRequest().Email;
+                            map.CreatedDt = DateTime.Now;
+                            map.UpdatedBy = this.User.UserRequest().Email;
+                            map.UpdatedDt = DateTime.Now;
+                            db.UserGroupPermissionMaps.Add(map);
+                        }
+                    }
+                }
+                if (mapList != null && mapList.Count > 0)
+                {
+                    db.UserGroupPermissionMaps.RemoveRange(mapList);
+                }
+                db.SaveChanges();
+                return GetUserGroupAdmin(usrGrp.GroupId);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/UserGroups/Admin")]
         [HttpGet]
         public HttpResponseMessage GetUserGroupAdmin([FromUri] UserGroupRequest request)
@@ -93,9 +290,9 @@ namespace Colsp.Api.Controllers
                 usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.Status = Constant.STATUS_ACTIVE;
                 usrGrp.Type = Constant.USER_TYPE_ADMIN;
-                usrGrp.CreatedBy = this.User.Email();
+                usrGrp.CreatedBy = this.User.UserRequest().Email;
                 usrGrp.CreatedDt = DateTime.Now;
-                usrGrp.UpdatedBy = this.User.Email();
+                usrGrp.UpdatedBy = this.User.UserRequest().Email;
                 usrGrp.UpdatedDt = DateTime.Now;
                 db.UserGroups.Add(usrGrp);
                 db.SaveChanges();
@@ -110,9 +307,9 @@ namespace Colsp.Api.Controllers
                         UserGroupPermissionMap map = new UserGroupPermissionMap();
                         map.PermissionId = perm.PermissionId.Value;
                         map.GroupId = usrGrp.GroupId;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.Email();
+                        map.UpdatedBy = this.User.UserRequest().Email;
                         map.UpdatedDt = DateTime.Now;
                         db.UserGroupPermissionMaps.Add(map);
                     }
@@ -126,6 +323,7 @@ namespace Colsp.Api.Controllers
                 {
                     db.UserGroups.Remove(usrGrp);
                 }
+                db.SaveChanges();
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -137,7 +335,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
                 foreach (UserGroupRequest userGrpRq in request)
                 {
                     if (userGrpRq.GroupId == null)
@@ -153,7 +350,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Cannot deleted non admin user " + userGrpRq.GroupId.Value);
                     }
-                    usrGrp.Status = Constant.STATUS_REMOVE;
+                    db.UserGroups.Remove(usrGrp);
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -197,7 +394,7 @@ namespace Colsp.Api.Controllers
                             var current = mapList.Where(w => w.PermissionId == permission.PermissionId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = this.User.Email();
+                                current.UpdatedBy = this.User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 mapList.Remove(current);
                             }
@@ -211,9 +408,9 @@ namespace Colsp.Api.Controllers
                             UserGroupPermissionMap map = new UserGroupPermissionMap();
                             map.GroupId = usrGrp.GroupId;
                             map.PermissionId = permission.PermissionId.Value;
-                            map.CreatedBy = this.User.Email();
+                            map.CreatedBy = this.User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.Email();
+                            map.UpdatedBy = this.User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.UserGroupPermissionMaps.Add(map);
                         }

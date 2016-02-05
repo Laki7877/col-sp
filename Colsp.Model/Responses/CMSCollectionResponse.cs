@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Colsp.Model.Requests
+namespace Colsp.Model.Responses
 {
-    public class CMSCollectionItemRequest
+    public class CMSCollectionResponse
     {
         public int CMSId { get; set; }
         public string CMSNameEN { get; set; }
@@ -28,18 +28,17 @@ namespace Colsp.Model.Requests
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> By { get; set; }
         public string IP { get; set; }
-        public List<CollectionItemList> CollectionItemList { get; set; }
-        public int? CMSStatusId { get; set; }
-        public int? Sequence { get; set; }
-    }
-    public class CollectionItemList {
+        public List<CollectionItemListResponse> CollectionItemList { get; set; }
 
-        public int CMSCollectionItemId { get; set; }
+    }
+    public class CollectionItemListResponse
+    {
+
         public string PId { get; set; }
         public string ProductBoxBadge { get; set; }
         public Nullable<int> Sequence { get; set; }
         public Nullable<bool> Status { get; set; }
-    
+
     }
 
 }

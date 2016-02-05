@@ -11,6 +11,7 @@ using Colsp.Api.Results;
 using Colsp.Api.Services;
 using Colsp.Entity.Models;
 using Colsp.Api.Security;
+using Colsp.Model.Requests;
 
 namespace Colsp.Api.Filters
 {
@@ -26,72 +27,80 @@ namespace Colsp.Api.Filters
 
 		public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
 		{
-			var request = context.Request;
-			var authorization = request.Headers.Authorization;
+            try
+            {
+                var request = context.Request;
+                var authorization = request.Headers.Authorization;
 
-			// Check for auth
-			if (authorization == null)
-			{
-				return;
-			}
+                // Check for auth
+                if (authorization == null)
+                {
+                    return;
+                }
 
-			// Check for auth scheme
-			if (authorization.Scheme != "Basic")
-			{
-				context.ErrorResult = new AuthenticationFailureResult("Missing credentials", request);
-				return;
-			}
+                // Check for auth scheme
+                if (authorization.Scheme != "Basic")
+                {
+                    context.ErrorResult = new AuthenticationFailureResult("Missing credentials", request);
+                    return;
+                }
 
-			// Check for auth parameter
-			if (String.IsNullOrEmpty(authorization.Parameter))
-			{
-				context.ErrorResult = new AuthenticationFailureResult("Missing credentials", request);
-				return;
-			}
+                // Check for auth parameter
+                if (String.IsNullOrEmpty(authorization.Parameter))
+                {
+                    context.ErrorResult = new AuthenticationFailureResult("Missing credentials", request);
+                    return;
+                }
 
-			// Check for existing cache
-			object cachedPrincipal = Cache.Get(authorization.Parameter);
-			if (cachedPrincipal != null)
-			{
-				context.Principal = (IPrincipal)cachedPrincipal;
-				return;
-			}
+                // Check for existing cache
+                object cachedPrincipal = Cache.Get(authorization.Parameter);
+                if (cachedPrincipal != null)
+                {
+                    context.Principal = (IPrincipal)cachedPrincipal;
+                    return;
+                }
 
-			var userNameAndPassword = ExtractUserNameAndPassword(authorization.Parameter);
+                var userNameAndPassword = ExtractUserNameAndPassword(authorization.Parameter);
 
-			// Check for parsed username password
-			if (userNameAndPassword == null)
-			{
-				// Authentication was attempted but failed. Set ErrorResult to indicate an error.
-				context.ErrorResult = new AuthenticationFailureResult("Invalid credentials", request);
-				return;
-			}
+                // Check for parsed username password
+                if (userNameAndPassword == null)
+                {
+                    // Authentication was attempted but failed. Set ErrorResult to indicate an error.
+                    throw new Exception("Invalid credentials");
+                }
 
-			var userName = userNameAndPassword.Item1;
-			var password = userNameAndPassword.Item2;
+                var email = userNameAndPassword.Item1;
+                var password = userNameAndPassword.Item2;
 
-			// Authenticate
-			IPrincipal principal = await AuthenticateAsync(userName, password, cancellationToken);
+                // Authenticate
+                IPrincipal principal = await AuthenticateAsync(email, password, cancellationToken);
 
-			if (principal == null)
-			{
-				context.ErrorResult = new AuthenticationFailureResult("Invalid username or password", request);
-			}
-			else
-			{
-				// Cached with encoded basic auth as key
-				Cache.Add(authorization.Parameter, principal);
-				context.Principal = principal;
-			}
+                if (principal == null)
+                {
+                    throw new Exception("Invalid username or password");
+                }
+                else
+                {
+                    // Cached with encoded basic auth as key
+                    Cache.Add(authorization.Parameter, principal);
+                    context.Principal = principal;
+                }
+            }
+            catch(Exception e)
+            {
+                context.ErrorResult = new AuthenticationFailureResult(e.Message, context.Request);
+            }
+			
 		}
-		// Challenge response
+		
+        // Challenge response
 		public Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
 		{
 			return Task.FromResult(0);
 		}
 
 		// Convert base64 to username and password
-		private static Tuple<string, string> ExtractUserNameAndPassword(string authorizationParameter)
+		private Tuple<string, string> ExtractUserNameAndPassword(string authorizationParameter)
 		{
 			byte[] credentialBytes;
 
@@ -136,7 +145,7 @@ namespace Colsp.Api.Filters
 		}
 
 		// Authenticate with database
-		private async Task<IPrincipal> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
+		private async Task<IPrincipal> AuthenticateAsync(string email, string password, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -145,15 +154,17 @@ namespace Colsp.Api.Filters
 				// TODO: salt the password
 				// Query authenticated user-permission
 				var user = await Task.Run(() =>
-					db.Users.Where(u => u.Username.Equals(username) && u.Password.Equals(password))
+					db.Users.Where(u => u.Email.Equals(email) && u.Password.Equals(password))
 							.Select(u => new
 							{
 								u.UserId,
 								u.NameEn,
 								u.NameTh,
 								u.Email,
-								u.Shops
-							})
+								Shops = u.UserShops,
+                                u.Type,
+                                Permission = u.UserGroupMaps.Select(um=>um.UserGroup.UserGroupPermissionMaps.Select(pm=>pm.Permission))
+                            })
 							.FirstOrDefault()
 				);
 
@@ -163,40 +174,31 @@ namespace Colsp.Api.Filters
 					return null;
 				}
 
-				// Get all permissions
-				var userPermissions = await Task.Run(() =>
-				   db.Users.Join(db.UserGroupMaps, u => u.UserId, g => g.GroupId, (u, g) => new { User = u, UserGroupMap = g })
-							.Join(db.UserGroups, a => a.UserGroupMap.GroupId, g => g.GroupId, (a, g) => new { User = a.User, UserGroup = g })
-							.Join(db.UserGroupPermissionMaps, a => a.UserGroup.GroupId, m => m.GroupId, (a, m) => new { User = a.User, UserGroupPermissionMap = m })
-							.Join(db.Permissions, a => a.UserGroupPermissionMap.PermissionId, p => p.PermissionId, (a, p) => new { User = a.User, Permission = p })
-							.Where(u => u.User.Username.Equals(username) && u.User.Password.Equals(password))
-							.Select(a => new
-							{
-								Permission = a.Permission.PermissionName
-							})
-							.ToList()
-				);
-				
-				// Assign claims
-				var claims = new List<Claim>();
-				foreach (var item in userPermissions)
+                // Get all permissions
+                var userPermissions = user.Permission;
+
+                // Assign claims
+                var claims = new List<Claim>();
+				foreach (var userGroup in userPermissions)
 				{
-					if (!claims.Exists(m => m.Value.Equals(item.Permission)))
-					{
-						claims.Add(new Claim("Permission", item.Permission));
-					}
+                    foreach (var p in userGroup)
+                    {
+                        if (!claims.Exists(m => m.Value.Equals(p.PermissionName)))
+                        {
+                            Claim claim = new Claim("Permission", p.PermissionName, p.PermissionGroup, null);
+                            claims.Add(claim);
+                        }
+                    }
+					
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
-				var principal = new UsersPrincipal(identity, user.UserId, user.NameEn, user.NameTh, user.Email, user.Shops.Select(s => s.ShopId).ToList());
+				var principal = new UsersPrincipal(identity,
+                    user.Shops.Select(s => new ShopRequest { ShopId = s.Shop.ShopId, ShopNameEn = s.Shop.ShopNameEn }).ToList(),
+                    new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type });
 
 				return principal;
 			}
 		}
 
-        // Get username from Header
-        public static string Username(string authorizationParameter)
-        {
-            return ExtractUserNameAndPassword(authorizationParameter).Item1;
-        }
     }
 }

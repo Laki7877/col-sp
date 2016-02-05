@@ -19,7 +19,61 @@ namespace Colsp.Api.CMSFunction
     public class CMSProcess
     {
         //Abstract
+
         #region Create CMS 
+
+        public int CreateCMSStaticPage(CMSCollectionItemRequest Model)
+        {
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        CM cms = new CM();
+                        cms.CMSNameEN = Model.CMSNameEN;
+                        cms.CMSNameTH = Model.CMSNameTH;
+                        cms.CMSSortId = Model.CMSSortId;
+                        cms.CMSTypeId = Model.CMSTypeId;
+                        cms.EffectiveDate = Model.EffectiveDate;
+                        cms.EffectiveTime = Model.EffectiveTime;
+                        cms.ExpiryDate = Model.ExpiryDate;
+                        cms.ExpiryTime = Model.ExpiryTime;
+                        cms.LongDescriptionEN = Model.LongDescriptionEN;
+                        cms.LongDescriptionTH = Model.LongDescriptionTH;
+                        cms.ShopId = Model.ShopId;
+                        cms.ShortDescriptionEN = Model.ShortDescriptionEN;
+                        cms.ShortDescriptionTH = Model.ShortDescriptionTH;
+                        cms.Status = Model.Status;
+                        cms.CMSStatusId = Model.CMSStatusId;
+                        cms.Sequence = Model.Sequence;
+                        cms.URLKey = Model.URLKey;
+                        cms.Visibility = Model.Visibility;
+                        cms.CreateBy = Model.By;
+                        cms.Createdate = DateTime.Now;
+                        cms.CreateIP = Model.IP;
+                        db.CMS.Add(cms);
+                        if (db.SaveChanges() > 0) //Saved return row save successfully.
+                        {
+                            //History Log
+                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            result = cms.CMSId;
+                        }
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbcxtransaction.Rollback();
+
+                        return result;
+                    }
+                }
+            }
+        }
+
+
         /// <summary>
         /// param as CMSId,list of CMSCollection
         /// </summary>
@@ -47,6 +101,9 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
+                        cms.CMSStatusId = Model.CMSStatusId;
+                        cms.Sequence = Model.Sequence;
+                        cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.By;
                         cms.Createdate = DateTime.Now;
@@ -90,6 +147,50 @@ namespace Colsp.Api.CMSFunction
 
         }
 
+        public CMSShopRequest CMSUpdateStatus(UpdateCMSStatusRequest model)
+        {
+            CMSShopRequest result = new CMSShopRequest();
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    foreach (var item in model.CMSList)
+                    {
+                        try
+                        {
+                            var cms = db.CMS.Where(c => c.CMSId == item.CMSId).FirstOrDefault();
+                            if (cms != null)
+                            {
+                                cms.CMSStatusId = item.CMSStatusId;
+                                cms.Status = item.Status;
+                                cms.Visibility = item.CMSVisibility;
+                                cms.UpdateBy = model.UserId;
+                                cms.UpdateDate = DateTime.Now;
+                                cms.UpdateIP = model.IP;
+                                db.Entry(cms).State = EntityState.Modified;
+                                db.SaveChanges();
+                                //History Log
+                                CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            dbcxtransaction.Rollback();
+                        }
+                    }
+                }
+            }
+            result.SearchText = model.SearchText;
+            result.ShopId = model.ShopId;
+            result._direction = model._direction;
+            result._filter = model._filter;
+            result._limit = model._limit;
+            result._offset = model._offset;
+            result._order = model._order;
+            return result;
+        }
+
         /// <summary>
         /// param as 
         /// </summary>
@@ -117,6 +218,9 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
+                        cms.CMSStatusId = Model.CMSStatusId;
+                        cms.Sequence = Model.Sequence;
+                        cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.By;
                         cms.Createdate = DateTime.Now;
@@ -181,6 +285,9 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
+                        cms.CMSStatusId = Model.CMSStatusId;
+                        cms.Sequence = Model.Sequence;
+                        cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.By;
                         cms.Createdate = DateTime.Now;
@@ -241,9 +348,59 @@ namespace Colsp.Api.CMSFunction
         /// <summary>
         /// param as cms class
         /// </summary>
-        public void EditCMS() { }
+        public int EditCMS(CMSCollectionItemRequest Model)
+        {
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var cms = db.CMS.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
+                        if (cms != null)
+                        {
+                            cms.CMSNameEN = Model.CMSNameEN;
+                            cms.CMSNameTH = Model.CMSNameTH;
+                            cms.CMSSortId = Model.CMSSortId;
+                            cms.CMSTypeId = Model.CMSTypeId;
+                            cms.EffectiveDate = Model.EffectiveDate;
+                            cms.EffectiveTime = Model.EffectiveTime;
+                            cms.ExpiryDate = Model.ExpiryDate;
+                            cms.ExpiryTime = Model.ExpiryTime;
+                            cms.LongDescriptionEN = Model.LongDescriptionEN;
+                            cms.LongDescriptionTH = Model.LongDescriptionTH;
+                            cms.ShopId = Model.ShopId;
+                            cms.ShortDescriptionEN = Model.ShortDescriptionEN;
+                            cms.ShortDescriptionTH = Model.ShortDescriptionTH;
+                            cms.Status = Model.Status;
+                            cms.CMSStatusId = Model.CMSStatusId;
+                            cms.Sequence = Model.Sequence;
+                            cms.URLKey = Model.URLKey;
+                            cms.Visibility = Model.Visibility;
+                            cms.UpdateBy = Model.By;
+                            cms.UpdateDate = DateTime.Now;
+                            cms.UpdateIP = Model.IP;
+                            db.Entry(cms).State = EntityState.Modified;
+                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            {
+                                //History Log
+                                CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                result = cms.CMSId;
+                            }
+                        }
 
-
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbcxtransaction.Rollback();
+                        return result;
+                    }
+                }
+            }
+        }
         public int EditCMSCollectionItem(CMSCollectionItemRequest Model)
         {
             int result = 0;
@@ -270,6 +427,9 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                             cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                             cms.Status = Model.Status;
+                            cms.CMSStatusId = Model.CMSStatusId;
+                            cms.Sequence = Model.Sequence;
+                            cms.URLKey = Model.URLKey;
                             cms.Visibility = Model.Visibility;
                             cms.UpdateBy = Model.By;
                             cms.UpdateDate = DateTime.Now;

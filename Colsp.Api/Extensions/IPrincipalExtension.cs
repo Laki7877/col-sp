@@ -1,4 +1,5 @@
 ﻿using Colsp.Api.Security;
+using Colsp.Model.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,31 +19,36 @@ namespace Colsp.Api.Extensions
 			}
 			return false;
 		}
-		public static int? UserId(this IPrincipal p)
-		{
-			if(p is UsersPrincipal)
-			{
-				return ((UsersPrincipal)p).UserId;
-			}
-			return null;
-		}
 
-        public static string Email(this IPrincipal p)
+        public static UserRequest UserRequest(this IPrincipal p)
         {
             if (p is UsersPrincipal)
             {
-                return ((UsersPrincipal)p).Email.Trim();
+                return ((UsersPrincipal)p).User;
             }
             return null;
         }
+            
+        public static List<ShopRequest> Shops(this IPrincipal p)
+        {
+            if (p is UsersPrincipal)
+            {
+                return ((UsersPrincipal)p).Shops;
+            }
+            return new List<ShopRequest>();
+        }
 
-        public static List<int> ShopIds(this IPrincipal p)
-		{
-			if(p is UsersPrincipal)
-			{
-				return ((UsersPrincipal)p).Shops;
-			}
-			return new List<int>();
-		}
-	}
+        public static ShopRequest ShopRequest(this IPrincipal p)
+        {
+            if (p is UsersPrincipal)
+            {
+                var list = ((UsersPrincipal)p).Shops;
+                if (list != null && list.Count > 0)
+                {
+                    return list[0];
+                }
+            }
+            return null;
+        }
+    }
 }

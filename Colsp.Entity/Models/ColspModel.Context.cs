@@ -18,7 +18,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -34,6 +33,15 @@ namespace Colsp.Entity.Models
         public virtual DbSet<AttributeValueMap> AttributeValueMaps { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
+        public virtual DbSet<CM> CMS { get; set; }
+        public virtual DbSet<CMSBrandInShop> CMSBrandInShops { get; set; }
+        public virtual DbSet<CMSCollectionGroup> CMSCollectionGroups { get; set; }
+        public virtual DbSet<CMSCollectionItem> CMSCollectionItems { get; set; }
+        public virtual DbSet<CMSHistoryLog> CMSHistoryLogs { get; set; }
+        public virtual DbSet<CMSMainCategory> CMSMainCategories { get; set; }
+        public virtual DbSet<CMSSort> CMSSorts { get; set; }
+        public virtual DbSet<CMSStatu> CMSStatus { get; set; }
+        public virtual DbSet<CMSType> CMSTypes { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
         public virtual DbSet<GlobalCategoryAbbrevation> GlobalCategoryAbbrevations { get; set; }
         public virtual DbSet<GlobalCategoryPID> GlobalCategoryPIDs { get; set; }
@@ -55,6 +63,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductImage> ProductImages { get; set; }
         public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
         public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
+        public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
         public virtual DbSet<ProductStageAttribute> ProductStageAttributes { get; set; }
         public virtual DbSet<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }

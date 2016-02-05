@@ -32,11 +32,13 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                int shopId = this.User.ShopRequest().ShopId.Value;
                 var products = (from stage in db.ProductStages
                           join proImg in db.ProductStageImages on stage.Pid equals proImg.Pid into proImgJoin
                           join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
                           from varJ in varJoin.DefaultIfEmpty()
                           join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
+                          where stage.ShopId == shopId 
                           select new
                           {
                               stage.ProductId,
@@ -45,9 +47,11 @@ namespace Colsp.Api.Controllers
                               ProductNameEn = varJ != null ? varJ.ProductNameEn : stage.ProductNameEn,
                               ProductNameTh = varJ != null ? varJ.ProductNameTh : stage.ProductNameTh,
                               Pid = varJ != null ? varJ.Pid : stage.Pid,
+                              VariantValue = varJ != null ? varJ.ValueEn1 + " , " + varJ.ValueEn2 : null,
                               Status = varJ != null ? varJ.Status : stage.Status,
                               MasterImg = proImgJoin.Select(s=>new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o=>o.Position),
-                              VariantImg = varImgJoin.Select(s => new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o => o.Position)
+                              VariantImg = varImgJoin.Select(s => new { s.ImageId, s.ImageUrlEn,s.Path,s.Position }).OrderBy(o => o.Position),
+                              IsVariant = varJ != null ? true : false
                           });
                 if(request == null)
                 {
@@ -114,9 +118,10 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                int shopId = this.User.ShopRequest().ShopId.Value;
                 var products = (from p in db.ProductStages
-                          where !Constant.STATUS_REMOVE.Equals(p.Status)
-                          select new {
+                          where !Constant.STATUS_REMOVE.Equals(p.Status) && p.ShopId == shopId
+                             select new {
                               p.Sku,
                               p.Pid,
                               p.Upc,
@@ -130,7 +135,6 @@ namespace Colsp.Api.Controllers
                               p.InfoFlag,
                               p.Visibility,
                               VariantCount = p.ProductStageVariants.Count,
-                              p.SellerId,
                               ImageUrl = p.FeatureImgUrl,
                               p.GlobalCatId,
                               p.LocalCatId,
@@ -170,10 +174,6 @@ namespace Colsp.Api.Controllers
                 if (!string.IsNullOrEmpty(request.Pid))
                 {
                     products = products.Where(p => p.Pid.Equals(request.Pid));
-                }
-                if (request.SellerId != null)
-                {
-                    products = products.Where(p => p.SellerId.Equals(request.SellerId));
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
@@ -229,8 +229,7 @@ namespace Colsp.Api.Controllers
             ProductStage stage = null;
             try
             {
-                if (request.SellerId == null || request.SellerId == 0 || this.User.UserId() != request.SellerId
-                    || this.User.ShopIds().Where(w => w == request.SellerId).SingleOrDefault() == 0)
+                if (this.User.ShopRequest().ShopId == 0)
                 {
                     throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
@@ -240,97 +239,16 @@ namespace Colsp.Api.Controllers
 
                 SetupProductStage(db,stage, request);
                 stage.Status = Constant.PRODUCT_STATUS_JUNK;
-                stage.SellerId = request.SellerId;
-                stage.ShopId = request.ShopId;
+                stage.ShopId = this.User.ShopRequest().ShopId.Value;
                 string masterPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                 stage.Pid = masterPid;
 
                 stage.OnlineFlag = false;
                 stage.Visibility = true;
-                stage.CreatedBy = this.User.Email();
+                stage.CreatedBy = this.User.UserRequest().Email;
                 stage.CreatedDt = DateTime.Now;
-                stage.UpdatedBy = this.User.Email();
+                stage.UpdatedBy = this.User.UserRequest().Email;
                 stage.UpdatedDt = DateTime.Now;
-                #region Validation
-                //if (stage.GlobalCatId == null)
-                //{
-                //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Global category is required");
-                //}
-                //if (string.IsNullOrEmpty(request.Status))
-                //{
-                //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Status is required");
-                //}
-                //else if (request.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL))
-                //{
-                //    //if (string.IsNullOrEmpty(stage.ProductNameTh))
-                //    //{
-                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product Name (Thai) is required");
-                //    //}
-                //    //if (string.IsNullOrEmpty(stage.ProductNameEn))
-                //    //{
-                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Product Name (English) is required");
-                //    //}
-                //    //if (string.IsNullOrEmpty(stage.Sku))
-                //    //{
-                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "SKU is required");
-                //    //}
-                //    ////else
-                //    ////{
-                //    ////    var pro = db.ProductStages.Where(w=> w.Sku.Equals(stage.Sku) && w.ShopId == stage.ShopId).ToList();
-                //    ////    if(pro != null && pro.Count > 0)
-                //    ////    {
-                //    ////        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "SKU is duplicated");
-                //    ////    }
-                //    ////}
-                //    //if (stage.OriginalPrice == null)
-                //    //{
-                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Original Price is required");
-                //    //}
-                //    //if (stage.PrepareDay == null)
-                //    //{
-                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Preparation Time is required");
-                //    //}
-                //    //if (stage.Length == null || stage.Height == null || stage.Width == null || string.IsNullOrEmpty(stage.DimensionUnit))
-                //    //{
-                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Package Dimension is required");
-                //    //}
-                //    //if (stage.Weight == null || string.IsNullOrEmpty(stage.WeightUnit))
-                //    //{
-                //    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Weight is required");
-                //    //}
-                //}
-                //else if (request.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
-                //{
-                //    if (string.IsNullOrEmpty(stage.ProductNameTh) || string.IsNullOrEmpty(stage.ProductNameEn) || string.IsNullOrEmpty(stage.Sku)
-                //        || stage.OriginalPrice == null || stage.PrepareDay == null
-                //        || stage.Length == null || stage.Height == null || stage.Width == null || string.IsNullOrEmpty(stage.DimensionUnit)
-                //        || stage.Weight == null || string.IsNullOrEmpty(stage.WeightUnit))
-                //    {
-                //        stage.InfoFlag = false;
-                //    }
-                //    else
-                //    {
-                //        stage.InfoFlag = true;
-                //    }
-                //}
-                //else
-                //{
-                //    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Status is invalid");
-                //}
-                //if (request.Variants != null && request.Variants.Count > 0)
-                //{
-                //    List<string> sku = new List<string>();
-                //    foreach (VariantRequest variantRq in request.Variants)
-                //    {
-                //        sku.Add(variantRq.Sku);
-                //    }
-                //    var pro = db.ProductStages.Where(w => sku.Contains(w.Sku) && w.ShopId == stage.ShopId).ToList();
-                //    if(pro != null && pro.Count > 0)
-                //    {
-                //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "SKU is duplicated");
-                //    }
-                //}
-                #endregion
                 db.ProductStages.Add(stage);
                 #endregion
                 db.SaveChanges();
@@ -339,7 +257,7 @@ namespace Colsp.Api.Controllers
                 #region Setup Master Attribute
                 if (request.MasterAttribute != null)
                 {
-                    SetupAttributeEntity(db, request.MasterAttribute, stage.ProductId, masterPid, this.User.Email());
+                    SetupAttributeEntity(db, request.MasterAttribute, stage.ProductId, masterPid, this.User.UserRequest().Email);
                 }
                 #endregion
                 #region Setup Inventory
@@ -354,7 +272,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 masterInventory.Pid = masterPid;
-                masterInventory.CreatedBy = this.User.Email();
+                masterInventory.CreatedBy = this.User.UserRequest().Email;
                 masterInventory.CreatedDt = DateTime.Now;
                 db.Inventories.Add(masterInventory);
 
@@ -370,14 +288,14 @@ namespace Colsp.Api.Controllers
                 }
                 masterInventoryHist.Pid = masterPid;
                 masterInventoryHist.Description = "Add new product";
-                masterInventoryHist.CreatedBy = this.User.Email();
+                masterInventoryHist.CreatedBy = this.User.UserRequest().Email;
                 masterInventoryHist.CreatedDt = DateTime.Now;
                 db.InventoryHistories.Add(masterInventoryHist);
                 #endregion
-                stage.FeatureImgUrl = SetupImgEntity(db, request.MasterVariant.Images, masterPid, this.User.Email());
+                stage.FeatureImgUrl = SetupImgEntity(db, request.MasterVariant.Images, masterPid, this.User.UserRequest().Email);
                 stage.ImageFlag = stage.FeatureImgUrl == null ? false : true;
-                SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, this.User.Email());
-                SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, this.User.Email());
+                SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, this.User.UserRequest().Email);
+                SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, this.User.UserRequest().Email);
                 #region Setup Related GlobalCategories
                 if (request.GlobalCategories != null)
                 {
@@ -388,7 +306,7 @@ namespace Colsp.Api.Controllers
                         map.CategoryId = cat.CategoryId;
                         map.ProductId = stage.ProductId;
                         map.Status = Constant.STATUS_ACTIVE;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
                         db.ProductStageGlobalCatMaps.Add(map);
                     }
@@ -404,7 +322,7 @@ namespace Colsp.Api.Controllers
                         map.CategoryId = cat.CategoryId;
                         map.ProductId = stage.ProductId;
                         map.Status = Constant.STATUS_ACTIVE;
-                        map.CreatedBy = this.User.Email();
+                        map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
                         db.ProductStageLocalCatMaps.Add(map);
                     }
@@ -419,9 +337,9 @@ namespace Colsp.Api.Controllers
                         ProductStageRelated relate = new ProductStageRelated();
                         relate.Pid1 = masterPid;
                         relate.Pid2 = pro.Pid;
-                        relate.CreatedBy = this.User.Email();
+                        relate.CreatedBy = this.User.UserRequest().Email;
                         relate.CreatedDt = DateTime.Now;
-                        relate.UpdatedBy = this.User.Email();
+                        relate.UpdatedBy = this.User.UserRequest().Email;
                         relate.UpdatedDt = DateTime.Now;
                         db.ProductStageRelateds.Add(relate);
                     }
@@ -482,18 +400,19 @@ namespace Colsp.Api.Controllers
                         }
                         variantInventoryHist.Pid = variantPid;
                         variantInventoryHist.Description = "Add new variant";
-                        variantInventoryHist.CreatedBy = this.User.Email();
+                        variantInventoryHist.CreatedBy = this.User.UserRequest().Email;
                         variantInventoryHist.CreatedDt = DateTime.Now;
                         db.InventoryHistories.Add(masterInventoryHist);
                         #endregion
 
-                        SetupImgEntity(db, variantRq.Images, variantPid, this.User.Email());
-                        SetupVdoEntity(db, variantRq.VideoLinks, variantPid, this.User.Email());
+                        SetupImgEntity(db, variantRq.Images, variantPid, this.User.UserRequest().Email);
+                        SetupVdoEntity(db, variantRq.VideoLinks, variantPid, this.User.UserRequest().Email);
                         SetupProductStageVariant(variant, variantRq);
                         variant.ShopId = stage.ShopId;
-                        variant.SellerId = stage.SellerId;
-                        variant.CreatedBy = this.User.Email();
+                        variant.CreatedBy = this.User.UserRequest().Email;
                         variant.CreatedDt = DateTime.Now;
+                        variant.UpdatedBy = this.User.UserRequest().Email;
+                        variant.UpdatedDt = DateTime.Now;
                         db.ProductStageVariants.Add(variant);
                     }
                 }
@@ -535,15 +454,12 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (request.SellerId == null || request.SellerId == 0 || this.User.ShopIds().Where(w => w == request.SellerId).SingleOrDefault() == 0)
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                if (shopId == 0)
                 {
                     throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
-                if (productId == 0)
-                {
-                    throw new Exception("Product is invalid");
-                }
-                var stage = db.ProductStages.Where(w => w.ProductId == productId)
+                var stage = db.ProductStages.Where(w => w.ProductId == productId && w.ShopId == shopId)
                     .Include(i => i.ProductStageVariants)
                     .Include(i => i.ProductStageAttributes).SingleOrDefault();
                 if (stage != null)
@@ -559,7 +475,7 @@ namespace Colsp.Api.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Status is required");
                     }
                     stage.Status = request.Status;
-                    stage.UpdatedBy = this.User.Email();
+                    stage.UpdatedBy = this.User.UserRequest().Email;
                     stage.UpdatedDt = DateTime.Now;
                     #region Setup Attribute
                     List<ProductStageAttribute> attrList = stage.ProductStageAttributes.ToList();
@@ -579,7 +495,7 @@ namespace Colsp.Api.Controllers
                                 if (current != null)
                                 {
                                     current.ValueEn = attr.ValueEn;
-                                    current.UpdatedBy = this.User.Email();
+                                    current.UpdatedBy = this.User.UserRequest().Email;
                                     current.UpdatedDt = DateTime.Now;
                                     attrList.Remove(current);
                                 }
@@ -597,8 +513,10 @@ namespace Colsp.Api.Controllers
                                 attriEntity.Pid = stage.Pid;
                                 attriEntity.ValueEn = attr.ValueEn;
                                 attriEntity.Status = Constant.STATUS_ACTIVE;
-                                attriEntity.CreatedBy = this.User.Email();
+                                attriEntity.CreatedBy = this.User.UserRequest().Email;
                                 attriEntity.CreatedDt = DateTime.Now;
+                                attriEntity.UpdatedBy = this.User.UserRequest().Email;
+                                attriEntity.UpdatedDt = DateTime.Now;
                                 db.ProductStageAttributes.Add(attriEntity);
                             }
 
@@ -610,15 +528,15 @@ namespace Colsp.Api.Controllers
                         db.ProductStageAttributes.RemoveRange(attrList);
                     }
                     #endregion
-                    SaveChangeInventory(db, stage.Pid, request.MasterVariant, this.User.Email());
-                    SaveChangeInventoryHistory(db, stage.Pid, request.MasterVariant, this.User.Email());
-                    stage.FeatureImgUrl = SaveChangeImg(db, stage.Pid, request.MasterVariant.Images, this.User.Email());
+                    SaveChangeInventory(db, stage.Pid, request.MasterVariant, this.User.UserRequest().Email);
+                    SaveChangeInventoryHistory(db, stage.Pid, request.MasterVariant, this.User.UserRequest().Email);
+                    stage.FeatureImgUrl = SaveChangeImg(db, stage.Pid, request.MasterVariant.Images, this.User.UserRequest().Email);
                     stage.ImageFlag = stage.FeatureImgUrl == null ? false : true;
-                    SaveChangeImg360(db, stage.Pid, request.MasterVariant.Images360, this.User.Email());
-                    SaveChangeVideoLinks(db, stage.Pid, request.MasterVariant.VideoLinks, this.User.Email());
-                    SaveChangeRelatedProduct(db, stage.Pid, request.RelatedProducts, this.User.Email());
-                    SaveChangeGlobalCat(db, stage.ProductId, request.GlobalCategories, this.User.Email());
-                    SaveChangeLocalCat(db, stage.ProductId, request.LocalCategories, this.User.Email());
+                    SaveChangeImg360(db, stage.Pid, request.MasterVariant.Images360, this.User.UserRequest().Email);
+                    SaveChangeVideoLinks(db, stage.Pid, request.MasterVariant.VideoLinks, this.User.UserRequest().Email);
+                    SaveChangeRelatedProduct(db, stage.Pid, request.RelatedProducts, this.User.UserRequest().Email);
+                    SaveChangeGlobalCat(db, stage.ProductId, request.GlobalCategories, this.User.UserRequest().Email);
+                    SaveChangeLocalCat(db, stage.ProductId, request.LocalCategories, this.User.UserRequest().Email);
                     #endregion
                     #region Setup Variant
                     List<ProductStageVariant> varList = null;
@@ -659,7 +577,7 @@ namespace Colsp.Api.Controllers
                             current.Pid = variantPid;
                             current.ProductId = stage.ProductId;
 
-                            current.CreatedBy = this.User.Email();
+                            current.CreatedBy = this.User.UserRequest().Email;
                             current.CreatedDt = DateTime.Now;
                         }
 
@@ -674,13 +592,13 @@ namespace Colsp.Api.Controllers
                             current.ValueEn2 = var.SecondAttribute.ValueEn;
                         }
 
-                        SaveChangeInventory(db, current.Pid, var, this.User.Email());
-                        SaveChangeInventoryHistory(db, current.Pid, var, this.User.Email());
-                        SaveChangeImg(db, current.Pid, var.Images, this.User.Email());
-                        SaveChangeVideoLinks(db, current.Pid, var.VideoLinks, this.User.Email());
+                        SaveChangeInventory(db, current.Pid, var, this.User.UserRequest().Email);
+                        SaveChangeInventoryHistory(db, current.Pid, var, this.User.UserRequest().Email);
+                        SaveChangeImg(db, current.Pid, var.Images, this.User.UserRequest().Email);
+                        SaveChangeVideoLinks(db, current.Pid, var.VideoLinks, this.User.UserRequest().Email);
                         current.Status = stage.Status;
                         SetupProductStageVariant(current, var);
-                        current.UpdatedBy = this.User.Email();
+                        current.UpdatedBy = this.User.UserRequest().Email;
                         current.UpdatedDt = DateTime.Now;
                         if (addNew)
                         {
@@ -766,8 +684,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int sellerId = this.User.UserId().Value;
-                var productList = db.ProductStages.Where(w => w.SellerId == sellerId);
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var productList = db.ProductStages.Where(w => w.ShopId == shopId);
                 foreach (ProductStageRequest proRq in request)
                 {
                     var pro = productList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
@@ -936,7 +854,8 @@ namespace Colsp.Api.Controllers
 
         private ProductStageRequest SetupProductStageRequestFromProductId(ColspEntities db, int productId)
         {
-            var stage = db.ProductStages.Where(w => w.ProductId == productId)
+            int shopId = this.User.ShopRequest().ShopId.Value;
+            var stage = db.ProductStages.Where(w => w.ProductId == productId && w.ShopId == shopId)
                     .Include(i => i.ProductStageVariants.Select(s => s.Attribute))
                     .Include(i => i.ProductStageVariants.Select(s => s.Attribute1))
                     .Include(i => i.ProductStageAttributes.Select(s => s.Attribute))
@@ -1004,7 +923,6 @@ namespace Colsp.Api.Controllers
                 response.ControlFlags.Flag3 = stage.ControlFlag3;
                 response.Remark = stage.Remark;
                 response.Status = stage.Status;
-                response.SellerId = stage.SellerId;
                 response.ShopId = stage.ShopId;
                 response.MasterVariant.Pid = stage.Pid;
                 response.ProductId = stage.ProductId;

@@ -26,15 +26,51 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var CMS = (from c in db.CMS
+                if (!request.ShopId.HasValue)
+                    return Ok(request);
+                IQueryable<CM> CMS;
+                if (request.ShopId.HasValue && request.ShopId.Equals(Constant.CMS_SHOP_GOBAL))
+                {
+                    CMS = (from c in db.CMS
+                           select c
+                          ).Take(100);
+                }
+                else
+                {
+                    CMS = (from c in db.CMS
                            where c.ShopId == request.ShopId
                            select c
-                                      ).Take(100);
+                          ).Take(100);
+                }
                 if (request == null)
                 {
                     return Ok(CMS);
                 }
                 request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    CMS = CMS.Where(c => (c.CMSNameEN.Contains(request.SearchText) || c.CMSNameTH.Contains(request.SearchText)));
+                }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+
+                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusId == Constant.CMS_STATUS_DRAFT);
+                    }
+                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusId == Constant.CMS_STATUS_APPROVE);
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusId == Constant.CMS_STATUS_NOT_APPROVE);
+                    }
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
+                    }
+                }
                 var total = CMS.Count();
                 var pagedCMS = CMS.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
@@ -46,7 +82,39 @@ namespace Colsp.Api.Controllers
             }
 
         }
-        [Route("api/CMSCollection")]
+
+        [Route("api/CMSUpdateStatus")]
+        [HttpPut]
+        public IHttpActionResult UpdateCMSStatusFormCMSList(UpdateCMSStatusRequest model)
+        {
+            CMSShopRequest CMSResult = new CMSShopRequest();
+            CMSResult.SearchText = model.SearchText;
+            CMSResult.ShopId = model.ShopId;
+            CMSResult._direction = model._direction;
+            CMSResult._filter = model._filter;
+            CMSResult._limit = model._limit;
+            CMSResult._offset = model._offset;
+            CMSResult._order = model._order;
+            try
+            {
+                if (model != null)
+                {
+                    if (model.ShopId.HasValue)
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSResult = cms.CMSUpdateStatus(model);
+                        return GetCMSList(CMSResult);
+                    }
+                }
+                return Ok(CMSResult);
+            }
+            catch (Exception ex)
+            {
+                return Ok(CMSResult);
+            }
+        }
+
+        [Route("api/CMSStages")]
         [HttpPost]
         public HttpResponseMessage CreateCMS(CMSCollectionItemRequest model)
         {
@@ -54,8 +122,17 @@ namespace Colsp.Api.Controllers
             {
                 if (model != null)
                 {
-                    CMSProcess cms = new CMSProcess();
-                    int CMSId = cms.CreateCMSCollectionItem(model);
+                    int CMSId = 0;
+                    if (model.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.CreateCMSStaticPage(model);
+                    }
+                    else if (model.CMSTypeId.Equals(Constant.CMS_TYPE_COLLECTION_PAGE))
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.CreateCMSCollectionItem(model);
+                    }
                     return GetCollection(CMSId);
                 }
                 else
@@ -69,8 +146,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        #region Get CMSCollection
-
+        #region Get CMS List
 
         public HttpResponseMessage GetCollection(int? CMSId)
         {
@@ -139,6 +215,68 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        public IHttpActionResult GetCMSList(CMSShopRequest request)
+        {
+            try
+            {
+                if (!request.ShopId.HasValue)
+                    return Ok(request);
+                IQueryable<CM> CMS;
+                if (request.ShopId.HasValue && request.ShopId.Equals(Constant.CMS_SHOP_GOBAL))
+                {
+                    CMS = (from c in db.CMS
+                           select c
+                          ).Take(100);
+                }
+                else
+                {
+                    CMS = (from c in db.CMS
+                           where c.ShopId == request.ShopId
+                           select c
+                          ).Take(100);
+                }
+                if (request == null)
+                {
+                    return Ok(CMS);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    CMS = CMS.Where(c => (c.CMSNameEN.Contains(request.SearchText) || c.CMSNameTH.Contains(request.SearchText)));
+                }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+
+                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusId.Equals(Constant.CMS_STATUS_DRAFT));
+                    }
+                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusId.Equals(Constant.CMS_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusId.Equals(Constant.CMS_STATUS_NOT_APPROVE));
+                    }
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL));
+                    }
+                }
+                var total = CMS.Count();
+                var pagedCMS = CMS.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return Ok(request);
+            }
+
+        }
+
+
         #endregion
 
         [Route("api/CMSUpdateCollection")]
@@ -149,8 +287,17 @@ namespace Colsp.Api.Controllers
             {
                 if (model != null)
                 {
-                    CMSProcess cms = new CMSProcess();
-                    int CMSId = cms.EditCMSCollectionItem(model);
+                    int CMSId = 0;
+                    if (model.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.EditCMS(model);
+                    }
+                    else if (model.CMSTypeId.Equals(Constant.CMS_TYPE_COLLECTION_PAGE))
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.EditCMSCollectionItem(model);
+                    }
                     return GetCollection(CMSId);
                 }
                 else
