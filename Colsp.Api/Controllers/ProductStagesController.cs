@@ -70,6 +70,30 @@ namespace Colsp.Api.Controllers
                 {
                     products = products.Where(p => p.Pid.Equals(request.Pid));
                 }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+
+                    if (string.Equals("ImageMissing", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(w => w.MasterImg.Count() == 0 && w.VariantImg.Count() == 0);
+                    }
+                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
+                    }
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                    }
+                    else if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
+                    }
+                }
                 var total = products.Count();
                 var pagedProducts = products.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
@@ -109,7 +133,7 @@ namespace Colsp.Api.Controllers
                     
                 }
                 db.SaveChanges();
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
+                return Request.CreateErrorResponse(HttpStatusCode.OK, "Save successful");
             }
             catch (Exception e)
             {

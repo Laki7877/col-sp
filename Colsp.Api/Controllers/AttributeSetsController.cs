@@ -140,6 +140,7 @@ namespace Colsp.Api.Controllers
                 set.UpdatedBy = this.User.UserRequest().Email;
                 set.UpdatedDt = DateTime.Now;
                 set = db.AttributeSets.Add(set);
+                IsNameExits(db, set);
                 db.SaveChanges();
                 if(request.Attributes != null && request.Attributes.Count > 0)
                 {
@@ -242,7 +243,7 @@ namespace Colsp.Api.Controllers
                     attrSet.Status = Constant.STATUS_ACTIVE;
                     attrSet.UpdatedBy = this.User.UserRequest().Email;
                     attrSet.UpdatedDt = DateTime.Now;
-
+                    IsNameExits(db, attrSet);
                     List<AttributeSetMap> mapList =  attrSet.AttributeSetMaps.ToList();
                     if(request.Attributes != null && request.Attributes.Count > 0)
                     {
@@ -456,6 +457,16 @@ namespace Colsp.Api.Controllers
             catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+
+        private void IsNameExits(ColspEntities db, AttributeSet set)
+        {
+            var nameExits = db.AttributeSets.Where(w => w.AttributeSetNameEn.Equals(set.AttributeSetNameEn) || set.AttributeSetNameTh.Equals(set.AttributeSetNameTh)).ToList();
+            if (nameExits != null && nameExits.Count > 0)
+            {
+                throw new Exception("Attribute set name " + set.AttributeSetNameEn + "(" + set.AttributeSetNameTh + ") is already exits");
             }
         }
 

@@ -141,8 +141,8 @@ namespace Colsp.Api.Controllers
                 attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
-               
 
+                IsNameExits(db, attribute);
                 attribute = db.Attributes.Add(attribute);
                 db.SaveChanges();
                 if (request.AttributeValues != null && request.AttributeValues.Count  > 0)
@@ -256,7 +256,7 @@ namespace Colsp.Api.Controllers
                 attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
-               
+                IsNameExits(db, attribute);
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
                 {
                     newList = new List<AttributeValue>();
@@ -402,6 +402,15 @@ namespace Colsp.Api.Controllers
             catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        private void IsNameExits(ColspEntities db, Entity.Models.Attribute attr)
+        {
+            var nameExits = db.Attributes.Where(w => w.AttributeNameEn.Equals(attr.AttributeNameEn) || attr.AttributeNameTh.Equals(attr.AttributeNameTh)).ToList();
+            if (nameExits != null && nameExits.Count > 0)
+            {
+                throw new Exception("Attribute name " + attr.AttributeNameEn + "(" + attr.AttributeNameTh + ") is already exits");
             }
         }
 

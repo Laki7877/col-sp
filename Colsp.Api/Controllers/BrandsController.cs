@@ -229,6 +229,10 @@ namespace Colsp.Api.Controllers
                 brand.CreatedDt = DateTime.Now;
                 brand.UpdatedBy = this.User.UserRequest().Email;
                 brand.UpdatedDt = DateTime.Now;
+
+                IsNameExits(db, brand);
+
+
                 db.Brands.Add(brand);
                 db.SaveChanges();
                 return GetBrand(brand.BrandId); ;
@@ -277,6 +281,7 @@ namespace Colsp.Api.Controllers
                     brand.Status = Constant.STATUS_ACTIVE;
                     brand.UpdatedBy = this.User.UserRequest().Email;
                     brand.UpdatedDt = DateTime.Now;
+                    IsNameExits(db, brand);
                     db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK);
                 }
@@ -289,6 +294,15 @@ namespace Colsp.Api.Controllers
             catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        private void IsNameExits(ColspEntities db, Brand brand)
+        {
+            var nameExits = db.Brands.Where(w => w.BrandNameEn.Equals(brand.BrandNameEn) || w.BrandNameTh.Equals(brand.BrandNameTh)).ToList();
+            if (nameExits != null && nameExits.Count > 0)
+            {
+                throw new Exception("Brand name " + brand.BrandNameEn + "(" + brand.BrandNameTh + ") is already exits");
             }
         }
 
