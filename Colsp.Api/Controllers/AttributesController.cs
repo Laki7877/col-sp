@@ -12,6 +12,8 @@ using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 
 namespace Colsp.Api.Controllers
 {
@@ -141,8 +143,6 @@ namespace Colsp.Api.Controllers
                 attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
-
-                IsNameExits(db, attribute);
                 attribute = db.Attributes.Add(attribute);
                 db.SaveChanges();
                 if (request.AttributeValues != null && request.AttributeValues.Count  > 0)
@@ -179,12 +179,24 @@ namespace Colsp.Api.Controllers
                 }
                 return GetAttribute(attribute.AttributeId);
             }
+            catch (DbUpdateException e)
+            {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "Attribute name " + request.AttributeNameEn + " ("+ request.AttributeNameTh + ") is already exits");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
             catch (Exception e)
             {
-                if(attribute != null)
+                if(attribute != null && attribute.AttributeId != 0)
                 {
-                    db.Dispose();
-                    db = new ColspEntities();
                     if (newList != null && newList.Count > 0)
                     {
                         db.AttributeValues.RemoveRange(newList);
@@ -230,12 +242,12 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
 
-                attribute = db.Attributes.Where(w=>w.AttributeId.Equals(attributeId)).Include(i=>i.AttributeValueMaps.Select(s=>s.AttributeValue)).SingleOrDefault();
+                attribute = db.Attributes.Where(w=>w.AttributeId.Equals(attributeId))
+                    .Include(i=>i.AttributeValueMaps.Select(s=>s.AttributeValue)).SingleOrDefault();
                 if(attribute == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    throw new Exception("Cannot find attribute " + attributeId);
                 }
-
                 attribute.AttributeNameEn = request.AttributeNameEn;
                 attribute.AttributeNameTh = request.AttributeNameTh;
                 attribute.AttributeUnitEn = request.AttributeUnitEn;
@@ -256,7 +268,6 @@ namespace Colsp.Api.Controllers
                 attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
-                IsNameExits(db, attribute);
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
                 {
                     newList = new List<AttributeValue>();
@@ -298,9 +309,23 @@ namespace Colsp.Api.Controllers
                 }
                 return GetAttribute(attribute.AttributeId);
             }
-            catch
+            catch (DbUpdateException e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "Attribute name " + request.AttributeNameEn + " (" + request.AttributeNameTh + ") is already exits");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -402,15 +427,6 @@ namespace Colsp.Api.Controllers
             catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
-            }
-        }
-
-        private void IsNameExits(ColspEntities db, Entity.Models.Attribute attr)
-        {
-            var nameExits = db.Attributes.Where(w => w.AttributeNameEn.Equals(attr.AttributeNameEn) || attr.AttributeNameTh.Equals(attr.AttributeNameTh)).ToList();
-            if (nameExits != null && nameExits.Count > 0)
-            {
-                throw new Exception("Attribute name " + attr.AttributeNameEn + "(" + attr.AttributeNameTh + ") is already exits");
             }
         }
 

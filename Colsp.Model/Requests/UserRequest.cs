@@ -15,6 +15,7 @@ namespace Colsp.Model.Requests
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Password { get; set; }
+        public string OldPassword { get; set; }
         public string EmployeeId { get; set; }
         public string Position { get; set; }
         public string Division { get; set; }

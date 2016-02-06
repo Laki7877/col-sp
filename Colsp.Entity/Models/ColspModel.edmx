@@ -10,8 +10,8 @@
             <PropertyRef Name="AttributeId" />
           </Key>
           <Property Name="AttributeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="AttributeNameEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="AttributeNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="AttributeNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="AttributeNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="AttributeUnitEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeUnitTh" Type="nvarchar" MaxLength="100" />
           <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="100" />
@@ -38,7 +38,7 @@
             <PropertyRef Name="AttributeSetId" />
           </Key>
           <Property Name="AttributeSetId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="AttributeSetNameEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="AttributeSetNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="AttributeSetNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeSetDescriptionEn" Type="nvarchar" MaxLength="500" />
           <Property Name="AttributeSetDescriptionTh" Type="nvarchar" MaxLength="500" />
@@ -108,7 +108,7 @@
             <PropertyRef Name="BrandId" />
           </Key>
           <Property Name="BrandId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="BrandNameEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="BrandNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Path" Type="nvarchar" MaxLength="500" />
           <Property Name="PicUrl" Type="nvarchar" MaxLength="500" />
@@ -143,11 +143,11 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="NameEn" Type="nvarchar" MaxLength="200" />
-          <Property Name="NameTh" Type="nvarchar" MaxLength="200" />
+          <Property Name="NameEn" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="NameTh" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="Commission" Type="decimal" Precision="10" Scale="2" />
           <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" />
-          <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductCount" Type="int" />
           <Property Name="Lft" Type="int" />
@@ -218,9 +218,9 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="NameEn" Type="nvarchar" MaxLength="50" />
-          <Property Name="NameTh" Type="nvarchar" MaxLength="50" />
-          <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="NameEn" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NameTh" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
           <Property Name="ProductCount" Type="int" />
           <Property Name="ShopId" Type="int" />
@@ -2545,8 +2545,8 @@
             <PropertyRef Name="AttributeId" />
           </Key>
           <Property Name="AttributeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AttributeNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="AttributeNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeUnitEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeUnitTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DisplayNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2582,7 +2582,7 @@
             <PropertyRef Name="AttributeSetId" />
           </Key>
           <Property Name="AttributeSetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AttributeSetNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSetNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeSetNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeSetDescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="AttributeSetDescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -2665,7 +2665,7 @@
             <PropertyRef Name="BrandId" />
           </Key>
           <Property Name="BrandId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BrandNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BrandNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="BrandNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="PicUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -2705,11 +2705,11 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NameEn" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="NameTh" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="NameEn" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="NameTh" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Commission" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CategoryAbbreviation" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UrlKeyEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductCount" Type="Int32" />
           <Property Name="Lft" Type="Int32" />
@@ -2789,9 +2789,9 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NameTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NameEn" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NameTh" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UrlKeyEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ProductCount" Type="Int32" />
           <Property Name="ShopId" Type="Int32" />

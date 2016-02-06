@@ -11,6 +11,8 @@ using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Api.Helper;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 
 namespace Colsp.Api.Controllers
 {
@@ -294,9 +296,23 @@ namespace Colsp.Api.Controllers
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
+            catch (DbUpdateException e)
+            {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "Category field is already exits");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 

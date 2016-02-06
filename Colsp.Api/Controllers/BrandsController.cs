@@ -15,6 +15,9 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -230,16 +233,26 @@ namespace Colsp.Api.Controllers
                 brand.UpdatedBy = this.User.UserRequest().Email;
                 brand.UpdatedDt = DateTime.Now;
 
-                IsNameExits(db, brand);
-
-
                 db.Brands.Add(brand);
                 db.SaveChanges();
                 return GetBrand(brand.BrandId); ;
             }
-            catch
+            catch (DbUpdateException e)
             {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "Brand name " + request.BrandNameEn + " is already exits");
+                    }
+                }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -281,7 +294,6 @@ namespace Colsp.Api.Controllers
                     brand.Status = Constant.STATUS_ACTIVE;
                     brand.UpdatedBy = this.User.UserRequest().Email;
                     brand.UpdatedDt = DateTime.Now;
-                    IsNameExits(db, brand);
                     db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK);
                 }
@@ -291,20 +303,41 @@ namespace Colsp.Api.Controllers
                 }
                 
             }
-            catch
+            catch (DbUpdateException e)
             {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                                                   , "Brand name " + request.BrandNameEn + " is already exits");
+                    }
+                }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
-        private void IsNameExits(ColspEntities db, Brand brand)
+        private void SetupModal(ColspEntities db, Brand brand, BrandRequest request)
         {
-            var nameExits = db.Brands.Where(w => w.BrandNameEn.Equals(brand.BrandNameEn) || w.BrandNameTh.Equals(brand.BrandNameTh)).ToList();
-            if (nameExits != null && nameExits.Count > 0)
-            {
-                throw new Exception("Brand name " + brand.BrandNameEn + "(" + brand.BrandNameTh + ") is already exits");
-            }
+           
+            brand.BrandNameEn = Validation.ValidateString(request.BrandNameEn, "Beand Name", true, 100, true);
+            brand.BrandNameTh = request.BrandNameTh;
+            brand.DescriptionEn = request.DescriptionEn;
+            brand.DescriptionTh = request.DescriptionTh;
+            brand.MetaDescription = request.SEO.MetaDescription;
+            brand.MetaKey = request.SEO.MetaKeywords;
+            brand.MetaTitle = request.SEO.MetaTitle;
+            brand.UrlEn = request.SEO.ProductUrlKeyEn;
+            brand.UrlTh = request.SEO.ProductUrlKeyTh;
+            brand.Path = request.BrandImage.tmpPath;
+            brand.PicUrl = request.BrandImage.url;
         }
+
 
         protected override void Dispose(bool disposing)
         {
