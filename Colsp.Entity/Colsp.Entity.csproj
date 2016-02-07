@@ -249,6 +249,9 @@
     <Compile Include="Models\ProductStageAttribute.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductStageComment.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ProductStageGlobalCatMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

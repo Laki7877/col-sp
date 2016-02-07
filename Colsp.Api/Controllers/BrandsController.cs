@@ -210,23 +210,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 Brand brand = new Brand();
-                brand.BrandNameEn = request.BrandNameEn;
-                brand.BrandNameTh = request.BrandNameTh;
-                brand.DescriptionEn = request.DescriptionEn;
-                brand.DescriptionTh = request.DescriptionTh;
-                if(request.SEO != null)
-                {
-                    brand.MetaDescription = request.SEO.MetaDescription;
-                    brand.MetaKey = request.SEO.MetaKeywords;
-                    brand.MetaTitle = request.SEO.MetaTitle;
-                    brand.UrlEn = request.SEO.ProductUrlKeyEn;
-                    brand.UrlTh = request.SEO.ProductUrlKeyTh;
-                }
-                if(request.BrandImage != null)
-                {
-                    brand.Path = request.BrandImage.tmpPath;
-                    brand.PicUrl = request.BrandImage.url;
-                }
+                SetupBrand(brand, request);
                 brand.Status = Constant.STATUS_ACTIVE;
                 brand.CreatedBy = this.User.UserRequest().Email;
                 brand.CreatedDt = DateTime.Now;
@@ -244,8 +228,18 @@ namespace Colsp.Api.Controllers
                     int sqlError = ((SqlException)e.InnerException.InnerException).Number;
                     if (sqlError == 2627)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Brand name " + request.BrandNameEn + " is already exits");
+                        string message = ((SqlException)e.InnerException.InnerException).Message;
+                        if (message.Contains("UrlEn"))
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "URL Key has already been used");
+                        }
+                        else
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "This brand name has already been used");
+                        }
+                        
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
@@ -269,28 +263,7 @@ namespace Colsp.Api.Controllers
                 var brand = db.Brands.Where(w => w.BrandId == brandId).SingleOrDefault();
                 if(brand != null)
                 {
-                    brand.BrandNameEn = request.BrandNameEn;
-                    brand.BrandNameTh = request.BrandNameTh;
-                    brand.DescriptionEn = request.DescriptionEn;
-                    brand.DescriptionTh = request.DescriptionTh;
-                    if(request.SEO != null)
-                    {
-                        brand.MetaDescription = request.SEO.MetaDescription;
-                        brand.MetaKey = request.SEO.MetaKeywords;
-                        brand.MetaTitle = request.SEO.MetaTitle;
-                        brand.UrlEn = request.SEO.ProductUrlKeyEn;
-                        brand.UrlTh = request.SEO.ProductUrlKeyTh;
-                    }
-                    if (request.BrandImage != null)
-                    {
-                        brand.Path = request.BrandImage.tmpPath;
-                        brand.PicUrl = request.BrandImage.url;
-                    }
-                    else
-                    {
-                        brand.Path = null;
-                        brand.PicUrl = null;
-                    }
+                    SetupBrand(brand, request);
                     brand.Status = Constant.STATUS_ACTIVE;
                     brand.UpdatedBy = this.User.UserRequest().Email;
                     brand.UpdatedDt = DateTime.Now;
@@ -310,8 +283,18 @@ namespace Colsp.Api.Controllers
                     int sqlError = ((SqlException)e.InnerException.InnerException).Number;
                     if (sqlError == 2627)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                                                   , "Brand name " + request.BrandNameEn + " is already exits");
+                        string message = ((SqlException)e.InnerException.InnerException).Message;
+                        if ("UrlEn".Contains(message))
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "URL Key has already been used");
+                        }
+                        else
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "This brand name has already been used");
+                        }
+
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
@@ -322,20 +305,32 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupModal(ColspEntities db, Brand brand, BrandRequest request)
+        private void SetupBrand(Brand brand, BrandRequest request)
         {
-           
-            brand.BrandNameEn = Validation.ValidateString(request.BrandNameEn, "Beand Name", true, 100, true);
-            brand.BrandNameTh = request.BrandNameTh;
-            brand.DescriptionEn = request.DescriptionEn;
-            brand.DescriptionTh = request.DescriptionTh;
-            brand.MetaDescription = request.SEO.MetaDescription;
-            brand.MetaKey = request.SEO.MetaKeywords;
-            brand.MetaTitle = request.SEO.MetaTitle;
-            brand.UrlEn = request.SEO.ProductUrlKeyEn;
-            brand.UrlTh = request.SEO.ProductUrlKeyTh;
-            brand.Path = request.BrandImage.tmpPath;
-            brand.PicUrl = request.BrandImage.url;
+            brand.BrandNameEn = Validation.ValidateString(request.BrandNameEn, "Brand Name (English)", true,100,true);
+            brand.BrandNameTh = Validation.ValidateString(request.BrandNameTh, "Brand Name (Thai)", true, 100, true);
+            brand.DescriptionEn = Validation.ValidateString(request.DescriptionEn, "Brand Description (English)", false, 500, false);
+            brand.DescriptionTh = Validation.ValidateString(request.DescriptionTh, "Brand Description (Thai)", false, 500, false);
+            if(request.SEO != null)
+            {
+                brand.MetaDescription = Validation.ValidateString(request.SEO.MetaDescription, "Meta Description", false, 500, false);
+                brand.MetaKey = Validation.ValidateString(request.SEO.MetaKeywords, "Meta Keywords", false, 500, false);
+                brand.MetaTitle = Validation.ValidateString(request.SEO.MetaTitle, "Meta Title", false, 100, false);
+                brand.UrlTh = request.SEO.ProductUrlKeyTh;
+            }
+            if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
+            {
+                brand.UrlEn = brand.BrandNameEn;
+            }
+            else
+            {
+                brand.UrlEn = request.SEO.ProductUrlKeyEn;
+            }
+            if (request.BrandImage != null)
+            {
+                brand.Path = request.BrandImage.tmpPath;
+                brand.PicUrl = request.BrandImage.url;
+            }
         }
 
 

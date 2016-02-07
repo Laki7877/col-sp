@@ -109,13 +109,13 @@
           </Key>
           <Property Name="BrandId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BrandNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Path" Type="nvarchar" MaxLength="500" />
           <Property Name="PicUrl" Type="nvarchar" MaxLength="500" />
           <Property Name="MetaTitle" Type="nvarchar" MaxLength="100" />
           <Property Name="MetaDescription" Type="nvarchar" MaxLength="500" />
           <Property Name="MetaKey" Type="nvarchar" MaxLength="500" />
-          <Property Name="UrlEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="UrlEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="UrlTh" Type="nvarchar" MaxLength="100" />
           <Property Name="DescriptionEn" Type="nvarchar" MaxLength="500" />
           <Property Name="DescriptionTh" Type="nvarchar" MaxLength="500" />
@@ -641,6 +641,18 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="ProductStageComment">
+          <Key>
+            <PropertyRef Name="CommentId" />
+          </Key>
+          <Property Name="CommentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="1000" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="ProductStageGlobalCatMap">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -740,6 +752,7 @@
           <Property Name="SellerId" Type="int" />
           <Property Name="Sku" Type="nvarchar" MaxLength="300" />
           <Property Name="Upc" Type="nvarchar" MaxLength="300" />
+          <Property Name="Display" Type="nvarchar" MaxLength="20" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
           <Property Name="DescriptionFullEn" Type="nvarchar(max)" />
@@ -1893,6 +1906,7 @@
           <EntitySet Name="ProductReview" EntityType="Self.ProductReview" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStage" EntityType="Self.ProductStage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageAttribute" EntityType="Self.ProductStageAttribute" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductStageComment" EntityType="Self.ProductStageComment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageGlobalCatMap" EntityType="Self.ProductStageGlobalCatMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageImage" EntityType="Self.ProductStageImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageImage360" EntityType="Self.ProductStageImage360" Schema="dbo" store:Type="Tables" />
@@ -2235,6 +2249,7 @@
           <EntitySet Name="ProductReviews" EntityType="ColspModel.ProductReview" />
           <EntitySet Name="ProductStages" EntityType="ColspModel.ProductStage" />
           <EntitySet Name="ProductStageAttributes" EntityType="ColspModel.ProductStageAttribute" />
+          <EntitySet Name="ProductStageComments" EntityType="ColspModel.ProductStageComment" />
           <EntitySet Name="ProductStageGlobalCatMaps" EntityType="ColspModel.ProductStageGlobalCatMap" />
           <EntitySet Name="ProductStageImages" EntityType="ColspModel.ProductStageImage" />
           <EntitySet Name="ProductStageImage360" EntityType="ColspModel.ProductStageImage360" />
@@ -2666,13 +2681,13 @@
           </Key>
           <Property Name="BrandId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="BrandNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BrandNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BrandNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="PicUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="UrlEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UrlEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -3265,6 +3280,18 @@
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductStageAttributeAttribute" FromRole="ProductStageAttribute" ToRole="Attribute" />
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_ProductStageAttribute_ProductStage" FromRole="ProductStageAttribute" ToRole="ProductStage" />
         </EntityType>
+        <EntityType Name="ProductStageComment">
+          <Key>
+            <PropertyRef Name="CommentId" />
+          </Key>
+          <Property Name="CommentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="ProductStageGlobalCatMap">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -3371,6 +3398,7 @@
           <Property Name="SellerId" Type="Int32" />
           <Property Name="Sku" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Upc" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Display" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="OriginalPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -5197,6 +5225,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ProductStageComments">
+            <EntityTypeMapping TypeName="ColspModel.ProductStageComment">
+              <MappingFragment StoreEntitySet="ProductStageComment">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="CommentId" ColumnName="CommentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ProductStageGlobalCatMaps">
             <EntityTypeMapping TypeName="ColspModel.ProductStageGlobalCatMap">
               <MappingFragment StoreEntitySet="ProductStageGlobalCatMap">
@@ -5305,6 +5346,7 @@
                 <ScalarProperty Name="DescriptionFullEn" ColumnName="DescriptionFullEn" />
                 <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
                 <ScalarProperty Name="OriginalPrice" ColumnName="OriginalPrice" />
+                <ScalarProperty Name="Display" ColumnName="Display" />
                 <ScalarProperty Name="Upc" ColumnName="Upc" />
                 <ScalarProperty Name="Sku" ColumnName="Sku" />
                 <ScalarProperty Name="SellerId" ColumnName="SellerId" />

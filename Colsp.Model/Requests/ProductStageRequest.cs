@@ -116,7 +116,6 @@ namespace Colsp.Model.Requests
         public List<ImageRequest> MasterImg { get; set; }
         public List<ImageRequest> VariantImg { get; set; }
 
-
         public VariantRequest()
         {
             FirstAttribute = new AttributeRequest();

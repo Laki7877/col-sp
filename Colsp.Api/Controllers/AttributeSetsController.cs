@@ -13,6 +13,7 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.Entity.Infrastructure;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -125,22 +126,13 @@ namespace Colsp.Api.Controllers
             try
             {
                 set = new AttributeSet();
-                set.AttributeSetNameEn = request.AttributeSetNameEn;
-                set.AttributeSetNameTh = request.AttributeSetNameTh;
-                set.AttributeSetDescriptionEn = request.AttributeSetDescriptionEn;
-                set.AttributeSetDescriptionTh = request.AttributeSetDescriptionTh;
-                set.Visibility = request.Visibility;
+                SetupAttributeSet(set, request);
                 set.Status = Constant.STATUS_ACTIVE;
                 set.CreatedBy = this.User.UserRequest().Email;
                 set.CreatedDt = DateTime.Now;
                 set.UpdatedBy = this.User.UserRequest().Email;
                 set.UpdatedDt = DateTime.Now;
-                #region Validation
-                if (string.IsNullOrEmpty(set.AttributeSetNameEn))
-                {
-                    throw new Exception("AttributeSetNameEn is required");
-                }
-                #endregion
+               
                 set = db.AttributeSets.Add(set);
                 db.SaveChanges();
                 if(request.Attributes != null && request.Attributes.Count > 0)
@@ -201,7 +193,7 @@ namespace Colsp.Api.Controllers
                     {
 
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Attribute set name " + request.AttributeSetNameEn + " is already exits");
+                           , "This attribute set name has already been used");
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
@@ -242,17 +234,7 @@ namespace Colsp.Api.Controllers
                     .SingleOrDefault();
                 if(attrSet != null)
                 {
-                    attrSet.AttributeSetNameEn = request.AttributeSetNameEn;
-                    attrSet.AttributeSetNameTh = request.AttributeSetNameTh;
-                    attrSet.AttributeSetDescriptionEn = request.AttributeSetDescriptionEn;
-                    attrSet.AttributeSetDescriptionTh = request.AttributeSetDescriptionTh;
-                    #region Validation
-                    if (string.IsNullOrEmpty(attrSet.AttributeSetNameEn))
-                    {
-                        return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameEn is required");
-                    }
-                    #endregion
-                    attrSet.Visibility = request.Visibility;
+                    SetupAttributeSet(attrSet, request);
                     attrSet.Status = Constant.STATUS_ACTIVE;
                     attrSet.UpdatedBy = this.User.UserRequest().Email;
                     attrSet.UpdatedDt = DateTime.Now;
@@ -363,7 +345,7 @@ namespace Colsp.Api.Controllers
                     {
 
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                            , "Attribute set name " + request.AttributeSetNameEn + " is already exits");
+                            , "This attribute set name has already been used");
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
@@ -483,6 +465,15 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
+        }
+
+        private void SetupAttributeSet(AttributeSet set, AttributeSetRequest request)
+        {
+            set.AttributeSetNameEn = Validation.ValidateString(request.AttributeSetNameEn, "Attribute Set Name (English)", true, 100, true);
+            set.AttributeSetNameTh = Validation.ValidateString(request.AttributeSetNameTh, "Attribute Set Name (Thai)", false, 100, true);
+            set.AttributeSetDescriptionEn = request.AttributeSetDescriptionEn;
+            set.AttributeSetDescriptionTh = request.AttributeSetDescriptionTh;
+            set.Visibility = request.Visibility;
         }
 
         private AttributeSetRequest GetAttributeSetResponse(ColspEntities db, int attributeSetId)

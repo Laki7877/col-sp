@@ -137,7 +137,7 @@ namespace Colsp.Api.Controllers
                 #endregion
 
                 attribute = new Entity.Models.Attribute();
-                SetupAttribute(db,attribute, request);
+                SetupAttribute(attribute, request);
                 attribute.CreatedBy = this.User.UserRequest().Email;
                 attribute.CreatedDt = DateTime.Now;
                 attribute.UpdatedBy = this.User.UserRequest().Email;
@@ -188,7 +188,7 @@ namespace Colsp.Api.Controllers
                     {
 
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Attribute name " + request.AttributeNameEn + " ("+ request.AttributeNameTh + ") is already exits");
+                           , "This attribute name has already been used");
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
@@ -248,23 +248,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find attribute " + attributeId);
                 }
-                attribute.AttributeNameEn = request.AttributeNameEn;
-                attribute.AttributeNameTh = request.AttributeNameTh;
-                attribute.AttributeUnitEn = request.AttributeUnitEn;
-                attribute.AttributeUnitTh = request.AttributeUnitTh;
-                attribute.DataType = request.DataType;
-                attribute.DataValidation = request.DataValidation;
-                attribute.DefaultValue = request.DefaultValue;
-                attribute.DisplayNameEn = request.DisplayNameEn;
-                attribute.DisplayNameTh = request.DisplayNameTh;
-                attribute.ShowAdminFlag = request.ShowAdminFlag;
-                attribute.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
-                attribute.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
-                attribute.ShowLocalFilterFlag = request.ShowLocalFilterFlag;
-                attribute.ShowLocalSearchFlag = request.ShowLocalSearchFlag;
-                attribute.VariantDataType = request.VariantDataType;
-                attribute.VariantStatus = request.VariantStatus;
-                attribute.AllowHtmlFlag = request.AllowHtmlFlag;
+                SetupAttribute(attribute, request);
                 attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
@@ -316,9 +300,8 @@ namespace Colsp.Api.Controllers
                     int sqlError = ((SqlException)e.InnerException.InnerException).Number;
                     if (sqlError == 2627)
                     {
-
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Attribute name " + request.AttributeNameEn + " (" + request.AttributeNameTh + ") is already exits");
+                              , "This attribute name has already been used");
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
@@ -478,24 +461,23 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupAttribute(ColspEntities db,Entity.Models.Attribute attribute, AttributeRequest request)
+        private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request)
         {
             attribute.AttributeNameEn = Validation.ValidateString(request.AttributeNameEn, "Attribute Name (English)", true, 100, true);
-            //db.Attributes.Where(w => w.AttributeNameEn.Equals(attribute.AttributeNameEn));
-            attribute.AttributeNameTh = request.AttributeNameTh;
-            attribute.AttributeUnitEn = request.AttributeUnitEn;
-            attribute.AttributeUnitTh = request.AttributeUnitTh;
-            attribute.DataType = request.DataType;
-            attribute.DataValidation = request.DataValidation;
-            attribute.DefaultValue = request.DefaultValue;
-            attribute.DisplayNameEn = request.DisplayNameEn;
-            attribute.DisplayNameTh = request.DisplayNameTh;
+            attribute.AttributeNameTh = Validation.ValidateString(request.AttributeNameTh, "Attribute Name (Thai)", true, 100, true);
+            attribute.AttributeUnitEn = Validation.ValidateString(request.AttributeUnitEn, "Attribute Unit (English)", false, 100, true);
+            attribute.AttributeUnitTh = Validation.ValidateString(request.AttributeUnitTh, "Attribute Unit (Thai)", false, 100, true);
+            attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", false, 2, true);
+            attribute.DataValidation = Validation.ValidateString(request.DataValidation, "Input Validation", false, 2, true);
+            attribute.DefaultValue = Validation.ValidateString(request.DefaultValue, "If empty, value equals", false, 100, true);
+            attribute.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Display Name (English)", true, 100, true);
+            attribute.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Display Name (Thai)", true, 100, true);
             attribute.ShowAdminFlag = request.ShowAdminFlag;
             attribute.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
             attribute.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
             attribute.ShowLocalFilterFlag = request.ShowLocalFilterFlag;
             attribute.ShowLocalSearchFlag = request.ShowLocalSearchFlag;
-            attribute.VariantDataType = request.VariantDataType;
+            attribute.VariantDataType = Validation.ValidateString(request.VariantDataType, "Variant Display Type", false, 2, true);
             attribute.VariantStatus = request.VariantStatus;
             attribute.AllowHtmlFlag = request.AllowHtmlFlag;
         }

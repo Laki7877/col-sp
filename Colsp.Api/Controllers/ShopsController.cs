@@ -425,7 +425,7 @@ namespace Colsp.Api.Controllers
                     if (sqlError == 2627)
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Category field is already exits");
+                           , "URL Key has already been used");
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);

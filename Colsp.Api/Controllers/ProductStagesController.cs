@@ -38,6 +38,8 @@ namespace Colsp.Api.Controllers
                           join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
                           from varJ in varJoin.DefaultIfEmpty()
                           join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
+                          let comm = db.ProductStageComments.Where(w=>w.Pid.Equals(stage.Pid)).OrderByDescending(o=>o.UpdatedDt).FirstOrDefault()
+                          let commVar = db.ProductStageComments.Where(w=>w.Pid.Equals(varJ.Pid)).OrderByDescending(o=>o.UpdatedDt).FirstOrDefault()
                           where stage.ShopId == shopId 
                           select new
                           {
@@ -51,7 +53,8 @@ namespace Colsp.Api.Controllers
                               Status = varJ != null ? varJ.Status : stage.Status,
                               MasterImg = proImgJoin.Select(s=>new ImageRequest{ ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o=>o.position),
                               VariantImg = varImgJoin.Select(s => new ImageRequest { ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o => o.position),
-                              IsVariant = varJ != null ? true : false
+                              IsVariant = varJ != null ? true : false,
+                              Comment = commVar != null ? commVar.Comment : commVar.Comment,
                           });
                 if(request == null)
                 {
@@ -303,6 +306,14 @@ namespace Colsp.Api.Controllers
                 stage.ShopId = shopId;
                 string masterPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                 stage.Pid = masterPid;
+                if (string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
+                {
+                    stage.UrlEn = stage.Pid;
+                }
+                else
+                {
+                    stage.UrlEn = request.SEO.ProductUrlKeyEn;
+                }
 
                 stage.OnlineFlag = false;
                 stage.Visibility = true;
@@ -1099,6 +1110,7 @@ namespace Colsp.Api.Controllers
                     varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
                     varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
                     varient.DefaultVariant = variantEntity.DefaultVaraint;
+                    varient.Display = variantEntity.Display;
                     #region Setup Variant Inventory
                     inventory = (from inv in db.Inventories
                                  where inv.Pid.Equals(variantEntity.Pid)
@@ -1184,6 +1196,7 @@ namespace Colsp.Api.Controllers
             {
                 throw new Exception("Invalid status");
             }
+            variant.Display = Validation.ValidateString(variantRq.Display, "Display", false, 20, true);
             variant.DimensionUnit = variantRq.DimensionUnit;
             variant.WeightUnit = variantRq.WeightUnit;
             variant.DefaultVaraint = variantRq.DefaultVariant;
@@ -1291,9 +1304,6 @@ namespace Colsp.Api.Controllers
             }
             stage.MetaTitle = Validation.ValidateString(request.SEO.MetaTitle, "Meta Title", false, 60, false);
             stage.MetaDescription = Validation.ValidateString(request.SEO.MetaDescription, "Meta Description", false, 150, false);
-            
-
-            stage.UrlEn = request.SEO.ProductUrlKeyEn;
             stage.UrlTh = request.SEO.ProductUrlKeyTh;
             stage.BoostWeight = request.SEO.ProductBoostingWeight;
             if (stage.BoostWeight != null 
@@ -1373,13 +1383,9 @@ namespace Colsp.Api.Controllers
             stage.Remark = Validation.ValidateString(request.Remark, "Remark", false, 2000, false);
 
             if(!string.IsNullOrEmpty(stage.ProductNameEn)
-                && string.IsNullOrEmpty(stage.ProductNameTh)
-                && string.IsNullOrEmpty(stage.ProductNameTh)
-                && stage.OriginalPrice != 0
-                && stage.PrepareDay != 0
-                && stage.Length != 0
-                && stage.Weight != 0
-                && stage.Width != 0)
+                && !string.IsNullOrEmpty(stage.ProductNameTh)
+                && !string.IsNullOrEmpty(stage.ProductNameTh)
+                )
             {
                 stage.InfoFlag = true;
             }
