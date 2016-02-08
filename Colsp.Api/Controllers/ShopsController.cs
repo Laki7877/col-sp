@@ -72,7 +72,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
         [Route("api/Shops/{shopId}")]
         [HttpGet]
         public HttpResponseMessage GetShop(int shopId)

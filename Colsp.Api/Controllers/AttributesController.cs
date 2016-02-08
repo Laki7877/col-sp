@@ -79,9 +79,9 @@ namespace Colsp.Api.Controllers
                 var response = PaginatedResponse.CreateResponse(pagedAttribute, request, total);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
-            catch
+            catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -100,7 +100,7 @@ namespace Colsp.Api.Controllers
             }
             catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
