@@ -202,6 +202,7 @@
     <Compile Include="Controllers\LocalCategoriesController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProductImagesController.cs" />
+    <Compile Include="Controllers\ProductReviewsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ProductStagesController.cs" />
     <Compile Include="Controllers\ShopsController.cs" />

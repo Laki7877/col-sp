@@ -138,6 +138,43 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Email" />
+          </Key>
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="PasswordHash" Type="varchar" MaxLength="60" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="200" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="200" />
+          <Property Name="Mobile" Type="varchar" MaxLength="30" />
+          <Property Name="IsFacebookConnect" Type="bit" Nullable="false" />
+          <Property Name="BirthDate" Type="smalldatetime" />
+          <Property Name="Gender" Type="tinyint" Nullable="false" />
+          <Property Name="CustId" Type="varchar" MaxLength="6" />
+          <Property Name="ProfileImage" Type="varchar(max)" Nullable="false" />
+          <Property Name="ForgotPasswordOn" Type="smalldatetime" />
+          <Property Name="VerifyKey" Type="varchar" MaxLength="100" />
+          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+          <Property Name="UpdateOn" Type="smalldatetime" />
+          <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+          <Property Name="ReceiveSms" Type="bit" Nullable="false" />
+          <Property Name="DefaultAddressId" Type="int" />
+          <Property Name="ListUserId" Type="varchar" MaxLength="36" />
+          <Property Name="GCListUserId" Type="varchar" MaxLength="36" />
+          <Property Name="ShippingAddressId" Type="int" />
+          <Property Name="T1CardNo" Type="varchar" MaxLength="10" />
+          <Property Name="TelephoneNo" Type="varchar" MaxLength="30" />
+          <Property Name="IsActivate" Type="bit" Nullable="false" />
+          <Property Name="Role" Type="int" Nullable="false" />
+          <Property Name="LastLoginDate" Type="smalldatetime" />
+          <Property Name="BranchID" Type="varchar" MaxLength="5" />
+          <Property Name="CustTaxID" Type="varchar" MaxLength="13" />
+          <Property Name="FacebookId" Type="varchar" MaxLength="30" />
+          <Property Name="CustT1CID" Type="varchar" MaxLength="36" />
+          <Property Name="Channel" Type="varchar" MaxLength="10" />
+        </EntityType>
         <EntityType Name="GlobalCategory">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -557,6 +594,7 @@
             <PropertyRef Name="ProudctReviewId" />
           </Key>
           <Property Name="ProudctReviewId" Type="int" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" />
           <Property Name="Rating" Type="decimal" Precision="3" Scale="1" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Comment" Type="nvarchar" MaxLength="500" />
@@ -1058,6 +1096,18 @@
             </Principal>
             <Dependent Role="ProductHistory">
               <PropertyRef Name="AttributeSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductReview_Email">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="ProductReview" Type="Self.ProductReview" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Email" />
+            </Principal>
+            <Dependent Role="ProductReview">
+              <PropertyRef Name="Email" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1882,6 +1932,7 @@
           <EntitySet Name="AttributeValueMap" EntityType="Self.AttributeValueMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryAbbrevation" EntityType="Self.GlobalCategoryAbbrevation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryPID" EntityType="Self.GlobalCategoryPID" Schema="dbo" store:Type="Tables" />
@@ -1946,6 +1997,10 @@
           <AssociationSet Name="FK_ProductHistory_AttributeSet" Association="Self.FK_ProductHistory_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
             <End Role="ProductHistory" EntitySet="ProductHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductReview_Email" Association="Self.FK_ProductReview_Email">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="ProductReview" EntitySet="ProductReview" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductStage_AttributeSet" Association="Self.FK_ProductStage_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
@@ -2225,6 +2280,7 @@
           <EntitySet Name="AttributeValueMaps" EntityType="ColspModel.AttributeValueMap" />
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
+          <EntitySet Name="Customers" EntityType="ColspModel.Customer" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
           <EntitySet Name="GlobalCategoryPIDs" EntityType="ColspModel.GlobalCategoryPID" />
@@ -2353,6 +2409,10 @@
           <AssociationSet Name="FKCategoryAttributeSetMapCategory" Association="ColspModel.FKCategoryAttributeSetMapCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="CategoryAttributeSetMap" EntitySet="CategoryAttributeSetMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductReview_Email" Association="ColspModel.FK_ProductReview_Email">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="ProductReview" EntitySet="ProductReviews" />
           </AssociationSet>
           <AssociationSet Name="FK_GlobalCategoryPID_GlobalCategory" Association="ColspModel.FK_GlobalCategoryPID_GlobalCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
@@ -2714,6 +2774,44 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FKCategoryAttributeSetMapAttributeSet" FromRole="CategoryAttributeSetMap" ToRole="AttributeSet" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKCategoryAttributeSetMapCategory" FromRole="CategoryAttributeSetMap" ToRole="GlobalCategory" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Email" />
+          </Key>
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Mobile" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="IsFacebookConnect" Type="Boolean" Nullable="false" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="Byte" Nullable="false" />
+          <Property Name="CustId" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="ProfileImage" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ForgotPasswordOn" Type="DateTime" Precision="0" />
+          <Property Name="VerifyKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="0" />
+          <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiveSms" Type="Boolean" Nullable="false" />
+          <Property Name="DefaultAddressId" Type="Int32" />
+          <Property Name="ListUserId" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="GCListUserId" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="ShippingAddressId" Type="Int32" />
+          <Property Name="T1CardNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TelephoneNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="IsActivate" Type="Boolean" Nullable="false" />
+          <Property Name="Role" Type="Int32" Nullable="false" />
+          <Property Name="LastLoginDate" Type="DateTime" Precision="0" />
+          <Property Name="BranchID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="CustTaxID" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="FacebookId" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CustT1CID" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="Channel" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ProductReviews" Relationship="ColspModel.FK_ProductReview_Email" FromRole="Customer" ToRole="ProductReview" />
         </EntityType>
         <EntityType Name="GlobalCategory">
           <Key>
@@ -3184,6 +3282,7 @@
             <PropertyRef Name="ProudctReviewId" />
           </Key>
           <Property Name="ProudctReviewId" Type="Int32" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Rating" Type="Decimal" Precision="3" Scale="1" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -3193,6 +3292,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Customer" Relationship="ColspModel.FK_ProductReview_Email" FromRole="ProductReview" ToRole="Customer" />
         </EntityType>
         <EntityType Name="ProductStage">
           <Key>
@@ -3942,6 +4042,18 @@
             </Principal>
             <Dependent Role="CategoryAttributeSetMap">
               <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductReview_Email">
+          <End Type="ColspModel.Customer" Role="Customer" Multiplicity="0..1" />
+          <End Type="ColspModel.ProductReview" Role="ProductReview" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Email" />
+            </Principal>
+            <Dependent Role="ProductReview">
+              <PropertyRef Name="Email" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4708,6 +4820,44 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="ColspModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="Channel" ColumnName="Channel" />
+                <ScalarProperty Name="CustT1CID" ColumnName="CustT1CID" />
+                <ScalarProperty Name="FacebookId" ColumnName="FacebookId" />
+                <ScalarProperty Name="CustTaxID" ColumnName="CustTaxID" />
+                <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+                <ScalarProperty Name="LastLoginDate" ColumnName="LastLoginDate" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="IsActivate" ColumnName="IsActivate" />
+                <ScalarProperty Name="TelephoneNo" ColumnName="TelephoneNo" />
+                <ScalarProperty Name="T1CardNo" ColumnName="T1CardNo" />
+                <ScalarProperty Name="ShippingAddressId" ColumnName="ShippingAddressId" />
+                <ScalarProperty Name="GCListUserId" ColumnName="GCListUserId" />
+                <ScalarProperty Name="ListUserId" ColumnName="ListUserId" />
+                <ScalarProperty Name="DefaultAddressId" ColumnName="DefaultAddressId" />
+                <ScalarProperty Name="ReceiveSms" ColumnName="ReceiveSms" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="VerifyKey" ColumnName="VerifyKey" />
+                <ScalarProperty Name="ForgotPasswordOn" ColumnName="ForgotPasswordOn" />
+                <ScalarProperty Name="ProfileImage" ColumnName="ProfileImage" />
+                <ScalarProperty Name="CustId" ColumnName="CustId" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="IsFacebookConnect" ColumnName="IsFacebookConnect" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="GlobalCategories">
             <EntityTypeMapping TypeName="ColspModel.GlobalCategory">
               <MappingFragment StoreEntitySet="GlobalCategory">
@@ -5146,6 +5296,7 @@
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="ProudctReviewId" ColumnName="ProudctReviewId" />
               </MappingFragment>
             </EntityTypeMapping>
