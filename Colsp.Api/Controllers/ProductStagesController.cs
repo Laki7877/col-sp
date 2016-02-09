@@ -38,6 +38,8 @@ namespace Colsp.Api.Controllers
                           join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
                           from varJ in varJoin.DefaultIfEmpty()
                           join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
+                          let comm = db.ProductStageComments.Where(w=>w.Pid.Equals(stage.Pid)).OrderByDescending(o=>o.UpdatedDt).FirstOrDefault()
+                          let commVar = db.ProductStageComments.Where(w=>w.Pid.Equals(varJ.Pid)).OrderByDescending(o=>o.UpdatedDt).FirstOrDefault()
                           where stage.ShopId == shopId 
                           select new
                           {
@@ -49,9 +51,10 @@ namespace Colsp.Api.Controllers
                               Pid = varJ != null ? varJ.Pid : stage.Pid,
                               VariantValue = varJ != null ? varJ.ValueEn1 + " , " + varJ.ValueEn2 : null,
                               Status = varJ != null ? varJ.Status : stage.Status,
-                              MasterImg = proImgJoin.Select(s=>new { s.ImageId, url = s.ImageUrlEn,s.Path,s.Position }).OrderBy(o=>o.Position),
-                              VariantImg = varImgJoin.Select(s => new { s.ImageId, url = s.ImageUrlEn,s.Path,s.Position }).OrderBy(o => o.Position),
-                              IsVariant = varJ != null ? true : false
+                              MasterImg = proImgJoin.Select(s=>new ImageRequest{ ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o=>o.position),
+                              VariantImg = varImgJoin.Select(s => new ImageRequest { ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o => o.position),
+                              IsVariant = varJ != null ? true : false,
+                              Comment = commVar != null ? commVar.Comment : commVar.Comment,
                           });
                 if(request == null)
                 {
@@ -70,10 +73,70 @@ namespace Colsp.Api.Controllers
                 {
                     products = products.Where(p => p.Pid.Equals(request.Pid));
                 }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+
+                    if (string.Equals("ImageMissing", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(w => w.MasterImg.Count() == 0 && w.VariantImg.Count() == 0);
+                    }
+                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
+                    }
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                    }
+                    else if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
+                    }
+                }
                 var total = products.Count();
                 var pagedProducts = products.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/All/Image")]
+        [HttpPut]
+        public HttpResponseMessage SaveChangeAllImage(List<VariantRequest> request)
+        {
+            try
+            {
+                if(request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                foreach(VariantRequest varRq in request)
+                {
+                    if(varRq.IsVariant == null)
+                    {
+                        throw new Exception("Invalid variant flag");
+                    }
+                    if (varRq.IsVariant.Value)
+                    {
+                        SaveChangeImg(db, varRq.Pid, shopId, varRq.VariantImg, this.User.UserRequest().Email);
+                    }
+                    else
+                    {
+                        SaveChangeImg(db, varRq.Pid, shopId, varRq.MasterImg, this.User.UserRequest().Email);
+                    }
+                    
+                }
+                db.SaveChanges();
+                return Request.CreateErrorResponse(HttpStatusCode.OK, "Save successful");
             }
             catch (Exception e)
             {
@@ -236,12 +299,21 @@ namespace Colsp.Api.Controllers
 
                 #region Setup Master Product
                 stage = new ProductStage();
-
+                
                 SetupProductStage(db,stage, request);
                 stage.Status = Constant.PRODUCT_STATUS_JUNK;
-                stage.ShopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                stage.ShopId = shopId;
                 string masterPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                 stage.Pid = masterPid;
+                if (string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
+                {
+                    stage.UrlEn = stage.Pid;
+                }
+                else
+                {
+                    stage.UrlEn = request.SEO.ProductUrlKeyEn;
+                }
 
                 stage.OnlineFlag = false;
                 stage.Visibility = true;
@@ -292,10 +364,10 @@ namespace Colsp.Api.Controllers
                 masterInventoryHist.CreatedDt = DateTime.Now;
                 db.InventoryHistories.Add(masterInventoryHist);
                 #endregion
-                stage.FeatureImgUrl = SetupImgEntity(db, request.MasterVariant.Images, masterPid, this.User.UserRequest().Email);
+                stage.FeatureImgUrl = SetupImgEntity(db, request.MasterVariant.Images, masterPid, shopId, this.User.UserRequest().Email);
                 stage.ImageFlag = stage.FeatureImgUrl == null ? false : true;
-                SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, this.User.UserRequest().Email);
-                SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, this.User.UserRequest().Email);
+                SetupImg360Entity(db, request.MasterVariant.Images360, masterPid, shopId, this.User.UserRequest().Email);
+                SetupVdoEntity(db, request.MasterVariant.VideoLinks, masterPid, shopId, this.User.UserRequest().Email);
                 #region Setup Related GlobalCategories
                 if (request.GlobalCategories != null)
                 {
@@ -337,6 +409,7 @@ namespace Colsp.Api.Controllers
                         ProductStageRelated relate = new ProductStageRelated();
                         relate.Pid1 = masterPid;
                         relate.Pid2 = pro.Pid;
+                        relate.ShopId = shopId;
                         relate.CreatedBy = this.User.UserRequest().Email;
                         relate.CreatedDt = DateTime.Now;
                         relate.UpdatedBy = this.User.UserRequest().Email;
@@ -405,8 +478,8 @@ namespace Colsp.Api.Controllers
                         db.InventoryHistories.Add(masterInventoryHist);
                         #endregion
 
-                        SetupImgEntity(db, variantRq.Images, variantPid, this.User.UserRequest().Email);
-                        SetupVdoEntity(db, variantRq.VideoLinks, variantPid, this.User.UserRequest().Email);
+                        SetupImgEntity(db, variantRq.Images, variantPid, shopId, this.User.UserRequest().Email);
+                        SetupVdoEntity(db, variantRq.VideoLinks, variantPid, shopId, this.User.UserRequest().Email);
                         SetupProductStageVariant(variant, variantRq);
                         variant.ShopId = stage.ShopId;
                         variant.CreatedBy = this.User.UserRequest().Email;
@@ -530,11 +603,11 @@ namespace Colsp.Api.Controllers
                     #endregion
                     SaveChangeInventory(db, stage.Pid, request.MasterVariant, this.User.UserRequest().Email);
                     SaveChangeInventoryHistory(db, stage.Pid, request.MasterVariant, this.User.UserRequest().Email);
-                    stage.FeatureImgUrl = SaveChangeImg(db, stage.Pid, request.MasterVariant.Images, this.User.UserRequest().Email);
+                    stage.FeatureImgUrl = SaveChangeImg(db, stage.Pid, shopId, request.MasterVariant.Images, this.User.UserRequest().Email);
                     stage.ImageFlag = stage.FeatureImgUrl == null ? false : true;
-                    SaveChangeImg360(db, stage.Pid, request.MasterVariant.Images360, this.User.UserRequest().Email);
-                    SaveChangeVideoLinks(db, stage.Pid, request.MasterVariant.VideoLinks, this.User.UserRequest().Email);
-                    SaveChangeRelatedProduct(db, stage.Pid, request.RelatedProducts, this.User.UserRequest().Email);
+                    SaveChangeImg360(db, stage.Pid, shopId, request.MasterVariant.Images360, this.User.UserRequest().Email);
+                    SaveChangeVideoLinks(db, stage.Pid, shopId, request.MasterVariant.VideoLinks, this.User.UserRequest().Email);
+                    SaveChangeRelatedProduct(db, stage.Pid, shopId, request.RelatedProducts, this.User.UserRequest().Email);
                     SaveChangeGlobalCat(db, stage.ProductId, request.GlobalCategories, this.User.UserRequest().Email);
                     SaveChangeLocalCat(db, stage.ProductId, request.LocalCategories, this.User.UserRequest().Email);
                     #endregion
@@ -594,8 +667,8 @@ namespace Colsp.Api.Controllers
 
                         SaveChangeInventory(db, current.Pid, var, this.User.UserRequest().Email);
                         SaveChangeInventoryHistory(db, current.Pid, var, this.User.UserRequest().Email);
-                        SaveChangeImg(db, current.Pid, var.Images, this.User.UserRequest().Email);
-                        SaveChangeVideoLinks(db, current.Pid, var.VideoLinks, this.User.UserRequest().Email);
+                        SaveChangeImg(db, current.Pid, shopId, var.Images, this.User.UserRequest().Email);
+                        SaveChangeVideoLinks(db, current.Pid, shopId, var.VideoLinks, this.User.UserRequest().Email);
                         current.Status = stage.Status;
                         SetupProductStageVariant(current, var);
                         current.UpdatedBy = this.User.UserRequest().Email;
@@ -634,14 +707,19 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var proList = db.ProductStages.ToList();
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var productList = db.ProductStages.Where(w => w.ShopId == shopId).ToList();
+                if(productList == null || productList.Count == 0)
+                {
+                    throw new Exception("No product found in this shop");
+                }
                 foreach (ProductStageRequest proRq in request)
                 {
 
-                    var current = proList.Where(w => w.ProductId.Equals(proRq.ProductId)).SingleOrDefault();
+                    var current = productList.Where(w => w.ProductId.Equals(proRq.ProductId)).SingleOrDefault();
                     if (current == null)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                        throw new Exception("Cannot find product " + proRq.ProductId + " in shop " + shopId);
                     }
                     current.Visibility = proRq.Visibility.Value;
                 }
@@ -1032,6 +1110,7 @@ namespace Colsp.Api.Controllers
                     varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
                     varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
                     varient.DefaultVariant = variantEntity.DefaultVaraint;
+                    varient.Display = variantEntity.Display;
                     #region Setup Variant Inventory
                     inventory = (from inv in db.Inventories
                                  where inv.Pid.Equals(variantEntity.Pid)
@@ -1117,6 +1196,7 @@ namespace Colsp.Api.Controllers
             {
                 throw new Exception("Invalid status");
             }
+            variant.Display = Validation.ValidateString(variantRq.Display, "Display", false, 20, true);
             variant.DimensionUnit = variantRq.DimensionUnit;
             variant.WeightUnit = variantRq.WeightUnit;
             variant.DefaultVaraint = variantRq.DefaultVariant;
@@ -1224,9 +1304,6 @@ namespace Colsp.Api.Controllers
             }
             stage.MetaTitle = Validation.ValidateString(request.SEO.MetaTitle, "Meta Title", false, 60, false);
             stage.MetaDescription = Validation.ValidateString(request.SEO.MetaDescription, "Meta Description", false, 150, false);
-            
-
-            stage.UrlEn = request.SEO.ProductUrlKeyEn;
             stage.UrlTh = request.SEO.ProductUrlKeyTh;
             stage.BoostWeight = request.SEO.ProductBoostingWeight;
             if (stage.BoostWeight != null 
@@ -1303,8 +1380,19 @@ namespace Colsp.Api.Controllers
                 stage.ExpiryTime = null;
             }
             #endregion
-            
             stage.Remark = Validation.ValidateString(request.Remark, "Remark", false, 2000, false);
+
+            if(!string.IsNullOrEmpty(stage.ProductNameEn)
+                && !string.IsNullOrEmpty(stage.ProductNameTh)
+                && !string.IsNullOrEmpty(stage.ProductNameTh)
+                )
+            {
+                stage.InfoFlag = true;
+            }
+            else
+            {
+                stage.InfoFlag = false;
+            }
         }
 
         private void SaveChangeInventoryHistory(ColspEntities db, string pid, VariantRequest variant, string email)
@@ -1454,9 +1542,9 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeRelatedProduct(ColspEntities db, string pid, List<VariantRequest> pidList, string email)
+        private void SaveChangeRelatedProduct(ColspEntities db, string pid, int shopId, List<VariantRequest> pidList, string email)
         {
-            var relateList = db.ProductStageRelateds.Where(w => w.Pid1 == pid).ToList();
+            var relateList = db.ProductStageRelateds.Where(w => w.Pid1 == pid && w.ShopId== shopId).ToList();
             if (relateList != null)
             {
                 foreach (var pro in pidList)
@@ -1485,6 +1573,7 @@ namespace Colsp.Api.Controllers
                         ProductStageRelated proEntity = new ProductStageRelated();
                         proEntity.Pid1 = pid;
                         proEntity.Pid2 = pro.Pid;
+                        proEntity.ShopId = shopId;
                         proEntity.Status = Constant.STATUS_ACTIVE;
                         proEntity.CreatedBy = email;
                         proEntity.CreatedDt = DateTime.Now;
@@ -1500,9 +1589,9 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeVideoLinks(ColspEntities db, string pid, List<VideoLinkRequest> videoRequest, string email)
+        private void SaveChangeVideoLinks(ColspEntities db, string pid, int shopId, List<VideoLinkRequest> videoRequest, string email)
         {
-            var vdoList = db.ProductStageVideos.Where(w => w.Pid.Equals(pid)).ToList();
+            var vdoList = db.ProductStageVideos.Where(w => w.Pid.Equals(pid) && w.ShopId == shopId).ToList();
             if (videoRequest != null)
             {
                 int index = 0;
@@ -1533,6 +1622,7 @@ namespace Colsp.Api.Controllers
                     {
                         ProductStageVideo vdoEntity = new ProductStageVideo();
                         vdoEntity.Pid = pid;
+                        vdoEntity.ShopId = shopId;
                         vdoEntity.Position = index++;
                         vdoEntity.VideoUrlEn = vdo.Url;
                         vdoEntity.Status = Constant.STATUS_ACTIVE;
@@ -1550,9 +1640,9 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SaveChangeImg360(ColspEntities db, string pid, List<ImageRequest> img360Request, string email)
+        private void SaveChangeImg360(ColspEntities db, string pid, int shopId, List<ImageRequest> img360Request, string email)
         {
-            var img360List = db.ProductStageImage360.Where(w => w.Pid.Equals(pid)).ToList();
+            var img360List = db.ProductStageImage360.Where(w => w.Pid.Equals(pid) && w.ShopId == shopId).ToList();
             if (img360Request != null)
             {
                 int index = 0;
@@ -1582,6 +1672,7 @@ namespace Colsp.Api.Controllers
                     {
                         ProductStageImage360 imgEntity = new ProductStageImage360();
                         imgEntity.Pid = pid;
+                        imgEntity.ShopId = shopId;
                         imgEntity.Position = index++;
                         imgEntity.Path = img.tmpPath;
                         imgEntity.ImageUrlEn = img.url;
@@ -1600,10 +1691,10 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private string SaveChangeImg(ColspEntities db, string pid, List<ImageRequest> imgRequest, string email)
+        private string SaveChangeImg(ColspEntities db, string pid, int shopId, List<ImageRequest> imgRequest, string email)
         {
             
-            var imgList = db.ProductStageImages.Where(w => w.Pid.Equals(pid)).ToList();
+            var imgList = db.ProductStageImages.Where(w => w.Pid.Equals(pid) && w.ShopId == shopId).ToList();
             bool featureImg = true;
             string featureImgUrl = null;
             if (imgRequest != null && imgRequest.Count > 0)
@@ -1636,6 +1727,7 @@ namespace Colsp.Api.Controllers
                     {
                         ProductStageImage imgEntity = new ProductStageImage();
                         imgEntity.Pid = pid;
+                        imgEntity.ShopId = shopId;
                         imgEntity.FeatureFlag = featureImg;
                         imgEntity.Position = index++;
                         imgEntity.Path = img.tmpPath;
@@ -1796,7 +1888,7 @@ namespace Colsp.Api.Controllers
 
         }
 
-        private string SetupImgEntity(ColspEntities db, List<ImageRequest> imgs, string pid, string email)
+        private string SetupImgEntity(ColspEntities db, List<ImageRequest> imgs, string pid,int shopId, string email)
         {
             if (imgs == null || imgs.Count == 0) { return null; }
             string featureImgUrl = imgs[0].url;
@@ -1806,6 +1898,7 @@ namespace Colsp.Api.Controllers
             {
                 ProductStageImage img = new ProductStageImage();
                 img.Pid = pid;
+                img.ShopId = shopId;
                 img.Position = index++;
                 img.FeatureFlag = featureImg;
                 featureImg = false;
@@ -1821,7 +1914,7 @@ namespace Colsp.Api.Controllers
             return featureImgUrl;
         }
 
-        private void SetupImg360Entity(ColspEntities db, List<ImageRequest> imgs, string pid, string email)
+        private void SetupImg360Entity(ColspEntities db, List<ImageRequest> imgs, string pid, int shopId, string email)
         {
             if (imgs == null) { return; }
             int index = 0;
@@ -1830,6 +1923,7 @@ namespace Colsp.Api.Controllers
             {
                 ProductStageImage360 img = new ProductStageImage360();
                 img.Pid = pid;
+                img.ShopId = shopId;
                 img.Position = index++;
                 img.FeatureFlag = featureImg;
                 featureImg = false;
@@ -1844,7 +1938,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupVdoEntity(ColspEntities db, List<VideoLinkRequest> vdos, string pid, string email)
+        private void SetupVdoEntity(ColspEntities db, List<VideoLinkRequest> vdos, string pid, int shopId, string email)
         {
             if (vdos == null) { return; }
             int index = 0;
@@ -1852,6 +1946,7 @@ namespace Colsp.Api.Controllers
             {
                 ProductStageVideo vdo = new ProductStageVideo();
                 vdo.Pid = pid;
+                vdo.ShopId = shopId;
                 vdo.Position = index++;
                 vdo.VideoUrlEn = vdoRq.Url;
                 vdo.Status = Constant.STATUS_ACTIVE;

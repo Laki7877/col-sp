@@ -67,6 +67,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
         public virtual DbSet<ProductStageAttribute> ProductStageAttributes { get; set; }
+        public virtual DbSet<ProductStageComment> ProductStageComments { get; set; }
         public virtual DbSet<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
         public virtual DbSet<ProductStageImage> ProductStageImages { get; set; }
         public virtual DbSet<ProductStageImage360> ProductStageImage360 { get; set; }

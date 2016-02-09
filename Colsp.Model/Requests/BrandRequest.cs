@@ -20,6 +20,8 @@ namespace Colsp.Model.Requests
         public SEORequest SEO { get; set; }
         public override void DefaultOnNull()
         {
+            BrandImage = new ImageRequest();
+            SEO = new SEORequest();
             BrandId = GetValueOrDefault(BrandId, null);
             SearchText = GetValueOrDefault(SearchText, null);
             _order = GetValueOrDefault(_order, "BrandId");

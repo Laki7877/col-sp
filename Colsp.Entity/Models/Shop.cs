@@ -21,7 +21,11 @@ namespace Colsp.Entity.Models
             this.Products = new HashSet<Product>();
             this.ProductHistories = new HashSet<ProductHistory>();
             this.ProductStages = new HashSet<ProductStage>();
+            this.ProductStageImages = new HashSet<ProductStageImage>();
+            this.ProductStageImage360 = new HashSet<ProductStageImage360>();
+            this.ProductStageRelateds = new HashSet<ProductStageRelated>();
             this.ProductStageVariants = new HashSet<ProductStageVariant>();
+            this.ProductStageVideos = new HashSet<ProductStageVideo>();
             this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
             this.UserShops = new HashSet<UserShop>();
         }
@@ -49,7 +53,15 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStage> ProductStages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageImage> ProductStageImages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageImage360> ProductStageImage360 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageRelated> ProductStageRelateds { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVariant> ProductStageVariants { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
         public virtual ShopType ShopType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }

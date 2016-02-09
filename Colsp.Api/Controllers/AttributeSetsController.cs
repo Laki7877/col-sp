@@ -11,6 +11,9 @@ using Colsp.Model.Responses;
 using System;
 using System.Data.Entity;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data.Entity.Infrastructure;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -123,22 +126,13 @@ namespace Colsp.Api.Controllers
             try
             {
                 set = new AttributeSet();
-                set.AttributeSetNameEn = request.AttributeSetNameEn;
-                set.AttributeSetNameTh = request.AttributeSetNameTh;
-                set.AttributeSetDescriptionEn = request.AttributeSetDescriptionEn;
-                set.AttributeSetDescriptionTh = request.AttributeSetDescriptionTh;
-                #region Validation
-                if (string.IsNullOrEmpty(set.AttributeSetNameEn))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameEn is required");
-                }
-                #endregion
-                set.Visibility = request.Visibility;
+                SetupAttributeSet(set, request);
                 set.Status = Constant.STATUS_ACTIVE;
                 set.CreatedBy = this.User.UserRequest().Email;
                 set.CreatedDt = DateTime.Now;
                 set.UpdatedBy = this.User.UserRequest().Email;
                 set.UpdatedDt = DateTime.Now;
+               
                 set = db.AttributeSets.Add(set);
                 db.SaveChanges();
                 if(request.Attributes != null && request.Attributes.Count > 0)
@@ -190,12 +184,24 @@ namespace Colsp.Api.Controllers
                 db.SaveChanges();
                 return GetAttributeSets(set.AttributeSetId);
             }
-            catch
+            catch(DbUpdateException e)
             {
-                db.Dispose();
-                db = new ColspEntities();
+                if(e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if(sqlError == 2627)
+                    {
+
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "This attribute set name has already been used");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+            catch (Exception e)
+            {
                 #region Rollback
-                if (set != null)
+                if (set != null && set.AttributeSetId != 0)
                 {
                     if (tagList != null && tagList.Count > 0)
                     {
@@ -205,7 +211,7 @@ namespace Colsp.Api.Controllers
                     db.SaveChanges();
                 }
                 #endregion
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -228,21 +234,10 @@ namespace Colsp.Api.Controllers
                     .SingleOrDefault();
                 if(attrSet != null)
                 {
-                    attrSet.AttributeSetNameEn = request.AttributeSetNameEn;
-                    attrSet.AttributeSetNameTh = request.AttributeSetNameTh;
-                    attrSet.AttributeSetDescriptionEn = request.AttributeSetDescriptionEn;
-                    attrSet.AttributeSetDescriptionTh = request.AttributeSetDescriptionTh;
-                    #region Validation
-                    if (string.IsNullOrEmpty(attrSet.AttributeSetNameEn))
-                    {
-                        return Request.CreateResponse(HttpStatusCode.NotAcceptable, "AttributeSetNameEn is required");
-                    }
-                    #endregion
-                    attrSet.Visibility = request.Visibility;
+                    SetupAttributeSet(attrSet, request);
                     attrSet.Status = Constant.STATUS_ACTIVE;
                     attrSet.UpdatedBy = this.User.UserRequest().Email;
                     attrSet.UpdatedDt = DateTime.Now;
-
                     List<AttributeSetMap> mapList =  attrSet.AttributeSetMaps.ToList();
                     if(request.Attributes != null && request.Attributes.Count > 0)
                     {
@@ -294,8 +289,7 @@ namespace Colsp.Api.Controllers
                                 || (map.Attribute.ProductStageVariants != null && map.Attribute.ProductStageVariants.Count > 0)
                                 || (map.Attribute.ProductStageVariants1 != null && map.Attribute.ProductStageVariants1.Count > 0))
                             {
-                                db.Dispose();
-                                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete attribute maping " + map.Attribute.AttributeNameEn + " in attribute set " + attrSet.AttributeSetNameEn + " with product associated");
+                                throw new Exception("Cannot delete attribute maping " + map.Attribute.AttributeNameEn + " in attribute set " + attrSet.AttributeSetNameEn + " with product associated");
                             }
                         }
                         db.AttributeSetMaps.RemoveRange(mapList);
@@ -339,12 +333,26 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    throw new Exception("Cannot find attribute set " + attributeSetId);
                 }
+            }
+            catch (DbUpdateException e)
+            {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                            , "This attribute set name has already been used");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -457,6 +465,15 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
+        }
+
+        private void SetupAttributeSet(AttributeSet set, AttributeSetRequest request)
+        {
+            set.AttributeSetNameEn = Validation.ValidateString(request.AttributeSetNameEn, "Attribute Set Name (English)", true, 100, true);
+            set.AttributeSetNameTh = Validation.ValidateString(request.AttributeSetNameTh, "Attribute Set Name (Thai)", false, 100, true);
+            set.AttributeSetDescriptionEn = request.AttributeSetDescriptionEn;
+            set.AttributeSetDescriptionTh = request.AttributeSetDescriptionTh;
+            set.Visibility = request.Visibility;
         }
 
         private AttributeSetRequest GetAttributeSetResponse(ColspEntities db, int attributeSetId)

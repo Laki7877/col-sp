@@ -497,7 +497,7 @@ namespace Colsp.Api.Controllers
                 claim.Permission = claimsIdentity.Claims
                     .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
                 claim.Shop = this.User.ShopRequest();
-                claim.User = new { Email = this.User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
+                claim.User = new { NameEn = this.User.UserRequest().NameEn , Email = this.User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
                 return Request.CreateResponse(HttpStatusCode.OK, claim);
             }
             catch (Exception e)
@@ -628,6 +628,32 @@ namespace Colsp.Api.Controllers
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 Cache.Add(Request.Headers.Authorization.Parameter, principal);
                 return Request.CreateResponse(HttpStatusCode.OK, claimRq);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Users/ChangePassword")]
+        [HttpPost]
+        public HttpResponseMessage ChangePassword(UserRequest request)
+        {
+            try
+            {
+                string email = this.User.UserRequest().Email;
+                var userList = db.Users.Where(w => w.Email.Equals(email) && w.Password.Equals(request.OldPassword)).ToList();
+                if(userList == null || userList.Count == 0)
+                {
+                    throw new Exception("User and password not match");
+                }
+                if (string.IsNullOrEmpty(request.Password))
+                {
+                    throw new Exception("Password cannot be empty");
+                }
+                userList[0].Password = request.Password;
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {

@@ -29,6 +29,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> SellerId { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
+        public string Display { get; set; }
         public Nullable<decimal> OriginalPrice { get; set; }
         public Nullable<decimal> SalePrice { get; set; }
         public string DescriptionFullEn { get; set; }

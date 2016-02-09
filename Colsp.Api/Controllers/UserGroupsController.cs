@@ -38,7 +38,7 @@ namespace Colsp.Api.Controllers
                         s.GroupNameEn,
                         s.GroupNameTh,
                         s.UpdatedDt,
-                        Permission = s.UserGroupPermissionMaps.Select(p => new { p.Permission.PermissionId, p.Permission.PermissionName }),
+                        //Permission = s.UserGroupPermissionMaps.Select(p => new { p.Permission.PermissionId, p.Permission.PermissionName }),
                         UserCount = s.UserGroupMaps.Count
                     });
                 if (request == null)
@@ -71,7 +71,7 @@ namespace Colsp.Api.Controllers
                 int shopId = this.User.ShopRequest().ShopId.Value;
                 var usrGrp = db.UserGroups.Include(i => i.UserGroupPermissionMaps.Select(s => s.Permission))
                     .Where(w => w.GroupId == usergroupid && !w.Status.Equals(Constant.STATUS_REMOVE) 
-                        && w.Type.Equals(Constant.USER_TYPE_ADMIN)
+                        && w.Type.Equals(Constant.USER_TYPE_SELLER)
                         && w.ShopUserGroupMaps.Any(a => a.ShopId == shopId))
                     .Select(s => new {
                         s.GroupId,
@@ -93,7 +93,7 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Seller")]
         [HttpPost]
-        public HttpResponseMessage AddUserSeller(UserGroupRequest request)
+        public HttpResponseMessage AddUserGroupSeller(UserGroupRequest request)
         {
             UserGroup usrGrp = null;
             try
@@ -102,7 +102,7 @@ namespace Colsp.Api.Controllers
                 usrGrp.GroupNameEn = request.GroupNameEn;
                 usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.Status = Constant.STATUS_ACTIVE;
-                usrGrp.Type = Constant.USER_TYPE_ADMIN;
+                usrGrp.Type = Constant.USER_TYPE_SELLER;
                 usrGrp.CreatedBy = this.User.UserRequest().Email;
                 usrGrp.CreatedDt = DateTime.Now;
                 usrGrp.UpdatedBy = this.User.UserRequest().Email;
@@ -156,6 +156,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                var shopId = this.User.ShopRequest().ShopId;
+                var tmp = db.UserGroups.Where(w => w.GroupId == usergroupid && w.ShopUserGroupMaps.Any(a => a.ShopId == shopId)).SingleOrDefault();
                 var usrGrp = db.UserGroups.Find(usergroupid);
                 if (usrGrp == null || usrGrp.Status.Equals(Constant.STATUS_REMOVE))
                 {
@@ -228,7 +230,7 @@ namespace Colsp.Api.Controllers
                     s.GroupNameEn,
                     s.GroupNameTh,
                     s.UpdatedDt,
-                    Permission = s.UserGroupPermissionMaps.Select(p=>new { p.Permission.PermissionId, p.Permission.PermissionName }),
+                    //Permission = s.UserGroupPermissionMaps.Select(p=>new { p.Permission.PermissionId, p.Permission.PermissionName }),
                     UserCount = s.UserGroupMaps.Count
                 });
                 if (request == null)
