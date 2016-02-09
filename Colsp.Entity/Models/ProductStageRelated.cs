@@ -16,10 +16,13 @@ namespace Colsp.Entity.Models
     {
         public string Pid1 { get; set; }
         public string Pid2 { get; set; }
+        public Nullable<int> ShopId { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
+    
+        public virtual Shop Shop { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace Colsp.Entity.Models
     {
         public int ImageId { get; set; }
         public string Pid { get; set; }
+        public Nullable<int> ShopId { get; set; }
         public string Path { get; set; }
         public string ImageName { get; set; }
         public string ImageOriginName { get; set; }
@@ -28,5 +29,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
+    
+        public virtual Shop Shop { get; set; }
     }
 }
