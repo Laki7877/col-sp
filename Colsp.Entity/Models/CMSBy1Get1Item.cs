@@ -11,7 +11,7 @@ namespace Colsp.Entity.Models
 {
     using System;
     using System.Collections.Generic;
-    //test
+    
     public partial class CMSBy1Get1Item
     {
         public int CMSBy1Get1ItemId { get; set; }

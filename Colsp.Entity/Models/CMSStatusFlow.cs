@@ -11,11 +11,12 @@ namespace Colsp.Entity.Models
 {
     using System;
     using System.Collections.Generic;
-    //test
+    
     public partial class CMSStatusFlow
     {
         public int CMSStatusId { get; set; }
-        public string CMSStatusName { get; set; }
+        public string CMSStatusNameEH { get; set; }
+        public string CMSStatusNameTH { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }

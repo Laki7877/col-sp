@@ -11,7 +11,7 @@ namespace Colsp.Entity.Models
 {
     using System;
     using System.Collections.Generic;
-    //test
+    
     public partial class CMSType
     {
         public int CMSTypeId { get; set; }
