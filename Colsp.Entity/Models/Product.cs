@@ -19,14 +19,12 @@ namespace Colsp.Entity.Models
         {
             this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
             this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
-            this.ProductVariants = new HashSet<ProductVariant>();
         }
     
         public int ProductId { get; set; }
         public Nullable<int> GlobalCatId { get; set; }
         public Nullable<int> LocalCatId { get; set; }
-        public Nullable<int> ShopId { get; set; }
-        public Nullable<int> SellerId { get; set; }
+        public int ShopId { get; set; }
         public Nullable<int> AttributeSetId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
@@ -34,7 +32,7 @@ namespace Colsp.Entity.Models
         public string Pid { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
-        public Nullable<decimal> OriginalPrice { get; set; }
+        public decimal OriginalPrice { get; set; }
         public Nullable<decimal> SalePrice { get; set; }
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortEn { get; set; }
@@ -45,19 +43,19 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShippingId { get; set; }
         public string FeatureImgUrl { get; set; }
         public string Tag { get; set; }
-        public Nullable<decimal> PrepareDay { get; set; }
-        public Nullable<decimal> Length { get; set; }
-        public Nullable<decimal> Height { get; set; }
-        public Nullable<decimal> Width { get; set; }
+        public decimal PrepareDay { get; set; }
+        public decimal Length { get; set; }
+        public decimal Height { get; set; }
+        public decimal Width { get; set; }
         public string DimensionUnit { get; set; }
-        public Nullable<decimal> Weight { get; set; }
+        public decimal Weight { get; set; }
         public string WeightUnit { get; set; }
         public string MetaTitle { get; set; }
         public string MetaDescription { get; set; }
         public string MetaKey { get; set; }
         public string UrlEn { get; set; }
         public string UrlTh { get; set; }
-        public string BoostWeight { get; set; }
+        public Nullable<int> BoostWeight { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<System.TimeSpan> EffectiveTime { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
@@ -66,10 +64,10 @@ namespace Colsp.Entity.Models
         public Nullable<bool> ControlFlag2 { get; set; }
         public Nullable<bool> ControlFlag3 { get; set; }
         public string Remark { get; set; }
-        public Nullable<bool> InfoFlag { get; set; }
-        public Nullable<bool> ImageFlag { get; set; }
-        public Nullable<bool> OnlineFlag { get; set; }
-        public Nullable<bool> Visibility { get; set; }
+        public bool InfoFlag { get; set; }
+        public bool ImageFlag { get; set; }
+        public bool OnlineFlag { get; set; }
+        public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
@@ -86,8 +84,5 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
         public virtual Shipping Shipping { get; set; }
         public virtual Shop Shop { get; set; }
-        public virtual User User { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductVariant> ProductVariants { get; set; }
     }
 }
