@@ -661,6 +661,21 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/Users/Logout")]
+        [HttpGet]
+        public HttpResponseMessage Logout()
+        {
+            try
+            {
+                Cache.Delete(Request.Headers.Authorization.Parameter);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

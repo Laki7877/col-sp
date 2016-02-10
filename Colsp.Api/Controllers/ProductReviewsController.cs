@@ -26,29 +26,28 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = this.User.ShopRequest().ShopId;
-                var review = from rev in db.ProductReviews
-                             join stage in db.ProductStages on rev.Pid equals stage.Pid into mastJoin
+                var review = (from rev in db.ProductReviews
+                              join cus in db.Customers on rev.CustomerId equals cus.CustomerId into cusJoin
+                              from cus in cusJoin.DefaultIfEmpty()
+                              join stage in db.ProductStages on rev.Pid equals stage.Pid into mastJoin
                              from mast in mastJoin.DefaultIfEmpty()
-                             join variant in db.ProductStageVariants on rev.Pid equals variant.Pid into varJoin
+                             join variant in db.ProductStageVariants on new { rev.Pid, ShopId = shopId } equals new { variant.Pid, variant.ShopId } into varJoin
                              from vari in varJoin.DefaultIfEmpty()
-                             where stage
-
-                            (from stage in db.ProductStages
-                             let rev = db.ProductReviews.Where(w => w.Pid.Equals(stage.Pid)).FirstOrDefault()
-                             join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
-                             from varJ in varJoin.DefaultIfEmpty()
-                             let varInv = db.ProductReviews.Where(w => w.Pid.Equals(varJ.Pid)).FirstOrDefault()
-                             where stage.ShopId == shopId
                              select new
                              {
-                                 stage.ProductId,
-                                 Sku = varJ != null ? varJ.Sku : stage.Sku,
-                                 Upc = varJ != null ? varJ.Upc : stage.Upc,
-                                 Pid = varJ != null ? varJ.Pid : stage.Pid,
-                                 ProductNameEn = varJ != null ? varJ.ProductNameEn : stage.ProductNameEn,
-                                 ProductNameTh = varJ != null ? varJ.ProductNameTh : stage.ProductNameTh,
-                                 Status = varJ != null ? varJ.Status : stage.Status,
-                                 Review = rev != null ? rev : varInv
+                                 ProductId = mast != null ? mast.ProductId : vari.ProductId,
+                                 Sku = vari != null ? vari.Sku : mast.Sku,
+                                 Upc = vari != null ? vari.Upc : mast.Upc,
+                                 Pid = vari != null ? vari.Pid : mast.Pid,
+                                 ProductNameEn = vari != null ? vari.ProductNameEn : mast.ProductNameEn,
+                                 ProductNameTh = vari != null ? vari.ProductNameTh : mast.ProductNameTh,
+                                 ProductStatus = vari != null ? vari.Status : mast.Status,
+                                 rev.ProudctReviewId,
+                                 rev.Rating,
+                                 ReviewStatus = rev.Status,
+                                 cus.CustomerId,
+                                 Customer = cus.FirstName + cus.LastName,
+                                 rev.UpdatedDt
                              });
                 if (request == null)
                 {

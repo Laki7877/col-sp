@@ -14,15 +14,21 @@ namespace Colsp.Entity.Models
     
     public partial class ProductVariant
     {
-        public int ProductId { get; set; }
         public int VariantId { get; set; }
-        public string ValueEn { get; set; }
-        public string ValueTh { get; set; }
+        public int ProductId { get; set; }
+        public Nullable<int> Attribute1Id { get; set; }
+        public Nullable<int> Attribute2Id { get; set; }
+        public string ValueEn1 { get; set; }
+        public string ValueTh1 { get; set; }
+        public string ValueEn2 { get; set; }
+        public string ValueTh2 { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public string Pid { get; set; }
+        public Nullable<int> ShopId { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
+        public string Display { get; set; }
         public Nullable<decimal> OriginalPrice { get; set; }
         public Nullable<decimal> SalePrice { get; set; }
         public string DescriptionFullEn { get; set; }
@@ -33,12 +39,14 @@ namespace Colsp.Entity.Models
         public Nullable<int> SaftyStock { get; set; }
         public string VideoLink { get; set; }
         public string ShippingMethod { get; set; }
-        public Nullable<decimal> Length { get; set; }
-        public Nullable<decimal> Height { get; set; }
-        public Nullable<decimal> Width { get; set; }
-        public string DimenstionUnit { get; set; }
-        public Nullable<decimal> Weight { get; set; }
-        public Nullable<decimal> DimenstionWeight { get; set; }
+        public decimal Length { get; set; }
+        public decimal Height { get; set; }
+        public decimal Width { get; set; }
+        public string DimensionUnit { get; set; }
+        public decimal Weight { get; set; }
+        public string WeightUnit { get; set; }
+        public Nullable<bool> DefaultVaraint { get; set; }
+        public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
@@ -46,6 +54,8 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         public virtual Attribute Attribute { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual Attribute Attribute1 { get; set; }
+        public virtual ProductStage ProductStage { get; set; }
+        public virtual Shop Shop { get; set; }
     }
 }
