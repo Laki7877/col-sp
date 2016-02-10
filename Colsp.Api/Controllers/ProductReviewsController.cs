@@ -26,7 +26,14 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = this.User.ShopRequest().ShopId;
-                var review = (from stage in db.ProductStages
+                var review = from rev in db.ProductReviews
+                             join stage in db.ProductStages on rev.Pid equals stage.Pid into mastJoin
+                             from mast in mastJoin.DefaultIfEmpty()
+                             join variant in db.ProductStageVariants on rev.Pid equals variant.Pid into varJoin
+                             from vari in varJoin.DefaultIfEmpty()
+                             where stage
+
+                            (from stage in db.ProductStages
                              let rev = db.ProductReviews.Where(w => w.Pid.Equals(stage.Pid)).FirstOrDefault()
                              join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
                              from varJ in varJoin.DefaultIfEmpty()

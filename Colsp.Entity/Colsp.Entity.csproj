@@ -177,6 +177,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ColspModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Customer.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GlobalCategory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

@@ -593,12 +593,11 @@
           <Key>
             <PropertyRef Name="ProudctReviewId" />
           </Key>
-          <Property Name="ProudctReviewId" Type="int" Nullable="false" />
+          <Property Name="ProudctReviewId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Email" Type="varchar" MaxLength="100" />
           <Property Name="Rating" Type="decimal" Precision="3" Scale="1" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Comment" Type="nvarchar" MaxLength="500" />
-          <Property Name="BuyerId" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -3281,12 +3280,11 @@
           <Key>
             <PropertyRef Name="ProudctReviewId" />
           </Key>
-          <Property Name="ProudctReviewId" Type="Int32" Nullable="false" />
+          <Property Name="ProudctReviewId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Rating" Type="Decimal" Precision="3" Scale="1" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="BuyerId" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -5292,7 +5290,6 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="BuyerId" ColumnName="BuyerId" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="Rating" ColumnName="Rating" />
