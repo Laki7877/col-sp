@@ -13,7 +13,7 @@ namespace Colsp.Model.Responses
         public string CMSNameTH { get; set; }
         public string URLKey { get; set; }
         public Nullable<int> CMSTypeId { get; set; }
-        public Nullable<int> CMSSortId { get; set; }
+        public Nullable<int> CMSFilterId { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<System.TimeSpan> EffectiveTime { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
@@ -29,7 +29,7 @@ namespace Colsp.Model.Responses
         public Nullable<int> By { get; set; }
         public string IP { get; set; }
         public List<CollectionItemListResponse> CollectionItemList { get; set; }
-
+        public int? CMSStatusFlowId { get; set; }
     }
     public class CollectionItemListResponse
     {

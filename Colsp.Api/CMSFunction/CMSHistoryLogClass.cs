@@ -90,7 +90,7 @@ namespace Colsp.Api.CMSFunction
         {
             using (ColspEntities db = new ColspEntities())
             {
-                var CMSModel = db.CMS.Where(c => c.CMSId == CMSId).ToList();
+                var CMSModel = db.CMSMasters.Where(c => c.CMSId == CMSId).ToList();
                 return new JsonContent(new
                 {
                     Data = CMSModel

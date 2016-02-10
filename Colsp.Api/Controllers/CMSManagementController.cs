@@ -29,16 +29,16 @@ namespace Colsp.Api.Controllers
             {
                 if (!request.ShopId.HasValue)
                     return Ok(request);
-                IQueryable<CM> CMS;
+                IQueryable<CMSMaster> CMS;
                 if (request.ShopId.HasValue && request.ShopId.Equals(Constant.CMS_SHOP_GOBAL))
                 {
-                    CMS = (from c in db.CMS
+                    CMS = (from c in db.CMSMasters
                            select c
                           ).Take(100);
                 }
                 else
                 {
-                    CMS = (from c in db.CMS
+                    CMS = (from c in db.CMSMasters
                            where c.ShopId == request.ShopId
                            select c
                           ).Take(100);
@@ -57,19 +57,19 @@ namespace Colsp.Api.Controllers
 
                     if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusId == Constant.CMS_STATUS_DRAFT);
+                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_DRAFT);
                     }
                     else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusId == Constant.CMS_STATUS_APPROVE);
+                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_APPROVE);
                     }
                     else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusId == Constant.CMS_STATUS_NOT_APPROVE);
+                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_NOT_APPROVE);
                     }
                     else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
+                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
                     }
                 }
                 var total = CMS.Count();
@@ -162,14 +162,14 @@ namespace Colsp.Api.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "CMS ID is invalid. Cannot find CMSId in System");
                     using (ColspEntities db = new ColspEntities())
                     {
-                        var GetCMS = db.CMS.Where(c => c.CMSId == CMSId).FirstOrDefault();
+                        var GetCMS = db.CMSMasters.Where(c => c.CMSId == CMSId).FirstOrDefault();
                         if (GetCMS != null)
                         {
                             response.CMSId = GetCMS.CMSId;
                             response.By = GetCMS.CreateBy;
                             response.CMSNameEN = GetCMS.CMSNameEN;
                             response.CMSNameTH = GetCMS.CMSNameTH;
-                            response.CMSSortId = GetCMS.CMSSortId;
+                            response.CMSFilterId = GetCMS.CMSFilterId;
                             response.CMSTypeId = GetCMS.CMSTypeId;
                             response.EffectiveDate = GetCMS.EffectiveDate;
                             response.EffectiveTime = GetCMS.EffectiveTime;
@@ -181,6 +181,7 @@ namespace Colsp.Api.Controllers
                             response.ShopId = GetCMS.ShopId;
                             response.ShortDescriptionEN = GetCMS.ShortDescriptionEN;
                             response.ShortDescriptionTH = GetCMS.ShortDescriptionTH;
+                            response.CMSStatusFlowId = GetCMS.CMSStatusFlowId;
                             response.URLKey = GetCMS.URLKey;
                             response.Visibility = GetCMS.Visibility;
 
@@ -224,16 +225,16 @@ namespace Colsp.Api.Controllers
             {
                 if (!request.ShopId.HasValue)
                     return Ok(request);
-                IQueryable<CM> CMS;
+                IQueryable<CMSMaster> CMS;
                 if (request.ShopId.HasValue && request.ShopId.Equals(Constant.CMS_SHOP_GOBAL))
                 {
-                    CMS = (from c in db.CMS
+                    CMS = (from c in db.CMSMasters
                            select c
                           ).Take(100);
                 }
                 else
                 {
-                    CMS = (from c in db.CMS
+                    CMS = (from c in db.CMSMasters
                            where c.ShopId == request.ShopId
                            select c
                           ).Take(100);
@@ -252,19 +253,19 @@ namespace Colsp.Api.Controllers
 
                     if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusId.Equals(Constant.CMS_STATUS_DRAFT));
+                        CMS = CMS.Where(p => p.CMSStatusFlowId.Equals(Constant.CMS_STATUS_DRAFT));
                     }
                     else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusId.Equals(Constant.CMS_STATUS_APPROVE));
+                        CMS = CMS.Where(p => p.CMSStatusFlowId.Equals(Constant.CMS_STATUS_APPROVE));
                     }
                     else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusId.Equals(Constant.CMS_STATUS_NOT_APPROVE));
+                        CMS = CMS.Where(p => p.CMSStatusFlowId.Equals(Constant.CMS_STATUS_NOT_APPROVE));
                     }
                     else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL));
+                        CMS = CMS.Where(p => p.CMSStatusFlowId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
                 var total = CMS.Count();

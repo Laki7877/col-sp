@@ -31,10 +31,10 @@ namespace Colsp.Api.CMSFunction
                 {
                     try
                     {
-                        CM cms = new CM();
+                        CMSMaster cms = new CMSMaster();
                         cms.CMSNameEN = Model.CMSNameEN;
                         cms.CMSNameTH = Model.CMSNameTH;
-                        cms.CMSSortId = Model.CMSSortId;
+                        cms.CMSFilterId = Model.CMSSortId;
                         cms.CMSTypeId = Model.CMSTypeId;
                         cms.EffectiveDate = Model.EffectiveDate;
                         cms.EffectiveTime = Model.EffectiveTime;
@@ -46,14 +46,14 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
-                        cms.CMSStatusId = Model.CMSStatusId;
+                        cms.CMSStatusFlowId = Model.CMSStatusId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.By;
                         cms.Createdate = DateTime.Now;
                         cms.CreateIP = Model.IP;
-                        db.CMS.Add(cms);
+                        db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
                             dbcxtransaction.Commit();
@@ -86,10 +86,10 @@ namespace Colsp.Api.CMSFunction
                 {
                     try
                     {
-                        CM cms = new CM();
+                        CMSMaster cms = new CMSMaster();
                         cms.CMSNameEN = Model.CMSNameEN;
                         cms.CMSNameTH = Model.CMSNameTH;
-                        cms.CMSSortId = Model.CMSSortId;
+                        cms.CMSFilterId = Model.CMSSortId;
                         cms.CMSTypeId = Model.CMSTypeId;
                         cms.EffectiveDate = Model.EffectiveDate;
                         cms.EffectiveTime = Model.EffectiveTime;
@@ -101,14 +101,14 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
-                        cms.CMSStatusId = Model.CMSStatusId;
+                        cms.CMSStatusFlowId = Model.CMSStatusId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.By;
                         cms.Createdate = DateTime.Now;
                         cms.CreateIP = Model.IP;
-                        db.CMS.Add(cms);
+                        db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
                           
@@ -160,10 +160,10 @@ namespace Colsp.Api.CMSFunction
                     {
                         try
                         {
-                            var cms = db.CMS.Where(c => c.CMSId == item.CMSId).FirstOrDefault();
+                            var cms = db.CMSMasters.Where(c => c.CMSId == item.CMSId).FirstOrDefault();
                             if (cms != null)
                             {
-                                cms.CMSStatusId = item.CMSStatusId;
+                                cms.CMSStatusFlowId = item.CMSStatusId;
                                 cms.Status = item.Status;
                                 cms.Visibility = item.CMSVisibility;
                                 cms.UpdateBy = model.UserId;
@@ -206,10 +206,10 @@ namespace Colsp.Api.CMSFunction
                 {
                     try
                     {
-                        CM cms = new CM();
+                        CMSMaster cms = new CMSMaster();
                         cms.CMSNameEN = Model.CMSNameEN;
                         cms.CMSNameTH = Model.CMSNameTH;
-                        cms.CMSSortId = Model.CMSSortId;
+                        cms.CMSFilterId = Model.CMSSortId;
                         cms.CMSTypeId = Model.CMSTypeId;
                         cms.EffectiveDate = Model.EffectiveDate;
                         cms.EffectiveTime = Model.EffectiveTime;
@@ -221,14 +221,14 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
-                        cms.CMSStatusId = Model.CMSStatusId;
+                        cms.CMSStatusFlowId = Model.CMSStatusId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.By;
                         cms.Createdate = DateTime.Now;
                         cms.CreateIP = Model.IP;
-                        db.CMS.Add(cms);
+                        db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
                             
@@ -274,10 +274,10 @@ namespace Colsp.Api.CMSFunction
                 {
                     try
                     {
-                        CM cms = new CM();
+                        CMSMaster cms = new  CMSMaster();
                         cms.CMSNameEN = Model.CMSNameEN;
                         cms.CMSNameTH = Model.CMSNameTH;
-                        cms.CMSSortId = Model.CMSSortId;
+                        cms.CMSFilterId = Model.CMSSortId;
                         cms.CMSTypeId = Model.CMSTypeId;
                         cms.EffectiveDate = Model.EffectiveDate;
                         cms.EffectiveTime = Model.EffectiveTime;
@@ -289,14 +289,14 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
-                        cms.CMSStatusId = Model.CMSStatusId;
+                        cms.CMSStatusFlowId = Model.CMSStatusId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.By;
                         cms.Createdate = DateTime.Now;
                         cms.CreateIP = Model.IP;
-                        db.CMS.Add(cms);
+                        db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
                             
@@ -361,12 +361,12 @@ namespace Colsp.Api.CMSFunction
                 {
                     try
                     {
-                        var cms = db.CMS.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
+                        var cms = db.CMSMasters.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
                         if (cms != null)
                         {
                             cms.CMSNameEN = Model.CMSNameEN;
                             cms.CMSNameTH = Model.CMSNameTH;
-                            cms.CMSSortId = Model.CMSSortId;
+                            cms.CMSFilterId = Model.CMSSortId;
                             cms.CMSTypeId = Model.CMSTypeId;
                             cms.EffectiveDate = Model.EffectiveDate;
                             cms.EffectiveTime = Model.EffectiveTime;
@@ -378,7 +378,7 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                             cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                             cms.Status = Model.Status;
-                            cms.CMSStatusId = Model.CMSStatusId;
+                            cms.CMSStatusFlowId = Model.CMSStatusId;
                             cms.Sequence = Model.Sequence;
                             cms.URLKey = Model.URLKey;
                             cms.Visibility = Model.Visibility;
@@ -415,12 +415,12 @@ namespace Colsp.Api.CMSFunction
                 {
                     try
                     {
-                        var cms = db.CMS.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
+                        var cms = db.CMSMasters.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
                         if (cms != null)
                         {
                             cms.CMSNameEN = Model.CMSNameEN;
                             cms.CMSNameTH = Model.CMSNameTH;
-                            cms.CMSSortId = Model.CMSSortId;
+                            cms.CMSFilterId = Model.CMSSortId;
                             cms.CMSTypeId = Model.CMSTypeId;
                             cms.EffectiveDate = Model.EffectiveDate;
                             cms.EffectiveTime = Model.EffectiveTime;
@@ -432,7 +432,7 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                             cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                             cms.Status = Model.Status;
-                            cms.CMSStatusId = Model.CMSStatusId;
+                            cms.CMSStatusFlowId = Model.CMSStatusId;
                             cms.Sequence = Model.Sequence;
                             cms.URLKey = Model.URLKey;
                             cms.Visibility = Model.Visibility;
