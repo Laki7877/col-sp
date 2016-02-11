@@ -53,11 +53,13 @@ namespace Colsp.Entity.Models
         public string DimensionUnit { get; set; }
         public decimal Weight { get; set; }
         public string WeightUnit { get; set; }
-        public string MetaTitle { get; set; }
-        public string MetaDescription { get; set; }
-        public string MetaKey { get; set; }
+        public string MetaTitleEn { get; set; }
+        public string MetaTitleTh { get; set; }
+        public string MetaDescriptionEn { get; set; }
+        public string MetaDescriptionTh { get; set; }
+        public string MetaKeyEn { get; set; }
+        public string MetaKeyTh { get; set; }
         public string UrlEn { get; set; }
-        public string UrlTh { get; set; }
         public Nullable<int> BoostWeight { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<System.TimeSpan> EffectiveTime { get; set; }

@@ -649,7 +649,7 @@ namespace Colsp.Api.Controllers
                             string variantPid = AutoGenerate.NextPID(db, stage.GlobalCatId);
                             current.Pid = variantPid;
                             current.ProductId = stage.ProductId;
-
+                            current.ShopId = shopId;
                             current.CreatedBy = this.User.UserRequest().Email;
                             current.CreatedDt = DateTime.Now;
                         }
@@ -722,6 +722,8 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find product " + proRq.ProductId + " in shop " + shopId);
                     }
                     current.Visibility = proRq.Visibility.Value;
+                    current.UpdatedBy = this.User.UserRequest().Email;
+                    current.UpdatedDt = DateTime.Now;
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -796,19 +798,33 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+
+                if (request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var productList = db.ProductStages.Where(w => w.ShopId == shopId).ToList();
+                if (productList == null || productList.Count == 0)
+                {
+                    throw new Exception("No product found in this shop");
+                }
+
+
                 foreach (ProductStageRequest rq in request)
                 {
-                    if(rq.ProductId == null) { throw new Exception("Product Id cannot be null"); }
-                    var stage = db.ProductStages.Find(rq.ProductId.Value);
-                    if(stage == null)
+                    var current = productList.Where(w => w.ProductId.Equals(rq.ProductId)).SingleOrDefault();
+                    if (current == null)
                     {
-                        throw new Exception("Cannot find Product with id " + rq.ProductId.Value );
+                        throw new Exception("Cannot find product " + rq.ProductId + " in shop " + shopId);
                     }
-                    if (!stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
+                    if (!current.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
                     {
                         throw new Exception("ProudctId " + rq.ProductId.Value + " is not drafted");
                     }
-                    stage.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
+                    current.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
+                    current.UpdatedBy = this.User.UserRequest().Email;
+                    current.UpdatedDt = DateTime.Now;
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK, "Published success");
@@ -970,11 +986,13 @@ namespace Colsp.Api.Controllers
                 response.MasterVariant.WeightUnit = stage.WeightUnit;
                 response.GlobalCategory = stage.GlobalCatId;
                 response.LocalCategory = stage.LocalCatId;
-                response.SEO.MetaTitle = stage.MetaTitle;
-                response.SEO.MetaDescription = stage.MetaDescription;
-                response.SEO.MetaKeywords = stage.MetaKey;
+                response.SEO.MetaTitleEn = stage.MetaTitleEn;
+                response.SEO.MetaTitleTh = stage.MetaTitleTh;
+                response.SEO.MetaDescriptionEn = stage.MetaDescriptionEn;
+                response.SEO.MetaDescriptionTh = stage.MetaDescriptionTh;
+                response.SEO.MetaKeywordEn = stage.MetaKeyEn;
+                response.SEO.MetaKeywordTh = stage.MetaKeyTh;
                 response.SEO.ProductUrlKeyEn = stage.UrlEn;
-                response.SEO.ProductUrlKeyTh = stage.UrlTh;
                 response.SEO.ProductBoostingWeight = stage.BoostWeight;
                 #region Setup Effective Date & Time 
                 if (stage.EffectiveDate != null)
@@ -1257,7 +1275,8 @@ namespace Colsp.Api.Controllers
                 tmp = Validation.ValidateDecimal(request.MasterVariant.Weight, "Weight", false, 11, 2, true);
                 stage.Weight = tmp != null ? tmp.Value : 0;
                 stage.Tag = Validation.ValidateString(request.Keywords, "Search Tag", false, 630,false);
-                stage.MetaKey = Validation.ValidateString(request.SEO.MetaKeywords, "Meta Keywords", false, 630, false);
+                stage.MetaKeyEn = Validation.ValidateString(request.SEO.MetaKeywordEn, "Meta Keywords (English)", false, 630, false);
+                stage.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keywords (Thai)", false, 630, false);
             }
             else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(request.Status))
             {
@@ -1272,7 +1291,8 @@ namespace Colsp.Api.Controllers
                 stage.Width = Validation.ValidateDecimal(request.MasterVariant.Width, "Width", true, 11, 2, true).Value;
                 stage.Weight = Validation.ValidateDecimal(request.MasterVariant.Weight, "Weight", true, 11, 2, true).Value;
                 stage.Tag = Validation.ValidateTaging(request.Keywords, "Search Tag", false, false, 20, 30);
-                stage.MetaKey = Validation.ValidateTaging(request.SEO.MetaKeywords, "Meta Keywords", false, false, 20, 30);
+                stage.MetaKeyEn = Validation.ValidateTaging(request.SEO.MetaKeywordEn, "Meta Keywords (English)", false, false, 20, 30);
+                stage.MetaKeyTh = Validation.ValidateTaging(request.SEO.MetaKeywordTh, "Meta Keywords (Thai)", false, false, 20, 30);
             }
             else
             {
@@ -1302,9 +1322,11 @@ namespace Colsp.Api.Controllers
                 }
                 stage.LocalCatId = localCat.CategoryId;
             }
-            stage.MetaTitle = Validation.ValidateString(request.SEO.MetaTitle, "Meta Title", false, 60, false);
-            stage.MetaDescription = Validation.ValidateString(request.SEO.MetaDescription, "Meta Description", false, 150, false);
-            stage.UrlTh = request.SEO.ProductUrlKeyTh;
+
+            stage.MetaTitleEn = Validation.ValidateString(request.SEO.MetaTitleEn, "Meta Title (English)", false, 60, false);
+            stage.MetaTitleTh = Validation.ValidateString(request.SEO.MetaTitleTh, "Meta Title (Thai)", false, 60, false);
+            stage.MetaDescriptionEn = Validation.ValidateString(request.SEO.MetaDescriptionEn, "Meta Description (English)", false, 150, false);
+            stage.MetaDescriptionTh = Validation.ValidateString(request.SEO.MetaDescriptionTh, "Meta Description (Thai)", false, 150, false);
             stage.BoostWeight = request.SEO.ProductBoostingWeight;
             if (stage.BoostWeight != null 
                 && stage.BoostWeight < 1 

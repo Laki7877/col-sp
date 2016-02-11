@@ -63,7 +63,8 @@ namespace Colsp.Api.Controllers
                                   atrS.Status,
                                   atrS.UpdatedDt,
                                   atrS.CreatedDt,
-                                  AttributeCount = atrS.AttributeSetMaps.AsEnumerable().Count()
+                                  AttributeCount = atrS.AttributeSetMaps.AsEnumerable().Count(),
+                                  CategoryCount = atrS.CategoryAttributeSetMaps.Count()
                               };
                 if (request == null)
                 {
@@ -483,6 +484,7 @@ namespace Colsp.Api.Controllers
                      .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants))
                      .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants1))
                      .Include(i => i.AttributeSetTagMaps.Select(s => s.Tag))
+                     .Include(i => i.CategoryAttributeSetMaps.Select(s=>s.GlobalCategory))
                      .SingleOrDefault();
             if (attrSet != null)
             {
@@ -525,6 +527,17 @@ namespace Colsp.Api.Controllers
                                             + (map.Attribute.ProductStageVariants1 != null ? map.Attribute.ProductStageVariants1.Count : 0);
                         attr.Status = map.Attribute.Status;
                         response.Attributes.Add(attr);
+                    }
+                }
+                if (attrSet.CategoryAttributeSetMaps != null && attrSet.CategoryAttributeSetMaps.Count > 0)
+                {
+                    response.Category = new List<CategoryRequest>();
+                    foreach (CategoryAttributeSetMap map in attrSet.CategoryAttributeSetMaps)
+                    {
+                        CategoryRequest cat = new CategoryRequest();
+                        cat.CategoryAbbreviation = map.GlobalCategory.CategoryAbbreviation;
+                        cat.NameEn = map.GlobalCategory.NameEn;
+                        response.Category.Add(cat);
                     }
                 }
                 if (attrSet.AttributeSetTagMaps != null && attrSet.AttributeSetTagMaps.Count > 0)

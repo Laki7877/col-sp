@@ -34,6 +34,16 @@ namespace Colsp.Entity.Models
         public virtual DbSet<AttributeValueMap> AttributeValueMaps { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
+        public virtual DbSet<CMSBrandInShop> CMSBrandInShops { get; set; }
+        public virtual DbSet<CMSBy1Get1Item> CMSBy1Get1Item { get; set; }
+        public virtual DbSet<CMSCollectionGroup> CMSCollectionGroups { get; set; }
+        public virtual DbSet<CMSCollectionItem> CMSCollectionItems { get; set; }
+        public virtual DbSet<CMSFilter> CMSFilters { get; set; }
+        public virtual DbSet<CMSHistoryLog> CMSHistoryLogs { get; set; }
+        public virtual DbSet<CMSMainCategory> CMSMainCategories { get; set; }
+        public virtual DbSet<CMSMaster> CMSMasters { get; set; }
+        public virtual DbSet<CMSStatusFlow> CMSStatusFlows { get; set; }
+        public virtual DbSet<CMSType> CMSTypes { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
         public virtual DbSet<GlobalCategoryAbbrevation> GlobalCategoryAbbrevations { get; set; }

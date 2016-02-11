@@ -26,4 +26,11 @@ namespace Colsp.Model.Requests
             AttributeSets = new List<AttributeSetRequest>();
         }
     }
+
+    public class CategoryShiftRequest
+    {
+        public int? Parent { get; set; }
+        public int? Sibling { get; set; }
+        public int? Child { get; set; }
+    }
 }
