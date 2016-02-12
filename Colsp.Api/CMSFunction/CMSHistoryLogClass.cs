@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace Colsp.Api.CMSFunction
 {
-    public class CMSHistoryLogClass
+    public class CMSHistoryLogClass : ApiController
     {
         public void LogCreateCMS(int Id, string Tablename, bool Status, string Transaction, int UserId, string IP)
         {
@@ -75,67 +75,46 @@ namespace Colsp.Api.CMSFunction
         }
 
 
-        private HttpResponseMessage GetJsonCollectionItem(int CollectionId)
+        private IHttpActionResult GetJsonCollectionItem(int CollectionId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSCollectionItem = db.CMSCollectionItems.Where(c => c.CMSId == CollectionId).ToList();
-                return new HttpResponseMessage()
-                {
-                    Content = new JsonContent(new
-                    {
-                        Data = CMSCollectionItem //,
-                        //Success = true, //error
-                        //Message = "Success" //return exception
-                    })
-                };
+                return Ok(CMSCollectionItem);
+
             }
         }
 
-        private HttpResponseMessage GetJsonMasterCMS(int CMSId)
+        private IHttpActionResult GetJsonMasterCMS(int CMSId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSModel = db.CMSMasters.Where(c => c.CMSId == CMSId).ToList();
-                return new HttpResponseMessage()
-                {
-                    Content = new JsonContent(new
-                    {
-                        Data = CMSModel
-                    })
-                };
+                return Ok(CMSModel);
+                   
 
             }
         }
 
-        private HttpResponseMessage GetJsonMainCategory(int MainId)
+        private IHttpActionResult GetJsonMainCategory(int MainId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSMainCat = db.CMSMainCategories.Where(c => c.CMSId == MainId).ToList();
-                return new HttpResponseMessage()
-                {
-                    Content = new JsonContent(new
-                    {
-                        Data = CMSMainCat
-                    })
-                };
+
+                return Ok(CMSMainCat);
+                  
 
             }
         }
 
-        private HttpResponseMessage GetJsonBrandInShop(int BrandId)
+        private IHttpActionResult GetJsonBrandInShop(int BrandId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSBrandInShop = db.CMSBrandInShops.Where(c => c.CMSId == BrandId).ToList();
-                return new HttpResponseMessage()
-                {
-                    Content = new JsonContent(new
-                    {
-                        Data = CMSBrandInShop
-                    })
-                };
+                return Ok(CMSBrandInShop);
+                    
 
             }
         }
