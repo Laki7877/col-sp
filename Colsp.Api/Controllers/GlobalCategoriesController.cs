@@ -273,7 +273,7 @@ namespace Colsp.Api.Controllers
             {
                 var querList = new List<int?> { request.Child, request.Parent, request.Sibling };
                 var catList = db.GlobalCategories.Where(w => querList.Contains(w.CategoryId)).ToList();
-                if(catList == null || catList.Count == 0)
+                if (catList == null || catList.Count == 0)
                 {
                     throw new Exception("Invalid request");
                 }
@@ -281,14 +281,15 @@ namespace Colsp.Api.Controllers
                 var sibling = catList.Where(w => w.CategoryId == request.Sibling).SingleOrDefault();
                 var child = catList.Where(w => w.CategoryId == request.Child).SingleOrDefault();
 
-                if(child == null)
+                if (child == null)
                 {
                     throw new Exception("Invalid request");
                 }
                 int childSize = child.Rgt.Value - child.Lft.Value + 1;
-                //delete
+                //delete 
                 db.GlobalCategories.Where(w => w.Rgt > child.Rgt).ToList()
-                    .ForEach(e => { e.Lft = e.Lft > child.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
+                .ForEach(e => { e.Lft = e.Lft > child.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; e.Status = "TM"; });
+
                 db.SaveChanges();
                 int x = 0;
 
@@ -296,7 +297,7 @@ namespace Colsp.Api.Controllers
                 {
                     x = sibling.Rgt.Value;
                 }
-                else if(parent != null)
+                else if (parent != null)
                 {
                     x = parent.Lft.Value;
                 }
@@ -304,11 +305,11 @@ namespace Colsp.Api.Controllers
                 int offset = x - child.Lft.Value + 1;
                 int size = child.Rgt.Value - child.Lft.Value + 1;
 
-                db.GlobalCategories.Where(w => w.Lft >= child.Lft && w.Rgt <= child.Rgt).ToList()
-                    .ForEach(e => { e.Lft = e.Lft + offset; e.Rgt = e.Rgt + offset; });
+                db.GlobalCategories.Where(w => w.Lft >= child.Lft && w.Rgt <= child.Rgt && w.Status == "TM").ToList()
+                .ForEach(e => { e.Lft = e.Lft + offset; e.Rgt = e.Rgt + offset; });
 
-                db.GlobalCategories.Where(w => w.Rgt > x).ToList()
-                    .ForEach(e => { e.Lft = e.Lft > x ? e.Lft + size : e.Lft; e.Rgt = e.Rgt + size; });
+                db.GlobalCategories.Where(w => w.Rgt > x && w.Status != "TM").ToList()
+                .ForEach(e => { e.Lft = e.Lft > x ? e.Lft + size : e.Lft; e.Rgt = e.Rgt + size; e.Status = "AT"; });
 
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
