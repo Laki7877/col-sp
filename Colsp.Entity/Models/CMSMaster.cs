@@ -32,6 +32,7 @@ namespace Colsp.Entity.Models
         public string LongDescriptionEN { get; set; }
         public Nullable<int> Sequence { get; set; }
         public Nullable<int> CMSStatusFlowId { get; set; }
+        public Nullable<int> CMSCollectionGroupId { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }

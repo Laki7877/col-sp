@@ -209,8 +209,26 @@
           <Property Name="PId" Type="nvarchar" MaxLength="50" />
           <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
           <Property Name="Sequence" Type="int" />
-          <Property Name="CMSCollectionGroupId" Type="int" />
+          <Property Name="CMSCollectionItemGroupId" Type="int" />
           <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CMSCollectionItemGroup">
+          <Key>
+            <PropertyRef Name="CMSCollectionItemGroupId" />
+          </Key>
+          <Property Name="CMSCollectionItemGroupId" Type="int" Nullable="false" />
+          <Property Name="CMSCollectionItemGroupNameEH" Type="nvarchar" MaxLength="100" />
+          <Property Name="CMSCollectionItemGroupNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="Createdate" Type="datetime" />
           <Property Name="UpdateBy" Type="int" />
@@ -284,6 +302,7 @@
           <Property Name="LongDescriptionEN" Type="ntext" />
           <Property Name="Sequence" Type="int" />
           <Property Name="CMSStatusFlowId" Type="int" />
+          <Property Name="CMSCollectionGroupId" Type="int" />
           <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
@@ -1139,6 +1158,16 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -2162,12 +2191,28 @@
           <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopTypePermissionMap" EntityType="Self.ShopTypePermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopUserGroupMap" EntityType="Self.ShopUserGroupMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroupMap" EntityType="Self.UserGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroupPermissionMap" EntityType="Self.UserGroupPermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserShop" EntityType="Self.UserShop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCollectionItemGroup" EntityType="Self.CMSCollectionItemGroup" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [CMSCollectionItemGroup].[CMSCollectionItemGroupId] AS [CMSCollectionItemGroupId], 
+    [CMSCollectionItemGroup].[CMSCollectionItemGroupNameEH] AS [CMSCollectionItemGroupNameEH], 
+    [CMSCollectionItemGroup].[CMSCollectionItemGroupNameTH] AS [CMSCollectionItemGroupNameTH], 
+    [CMSCollectionItemGroup].[Status] AS [Status], 
+    [CMSCollectionItemGroup].[Visibility] AS [Visibility], 
+    [CMSCollectionItemGroup].[CreateBy] AS [CreateBy], 
+    [CMSCollectionItemGroup].[Createdate] AS [Createdate], 
+    [CMSCollectionItemGroup].[UpdateBy] AS [UpdateBy], 
+    [CMSCollectionItemGroup].[UpdateDate] AS [UpdateDate], 
+    [CMSCollectionItemGroup].[CreateIP] AS [CreateIP], 
+    [CMSCollectionItemGroup].[UpdateIP] AS [UpdateIP]
+    FROM [dbo].[CMSCollectionItemGroup] AS [CMSCollectionItemGroup]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_AttributeSetTagMap_AttributeSet" Association="Self.FK_AttributeSetTagMap_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
             <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMap" />
@@ -2516,12 +2561,14 @@
           <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
           <EntitySet Name="ShopTypePermissionMaps" EntityType="ColspModel.ShopTypePermissionMap" />
           <EntitySet Name="ShopUserGroupMaps" EntityType="ColspModel.ShopUserGroupMap" />
+          <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
           <EntitySet Name="Tags" EntityType="ColspModel.Tag" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
           <EntitySet Name="UserGroupMaps" EntityType="ColspModel.UserGroupMap" />
           <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
           <EntitySet Name="UserShops" EntityType="ColspModel.UserShop" />
+          <EntitySet Name="CMSCollectionItemGroups" EntityType="ColspModel.CMSCollectionItemGroup" />
           <AssociationSet Name="FKAttributeSetMapAttribute" Association="ColspModel.FKAttributeSetMapAttribute">
             <End Role="Attribute" EntitySet="Attributes" />
             <End Role="AttributeSetMap" EntitySet="AttributeSetMaps" />
@@ -3039,7 +3086,7 @@
           <Property Name="PId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
-          <Property Name="CMSCollectionGroupId" Type="Int32" />
+          <Property Name="CMSCollectionItemGroupId" Type="Int32" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="Createdate" Type="DateTime" Precision="3" />
@@ -3114,6 +3161,7 @@
           <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
           <Property Name="CMSStatusFlowId" Type="Int32" />
+          <Property Name="CMSCollectionGroupId" Type="Int32" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
@@ -4070,6 +4118,16 @@
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="ShopUserGroupMap" ToRole="Shop" />
           <NavigationProperty Name="UserGroup" Relationship="ColspModel.FK_ShopUerGroupMap_UserGroup" FromRole="ShopUserGroupMap" ToRole="UserGroup" />
         </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
         <EntityType Name="Tag">
           <Key>
             <PropertyRef Name="TagId" />
@@ -4172,6 +4230,22 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKUserShopShop" FromRole="UserShop" ToRole="Shop" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKUserShopUser" FromRole="UserShop" ToRole="User" />
+        </EntityType>
+        <EntityType Name="CMSCollectionItemGroup">
+          <Key>
+            <PropertyRef Name="CMSCollectionItemGroupId" />
+          </Key>
+          <Property Name="CMSCollectionItemGroupId" Type="Int32" Nullable="false" />
+          <Property Name="CMSCollectionItemGroupNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSCollectionItemGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FKAttributeSetMapAttribute">
           <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="1" />
@@ -5265,7 +5339,7 @@
                 <ScalarProperty Name="Createdate" ColumnName="Createdate" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
+                <ScalarProperty Name="CMSCollectionItemGroupId" ColumnName="CMSCollectionItemGroupId" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
                 <ScalarProperty Name="PId" ColumnName="PId" />
@@ -5332,6 +5406,7 @@
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
                 <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
@@ -6227,6 +6302,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ColspModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Tags">
             <EntityTypeMapping TypeName="ColspModel.Tag">
               <MappingFragment StoreEntitySet="Tag">
@@ -6316,6 +6402,23 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCollectionItemGroups">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionItemGroup">
+              <MappingFragment StoreEntitySet="CMSCollectionItemGroup">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSCollectionItemGroupNameTH" ColumnName="CMSCollectionItemGroupNameTH" />
+                <ScalarProperty Name="CMSCollectionItemGroupNameEH" ColumnName="CMSCollectionItemGroupNameEH" />
+                <ScalarProperty Name="CMSCollectionItemGroupId" ColumnName="CMSCollectionItemGroupId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -19,7 +19,7 @@ namespace Colsp.Entity.Models
         public string PId { get; set; }
         public string ProductBoxBadge { get; set; }
         public Nullable<int> Sequence { get; set; }
-        public Nullable<int> CMSCollectionGroupId { get; set; }
+        public Nullable<int> CMSCollectionItemGroupId { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
