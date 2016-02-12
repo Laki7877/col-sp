@@ -30,5 +30,6 @@ namespace Colsp.Model.Requests
         public string CategoryId { get; set; }
         public int? CMSStatusId { get; set; }
         public int? Sequence { get; set; }
+        public int? CMSCollectionGroupId { get; set; }
     }
 }

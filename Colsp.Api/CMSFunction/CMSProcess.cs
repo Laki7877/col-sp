@@ -46,13 +46,14 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
-                        cms.CMSStatusFlowId = Model.CMSStatusId;
+                        cms.CMSStatusFlowId = Model.CMSStatusFlowId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
-                        cms.CreateBy = Model.By;
+                        cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
+                        cms.CreateBy = Model.CreateBy;
                         cms.Createdate = DateTime.Now;
-                        cms.CreateIP = Model.IP;
+                        cms.CreateIP = Model.CreateIP;
                         db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
@@ -101,17 +102,18 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
-                        cms.CMSStatusFlowId = Model.CMSStatusId;
+                        cms.CMSStatusFlowId = Model.CMSStatusFlowId;
+                        cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
-                        cms.CreateBy = Model.By;
+                        cms.CreateBy = Model.CreateBy;
                         cms.Createdate = DateTime.Now;
-                        cms.CreateIP = Model.IP;
+                        cms.CreateIP = Model.CreateIP;
                         db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
-                          
+
                             foreach (var item in Model.CollectionItemList)
                             {
                                 CMSCollectionItem cItem = new CMSCollectionItem();
@@ -120,21 +122,20 @@ namespace Colsp.Api.CMSFunction
                                 cItem.ProductBoxBadge = item.ProductBoxBadge;
                                 cItem.Sequence = item.Sequence;
                                 cItem.Status = item.Status;
-                                cItem.CreateBy = Model.By;
+                                cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId;
+                                cItem.CreateBy = Model.CreateBy;
                                 cItem.Createdate = DateTime.Now;
-                                cItem.CreateIP = Model.IP;
+                                cItem.CreateIP = Model.CreateIP;
                                 db.CMSCollectionItems.Add(cItem);
                                 db.SaveChanges();
-
-                                dbcxtransaction.Commit();
-                                //History Log
-                                CMSHistoryLogClass log = new CMSHistoryLogClass();
-                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
-                                CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
-                                log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", (bool)cItem.Status, "Create", (int)cItem.CreateBy, cItem.CreateIP);
                             }
                             result = cms.CMSId;
-
+                            dbcxtransaction.Commit();
+                            //History Log
+                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
+                            log.LogCreateCMS(cms.CMSId, "CMSCollectionItem", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                         }
                         return result;
                     }
@@ -168,7 +169,7 @@ namespace Colsp.Api.CMSFunction
                                 cms.Visibility = item.CMSVisibility;
                                 cms.UpdateBy = model.UserId;
                                 cms.UpdateDate = DateTime.Now;
-                                cms.UpdateIP = model.IP;
+                                cms.UpdateIP = model.CreateIP;
                                 db.Entry(cms).State = EntityState.Modified;
                                 db.SaveChanges();
                                 dbcxtransaction.Commit();
@@ -222,6 +223,7 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
                         cms.CMSStatusFlowId = Model.CMSStatusId;
+                        cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
@@ -231,7 +233,7 @@ namespace Colsp.Api.CMSFunction
                         db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
-                            
+
                             CMSMainCategory cItem = new CMSMainCategory();
                             cItem.CMSId = cms.CMSId;//When saved has id.
                             cItem.CategoryId = Model.CategoryId;
@@ -274,7 +276,7 @@ namespace Colsp.Api.CMSFunction
                 {
                     try
                     {
-                        CMSMaster cms = new  CMSMaster();
+                        CMSMaster cms = new CMSMaster();
                         cms.CMSNameEN = Model.CMSNameEN;
                         cms.CMSNameTH = Model.CMSNameTH;
                         cms.CMSFilterId = Model.CMSSortId;
@@ -288,6 +290,7 @@ namespace Colsp.Api.CMSFunction
                         cms.ShopId = Model.ShopId;
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
+                        cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                         cms.Status = Model.Status;
                         cms.CMSStatusFlowId = Model.CMSStatusId;
                         cms.Sequence = Model.Sequence;
@@ -299,7 +302,7 @@ namespace Colsp.Api.CMSFunction
                         db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
-                            
+
 
                             CMSBrandInShop bItem = new CMSBrandInShop();
                             bItem.CMSId = cms.CMSId;//When saved has id.
@@ -377,14 +380,15 @@ namespace Colsp.Api.CMSFunction
                             cms.ShopId = Model.ShopId;
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                             cms.ShortDescriptionTH = Model.ShortDescriptionTH;
+                            cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                             cms.Status = Model.Status;
-                            cms.CMSStatusFlowId = Model.CMSStatusId;
+                            cms.CMSStatusFlowId = Model.CMSStatusFlowId;
                             cms.Sequence = Model.Sequence;
                             cms.URLKey = Model.URLKey;
                             cms.Visibility = Model.Visibility;
-                            cms.UpdateBy = Model.By;
+                            cms.UpdateBy = Model.CreateBy;
                             cms.UpdateDate = DateTime.Now;
-                            cms.UpdateIP = Model.IP;
+                            cms.UpdateIP = Model.CreateIP;
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
@@ -432,17 +436,18 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                             cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                             cms.Status = Model.Status;
-                            cms.CMSStatusFlowId = Model.CMSStatusId;
+                            cms.CMSStatusFlowId = Model.CMSStatusFlowId;
                             cms.Sequence = Model.Sequence;
+                            cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                             cms.URLKey = Model.URLKey;
                             cms.Visibility = Model.Visibility;
-                            cms.UpdateBy = Model.By;
+                            cms.UpdateBy = Model.CreateBy;
                             cms.UpdateDate = DateTime.Now;
-                            cms.UpdateIP = Model.IP;
+                            cms.UpdateIP = Model.CreateIP;
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
-                               
+
                                 foreach (var item in Model.CollectionItemList)
                                 {
                                     var cItem = db.CMSCollectionItems.Where(c => c.CMSCollectionItemId == item.CMSCollectionItemId).FirstOrDefault();
@@ -453,9 +458,10 @@ namespace Colsp.Api.CMSFunction
                                         cItem.ProductBoxBadge = item.ProductBoxBadge;
                                         cItem.Sequence = item.Sequence;
                                         cItem.Status = item.Status;
-                                        cItem.UpdateBy = Model.By;
+                                        cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId;
+                                        cItem.UpdateBy = Model.CreateBy;
                                         cItem.UpdateDate = DateTime.Now;
-                                        cItem.UpdateIP = Model.IP;
+                                        cItem.UpdateIP = Model.CreateIP;
                                         db.Entry(cItem).State = EntityState.Modified;
                                         db.SaveChanges();
                                         dbcxtransaction.Commit();

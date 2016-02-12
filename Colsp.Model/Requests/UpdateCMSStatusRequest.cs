@@ -11,7 +11,7 @@ namespace Colsp.Model.Requests
         public int? ShopId { get; set; }
         public string SearchText { get; set; }
         public int UserId { get; set; }
-        public string IP { get; set; }
+        public string CreateIP { get; set; }
         public List<CMSAsUpdate> CMSList { get; set; }
     }
 

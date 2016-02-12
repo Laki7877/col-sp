@@ -12,6 +12,7 @@ using Colsp.Model.Requests;
 using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
+using Newtonsoft.Json;
 
 namespace Colsp.Api.CMSFunction
 {
@@ -19,14 +20,14 @@ namespace Colsp.Api.CMSFunction
     {
         public void LogCreateCMS(int Id, string Tablename, bool Status, string Transaction, int UserId, string IP)
         {
-            string JsonText = "";
+            string JsonText;
             switch (Tablename.ToUpper())
             {
-                case "CMS":
+                case "CMSMASTER":
                     JsonText = this.GetJsonMasterCMS(Id).ToString();
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
                     break;
-                case "CMSCollectionItem":
+                case "CMSCOLLECTIONITEM":
                     JsonText = this.GetJsonCollectionItem(Id).ToString();
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
                     break;
@@ -47,6 +48,7 @@ namespace Colsp.Api.CMSFunction
         private bool SaveCMSHistoryLog(int Id, string Tablename, string JsonText, bool Status, string Transaction, int UserId, string IP)
         {
             bool result = false;
+
             try
             {
                 using (ColspEntities db = new ColspEntities())
@@ -73,54 +75,67 @@ namespace Colsp.Api.CMSFunction
         }
 
 
-        private JsonContent GetJsonCollectionItem(int CollectionId)
+        private HttpResponseMessage GetJsonCollectionItem(int CollectionId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSCollectionItem = db.CMSCollectionItems.Where(c => c.CMSId == CollectionId).ToList();
-
-                return new JsonContent(new
+                return new HttpResponseMessage()
                 {
-                    Data = CMSCollectionItem
-                });
+                    Content = new JsonContent(new
+                    {
+                        Data = CMSCollectionItem //,
+                        //Success = true, //error
+                        //Message = "Success" //return exception
+                    })
+                };
             }
         }
 
-        private JsonContent GetJsonMasterCMS(int CMSId)
+        private HttpResponseMessage GetJsonMasterCMS(int CMSId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSModel = db.CMSMasters.Where(c => c.CMSId == CMSId).ToList();
-                return new JsonContent(new
+                return new HttpResponseMessage()
                 {
-                    Data = CMSModel
-                });
+                    Content = new JsonContent(new
+                    {
+                        Data = CMSModel
+                    })
+                };
 
             }
         }
 
-        private JsonContent GetJsonMainCategory(int MainId)
+        private HttpResponseMessage GetJsonMainCategory(int MainId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSMainCat = db.CMSMainCategories.Where(c => c.CMSId == MainId).ToList();
-                return new JsonContent(new
+                return new HttpResponseMessage()
                 {
-                    Data = CMSMainCat
-                });
+                    Content = new JsonContent(new
+                    {
+                        Data = CMSMainCat
+                    })
+                };
 
             }
         }
 
-        private JsonContent GetJsonBrandInShop(int BrandId)
+        private HttpResponseMessage GetJsonBrandInShop(int BrandId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSBrandInShop = db.CMSBrandInShops.Where(c => c.CMSId == BrandId).ToList();
-                return new JsonContent(new
+                return new HttpResponseMessage()
                 {
-                    Data = CMSBrandInShop
-                });
+                    Content = new JsonContent(new
+                    {
+                        Data = CMSBrandInShop
+                    })
+                };
 
             }
         }

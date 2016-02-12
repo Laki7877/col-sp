@@ -26,14 +26,15 @@ namespace Colsp.Model.Requests
         public string LongDescriptionEN { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
-        public Nullable<int> By { get; set; }
-        public string IP { get; set; }
+        public Nullable<int> CreateBy { get; set; }
+        public string CreateIP { get; set; }
         public List<CollectionItemList> CollectionItemList { get; set; }
-        public int? CMSStatusId { get; set; }
+        public int? CMSStatusFlowId { get; set; }
         public int? Sequence { get; set; }
+        public int? CMSCollectionGroupId { get; set; }
     }
     public class CollectionItemList {
-
+        public int? CMSCollectionItemGroupId { get; set; }
         public int CMSCollectionItemId { get; set; }
         public string PId { get; set; }
         public string ProductBoxBadge { get; set; }
