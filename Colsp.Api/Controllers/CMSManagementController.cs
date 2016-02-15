@@ -20,6 +20,14 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
+        #region GetShopId
+        private int GetShopId()
+        {
+            var shopId = this.User.Shops().FirstOrDefault();
+            return 0;
+        }
+        #endregion
+
         #region Page List
         [Route("api/CMSShopList")]
         [HttpGet]
@@ -293,7 +301,30 @@ namespace Colsp.Api.Controllers
         [HttpGet]
         public IHttpActionResult CMSSearchForAdd([FromUri]CMSSearchForAddRequest request)
         {
-            int? shopId = (int?)this.User.ShopRequest().ShopId.Value;
+            var UserType = this.User.UserRequest().Type;
+            int? shopId = 0;
+            switch (UserType)
+            {
+                case "A":
+                    shopId = 0;
+                    break;
+                case "S":
+                case "H":
+                    try
+                    {
+                        shopId = this.User.ShopRequest().ShopId.Value;
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok(request);
+                        throw;
+                    }
+
+                    break;
+                default:
+                    shopId = null;
+                    break;
+            }
             try
             {
                 if (!shopId.HasValue)
@@ -302,11 +333,22 @@ namespace Colsp.Api.Controllers
                 switch (request.SearchType.ToUpper())
                 {
                     case "CATEGORY":
+                        if (string.IsNullOrWhiteSpace(request._order))
+                            request._order = "CategoryId";
                         if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
                         {
                             var result = (from g in db.LocalCategories
                                           where g.ShopId == shopId
-                                          select g
+                                          select new
+                                          {
+                                              g.CategoryId,
+                                              g.NameEn,
+                                              g.NameTh,
+                                              g.Shop.ShopNameEn,
+                                              g.Shop.ShopNameTh,
+                                              g.Status,
+                                              g.Visibility
+                                          }
                                        ).Take(100);
 
                             if (request == null)
@@ -325,7 +367,14 @@ namespace Colsp.Api.Controllers
                         else //Global
                         {
                             var result = (from g in db.GlobalCategories
-                                          select g
+                                          select new
+                                          {
+                                              g.CategoryId,
+                                              g.NameEn,
+                                              g.NameTh,
+                                              g.Status,
+                                              g.Visibility
+                                          }
                                       ).Take(100);
 
                             if (request == null)
@@ -346,13 +395,22 @@ namespace Colsp.Api.Controllers
 
                         break;
                     case "BRAND":
+                        if (string.IsNullOrWhiteSpace(request._order))
+                            request._order = "BrandId";
                         if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
                         {
 
                             var resultBrand = (from g in db.Brands
                                                join p in db.Products on g.BrandId equals p.BrandId
                                                where p.ShopId == shopId
-                                               select g
+                                               select new
+                                               {
+                                                   g.BrandId,
+                                                   g.BrandNameEn,
+                                                   g.BrandNameTh,
+                                                   g.Status
+
+                                               }
                                         ).Take(100);
                             if (request == null)
                             {
@@ -367,7 +425,14 @@ namespace Colsp.Api.Controllers
                         {
                             var resultBrand = (from g in db.Brands
                                                where (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
-                                               select g
+                                               select new
+                                               {
+                                                   g.BrandId,
+                                                   g.BrandNameEn,
+                                                   g.BrandNameTh,
+                                                   g.Status
+
+                                               }
                                         ).Take(100);
                             if (request == null)
                             {
@@ -380,11 +445,20 @@ namespace Colsp.Api.Controllers
                         }
                         break;
                     case "SHOP":
+                        if (string.IsNullOrWhiteSpace(request._order))
+                            request._order = "ShopId";
                         if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
                         {
                             var resultShop = (from g in db.Shops
                                               where g.ShopId == shopId
-                                              select g
+                                              select new
+                                              {
+                                                  g.ShopId,
+                                                  g.ShopNameEn,
+                                                  g.ShopNameTh,
+                                                  g.Status
+
+                                              }
                                       ).Take(100);
                             if (request == null)
                             {
@@ -402,7 +476,14 @@ namespace Colsp.Api.Controllers
                         else
                         {
                             var resultShop = (from g in db.Shops
-                                              select g
+                                              select new
+                                              {
+                                                  g.ShopId,
+                                                  g.ShopNameEn,
+                                                  g.ShopNameTh,
+                                                  g.Status
+
+                                              }
                                       ).Take(100);
                             if (request == null)
                             {
@@ -420,11 +501,24 @@ namespace Colsp.Api.Controllers
 
                         break;
                     case "PRODUCT":
+                        if (string.IsNullOrWhiteSpace(request._order))
+                            request._order = "ProductId";
                         if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
                         {
                             var resultPro = (from g in db.Products
                                              where g.ShopId == shopId
-                                             select g
+                                             select new
+                                             {
+                                                 g.GlobalCatId,
+                                                 g.BrandId,
+                                                 g.ProductId,
+                                                 g.ShopId,
+                                                 g.Pid,
+                                                 g.ProductNameEn,
+                                                 g.ProductNameTh,
+                                                 g.Status
+
+                                             }
                                            ).Take(100);
                             if (request == null)
                             {
@@ -441,7 +535,18 @@ namespace Colsp.Api.Controllers
                         }
                         else {
                             var resultPro = (from g in db.Products
-                                             select g
+                                             select new
+                                             {
+                                                 g.GlobalCatId,
+                                                 g.BrandId,
+                                                 g.ProductId,
+                                                 g.ShopId,
+                                                 g.Pid,
+                                                 g.ProductNameEn,
+                                                 g.ProductNameTh,
+                                                 g.Status
+
+                                             }
                                            ).Take(100);
                             if (request == null)
                             {
