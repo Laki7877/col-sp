@@ -186,7 +186,7 @@ namespace Colsp.Api.CMSFunction
                 }
             }
             result.SearchText = model.SearchText;
-            result.ShopId = model.ShopId;
+            //result.ShopId = model.ShopId;
             result._direction = model._direction;
             result._filter = model._filter;
             result._limit = model._limit;
