@@ -403,6 +403,41 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
             }
         }
+
+        //Thanakrit : 20160215 , add for minified transfer json obj from front end
+        //used it's own data if not transfer
+        [Route("api/CMSUpdateStages")]
+        [HttpPost]
+        public HttpResponseMessage EditCMSMinJson(CMSCollectionItemRequest model)
+        {
+            try
+            {
+                if (model != null)
+                {
+                    int CMSId = 0;
+                    if (model.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.UpdateCMSStaticPage(model);
+                    }
+                    else if (model.CMSTypeId.Equals(Constant.CMS_TYPE_COLLECTION_PAGE))
+                    {
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.UpdateCMSCollectionItem(model);
+                    }
+                    return GetCollection(CMSId);
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
+            }
+        }
+
         #endregion
         protected override void Dispose(bool disposing)
         {

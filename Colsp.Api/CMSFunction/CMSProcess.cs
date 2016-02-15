@@ -488,6 +488,139 @@ namespace Colsp.Api.CMSFunction
         }
 
 
+        //Thanakrit : 20160215 , update only sending field
+        public int UpdateCMSStaticPage(CMSCollectionItemRequest Model)
+        {
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var cms = db.CMSMasters.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
+                        if (cms != null)
+                        {
+                            cms.CMSNameEN = Model.CMSNameEN != default(string) ? Model.CMSNameEN : cms.CMSNameEN ;
+                            cms.CMSNameTH = Model.CMSNameTH != default(string) ? Model.CMSNameTH : cms.CMSNameTH;
+                            cms.CMSFilterId = Model.CMSSortId ?? cms.CMSFilterId;
+                            cms.CMSTypeId = Model.CMSTypeId ?? cms.CMSTypeId ;
+                            cms.EffectiveDate = Model.EffectiveDate ?? cms.EffectiveDate ;
+                            cms.EffectiveTime = Model.EffectiveTime ?? cms.EffectiveTime ;
+                            cms.ExpiryDate = Model.ExpiryDate ?? cms.ExpiryDate ;
+                            cms.ExpiryTime = Model.ExpiryTime ?? cms.ExpiryTime ;
+                            cms.LongDescriptionEN = Model.LongDescriptionEN != default(string) ? Model.LongDescriptionEN : cms.LongDescriptionEN; 
+                            cms.LongDescriptionTH = Model.LongDescriptionTH != default(string) ? Model.LongDescriptionTH : cms.LongDescriptionTH ; 
+                            cms.ShopId = Model.ShopId ?? cms.ShopId;
+                            cms.ShortDescriptionEN = Model.ShortDescriptionEN != default(string) ? Model.ShortDescriptionEN : cms.ShortDescriptionEN;
+                            cms.ShortDescriptionTH = Model.ShortDescriptionTH != default(string) ? Model.ShortDescriptionTH : cms.ShortDescriptionTH; 
+                            cms.CMSCollectionGroupId = Model.CMSCollectionGroupId ?? cms.CMSCollectionGroupId ;
+                            cms.Status = Model.Status ?? cms.Status;
+                            cms.CMSStatusFlowId = Model.CMSStatusFlowId ?? cms.CMSStatusFlowId;
+                            cms.Sequence = Model.Sequence ?? cms.Sequence;
+                            cms.URLKey = Model.URLKey != default(string) ? Model.URLKey : cms.URLKey;
+                            cms.Visibility = Model.Visibility ?? cms.Visibility;
+                            cms.UpdateBy = Model.CreateBy ?? cms.UpdateBy;
+                            cms.UpdateDate = DateTime.Now;
+                            cms.UpdateIP = Model.CreateIP != default(string) ? Model.CreateIP : cms.UpdateIP;
+                            db.Entry(cms).State = EntityState.Modified;
+                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            {
+                                dbcxtransaction.Commit();
+                                //History Log
+                                CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                result = cms.CMSId;
+                            }
+                        }
+
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbcxtransaction.Rollback();
+                        return result;
+                    }
+                }
+            }
+        }
+        public int UpdateCMSCollectionItem(CMSCollectionItemRequest Model)
+        {
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var cms = db.CMSMasters.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
+                        if (cms != null)
+                        {
+                            cms.CMSNameEN = Model.CMSNameEN != default(string) ? Model.CMSNameEN : cms.CMSNameEN;
+                            cms.CMSNameTH = Model.CMSNameTH != default(string) ? Model.CMSNameTH : cms.CMSNameTH;
+                            cms.CMSFilterId = Model.CMSSortId ?? cms.CMSFilterId;
+                            cms.CMSTypeId = Model.CMSTypeId ?? cms.CMSTypeId;
+                            cms.EffectiveDate = Model.EffectiveDate ?? cms.EffectiveDate;
+                            cms.EffectiveTime = Model.EffectiveTime ?? cms.EffectiveTime;
+                            cms.ExpiryDate = Model.ExpiryDate ?? cms.ExpiryDate;
+                            cms.ExpiryTime = Model.ExpiryTime ?? cms.ExpiryTime;
+                            cms.LongDescriptionEN = Model.LongDescriptionEN != default(string) ? Model.LongDescriptionEN : cms.LongDescriptionEN;
+                            cms.LongDescriptionTH = Model.LongDescriptionTH != default(string) ? Model.LongDescriptionTH : cms.LongDescriptionTH;
+                            cms.ShopId = Model.ShopId ?? cms.ShopId;
+                            cms.ShortDescriptionEN = Model.ShortDescriptionEN != default(string) ? Model.ShortDescriptionEN : cms.ShortDescriptionEN;
+                            cms.ShortDescriptionTH = Model.ShortDescriptionTH != default(string) ? Model.ShortDescriptionTH : cms.ShortDescriptionTH;
+                            cms.CMSCollectionGroupId = Model.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
+                            cms.Status = Model.Status ?? cms.Status;
+                            cms.CMSStatusFlowId = Model.CMSStatusFlowId ?? cms.CMSStatusFlowId;
+                            cms.Sequence = Model.Sequence ?? cms.Sequence;
+                            cms.URLKey = Model.URLKey != default(string) ? Model.URLKey : cms.URLKey;
+                            cms.Visibility = Model.Visibility ?? cms.Visibility;
+                            cms.UpdateBy = Model.CreateBy ?? cms.UpdateBy;
+                            cms.UpdateDate = DateTime.Now;
+                            cms.UpdateIP = Model.CreateIP != default(string) ? Model.CreateIP : cms.UpdateIP;
+                            db.Entry(cms).State = EntityState.Modified;
+                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            {
+
+                                foreach (var item in Model.CollectionItemList)
+                                {
+                                    var cItem = db.CMSCollectionItems.Where(c => c.CMSCollectionItemId == item.CMSCollectionItemId).FirstOrDefault();
+                                    if (cItem != null)
+                                    {
+                                        cItem.CMSId = cms.CMSId != default(int) ? cms.CMSId   : cItem.CMSId;//When saved has id.
+                                        cItem.PId = item.PId != default(string) ? item.PId : cItem.PId; 
+                                        cItem.ProductBoxBadge = item.ProductBoxBadge != default(string) ? item.ProductBoxBadge : cItem.ProductBoxBadge;
+                                        cItem.Sequence = item.Sequence ?? cItem.Sequence;
+                                        cItem.Status = item.Status ?? cItem.Status;
+                                        cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId ?? cItem.CMSCollectionItemGroupId;
+                                        cItem.UpdateBy = Model.CreateBy ?? cItem.UpdateBy;
+                                        cItem.UpdateDate = DateTime.Now;
+                                        cItem.UpdateIP = Model.CreateIP != default(string) ? Model.CreateIP : cItem.CreateIP;
+                                        db.Entry(cItem).State = EntityState.Modified;
+                                        db.SaveChanges();
+                                        dbcxtransaction.Commit();
+                                        //History Log
+                                        CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                        log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                        CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
+                                        log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", (bool)cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
+                                    }
+                                }
+                                result = cms.CMSId;
+                            }
+                        }
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbcxtransaction.Rollback();
+                        return result;
+                    }
+                }
+            }
+
+        }
+
         /// <summary>
         /// param as 
         /// </summary>
