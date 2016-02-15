@@ -8,7 +8,7 @@ namespace Colsp.Model.Requests
 {
     public class CMSShopRequest : PaginatedRequest
     {
-        public int? ShopId { get; set; }
+        //public int? ShopId { get; set; }
         public string SearchText { get; set; }
     }
 }
