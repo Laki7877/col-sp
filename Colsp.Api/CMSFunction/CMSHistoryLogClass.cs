@@ -13,6 +13,7 @@ using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
 using Newtonsoft.Json;
+using System.Web.Script.Serialization;
 
 namespace Colsp.Api.CMSFunction
 {
@@ -20,23 +21,23 @@ namespace Colsp.Api.CMSFunction
     {
         public void LogCreateCMS(int Id, string Tablename, bool Status, string Transaction, int UserId, string IP)
         {
-            string JsonText;
+            var JsonText = "";
             switch (Tablename.ToUpper())
             {
                 case "CMSMASTER":
-                    JsonText = this.GetJsonMasterCMS(Id).ToString();
+                     JsonText = this.GetJsonMasterCMS(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
                     break;
                 case "CMSCOLLECTIONITEM":
-                    JsonText = this.GetJsonCollectionItem(Id).ToString();
+                    JsonText = this.GetJsonCollectionItem(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
                     break;
                 case "CMSMainCategory":
-                    JsonText = this.GetJsonMainCategory(Id).ToString();
+                    JsonText = this.GetJsonMainCategory(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
                     break;
                 case "CMSBrandInShop":
-                    JsonText = this.GetJsonBrandInShop(Id).ToString();
+                    JsonText = this.GetJsonBrandInShop(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
                     break;
                 default:
@@ -75,46 +76,59 @@ namespace Colsp.Api.CMSFunction
         }
 
 
-        private IHttpActionResult GetJsonCollectionItem(int CollectionId)
+        private string GetJsonCollectionItem(int CollectionId)
         {
             using (ColspEntities db = new ColspEntities())
             {
-                var CMSCollectionItem = db.CMSCollectionItems.Where(c => c.CMSId == CollectionId).ToList();
-                return Ok(CMSCollectionItem);
+                var CMSCollectionItem = from n in db.CMSCollectionItems
+                                        where n.CMSId == CollectionId
+                                        select n;
+                string output = new JavaScriptSerializer().Serialize(CMSCollectionItem);
+                return output;
 
             }
         }
 
-        private IHttpActionResult GetJsonMasterCMS(int CMSId)
+        private string GetJsonMasterCMS(int CMSId)
         {
-            using (ColspEntities db = new ColspEntities())
+            try
             {
-                var CMSModel = db.CMSMasters.Where(c => c.CMSId == CMSId).ToList();
-                return Ok(CMSModel);
-                   
+                using (ColspEntities db = new ColspEntities())
+                {
+                    var CMSModel = from n in db.CMSMasters
+                                   where n.CMSId == CMSId
+                                   select n;
+                    string output = new JavaScriptSerializer().Serialize(CMSModel);
+                    return output;
 
+                }
             }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
         }
 
-        private IHttpActionResult GetJsonMainCategory(int MainId)
+        private string GetJsonMainCategory(int MainId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSMainCat = db.CMSMainCategories.Where(c => c.CMSId == MainId).ToList();
-
-                return Ok(CMSMainCat);
-                  
-
+                string output = new JavaScriptSerializer().Serialize(CMSMainCat);
+                return output;
             }
         }
 
-        private IHttpActionResult GetJsonBrandInShop(int BrandId)
+        private string GetJsonBrandInShop(int BrandId)
         {
             using (ColspEntities db = new ColspEntities())
             {
                 var CMSBrandInShop = db.CMSBrandInShops.Where(c => c.CMSId == BrandId).ToList();
-                return Ok(CMSBrandInShop);
-                    
+                string output = new JavaScriptSerializer().Serialize(CMSBrandInShop);
+                return output;
+
 
             }
         }

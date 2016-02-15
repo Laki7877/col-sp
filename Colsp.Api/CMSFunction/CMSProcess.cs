@@ -133,7 +133,7 @@ namespace Colsp.Api.CMSFunction
                             dbcxtransaction.Commit();
                             //History Log
                             CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            log.LogCreateCMS(cms.CMSId, "CMSMaster", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                             CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
                             log.LogCreateCMS(cms.CMSId, "CMSCollectionItem", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                         }
