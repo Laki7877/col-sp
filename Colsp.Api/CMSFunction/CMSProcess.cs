@@ -529,7 +529,7 @@ namespace Colsp.Api.CMSFunction
                                 dbcxtransaction.Commit();
                                 //History Log
                                 CMSHistoryLogClass log = new CMSHistoryLogClass();
-                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                log.LogCreateCMS(cms.CMSId, "CMSMaster", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                 result = cms.CMSId;
                             }
                         }
