@@ -11,7 +11,7 @@
           </Key>
           <Property Name="AttributeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="AttributeNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="AttributeNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeUnitEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeUnitTh" Type="nvarchar" MaxLength="100" />
           <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="100" />
@@ -28,9 +28,9 @@
           <Property Name="ShowLocalFilterFlag" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="AllowHtmlFlag" Type="bit" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="AttributeSet">
@@ -44,9 +44,9 @@
           <Property Name="AttributeSetDescriptionTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="AttributeSetMap">
@@ -59,9 +59,9 @@
           <Property Name="Required" Type="bit" />
           <Property Name="Filterable" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="AttributeSetTagMap">
@@ -72,9 +72,9 @@
           <Property Name="AttributeSetId" Type="int" Nullable="false" />
           <Property Name="TagId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="AttributeValue">
@@ -85,9 +85,9 @@
           <Property Name="AttributeValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeValueTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="AttributeValueMap">
@@ -98,9 +98,9 @@
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="AttributeValueId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="Brand">
@@ -112,17 +112,19 @@
           <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Path" Type="nvarchar" MaxLength="500" />
           <Property Name="PicUrl" Type="nvarchar" MaxLength="500" />
-          <Property Name="MetaTitle" Type="nvarchar" MaxLength="100" />
-          <Property Name="MetaDescription" Type="nvarchar" MaxLength="500" />
-          <Property Name="MetaKey" Type="nvarchar" MaxLength="500" />
-          <Property Name="UrlEn" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="UrlTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="MetaTitleEn" Type="nvarchar" MaxLength="60" />
+          <Property Name="MetaTitleTh" Type="nvarchar" MaxLength="60" />
+          <Property Name="MetaDescriptionEn" Type="nvarchar" MaxLength="150" />
+          <Property Name="MetaDescriptionTh" Type="nvarchar" MaxLength="150" />
+          <Property Name="MetaKeyEn" Type="nvarchar" MaxLength="630" />
+          <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" />
+          <Property Name="UrlEn" Type="nvarchar" MaxLength="300" />
           <Property Name="DescriptionEn" Type="nvarchar" MaxLength="500" />
           <Property Name="DescriptionTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="CategoryAttributeSetMap">
@@ -133,215 +135,10 @@
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="AttributeSetId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
-        </EntityType>
-        <EntityType Name="CMSBrandInShop">
-          <Key>
-            <PropertyRef Name="CMSBrandInShopId" />
-          </Key>
-          <Property Name="CMSBrandInShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSId" Type="int" />
-          <Property Name="BrandId" Type="int" />
-          <Property Name="BrandNameEN" Type="nvarchar" MaxLength="300" />
-          <Property Name="BrandNameTH" Type="nvarchar" MaxLength="300" />
-          <Property Name="Path" Type="nvarchar" MaxLength="200" />
-          <Property Name="PicUrl" Type="nvarchar" MaxLength="200" />
-          <Property Name="MetaTitle" Type="nvarchar" MaxLength="200" />
-          <Property Name="MetaDescription" Type="nvarchar" MaxLength="500" />
-          <Property Name="MetaKey" Type="nvarchar" MaxLength="100" />
-          <Property Name="UrlKey" Type="nvarchar" MaxLength="100" />
-          <Property Name="ShortDescriptionEn" Type="nvarchar" MaxLength="300" />
-          <Property Name="LongDescriptionEn" Type="ntext" />
-          <Property Name="ShortDescriptionTh" Type="nvarchar" MaxLength="300" />
-          <Property Name="LongDescriptionTh" Type="ntext" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSBy1Get1Item">
-          <Key>
-            <PropertyRef Name="CMSBy1Get1ItemId" />
-          </Key>
-          <Property Name="CMSBy1Get1ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSId" Type="int" />
-          <Property Name="PIDBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="PIDGet" Type="nvarchar" MaxLength="50" />
-          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
-          <Property Name="Sequence" Type="int" />
-          <Property Name="CMSCollectionGroupId" Type="int" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSCollectionGroup">
-          <Key>
-            <PropertyRef Name="CMSCollectionGroupId" />
-          </Key>
-          <Property Name="CMSCollectionGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSCollectionGroupNameEH" Type="nvarchar" MaxLength="100" />
-          <Property Name="CMSCollectionGroupNameTH" Type="nvarchar" MaxLength="100" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSCollectionItem">
-          <Key>
-            <PropertyRef Name="CMSCollectionItemId" />
-          </Key>
-          <Property Name="CMSCollectionItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSId" Type="int" />
-          <Property Name="PId" Type="nvarchar" MaxLength="50" />
-          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
-          <Property Name="Sequence" Type="int" />
-          <Property Name="CMSCollectionItemGroupId" Type="int" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="CMSCollectionItemGroup">
-          <Key>
-            <PropertyRef Name="CMSCollectionItemGroupId" />
-          </Key>
-          <Property Name="CMSCollectionItemGroupId" Type="int" Nullable="false" />
-          <Property Name="CMSCollectionItemGroupNameEH" Type="nvarchar" MaxLength="100" />
-          <Property Name="CMSCollectionItemGroupNameTH" Type="nvarchar" MaxLength="100" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSFilter">
-          <Key>
-            <PropertyRef Name="CMSSortId" />
-          </Key>
-          <Property Name="CMSSortId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSSortNameTH" Type="nvarchar" MaxLength="300" />
-          <Property Name="CMSSortNameEN" Type="nvarchar" MaxLength="300" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSHistoryLog">
-          <Key>
-            <PropertyRef Name="CMSHistoryLogId" />
-          </Key>
-          <Property Name="CMSHistoryLogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ChangeId" Type="int" />
-          <Property Name="CMSTableLog" Type="nchar" MaxLength="10" />
-          <Property Name="TransactionLog" Type="nvarchar" MaxLength="50" />
-          <Property Name="DetailLog" Type="ntext" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSMainCategory">
-          <Key>
-            <PropertyRef Name="CMSMainCategoryId" />
-          </Key>
-          <Property Name="CMSMainCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSId" Type="int" />
-          <Property Name="CategoryId" Type="nchar" MaxLength="10" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSMaster">
-          <Key>
-            <PropertyRef Name="CMSId" />
-          </Key>
-          <Property Name="CMSId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSNameEN" Type="nvarchar" MaxLength="300" />
-          <Property Name="CMSNameTH" Type="nvarchar" MaxLength="300" />
-          <Property Name="URLKey" Type="nvarchar" MaxLength="300" />
-          <Property Name="CMSTypeId" Type="int" />
-          <Property Name="CMSFilterId" Type="int" />
-          <Property Name="EffectiveDate" Type="date" />
-          <Property Name="EffectiveTime" Type="time" Precision="7" />
-          <Property Name="ExpiryDate" Type="date" />
-          <Property Name="ExpiryTime" Type="time" Precision="7" />
-          <Property Name="ShopId" Type="int" />
-          <Property Name="CMSCount" Type="int" />
-          <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="500" />
-          <Property Name="LongDescriptionTH" Type="ntext" />
-          <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="500" />
-          <Property Name="LongDescriptionEN" Type="ntext" />
-          <Property Name="Sequence" Type="int" />
-          <Property Name="CMSStatusFlowId" Type="int" />
-          <Property Name="CMSCollectionGroupId" Type="int" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSStatusFlow">
-          <Key>
-            <PropertyRef Name="CMSStatusId" />
-          </Key>
-          <Property Name="CMSStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSStatusNameEH" Type="nvarchar" MaxLength="50" />
-          <Property Name="CMSStatusNameTH" Type="nvarchar" MaxLength="50" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSType">
-          <Key>
-            <PropertyRef Name="CMSTypeId" />
-          </Key>
-          <Property Name="CMSTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSTypeNameTH" Type="nvarchar" MaxLength="300" />
-          <Property Name="CMSTypeNameEN" Type="nvarchar" MaxLength="300" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CMSTypeCode" Type="nvarchar" MaxLength="3" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -396,9 +193,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Rgt" Type="int" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="GlobalCategoryAbbrevation">
@@ -424,15 +221,18 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Pid" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Quantity" Type="int" />
           <Property Name="QuantityOutStock" Type="int" />
+          <Property Name="Defect" Type="int" />
+          <Property Name="OnHold" Type="int" />
+          <Property Name="Reserve" Type="int" />
           <Property Name="MinQuantity" Type="int" />
           <Property Name="MaxQuantity" Type="int" />
           <Property Name="UseDecimal" Type="bit" />
           <Property Name="SaftyStockSeller" Type="int" />
           <Property Name="SaftyStockAdmin" Type="int" />
           <Property Name="StockAvailable" Type="int" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="InventoryHistory">
@@ -450,9 +250,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="SafetyStockSeller" Type="int" />
           <Property Name="SafetyStockAdmin" Type="int" />
           <Property Name="StockAvailable" Type="int" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="LocalCategory">
@@ -470,9 +270,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Rgt" Type="int" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="Permission">
@@ -536,9 +336,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="OnlineFlag" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductAttribute">
@@ -551,9 +351,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ValueTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductGlobalCatMap">
@@ -564,9 +364,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductHistory">
@@ -622,9 +422,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="OnlineFlag" Type="bit" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductHistoryAttribute">
@@ -637,9 +437,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ValueTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductHistoryGlobalCatMap">
@@ -650,9 +450,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductHistoryImage">
@@ -666,9 +466,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Position" Type="int" />
           <Property Name="FeatureFlag" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductHistoryLocalCatMap">
@@ -679,9 +479,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductHistoryRelated">
@@ -692,9 +492,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Pid1" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Pid2" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductHistoryVariant">
@@ -728,9 +528,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" />
           <Property Name="DimenstionWeight" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductHistoryVideo">
@@ -743,9 +543,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="VideoUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductImage">
@@ -762,9 +562,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Position" Type="int" />
           <Property Name="FeatureFlag" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductLocalCatMap">
@@ -775,9 +575,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductRelated">
@@ -788,24 +588,24 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Pid1" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Pid2" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductReview">
           <Key>
-            <PropertyRef Name="ProudctReviewId" />
+            <PropertyRef Name="ProductReviewId" />
           </Key>
-          <Property Name="ProudctReviewId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductReviewId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CustomerId" Type="varchar" MaxLength="36" />
           <Property Name="Rating" Type="decimal" Precision="3" Scale="1" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Comment" Type="nvarchar" MaxLength="500" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStage">
@@ -838,14 +638,16 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
-          <Property Name="DimensionUnit" Type="char" MaxLength="10" />
+          <Property Name="DimensionUnit" Type="char" MaxLength="2" />
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
-          <Property Name="WeightUnit" Type="char" MaxLength="10" />
-          <Property Name="MetaTitle" Type="nvarchar" MaxLength="60" />
-          <Property Name="MetaDescription" Type="nvarchar" MaxLength="150" />
-          <Property Name="MetaKey" Type="nvarchar" MaxLength="630" />
+          <Property Name="WeightUnit" Type="char" MaxLength="2" />
+          <Property Name="MetaTitleEn" Type="nvarchar" MaxLength="60" />
+          <Property Name="MetaTitleTh" Type="nvarchar" MaxLength="60" />
+          <Property Name="MetaDescriptionEn" Type="nvarchar" MaxLength="150" />
+          <Property Name="MetaDescriptionTh" Type="nvarchar" MaxLength="150" />
+          <Property Name="MetaKeyEn" Type="nvarchar" MaxLength="630" />
+          <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" />
           <Property Name="UrlEn" Type="nvarchar" MaxLength="300" />
-          <Property Name="UrlTh" Type="nvarchar" MaxLength="300" />
           <Property Name="BoostWeight" Type="int" />
           <Property Name="EffectiveDate" Type="date" />
           <Property Name="EffectiveTime" Type="time" Precision="7" />
@@ -860,9 +662,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="OnlineFlag" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageAttribute">
@@ -877,9 +679,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ValueTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageComment">
@@ -889,9 +691,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="CommentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Comment" Type="nvarchar" MaxLength="1000" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageGlobalCatMap">
@@ -902,9 +704,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageImage">
@@ -922,9 +724,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Position" Type="int" />
           <Property Name="FeatureFlag" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageImage360">
@@ -942,9 +744,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Position" Type="int" />
           <Property Name="FeatureFlag" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageLocalCatMap">
@@ -955,9 +757,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageRelated">
@@ -969,9 +771,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Pid2" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="ShopId" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageVariant">
@@ -989,15 +791,15 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" />
           <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
-          <Property Name="ShopId" Type="int" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="Sku" Type="nvarchar" MaxLength="300" />
           <Property Name="Upc" Type="nvarchar" MaxLength="300" />
           <Property Name="Display" Type="nvarchar" MaxLength="20" />
           <Property Name="OriginalPrice" Type="money" />
           <Property Name="SalePrice" Type="money" />
-          <Property Name="DescriptionFullEn" Type="nvarchar(max)" />
+          <Property Name="DescriptionFullEn" Type="ntext" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="nvarchar(max)" />
+          <Property Name="DescriptionFullTh" Type="ntext" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Stock" Type="int" />
           <Property Name="SaftyStock" Type="int" />
@@ -1006,15 +808,15 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
-          <Property Name="DimensionUnit" Type="char" MaxLength="10" />
+          <Property Name="DimensionUnit" Type="char" MaxLength="2" />
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
-          <Property Name="WeightUnit" Type="char" MaxLength="10" />
+          <Property Name="WeightUnit" Type="char" MaxLength="2" />
           <Property Name="DefaultVaraint" Type="bit" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductStageVideo">
@@ -1028,9 +830,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="VideoUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductVariant">
@@ -1071,9 +873,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="DefaultVaraint" Type="bit" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ProductVideo">
@@ -1086,9 +888,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="VideoUrlTh" Type="nvarchar" MaxLength="2083" />
           <Property Name="Position" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="Shipping">
@@ -1099,9 +901,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ShippingMethodEn" Type="nvarchar" MaxLength="50" />
           <Property Name="ShippingMethodTh" Type="nvarchar" MaxLength="50" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="Shop">
@@ -1117,9 +919,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ShopType">
@@ -1130,9 +932,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ShopTypeNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ShopTypeNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ShopTypePermissionMap">
@@ -1142,9 +944,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="ShopTypeId" Type="int" Nullable="false" />
           <Property Name="PermissionId" Type="int" Nullable="false" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ShopUserGroupMap">
@@ -1154,9 +956,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="GroupId" Type="int" Nullable="false" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="sysdiagrams">
@@ -1177,9 +979,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="TagName" Type="nvarchar" MaxLength="100" />
           <Property Name="Count" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="User">
@@ -1190,7 +992,7 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Username" Type="nvarchar" MaxLength="50" />
           <Property Name="Password" Type="nvarchar" MaxLength="100" />
           <Property Name="PasswordLastChg" Type="nvarchar" MaxLength="100" />
-          <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="EmployeeId" Type="nvarchar" MaxLength="100" />
           <Property Name="Position" Type="nvarchar" MaxLength="100" />
           <Property Name="Division" Type="nvarchar" MaxLength="100" />
@@ -1203,9 +1005,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="LoginFailCount" Type="int" />
           <Property Name="LastLoginDt" Type="datetime" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="UserGroup">
@@ -1217,9 +1019,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="GroupNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Type" Type="char" MaxLength="1" />
           <Property Name="Status" Type="char" MaxLength="2" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="UserGroupMap">
@@ -1229,9 +1031,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="GroupId" Type="int" Nullable="false" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="UserGroupPermissionMap">
@@ -1241,9 +1043,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="GroupId" Type="int" Nullable="false" />
           <Property Name="PermissionId" Type="int" Nullable="false" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="UserShop">
@@ -1253,9 +1055,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <Association Name="FK_AttributeSetTagMap_AttributeSet">
@@ -1283,7 +1085,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_GlobalCategoryPID_GlobalCategory">
-          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="GlobalCategoryPID" Type="Self.GlobalCategoryPID" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -1977,7 +1781,7 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageVariantShop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
           <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -2860,7 +2664,7 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="AttributeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AttributeNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="AttributeNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeUnitEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeUnitTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DisplayNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2877,9 +2681,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ShowLocalFilterFlag" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="AllowHtmlFlag" Type="Boolean" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSetMaps" Relationship="ColspModel.FKAttributeSetMapAttribute" FromRole="Attribute" ToRole="AttributeSetMap" />
           <NavigationProperty Name="AttributeValueMaps" Relationship="ColspModel.FKAttributeValueMapAttribute" FromRole="Attribute" ToRole="AttributeValueMap" />
@@ -2903,9 +2707,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="AttributeSetDescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSetTagMaps" Relationship="ColspModel.FK_AttributeSetTagMap_AttributeSet" FromRole="AttributeSet" ToRole="AttributeSetTagMap" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_AttributeSet" FromRole="AttributeSet" ToRole="Product" />
@@ -2924,9 +2728,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Required" Type="Boolean" />
           <Property Name="Filterable" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKAttributeSetMapAttribute" FromRole="AttributeSetMap" ToRole="Attribute" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FKAttributeSetMapAttributeSet" FromRole="AttributeSetMap" ToRole="AttributeSet" />
@@ -2939,9 +2743,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="AttributeSetId" Type="Int32" Nullable="false" />
           <Property Name="TagId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_AttributeSetTagMap_AttributeSet" FromRole="AttributeSetTagMap" ToRole="AttributeSet" />
           <NavigationProperty Name="Tag" Relationship="ColspModel.FK_AttributeSetTagMap_Tag" FromRole="AttributeSetTagMap" ToRole="Tag" />
@@ -2954,9 +2758,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="AttributeValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeValueMaps" Relationship="ColspModel.FKAttributeValueMapAttributeValue" FromRole="AttributeValue" ToRole="AttributeValueMap" />
         </EntityType>
@@ -2968,9 +2772,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="AttributeValueId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKAttributeValueMapAttribute" FromRole="AttributeValueMap" ToRole="Attribute" />
           <NavigationProperty Name="AttributeValue" Relationship="ColspModel.FKAttributeValueMapAttributeValue" FromRole="AttributeValueMap" ToRole="AttributeValue" />
@@ -2984,17 +2788,19 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="BrandNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="PicUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="MetaTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="MetaKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="UrlEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="UrlTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitleEn" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitleTh" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionEn" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionTh" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyEn" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyTh" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="UrlEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductBrand" FromRole="Brand" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryBrand" FromRole="Brand" ToRole="ProductHistory" />
@@ -3008,199 +2814,12 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="AttributeSetId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FKCategoryAttributeSetMapAttributeSet" FromRole="CategoryAttributeSetMap" ToRole="AttributeSet" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKCategoryAttributeSetMapCategory" FromRole="CategoryAttributeSetMap" ToRole="GlobalCategory" />
-        </EntityType>
-        <EntityType Name="CMSBrandInShop">
-          <Key>
-            <PropertyRef Name="CMSBrandInShopId" />
-          </Key>
-          <Property Name="CMSBrandInShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSId" Type="Int32" />
-          <Property Name="BrandId" Type="Int32" />
-          <Property Name="BrandNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="BrandNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="Path" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="PicUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="MetaTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="MetaDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="MetaKey" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="UrlKey" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSBy1Get1Item">
-          <Key>
-            <PropertyRef Name="CMSBy1Get1ItemId" />
-          </Key>
-          <Property Name="CMSBy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSId" Type="Int32" />
-          <Property Name="PIDBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PIDGet" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="CMSCollectionGroupId" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSCollectionGroup">
-          <Key>
-            <PropertyRef Name="CMSCollectionGroupId" />
-          </Key>
-          <Property Name="CMSCollectionGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSCollectionGroupNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CMSCollectionGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSCollectionItem">
-          <Key>
-            <PropertyRef Name="CMSCollectionItemId" />
-          </Key>
-          <Property Name="CMSCollectionItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSId" Type="Int32" />
-          <Property Name="PId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="CMSCollectionItemGroupId" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSFilter">
-          <Key>
-            <PropertyRef Name="CMSSortId" />
-          </Key>
-          <Property Name="CMSSortId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSSortNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="CMSSortNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSHistoryLog">
-          <Key>
-            <PropertyRef Name="CMSHistoryLogId" />
-          </Key>
-          <Property Name="CMSHistoryLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ChangeId" Type="Int32" />
-          <Property Name="CMSTableLog" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="TransactionLog" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="DetailLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSMainCategory">
-          <Key>
-            <PropertyRef Name="CMSMainCategoryId" />
-          </Key>
-          <Property Name="CMSMainCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSId" Type="Int32" />
-          <Property Name="CategoryId" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSMaster">
-          <Key>
-            <PropertyRef Name="CMSId" />
-          </Key>
-          <Property Name="CMSId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="CMSNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="CMSTypeId" Type="Int32" />
-          <Property Name="CMSFilterId" Type="Int32" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="EffectiveTime" Type="Time" Precision="7" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="ExpiryTime" Type="Time" Precision="7" />
-          <Property Name="ShopId" Type="Int32" />
-          <Property Name="CMSCount" Type="Int32" />
-          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="CMSStatusFlowId" Type="Int32" />
-          <Property Name="CMSCollectionGroupId" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSStatusFlow">
-          <Key>
-            <PropertyRef Name="CMSStatusId" />
-          </Key>
-          <Property Name="CMSStatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSStatusNameEH" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CMSStatusNameTH" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSType">
-          <Key>
-            <PropertyRef Name="CMSTypeId" />
-          </Key>
-          <Property Name="CMSTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSTypeNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="CMSTypeNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CMSTypeCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -3255,9 +2874,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Rgt" Type="Int32" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CategoryAttributeSetMaps" Relationship="ColspModel.FKCategoryAttributeSetMapCategory" FromRole="GlobalCategory" ToRole="CategoryAttributeSetMap" />
           <NavigationProperty Name="GlobalCategoryPID" Relationship="ColspModel.FK_GlobalCategoryPID_GlobalCategory" FromRole="GlobalCategory" ToRole="GlobalCategoryPID" />
@@ -3292,15 +2911,18 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Int32" />
           <Property Name="QuantityOutStock" Type="Int32" />
+          <Property Name="Defect" Type="Int32" />
+          <Property Name="OnHold" Type="Int32" />
+          <Property Name="Reserve" Type="Int32" />
           <Property Name="MinQuantity" Type="Int32" />
           <Property Name="MaxQuantity" Type="Int32" />
           <Property Name="UseDecimal" Type="Boolean" />
           <Property Name="SaftyStockSeller" Type="Int32" />
           <Property Name="SaftyStockAdmin" Type="Int32" />
           <Property Name="StockAvailable" Type="Int32" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="InventoryHistory">
@@ -3318,9 +2940,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="SafetyStockSeller" Type="Int32" />
           <Property Name="SafetyStockAdmin" Type="Int32" />
           <Property Name="StockAvailable" Type="Int32" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="LocalCategory">
@@ -3338,9 +2960,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Rgt" Type="Int32" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKLocalCategoryShop" FromRole="LocalCategory" ToRole="Shop" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryLocalCat" FromRole="LocalCategory" ToRole="ProductHistory" />
@@ -3413,9 +3035,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="OnlineFlag" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_Product_AttributeSet" FromRole="Product" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FKProductBrand" FromRole="Product" ToRole="Brand" />
@@ -3436,9 +3058,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductAttributeAttribute" FromRole="ProductAttribute" ToRole="Attribute" />
         </EntityType>
@@ -3450,9 +3072,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKProductGlobalCatMapGlobalCategory" FromRole="ProductGlobalCatMap" ToRole="GlobalCategory" />
           <NavigationProperty Name="Product" Relationship="ColspModel.FKProductGlobalCatMapProduct" FromRole="ProductGlobalCatMap" ToRole="Product" />
@@ -3510,9 +3132,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="OnlineFlag" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_ProductHistory_AttributeSet" FromRole="ProductHistory" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FKProductHistoryBrand" FromRole="ProductHistory" ToRole="Brand" />
@@ -3535,9 +3157,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductHistoryAttributeAttribute" FromRole="ProductHistoryAttribute" ToRole="Attribute" />
         </EntityType>
@@ -3549,9 +3171,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKProductHistoryGlobalCatMapGlobalCategory" FromRole="ProductHistoryGlobalCatMap" ToRole="GlobalCategory" />
           <NavigationProperty Name="ProductHistory" Relationship="ColspModel.FKProductHistoryGlobalCatMapProduct" FromRole="ProductHistoryGlobalCatMap" ToRole="ProductHistory" />
@@ -3567,9 +3189,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Position" Type="Int32" />
           <Property Name="FeatureFlag" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductHistoryLocalCatMap">
@@ -3580,9 +3202,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductHistoryLocalCatMapLocalCategory" FromRole="ProductHistoryLocalCatMap" ToRole="LocalCategory" />
           <NavigationProperty Name="ProductHistory" Relationship="ColspModel.FKProductHistoryLocalCatMapProduct" FromRole="ProductHistoryLocalCatMap" ToRole="ProductHistory" />
@@ -3595,9 +3217,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Pid1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Pid2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductHistoryVariant">
@@ -3631,9 +3253,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="DimenstionWeight" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductHistoryVariantVariant" FromRole="ProductHistoryVariant" ToRole="Attribute" />
           <NavigationProperty Name="ProductHistory" Relationship="ColspModel.FKProductHistoryVariantProduct" FromRole="ProductHistoryVariant" ToRole="ProductHistory" />
@@ -3648,9 +3270,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductImage">
@@ -3667,9 +3289,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Position" Type="Int32" />
           <Property Name="FeatureFlag" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductLocalCatMap">
@@ -3680,9 +3302,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductLocalCatMapLocalCategory" FromRole="ProductLocalCatMap" ToRole="LocalCategory" />
           <NavigationProperty Name="Product" Relationship="ColspModel.FKProductLocalCatMapProduct" FromRole="ProductLocalCatMap" ToRole="Product" />
@@ -3695,24 +3317,24 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Pid1" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Pid2" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductReview">
           <Key>
-            <PropertyRef Name="ProudctReviewId" />
+            <PropertyRef Name="ProductReviewId" />
           </Key>
-          <Property Name="ProudctReviewId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductReviewId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CustomerId" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
           <Property Name="Rating" Type="Decimal" Precision="3" Scale="1" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductStage">
@@ -3745,14 +3367,16 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
-          <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="DimensionUnit" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
-          <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="MetaTitle" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
-          <Property Name="MetaDescription" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="MetaKey" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="WeightUnit" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="MetaTitleEn" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitleTh" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionEn" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionTh" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyEn" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyTh" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="UrlEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="UrlTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="BoostWeight" Type="Int32" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
           <Property Name="EffectiveTime" Type="Time" Precision="7" />
@@ -3767,9 +3391,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="OnlineFlag" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_ProductStage_AttributeSet" FromRole="ProductStage" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FKProductStageBrand" FromRole="ProductStage" ToRole="Brand" />
@@ -3795,9 +3419,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductStageAttributeAttribute" FromRole="ProductStageAttribute" ToRole="Attribute" />
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_ProductStageAttribute_ProductStage" FromRole="ProductStageAttribute" ToRole="ProductStage" />
@@ -3809,9 +3433,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="CommentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Comment" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductStageGlobalCatMap">
@@ -3822,9 +3446,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKProductStageGlobalCatMapGlobalCategory" FromRole="ProductStageGlobalCatMap" ToRole="GlobalCategory" />
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FKProductStageGlobalCatMapProduct" FromRole="ProductStageGlobalCatMap" ToRole="ProductStage" />
@@ -3844,9 +3468,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Position" Type="Int32" />
           <Property Name="FeatureFlag" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageImage_Shop" FromRole="ProductStageImage" ToRole="Shop" />
         </EntityType>
@@ -3865,9 +3489,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Position" Type="Int32" />
           <Property Name="FeatureFlag" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageImage360_Shop" FromRole="ProductStageImage360" ToRole="Shop" />
         </EntityType>
@@ -3879,9 +3503,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductStageLocalCatMapLocalCategory" FromRole="ProductStageLocalCatMap" ToRole="LocalCategory" />
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FKProductStageLocalCatMapProduct" FromRole="ProductStageLocalCatMap" ToRole="ProductStage" />
@@ -3895,9 +3519,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Pid2" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="ShopId" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageRelated_Shop" FromRole="ProductStageRelated" ToRole="Shop" />
         </EntityType>
@@ -3916,7 +3540,7 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ProductNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
-          <Property Name="ShopId" Type="Int32" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="Sku" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Upc" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Display" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -3933,15 +3557,15 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
-          <Property Name="DimensionUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="DimensionUnit" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
-          <Property Name="WeightUnit" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="WeightUnit" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="DefaultVaraint" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductStageVariantAttribute1" FromRole="ProductStageVariant" ToRole="Attribute" />
           <NavigationProperty Name="Attribute1" Relationship="ColspModel.FKProductStageVariantAttribute2" FromRole="ProductStageVariant" ToRole="Attribute" />
@@ -3959,9 +3583,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageVideo_Shop" FromRole="ProductStageVideo" ToRole="Shop" />
         </EntityType>
@@ -4003,9 +3627,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="DefaultVaraint" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductVariantAttribute1" FromRole="ProductVariant" ToRole="Attribute" />
           <NavigationProperty Name="Attribute1" Relationship="ColspModel.FKProductVariantAttribute2" FromRole="ProductVariant" ToRole="Attribute" />
@@ -4022,9 +3646,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="VideoUrlTh" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Shipping">
@@ -4035,9 +3659,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ShippingMethodEn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ShippingMethodTh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShipping" FromRole="Shipping" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShipping" FromRole="Shipping" ToRole="ProductHistory" />
@@ -4056,9 +3680,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="LocalCategories" Relationship="ColspModel.FKLocalCategoryShop" FromRole="Shop" ToRole="LocalCategory" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShop" FromRole="Shop" ToRole="Product" />
@@ -4083,9 +3707,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="ShopTypeNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ShopTypeNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FK_Shop_ShopType" FromRole="ShopType" ToRole="Shop" />
           <NavigationProperty Name="ShopTypePermissionMaps" Relationship="ColspModel.FK_ShopTypePermissionMap_ShopType" FromRole="ShopType" ToRole="ShopTypePermissionMap" />
@@ -4097,9 +3721,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="ShopTypeId" Type="Int32" Nullable="false" />
           <Property Name="PermissionId" Type="Int32" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Permission" Relationship="ColspModel.FK_ShopTypePermissionMap_Permission" FromRole="ShopTypePermissionMap" ToRole="Permission" />
           <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_ShopTypePermissionMap_ShopType" FromRole="ShopTypePermissionMap" ToRole="ShopType" />
@@ -4111,9 +3735,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="GroupId" Type="Int32" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="ShopUserGroupMap" ToRole="Shop" />
           <NavigationProperty Name="UserGroup" Relationship="ColspModel.FK_ShopUerGroupMap_UserGroup" FromRole="ShopUserGroupMap" ToRole="UserGroup" />
@@ -4136,9 +3760,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="TagName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Count" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSetTagMaps" Relationship="ColspModel.FK_AttributeSetTagMap_Tag" FromRole="Tag" ToRole="AttributeSetTagMap" />
         </EntityType>
@@ -4150,7 +3774,7 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="PasswordLastChg" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="EmployeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Division" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -4163,9 +3787,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="LoginFailCount" Type="Int32" />
           <Property Name="LastLoginDt" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryUser" FromRole="User" ToRole="ProductHistory" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FKShopUser" FromRole="User" ToRole="Shop" />
@@ -4181,9 +3805,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           <Property Name="GroupNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ShopUserGroupMaps" Relationship="ColspModel.FK_ShopUerGroupMap_UserGroup" FromRole="UserGroup" ToRole="ShopUserGroupMap" />
           <NavigationProperty Name="UserGroupMaps" Relationship="ColspModel.FKUserGroupMapUserGroup" FromRole="UserGroup" ToRole="UserGroupMap" />
@@ -4196,9 +3820,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="GroupId" Type="Int32" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKUserGroupMapUser" FromRole="UserGroupMap" ToRole="User" />
           <NavigationProperty Name="UserGroup" Relationship="ColspModel.FKUserGroupMapUserGroup" FromRole="UserGroupMap" ToRole="UserGroup" />
@@ -4210,9 +3834,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="GroupId" Type="Int32" Nullable="false" />
           <Property Name="PermissionId" Type="Int32" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Permission" Relationship="ColspModel.FKUserGroupPermissionMapUserPermission" FromRole="UserGroupPermissionMap" ToRole="Permission" />
           <NavigationProperty Name="UserGroup" Relationship="ColspModel.FKUserGroupPermissionMapUserGroup" FromRole="UserGroupPermissionMap" ToRole="UserGroup" />
@@ -4224,9 +3848,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </Key>
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKUserShopShop" FromRole="UserShop" ToRole="Shop" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKUserShopUser" FromRole="UserShop" ToRole="User" />
@@ -4512,7 +4136,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_GlobalCategoryPID_GlobalCategory">
-          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1" />
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.GlobalCategoryPID" Role="GlobalCategoryPID" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -4954,7 +4580,7 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageVariantShop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -5238,11 +4864,13 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="DescriptionTh" ColumnName="DescriptionTh" />
                 <ScalarProperty Name="DescriptionEn" ColumnName="DescriptionEn" />
-                <ScalarProperty Name="UrlTh" ColumnName="UrlTh" />
                 <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
-                <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
-                <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
-                <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
+                <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />
+                <ScalarProperty Name="MetaKeyEn" ColumnName="MetaKeyEn" />
+                <ScalarProperty Name="MetaDescriptionTh" ColumnName="MetaDescriptionTh" />
+                <ScalarProperty Name="MetaDescriptionEn" ColumnName="MetaDescriptionEn" />
+                <ScalarProperty Name="MetaTitleTh" ColumnName="MetaTitleTh" />
+                <ScalarProperty Name="MetaTitleEn" ColumnName="MetaTitleEn" />
                 <ScalarProperty Name="PicUrl" ColumnName="PicUrl" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
                 <ScalarProperty Name="BrandNameTh" ColumnName="BrandNameTh" />
@@ -5261,137 +4889,6 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSBrandInShops">
-            <EntityTypeMapping TypeName="ColspModel.CMSBrandInShop">
-              <MappingFragment StoreEntitySet="CMSBrandInShop">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="LongDescriptionTh" ColumnName="LongDescriptionTh" />
-                <ScalarProperty Name="ShortDescriptionTh" ColumnName="ShortDescriptionTh" />
-                <ScalarProperty Name="LongDescriptionEn" ColumnName="LongDescriptionEn" />
-                <ScalarProperty Name="ShortDescriptionEn" ColumnName="ShortDescriptionEn" />
-                <ScalarProperty Name="UrlKey" ColumnName="UrlKey" />
-                <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
-                <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
-                <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
-                <ScalarProperty Name="PicUrl" ColumnName="PicUrl" />
-                <ScalarProperty Name="Path" ColumnName="Path" />
-                <ScalarProperty Name="BrandNameTH" ColumnName="BrandNameTH" />
-                <ScalarProperty Name="BrandNameEN" ColumnName="BrandNameEN" />
-                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
-                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
-                <ScalarProperty Name="CMSBrandInShopId" ColumnName="CMSBrandInShopId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSBy1Get1Item">
-            <EntityTypeMapping TypeName="ColspModel.CMSBy1Get1Item">
-              <MappingFragment StoreEntitySet="CMSBy1Get1Item">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
-                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
-                <ScalarProperty Name="PIDBy" ColumnName="PIDBy" />
-                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
-                <ScalarProperty Name="CMSBy1Get1ItemId" ColumnName="CMSBy1Get1ItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSCollectionGroups">
-            <EntityTypeMapping TypeName="ColspModel.CMSCollectionGroup">
-              <MappingFragment StoreEntitySet="CMSCollectionGroup">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionGroupNameTH" ColumnName="CMSCollectionGroupNameTH" />
-                <ScalarProperty Name="CMSCollectionGroupNameEH" ColumnName="CMSCollectionGroupNameEH" />
-                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSCollectionItems">
-            <EntityTypeMapping TypeName="ColspModel.CMSCollectionItem">
-              <MappingFragment StoreEntitySet="CMSCollectionItem">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionItemGroupId" ColumnName="CMSCollectionItemGroupId" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
-                <ScalarProperty Name="PId" ColumnName="PId" />
-                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
-                <ScalarProperty Name="CMSCollectionItemId" ColumnName="CMSCollectionItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSFilters">
-            <EntityTypeMapping TypeName="ColspModel.CMSFilter">
-              <MappingFragment StoreEntitySet="CMSFilter">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSSortNameEN" ColumnName="CMSSortNameEN" />
-                <ScalarProperty Name="CMSSortNameTH" ColumnName="CMSSortNameTH" />
-                <ScalarProperty Name="CMSSortId" ColumnName="CMSSortId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSHistoryLogs">
-            <EntityTypeMapping TypeName="ColspModel.CMSHistoryLog">
-              <MappingFragment StoreEntitySet="CMSHistoryLog">
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="DetailLog" ColumnName="DetailLog" />
-                <ScalarProperty Name="TransactionLog" ColumnName="TransactionLog" />
-                <ScalarProperty Name="CMSTableLog" ColumnName="CMSTableLog" />
-                <ScalarProperty Name="ChangeId" ColumnName="ChangeId" />
-                <ScalarProperty Name="CMSHistoryLogId" ColumnName="CMSHistoryLogId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSMainCategories">
-            <EntityTypeMapping TypeName="ColspModel.CMSMainCategory">
-              <MappingFragment StoreEntitySet="CMSMainCategory">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
-                <ScalarProperty Name="CMSMainCategoryId" ColumnName="CMSMainCategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5552,6 +5049,9 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
                 <ScalarProperty Name="UseDecimal" ColumnName="UseDecimal" />
                 <ScalarProperty Name="MaxQuantity" ColumnName="MaxQuantity" />
                 <ScalarProperty Name="MinQuantity" ColumnName="MinQuantity" />
+                <ScalarProperty Name="Reserve" ColumnName="Reserve" />
+                <ScalarProperty Name="OnHold" ColumnName="OnHold" />
+                <ScalarProperty Name="Defect" ColumnName="Defect" />
                 <ScalarProperty Name="QuantityOutStock" ColumnName="QuantityOutStock" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
@@ -5936,7 +5436,7 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="Rating" ColumnName="Rating" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="ProudctReviewId" ColumnName="ProudctReviewId" />
+                <ScalarProperty Name="ProductReviewId" ColumnName="ProductReviewId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5961,11 +5461,13 @@ warning 6002: The table/view 'colsp.dbo.CMSCollectionItemGroup' does not have a 
                 <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="BoostWeight" ColumnName="BoostWeight" />
-                <ScalarProperty Name="UrlTh" ColumnName="UrlTh" />
                 <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
-                <ScalarProperty Name="MetaKey" ColumnName="MetaKey" />
-                <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
-                <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
+                <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />
+                <ScalarProperty Name="MetaKeyEn" ColumnName="MetaKeyEn" />
+                <ScalarProperty Name="MetaDescriptionTh" ColumnName="MetaDescriptionTh" />
+                <ScalarProperty Name="MetaDescriptionEn" ColumnName="MetaDescriptionEn" />
+                <ScalarProperty Name="MetaTitleTh" ColumnName="MetaTitleTh" />
+                <ScalarProperty Name="MetaTitleEn" ColumnName="MetaTitleEn" />
                 <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
                 <ScalarProperty Name="DimensionUnit" ColumnName="DimensionUnit" />

@@ -17,6 +17,9 @@ namespace Colsp.Entity.Models
         public string Pid { get; set; }
         public Nullable<int> Quantity { get; set; }
         public Nullable<int> QuantityOutStock { get; set; }
+        public Nullable<int> Defect { get; set; }
+        public Nullable<int> OnHold { get; set; }
+        public Nullable<int> Reserve { get; set; }
         public Nullable<int> MinQuantity { get; set; }
         public Nullable<int> MaxQuantity { get; set; }
         public Nullable<bool> UseDecimal { get; set; }

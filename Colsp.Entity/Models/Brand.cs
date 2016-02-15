@@ -27,11 +27,13 @@ namespace Colsp.Entity.Models
         public string BrandNameTh { get; set; }
         public string Path { get; set; }
         public string PicUrl { get; set; }
-        public string MetaTitle { get; set; }
-        public string MetaDescription { get; set; }
-        public string MetaKey { get; set; }
+        public string MetaTitleEn { get; set; }
+        public string MetaTitleTh { get; set; }
+        public string MetaDescriptionEn { get; set; }
+        public string MetaDescriptionTh { get; set; }
+        public string MetaKeyEn { get; set; }
+        public string MetaKeyTh { get; set; }
         public string UrlEn { get; set; }
-        public string UrlTh { get; set; }
         public string DescriptionEn { get; set; }
         public string DescriptionTh { get; set; }
         public string Status { get; set; }
