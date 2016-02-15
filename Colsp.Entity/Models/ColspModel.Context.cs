@@ -18,6 +18,7 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -37,6 +38,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSBy1Get1Item> CMSBy1Get1Item { get; set; }
         public virtual DbSet<CMSCollectionGroup> CMSCollectionGroups { get; set; }
         public virtual DbSet<CMSCollectionItem> CMSCollectionItems { get; set; }
+        public virtual DbSet<CMSCollectionItemGroup> CMSCollectionItemGroups { get; set; }
         public virtual DbSet<CMSFilter> CMSFilters { get; set; }
         public virtual DbSet<CMSHistoryLog> CMSHistoryLogs { get; set; }
         public virtual DbSet<CMSMainCategory> CMSMainCategories { get; set; }
@@ -83,13 +85,11 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
         public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShop> UserShops { get; set; }
-        public virtual DbSet<CMSCollectionItemGroup> CMSCollectionItemGroups { get; set; }
     }
 }

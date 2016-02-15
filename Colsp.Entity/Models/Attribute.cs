@@ -28,7 +28,7 @@ namespace Colsp.Entity.Models
             this.ProductVariants = new HashSet<ProductVariant>();
             this.ProductVariants1 = new HashSet<ProductVariant>();
         }
-    //
+    
         public int AttributeId { get; set; }
         public string AttributeNameEn { get; set; }
         public string AttributeNameTh { get; set; }

@@ -14,7 +14,7 @@ namespace Colsp.Entity.Models
     
     public partial class ProductReview
     {
-        public int ProudctReviewId { get; set; }
+        public int ProductReviewId { get; set; }
         public string CustomerId { get; set; }
         public Nullable<decimal> Rating { get; set; }
         public string Pid { get; set; }
