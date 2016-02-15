@@ -21,24 +21,29 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
-                var inven = (from stage in db.ProductStages
-                             let inv = db.Inventories.Where(w => w.Pid.Equals(stage.Pid)).FirstOrDefault()
-                             join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
-                             from varJ in varJoin.DefaultIfEmpty()
-                             let varInv = db.Inventories.Where(w => w.Pid.Equals(varJ.Pid)).FirstOrDefault()
-                             where stage.ShopId == shopId
+                var shopId = this.User.ShopRequest().ShopId.Value;
+
+                var inven = (from inv in db.Inventories
+                              join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId } into mastJoin
+                              from mast in mastJoin.DefaultIfEmpty()
+                              join variant in db.ProductStageVariants on new { inv.Pid, ShopId = shopId } equals new { variant.Pid, variant.ShopId } into varJoin
+                              from vari in varJoin.DefaultIfEmpty()
+                              where vari != null || mast != null
                              select new
-                             {
-                                 stage.ProductId,
-                                 Sku = varJ != null ? varJ.Sku : stage.Sku,
-                                 Upc = varJ != null ? varJ.Upc : stage.Upc,
-                                 Pid = varJ != null ? varJ.Pid : stage.Pid,
-                                 ProductNameEn = varJ != null ? varJ.ProductNameEn : stage.ProductNameEn,
-                                 ProductNameTh = varJ != null ? varJ.ProductNameTh : stage.ProductNameTh,
-                                 Status = varJ != null ? varJ.Status : stage.Status,
-                                 Inventory = inv != null ? inv : varInv
-                             });
+                              {
+                                  ProductId = mast != null ? mast.ProductId : vari.ProductId,
+                                  Sku = vari != null ? vari.Sku : mast.Sku,
+                                  Upc = vari != null ? vari.Upc : mast.Upc,
+                                  Pid = vari != null ? vari.Pid : mast.Pid,
+                                  ProductNameEn = vari != null ? vari.ProductNameEn : mast.ProductNameEn,
+                                  ProductNameTh = vari != null ? vari.ProductNameTh : mast.ProductNameTh,
+                                  inv.Quantity,
+                                  inv.Defect,
+                                  inv.OnHold,
+                                  inv.Reserve,
+                                  inv.SaftyStockSeller,
+                                  inv.UpdatedDt
+                              });
                 if(request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, inven);

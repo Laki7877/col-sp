@@ -32,21 +32,21 @@ namespace Colsp.Api.Controllers
                                 {
                                     cat.CategoryId,
                                     cat.NameEn,
-                                    cat.NameTh,
+                                    //cat.NameTh,
                                     cat.CategoryAbbreviation,
                                     cat.Lft,
                                     cat.Rgt,
-                                    cat.UrlKeyEn,
-                                    cat.UrlKeyTh,
+                                    //cat.UrlKeyEn,
+                                    //cat.UrlKeyTh,
                                     cat.Visibility,
-                                    cat.Status,
-                                    cat.UpdatedDt,
-                                    cat.CreatedDt,
-                                    cat.Commission,
+                                    //cat.Status,
+                                    //cat.UpdatedDt,
+                                    //cat.CreatedDt,
+                                    //cat.Commission,
                                     ProductCount = cat.ProductStages.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)) 
                                                     + cat.Products.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
                                                     + cat.ProductHistories.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)),
-                                    AttributeSets = cat.CategoryAttributeSetMaps.Select(s=> new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn, ProductCount = s.AttributeSet.ProductStages.Count + s.AttributeSet.Products.Count + s.AttributeSet.ProductHistories.Count })
+                                    //AttributeSets = cat.CategoryAttributeSetMaps.Select(s=> new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn, ProductCount = s.AttributeSet.ProductStages.Count + s.AttributeSet.Products.Count + s.AttributeSet.ProductHistories.Count })
                                 }).ToList();
 
                 if (globalCat != null && globalCat.Count > 0)
@@ -55,12 +55,297 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Cannot find any global category");
+                   throw new Exception("Cannot find any global category");
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/GlobalCategories/{categoryId}")]
+        [HttpGet]
+        public HttpResponseMessage GetGlobalCategory(int categoryId)
+        {
+            try
+            {
+                var globalCat = (from cat in db.GlobalCategories
+                                 where cat.CategoryId==categoryId
+                                 select new
+                                 {
+                                     cat.CategoryId,
+                                     cat.NameEn,
+                                     cat.NameTh,
+                                     //cat.CategoryAbbreviation,
+                                     //cat.Lft,
+                                     //cat.Rgt,
+                                     cat.UrlKeyEn,
+                                     cat.UrlKeyTh,
+                                     cat.Visibility,
+                                     cat.Status,
+                                     //cat.UpdatedDt,
+                                     //cat.CreatedDt,
+                                     cat.Commission,
+                                     //ProductCount = cat.ProductStages.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
+                                     //               + cat.Products.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
+                                     //               + cat.ProductHistories.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)),
+                                     AttributeSets = cat.CategoryAttributeSetMaps.Select(s => new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn, ProductCount = s.AttributeSet.ProductStages.Count + s.AttributeSet.Products.Count + s.AttributeSet.ProductHistories.Count })
+                                 }).SingleOrDefault();
+                if(globalCat == null)
+                {
+                    throw new Exception("Cannot find selected category");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, globalCat);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,e.Message);
+            }
+        }
+
+        [Route("api/GlobalCategories")]
+        [HttpPost]
+        public HttpResponseMessage AddGlobalCategory(CategoryRequest request)
+        {
+            GlobalCategory category = null;
+            try
+            {
+                category = new GlobalCategory();
+                string abbr = AutoGenerate.NextCatAbbre(db);
+                category.CategoryAbbreviation = abbr;
+                category.NameEn = request.NameEn;
+                category.NameTh = request.NameTh;
+                category.Commission = request.Commission;
+                category.UrlKeyEn = request.UrlKeyEn;
+                category.Visibility = request.Visibility;
+                category.Status = request.Status;
+                category.CreatedBy = this.User.UserRequest().Email;
+                category.CreatedDt = DateTime.Now;
+                category.UpdatedBy = this.User.UserRequest().Email;
+                category.UpdatedDt = DateTime.Now;
+
+                db.GlobalCategories.ToList().ForEach(c => { c.Lft = c.Lft + 2; c.Rgt = c.Rgt + 2; });
+
+                category.Lft = 1;
+                category.Rgt = 2;
+                db.GlobalCategories.Add(category);
+                db.SaveChanges();
+
+                if (request.AttributeSets != null && request.AttributeSets.Count > 0)
+                {
+                    foreach (AttributeSetRequest mapRq in request.AttributeSets)
+                    {
+                        CategoryAttributeSetMap map = new CategoryAttributeSetMap();
+                        map.AttributeSetId = mapRq.AttributeSetId.Value;
+                        map.CategoryId = category.CategoryId;
+                        map.CreatedBy = this.User.UserRequest().Email;
+                        map.CreatedDt = DateTime.Now;
+                        map.UpdatedBy = this.User.UserRequest().Email;
+                        map.UpdatedDt = DateTime.Now;
+                        db.CategoryAttributeSetMaps.Add(map);
+                    }
+                    db.SaveChanges();
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, category);
+            }
+            catch (DbUpdateException e)
+            {
+                if (category != null && category.CategoryId != 0)
+                {
+                    db.GlobalCategories.Remove(category);
+                    db.SaveChanges();
+                }
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "URL Key has already been used");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+            catch (Exception e)
+            {
+                if (category != null && category.CategoryId != 0)
+                {
+                    db.GlobalCategories.Remove(category);
+                    db.SaveChanges();
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/GlobalCategories/{categoryId}")]
+        [HttpPut]
+        public HttpResponseMessage SaveChange(int categoryId, CategoryRequest request)
+        {
+            try
+            {
+                var category = db.GlobalCategories
+                    .Include(i => i.CategoryAttributeSetMaps
+                    .Select(s => s.AttributeSet)).Where(w => w.CategoryId == categoryId).SingleOrDefault();
+                if (category == null)
+                {
+                    throw new Exception("Cannot find selected category");
+                }
+                category.NameEn = request.NameEn;
+                category.NameTh = request.NameTh;
+                category.Commission = request.Commission;
+                category.UrlKeyEn = request.UrlKeyEn;
+                category.Visibility = request.Visibility;
+                category.Status = request.Status;
+                category.UpdatedBy = this.User.UserRequest().Email;
+                category.UpdatedDt = DateTime.Now;
+
+
+                var setList = db.CategoryAttributeSetMaps.Where(w => w.CategoryId == categoryId).ToList();
+                if (request.AttributeSets != null && request.AttributeSets.Count > 0)
+                {
+                    bool addNew = false;
+
+                    foreach (AttributeSetRequest mapRq in request.AttributeSets)
+                    {
+                        if (setList == null || setList.Count == 0)
+                        {
+                            addNew = true;
+                        }
+                        if (!addNew)
+                        {
+                            var current = setList.Where(w => w.AttributeSetId == mapRq.AttributeSetId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedDt = DateTime.Now;
+                                setList.Remove(current);
+                            }
+                            else
+                            {
+                                addNew = true;
+                            }
+                        }
+                        if (addNew)
+                        {
+                            CategoryAttributeSetMap map = new CategoryAttributeSetMap();
+                            map.AttributeSetId = mapRq.AttributeSetId.Value;
+                            map.CategoryId = category.CategoryId;
+                            map.CreatedBy = this.User.UserRequest().Email;
+                            map.CreatedDt = DateTime.Now;
+                            map.UpdatedBy = this.User.UserRequest().Email;
+                            map.UpdatedDt = DateTime.Now;
+                            db.CategoryAttributeSetMaps.Add(map);
+                        }
+                    }
+                }
+                if (setList != null && setList.Count > 0)
+                {
+                    db.CategoryAttributeSetMaps.RemoveRange(setList);
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, category);
+            }
+            catch (DbUpdateException e)
+            {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "URL Key has already been used");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/GlobalCategories/Shift")]
+        [HttpPut]
+        public HttpResponseMessage ShiftChange(CategoryShiftRequest request)
+        {
+            try
+            {
+                var querList = new List<int?> { request.Child, request.Parent, request.Sibling };
+                var catList = db.GlobalCategories.Where(w => querList.Contains(w.CategoryId)).ToList();
+                if (catList == null || catList.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var parent = catList.Where(w => w.CategoryId == request.Parent).SingleOrDefault();
+                var sibling = catList.Where(w => w.CategoryId == request.Sibling).SingleOrDefault();
+                var child = catList.Where(w => w.CategoryId == request.Child).SingleOrDefault();
+
+                if (child == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                int childSize = child.Rgt.Value - child.Lft.Value + 1;
+                //delete 
+                db.GlobalCategories.Where(w => w.Rgt > child.Rgt).ToList()
+                .ForEach(e => { e.Lft = e.Lft > child.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; e.Status = "TM"; });
+
+                db.SaveChanges();
+                int x = 0;
+
+                if (sibling != null)
+                {
+                    x = sibling.Rgt.Value;
+                }
+                else if (parent != null)
+                {
+                    x = parent.Lft.Value;
+                }
+
+                int offset = x - child.Lft.Value + 1;
+                int size = child.Rgt.Value - child.Lft.Value + 1;
+
+                db.GlobalCategories.Where(w => w.Lft >= child.Lft && w.Rgt <= child.Rgt && w.Status == "TM").ToList()
+                .ForEach(e => { e.Lft = e.Lft + offset; e.Rgt = e.Rgt + offset; });
+
+                db.GlobalCategories.Where(w => w.Rgt > x && w.Status != "TM").ToList()
+                .ForEach(e => { e.Lft = e.Lft > x ? e.Lft + size : e.Lft; e.Rgt = e.Rgt + size; e.Status = "AT"; });
+
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/GlobalCategories")]
+        [HttpDelete]
+        public HttpResponseMessage DeteleCategory(List<CategoryRequest> request)
+        {
+            try
+            {
+                foreach(CategoryRequest rq in request)
+                {
+                    var cat = db.GlobalCategories.Find(rq.CategoryId);
+                    if (cat == null)
+                    {
+                        throw new Exception("Cannot find category");
+                    }
+                    int childSize = cat.Rgt.Value - cat.Lft.Value + 1;
+                    //delete
+                    db.GlobalCategories.Where(w => w.Rgt > cat.Rgt).ToList()
+                        .ForEach(e => { e.Lft = e.Lft > cat.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
+                    db.GlobalCategories.RemoveRange(db.GlobalCategories.Where(w => w.Lft >= cat.Lft && w.Rgt <= cat.Rgt));
+                    break;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -144,10 +429,10 @@ namespace Colsp.Api.Controllers
                 List<Tuple<GlobalCategory, int>> insetMap = new List<Tuple<GlobalCategory, int>>();
                 foreach (CategoryRequest catRq in request)
                 {
-                    if(string.IsNullOrEmpty(catRq.NameEn))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category require field are not met the requirement");
-                    }
+                    //if(string.IsNullOrEmpty(catRq.NameEn))
+                    //{
+                    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category require field are not met the requirement");
+                    //}
                     if (catRq.Lft == null || catRq.Rgt == null || catRq.Lft >= catRq.Rgt)
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node is not properly formated");

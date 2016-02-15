@@ -73,6 +73,10 @@ namespace Colsp.Api.Controllers
                     {
                         attrList = attrList.Where(a => a.VariantStatus == false);
                     }
+                    else if (string.Equals("HTMLBox", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        attrList = attrList.Where(a => a.DataType.Equals("HB"));
+                    }
                 }
                 var total = attrList.Count();
                 var pagedAttribute = attrList.Paginate(request);
@@ -112,30 +116,6 @@ namespace Colsp.Api.Controllers
             List<AttributeValue> newList = null;
             try
             {
-
-                #region Validation
-                if (string.IsNullOrEmpty(request.AttributeNameEn))
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "AttributeNameEn is required");
-                }
-                if (string.IsNullOrEmpty(request.AttributeNameTh))
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "AttributeNameTh is required");
-                }
-                if (!string.IsNullOrEmpty(request.DataType))
-                {
-                    if (request.DataType.Equals("LT")
-                        && (request.AttributeValues == null || request.AttributeValues.Count == 0))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "DataType is required");
-                    }
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "DataType Dropdown should have at least 1 value");
-                }
-                #endregion
-
                 attribute = new Entity.Models.Attribute();
                 SetupAttribute(attribute, request);
                 attribute.CreatedBy = this.User.UserRequest().Email;
@@ -204,7 +184,6 @@ namespace Colsp.Api.Controllers
                     db.Attributes.Remove(attribute);
                     db.SaveChanges();
                 }
-                
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -218,30 +197,6 @@ namespace Colsp.Api.Controllers
             List<AttributeValue> newList = null;
             try
             {
-
-                #region Validation
-                if (string.IsNullOrEmpty(request.AttributeNameEn))
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "AttributeNameEn is required");
-                }
-                if (string.IsNullOrEmpty(request.AttributeNameTh))
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "AttributeNameTh is required");
-                }
-                if (!string.IsNullOrEmpty(request.DataType))
-                {
-                    if (request.DataType.Equals("LT")
-                        && (request.AttributeValues == null || request.AttributeValues.Count == 0))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "DataType is required");
-                    }
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "DataType Dropdown should have at least 1 value");
-                }
-                #endregion
-
                 attribute = db.Attributes.Where(w=>w.AttributeId.Equals(attributeId))
                     .Include(i=>i.AttributeValueMaps.Select(s=>s.AttributeValue)).SingleOrDefault();
                 if(attribute == null)
@@ -464,10 +419,18 @@ namespace Colsp.Api.Controllers
         private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request)
         {
             attribute.AttributeNameEn = Validation.ValidateString(request.AttributeNameEn, "Attribute Name (English)", true, 100, true);
-            attribute.AttributeNameTh = Validation.ValidateString(request.AttributeNameTh, "Attribute Name (Thai)", true, 100, true);
+            attribute.AttributeNameTh = Validation.ValidateString(request.AttributeNameTh, "Attribute Name (Thai)", false, 100, true);
             attribute.AttributeUnitEn = Validation.ValidateString(request.AttributeUnitEn, "Attribute Unit (English)", false, 100, true);
             attribute.AttributeUnitTh = Validation.ValidateString(request.AttributeUnitTh, "Attribute Unit (Thai)", false, 100, true);
             attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", false, 2, true);
+            if (!string.IsNullOrEmpty(attribute.DataType))
+            {
+                if (request.DataType.Equals("LT")
+                    && (request.AttributeValues == null || request.AttributeValues.Count == 0))
+                {
+                    throw new Exception("DataType Dropdown should have at least 1 value");
+                }
+            }
             attribute.DataValidation = Validation.ValidateString(request.DataValidation, "Input Validation", false, 2, true);
             attribute.DefaultValue = Validation.ValidateString(request.DefaultValue, "If empty, value equals", false, 100, true);
             attribute.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Display Name (English)", true, 100, true);

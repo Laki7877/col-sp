@@ -8,9 +8,12 @@ namespace Colsp.Model.Requests
 {
     public class SEORequest
     {
-        public string MetaTitle { get; set; }
-        public string MetaDescription { get; set; }
-        public string MetaKeywords { get; set; }
+        public string MetaTitleEn { get; set; }
+        public string MetaTitleTh { get; set; }
+        public string MetaDescriptionEn { get; set; }
+        public string MetaDescriptionTh { get; set; }
+        public string MetaKeywordEn { get; set; }
+        public string MetaKeywordTh { get; set; }
         public string ProductUrlKeyTh { get; set; }
         public string ProductUrlKeyEn { get; set; }
         public int? ProductBoostingWeight { get; set; }

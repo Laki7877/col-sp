@@ -18,10 +18,12 @@ namespace Colsp.Model.Requests
         public List<AttributeRequest> Attributes { get; set; }
         public string SearchText { get; set; }
         public List<TagRequest> Tags { get; set; }
+        public List<CategoryRequest> Category { get; set; }
 
         public AttributeSetRequest()
         {
             Attributes = new List<AttributeRequest>();
+            Category = new List<CategoryRequest>();
         }
 
         public override void DefaultOnNull()
