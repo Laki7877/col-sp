@@ -146,11 +146,14 @@ namespace Colsp.Api.Controllers
                     response.DescriptionEn = brand.DescriptionEn;
                     response.DescriptionTh = brand.DescriptionTh;
                     response.SEO = new SEORequest();
-                    response.SEO.MetaDescription = brand.MetaDescription;
-                    response.SEO.MetaKeywords = brand.MetaKey;
-                    response.SEO.MetaTitle = brand.MetaTitle;
+                    response.SEO.MetaDescriptionEn = brand.MetaDescriptionEn;
+                    response.SEO.MetaDescriptionTh = brand.MetaDescriptionTh;
+                    response.SEO.MetaKeywordEn = brand.MetaKeyEn;
+                    response.SEO.MetaKeywordTh = brand.MetaKeyTh;
+                    response.SEO.MetaTitleEn = brand.MetaTitleEn;
+                    response.SEO.MetaTitleTh = brand.MetaTitleTh;
                     response.SEO.ProductUrlKeyEn = brand.UrlEn;
-                    response.SEO.ProductUrlKeyTh = brand.UrlTh;
+                    //response.SEO.ProductUrlKeyTh = brand.UrlTh;
                     if (!string.IsNullOrEmpty(brand.PicUrl))
                     {
                         response.BrandImage = new ImageRequest();
@@ -313,10 +316,13 @@ namespace Colsp.Api.Controllers
             brand.DescriptionTh = Validation.ValidateString(request.DescriptionTh, "Brand Description (Thai)", false, 500, false);
             if(request.SEO != null)
             {
-                brand.MetaDescription = Validation.ValidateString(request.SEO.MetaDescription, "Meta Description", false, 500, false);
-                brand.MetaKey = Validation.ValidateString(request.SEO.MetaKeywords, "Meta Keywords", false, 500, false);
-                brand.MetaTitle = Validation.ValidateString(request.SEO.MetaTitle, "Meta Title", false, 100, false);
-                brand.UrlTh = request.SEO.ProductUrlKeyTh;
+                brand.MetaDescriptionEn = Validation.ValidateString(request.SEO.MetaDescriptionEn, "Meta Description (English)", false, 500, false);
+                brand.MetaDescriptionTh = Validation.ValidateString(request.SEO.MetaDescriptionTh, "Meta Description (Thai)", false, 500, false);
+                brand.MetaKeyEn = Validation.ValidateString(request.SEO.MetaKeywordEn, "Meta Keywords (English)", false, 500, false);
+                brand.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keywords (Thai)", false, 500, false);
+                brand.MetaTitleEn = Validation.ValidateString(request.SEO.MetaTitleEn, "Meta Title (English)", false, 100, false);
+                brand.MetaTitleTh = Validation.ValidateString(request.SEO.MetaTitleTh, "Meta Title (Thai)", false, 100, false);
+               // brand.UrlTh = request.SEO.ProductUrlKeyTh;
             }
             if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
             {
