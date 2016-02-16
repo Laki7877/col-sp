@@ -19,14 +19,17 @@ namespace Colsp.Api.CMSFunction
 {
     public class CMSHistoryLogClass : ApiController
     {
+
         public void LogCreateCMS(int Id, string Tablename, bool? Status, string Transaction, int UserId, string IP)
         {
             var JsonText = "";
             switch (Tablename.ToUpper())
             {
                 case "CMSMASTER":
+
                      JsonText = this.GetJsonMasterCMS(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
+
                     break;
                 case "CMSCOLLECTIONITEM":
                     JsonText = this.GetJsonCollectionItem(Id);
@@ -40,13 +43,20 @@ namespace Colsp.Api.CMSFunction
                     JsonText = this.GetJsonBrandInShop(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
                     break;
+                case "CMSBY1GET1ITEM":
+                    JsonText = this.GetJsonCMSBy1Get1Item(Id);
+                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
+                    break;
                 default:
                     break;
 
             }
         }
+        #endregion
+
 
         private bool SaveCMSHistoryLog(int Id, string Tablename, string JsonText, bool? Status, string Transaction, int UserId, string IP)
+
         {
             bool result = false;
 
@@ -74,7 +84,9 @@ namespace Colsp.Api.CMSFunction
                 return result;
             }
         }
-
+        #endregion
+        
+        #region Get Json Log
 
         private string GetJsonCollectionItem(int CollectionId)
         {
@@ -132,5 +144,20 @@ namespace Colsp.Api.CMSFunction
 
             }
         }
+
+        private string GetJsonCMSBy1Get1Item(int id)
+        {
+            using (ColspEntities db = new ColspEntities())
+            {
+                var CMSBy1Get1Item = from n in db.CMSBy1Get1Item
+                                     where n.CMSBy1Get1ItemId == id
+                                     select n;
+                string output = new JavaScriptSerializer().Serialize(CMSBy1Get1Item);
+                return output;
+
+            }
+        }
+        #endregion
+
     }
 }
