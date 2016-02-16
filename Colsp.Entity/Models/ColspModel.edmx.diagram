@@ -6,142 +6,142 @@
     <edmx:Diagrams>
 <<<<<<< HEAD
       <Diagram DiagramId="31d0f2efad8247dbbec92752c7695fdb" Name="Diagram1" ZoomLevel="70">
-        <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="17.5" PointY="44.375" />
-        <EntityTypeShape EntityType="ColspModel.AttributeSet" Width="1.5" PointX="9.25" PointY="58" />
-        <EntityTypeShape EntityType="ColspModel.AttributeSetMap" Width="1.5" PointX="22.75" PointY="51.75" />
-        <EntityTypeShape EntityType="ColspModel.AttributeSetTagMap" Width="1.5" PointX="11.5" PointY="61.75" />
-        <EntityTypeShape EntityType="ColspModel.AttributeValue" Width="1.5" PointX="20.5" PointY="61.625" />
-        <EntityTypeShape EntityType="ColspModel.AttributeValueMap" Width="1.5" PointX="22.75" PointY="46.625" />
-        <EntityTypeShape EntityType="ColspModel.Brand" Width="1.5" PointX="9.25" PointY="24.625" />
-        <EntityTypeShape EntityType="ColspModel.CategoryAttributeSetMap" Width="1.5" PointX="14.5" PointY="44.5" />
-        <EntityTypeShape EntityType="ColspModel.CMSBrandInShop" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSBy1Get1Item" Width="1.5" PointX="2.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSCollectionGroup" Width="1.5" PointX="4.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSCollectionItem" Width="1.5" PointX="4.75" PointY="4.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSCollectionItemGroup" Width="1.5" PointX="6.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSFilter" Width="1.5" PointX="0.75" PointY="6.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSHistoryLog" Width="1.5" PointX="6.75" PointY="4.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSMainCategory" Width="1.5" PointX="8.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSMaster" Width="1.5" PointX="8.75" PointY="4.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSStatusFlow" Width="1.5" PointX="2.75" PointY="9.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSType" Width="1.5" PointX="4.75" PointY="9.75" />
-        <EntityTypeShape EntityType="ColspModel.Customer" Width="1.5" PointX="10.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ColspModel.GlobalCategory" Width="1.5" PointX="9.25" PointY="17.625" />
-        <EntityTypeShape EntityType="ColspModel.GlobalCategoryAbbrevation" Width="1.5" PointX="10.75" PointY="8.75" />
-        <EntityTypeShape EntityType="ColspModel.GlobalCategoryPID" Width="1.5" PointX="11.5" PointY="23" />
-        <EntityTypeShape EntityType="ColspModel.Inventory" Width="1.5" PointX="6.75" PointY="11.75" />
-        <EntityTypeShape EntityType="ColspModel.InventoryHistory" Width="1.5" PointX="8.75" PointY="11.75" />
-        <EntityTypeShape EntityType="ColspModel.LocalCategory" Width="1.5" PointX="5.25" PointY="30.625" />
-        <EntityTypeShape EntityType="ColspModel.Permission" Width="1.5" PointX="12" PointY="57.875" />
-        <EntityTypeShape EntityType="ColspModel.Product" Width="1.5" PointX="11.5" PointY="31.625" />
-        <EntityTypeShape EntityType="ColspModel.ProductAttribute" Width="1.5" PointX="19.75" PointY="54.125" />
-        <EntityTypeShape EntityType="ColspModel.ProductGlobalCatMap" Width="1.5" PointX="16.75" PointY="36.5" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistory" Width="1.5" PointX="6" PointY="41.375" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryAttribute" Width="1.5" PointX="19.75" PointY="57.875" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryGlobalCatMap" Width="1.5" PointX="8.25" PointY="49.5" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryImage" Width="1.5" PointX="10.75" PointY="11.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryLocalCatMap" Width="1.5" PointX="14.25" PointY="40.25" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryRelated" Width="1.5" PointX="12.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryVariant" Width="1.5" PointX="11.25" PointY="49.375" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryVideo" Width="1.5" PointX="12.75" PointY="4.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductImage" Width="1.5" PointX="12.75" PointY="8.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductLocalCatMap" Width="1.5" PointX="13.75" PointY="36" />
-        <EntityTypeShape EntityType="ColspModel.ProductRelated" Width="1.5" PointX="0.75" PointY="13.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductReview" Width="1.5" PointX="2.75" PointY="13.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductStage" Width="1.5" PointX="8.5" PointY="31.125" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageAttribute" Width="1.5" PointX="16.75" PointY="40.125" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageComment" Width="1.5" PointX="12.75" PointY="13.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageGlobalCatMap" Width="1.5" PointX="13.75" PointY="32.5" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageImage" Width="1.5" PointX="5.25" PointY="64.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageImage360" Width="1.5" PointX="5.25" PointY="55.75" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageLocalCatMap" Width="1.5" PointX="16.75" PointY="32.25" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageRelated" Width="1.5" PointX="5.25" PointY="36.625" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageVariant" Width="1.5" PointX="19.75" PointY="33.5" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageVideo" Width="1.5" PointX="5.25" PointY="60.625" />
-        <EntityTypeShape EntityType="ColspModel.ProductVariant" Width="1.5" PointX="19.75" PointY="43.5" />
-        <EntityTypeShape EntityType="ColspModel.ProductVideo" Width="1.5" PointX="14.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ColspModel.Shipping" Width="1.5" PointX="9.25" PointY="63" />
-        <EntityTypeShape EntityType="ColspModel.Shop" Width="1.5" PointX="3" PointY="38.875" />
-        <EntityTypeShape EntityType="ColspModel.ShopType" Width="1.5" PointX="0.75" PointY="40.5" />
-        <EntityTypeShape EntityType="ColspModel.ShopTypePermissionMap" Width="1.5" PointX="14.25" PointY="49" />
-        <EntityTypeShape EntityType="ColspModel.ShopUserGroupMap" Width="1.5" PointX="11.25" PointY="45.625" />
-        <EntityTypeShape EntityType="ColspModel.Tag" Width="1.5" PointX="9.25" PointY="67.75" />
-        <EntityTypeShape EntityType="ColspModel.User" Width="1.5" PointX="0.75" PointY="45" />
-        <EntityTypeShape EntityType="ColspModel.UserGroup" Width="1.5" PointX="9" PointY="53.25" />
-        <EntityTypeShape EntityType="ColspModel.UserGroupMap" Width="1.5" PointX="3" PointY="46.625" />
-        <EntityTypeShape EntityType="ColspModel.UserGroupPermissionMap" Width="1.5" PointX="14.25" PointY="53.625" />
-        <EntityTypeShape EntityType="ColspModel.UserShop" Width="1.5" PointX="8.25" PointY="45.5" />
-        <AssociationConnector Association="ColspModel.FKAttributeSetMapAttribute" />
-        <AssociationConnector Association="ColspModel.FKAttributeValueMapAttribute" />
-        <AssociationConnector Association="ColspModel.FKProductAttributeAttribute" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryAttributeAttribute" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryVariantVariant" />
-        <AssociationConnector Association="ColspModel.FKProductStageAttributeAttribute" />
-        <AssociationConnector Association="ColspModel.FKProductStageVariantAttribute1" />
-        <AssociationConnector Association="ColspModel.FKProductStageVariantAttribute2" />
-        <AssociationConnector Association="ColspModel.FKProductVariantAttribute1" />
-        <AssociationConnector Association="ColspModel.FKProductVariantAttribute2" />
-        <AssociationConnector Association="ColspModel.FK_AttributeSetTagMap_AttributeSet" />
-        <AssociationConnector Association="ColspModel.FK_Product_AttributeSet" />
-        <AssociationConnector Association="ColspModel.FK_ProductHistory_AttributeSet" />
-        <AssociationConnector Association="ColspModel.FK_ProductStage_AttributeSet" />
-        <AssociationConnector Association="ColspModel.FKAttributeSetMapAttributeSet" />
-        <AssociationConnector Association="ColspModel.FKCategoryAttributeSetMapAttributeSet" />
-        <AssociationConnector Association="ColspModel.FK_AttributeSetTagMap_Tag" />
-        <AssociationConnector Association="ColspModel.FKAttributeValueMapAttributeValue" />
-        <AssociationConnector Association="ColspModel.FKProductBrand" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryBrand" />
-        <AssociationConnector Association="ColspModel.FKProductStageBrand" />
-        <AssociationConnector Association="ColspModel.FKCategoryAttributeSetMapCategory" />
-        <AssociationConnector Association="ColspModel.FK_GlobalCategoryPID_GlobalCategory" />
-        <AssociationConnector Association="ColspModel.FKProductGlobalCat" />
-        <AssociationConnector Association="ColspModel.FKProductGlobalCatMapGlobalCategory" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryGlobalCat" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryGlobalCatMapGlobalCategory" />
-        <AssociationConnector Association="ColspModel.FKProductStageGlobalCat" />
-        <AssociationConnector Association="ColspModel.FKProductStageGlobalCatMapGlobalCategory" />
-        <AssociationConnector Association="ColspModel.FKLocalCategoryShop" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryLocalCat" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryLocalCatMapLocalCategory" />
-        <AssociationConnector Association="ColspModel.FKProductLocalCat" />
-        <AssociationConnector Association="ColspModel.FKProductLocalCatMapLocalCategory" />
-        <AssociationConnector Association="ColspModel.FKProductStageLocalCat" />
-        <AssociationConnector Association="ColspModel.FKProductStageLocalCatMapLocalCategory" />
-        <AssociationConnector Association="ColspModel.FK_ShopTypePermissionMap_Permission" />
-        <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserPermission" />
-        <AssociationConnector Association="ColspModel.FKProductGlobalCatMapProduct" />
-        <AssociationConnector Association="ColspModel.FKProductLocalCatMapProduct" />
-        <AssociationConnector Association="ColspModel.FKProductShipping" />
-        <AssociationConnector Association="ColspModel.FKProductShop" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryGlobalCatMapProduct" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryLocalCatMapProduct" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryShipping" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryShop" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryUser" />
-        <AssociationConnector Association="ColspModel.FKProductHistoryVariantProduct" />
-        <AssociationConnector Association="ColspModel.FK_ProductStageAttribute_ProductStage" />
-        <AssociationConnector Association="ColspModel.FKProductStageGlobalCatMapProduct" />
-        <AssociationConnector Association="ColspModel.FKProductStageLocalCatMapProduct" />
-        <AssociationConnector Association="ColspModel.FKProductStageShipping" />
-        <AssociationConnector Association="ColspModel.FKProductStageShop" />
-        <AssociationConnector Association="ColspModel.FKProductStageVariantProduct" />
-        <AssociationConnector Association="ColspModel.FKProductVariantProduct" />
-        <AssociationConnector Association="ColspModel.FK_ProductStageImage_Shop" />
-        <AssociationConnector Association="ColspModel.FK_ProductStageImage360_Shop" />
-        <AssociationConnector Association="ColspModel.FK_ProductStageRelated_Shop" />
-        <AssociationConnector Association="ColspModel.FKProductStageVariantShop" />
-        <AssociationConnector Association="ColspModel.FK_ProductStageVideo_Shop" />
-        <AssociationConnector Association="ColspModel.FKProductVariantShop" />
-        <AssociationConnector Association="ColspModel.FK_Shop_ShopType" />
-        <AssociationConnector Association="ColspModel.FK_ShopUerGroupMap_Shop" />
-        <AssociationConnector Association="ColspModel.FKShopUser" />
-        <AssociationConnector Association="ColspModel.FKUserShopShop" />
-        <AssociationConnector Association="ColspModel.FK_ShopTypePermissionMap_ShopType" />
-        <AssociationConnector Association="ColspModel.FK_ShopUerGroupMap_UserGroup" />
-        <AssociationConnector Association="ColspModel.FKUserGroupMapUser" />
-        <AssociationConnector Association="ColspModel.FKUserShopUser" />
-        <AssociationConnector Association="ColspModel.FKUserGroupMapUserGroup" />
-        <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 =======
       <Diagram DiagramId="31d0f2efad8247dbbec92752c7695fdb" Name="Diagram1" ZoomLevel="51">
         <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="9" PointY="28.25" IsExpanded="true" />
@@ -282,6 +282,142 @@
         <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" ManuallyRouted="false" />
 >>>>>>> a6986d1fcb7c6f7b20771b9a7f51f305c9f88818
       </Diagram>
+        <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="1.2648960488219263" PointY="27.077210871073049" />
+        <EntityTypeShape EntityType="ColspModel.AttributeSet" Width="1.5" PointX="11.725442625454367" PointY="9.3318445278945585" />
+        <EntityTypeShape EntityType="ColspModel.AttributeSetMap" Width="1.5" PointX="0.27345542808689893" PointY="27.79218745035687" />
+        <EntityTypeShape EntityType="ColspModel.AttributeSetTagMap" Width="1.5" PointX="6.9437592229544" PointY="25.83179153214758" />
+        <EntityTypeShape EntityType="ColspModel.AttributeValue" Width="1.5" PointX="1.7683588404992405" PointY="22.786571096063856" />
+        <EntityTypeShape EntityType="ColspModel.AttributeValueMap" Width="1.5" PointX="2.735796937130297" PointY="28.711995540518313" />
+        <EntityTypeShape EntityType="ColspModel.Brand" Width="1.5" PointX="11.06797939495555" PointY="13.145422390264191" />
+        <EntityTypeShape EntityType="ColspModel.CategoryAttributeSetMap" Width="1.5" PointX="11.579886831147544" PointY="24.487069975811554" />
+        <EntityTypeShape EntityType="ColspModel.CMSBrandInShop" Width="1.5" PointX="3.7240043169464938" PointY="26.893402559167427" />
+        <EntityTypeShape EntityType="ColspModel.CMSBy1Get1Item" Width="1.5" PointX="9.75464627228428" PointY="28.882522209027094" />
+        <EntityTypeShape EntityType="ColspModel.CMSCollectionGroup" Width="1.5" PointX="9.5008270617112647" PointY="9.84044421177378" />
+        <EntityTypeShape EntityType="ColspModel.CMSCollectionItem" Width="1.5" PointX="10.692220983417808" PointY="2.7171828312413688" />
+        <EntityTypeShape EntityType="ColspModel.CMSCollectionItemGroup" Width="1.5" PointX="1.65898584465449" PointY="11.324707960395472" />
+        <EntityTypeShape EntityType="ColspModel.CMSFilter" Width="1.5" PointX="9.184689395681346" PointY="0.39572447556803214" />
+        <EntityTypeShape EntityType="ColspModel.CMSHistoryLog" Width="1.5" PointX="3.1956261001506947" PointY="8.3575089761789467" />
+        <EntityTypeShape EntityType="ColspModel.CMSMainCategory" Width="1.5" PointX="6.3166508815794495" PointY="8.702081356524527" />
+        <EntityTypeShape EntityType="ColspModel.CMSMaster" Width="1.5" PointX="11.04982260011594" PointY="15.043423614950582" />
+        <EntityTypeShape EntityType="ColspModel.CMSStatusFlow" Width="1.5" PointX="11.357918282671793" PointY="14.508403829535657" />
+        <EntityTypeShape EntityType="ColspModel.CMSType" Width="1.5" PointX="7.8434215410814723" PointY="28.623148037410875" />
+        <EntityTypeShape EntityType="ColspModel.Customer" Width="1.5" PointX="9.1226565060776927" PointY="25.085445281623603" />
+        <EntityTypeShape EntityType="ColspModel.GlobalCategory" Width="1.5" PointX="0.99557168083059211" PointY="0.723246470430515" />
+        <EntityTypeShape EntityType="ColspModel.GlobalCategoryAbbrevation" Width="1.5" PointX="4.3411821594187909" PointY="20.970532546271819" />
+        <EntityTypeShape EntityType="ColspModel.GlobalCategoryPID" Width="1.5" PointX="1.4626215628639896" PointY="3.08068876111912" />
+        <EntityTypeShape EntityType="ColspModel.Inventory" Width="1.5" PointX="11.563424544205621" PointY="16.121030889507864" />
+        <EntityTypeShape EntityType="ColspModel.InventoryHistory" Width="1.5" PointX="7.9407465345881629" PointY="30.827155067970583" />
+        <EntityTypeShape EntityType="ColspModel.LocalCategory" Width="1.5" PointX="0.49365089111665772" PointY="29.965532346612555" />
+        <EntityTypeShape EntityType="ColspModel.Permission" Width="1.5" PointX="2.1132997042095751" PointY="18.542817184023008" />
+        <EntityTypeShape EntityType="ColspModel.Product" Width="1.5" PointX="8.8143616974420667" PointY="25.532611918418024" />
+        <EntityTypeShape EntityType="ColspModel.ProductAttribute" Width="1.5" PointX="11.461733093234585" PointY="28.550664169970279" />
+        <EntityTypeShape EntityType="ColspModel.ProductGlobalCatMap" Width="1.5" PointX="1.8404558533059694" PointY="21.404506514502923" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistory" Width="1.5" PointX="1.2373808982024812" PointY="18.1209667856437" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryAttribute" Width="1.5" PointX="6.4912957244046474" PointY="28.358114598485695" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryGlobalCatMap" Width="1.5" PointX="2.2283132794444978" PointY="30.593377142489597" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryImage" Width="1.5" PointX="11.717175727578429" PointY="14.471188104930887" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryLocalCatMap" Width="1.5" PointX="5.5716151136772778" PointY="16.371294386857791" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryRelated" Width="1.5" PointX="1.339229699847861" PointY="13.307530141113107" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryVariant" Width="1.5" PointX="0.96236945361009307" PointY="0.92694477780114148" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryVideo" Width="1.5" PointX="9.8353741475545675" PointY="24.612292360799522" />
+        <EntityTypeShape EntityType="ColspModel.ProductImage" Width="1.5" PointX="11.348984419996377" PointY="7.5420567428423357" />
+        <EntityTypeShape EntityType="ColspModel.ProductLocalCatMap" Width="1.5" PointX="11.556321998851523" PointY="1.3432734912928537" />
+        <EntityTypeShape EntityType="ColspModel.ProductRelated" Width="1.5" PointX="4.6833409409426814" PointY="8.37147416564239" />
+        <EntityTypeShape EntityType="ColspModel.ProductReview" Width="1.5" PointX="4.2076501437498495" PointY="9.6945145324312687" />
+        <EntityTypeShape EntityType="ColspModel.ProductStage" Width="1.5" PointX="2.6404149749504473" PointY="18.878870004265973" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageAttribute" Width="1.5" PointX="1.1499808044871225" PointY="10.923376416286164" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageComment" Width="1.5" PointX="8.8269221581644022" PointY="4.7551701687067611" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageGlobalCatMap" Width="1.5" PointX="5.9789183428412853" PointY="24.365126606246982" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageImage" Width="1.5" PointX="8.8932246607231082" PointY="2.9225775017042541" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageImage360" Width="1.5" PointX="8.1696610824063711" PointY="16.533891029904545" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageLocalCatMap" Width="1.5" PointX="5.7799217020067957" PointY="15.218371159964415" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageRelated" Width="1.5" PointX="5.6356364254074336" PointY="5.306947025147708" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageVariant" Width="1.5" PointX="1.4380825578412426" PointY="16.364610679617435" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageVideo" Width="1.5" PointX="0.47377146988817093" PointY="4.8040297053773093" />
+        <EntityTypeShape EntityType="ColspModel.ProductVariant" Width="1.5" PointX="10.220953450641108" PointY="20.00887223519798" />
+        <EntityTypeShape EntityType="ColspModel.ProductVideo" Width="1.5" PointX="10.274705176369615" PointY="4.7085211000910592" />
+        <EntityTypeShape EntityType="ColspModel.Shipping" Width="1.5" PointX="9.11818229645406" PointY="30.892672165712654" />
+        <EntityTypeShape EntityType="ColspModel.Shop" Width="1.5" PointX="10.225745049410381" PointY="23.022564839116562" />
+        <EntityTypeShape EntityType="ColspModel.ShopType" Width="1.5" PointX="11.15017706488733" PointY="3.5646087841897311" />
+        <EntityTypeShape EntityType="ColspModel.ShopTypePermissionMap" Width="1.5" PointX="3.3433490019959158" PointY="26.928208229564227" />
+        <EntityTypeShape EntityType="ColspModel.ShopUserGroupMap" Width="1.5" PointX="2.5877124008665384" PointY="7.6156073993144595" />
+        <EntityTypeShape EntityType="ColspModel.Tag" Width="1.5" PointX="7.993877999481688" PointY="19.063298740919354" />
+        <EntityTypeShape EntityType="ColspModel.User" Width="1.5" PointX="10.322535623946477" PointY="20.322425523922977" />
+        <EntityTypeShape EntityType="ColspModel.UserGroup" Width="1.5" PointX="8.599773381184681" PointY="10.102470134432647" />
+        <EntityTypeShape EntityType="ColspModel.UserGroupMap" Width="1.5" PointX="0.16031705223038656" PointY="11.206152593347316" />
+        <EntityTypeShape EntityType="ColspModel.UserGroupPermissionMap" Width="1.5" PointX="8.0970991421943062" PointY="31.643741041255993" />
+        <EntityTypeShape EntityType="ColspModel.UserShop" Width="1.5" PointX="4.177943209269058" PointY="9.6937733635743033" />
+        <AssociationConnector Association="ColspModel.FKAttributeSetMapAttribute" />
+        <AssociationConnector Association="ColspModel.FKAttributeValueMapAttribute" />
+        <AssociationConnector Association="ColspModel.FKProductAttributeAttribute" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryAttributeAttribute" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryVariantVariant" />
+        <AssociationConnector Association="ColspModel.FKProductStageAttributeAttribute" />
+        <AssociationConnector Association="ColspModel.FKProductStageVariantAttribute1" />
+        <AssociationConnector Association="ColspModel.FKProductStageVariantAttribute2" />
+        <AssociationConnector Association="ColspModel.FKProductVariantAttribute1" />
+        <AssociationConnector Association="ColspModel.FKProductVariantAttribute2" />
+        <AssociationConnector Association="ColspModel.FK_AttributeSetTagMap_AttributeSet" />
+        <AssociationConnector Association="ColspModel.FK_Product_AttributeSet" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistory_AttributeSet" />
+        <AssociationConnector Association="ColspModel.FK_ProductStage_AttributeSet" />
+        <AssociationConnector Association="ColspModel.FKAttributeSetMapAttributeSet" />
+        <AssociationConnector Association="ColspModel.FKCategoryAttributeSetMapAttributeSet" />
+        <AssociationConnector Association="ColspModel.FK_AttributeSetTagMap_Tag" />
+        <AssociationConnector Association="ColspModel.FKAttributeValueMapAttributeValue" />
+        <AssociationConnector Association="ColspModel.FKProductBrand" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryBrand" />
+        <AssociationConnector Association="ColspModel.FKProductStageBrand" />
+        <AssociationConnector Association="ColspModel.FKCategoryAttributeSetMapCategory" />
+        <AssociationConnector Association="ColspModel.FK_GlobalCategoryPID_GlobalCategory" />
+        <AssociationConnector Association="ColspModel.FKProductGlobalCat" />
+        <AssociationConnector Association="ColspModel.FKProductGlobalCatMapGlobalCategory" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryGlobalCat" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryGlobalCatMapGlobalCategory" />
+        <AssociationConnector Association="ColspModel.FKProductStageGlobalCat" />
+        <AssociationConnector Association="ColspModel.FKProductStageGlobalCatMapGlobalCategory" />
+        <AssociationConnector Association="ColspModel.FKLocalCategoryShop" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryLocalCat" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryLocalCatMapLocalCategory" />
+        <AssociationConnector Association="ColspModel.FKProductLocalCat" />
+        <AssociationConnector Association="ColspModel.FKProductLocalCatMapLocalCategory" />
+        <AssociationConnector Association="ColspModel.FKProductStageLocalCat" />
+        <AssociationConnector Association="ColspModel.FKProductStageLocalCatMapLocalCategory" />
+        <AssociationConnector Association="ColspModel.FK_ShopTypePermissionMap_Permission" />
+        <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserPermission" />
+        <AssociationConnector Association="ColspModel.FKProductGlobalCatMapProduct" />
+        <AssociationConnector Association="ColspModel.FKProductLocalCatMapProduct" />
+        <AssociationConnector Association="ColspModel.FKProductShipping" />
+        <AssociationConnector Association="ColspModel.FKProductShop" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryGlobalCatMapProduct" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryLocalCatMapProduct" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryShipping" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryShop" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryUser" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryVariantProduct" />
+        <AssociationConnector Association="ColspModel.FK_ProductStageAttribute_ProductStage" />
+        <AssociationConnector Association="ColspModel.FKProductStageGlobalCatMapProduct" />
+        <AssociationConnector Association="ColspModel.FKProductStageLocalCatMapProduct" />
+        <AssociationConnector Association="ColspModel.FKProductStageShipping" />
+        <AssociationConnector Association="ColspModel.FKProductStageShop" />
+        <AssociationConnector Association="ColspModel.FKProductStageVariantProduct" />
+        <AssociationConnector Association="ColspModel.FKProductVariantProduct" />
+        <AssociationConnector Association="ColspModel.FK_ProductStageImage_Shop" />
+        <AssociationConnector Association="ColspModel.FK_ProductStageImage360_Shop" />
+        <AssociationConnector Association="ColspModel.FK_ProductStageRelated_Shop" />
+        <AssociationConnector Association="ColspModel.FKProductStageVariantShop" />
+        <AssociationConnector Association="ColspModel.FK_ProductStageVideo_Shop" />
+        <AssociationConnector Association="ColspModel.FKProductVariantShop" />
+        <AssociationConnector Association="ColspModel.FK_Shop_ShopType" />
+        <AssociationConnector Association="ColspModel.FK_ShopUerGroupMap_Shop" />
+        <AssociationConnector Association="ColspModel.FKShopUser" />
+        <AssociationConnector Association="ColspModel.FKUserShopShop" />
+        <AssociationConnector Association="ColspModel.FK_ShopTypePermissionMap_ShopType" />
+        <AssociationConnector Association="ColspModel.FK_ShopUerGroupMap_UserGroup" />
+        <AssociationConnector Association="ColspModel.FKUserGroupMapUser" />
+        <AssociationConnector Association="ColspModel.FKUserShopUser" />
+        <AssociationConnector Association="ColspModel.FKUserGroupMapUserGroup" />
+        <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

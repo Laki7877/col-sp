@@ -17,7 +17,7 @@ namespace Colsp.Entity.Models
         public int CMSMainCategoryId { get; set; }
         public Nullable<int> CMSId { get; set; }
         public string CategoryId { get; set; }
-        public int? Status { get; set; }
+        public Nullable<int> Status { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public Nullable<int> UpdateBy { get; set; }
