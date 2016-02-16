@@ -13,6 +13,9 @@ using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
 using Colsp.Api.CMSFunction;
+using System.IO;
+using System.Text;
+using System.Net.Http.Headers;
 
 namespace Colsp.Api.Controllers
 {
@@ -648,8 +651,125 @@ namespace Colsp.Api.Controllers
 
 
         }
+        #endregion
+
+        #region export
+
+        [Route("api/CMSStages/Export")]
+        [HttpPost]
+        public HttpResponseMessage ExportCollection(List<CMSCollectionItemRequest> request)
+        {
+            MemoryStream stream = null;
+            StreamWriter writer = null;
+            try
+            {
+                stream = new MemoryStream();
+                writer = new StreamWriter(stream);
+                string header = @"Collection ID,Collection English Name,Collection Thai Name,URL Keyword,EffectiveDate,EffectiveTime,ExpiryDate,ExpiryTime,ShopId,CMSCount,ShortDescriptionTH,ShortDescriptionEN,LongDescriptionTH,LongDescriptionEN,Sequence,Collection Status,Visibility";
+                writer.WriteLine(header);
+                StringBuilder sb = null;
+                foreach (CMSCollectionItemRequest rq in request)
+                {
+                    sb = new StringBuilder();
+                    if (rq.CMSId == default(int)) { throw new Exception("Collection Id cannot be null"); }
+                    var coll = db.CMSMasters.Find(rq.CMSId);
+                    var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
+                    var visible = coll.Visibility != null ? (coll.Visibility == true? "Visible" : "InVisible") : "unknow";
+                    if (coll == null)
+                    {
+                        throw new Exception("Cannot find Collection with id " + rq.CMSId);
+                    }
+                    sb.Append(coll.CMSId); sb.Append(",");
+                    sb.Append(coll.CMSNameEN); sb.Append(",");
+                    sb.Append(coll.CMSNameTH); sb.Append(",");
+                    sb.Append(coll.URLKey); sb.Append(",");
+                    //sb.Append(coll.CMSTypeId); sb.Append(",");
+                    //sb.Append(coll.CMSFilterId); sb.Append(",");
+                    sb.Append(coll.EffectiveDate); sb.Append(",");
+                    sb.Append(coll.EffectiveTime); sb.Append(",");
+                    sb.Append(coll.ExpiryDate); sb.Append(",");
+                    sb.Append(coll.ExpiryTime); sb.Append(",");
+                    sb.Append(coll.ShopId); sb.Append(",");
+                    sb.Append(coll.CMSCount); sb.Append(",");
+                    sb.Append(coll.ShortDescriptionTH); sb.Append(",");
+                    sb.Append(coll.ShortDescriptionEN); sb.Append(",");
+                    if (!string.IsNullOrEmpty(coll.LongDescriptionTH))
+                    {
+                        if (coll.LongDescriptionTH.Contains("\""))
+                        {
+                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH.Replace("\"", "\"\""));
+                        }
+                        if (coll.LongDescriptionTH.Contains(","))
+                        {
+                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
+                        }
+                        if (coll.LongDescriptionTH.Contains(System.Environment.NewLine))
+                        {
+                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(coll.LongDescriptionEN))
+                    {
+                        if (coll.LongDescriptionEN.Contains("\""))
+                        {
+                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN.Replace("\"", "\"\""));
+                        }
+                        if (coll.LongDescriptionEN.Contains(","))
+                        {
+                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
+                        }
+                        if (coll.LongDescriptionEN.Contains(System.Environment.NewLine))
+                        {
+                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
+                        }
+                    }
+                    sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
+                    sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
+                    sb.Append(coll.Sequence); sb.Append(",");
+                    //sb.Append(coll.CMSCollectionGroupId); sb.Append(",");
+                    sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
+                    sb.Append(visible); sb.Append(",");
+                    //sb.Append(coll.CreateBy); sb.Append(",");
+                    //sb.Append(coll.Createdate); sb.Append(",");
+                    //sb.Append(coll.UpdateBy); sb.Append(",");
+                    //sb.Append(coll.UpdateDate); sb.Append(",");
+                    //sb.Append(coll.CreateIP); sb.Append(",");
+                    //sb.Append(coll.UpdateIP); sb.Append(",");
+                     
+
+                    writer.WriteLine(sb);
+                }
+                writer.Flush();
+                stream.Position = 0;
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StreamContent(stream);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
+                {
+                    CharSet = Encoding.UTF8.WebName
+                };
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = "file.csv";
+                return result;
+            }
+            catch (Exception e)
+            {
+                if (writer != null)
+                {
+                    writer.Close();
+                    writer.Dispose();
+                }
+                if (stream != null)
+                {
+                    stream.Close();
+                    stream.Dispose();
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+            }
+        }
 
         #endregion
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
