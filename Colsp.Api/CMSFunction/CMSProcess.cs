@@ -60,7 +60,7 @@ namespace Colsp.Api.CMSFunction
                             dbcxtransaction.Commit();
                             ////History Log
                             CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                             result = cms.CMSId;
                         }
                         return result;
@@ -133,9 +133,9 @@ namespace Colsp.Api.CMSFunction
                             dbcxtransaction.Commit();
                             //History Log
                             CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMSMaster", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            log.LogCreateCMS(cms.CMSId, "CMSMaster", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                             CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMSCollectionItem", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            log.LogCreateCMS(cms.CMSId, "CMSCollectionItem", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                         }
                         return result;
                     }
@@ -175,7 +175,7 @@ namespace Colsp.Api.CMSFunction
                                 dbcxtransaction.Commit();
                                 //History Log
                                 CMSHistoryLogClass log = new CMSHistoryLogClass();
-                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                             }
                         }
                         catch (Exception ex)
@@ -246,10 +246,10 @@ namespace Colsp.Api.CMSFunction
                             dbcxtransaction.Commit();
                             //History Log
                             CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
 
                             CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cItem.CMSMainCategoryId, "CMSCollectionItem", (bool)cItem.Status, "Create", (int)cItem.CreateBy, cItem.CreateIP);
+                            log.LogCreateCMS(cItem.CMSMainCategoryId, "CMSCollectionItem", cItem.Status, "Create", (int)cItem.CreateBy, cItem.CreateIP);
 
                             result = true;
 
@@ -327,9 +327,9 @@ namespace Colsp.Api.CMSFunction
                             db.SaveChanges();
                             dbcxtransaction.Commit();
                             CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                            log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                             CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
-                            log.LogCreateCMS(bItem.CMSBrandInShopId, "CMSBrandInShop", (bool)bItem.Status, "Create", (int)bItem.CreateBy, bItem.CreateIP);
+                            log.LogCreateCMS(bItem.CMSBrandInShopId, "CMSBrandInShop", bItem.Status, "Create", (int)bItem.CreateBy, bItem.CreateIP);
 
                             result = true;
 
@@ -395,7 +395,7 @@ namespace Colsp.Api.CMSFunction
                                 dbcxtransaction.Commit();
                                 //History Log
                                 CMSHistoryLogClass log = new CMSHistoryLogClass();
-                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                 result = cms.CMSId;
                             }
                         }
@@ -467,9 +467,9 @@ namespace Colsp.Api.CMSFunction
                                         dbcxtransaction.Commit();
                                         //History Log
                                         CMSHistoryLogClass log = new CMSHistoryLogClass();
-                                        log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                        log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                         CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
-                                        log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", (bool)cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
+                                        log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
                                     }
                                 }
                                 result = cms.CMSId;
@@ -491,134 +491,142 @@ namespace Colsp.Api.CMSFunction
         //Thanakrit : 20160215 , update only sending field
         public int UpdateCMSStaticPage(CMSCollectionItemRequest Model)
         {
+            var modelItem = Model;
             int result = 0;
             using (ColspEntities db = new ColspEntities())
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
-                    try
-                    {
-                        var cms = db.CMSMasters.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
-                        if (cms != null)
+                    //foreach (var modelItem in Model) {
+                        try
                         {
-                            cms.CMSNameEN = Model.CMSNameEN != default(string) ? Model.CMSNameEN : cms.CMSNameEN ;
-                            cms.CMSNameTH = Model.CMSNameTH != default(string) ? Model.CMSNameTH : cms.CMSNameTH;
-                            cms.CMSFilterId = Model.CMSSortId ?? cms.CMSFilterId;
-                            cms.CMSTypeId = Model.CMSTypeId ?? cms.CMSTypeId ;
-                            cms.EffectiveDate = Model.EffectiveDate ?? cms.EffectiveDate ;
-                            cms.EffectiveTime = Model.EffectiveTime ?? cms.EffectiveTime ;
-                            cms.ExpiryDate = Model.ExpiryDate ?? cms.ExpiryDate ;
-                            cms.ExpiryTime = Model.ExpiryTime ?? cms.ExpiryTime ;
-                            cms.LongDescriptionEN = Model.LongDescriptionEN != default(string) ? Model.LongDescriptionEN : cms.LongDescriptionEN; 
-                            cms.LongDescriptionTH = Model.LongDescriptionTH != default(string) ? Model.LongDescriptionTH : cms.LongDescriptionTH ; 
-                            cms.ShopId = Model.ShopId ?? cms.ShopId;
-                            cms.ShortDescriptionEN = Model.ShortDescriptionEN != default(string) ? Model.ShortDescriptionEN : cms.ShortDescriptionEN;
-                            cms.ShortDescriptionTH = Model.ShortDescriptionTH != default(string) ? Model.ShortDescriptionTH : cms.ShortDescriptionTH; 
-                            cms.CMSCollectionGroupId = Model.CMSCollectionGroupId ?? cms.CMSCollectionGroupId ;
-                            cms.Status = Model.Status ?? cms.Status;
-                            cms.CMSStatusFlowId = Model.CMSStatusFlowId ?? cms.CMSStatusFlowId;
-                            cms.Sequence = Model.Sequence ?? cms.Sequence;
-                            cms.URLKey = Model.URLKey != default(string) ? Model.URLKey : cms.URLKey;
-                            cms.Visibility = Model.Visibility ?? cms.Visibility;
-                            cms.UpdateBy = Model.CreateBy ?? cms.UpdateBy;
-                            cms.UpdateDate = DateTime.Now;
-                            cms.UpdateIP = Model.CreateIP != default(string) ? Model.CreateIP : cms.UpdateIP;
-                            db.Entry(cms).State = EntityState.Modified;
-                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            var cms = db.CMSMasters.Where(c => c.CMSId == modelItem.CMSId).FirstOrDefault();
+                            if (cms != null)
                             {
-                                dbcxtransaction.Commit();
-                                //History Log
-                                CMSHistoryLogClass log = new CMSHistoryLogClass();
-                                log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
-                                result = cms.CMSId;
-                            }
-                        }
 
-                        return result;
-                    }
-                    catch (Exception ex)
-                    {
-                        dbcxtransaction.Rollback();
-                        return result;
-                    }
-                }
+                                cms.CMSNameEN = modelItem.CMSNameEN != default(string) ? modelItem.CMSNameEN : cms.CMSNameEN;
+                                cms.CMSNameTH = modelItem.CMSNameTH != default(string) ? modelItem.CMSNameTH : cms.CMSNameTH;
+                                cms.CMSFilterId = modelItem.CMSSortId ?? cms.CMSFilterId;
+                                cms.CMSTypeId = modelItem.CMSTypeId ?? cms.CMSTypeId;
+                                cms.EffectiveDate = modelItem.EffectiveDate ?? cms.EffectiveDate;
+                                cms.EffectiveTime = modelItem.EffectiveTime ?? cms.EffectiveTime;
+                                cms.ExpiryDate = modelItem.ExpiryDate ?? cms.ExpiryDate;
+                                cms.ExpiryTime = modelItem.ExpiryTime ?? cms.ExpiryTime;
+                                cms.LongDescriptionEN = modelItem.LongDescriptionEN != default(string) ? modelItem.LongDescriptionEN : cms.LongDescriptionEN;
+                                cms.LongDescriptionTH = modelItem.LongDescriptionTH != default(string) ? modelItem.LongDescriptionTH : cms.LongDescriptionTH;
+                                cms.ShopId = modelItem.ShopId ?? cms.ShopId;
+                                cms.ShortDescriptionEN = modelItem.ShortDescriptionEN != default(string) ? modelItem.ShortDescriptionEN : cms.ShortDescriptionEN;
+                                cms.ShortDescriptionTH = modelItem.ShortDescriptionTH != default(string) ? modelItem.ShortDescriptionTH : cms.ShortDescriptionTH;
+                                cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
+                                cms.Status = modelItem.Status ?? cms.Status;
+                                cms.CMSStatusFlowId = modelItem.CMSStatusFlowId ?? cms.CMSStatusFlowId;
+                                cms.Sequence = modelItem.Sequence ?? cms.Sequence;
+                                cms.URLKey = modelItem.URLKey != default(string) ? modelItem.URLKey : cms.URLKey;
+                                cms.Visibility = modelItem.Visibility ?? cms.Visibility;
+                                cms.UpdateBy = modelItem.CreateBy ?? cms.UpdateBy;
+                                cms.UpdateDate = DateTime.Now;
+                                cms.UpdateIP = modelItem.CreateIP != default(string) ? modelItem.CreateIP : cms.UpdateIP;
+                                db.Entry(cms).State = EntityState.Modified;
+                                if (db.SaveChanges() > 0) //Saved return row save successfully.
+                                {
+                                    dbcxtransaction.Commit();
+                                    //History Log
+                                    CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                    log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                    result = cms.CMSId;
+                                }
+                            }
+
+                            
+                        }
+                        catch (Exception ex)
+                        {
+                            dbcxtransaction.Rollback();
+                            return result;
+                        }
+                    //}
+                    return result;
+                }// end db transaction
             }
         }
         public int UpdateCMSCollectionItem(CMSCollectionItemRequest Model)
         {
+            var modelItem = Model;
             int result = 0;
             using (ColspEntities db = new ColspEntities())
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
-                    try
-                    {
-                        var cms = db.CMSMasters.Where(c => c.CMSId == Model.CMSId).FirstOrDefault();
-                        if (cms != null)
+                    //foreach (var modelItem in Model) {
+                        try
                         {
-                            cms.CMSNameEN = Model.CMSNameEN != default(string) ? Model.CMSNameEN : cms.CMSNameEN;
-                            cms.CMSNameTH = Model.CMSNameTH != default(string) ? Model.CMSNameTH : cms.CMSNameTH;
-                            cms.CMSFilterId = Model.CMSSortId ?? cms.CMSFilterId;
-                            cms.CMSTypeId = Model.CMSTypeId ?? cms.CMSTypeId;
-                            cms.EffectiveDate = Model.EffectiveDate ?? cms.EffectiveDate;
-                            cms.EffectiveTime = Model.EffectiveTime ?? cms.EffectiveTime;
-                            cms.ExpiryDate = Model.ExpiryDate ?? cms.ExpiryDate;
-                            cms.ExpiryTime = Model.ExpiryTime ?? cms.ExpiryTime;
-                            cms.LongDescriptionEN = Model.LongDescriptionEN != default(string) ? Model.LongDescriptionEN : cms.LongDescriptionEN;
-                            cms.LongDescriptionTH = Model.LongDescriptionTH != default(string) ? Model.LongDescriptionTH : cms.LongDescriptionTH;
-                            cms.ShopId = Model.ShopId ?? cms.ShopId;
-                            cms.ShortDescriptionEN = Model.ShortDescriptionEN != default(string) ? Model.ShortDescriptionEN : cms.ShortDescriptionEN;
-                            cms.ShortDescriptionTH = Model.ShortDescriptionTH != default(string) ? Model.ShortDescriptionTH : cms.ShortDescriptionTH;
-                            cms.CMSCollectionGroupId = Model.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
-                            cms.Status = Model.Status ?? cms.Status;
-                            cms.CMSStatusFlowId = Model.CMSStatusFlowId ?? cms.CMSStatusFlowId;
-                            cms.Sequence = Model.Sequence ?? cms.Sequence;
-                            cms.URLKey = Model.URLKey != default(string) ? Model.URLKey : cms.URLKey;
-                            cms.Visibility = Model.Visibility ?? cms.Visibility;
-                            cms.UpdateBy = Model.CreateBy ?? cms.UpdateBy;
-                            cms.UpdateDate = DateTime.Now;
-                            cms.UpdateIP = Model.CreateIP != default(string) ? Model.CreateIP : cms.UpdateIP;
-                            db.Entry(cms).State = EntityState.Modified;
-                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            var cms = db.CMSMasters.Where(c => c.CMSId == modelItem.CMSId).FirstOrDefault();
+                            if (cms != null)
                             {
-
-                                foreach (var item in Model.CollectionItemList)
+                                cms.CMSNameEN = modelItem.CMSNameEN != default(string) ? modelItem.CMSNameEN : cms.CMSNameEN;
+                                cms.CMSNameTH = modelItem.CMSNameTH != default(string) ? modelItem.CMSNameTH : cms.CMSNameTH;
+                                cms.CMSFilterId = modelItem.CMSSortId ?? cms.CMSFilterId;
+                                cms.CMSTypeId = modelItem.CMSTypeId ?? cms.CMSTypeId;
+                                cms.EffectiveDate = modelItem.EffectiveDate ?? cms.EffectiveDate;
+                                cms.EffectiveTime = modelItem.EffectiveTime ?? cms.EffectiveTime;
+                                cms.ExpiryDate = modelItem.ExpiryDate ?? cms.ExpiryDate;
+                                cms.ExpiryTime = modelItem.ExpiryTime ?? cms.ExpiryTime;
+                                cms.LongDescriptionEN = modelItem.LongDescriptionEN != default(string) ? modelItem.LongDescriptionEN : cms.LongDescriptionEN;
+                                cms.LongDescriptionTH = modelItem.LongDescriptionTH != default(string) ? modelItem.LongDescriptionTH : cms.LongDescriptionTH;
+                                cms.ShopId = modelItem.ShopId ?? cms.ShopId;
+                                cms.ShortDescriptionEN = modelItem.ShortDescriptionEN != default(string) ? modelItem.ShortDescriptionEN : cms.ShortDescriptionEN;
+                                cms.ShortDescriptionTH = modelItem.ShortDescriptionTH != default(string) ? modelItem.ShortDescriptionTH : cms.ShortDescriptionTH;
+                                cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
+                                cms.Status = modelItem.Status ?? cms.Status;
+                                cms.CMSStatusFlowId = modelItem.CMSStatusFlowId ?? cms.CMSStatusFlowId;
+                                cms.Sequence = modelItem.Sequence ?? cms.Sequence;
+                                cms.URLKey = modelItem.URLKey != default(string) ? modelItem.URLKey : cms.URLKey;
+                                cms.Visibility = modelItem.Visibility ?? cms.Visibility;
+                                cms.UpdateBy = modelItem.CreateBy ?? cms.UpdateBy;
+                                cms.UpdateDate = DateTime.Now;
+                                cms.UpdateIP = modelItem.CreateIP != default(string) ? modelItem.CreateIP : cms.UpdateIP;
+                                db.Entry(cms).State = EntityState.Modified;
+                                if (db.SaveChanges() > 0) //Saved return row save successfully.
                                 {
-                                    var cItem = db.CMSCollectionItems.Where(c => c.CMSCollectionItemId == item.CMSCollectionItemId).FirstOrDefault();
-                                    if (cItem != null)
+
+                                    foreach (var item in modelItem.CollectionItemList)
                                     {
-                                        cItem.CMSId = cms.CMSId != default(int) ? cms.CMSId   : cItem.CMSId;//When saved has id.
-                                        cItem.PId = item.PId != default(string) ? item.PId : cItem.PId; 
-                                        cItem.ProductBoxBadge = item.ProductBoxBadge != default(string) ? item.ProductBoxBadge : cItem.ProductBoxBadge;
-                                        cItem.Sequence = item.Sequence ?? cItem.Sequence;
-                                        cItem.Status = item.Status ?? cItem.Status;
-                                        cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId ?? cItem.CMSCollectionItemGroupId;
-                                        cItem.UpdateBy = Model.CreateBy ?? cItem.UpdateBy;
-                                        cItem.UpdateDate = DateTime.Now;
-                                        cItem.UpdateIP = Model.CreateIP != default(string) ? Model.CreateIP : cItem.CreateIP;
-                                        db.Entry(cItem).State = EntityState.Modified;
-                                        db.SaveChanges();
-                                        dbcxtransaction.Commit();
-                                        //History Log
-                                        CMSHistoryLogClass log = new CMSHistoryLogClass();
-                                        log.LogCreateCMS(cms.CMSId, "CMS", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
-                                        CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
-                                        log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", (bool)cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
+                                        var cItem = db.CMSCollectionItems.Where(c => c.CMSCollectionItemId == item.CMSCollectionItemId).FirstOrDefault();
+                                        if (cItem != null)
+                                        {
+                                            cItem.CMSId = cms.CMSId != default(int) ? cms.CMSId : cItem.CMSId;//When saved has id.
+                                            cItem.PId = item.PId != default(string) ? item.PId : cItem.PId;
+                                            cItem.ProductBoxBadge = item.ProductBoxBadge != default(string) ? item.ProductBoxBadge : cItem.ProductBoxBadge;
+                                            cItem.Sequence = item.Sequence ?? cItem.Sequence;
+                                            cItem.Status = item.Status ?? cItem.Status;
+                                            cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId ?? cItem.CMSCollectionItemGroupId;
+                                            cItem.UpdateBy = modelItem.CreateBy ?? cItem.UpdateBy;
+                                            cItem.UpdateDate = DateTime.Now;
+                                            cItem.UpdateIP = modelItem.CreateIP != default(string) ? modelItem.CreateIP : cItem.CreateIP;
+                                            db.Entry(cItem).State = EntityState.Modified;
+                                            db.SaveChanges();
+                                            dbcxtransaction.Commit();
+                                            //History Log
+                                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                            log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                            CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
+                                            log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
+                                        }
                                     }
+                                    result = cms.CMSId;
                                 }
-                                result = cms.CMSId;
                             }
                         }
-                        return result;
-                    }
-                    catch (Exception ex)
-                    {
-                        dbcxtransaction.Rollback();
-                        return result;
-                    }
-                }
+                        catch (Exception ex)
+                        {
+                            dbcxtransaction.Rollback();
+                            return result;
+                        }
+                    //}
+                    return result;
+                }//end db transaction
             }
-
+            
         }
 
         /// <summary>

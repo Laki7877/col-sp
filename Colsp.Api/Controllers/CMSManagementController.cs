@@ -408,34 +408,40 @@ namespace Colsp.Api.Controllers
         //used it's own data if not transfer
         [Route("api/CMSUpdateStages")]
         [HttpPost]
-        public HttpResponseMessage EditCMSMinJson(CMSCollectionItemRequest model)
-        {
+        public HttpResponseMessage UpdateCMS(List<CMSCollectionItemRequest> model)
+        {            
             try
             {
+                int CMSId = 0;
                 if (model != null)
                 {
-                    int CMSId = 0;
-                    if (model.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                    foreach (var item in model) { 
+                    
+                    if (model.FirstOrDefault().CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                    {                       
+                        CMSProcess cms = new CMSProcess();
+                        CMSId = cms.UpdateCMSStaticPage(item);
+                    }
+                    else if (model.FirstOrDefault().CMSTypeId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL))
                     {
                         CMSProcess cms = new CMSProcess();
-                        CMSId = cms.UpdateCMSStaticPage(model);
+                        CMSId = cms.UpdateCMSCollectionItem(item);
                     }
-                    else if (model.CMSTypeId.Equals(Constant.CMS_TYPE_COLLECTION_PAGE))
-                    {
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.UpdateCMSCollectionItem(model);
+                    
                     }
-                    return GetCollection(CMSId);
                 }
                 else
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
                 }
+                return GetCollection(CMSId);
             }
             catch (Exception ex)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
             }
+
+
         }
 
         #endregion

@@ -20,7 +20,7 @@ namespace Colsp.Model.Requests
         public int CMSId { get; set; }
         public int CMSStatusId { get; set; }
         public bool CMSVisibility { get; set; }
-        public bool Status { get; set; }
+        public int? Status { get; set; }
     }
 
 }
