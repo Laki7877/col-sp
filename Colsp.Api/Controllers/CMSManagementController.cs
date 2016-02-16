@@ -158,6 +158,8 @@ namespace Colsp.Api.Controllers
             }
         }
 
+       
+
         #region Get CMS List
 
         public HttpResponseMessage GetCollection(int? CMSId)
@@ -296,7 +298,7 @@ namespace Colsp.Api.Controllers
 
         #endregion
 
-
+        #region Search
         [Route("api/CMSSearchForAdd")]
         [HttpGet]
         public IHttpActionResult CMSSearchForAdd([FromUri]CMSSearchForAddRequest request)
@@ -575,6 +577,8 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        #endregion
+
 
         #region Edit/Update CMS
         [Route("api/CMSEditStages")]
@@ -614,25 +618,26 @@ namespace Colsp.Api.Controllers
         [Route("api/CMSUpdateStages")]
         [HttpPost]
         public HttpResponseMessage UpdateCMS(List<CMSCollectionItemRequest> model)
-        {            
+        {
             try
             {
                 int CMSId = 0;
                 if (model != null)
                 {
-                    foreach (var item in model) { 
-                    
-                    if (model.FirstOrDefault().CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
-                    {                       
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.UpdateCMSStaticPage(item);
-                    }
-                    else if (model.FirstOrDefault().CMSTypeId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL))
+                    foreach (var item in model)
                     {
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.UpdateCMSCollectionItem(item);
-                    }
-                    
+
+                        if (model.FirstOrDefault().CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                        {
+                            CMSProcess cms = new CMSProcess();
+                            CMSId = cms.UpdateCMSStaticPage(item);
+                        }
+                        else if (model.FirstOrDefault().CMSTypeId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL))
+                        {
+                            CMSProcess cms = new CMSProcess();
+                            CMSId = cms.UpdateCMSCollectionItem(item);
+                        }
+
                     }
                 }
                 else
