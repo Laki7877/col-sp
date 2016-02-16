@@ -11,15 +11,16 @@ namespace Colsp.Api.Helpers
         public static string ValidateString(string val,string fieldName, bool required, int maxLenght, bool isAlphanumeric)
         {
             
-            if(required && string.IsNullOrEmpty(val))
+            if(required && string.IsNullOrWhiteSpace(val))
             {
                 throw new Exception(fieldName + " is a required field");
             }
-            if (val == null) { return val; }
+            if (string.IsNullOrWhiteSpace(val)) { return val; }
             val = val.Trim();
-            if (isAlphanumeric )
+            if (isAlphanumeric)
             {
-                Regex rg = new Regex(@"^[ก-๙A-Za-z0-9\s]*$");
+                Regex rg = new Regex(@"^[^<>]+$");
+                //Regex rg = new Regex(@"^[ก-๙A-Za-z0-9\s]*$");
                 if (!rg.IsMatch(val))
                 {
                     throw new Exception(fieldName + " only letters and numbers allowed");

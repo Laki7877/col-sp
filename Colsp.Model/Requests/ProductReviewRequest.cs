@@ -9,6 +9,7 @@ namespace Colsp.Model.Requests
     public class ProductReviewRequest : PaginatedRequest
     {
         public int? ProductReviewId { get; set; }
+        public string Status { get; set; }
         public string Pid { get; set;}
         public string SearchText { get; set; }
 

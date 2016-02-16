@@ -485,6 +485,14 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/ClearCache")]
+        [HttpGet]
+        public HttpResponseMessage ClearCache()
+        {
+            Cache.Clear();
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
         [Route("api/Users/Login")]
         [HttpGet]
         public HttpResponseMessage LoginUser()
@@ -623,7 +631,7 @@ namespace Colsp.Api.Controllers
                 var claimsIdentity = identity;
                 claimRq.Permission = claims.Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
                 claimRq.Shop = principal.ShopRequest();
-                claimRq.User = this.User.UserRequest();
+                claimRq.User = new { NameEn = this.User.UserRequest().NameEn, Email = this.User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
 
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 Cache.Add(Request.Headers.Authorization.Parameter, principal);

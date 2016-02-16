@@ -17,6 +17,7 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LocalCategory()
         {
+            this.CouponLocalCatMaps = new HashSet<CouponLocalCatMap>();
             this.ProductHistories = new HashSet<ProductHistory>();
             this.ProductHistoryLocalCatMaps = new HashSet<ProductHistoryLocalCatMap>();
             this.Products = new HashSet<Product>();
@@ -41,6 +42,8 @@ namespace Colsp.Entity.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
         public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistory> ProductHistories { get; set; }

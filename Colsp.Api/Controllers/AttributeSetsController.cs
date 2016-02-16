@@ -58,7 +58,6 @@ namespace Colsp.Api.Controllers
                               {
                                   atrS.AttributeSetId,
                                   atrS.AttributeSetNameEn,
-                                  atrS.AttributeSetNameTh,
                                   atrS.Visibility,
                                   atrS.Status,
                                   atrS.UpdatedDt,
@@ -74,8 +73,7 @@ namespace Colsp.Api.Controllers
                 request.DefaultOnNull();        
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
-                    attrSet = attrSet.Where(a => a.AttributeSetNameEn.Contains(request.SearchText)
-                    || a.AttributeSetNameTh.Contains(request.SearchText));
+                    attrSet = attrSet.Where(a => a.AttributeSetNameEn.Contains(request.SearchText));
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
@@ -471,7 +469,6 @@ namespace Colsp.Api.Controllers
         private void SetupAttributeSet(AttributeSet set, AttributeSetRequest request)
         {
             set.AttributeSetNameEn = Validation.ValidateString(request.AttributeSetNameEn, "Attribute Set Name (English)", true, 100, true);
-            set.AttributeSetNameTh = Validation.ValidateString(request.AttributeSetNameTh, "Attribute Set Name (Thai)", false, 100, true);
             set.AttributeSetDescriptionEn = request.AttributeSetDescriptionEn;
             set.AttributeSetDescriptionTh = request.AttributeSetDescriptionTh;
             set.Visibility = request.Visibility;
@@ -491,7 +488,6 @@ namespace Colsp.Api.Controllers
                 AttributeSetRequest response = new AttributeSetRequest();
                 response.AttributeSetId = attrSet.AttributeSetId;
                 response.AttributeSetNameEn = attrSet.AttributeSetNameEn;
-                response.AttributeSetNameTh = attrSet.AttributeSetNameTh;
                 response.AttributeSetDescriptionEn = attrSet.AttributeSetDescriptionEn;
                 response.AttributeSetDescriptionTh = attrSet.AttributeSetDescriptionTh;
                 response.Visibility = attrSet.Visibility;
@@ -504,7 +500,6 @@ namespace Colsp.Api.Controllers
                         AttributeRequest attr = new AttributeRequest();
                         attr.AttributeId = map.AttributeId;
                         attr.AttributeNameEn = map.Attribute.AttributeNameEn;
-                        attr.AttributeNameTh = map.Attribute.AttributeNameTh;
                         attr.AttributeUnitEn = map.Attribute.AttributeUnitEn;
                         attr.AttributeUnitTh = map.Attribute.AttributeUnitTh;
                         attr.DataType = map.Attribute.DataType;
