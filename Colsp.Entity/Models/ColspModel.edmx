@@ -303,7 +303,7 @@
           <Property Name="Sequence" Type="int" />
           <Property Name="CMSStatusFlowId" Type="int" />
           <Property Name="CMSCollectionGroupId" Type="int" />
-          <Property Name="Status" Type="int" />
+          <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="Createdate" Type="datetime" />
@@ -3160,7 +3160,7 @@
           <Property Name="Sequence" Type="Int32" />
           <Property Name="CMSStatusFlowId" Type="Int32" />
           <Property Name="CMSCollectionGroupId" Type="Int32" />
-          <Property Name="Status" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="Createdate" Type="DateTime" Precision="3" />

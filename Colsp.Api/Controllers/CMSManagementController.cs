@@ -622,12 +622,12 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (var item in model) { 
                     
-                    if (model.FirstOrDefault().CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                    if (item.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
                     {                       
                         CMSProcess cms = new CMSProcess();
                         CMSId = cms.UpdateCMSStaticPage(item);
                     }
-                    else if (model.FirstOrDefault().CMSTypeId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL))
+                    else if (item.CMSTypeId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL))
                     {
                         CMSProcess cms = new CMSProcess();
                         CMSId = cms.UpdateCMSCollectionItem(item);

@@ -19,26 +19,26 @@ namespace Colsp.Api.CMSFunction
 {
     public class CMSHistoryLogClass : ApiController
     {
-        public void LogCreateCMS(int Id, string Tablename, int? Status, string Transaction, int UserId, string IP)
+        public void LogCreateCMS(int Id, string Tablename, bool? Status, string Transaction, int UserId, string IP)
         {
             var JsonText = "";
             switch (Tablename.ToUpper())
             {
                 case "CMSMASTER":
                      JsonText = this.GetJsonMasterCMS(Id);
-                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
+                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
                     break;
                 case "CMSCOLLECTIONITEM":
                     JsonText = this.GetJsonCollectionItem(Id);
-                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
+                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
                     break;
                 case "CMSMainCategory":
                     JsonText = this.GetJsonMainCategory(Id);
-                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
+                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
                     break;
                 case "CMSBrandInShop":
                     JsonText = this.GetJsonBrandInShop(Id);
-                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
+                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
                     break;
                 default:
                     break;
@@ -46,7 +46,7 @@ namespace Colsp.Api.CMSFunction
             }
         }
 
-        private bool SaveCMSHistoryLog(int Id, string Tablename, string JsonText, int? Status, string Transaction, int UserId, string IP)
+        private bool SaveCMSHistoryLog(int Id, string Tablename, string JsonText, bool? Status, string Transaction, int UserId, string IP)
         {
             bool result = false;
 

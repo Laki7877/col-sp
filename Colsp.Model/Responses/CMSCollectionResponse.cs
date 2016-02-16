@@ -40,7 +40,7 @@ namespace Colsp.Model.Responses
         public string PId { get; set; }
         public string ProductBoxBadge { get; set; }
         public Nullable<int> Sequence { get; set; }
-        public int? Status { get; set; }
+        public bool? Status { get; set; }
         public int? CMSCollectionItemGroupId { get; set; }
         public DateTime CreateDate { get; set; }
     }

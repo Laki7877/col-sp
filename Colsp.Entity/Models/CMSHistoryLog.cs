@@ -19,7 +19,7 @@ namespace Colsp.Entity.Models
         public string CMSTableLog { get; set; }
         public string TransactionLog { get; set; }
         public string DetailLog { get; set; }
-        public int? Status { get; set; }
+        public Nullable<bool> Status { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public string CreateIP { get; set; }

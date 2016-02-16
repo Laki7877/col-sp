@@ -23,7 +23,7 @@ namespace Colsp.Model.Requests
         public string LongDescriptionTH { get; set; }
         public string ShortDescriptionEN { get; set; }
         public string LongDescriptionEN { get; set; }
-        public int? Status { get; set; }
+        public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> By { get; set; }
         public string IP { get; set; }

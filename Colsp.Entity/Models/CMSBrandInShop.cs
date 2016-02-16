@@ -29,7 +29,7 @@ namespace Colsp.Entity.Models
         public string LongDescriptionEn { get; set; }
         public string ShortDescriptionTh { get; set; }
         public string LongDescriptionTh { get; set; }
-        public Nullable<int> Status { get; set; }
+        public Nullable<bool> Status { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public Nullable<int> UpdateBy { get; set; }
