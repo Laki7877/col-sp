@@ -121,6 +121,43 @@ namespace Colsp.Api.Controllers
             }
         }
 
+
+        [Route("api/ShopsSeller")]
+        [HttpGet]
+        public HttpResponseMessage GetShopSeller()
+        {
+            try
+            {
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Select(s => new
+                    {
+                        s.ShopId,
+                        s.ShopNameEn,
+                        s.ShopDescriptionEn,
+                        s.ShopDescriptionTh,
+                        s.ShopAddress,
+                        s.BankAccountName,
+                        s.BankAccountNumber,
+                        s.Facebook,
+                        s.Youtube,
+                        s.Twitter,
+                        s.Instagram,
+                        s.Pinterest,
+                        s.StockAlert
+                    }).ToList();
+                if (shop == null || shop.Count == 0)
+                {
+                    throw new Exception("Cannot find shop");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, shop[0]);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/Shops")]
         [HttpPost]
         public HttpResponseMessage AddShop(ShopRequest request)
@@ -129,16 +166,6 @@ namespace Colsp.Api.Controllers
             User usr = null;
             try
             {
-                shop = new Shop();
-                shop.Commission = request.Commission;
-                shop.ShopNameEn = request.ShopNameEn;
-                shop.ShopNameTh = request.ShopNameTh;
-                shop.ShopTypeId = request.ShopType.ShopTypeId;
-                shop.Status = request.Status;
-                shop.CreatedBy = this.User.UserRequest().Email;
-                shop.CreatedDt = DateTime.Now;
-                shop.UpdatedBy = this.User.UserRequest().Email;
-                shop.UpdatedDt = DateTime.Now;
                 usr = new User();
                 usr.Email = Validation.ValidateString(request.ShopOwner.Email, "Email", true, 100, false);
                 usr.Password = request.ShopOwner.Password;
@@ -155,19 +182,22 @@ namespace Colsp.Api.Controllers
                 usr.UpdatedBy = this.User.UserRequest().Email;
                 usr.UpdatedDt = DateTime.Now;
                 db.Users.Add(usr);
-                db.SaveChanges();
-               
-                UserGroupMap map = new UserGroupMap();
-                map.UserId = usr.UserId;
-                map.GroupId = Constant.SHOP_OWNER_GROUP_ID;
-                map.CreatedBy = this.User.UserRequest().Email;
-                map.CreatedDt = DateTime.Now;
-                map.UpdatedBy = this.User.UserRequest().Email;
-                map.UpdatedDt = DateTime.Now;
-                db.UserGroupMaps.Add(map);
-                shop.ShopOwner = usr.UserId;
+
+                shop = new Shop();
+                shop.Commission = request.Commission;
+                shop.ShopNameEn = request.ShopNameEn;
+                shop.ShopNameTh = request.ShopNameTh;
+                shop.ShopTypeId = request.ShopType.ShopTypeId;
+                shop.Status = request.Status;
+                shop.CreatedBy = this.User.UserRequest().Email;
+                shop.CreatedDt = DateTime.Now;
+                shop.UpdatedBy = this.User.UserRequest().Email;
+                shop.UpdatedDt = DateTime.Now;
                 db.Shops.Add(shop);
+
                 db.SaveChanges();
+
+                shop.ShopOwner = usr.UserId;
 
                 UserShop userShop = new UserShop();
                 userShop.ShopId = shop.ShopId;
@@ -176,19 +206,58 @@ namespace Colsp.Api.Controllers
                 userShop.CreatedDt = DateTime.Now;
                 userShop.UpdatedBy = this.User.UserRequest().Email;
                 userShop.UpdatedDt = DateTime.Now;
+                db.UserShops.Add(userShop);
+
+                UserGroupMap map = new UserGroupMap();
+                map.UserId = usr.UserId;
+                map.GroupId = Constant.SHOP_OWNER_GROUP_ID;
+                map.CreatedBy = this.User.UserRequest().Email;
+                map.CreatedDt = DateTime.Now;
+                map.UpdatedBy = this.User.UserRequest().Email;
+                map.UpdatedDt = DateTime.Now;
+                db.UserGroupMaps.Add(map);
+
+                db.SaveChanges();
                 return GetShop(shop.ShopId);
+            }
+            catch (DbUpdateException e)
+            {
+                if (usr != null && usr.UserId != 0)
+                {
+                    db.Users.Remove(usr);
+                    db.SaveChanges();
+                }
+                if (shop != null && shop.ShopId != 0)
+                {
+                    db.Shops.Remove(shop);
+                    db.SaveChanges();
+                }
+                
+
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "Email has already been used");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
                 if (usr != null && usr.UserId != 0)
                 {
                     db.Users.Remove(usr);
+                    db.SaveChanges();
                 }
                 if (shop != null && shop.ShopId != 0)
                 {
                     db.Shops.Remove(shop);
+                    db.SaveChanges();
                 }
-                db.SaveChanges();
+                
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -293,148 +362,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
-        [Route("api/Shops/{shopId}/LocalCategories")]
-        [HttpGet]
-        public HttpResponseMessage GetCategoryFromShop(int shopId)
-        {
-            try
-            {
-                var localCat = (from cat in db.LocalCategories
-                                 where cat.ShopId == shopId
-                                 select new
-                                 {
-                                     cat.CategoryId,
-                                     cat.NameEn,
-                                     cat.NameTh,
-                                     cat.Lft,
-                                     cat.Rgt,
-                                     cat.UrlKeyEn,
-                                     cat.UrlKeyTh,
-                                     cat.Visibility,
-                                     cat.Status,
-                                     cat.UpdatedDt,
-                                     cat.CreatedDt,
-                                     ProductCount = cat.ProductStages.Count,
-                                 }).ToList();
-                if (localCat != null && localCat.Count > 0)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, localCat);
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
-                }
-
-            }
-            catch
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
-            }
-        }
-
-        [Route("api/Shops/{shopId}/LocalCategories")]
-        [HttpPut]
-        public HttpResponseMessage SaveChangeLocalCategory([FromUri]int shopId, List<CategoryRequest> request)
-        {
-            try
-            {
-                int shopIdRq = this.User.ShopRequest().ShopId.Value;
-                if (shopIdRq == 0)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid. Cannot find shop in session");
-                }
-                var catEnList = (from cat in db.LocalCategories
-                                 join proStg in db.ProductStages on cat.CategoryId equals proStg.LocalCatId into j
-                                 from j2 in j.DefaultIfEmpty()
-                                 where cat.ShopId == shopIdRq
-                                 group j2 by cat into g
-                                 select new
-                                 {
-                                     Category = g,
-                                     ProductCount = g.Key.ProductStages.Count
-                                 }).ToList();
-                foreach (CategoryRequest catRq in request)
-                {
-                    if (catRq.Lft == null || catRq.Rgt == null || catRq.Lft >= catRq.Rgt)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node is not properly formated");
-                    }
-                    var validate = request.Where(w => w.Lft == catRq.Lft || w.Rgt == catRq.Rgt).ToList();
-                    if (validate != null && validate.Count > 1)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
-                    }
-                    if (catRq.CategoryId != 0)
-                    {
-                        var catEn = catEnList.Where(w => w.Category.Key.CategoryId == catRq.CategoryId).Select(s => s.Category).SingleOrDefault();
-                        if (catEn == null)
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
-                        }
-                        else
-                        {
-                            catEn.Key.Lft = catRq.Lft;
-                            catEn.Key.Rgt = catRq.Rgt;
-                            catEn.Key.NameEn = catRq.NameEn;
-                            catEn.Key.NameTh = catRq.NameTh;
-                            catEn.Key.UrlKeyEn = catRq.UrlKeyEn;
-                            catEn.Key.Visibility = catRq.Visibility;
-                            catEn.Key.Status = Constant.STATUS_ACTIVE;
-                            catEn.Key.UpdatedBy = this.User.UserRequest().Email;
-                            catEn.Key.UpdatedDt = DateTime.Now;
-                            catEnList.Remove(catEnList.Where(w => w.Category.Key.CategoryId == catEn.Key.CategoryId).SingleOrDefault());
-                        }
-                    }
-                    else
-                    {
-                        LocalCategory catEn = new LocalCategory();
-                        catEn.Lft = catRq.Lft;
-                        catEn.Rgt = catRq.Rgt;
-                        catEn.NameEn = catRq.NameEn;
-                        catEn.NameTh = catRq.NameTh;
-                        catEn.UrlKeyEn = catRq.UrlKeyEn;
-                        catEn.ShopId = shopId;
-                        catEn.Visibility = catRq.Visibility;
-                        catEn.Status = Constant.STATUS_ACTIVE;
-                        catEn.CreatedBy = this.User.UserRequest().Email;
-                        catEn.CreatedDt = DateTime.Now;
-                        catEn.UpdatedBy = this.User.UserRequest().Email;
-                        catEn.UpdatedDt = DateTime.Now;
-                        db.LocalCategories.Add(catEn);
-                    }
-                }
-                foreach (var cat in catEnList)
-                {
-                    if (cat.ProductCount != 0)
-                    {
-                        db.Dispose();
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete category " + cat.Category.Key.NameEn + " with product associated");
-                    }
-                    db.LocalCategories.Remove(cat.Category.Key);
-                }
-                db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "URL Key has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-            }
-
-        }
 
         //[Route("api/Shops/{sellerId}/ProductStages")]
         //[HttpGet]

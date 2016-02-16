@@ -39,7 +39,13 @@ namespace Colsp.Api.Helper
             }
             else
             {
-                return null;
+                string ab = NextCatAbbre(db);
+                GlobalCategoryPID pid = new GlobalCategoryPID();
+                pid.CategoryAbbreviation = ab;
+                pid.CategoryId = CategoryId.Value;
+                pid.CurrentKey = "11111";
+                db.GlobalCategoryPIDs.Add(pid);
+                return string.Concat(pid.CategoryAbbreviation, pid.CurrentKey).Trim();
             }
         }
 

@@ -44,5 +44,6 @@ namespace Colsp.Api.Constants
         public static readonly int CMS_TYPE_STATIC_PAGE = 1;
         public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;
         #endregion
+        public static int SHOP_OWNER_GROUP_ID = 2;
     }
 }

@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Text;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -34,29 +35,29 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = this.User.ShopRequest().ShopId.Value;
                 var products = (from stage in db.ProductStages
-                          join proImg in db.ProductStageImages on stage.Pid equals proImg.Pid into proImgJoin
-                          join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
-                          from varJ in varJoin.DefaultIfEmpty()
-                          join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
-                          let comm = db.ProductStageComments.Where(w=>w.Pid.Equals(stage.Pid)).OrderByDescending(o=>o.UpdatedDt).FirstOrDefault()
-                          let commVar = db.ProductStageComments.Where(w=>w.Pid.Equals(varJ.Pid)).OrderByDescending(o=>o.UpdatedDt).FirstOrDefault()
-                          where stage.ShopId == shopId 
-                          select new
-                          {
-                              stage.ProductId,
-                              Sku = varJ != null ? varJ.Sku : stage.Sku,
-                              Upc = varJ != null ? varJ.Upc : stage.Upc,
-                              ProductNameEn = varJ != null ? varJ.ProductNameEn : stage.ProductNameEn,
-                              ProductNameTh = varJ != null ? varJ.ProductNameTh : stage.ProductNameTh,
-                              Pid = varJ != null ? varJ.Pid : stage.Pid,
-                              VariantValue = varJ != null ? varJ.ValueEn1 + " , " + varJ.ValueEn2 : null,
-                              Status = varJ != null ? varJ.Status : stage.Status,
-                              MasterImg = proImgJoin.Select(s=>new ImageRequest{ ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o=>o.position),
-                              VariantImg = varImgJoin.Select(s => new ImageRequest { ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o => o.position),
-                              IsVariant = varJ != null ? true : false,
-                              Comment = commVar != null ? commVar.Comment : commVar.Comment,
-                          });
-                if(request == null)
+                                join proImg in db.ProductStageImages on stage.Pid equals proImg.Pid into proImgJoin
+                                join variant in db.ProductStageVariants on stage.ProductId equals variant.ProductId into varJoin
+                                from varJ in varJoin.DefaultIfEmpty()
+                                join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
+                                let comm = db.ProductStageComments.Where(w => w.Pid.Equals(stage.Pid)).OrderByDescending(o => o.UpdatedDt).FirstOrDefault()
+                                let commVar = db.ProductStageComments.Where(w => w.Pid.Equals(varJ.Pid)).OrderByDescending(o => o.UpdatedDt).FirstOrDefault()
+                                where stage.ShopId == shopId
+                                select new
+                                {
+                                    stage.ProductId,
+                                    Sku = varJ != null ? varJ.Sku : stage.Sku,
+                                    Upc = varJ != null ? varJ.Upc : stage.Upc,
+                                    ProductNameEn = varJ != null ? varJ.ProductNameEn : stage.ProductNameEn,
+                                    ProductNameTh = varJ != null ? varJ.ProductNameTh : stage.ProductNameTh,
+                                    Pid = varJ != null ? varJ.Pid : stage.Pid,
+                                    VariantValue = varJ != null ? varJ.ValueEn1 + " , " + varJ.ValueEn2 : null,
+                                    Status = varJ != null ? varJ.Status : stage.Status,
+                                    MasterImg = proImgJoin.Select(s => new ImageRequest { ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o => o.position),
+                                    VariantImg = varImgJoin.Select(s => new ImageRequest { ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o => o.position),
+                                    IsVariant = varJ != null ? true : false,
+                                    Comment = commVar != null ? commVar.Comment : commVar.Comment,
+                                });
+                if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, products);
                 }
@@ -114,14 +115,14 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if(request == null || request.Count == 0)
+                if (request == null || request.Count == 0)
                 {
                     throw new Exception("Invalid request");
                 }
                 int shopId = this.User.ShopRequest().ShopId.Value;
-                foreach(VariantRequest varRq in request)
+                foreach (VariantRequest varRq in request)
                 {
-                    if(varRq.IsVariant == null)
+                    if (varRq.IsVariant == null)
                     {
                         throw new Exception("Invalid variant flag");
                     }
@@ -133,7 +134,7 @@ namespace Colsp.Api.Controllers
                     {
                         SaveChangeImg(db, varRq.Pid, shopId, varRq.MasterImg, this.User.UserRequest().Email);
                     }
-                    
+
                 }
                 db.SaveChanges();
                 return Request.CreateErrorResponse(HttpStatusCode.OK, "Save successful");
@@ -177,54 +178,66 @@ namespace Colsp.Api.Controllers
 
         [Route("api/ProductStages")]
         [HttpGet]
+        [ClaimsAuthorize(Permission=new string[] { "View Product", "View All Product" })]
         public HttpResponseMessage GetProductStages([FromUri] ProductRequest request)
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
-                var products = (from p in db.ProductStages
-                          where !Constant.STATUS_REMOVE.Equals(p.Status) && p.ShopId == shopId
-                             select new {
-                              p.Sku,
-                              p.Pid,
-                              p.Upc,
-                              p.ProductId,
-                              p.ProductNameEn,
-                              p.ProductNameTh,
-                              p.OriginalPrice,
-                              p.SalePrice,
-                              p.Status,
-                              p.ImageFlag,
-                              p.InfoFlag,
-                              p.Visibility,
-                              VariantCount = p.ProductStageVariants.Count,
-                              ImageUrl = p.FeatureImgUrl,
-                              p.GlobalCatId,
-                              p.LocalCatId,
-                              p.AttributeSetId,
-                              p.ProductStageAttributes,
-                              p.UpdatedDt,
-                          }).Take(100);
-                if(request == null)
+                if (request == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, products);
+                    throw new Exception("Invalid request");
+                }
+                var products = (from p in db.ProductStages
+                                where !Constant.STATUS_REMOVE.Equals(p.Status)
+                                select new {
+                                    p.Sku,
+                                    p.Pid,
+                                    p.Upc,
+                                    p.ProductId,
+                                    p.ProductNameEn,
+                                    p.ProductNameTh,
+                                    p.OriginalPrice,
+                                    p.SalePrice,
+                                    p.Status,
+                                    p.ImageFlag,
+                                    p.InfoFlag,
+                                    p.Visibility,
+                                    VariantCount = p.ProductStageVariants.Where(w => w.Visibility == true).ToList().Count,
+                                    ImageUrl = p.FeatureImgUrl,
+                                    p.GlobalCatId,
+                                    p.LocalCatId,
+                                    p.AttributeSetId,
+                                    p.ProductStageAttributes,
+                                    p.UpdatedDt,
+                                    p.ShopId,
+                                    p.InformationTabStatus,
+                                    p.ImageTabStatus,
+                                    p.CategoryTabStatus,
+                                    p.VariantTabStatus,
+                                    p.MoreOptionTabStatus,
+                                    Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn }
+                                });
+                if (this.User.HasPermission("View Product"))
+                {
+                    int shopId = this.User.ShopRequest().ShopId.Value;
+                    products = products.Where(w => w.ShopId == shopId);
                 }
                 request.DefaultOnNull();
-                if(request.GlobalCatId != null)
+                if (request.GlobalCatId != null)
                 {
                     products = products.Where(p => p.GlobalCatId == request.GlobalCatId);
                 }
-                if(request.LocalCatId != null)
+                if (request.LocalCatId != null)
                 {
                     products = products.Where(p => p.LocalCatId == request.LocalCatId);
                 }
-                if(request.AttributeSetId != null)
+                if (request.AttributeSetId != null)
                 {
                     products = products.Where(p => p.LocalCatId == request.LocalCatId);
                 }
-                if(request.AttributeId != null)
+                if (request.AttributeId != null)
                 {
-                    products = products.Where(p=>p.ProductStageAttributes.All(a=>a.AttributeId==request.AttributeId));
+                    products = products.Where(p => p.ProductStageAttributes.All(a => a.AttributeId == request.AttributeId));
                 }
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
@@ -240,7 +253,7 @@ namespace Colsp.Api.Controllers
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
-                    
+
                     if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
@@ -258,16 +271,42 @@ namespace Colsp.Api.Controllers
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
+                if (!string.IsNullOrEmpty(request._missingfilter))
+                {
+                    if (string.Equals("Information", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => !p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("Image", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => !p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("Variation", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => !p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("More", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => !p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("ReadyForAction", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => 
+                           p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
+                        && p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
+                        && p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
+                        && p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                }
                 var total = products.Count();
                 var pagedProducts = products.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
-
         }
 
         [Route("api/ProductStages/{productId}")]
@@ -276,7 +315,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var response = SetupProductStageRequestFromProductId(db,productId);
+                var response = SetupProductStageRequestFromProductId(db, productId);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
@@ -299,8 +338,8 @@ namespace Colsp.Api.Controllers
 
                 #region Setup Master Product
                 stage = new ProductStage();
-                
-                SetupProductStage(db,stage, request);
+
+                SetupProductStage(db, stage, request);
                 stage.Status = Constant.PRODUCT_STATUS_JUNK;
                 int shopId = this.User.ShopRequest().ShopId.Value;
                 stage.ShopId = shopId;
@@ -419,7 +458,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 #region Setup variant
-                if(request.Variants != null && request.Variants.Count > 0)
+                if (request.Variants != null && request.Variants.Count > 0)
                 {
                     foreach (VariantRequest variantRq in request.Variants)
                     {
@@ -489,7 +528,7 @@ namespace Colsp.Api.Controllers
                         db.ProductStageVariants.Add(variant);
                     }
                 }
-               
+
                 #endregion
                 db.SaveChanges();
                 return GetProductStage(stage.ProductId);
@@ -498,7 +537,7 @@ namespace Colsp.Api.Controllers
             {
                 #region Rollback
                 db.Dispose();
-                if(stage != null && stage.ProductId > 0)
+                if (stage != null && stage.ProductId > 0)
                 {
                     db = new ColspEntities();
                     db.ProductStageAttributes.RemoveRange(db.ProductStageAttributes.Where(w => w.ProductId.Equals(stage.ProductId)));
@@ -1236,7 +1275,15 @@ namespace Colsp.Api.Controllers
                 }
                 stage.BrandId = brand.BrandId;
             }
-            stage.OriginalPrice = Validation.ValidateDecimal(request.MasterVariant.OriginalPrice, "Original Price",true,20,2,true).Value;
+            decimal? op = Validation.ValidateDecimal(request.MasterVariant.OriginalPrice, "Original Price", false, 20, 2, true);
+            if(op != null)
+            {
+                stage.OriginalPrice = op.Value;
+            }
+            else
+            {
+                stage.OriginalPrice = 0;
+            }
             stage.SalePrice = Validation.ValidateDecimal(request.MasterVariant.SalePrice, "Sale Price", false, 20, 2, true);
             
             stage.DescriptionFullTh = Validation.ValidateString(request.MasterVariant.DescriptionFullTh, "Description (Thai)", false, 2000, false);

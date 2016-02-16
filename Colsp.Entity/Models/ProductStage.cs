@@ -73,6 +73,12 @@ namespace Colsp.Entity.Models
         public bool ImageFlag { get; set; }
         public bool OnlineFlag { get; set; }
         public bool Visibility { get; set; }
+        public string InformationTabStatus { get; set; }
+        public string ImageTabStatus { get; set; }
+        public string CategoryTabStatus { get; set; }
+        public string VariantTabStatus { get; set; }
+        public string MoreOptionTabStatus { get; set; }
+        public string RejectReason { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

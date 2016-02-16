@@ -8,7 +8,7 @@ namespace Colsp.Api.Filters
 {
 	public class ClaimsAuthorizeAttribute : AuthorizeAttribute
 	{
-		public string Permission { get; set; }
+		public string[] Permission { get; set; }
 
         protected override bool IsAuthorized(HttpActionContext actionContext)
 		{
@@ -22,7 +22,7 @@ namespace Colsp.Api.Filters
 			}
 
 			// Fetch permission from attribute
-			var permissions = this.Permission.Replace(" ", "").Split(',');
+			var permissions = this.Permission;
 
 			// Match with the user's permission list
 			var claimsIdentity = HttpContext.Current.User.Identity as ClaimsIdentity;
