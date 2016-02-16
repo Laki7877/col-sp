@@ -20,17 +20,26 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
+        #region GetShopId
+        private int GetShopId()
+        {
+            var shopId = this.User.Shops().FirstOrDefault();
+            return 0;
+        }
+        #endregion
+
         #region Page List
         [Route("api/CMSShopList")]
         [HttpGet]
         public IHttpActionResult GetByShop([FromUri] CMSShopRequest request)
         {
+            int? shopId = (int?)this.User.ShopRequest().ShopId.Value;
             try
             {
-                if (!request.ShopId.HasValue)
+                if (!shopId.HasValue)
                     return Ok(request);
                 IQueryable<CMSMaster> CMS;
-                if (request.ShopId.HasValue && request.ShopId.Equals(Constant.CMS_SHOP_GOBAL))
+                if (shopId.HasValue && shopId.Equals(Constant.CMS_SHOP_GOBAL))
                 {
                     CMS = (from c in db.CMSMasters
                            select c
@@ -39,7 +48,7 @@ namespace Colsp.Api.Controllers
                 else
                 {
                     CMS = (from c in db.CMSMasters
-                           where c.ShopId == request.ShopId
+                           where c.ShopId == shopId
                            select c
                           ).Take(100);
                 }
@@ -90,7 +99,7 @@ namespace Colsp.Api.Controllers
         {
             CMSShopRequest CMSResult = new CMSShopRequest();
             CMSResult.SearchText = model.SearchText;
-            CMSResult.ShopId = model.ShopId;
+            //CMSResult.ShopId = model.ShopId;
             CMSResult._direction = model._direction;
             CMSResult._filter = model._filter;
             CMSResult._limit = model._limit;
@@ -224,12 +233,13 @@ namespace Colsp.Api.Controllers
 
         public IHttpActionResult GetCMSList(CMSShopRequest request)
         {
+            int? shopId = (int?)this.User.ShopRequest().ShopId.Value;
             try
             {
-                if (!request.ShopId.HasValue)
+                if (!shopId.HasValue)
                     return Ok(request);
                 IQueryable<CMSMaster> CMS;
-                if (request.ShopId.HasValue && request.ShopId.Equals(Constant.CMS_SHOP_GOBAL))
+                if (shopId.HasValue && shopId.Equals(Constant.CMS_SHOP_GOBAL))
                 {
                     CMS = (from c in db.CMSMasters
                            select c
@@ -238,7 +248,7 @@ namespace Colsp.Api.Controllers
                 else
                 {
                     CMS = (from c in db.CMSMasters
-                           where c.ShopId == request.ShopId
+                           where c.ShopId == shopId
                            select c
                           ).Take(100);
                 }
@@ -285,78 +295,273 @@ namespace Colsp.Api.Controllers
 
 
         #endregion
-        
+
 
         [Route("api/CMSSearchForAdd")]
         [HttpGet]
         public IHttpActionResult CMSSearchForAdd([FromUri]CMSSearchForAddRequest request)
         {
+            var UserType = this.User.UserRequest().Type;
+            int? shopId = 0;
+            switch (UserType)
+            {
+                case "A":
+                    shopId = 0;
+                    break;
+                case "S":
+                case "H":
+                    try
+                    {
+                        shopId = this.User.ShopRequest().ShopId.Value;
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok(request);
+                        throw;
+                    }
+
+                    break;
+                default:
+                    shopId = null;
+                    break;
+            }
             try
             {
+                if (!shopId.HasValue)
+                    return Ok(request);
                 dynamic response = string.Empty;
-                switch (request.SearchType)
+                switch (request.SearchType.ToUpper())
                 {
-                    case "Category":
-                        var result = (from g in db.GlobalCategories
-                                      where (g.NameEn.Contains(request.SearchText) || g.NameTh.Contains(request.SearchText))
-                                      select g
-                                        ).Take(100);
-                        if (string.IsNullOrWhiteSpace(request.SearchText))
+                    case "CATEGORY":
+                        if (string.IsNullOrWhiteSpace(request._order))
+                            request._order = "CategoryId";
+                        if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
                         {
-                            result = (from g in db.GlobalCategories
-                                      select g
-                                        ).Take(100);
+                            var result = (from g in db.LocalCategories
+                                          where g.ShopId == shopId
+                                          select new
+                                          {
+                                              g.CategoryId,
+                                              g.NameEn,
+                                              g.NameTh,
+                                              g.Shop.ShopNameEn,
+                                              g.Shop.ShopNameTh,
+                                              g.Status,
+                                              g.Visibility
+                                          }
+                                       ).Take(100);
+
+                            if (request == null)
+                            {
+                                return Ok(result);
+                            }
+                            request.DefaultOnNull();
+                            if (!string.IsNullOrEmpty(request.SearchText))
+                            {
+                                result = result.Where(c => (c.NameEn.Contains(request.SearchText) || c.NameTh.Contains(request.SearchText)));
+                            }
+                            var total = result.Count();
+                            var pagedCMS = result.Paginate(request);
+                            response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
                         }
-                        if (request == null)
+                        else //Global
                         {
-                            return Ok(result);
-                        }
-                        request.DefaultOnNull();
-                        var total = result.Count();
-                        var pagedCMS = result.Paginate(request);
-                        response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
-                        break;
-                    case "Brand":
-                        var resultBrand = (from g in db.Brands
-                                         where (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
-                                         select g
-                                        ).Take(100);
-                        if (request == null)
-                        {
-                            return Ok(resultBrand);
-                        }
-                        request.DefaultOnNull();
-                        var totalBrand = resultBrand.Count();
-                        var pagedCMSBrand = resultBrand.Paginate(request);
-                        response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
-                        break;
-                    case "Shop":
-                        var resultShop = (from g in db.Shops
-                                          where (g.ShopNameEn.Contains(request.SearchText) || g.ShopNameTh.Contains(request.SearchText))
-                                          select g
+                            var result = (from g in db.GlobalCategories
+                                          select new
+                                          {
+                                              g.CategoryId,
+                                              g.NameEn,
+                                              g.NameTh,
+                                              g.Status,
+                                              g.Visibility
+                                          }
                                       ).Take(100);
-                        if (request == null)
-                        {
-                            return Ok(resultShop);
+
+                            if (request == null)
+                            {
+                                return Ok(result);
+                            }
+                            request.DefaultOnNull();
+                            if (!string.IsNullOrEmpty(request.SearchText))
+                            {
+                                result = result.Where(c => (c.NameEn.Contains(request.SearchText) || c.NameTh.Contains(request.SearchText)));
+                            }
+                            var total = result.Count();
+                            var pagedCMS = result.Paginate(request);
+                            response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
                         }
-                        request.DefaultOnNull();
-                        var totalShop = resultShop.Count();
-                        var pagedCMSShop = resultShop.Paginate(request);
-                        response = PaginatedResponse.CreateResponse(pagedCMSShop, request, totalShop);
+
+
+
                         break;
-                    case "Product":
-                        var resultPro = (from g in db.Products
-                                         where (g.ProductNameEn.Contains(request.SearchText) || g.ProductNameTh.Contains(request.SearchText))
-                                         select g
-                                        ).Take(100);
-                        if (request == null)
+                    case "BRAND":
+                        if (string.IsNullOrWhiteSpace(request._order))
+                            request._order = "BrandId";
+                        if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
                         {
-                            return Ok(resultPro);
+
+                            var resultBrand = (from g in db.Brands
+                                               join p in db.Products on g.BrandId equals p.BrandId
+                                               where p.ShopId == shopId
+                                               select new
+                                               {
+                                                   g.BrandId,
+                                                   g.BrandNameEn,
+                                                   g.BrandNameTh,
+                                                   g.Status
+
+                                               }
+                                        ).Take(100);
+                            if (request == null)
+                            {
+                                return Ok(resultBrand);
+                            }
+                            request.DefaultOnNull();
+                            var totalBrand = resultBrand.Count();
+                            var pagedCMSBrand = resultBrand.Paginate(request);
+                            response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
                         }
-                        request.DefaultOnNull();
-                        var totalPro = resultPro.Count();
-                        var pagedCMSPro = resultPro.Paginate(request);
-                        response = PaginatedResponse.CreateResponse(pagedCMSPro, request, totalPro);
+                        else
+                        {
+                            var resultBrand = (from g in db.Brands
+                                               where (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
+                                               select new
+                                               {
+                                                   g.BrandId,
+                                                   g.BrandNameEn,
+                                                   g.BrandNameTh,
+                                                   g.Status
+
+                                               }
+                                        ).Take(100);
+                            if (request == null)
+                            {
+                                return Ok(resultBrand);
+                            }
+                            request.DefaultOnNull();
+                            var totalBrand = resultBrand.Count();
+                            var pagedCMSBrand = resultBrand.Paginate(request);
+                            response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
+                        }
+                        break;
+                    case "SHOP":
+                        if (string.IsNullOrWhiteSpace(request._order))
+                            request._order = "ShopId";
+                        if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
+                        {
+                            var resultShop = (from g in db.Shops
+                                              where g.ShopId == shopId
+                                              select new
+                                              {
+                                                  g.ShopId,
+                                                  g.ShopNameEn,
+                                                  g.ShopNameTh,
+                                                  g.Status
+
+                                              }
+                                      ).Take(100);
+                            if (request == null)
+                            {
+                                return Ok(resultShop);
+                            }
+                            request.DefaultOnNull();
+                            if (!string.IsNullOrEmpty(request.SearchText))
+                            {
+                                resultShop = resultShop.Where(c => (c.ShopNameEn.Contains(request.SearchText) || c.ShopNameTh.Contains(request.SearchText)));
+                            }
+                            var totalShop = resultShop.Count();
+                            var pagedCMSShop = resultShop.Paginate(request);
+                            response = PaginatedResponse.CreateResponse(pagedCMSShop, request, totalShop);
+                        }
+                        else
+                        {
+                            var resultShop = (from g in db.Shops
+                                              select new
+                                              {
+                                                  g.ShopId,
+                                                  g.ShopNameEn,
+                                                  g.ShopNameTh,
+                                                  g.Status
+
+                                              }
+                                      ).Take(100);
+                            if (request == null)
+                            {
+                                return Ok(resultShop);
+                            }
+                            request.DefaultOnNull();
+                            if (!string.IsNullOrEmpty(request.SearchText))
+                            {
+                                resultShop = resultShop.Where(c => (c.ShopNameEn.Contains(request.SearchText) || c.ShopNameTh.Contains(request.SearchText)));
+                            }
+                            var totalShop = resultShop.Count();
+                            var pagedCMSShop = resultShop.Paginate(request);
+                            response = PaginatedResponse.CreateResponse(pagedCMSShop, request, totalShop);
+                        }
+
+                        break;
+                    case "PRODUCT":
+                        if (string.IsNullOrWhiteSpace(request._order))
+                            request._order = "ProductId";
+                        if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
+                        {
+                            var resultPro = (from g in db.Products
+                                             where g.ShopId == shopId
+                                             select new
+                                             {
+                                                 g.GlobalCatId,
+                                                 g.BrandId,
+                                                 g.ProductId,
+                                                 g.ShopId,
+                                                 g.Pid,
+                                                 g.ProductNameEn,
+                                                 g.ProductNameTh,
+                                                 g.Status
+
+                                             }
+                                           ).Take(100);
+                            if (request == null)
+                            {
+                                return Ok(resultPro);
+                            }
+                            request.DefaultOnNull();
+                            if (!string.IsNullOrEmpty(request.SearchText))
+                            {
+                                resultPro = resultPro.Where(c => (c.ProductNameEn.Contains(request.SearchText) || c.ProductNameTh.Contains(request.SearchText)));
+                            }
+                            var totalPro = resultPro.Count();
+                            var pagedCMSPro = resultPro.Paginate(request);
+                            response = PaginatedResponse.CreateResponse(pagedCMSPro, request, totalPro);
+                        }
+                        else {
+                            var resultPro = (from g in db.Products
+                                             select new
+                                             {
+                                                 g.GlobalCatId,
+                                                 g.BrandId,
+                                                 g.ProductId,
+                                                 g.ShopId,
+                                                 g.Pid,
+                                                 g.ProductNameEn,
+                                                 g.ProductNameTh,
+                                                 g.Status
+
+                                             }
+                                           ).Take(100);
+                            if (request == null)
+                            {
+                                return Ok(resultPro);
+                            }
+                            request.DefaultOnNull();
+                            if (!string.IsNullOrEmpty(request.SearchText))
+                            {
+                                resultPro = resultPro.Where(c => (c.ProductNameEn.Contains(request.SearchText) || c.ProductNameTh.Contains(request.SearchText)));
+                            }
+                            var totalPro = resultPro.Count();
+                            var pagedCMSPro = resultPro.Paginate(request);
+                            response = PaginatedResponse.CreateResponse(pagedCMSPro, request, totalPro);
+                        }
+
                         break;
                     default:
                         break;

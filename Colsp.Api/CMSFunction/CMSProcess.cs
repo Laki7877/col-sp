@@ -186,7 +186,7 @@ namespace Colsp.Api.CMSFunction
                 }
             }
             result.SearchText = model.SearchText;
-            result.ShopId = model.ShopId;
+            //result.ShopId = model.ShopId;
             result._direction = model._direction;
             result._filter = model._filter;
             result._limit = model._limit;
@@ -503,6 +503,7 @@ namespace Colsp.Api.CMSFunction
                             var cms = db.CMSMasters.Where(c => c.CMSId == modelItem.CMSId).FirstOrDefault();
                             if (cms != null)
                             {
+<<<<<<< HEAD
 
                                 cms.CMSNameEN = modelItem.CMSNameEN != default(string) ? modelItem.CMSNameEN : cms.CMSNameEN;
                                 cms.CMSNameTH = modelItem.CMSNameTH != default(string) ? modelItem.CMSNameTH : cms.CMSNameTH;
@@ -535,6 +536,13 @@ namespace Colsp.Api.CMSFunction
                                     log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                     result = cms.CMSId;
                                 }
+=======
+                                dbcxtransaction.Commit();
+                                //History Log
+                                CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                log.LogCreateCMS(cms.CMSId, "CMSMaster", (bool)cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                result = cms.CMSId;
+>>>>>>> a6986d1fcb7c6f7b20771b9a7f51f305c9f88818
                             }
 
                             
