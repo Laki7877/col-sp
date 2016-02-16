@@ -46,6 +46,7 @@
     <Compile Include="Requests\AttributeSetRequest.cs" />
     <Compile Include="Requests\AttributeValueRequest.cs" />
     <Compile Include="Requests\BrandRequest.cs" />
+    <Compile Include="Requests\By1Get1ItemRequest.cs" />
     <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
     <Compile Include="Requests\CMSBrandInShopRequest.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Requests\UserGroupRequest.cs" />
     <Compile Include="Requests\PermissionRequest.cs" />
     <Compile Include="Requests\UserRequest.cs" />
+    <Compile Include="Responses\By1Get1ItemResponse.cs" />
     <Compile Include="Responses\CMSCollectionResponse.cs" />
     <Compile Include="Responses\CollectionItemResponse.cs" />
     <Compile Include="Responses\CollectionResponse.cs" />
