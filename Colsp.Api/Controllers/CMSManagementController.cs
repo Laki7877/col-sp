@@ -163,6 +163,8 @@ namespace Colsp.Api.Controllers
 
         #region Get CMS List
 
+        [Route("api/CMSStages/{CMSId}")]
+        [HttpGet]
         public HttpResponseMessage GetCollection(int? CMSId)
         {
             try
