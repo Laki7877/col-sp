@@ -18,6 +18,7 @@ namespace Colsp.Entity.Models
         public GlobalCategory()
         {
             this.CategoryAttributeSetMaps = new HashSet<CategoryAttributeSetMap>();
+            this.CouponGlobalCatMaps = new HashSet<CouponGlobalCatMap>();
             this.Products = new HashSet<Product>();
             this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
             this.ProductHistories = new HashSet<ProductHistory>();
@@ -45,6 +46,8 @@ namespace Colsp.Entity.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CouponGlobalCatMap> CouponGlobalCatMaps { get; set; }
         public virtual GlobalCategoryPID GlobalCategoryPID { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }

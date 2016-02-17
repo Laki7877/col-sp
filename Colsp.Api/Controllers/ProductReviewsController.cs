@@ -43,13 +43,12 @@ namespace Colsp.Api.Controllers
                                   Pid = vari != null ? vari.Pid : mast.Pid,
                                   ProductNameEn = vari != null ? vari.ProductNameEn : mast.ProductNameEn,
                                   ProductNameTh = vari != null ? vari.ProductNameTh : mast.ProductNameTh,
-                                  ProductStatus = vari != null ? vari.Status : mast.Status,
                                   BrandId = vari != null && vari.ProductStage != null && vari.ProductStage.Brand != null ? vari.ProductStage.Brand.BrandId : mast != null && mast.Brand != null ? mast.Brand.BrandId : 0,
                                   BrandNameEn = vari != null ? vari.ProductStage.Brand.BrandNameEn : mast.Brand.BrandNameEn,
                                   rev.ProductReviewId,
                                   rev.Comment,
                                   rev.Rating,
-                                  ReviewStatus = rev.Status,
+                                  rev.Status,
                                   cus.CustomerId,
                                   Customer = cus != null ? cus.FirstName + " " + cus.LastName : null,
                                   rev.UpdatedDt
@@ -58,6 +57,18 @@ namespace Colsp.Api.Controllers
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, review);
+                }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+
+                    if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        review = review.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        review = review.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                    }
                 }
                 var total = review.Count();
                 var pagedAttribute = review.Paginate(request);
@@ -102,7 +113,9 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Cannot find review " + revRq.ProductReviewId + " in shop " + shopId);
                     }
-                    current.Status = Constant.PRODUCT_STATUS_APPROVE;
+                    current.Status = revRq.Status;
+                    current.UpdatedBy = this.User.UserRequest().Email;
+                    current.UpdatedDt = DateTime.Now;
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);

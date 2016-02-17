@@ -45,6 +45,12 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSMaster> CMSMasters { get; set; }
         public virtual DbSet<CMSStatusFlow> CMSStatusFlows { get; set; }
         public virtual DbSet<CMSType> CMSTypes { get; set; }
+        public virtual DbSet<Coupon> Coupons { get; set; }
+        public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
+        public virtual DbSet<CouponCondition> CouponConditions { get; set; }
+        public virtual DbSet<CouponGlobalCatMap> CouponGlobalCatMaps { get; set; }
+        public virtual DbSet<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
+        public virtual DbSet<CouponPidMap> CouponPidMaps { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
         public virtual DbSet<GlobalCategoryAbbrevation> GlobalCategoryAbbrevations { get; set; }
@@ -85,11 +91,13 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
         public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShop> UserShops { get; set; }
+        public virtual DbSet<UserStatu> UserStatus { get; set; }
     }
 }

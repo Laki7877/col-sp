@@ -161,6 +161,8 @@ namespace Colsp.Api.Controllers
             }
         }
 
+
+
         #region Get CMS List
 
         [Route("api/CMSStages/{CMSId}")]
@@ -301,7 +303,7 @@ namespace Colsp.Api.Controllers
 
         #endregion
 
-
+        #region Search
         [Route("api/CMSSearchForAdd")]
         [HttpGet]
         public IHttpActionResult CMSSearchForAdd([FromUri]CMSSearchForAddRequest request)
@@ -580,6 +582,8 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        #endregion
+
 
         #region Edit/Update CMS
         [Route("api/CMSEditStages")]
@@ -619,25 +623,28 @@ namespace Colsp.Api.Controllers
         [Route("api/CMSUpdateStages")]
         [HttpPost]
         public HttpResponseMessage UpdateCMS(List<CMSCollectionItemRequest> model)
-        {            
+        {
             try
             {
                 int CMSId = 0;
                 if (model != null)
                 {
-                    foreach (var item in model) { 
-                    
-                    if (item.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
-                    {                       
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.UpdateCMSStaticPage(item);
-                    }
-                    else if (item.CMSTypeId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL))
+
+                    foreach (var item in model)
                     {
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.UpdateCMSCollectionItem(item);
-                    }
-                    
+
+                        if (item.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
+                        {
+                            CMSProcess cms = new CMSProcess();
+                            CMSId = cms.UpdateCMSStaticPage(item);
+                        }
+                        else if (item.CMSTypeId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL))
+
+                        {
+                            CMSProcess cms = new CMSProcess();
+                            CMSId = cms.UpdateCMSCollectionItem(item);
+                        }
+
                     }
                 }
                 else
@@ -676,7 +683,7 @@ namespace Colsp.Api.Controllers
                     if (rq.CMSId == default(int)) { throw new Exception("Collection Id cannot be null"); }
                     var coll = db.CMSMasters.Find(rq.CMSId);
                     var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
-                    var visible = coll.Visibility != null ? (coll.Visibility == true? "Visible" : "InVisible") : "unknow";
+                    var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
                     if (coll == null)
                     {
                         throw new Exception("Cannot find Collection with id " + rq.CMSId);
@@ -737,7 +744,7 @@ namespace Colsp.Api.Controllers
                     //sb.Append(coll.UpdateDate); sb.Append(",");
                     //sb.Append(coll.CreateIP); sb.Append(",");
                     //sb.Append(coll.UpdateIP); sb.Append(",");
-                     
+
 
                     writer.WriteLine(sb);
                 }

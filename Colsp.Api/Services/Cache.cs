@@ -27,13 +27,18 @@ namespace Colsp.Api.Services
 			return memoryCache.Add(key, value, DateTimeOffset.UtcNow.AddMinutes(Config.Settings.Cache.Expire));
 		}
 
+        public static void Clear()
+        {
+            var memoryCache = MemoryCache.Default;
+            memoryCache.Dispose();
+        }
 		public static void Delete(string key)
 		{
 			var memoryCache = MemoryCache.Default;
 			if (memoryCache.Contains(key))
 			{
 				memoryCache.Remove(key);
-			}
+            }
 		}
 	}
 }

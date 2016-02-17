@@ -48,6 +48,28 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, inven);
                 }
+
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+
+                    if (string.Equals("NormalStock", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
+                    }
+                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
+                    }
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                    }
+                }
+
                 var total = inven.Count();
                 var pagedAttribute = inven.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedAttribute, request, total);

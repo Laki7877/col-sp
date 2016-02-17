@@ -34,7 +34,6 @@ namespace Colsp.Api.Controllers
                                {
                                    attr.AttributeId,
                                    attr.AttributeNameEn,
-                                   attr.AttributeNameTh,
                                    attr.DisplayNameEn,
                                    attr.DisplayNameTh,
                                    attr.VariantStatus,
@@ -52,8 +51,7 @@ namespace Colsp.Api.Controllers
                 
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
-                    attrList = attrList.Where(a => a.AttributeNameEn.Contains(request.SearchText)
-                    || a.AttributeNameTh.Contains(request.SearchText));
+                    attrList = attrList.Where(a => a.AttributeNameEn.Contains(request.SearchText));
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
@@ -119,9 +117,7 @@ namespace Colsp.Api.Controllers
                 attribute = new Entity.Models.Attribute();
                 SetupAttribute(attribute, request);
                 attribute.CreatedBy = this.User.UserRequest().Email;
-                attribute.CreatedDt = DateTime.Now;
                 attribute.UpdatedBy = this.User.UserRequest().Email;
-                attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
                 attribute = db.Attributes.Add(attribute);
                 db.SaveChanges();
@@ -135,9 +131,7 @@ namespace Colsp.Api.Controllers
                         value.AttributeValueTh = val.AttributeValueTh;
                         value.Status = Constant.STATUS_ACTIVE;
                         value.CreatedBy = this.User.UserRequest().Email;
-                        value.CreatedDt = DateTime.Now;
                         value.UpdatedBy = this.User.UserRequest().Email;
-                        value.UpdatedDt = DateTime.Now;
                         newList.Add(db.AttributeValues.Add(value));
                     }
                     db.SaveChanges();
@@ -149,9 +143,7 @@ namespace Colsp.Api.Controllers
                             map.AttributeId = attribute.AttributeId;
                             map.AttributeValueId = val.AttributeValueId;
                             map.CreatedBy = this.User.UserRequest().Email;
-                            map.CreatedDt = DateTime.Now;
                             map.UpdatedBy = this.User.UserRequest().Email;
-                            map.UpdatedDt = DateTime.Now;
                             db.AttributeValueMaps.Add(map);
                         }
                         db.SaveChanges();
@@ -205,7 +197,6 @@ namespace Colsp.Api.Controllers
                 }
                 SetupAttribute(attribute, request);
                 attribute.UpdatedBy = this.User.UserRequest().Email;
-                attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
                 {
@@ -224,9 +215,7 @@ namespace Colsp.Api.Controllers
                         value.AttributeValueTh = valRq.AttributeValueTh;
                         value.Status = Constant.STATUS_ACTIVE;
                         value.CreatedBy = this.User.UserRequest().Email;
-                        value.CreatedDt = DateTime.Now;
                         value.UpdatedBy = this.User.UserRequest().Email;
-                        value.UpdatedDt = DateTime.Now;
                         newList.Add(db.AttributeValues.Add(value));
                     }
                 }
@@ -239,9 +228,7 @@ namespace Colsp.Api.Controllers
                         map.AttributeId = attribute.AttributeId;
                         map.AttributeValueId = val.AttributeValueId;
                         map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
                         map.UpdatedBy = this.User.UserRequest().Email;
-                        map.UpdatedDt = DateTime.Now;
                         db.AttributeValueMaps.Add(map);
                     }
                     db.SaveChanges();
@@ -376,7 +363,6 @@ namespace Colsp.Api.Controllers
                 AttributeRequest attribute = new AttributeRequest();
                 attribute.AttributeId = attr.AttributeId;
                 attribute.AttributeNameEn = attr.AttributeNameEn;
-                attribute.AttributeNameTh = attr.AttributeNameTh;
                 attribute.AttributeUnitEn = attr.AttributeUnitEn;
                 attribute.AttributeUnitTh = attr.AttributeUnitTh;
                 attribute.DataType = attr.DataType;
@@ -419,7 +405,6 @@ namespace Colsp.Api.Controllers
         private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request)
         {
             attribute.AttributeNameEn = Validation.ValidateString(request.AttributeNameEn, "Attribute Name (English)", true, 100, true);
-            attribute.AttributeNameTh = Validation.ValidateString(request.AttributeNameTh, "Attribute Name (Thai)", false, 100, true);
             attribute.AttributeUnitEn = Validation.ValidateString(request.AttributeUnitEn, "Attribute Unit (English)", false, 100, true);
             attribute.AttributeUnitTh = Validation.ValidateString(request.AttributeUnitTh, "Attribute Unit (Thai)", false, 100, true);
             attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", false, 2, true);

@@ -27,7 +27,6 @@ namespace Colsp.Entity.Models
     
         public int AttributeSetId { get; set; }
         public string AttributeSetNameEn { get; set; }
-        public string AttributeSetNameTh { get; set; }
         public string AttributeSetDescriptionEn { get; set; }
         public string AttributeSetDescriptionTh { get; set; }
         public Nullable<bool> Visibility { get; set; }

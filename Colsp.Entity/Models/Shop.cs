@@ -35,6 +35,17 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopOwner { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
+        public string ShopDescriptionEn { get; set; }
+        public string ShopDescriptionTh { get; set; }
+        public string ShopAddress { get; set; }
+        public string BankAccountNumber { get; set; }
+        public string BankAccountName { get; set; }
+        public string Facebook { get; set; }
+        public string Youtube { get; set; }
+        public string Twitter { get; set; }
+        public string Instagram { get; set; }
+        public string Pinterest { get; set; }
+        public Nullable<int> StockAlert { get; set; }
         public Nullable<decimal> Commission { get; set; }
         public Nullable<int> ShopTypeId { get; set; }
         public string UrlKeyEn { get; set; }

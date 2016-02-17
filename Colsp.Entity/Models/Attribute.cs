@@ -31,7 +31,6 @@ namespace Colsp.Entity.Models
     
         public int AttributeId { get; set; }
         public string AttributeNameEn { get; set; }
-        public string AttributeNameTh { get; set; }
         public string AttributeUnitEn { get; set; }
         public string AttributeUnitTh { get; set; }
         public string DisplayNameEn { get; set; }
