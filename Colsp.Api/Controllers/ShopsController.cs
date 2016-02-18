@@ -122,7 +122,7 @@ namespace Colsp.Api.Controllers
         }
 
 
-        [Route("Shop/Profile")]
+        [Route("api/Shop/Profile")]
         [HttpGet]
         public HttpResponseMessage GetShopProfile()
         {
