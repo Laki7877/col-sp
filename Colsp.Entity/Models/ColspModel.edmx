@@ -347,6 +347,9 @@
           <Property Name="CouponId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CouponCode" Type="varchar" MaxLength="50" />
           <Property Name="CouponName" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="CouponQuantity" Type="int" />
+          <Property Name="CouponUsed" Type="int" />
           <Property Name="StartDate" Type="datetime" />
           <Property Name="ExpireDate" Type="datetime" />
           <Property Name="DiscountAmount" Type="money" />
@@ -1423,6 +1426,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Coupon_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="Coupon">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CouponBrandMap_Brand">
           <End Role="Brand" Type="Self.Brand" Multiplicity="1" />
           <End Role="CouponBrandMap" Type="Self.CouponBrandMap" Multiplicity="*" />
@@ -2449,6 +2464,10 @@
             <End Role="CouponCondition" EntitySet="CouponCondition" />
             <End Role="Coupon" EntitySet="Coupon" />
           </AssociationSet>
+          <AssociationSet Name="FK_Coupon_Shop" Association="Self.FK_Coupon_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="Coupon" EntitySet="Coupon" />
+          </AssociationSet>
           <AssociationSet Name="FK_CouponBrandMap_Brand" Association="Self.FK_CouponBrandMap_Brand">
             <End Role="Brand" EntitySet="Brand" />
             <End Role="CouponBrandMap" EntitySet="CouponBrandMap" />
@@ -2930,6 +2949,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Coupon_FilterCondition" Association="ColspModel.FK_Coupon_FilterCondition">
             <End Role="CouponCondition" EntitySet="CouponConditions" />
+            <End Role="Coupon" EntitySet="Coupons" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Coupon_Shop" Association="ColspModel.FK_Coupon_Shop">
+            <End Role="Shop" EntitySet="Shops" />
             <End Role="Coupon" EntitySet="Coupons" />
           </AssociationSet>
           <AssociationSet Name="FK_CouponBrandMap_Coupon" Association="ColspModel.FK_CouponBrandMap_Coupon">
@@ -3524,6 +3547,9 @@
           <Property Name="CouponId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CouponCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CouponName" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="CouponQuantity" Type="Int32" />
+          <Property Name="CouponUsed" Type="Int32" />
           <Property Name="StartDate" Type="DateTime" Precision="3" />
           <Property Name="ExpireDate" Type="DateTime" Precision="3" />
           <Property Name="DiscountAmount" Type="Decimal" Precision="19" Scale="4" />
@@ -3541,6 +3567,7 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CouponCondition" Relationship="ColspModel.FK_Coupon_CriteriaCondition" FromRole="Coupon" ToRole="CouponCondition" />
           <NavigationProperty Name="CouponCondition1" Relationship="ColspModel.FK_Coupon_FilterCondition" FromRole="Coupon" ToRole="CouponCondition" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_Coupon_Shop" FromRole="Coupon" ToRole="Shop" />
           <NavigationProperty Name="CouponBrandMaps" Relationship="ColspModel.FK_CouponBrandMap_Coupon" FromRole="Coupon" ToRole="CouponBrandMap" />
           <NavigationProperty Name="CouponGlobalCatMaps" Relationship="ColspModel.FK_CouponGlobalCatMap_Coupon" FromRole="Coupon" ToRole="CouponGlobalCatMap" />
           <NavigationProperty Name="CouponLocalCatMaps" Relationship="ColspModel.FK_CouponLocalCatMap_Coupon" FromRole="Coupon" ToRole="CouponLocalCatMap" />
@@ -4497,6 +4524,7 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Coupons" Relationship="ColspModel.FK_Coupon_Shop" FromRole="Shop" ToRole="Coupon" />
           <NavigationProperty Name="LocalCategories" Relationship="ColspModel.FKLocalCategoryShop" FromRole="Shop" ToRole="LocalCategory" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
@@ -4980,6 +5008,18 @@
             </Principal>
             <Dependent Role="Coupon">
               <PropertyRef Name="FilterBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Coupon_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="Coupon">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6041,6 +6081,9 @@
                 <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
                 <ScalarProperty Name="ExpireDate" ColumnName="ExpireDate" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="CouponUsed" ColumnName="CouponUsed" />
+                <ScalarProperty Name="CouponQuantity" ColumnName="CouponQuantity" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="CouponName" ColumnName="CouponName" />
                 <ScalarProperty Name="CouponCode" ColumnName="CouponCode" />
                 <ScalarProperty Name="CouponId" ColumnName="CouponId" />
