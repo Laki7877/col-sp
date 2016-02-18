@@ -9,6 +9,10 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Colsp.Entity.Models;
+using Colsp.Model.Requests;
+using Colsp.Api.Extensions;
+using Colsp.Api.Constants;
+using Colsp.Model.Responses;
 
 namespace Colsp.Api.Controllers
 {
@@ -16,90 +20,77 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-        // GET: api/Coupons
-        public IQueryable<Coupon> GetCoupons()
+        [Route("api/Coupons")]
+        [HttpGet]
+        public HttpResponseMessage GetAllCoupon([FromUri] CouponRequest request)
         {
-            return db.Coupons;
-        }
-
-        // GET: api/Coupons/5
-        [ResponseType(typeof(Coupon))]
-        public IHttpActionResult GetCoupon(int id)
-        {
-            Coupon coupon = db.Coupons.Find(id);
-            if (coupon == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(coupon);
-        }
-
-        // PUT: api/Coupons/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutCoupon(int id, Coupon coupon)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != coupon.CouponId)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(coupon).State = EntityState.Modified;
-
             try
             {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CouponExists(id))
+                var coupon = from c in db.Coupons
+                             select new
+                             {
+                                 c.CouponId,
+                                 c.CouponCode,
+                                 c.CouponName,
+                                 Remaining = c.CouponQuantity - c.CouponUsed,
+                                 c.StartDate,
+                                 c.ExpireDate,
+                                 c.Status,
+                                 c.ShopId
+                             };
+                if(this.User.HasPermission("View Promotion"))
                 {
-                    return NotFound();
+                    var shopId = this.User.ShopRequest().ShopId.Value;
+                    coupon = coupon.Where(w => w.ShopId == shopId);
                 }
-                else
+                if (request == null)
                 {
-                    throw;
+                    return Request.CreateResponse(HttpStatusCode.OK, coupon);
                 }
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    coupon = coupon.Where(w => w.CouponName.Contains(request.SearchText)
+                    || w.CouponCode.Contains(request.SearchText));
+                }
+                var total = coupon.Count();
+                var pagedAttribute = coupon.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedAttribute, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
             }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST: api/Coupons
-        [ResponseType(typeof(Coupon))]
-        public IHttpActionResult PostCoupon(Coupon coupon)
-        {
-            if (!ModelState.IsValid)
+            catch (Exception e)
             {
-                return BadRequest(ModelState);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.InnerException);
             }
-
-            db.Coupons.Add(coupon);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = coupon.CouponId }, coupon);
         }
 
-        // DELETE: api/Coupons/5
-        [ResponseType(typeof(Coupon))]
-        public IHttpActionResult DeleteCoupon(int id)
+        [Route("api/Coupons/{couponId}")]
+        [HttpGet]
+        public HttpResponseMessage GetCoupon(int couponId)
         {
-            Coupon coupon = db.Coupons.Find(id);
-            if (coupon == null)
+            try
             {
-                return NotFound();
+                var coupon = db.Coupons.Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status))
+                    .Include(i => i.CouponCondition)
+                    .Include(i => i.CouponCondition1)
+                    .Include(i => i.CouponPidMaps)
+                    .Include(i => i.CouponBrandMaps);
+                if (this.User.HasPermission("View Promotion"))
+                {
+                    var shopId = this.User.ShopRequest().ShopId.Value;
+                    coupon = coupon.Where(w => w.ShopId == shopId);
+                }
+                if (coupon == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpStatusCode.NotFound);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, coupon.ToList()[0]);
             }
-
-            db.Coupons.Remove(coupon);
-            db.SaveChanges();
-
-            return Ok(coupon);
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
         }
+
 
         protected override void Dispose(bool disposing)
         {
