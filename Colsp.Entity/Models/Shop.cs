@@ -36,6 +36,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopOwner { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
+        public string ShopImageUrl { get; set; }
         public string ShopDescriptionEn { get; set; }
         public string ShopDescriptionTh { get; set; }
         public string ShopAddress { get; set; }
@@ -51,6 +52,8 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopTypeId { get; set; }
         public string UrlKeyEn { get; set; }
         public string UrlKeyTh { get; set; }
+        public string FloatMessageEn { get; set; }
+        public string FloatMessageTh { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

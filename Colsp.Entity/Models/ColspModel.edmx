@@ -1206,6 +1206,7 @@
           <Property Name="ShopOwner" Type="int" />
           <Property Name="ShopNameEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ShopNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShopImageUrl" Type="nvarchar" MaxLength="1000" />
           <Property Name="ShopDescriptionEn" Type="nvarchar" MaxLength="500" />
           <Property Name="ShopDescriptionTh" Type="nvarchar" MaxLength="500" />
           <Property Name="ShopAddress" Type="nvarchar" MaxLength="500" />
@@ -1221,6 +1222,8 @@
           <Property Name="ShopTypeId" Type="int" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="FloatMessageEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="FloatMessageTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -4504,6 +4507,7 @@
           <Property Name="ShopOwner" Type="Int32" />
           <Property Name="ShopNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ShopNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShopImageUrl" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="ShopDescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ShopDescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ShopAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -4519,6 +4523,8 @@
           <Property Name="ShopTypeId" Type="Int32" />
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FloatMessageEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FloatMessageTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -6954,6 +6960,8 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FloatMessageTh" ColumnName="FloatMessageTh" />
+                <ScalarProperty Name="FloatMessageEn" ColumnName="FloatMessageEn" />
                 <ScalarProperty Name="UrlKeyTh" ColumnName="UrlKeyTh" />
                 <ScalarProperty Name="UrlKeyEn" ColumnName="UrlKeyEn" />
                 <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />
@@ -6969,6 +6977,7 @@
                 <ScalarProperty Name="ShopAddress" ColumnName="ShopAddress" />
                 <ScalarProperty Name="ShopDescriptionTh" ColumnName="ShopDescriptionTh" />
                 <ScalarProperty Name="ShopDescriptionEn" ColumnName="ShopDescriptionEn" />
+                <ScalarProperty Name="ShopImageUrl" ColumnName="ShopImageUrl" />
                 <ScalarProperty Name="ShopNameTh" ColumnName="ShopNameTh" />
                 <ScalarProperty Name="ShopNameEn" ColumnName="ShopNameEn" />
                 <ScalarProperty Name="ShopOwner" ColumnName="ShopOwner" />

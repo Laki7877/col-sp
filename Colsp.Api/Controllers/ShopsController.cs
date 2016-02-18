@@ -15,12 +15,66 @@ using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
+using System.IO;
+using System.Web;
+using System.Configuration;
 
 namespace Colsp.Api.Controllers
 {
     public class ShopsController : ApiController
     {
         private ColspEntities db = new ColspEntities();
+
+
+        private readonly string root = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
+
+        [Route("api/ShopImages")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadFile()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
+                }
+                string tmpFolder = Path.Combine(root, "Shop");
+                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+
+                FileUploadRespond fileUpload = new FileUploadRespond();
+                string fileName = string.Empty;
+                string ext = string.Empty;
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    fileName = fileData.LocalFileName;
+                    string tmp = fileData.Headers.ContentDisposition.FileName;
+                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+                    {
+                        tmp = tmp.Trim('"');
+                    }
+                    ext = Path.GetExtension(tmp);
+                    break;
+                }
+
+                string newName = string.Concat(fileName, ext);
+                File.Move(fileName, newName);
+                fileUpload.tmpPath = newName;
+
+                var name = Path.GetFileName(newName);
+                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+                fileUpload.url = string.Concat(schema, "://", imageUrl, "/Images/Shop/", name);
+
+                return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
 
         [Route("api/Shops")]
         [HttpGet]
@@ -145,7 +199,8 @@ namespace Colsp.Api.Controllers
                         s.Instagram,
                         s.Pinterest,
                         s.Twitter,
-                        s.StockAlert
+                        s.StockAlert,
+                        Logo = new ImageRequest { url=s.ShopImageUrl }
                     }).ToList();
                 if (shop == null || shop.Count == 0)
                 {
