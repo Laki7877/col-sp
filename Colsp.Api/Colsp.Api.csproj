@@ -189,12 +189,6 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="ByOneGetOneFunction\ByOneGetOneProcess.cs" />
-    <Compile Include="CMSFunction\CMSHistoryLogClass.cs" />
-    <Compile Include="CMSFunction\CMSProcess.cs" />
-    <Compile Include="CMSFunction\GetCMSList.cs" />
-    <Compile Include="CMSFunction\GetCMSSearch.cs" />
-    <Compile Include="CMSFunction\JsonContent.cs" />
     <Compile Include="Constants\AppSettingKey.cs" />
     <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
@@ -202,8 +196,7 @@
     <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
-    <Compile Include="Controllers\ByOneGetOneController.cs" />
-    <Compile Include="Controllers\CMSManagementController.cs" />
+    <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\GlobalCategoriesController.cs" />
     <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
@@ -264,7 +257,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>58127</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

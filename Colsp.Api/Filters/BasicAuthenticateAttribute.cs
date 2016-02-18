@@ -163,7 +163,9 @@ namespace Colsp.Api.Filters
 								u.Email,
 								Shops = u.UserShops.Select(s=>s.Shop),
                                 u.Type,
-                                Permission = u.UserGroupMaps.Select(um=>um.UserGroup.UserGroupPermissionMaps.Select(pm=>pm.Permission))
+                                Permission = u.UserGroupMaps
+                                .Select(um=>um.UserGroup.UserGroupPermissionMaps
+                                .Select(pm=>new { pm.Permission.PermissionName, pm.Permission.PermissionGroup }))
                             })
 							.FirstOrDefault()
 				);
