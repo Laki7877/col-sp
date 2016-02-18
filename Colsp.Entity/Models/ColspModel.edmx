@@ -165,25 +165,6 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
-        <EntityType Name="CMSBy1Get1Item">
-          <Key>
-            <PropertyRef Name="CMSBy1Get1ItemId" />
-          </Key>
-          <Property Name="CMSBy1Get1ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSId" Type="int" />
-          <Property Name="PIDBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="PIDGet" Type="nvarchar" MaxLength="50" />
-          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
-          <Property Name="Sequence" Type="int" />
-          <Property Name="CMSCollectionGroupId" Type="int" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
             <PropertyRef Name="CMSCollectionGroupId" />
@@ -1184,6 +1165,25 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PromotionBy1Get1Item">
+          <Key>
+            <PropertyRef Name="CMSBy1Get1ItemId" />
+          </Key>
+          <Property Name="CMSBy1Get1ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSId" Type="int" />
+          <Property Name="PIDBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="PIDGet" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="CMSCollectionGroupId" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="Shipping">
           <Key>
@@ -2384,7 +2384,6 @@
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSBrandInShop" EntityType="Self.CMSBrandInShop" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CMSBy1Get1Item" EntityType="Self.CMSBy1Get1Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionGroup" EntityType="Self.CMSCollectionGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionItem" EntityType="Self.CMSCollectionItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionItemGroup" EntityType="Self.CMSCollectionItemGroup" Schema="dbo" store:Type="Tables" />
@@ -2435,6 +2434,7 @@
           <EntitySet Name="ProductStageVideo" EntityType="Self.ProductStageVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductVariant" EntityType="Self.ProductVariant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductVideo" EntityType="Self.ProductVideo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PromotionBy1Get1Item" EntityType="Self.PromotionBy1Get1Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
@@ -2787,7 +2787,6 @@
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="CMSBrandInShops" EntityType="ColspModel.CMSBrandInShop" />
-          <EntitySet Name="CMSBy1Get1Item" EntityType="ColspModel.CMSBy1Get1Item" />
           <EntitySet Name="CMSCollectionGroups" EntityType="ColspModel.CMSCollectionGroup" />
           <EntitySet Name="CMSCollectionItems" EntityType="ColspModel.CMSCollectionItem" />
           <EntitySet Name="CMSCollectionItemGroups" EntityType="ColspModel.CMSCollectionItemGroup" />
@@ -2838,6 +2837,7 @@
           <EntitySet Name="ProductStageVideos" EntityType="ColspModel.ProductStageVideo" />
           <EntitySet Name="ProductVariants" EntityType="ColspModel.ProductVariant" />
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
+          <EntitySet Name="PromotionBy1Get1Item" EntityType="ColspModel.PromotionBy1Get1Item" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
           <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
@@ -3357,25 +3357,6 @@
           <Property Name="LongDescriptionEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ShortDescriptionTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="LongDescriptionTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSBy1Get1Item">
-          <Key>
-            <PropertyRef Name="CMSBy1Get1ItemId" />
-          </Key>
-          <Property Name="CMSBy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSId" Type="Int32" />
-          <Property Name="PIDBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PIDGet" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="CMSCollectionGroupId" Type="Int32" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="Createdate" Type="DateTime" Precision="3" />
@@ -4479,6 +4460,25 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PromotionBy1Get1Item">
+          <Key>
+            <PropertyRef Name="CMSBy1Get1ItemId" />
+          </Key>
+          <Property Name="CMSBy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSId" Type="Int32" />
+          <Property Name="PIDBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PIDGet" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="CMSCollectionGroupId" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Shipping">
           <Key>
@@ -5878,26 +5878,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CMSBy1Get1Item">
-            <EntityTypeMapping TypeName="ColspModel.CMSBy1Get1Item">
-              <MappingFragment StoreEntitySet="CMSBy1Get1Item">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
-                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
-                <ScalarProperty Name="PIDBy" ColumnName="PIDBy" />
-                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
-                <ScalarProperty Name="CMSBy1Get1ItemId" ColumnName="CMSBy1Get1ItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CMSCollectionGroups">
             <EntityTypeMapping TypeName="ColspModel.CMSCollectionGroup">
               <MappingFragment StoreEntitySet="CMSCollectionGroup">
@@ -6929,6 +6909,26 @@
                 <ScalarProperty Name="VideoUrlEn" ColumnName="VideoUrlEn" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="VideoId" ColumnName="VideoId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionBy1Get1Item">
+            <EntityTypeMapping TypeName="ColspModel.PromotionBy1Get1Item">
+              <MappingFragment StoreEntitySet="PromotionBy1Get1Item">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
+                <ScalarProperty Name="PIDBy" ColumnName="PIDBy" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+                <ScalarProperty Name="CMSBy1Get1ItemId" ColumnName="CMSBy1Get1ItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

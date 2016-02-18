@@ -122,6 +122,43 @@ namespace Colsp.Api.Controllers
         }
 
 
+        [Route("Shop/Profile")]
+        [HttpGet]
+        public HttpResponseMessage GetShopProfile()
+        {
+            try
+            {
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var shop = db.Shops
+                    .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Select(s => new
+                    {
+                        s.ShopId,
+                        s.ShopNameEn,
+                        s.ShopDescriptionEn,
+                        s.ShopDescriptionTh,
+                        s.ShopAddress,
+                        s.BankAccountName,
+                        s.BankAccountNumber,
+                        s.Facebook,
+                        s.Youtube,
+                        s.Instagram,
+                        s.Pinterest,
+                        s.Twitter,
+                        s.StockAlert
+                    }).ToList();
+                if (shop == null || shop.Count == 0)
+                {
+                    throw new Exception("Cannot find shop");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, shop[0]);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/ShopsSeller")]
         [HttpGet]
         public HttpResponseMessage GetShopSeller()
@@ -361,6 +398,8 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
+
+
 
 
         //[Route("api/Shops/{sellerId}/ProductStages")]
