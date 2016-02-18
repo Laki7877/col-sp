@@ -200,6 +200,8 @@ namespace Colsp.Api.Controllers
                         s.Pinterest,
                         s.Twitter,
                         s.StockAlert,
+                        s.FloatMessageEn,
+                        s.FloatMessageTh,
                         Logo = new ImageRequest { url=s.ShopImageUrl }
                     }).ToList();
                 if (shop == null || shop.Count == 0)
@@ -213,6 +215,54 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
+
+
+        [Route("api/Shop/Profile")]
+        [HttpPut]
+        public HttpResponseMessage SaveShopProfile(ShopRequest request)
+        {
+            try
+            {
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var shop = db.Shops.Find(shopId);
+                if (shop == null || shop.Status.Equals(Constant.STATUS_REMOVE))
+                {
+                    throw new Exception("Cannot find shop");
+                }
+                shop.ShopNameEn = request.ShopNameEn;
+                shop.ShopDescriptionEn = request.ShopDescriptionEn;
+                shop.ShopDescriptionTh = request.ShopDescriptionTh;
+                shop.FloatMessageEn = request.FloatMessageEn;
+                shop.FloatMessageTh = request.FloatMessageTh;
+                shop.ShopAddress = request.ShopAddress;
+                shop.BankAccountName = request.BankAccountName;
+                shop.BankAccountNumber = request.BankAccountNumber;
+                shop.Facebook = request.Facebook;
+                shop.Youtube = request.Youtube;
+                shop.Instagram = request.Instagram;
+                shop.Pinterest = request.Pinterest;
+                shop.Twitter = request.Twitter;
+                shop.StockAlert = request.StockAlert;
+                shop.UpdatedBy = this.User.UserRequest().Email;
+                shop.UpdatedDt = DateTime.Now;
+                if(request.Logo != null)
+                {
+                    shop.ShopImageUrl = request.Logo.url;
+                }
+                else
+                {
+                    shop.ShopImageUrl = null;
+                }
+                
+                db.SaveChanges();
+                return GetShopProfile();
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
 
         [Route("api/ShopsSeller")]
         [HttpGet]
