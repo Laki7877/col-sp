@@ -35,7 +35,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
         public virtual DbSet<CMSBrandInShop> CMSBrandInShops { get; set; }
-        public virtual DbSet<CMSBy1Get1Item> CMSBy1Get1Item { get; set; }
         public virtual DbSet<CMSCollectionGroup> CMSCollectionGroups { get; set; }
         public virtual DbSet<CMSCollectionItem> CMSCollectionItems { get; set; }
         public virtual DbSet<CMSCollectionItemGroup> CMSCollectionItemGroups { get; set; }
@@ -86,12 +85,12 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
         public virtual DbSet<ProductVariant> ProductVariants { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
+        public virtual DbSet<PromotionBy1Get1Item> PromotionBy1Get1Item { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
         public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
@@ -99,5 +98,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShop> UserShops { get; set; }
         public virtual DbSet<UserStatu> UserStatus { get; set; }
+        public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
+        public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
     }
 }

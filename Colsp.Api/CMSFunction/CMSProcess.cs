@@ -59,7 +59,7 @@ namespace Colsp.Api.CMSFunction
                         {
                             dbcxtransaction.Commit();
                             ////History Log
-                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                            HistoryLogClass log = new HistoryLogClass();
                             log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                             result = cms.CMSId;
                         }
@@ -132,9 +132,9 @@ namespace Colsp.Api.CMSFunction
                             result = cms.CMSId;
                             dbcxtransaction.Commit();
                             //History Log
-                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                            HistoryLogClass log = new HistoryLogClass();
                             log.LogCreateCMS(cms.CMSId, "CMSMaster", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
-                            CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
+                            HistoryLogClass logCollection = new HistoryLogClass();
                             log.LogCreateCMS(cms.CMSId, "CMSCollectionItem", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
                         }
                         return result;
@@ -174,7 +174,7 @@ namespace Colsp.Api.CMSFunction
                                 db.SaveChanges();
                                 dbcxtransaction.Commit();
                                 //History Log
-                                CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                HistoryLogClass log = new HistoryLogClass();
                                 log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                             }
                         }
@@ -245,10 +245,10 @@ namespace Colsp.Api.CMSFunction
                             db.SaveChanges();
                             dbcxtransaction.Commit();
                             //History Log
-                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                            HistoryLogClass log = new HistoryLogClass();
                             log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
 
-                            CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
+                            HistoryLogClass logCollection = new HistoryLogClass();
                             log.LogCreateCMS(cItem.CMSMainCategoryId, "CMSCollectionItem", cItem.Status, "Create", (int)cItem.CreateBy, cItem.CreateIP);
 
                             result = true;
@@ -326,9 +326,9 @@ namespace Colsp.Api.CMSFunction
                             db.CMSBrandInShops.Add(bItem);
                             db.SaveChanges();
                             dbcxtransaction.Commit();
-                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                            HistoryLogClass log = new HistoryLogClass();
                             log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
-                            CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
+                            HistoryLogClass logCollection = new HistoryLogClass();
                             log.LogCreateCMS(bItem.CMSBrandInShopId, "CMSBrandInShop", bItem.Status, "Create", (int)bItem.CreateBy, bItem.CreateIP);
 
                             result = true;
@@ -394,7 +394,7 @@ namespace Colsp.Api.CMSFunction
                             {
                                 dbcxtransaction.Commit();
                                 //History Log
-                                CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                HistoryLogClass log = new HistoryLogClass();
                                 log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                 result = cms.CMSId;
                             }
@@ -466,9 +466,9 @@ namespace Colsp.Api.CMSFunction
                                         db.SaveChanges();
                                         dbcxtransaction.Commit();
                                         //History Log
-                                        CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                        HistoryLogClass log = new HistoryLogClass();
                                         log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
-                                        CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
+                                        HistoryLogClass logCollection = new HistoryLogClass();
                                         log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
                                     }
                                 }
@@ -531,7 +531,7 @@ namespace Colsp.Api.CMSFunction
                                 {
                                     dbcxtransaction.Commit();
                                     //History Log
-                                    CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                    HistoryLogClass log = new HistoryLogClass();
                                     log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                     result = cms.CMSId;
                                 }
@@ -607,9 +607,9 @@ namespace Colsp.Api.CMSFunction
                                             db.SaveChanges();
                                             dbcxtransaction.Commit();
                                             //History Log
-                                            CMSHistoryLogClass log = new CMSHistoryLogClass();
+                                            HistoryLogClass log = new HistoryLogClass();
                                             log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
-                                            CMSHistoryLogClass logCollection = new CMSHistoryLogClass();
+                                            HistoryLogClass logCollection = new HistoryLogClass();
                                             log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
                                         }
                                     }

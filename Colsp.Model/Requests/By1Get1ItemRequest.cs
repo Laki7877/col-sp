@@ -8,7 +8,7 @@ namespace Colsp.Model.Requests
 {
     public class By1Get1ItemRequest
     {
-        public int CMSId { get; set; }
+        public int PromotionBy1Get1ItemId { get; set; }
         public string NameEN { get; set; }
         public string NameTH { get; set; }
         public string URLKey { get; set; }
@@ -21,7 +21,7 @@ namespace Colsp.Model.Requests
         public string ShortDetailEN { get; set; }
         public string ShortDescriptionEN { get; set; }
         public string ShortDescriptionTH { get; set; }
-        public int? Status { get; set; }
+        public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public string CreateIP { get; set; }

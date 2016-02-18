@@ -8,7 +8,7 @@ namespace Colsp.Model.Responses
 {
     public class By1Get1ItemResponse
     {
-        public int CMSBy1Get1ItemId { get; set; }
+        public int PromotionBy1Get1ItemId { get; set; }
         public string NameEN { get; set; }
         public string NameTH { get; set; }
         public string URLKey { get; set; }
@@ -30,5 +30,7 @@ namespace Colsp.Model.Responses
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
+        public int? ByPID { get; set; }
+        public int? GetPID { get; set; }
     }
 }

@@ -30,8 +30,6 @@ namespace Colsp.Api.Constants
         public static readonly string USER_TYPE_SELLER = "S";
         public static readonly string SHOP_TYPE = "H";
 
-        public static int SHOP_OWNER_GROUP_ID = 13;
-
         #region CMS
         public static readonly int CMS_SHOP_GOBAL = 0;
 
@@ -44,6 +42,6 @@ namespace Colsp.Api.Constants
         public static readonly int CMS_TYPE_STATIC_PAGE = 1;
         public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;
         #endregion
-        public static int SHOP_OWNER_GROUP_ID = 2;
+       public static int SHOP_OWNER_GROUP_ID = 2;
     }
 }

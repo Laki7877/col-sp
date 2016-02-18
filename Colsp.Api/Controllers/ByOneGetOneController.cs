@@ -60,10 +60,10 @@ namespace Colsp.Api.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Item id is invalid. Cannot find item in System");
                     using (ColspEntities db = new ColspEntities())
                     {
-                        var B1G = db.CMSBy1Get1Item.Where(c => c.CMSBy1Get1ItemId == Id).FirstOrDefault();
+                        var B1G = db.PromotionBy1Get1Item.Where(c => c.PromotionBy1Get1ItemId == Id).FirstOrDefault();
                         if (B1G != null)
                         {
-                            response.CMSBy1Get1ItemId = B1G.CMSBy1Get1ItemId;
+                            response.PromotionBy1Get1ItemId = B1G.PromotionBy1Get1ItemId;
                             response.CreateBy = B1G.CreateBy;
                             response.NameEN = B1G.NameEN;
                             response.NameTH = B1G.NameTH;
@@ -77,7 +77,8 @@ namespace Colsp.Api.Controllers
                             response.ShopId = B1G.ShopId;
                             response.ShortDetailEN = B1G.ShortDetailEN;
                             response.ShortDetailTH = B1G.ShortDetailTH;
-                            response.CMSStatusFlowId = B1G.CMSStatusFlowId;
+                            response.ByPID = B1G.ByPID;
+                            response.GetPID = B1G.GetPID;
                             response.URLKey = B1G.URLKey;
                             response.Visibility = B1G.Visibility;
                             response.Createdate = (DateTime)B1G.Createdate;
