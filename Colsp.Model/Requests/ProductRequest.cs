@@ -17,6 +17,14 @@ namespace Colsp.Model.Requests
         public int? AttributeId { get; set; }
         public string Pid { get; set; }
         public string _missingfilter { get; set; }
+        public int? BrandId { get; set; }
+        public int? ShopId { get; set; }
+        public List<string> SearchTag { get; set; }
+        public decimal? PriceFrom { get; set; }
+        public decimal? PriceTo { get; set; }
+        public string ModifyDtFrom { get; set; }
+        public string ModifyDtTo { get; set; }
+
 
         public override void DefaultOnNull()
 		{
@@ -31,5 +39,10 @@ namespace Colsp.Model.Requests
 			_order = GetValueOrDefault(_order, "ProductId");
 			base.DefaultOnNull();
 		}
-	}
+
+        public ProductRequest()
+        {
+            SearchTag = new List<string>();
+        }
+    }
 }

@@ -27,6 +27,143 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
         private readonly string root = HttpContext.Current.Server.MapPath("~/Excel");
 
+        [Route("api/ProductStages/Search")]
+        [HttpPost]
+        public HttpResponseMessage GetProductStagesAdvance(ProductRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var products = (from p in db.ProductStages
+                                where !Constant.STATUS_REMOVE.Equals(p.Status)
+                                select new
+                                {
+                                    p.Sku,
+                                    p.Pid,
+                                    p.Upc,
+                                    p.ProductId,
+                                    p.ProductNameEn,
+                                    p.ProductNameTh,
+                                    p.OriginalPrice,
+                                    p.SalePrice,
+                                    p.Status,
+                                    p.ImageFlag,
+                                    p.InfoFlag,
+                                    p.Visibility,
+                                    VariantCount = p.ProductStageVariants.Where(w => w.Visibility == true).ToList().Count,
+                                    ImageUrl = p.FeatureImgUrl,
+                                    p.GlobalCatId,
+                                    p.LocalCatId,
+                                    p.AttributeSetId,
+                                    p.ProductStageAttributes,
+                                    p.UpdatedDt,
+                                    p.ShopId,
+                                    p.BrandId,
+                                    p.InformationTabStatus,
+                                    p.ImageTabStatus,
+                                    p.CategoryTabStatus,
+                                    p.VariantTabStatus,
+                                    p.MoreOptionTabStatus,
+                                    Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn }
+                                });
+                if (this.User.HasPermission("View Product"))
+                {
+                    int shopId = this.User.ShopRequest().ShopId.Value;
+                    products = products.Where(w => w.ShopId == shopId);
+                }
+                request.DefaultOnNull();
+                if (request.GlobalCatId != null)
+                {
+                    products = products.Where(p => p.GlobalCatId == request.GlobalCatId);
+                }
+                if (request.LocalCatId != null)
+                {
+                    products = products.Where(p => p.LocalCatId == request.LocalCatId);
+                }
+                if (request.AttributeSetId != null)
+                {
+                    products = products.Where(p => p.LocalCatId == request.LocalCatId);
+                }
+                if (request.AttributeId != null)
+                {
+                    products = products.Where(p => p.ProductStageAttributes.All(a => a.AttributeId == request.AttributeId));
+                }
+                if (request.BrandId != null)
+                {
+                    products = products.Where(p => p.BrandId == request.BrandId);
+                }
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    products = products.Where(p => p.Sku.Contains(request.SearchText)
+                    || p.ProductNameEn.Contains(request.SearchText)
+                    || p.ProductNameTh.Contains(request.SearchText)
+                    || p.Pid.Contains(request.SearchText)
+                    || p.Upc.Contains(request.SearchText));
+                }
+                if (!string.IsNullOrEmpty(request.Pid))
+                {
+                    products = products.Where(p => p.Pid.Equals(request.Pid));
+                }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
+                    }
+                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
+                    }
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                    }
+                }
+                if (!string.IsNullOrEmpty(request._missingfilter))
+                {
+                    if (string.Equals("Information", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => !p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("Image", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => !p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("Variation", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => !p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("More", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => !p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("ReadyForAction", request._missingfilter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p =>
+                           p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
+                        && p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
+                        && p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
+                        && p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                    }
+                }
+                var total = products.Count();
+                var pagedProducts = products.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/ProductStages/All")]
         [HttpGet]
         public HttpResponseMessage GetProductAllStages([FromUri] ProductRequest request)
