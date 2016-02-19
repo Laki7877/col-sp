@@ -43,7 +43,7 @@ namespace Colsp.Api.CMSFunction
                     JsonText = this.GetJsonBrandInShop(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
                     break;
-                case "CMSBY1GET1ITEM":
+                case "PROMOTIONBY1GET1ITEM":
                     JsonText = this.GetJsonCMSBy1Get1Item(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
                     break;
