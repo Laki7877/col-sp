@@ -59,7 +59,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.InnerException);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -69,11 +69,34 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var coupon = db.Coupons.Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status))
-                    .Include(i => i.CouponCondition)
-                    .Include(i => i.CouponCondition1)
-                    .Include(i => i.CouponPidMaps)
-                    .Include(i => i.CouponBrandMaps);
+                var coupon = db.Coupons
+                    .Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status))
+                    .Select(s=> new {
+                        s.CouponName,
+                        s.CouponCode,
+                        s.Status,
+                        s.ExpireDate,
+                        s.StartDate,
+                        s.ShopId,
+                        Action = new { Type = s.Action , s.DiscountAmount, s.MaximumAmount },
+                        s.UsagePerCustomer,
+                        s.MaximumUser,
+                        Conditions = new
+                        {
+                            Order = s.CouponOrders.Select(se=>new { Type = se.Criteria, Value = se.CriteriaPrice }),
+                            FilterBy = new
+                            {
+                                Type = s.FilterBy,
+                                Brands = s.CouponBrandMaps.Select(se=>new { se.Brand.BrandId, se.Brand.BrandNameEn } ),
+                                Emails = s.CouponCustomerMaps.Select(se=>se.Email),
+                                GlobalCategories = s.CouponGlobalCatMaps.Select(se=>new {se.GlobalCategory.CategoryId, se.GlobalCategory.NameEn }),
+                                LocalCategories = s.CouponLocalCatMaps.Select(se=>new { se.LocalCategory.CategoryId, se.LocalCategory.NameEn})
+                            },
+                            Include = s.CouponPidMaps.Where(w=>w.Filter.Equals("I")).Select(se=>se.Pid),
+                            Exclude = s.CouponPidMaps.Where(w=>w.Filter.Equals("E")).Select(se=>se.Pid)
+                        }
+
+                    });
                 if (this.User.HasPermission("View Promotion"))
                 {
                     var shopId = this.User.ShopRequest().ShopId.Value;
@@ -91,7 +114,44 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        //[Route("api/Coupons")]
+        //[HttpPost]
+        //public HttpResponseMessage AddCoupon(CouponRequest request)
+        //{
+        //    Coupon coupon = null;
+        //    try
+        //    {
+        //        if(request == null)
+        //        {
+        //            throw new Exception("Invalid request");
+        //        }
+        //        coupon = new Coupon();
+        //        var shopId = this.User.ShopRequest().ShopId;
+        //        coupon.CouponName = request.CouponName;
+        //        coupon.CouponCode = request.CouponCode;
+        //        coupon.Status = request.Status;
+        //        if (!string.IsNullOrWhiteSpace(request.ExpireDate))
+        //        {
+        //            coupon.ExpireDate = Convert.ToDateTime(request.ExpireDate);
+        //        }
+        //        if (!string.IsNullOrWhiteSpace(request.StartDate))
+        //        {
+        //            coupon.StartDate = Convert.ToDateTime(request.StartDate);
+        //        }
 
+        //        coupon.ShopId = shopId;
+        //        coupon.Action = request.Action.Type;
+        //        coupon.DiscountAmount = request.Action.DiscountAmount;
+        //        coupon.MaximumAmount = request.Action.MaximumAmount;
+        //        coupon.UsagePerCustomer = request.UsagePerCustomer;
+        //        coupon.MaximumUser = request.MaximumUser;
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+        //    }
+        //}
         protected override void Dispose(bool disposing)
         {
             if (disposing)

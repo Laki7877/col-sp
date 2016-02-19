@@ -44,20 +44,12 @@ namespace Colsp.Api.Controllers
                                     cat.UpdatedDt,
                                     cat.CreatedDt,
                                     ProductCount = cat.ProductStages.Count,
-                                }).ToList();
-                if (localCat != null && localCat.Count > 0)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, localCat);
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
-                }
-
+                                });
+                return Request.CreateResponse(HttpStatusCode.OK, localCat);
             }
-            catch
+            catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 

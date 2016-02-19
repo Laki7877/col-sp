@@ -47,8 +47,10 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
+        public virtual DbSet<CouponCustomerMap> CouponCustomerMaps { get; set; }
         public virtual DbSet<CouponGlobalCatMap> CouponGlobalCatMaps { get; set; }
         public virtual DbSet<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
+        public virtual DbSet<CouponOrder> CouponOrders { get; set; }
         public virtual DbSet<CouponPidMap> CouponPidMaps { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
@@ -85,7 +87,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
         public virtual DbSet<ProductVariant> ProductVariants { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
-        public virtual DbSet<PromotionBy1Get1Item> PromotionBy1Get1Item { get; set; }
+        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }

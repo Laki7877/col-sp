@@ -75,37 +75,18 @@ namespace Colsp.Api.Controllers
                     products = products.Where(w => w.ShopId == shopId);
                 }
                 request.DefaultOnNull();
-                if (request.GlobalCatId != null)
+                if(request.ProductNames != null && request.ProductNames.Count > 0)
                 {
-                    products = products.Where(p => p.GlobalCatId == request.GlobalCatId);
+                    products = products.Where(w => request.ProductNames.Contains(w.ProductNameEn)
+                    || request.ProductNames.Contains(w.ProductNameTh));
                 }
-                if (request.LocalCatId != null)
+                if (request.Pids != null && request.Pids.Count > 0)
                 {
-                    products = products.Where(p => p.LocalCatId == request.LocalCatId);
+                    products = products.Where(w => request.Pids.Contains(w.Pid));
                 }
-                if (request.AttributeSetId != null)
+                if (request.Skus != null && request.Skus.Count > 0)
                 {
-                    products = products.Where(p => p.LocalCatId == request.LocalCatId);
-                }
-                if (request.AttributeId != null)
-                {
-                    products = products.Where(p => p.ProductStageAttributes.All(a => a.AttributeId == request.AttributeId));
-                }
-                if (request.BrandId != null)
-                {
-                    products = products.Where(p => p.BrandId == request.BrandId);
-                }
-                if (!string.IsNullOrEmpty(request.SearchText))
-                {
-                    products = products.Where(p => p.Sku.Contains(request.SearchText)
-                    || p.ProductNameEn.Contains(request.SearchText)
-                    || p.ProductNameTh.Contains(request.SearchText)
-                    || p.Pid.Contains(request.SearchText)
-                    || p.Upc.Contains(request.SearchText));
-                }
-                if (!string.IsNullOrEmpty(request.Pid))
-                {
-                    products = products.Where(p => p.Pid.Equals(request.Pid));
+                    products = products.Where(w => request.Skus.Contains(w.Sku));
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {

@@ -216,10 +216,16 @@
     <Compile Include="Models\CouponCondition.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CouponCustomerMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CouponGlobalCatMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponLocalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CouponOrder.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponPidMap.cs">
@@ -330,7 +336,7 @@
     <Compile Include="Models\ProductVideo.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\PromotionBy1Get1Item.cs">
+    <Compile Include="Models\PromotionBuy1Get1Item.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipping.cs">

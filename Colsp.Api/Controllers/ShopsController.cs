@@ -505,8 +505,6 @@ namespace Colsp.Api.Controllers
         }
 
 
-
-
         //[Route("api/Shops/{sellerId}/ProductStages")]
         //[HttpGet]
         //public HttpResponseMessage GetProductStageFromShop([FromUri] ProductRequest request)
