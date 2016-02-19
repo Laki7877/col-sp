@@ -20,7 +20,7 @@ namespace Colsp.Api.ByOneGetOneFunction
                 {
                     try
                     {
-                        CMSBy1Get1Item bg = new CMSBy1Get1Item();
+                        PromotionBy1Get1Item bg = new PromotionBy1Get1Item();
                         bg.NameEN = Model.NameEN;
                         bg.NameTH = Model.NameTH;
                         bg.EffectiveDate = Model.EffectiveDate;
@@ -33,20 +33,21 @@ namespace Colsp.Api.ByOneGetOneFunction
                         bg.ShortDetailEN = Model.ShortDetailEN;
                         bg.ShortDetailTH = Model.ShortDetailTH;
                         bg.Status = Model.Status;
-                        bg.CMSStatusFlowId = Model.CMSStatusFlowId;
+                        bg.ByPID = Model.ByPID;
+                        bg.GetPID = Model.GetPID;
                         bg.URLKey = Model.URLKey;
                         bg.Visibility = Model.Visibility;
                         bg.CreateBy = Model.CreateBy;
                         bg.Createdate = DateTime.Now;
                         bg.CreateIP = Model.CreateIP;
-                        db.CMSBy1Get1Item.Add(bg);
+                        db.PromotionBy1Get1Item.Add(bg);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
                             dbcxtransaction.Commit();
                             ////History Log
-                            CMSHistoryLogClass log = new CMSHistoryLogClass();
-                            log.LogCreateCMS(bg.CMSBy1Get1ItemId, "CMSBy1Get1Item", bg.Status, "Create", (int)bg.CreateBy, bg.CreateIP);
-                            result = bg.CMSBy1Get1ItemId;
+                            HistoryLogClass log = new HistoryLogClass();
+                            log.LogCreateCMS(bg.PromotionBy1Get1ItemId, "PromotionBy1Get1Item", bg.Status, "Create", (int)bg.CreateBy, bg.CreateIP);
+                            result = bg.PromotionBy1Get1ItemId;
                         }
                         return result;
                     }
