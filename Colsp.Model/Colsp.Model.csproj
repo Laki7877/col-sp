@@ -71,7 +71,8 @@
     <Compile Include="Requests\UserGroupRequest.cs" />
     <Compile Include="Requests\PermissionRequest.cs" />
     <Compile Include="Requests\UserRequest.cs" />
-    <Compile Include="Responses\By1Get1ItemResponse.cs" />
+    <Compile Include="Responses\Buy1Get1ItemRequest.cs" />
+    <Compile Include="Responses\Buy1Get1ItemResponse.cs" />
     <Compile Include="Responses\CMSCollectionResponse.cs" />
     <Compile Include="Responses\CollectionItemResponse.cs" />
     <Compile Include="Responses\CollectionResponse.cs" />

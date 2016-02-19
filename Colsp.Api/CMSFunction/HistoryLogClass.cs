@@ -149,8 +149,8 @@ namespace Colsp.Api.CMSFunction
         {
             using (ColspEntities db = new ColspEntities())
             {
-                var CMSBy1Get1Item = from n in db.PromotionBy1Get1Item
-                                     where n.PromotionBy1Get1ItemId == id
+                var CMSBy1Get1Item = from n in db.PromotionBuy1Get1Item
+                                     where n.PromotionBuy1Get1ItemId == id
                                      select n;
                 string output = new JavaScriptSerializer().Serialize(CMSBy1Get1Item);
                 return output;

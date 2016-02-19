@@ -189,7 +189,7 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="PromotionFunction\ByOneGetOneProcess.cs" />
+    <Compile Include="PromotionFunction\BuyOneGetOneProcess.cs" />
     <Compile Include="CMSFunction\HistoryLogClass.cs" />
     <Compile Include="CMSFunction\CMSProcess.cs" />
     <Compile Include="CMSFunction\GetCMSList.cs" />
@@ -202,7 +202,7 @@
     <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
-    <Compile Include="Controllers\ByOneGetOneController.cs" />
+    <Compile Include="Controllers\BuyOneGetOneController.cs" />
     <Compile Include="Controllers\CMSManagementController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />

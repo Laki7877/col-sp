@@ -330,13 +330,7 @@
     <Compile Include="Models\ProductVideo.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\PromotionBy1Get1Item.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PromotionOnTopCreditCard.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PromotionOnTopCreditNumber.cs">
+    <Compile Include="Models\PromotionBuy1Get1Item.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipping.cs">

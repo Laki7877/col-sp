@@ -37,6 +37,7 @@ namespace Colsp.Api.Controllers
         public IHttpActionResult GetByShop([FromUri] CMSShopRequest request)
         {
             int? shopId = (int?)this.User.ShopRequest().ShopId.Value;
+            //int? shopId = 0;
             try
             {
                 if (!shopId.HasValue)
@@ -651,7 +652,7 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
                 }
-                return GetCollection(CMSId);
+                return Request.CreateErrorResponse(HttpStatusCode.OK, "Update Complete");
             }
             catch (Exception ex)
             {
