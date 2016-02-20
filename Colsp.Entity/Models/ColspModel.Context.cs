@@ -52,6 +52,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
         public virtual DbSet<CouponOrder> CouponOrders { get; set; }
         public virtual DbSet<CouponPidMap> CouponPidMaps { get; set; }
+        public virtual DbSet<CouponShopMap> CouponShopMaps { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
         public virtual DbSet<GlobalCategoryAbbrevation> GlobalCategoryAbbrevations { get; set; }

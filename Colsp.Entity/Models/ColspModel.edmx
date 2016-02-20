@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ColspModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ColspModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Attribute">
           <Key>
             <PropertyRef Name="AttributeId" />
@@ -426,6 +426,18 @@
           <Property Name="CouponId" Type="int" Nullable="false" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Filter" Type="char" MaxLength="1" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CouponShopMap">
+          <Key>
+            <PropertyRef Name="CouponId" />
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="CouponId" Type="int" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -1559,6 +1571,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CouponShopMap_Coupon">
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="CouponShopMap" Type="Self.CouponShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="CouponId" />
+            </Principal>
+            <Dependent Role="CouponShopMap">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CouponShopMap_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="CouponShopMap" Type="Self.CouponShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="CouponShopMap">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GlobalCategoryPID_GlobalCategory">
           <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2438,6 +2474,7 @@
           <EntitySet Name="CouponLocalCatMap" EntityType="Self.CouponLocalCatMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponOrder" EntityType="Self.CouponOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponPidMap" EntityType="Self.CouponPidMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CouponShopMap" EntityType="Self.CouponShopMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryAbbrevation" EntityType="Self.GlobalCategoryAbbrevation" Schema="dbo" store:Type="Tables" />
@@ -2534,6 +2571,14 @@
           <AssociationSet Name="FK_CouponPidMap_Coupon" Association="Self.FK_CouponPidMap_Coupon">
             <End Role="Coupon" EntitySet="Coupon" />
             <End Role="CouponPidMap" EntitySet="CouponPidMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponShopMap_Coupon" Association="Self.FK_CouponShopMap_Coupon">
+            <End Role="Coupon" EntitySet="Coupon" />
+            <End Role="CouponShopMap" EntitySet="CouponShopMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponShopMap_Shop" Association="Self.FK_CouponShopMap_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="CouponShopMap" EntitySet="CouponShopMap" />
           </AssociationSet>
           <AssociationSet Name="FK_GlobalCategoryPID_GlobalCategory" Association="Self.FK_GlobalCategoryPID_GlobalCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategory" />
@@ -2843,6 +2888,7 @@
           <EntitySet Name="CouponLocalCatMaps" EntityType="ColspModel.CouponLocalCatMap" />
           <EntitySet Name="CouponOrders" EntityType="ColspModel.CouponOrder" />
           <EntitySet Name="CouponPidMaps" EntityType="ColspModel.CouponPidMap" />
+          <EntitySet Name="CouponShopMaps" EntityType="ColspModel.CouponShopMap" />
           <EntitySet Name="Customers" EntityType="ColspModel.Customer" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
@@ -3012,6 +3058,10 @@
             <End Role="Coupon" EntitySet="Coupons" />
             <End Role="CouponPidMap" EntitySet="CouponPidMaps" />
           </AssociationSet>
+          <AssociationSet Name="FK_CouponShopMap_Coupon" Association="ColspModel.FK_CouponShopMap_Coupon">
+            <End Role="Coupon" EntitySet="Coupons" />
+            <End Role="CouponShopMap" EntitySet="CouponShopMaps" />
+          </AssociationSet>
           <AssociationSet Name="FK_CouponGlobalCatMap_Brand" Association="ColspModel.FK_CouponGlobalCatMap_Brand">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="CouponGlobalCatMap" EntitySet="CouponGlobalCatMaps" />
@@ -3019,6 +3069,10 @@
           <AssociationSet Name="FK_CouponLocalCatMap_Brand" Association="ColspModel.FK_CouponLocalCatMap_Brand">
             <End Role="LocalCategory" EntitySet="LocalCategories" />
             <End Role="CouponLocalCatMap" EntitySet="CouponLocalCatMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponShopMap_Shop" Association="ColspModel.FK_CouponShopMap_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="CouponShopMap" EntitySet="CouponShopMaps" />
           </AssociationSet>
           <AssociationSet Name="FK_GlobalCategoryPID_GlobalCategory" Association="ColspModel.FK_GlobalCategoryPID_GlobalCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
@@ -3593,6 +3647,7 @@
           <NavigationProperty Name="CouponLocalCatMaps" Relationship="ColspModel.FK_CouponLocalCatMap_Coupon" FromRole="Coupon" ToRole="CouponLocalCatMap" />
           <NavigationProperty Name="CouponOrders" Relationship="ColspModel.FK_CouponOrder_Coupon" FromRole="Coupon" ToRole="CouponOrder" />
           <NavigationProperty Name="CouponPidMaps" Relationship="ColspModel.FK_CouponPidMap_Coupon" FromRole="Coupon" ToRole="CouponPidMap" />
+          <NavigationProperty Name="CouponShopMaps" Relationship="ColspModel.FK_CouponShopMap_Coupon" FromRole="Coupon" ToRole="CouponShopMap" />
         </EntityType>
         <EntityType Name="CouponBrandMap">
           <Key>
@@ -3687,6 +3742,20 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Coupon" Relationship="ColspModel.FK_CouponPidMap_Coupon" FromRole="CouponPidMap" ToRole="Coupon" />
+        </EntityType>
+        <EntityType Name="CouponShopMap">
+          <Key>
+            <PropertyRef Name="CouponId" />
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="CouponId" Type="Int32" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Coupon" Relationship="ColspModel.FK_CouponShopMap_Coupon" FromRole="CouponShopMap" ToRole="Coupon" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_CouponShopMap_Shop" FromRole="CouponShopMap" ToRole="Shop" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -4603,6 +4672,7 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Coupons" Relationship="ColspModel.FK_Coupon_Shop" FromRole="Shop" ToRole="Coupon" />
+          <NavigationProperty Name="CouponShopMaps" Relationship="ColspModel.FK_CouponShopMap_Shop" FromRole="Shop" ToRole="CouponShopMap" />
           <NavigationProperty Name="LocalCategories" Relationship="ColspModel.FKLocalCategoryShop" FromRole="Shop" ToRole="LocalCategory" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
@@ -5149,6 +5219,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CouponShopMap_Coupon">
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.CouponShopMap" Role="CouponShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="CouponId" />
+            </Principal>
+            <Dependent Role="CouponShopMap">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CouponGlobalCatMap_Brand">
           <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1" />
           <End Type="ColspModel.CouponGlobalCatMap" Role="CouponGlobalCatMap" Multiplicity="*" />
@@ -5170,6 +5252,18 @@
             </Principal>
             <Dependent Role="CouponLocalCatMap">
               <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CouponShopMap_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.CouponShopMap" Role="CouponShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="CouponShopMap">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6229,6 +6323,18 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Filter" ColumnName="Filter" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="CouponId" ColumnName="CouponId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CouponShopMaps">
+            <EntityTypeMapping TypeName="ColspModel.CouponShopMap">
+              <MappingFragment StoreEntitySet="CouponShopMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="CouponId" ColumnName="CouponId" />
               </MappingFragment>
             </EntityTypeMapping>

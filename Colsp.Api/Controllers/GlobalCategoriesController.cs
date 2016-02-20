@@ -572,10 +572,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var catEnList = db.GlobalCategories.ToList();
-
-                List<GlobalCategory> newCat = new List<GlobalCategory>();
-                List<Tuple<GlobalCategory, int>> insetMap = new List<Tuple<GlobalCategory, int>>();
+                var catEnList = db.GlobalCategories.Include(i=>i.ProductStages).ToList();
                 foreach (CategoryRequest catRq in request)
                 {
                     if (catRq.Lft == null || catRq.Rgt == null || catRq.Lft >= catRq.Rgt)
@@ -627,7 +624,7 @@ namespace Colsp.Api.Controllers
                            , "URL Key has already been used");
                     }
                 }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
             catch (Exception e)
             {

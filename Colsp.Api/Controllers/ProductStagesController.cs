@@ -47,46 +47,124 @@ namespace Colsp.Api.Controllers
                                     p.ProductId,
                                     p.ProductNameEn,
                                     p.ProductNameTh,
-                                    p.OriginalPrice,
                                     p.SalePrice,
+                                    p.OriginalPrice,
+                                    p.Shop.ShopNameEn,
                                     p.Status,
                                     p.ImageFlag,
                                     p.InfoFlag,
                                     p.Visibility,
                                     VariantCount = p.ProductStageVariants.Where(w => w.Visibility == true).ToList().Count,
                                     ImageUrl = p.FeatureImgUrl,
-                                    p.GlobalCatId,
-                                    p.LocalCatId,
-                                    p.AttributeSetId,
-                                    p.ProductStageAttributes,
+                                    GlobalCategory = p.GlobalCategory != null ? new { p.GlobalCategory.CategoryId, p.GlobalCategory.NameEn,p.GlobalCategory.Lft,p.GlobalCategory.Rgt } : null,
+                                    LocalCategory = p.LocalCategory != null ? new { p.LocalCategory.CategoryId, p.LocalCategory.NameEn, p.LocalCategory.Lft,p.LocalCategory.Rgt } : null,
+                                    Brand = p.Brand != null ? new { p.Brand.BrandId,p.Brand.BrandNameEn } : null,
+                                    p.Tag,
+                                    p.CreatedDt,
                                     p.UpdatedDt,
-                                    p.ShopId,
-                                    p.BrandId,
-                                    p.InformationTabStatus,
-                                    p.ImageTabStatus,
-                                    p.CategoryTabStatus,
-                                    p.VariantTabStatus,
-                                    p.MoreOptionTabStatus,
                                     Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn }
                                 });
                 if (this.User.HasPermission("View Product"))
                 {
                     int shopId = this.User.ShopRequest().ShopId.Value;
-                    products = products.Where(w => w.ShopId == shopId);
+                    products = products.Where(w => w.Shop.ShopId == shopId);
                 }
                 request.DefaultOnNull();
                 if(request.ProductNames != null && request.ProductNames.Count > 0)
                 {
-                    products = products.Where(w => request.ProductNames.Contains(w.ProductNameEn)
-                    || request.ProductNames.Contains(w.ProductNameTh));
+                    products = products.Where(w => request.ProductNames.Any(a => w.ProductNameEn.Contains(a))
+                    || request.ProductNames.Any(a => w.ProductNameTh.Contains(a)));
                 }
                 if (request.Pids != null && request.Pids.Count > 0)
                 {
-                    products = products.Where(w => request.Pids.Contains(w.Pid));
+                    products = products.Where(w => request.Pids.Any(a => w.Pid.Contains(a)));
                 }
                 if (request.Skus != null && request.Skus.Count > 0)
                 {
-                    products = products.Where(w => request.Skus.Contains(w.Sku));
+                    products = products.Where(w => request.Skus.Any(a => w.Sku.Contains(a)));
+                }
+                if (request.Brands != null && request.Brands.Count > 0)
+                {
+                    List<int> brandIds = request.Brands.Where(w => w.BrandId != null).Select(s => s.BrandId.Value).ToList();
+                    if (brandIds != null && brandIds.Count > 0)
+                    {
+                        products = products.Where(w => brandIds.Contains(w.Brand.BrandId));
+                    }
+                    List<string> brandNames = request.Brands.Where(w => w.BrandNameEn != null).Select(s => s.BrandNameEn).ToList();
+                    if (brandNames != null && brandNames.Count > 0)
+                    {
+                        products = products.Where(w => brandNames.Any(a => w.Brand.BrandNameEn.Contains(a)));
+                    }
+                }
+                if (request.GlobalCategories != null && request.GlobalCategories.Count > 0)
+                {
+                    var lft = request.GlobalCategories.Where(w=>w.Lft!=null).Select(s => s.Lft).ToList();
+                    var rgt = request.GlobalCategories.Where(w => w.Rgt != null).Select(s => s.Rgt).ToList();
+                    if (lft != null && lft.Count > 0 && rgt != null && rgt.Count > 0)
+                    {
+                        products = products.Where(w => lft.Any(a => a <= w.GlobalCategory.Lft) && rgt.Any(a=>a >= w.GlobalCategory.Rgt));
+                    }
+                    List<string> catNames = request.GlobalCategories.Where(w => w.NameEn != null).Select(s => s.NameEn).ToList();
+                    if (catNames != null && catNames.Count > 0)
+                    {
+                        products = products.Where(w => catNames.Any(a => w.GlobalCategory.NameEn.Contains(a)));
+                    }
+                }
+                if (request.LocalCategories != null && request.LocalCategories.Count > 0)
+                {
+                    var lft = request.LocalCategories.Where(w => w.Lft != null).Select(s => s.Lft).ToList();
+                    var rgt = request.LocalCategories.Where(w => w.Rgt != null).Select(s => s.Rgt).ToList();
+
+                    if (lft != null && lft.Count > 0 && rgt != null && rgt.Count > 0)
+                    {
+                        products = products.Where(w => lft.Any(a => a <= w.LocalCategory.Lft) && rgt.Any(a => a >= w.LocalCategory.Rgt));
+                    }
+                    List<string> catNames = request.LocalCategories.Where(w => w.NameEn != null).Select(s => s.NameEn).ToList();
+                    if (catNames != null && catNames.Count > 0)
+                    {
+                        products = products.Where(w => catNames.Any(a => w.LocalCategory.NameEn.Contains(a)));
+                    }
+                }
+                if (request.Tags != null && request.Tags.Count > 0)
+                {
+                    products = products.Where(w => request.Tags.Any(a => w.Tag.Contains(a)));
+                }
+                if(request.PriceFrom != null)
+                {
+                    products = products.Where(w => w.SalePrice >= request.PriceFrom);
+                }
+                if (request.PriceTo != null)
+                {
+                    products = products.Where(w => w.SalePrice <= request.PriceTo);
+                }
+                if (request.CreatedDtFrom != null)
+                {
+                    DateTime from = Convert.ToDateTime(request.CreatedDtFrom);
+                    products = products.Where(w => w.CreatedDt >= from);
+                }
+                if (request.CreatedDtTo != null)
+                {
+                    DateTime to = Convert.ToDateTime(request.CreatedDtTo);
+                    products = products.Where(w => w.CreatedDt <= to);
+                }
+
+                if (request.ModifyDtFrom != null)
+                {
+                    DateTime from = Convert.ToDateTime(request.ModifyDtFrom);
+                    products = products.Where(w => w.UpdatedDt >= from);
+                }
+                if (request.ModifyDtTo != null)
+                {
+                    DateTime to = Convert.ToDateTime(request.ModifyDtTo);
+                    products = products.Where(w => w.UpdatedDt <= to);
+                }
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    products = products.Where(p => p.Sku.Contains(request.SearchText)
+                    || p.ProductNameEn.Contains(request.SearchText)
+                    || p.ProductNameTh.Contains(request.SearchText)
+                    || p.Pid.Contains(request.SearchText)
+                    || p.Upc.Contains(request.SearchText));
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
@@ -107,33 +185,7 @@ namespace Colsp.Api.Controllers
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
-                if (!string.IsNullOrEmpty(request._missingfilter))
-                {
-                    if (string.Equals("Information", request._missingfilter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        products = products.Where(p => !p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
-                    }
-                    else if (string.Equals("Image", request._missingfilter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        products = products.Where(p => !p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
-                    }
-                    else if (string.Equals("Variation", request._missingfilter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        products = products.Where(p => !p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
-                    }
-                    else if (string.Equals("More", request._missingfilter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        products = products.Where(p => !p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
-                    }
-                    else if (string.Equals("ReadyForAction", request._missingfilter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        products = products.Where(p =>
-                           p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
-                        && p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
-                        && p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE)
-                        && p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
-                    }
-                }
+                
                 var total = products.Count();
                 var pagedProducts = products.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
@@ -530,9 +582,9 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (CategoryRequest cat in request.GlobalCategories)
                     {
-                        if (cat == null) { continue; }
+                        if (cat == null || cat.CategoryId == null) { continue; }
                         ProductStageGlobalCatMap map = new ProductStageGlobalCatMap();
-                        map.CategoryId = cat.CategoryId;
+                        map.CategoryId = cat.CategoryId.Value;
                         map.ProductId = stage.ProductId;
                         map.Status = Constant.STATUS_ACTIVE;
                         map.CreatedBy = this.User.UserRequest().Email;
@@ -546,9 +598,9 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (CategoryRequest cat in request.LocalCategories)
                     {
-                        if (cat == null) { continue; }
+                        if (cat == null || cat.CategoryId == null) { continue; }
                         ProductStageLocalCatMap map = new ProductStageLocalCatMap();
-                        map.CategoryId = cat.CategoryId;
+                        map.CategoryId = cat.CategoryId.Value;
                         map.ProductId = stage.ProductId;
                         map.Status = Constant.STATUS_ACTIVE;
                         map.CreatedBy = this.User.UserRequest().Email;
@@ -1663,7 +1715,7 @@ namespace Colsp.Api.Controllers
                     {
                         if (cat == null) { continue; }
                         ProductStageLocalCatMap catEntity = new ProductStageLocalCatMap();
-                        catEntity.CategoryId = cat.CategoryId;
+                        catEntity.CategoryId = cat.CategoryId.Value;
                         catEntity.ProductId = ProductId;
                         catEntity.Status = Constant.STATUS_ACTIVE;
                         catEntity.CreatedBy = email;
@@ -1710,9 +1762,9 @@ namespace Colsp.Api.Controllers
                     }
                     if (addNew)
                     {
-                        if (cat == null) { continue; }
+                        if (cat == null || cat.CategoryId == null) { continue; }
                         ProductStageGlobalCatMap catEntity = new ProductStageGlobalCatMap();
-                        catEntity.CategoryId = cat.CategoryId;
+                        catEntity.CategoryId = cat.CategoryId.Value;
                         catEntity.ProductId = ProductId;
                         catEntity.Status = Constant.STATUS_ACTIVE;
                         catEntity.CreatedBy = email;

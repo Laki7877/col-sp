@@ -59,7 +59,7 @@ namespace Colsp.Model.Requests
     public class OrderRequest
     {
         public string Type { get; set; }
-        public string Value { get; set; }
+        public decimal? Value { get; set; }
 
     }
     public class FilterByRequest
@@ -69,6 +69,7 @@ namespace Colsp.Model.Requests
         public List<string> Emails { get; set; }
         public List<CategoryRequest> GlobalCategories { get; set; }
         public List<CategoryRequest> LocalCategories { get; set; }
+        public List<ShopRequest> Shops { get; set; }
         public List<String> Include { get; set; }
         public List<String> Exclude { get; set; }
 

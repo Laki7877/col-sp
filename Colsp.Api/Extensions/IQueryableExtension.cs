@@ -13,9 +13,9 @@ namespace Colsp.Api.Extensions
 			//Generate Lambda Expression for LINQ that will sort
 			//It is equivalent to doing OrderBy(p => p.Name) which will order by Name,
 			//but dynamically at runtime
-			var _order = pagination._order; 
-			var _dir = pagination._direction.ToUpper().Equals("DESC") ? "DESC" : "ASC";
-
+			var _order = pagination._order;
+            string _dir = pagination._direction.ToUpper().Equals("DESC") ? "DESC" : "ASC";
+                
 			try {
 				iq = iq.OrderBy(_order + " " + _dir);
 			} catch (Exception)
