@@ -330,6 +330,9 @@
     <Compile Include="Models\ProductStageVariant.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductStageVariantArrtibuteMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ProductStageVideo.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

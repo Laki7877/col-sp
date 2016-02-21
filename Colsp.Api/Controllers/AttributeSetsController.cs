@@ -227,8 +227,7 @@ namespace Colsp.Api.Controllers
                 }
                 var attrSet = db.AttributeSets.Where(w => w.AttributeSetId.Equals(attributeSetId))
                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes))
-                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants ))
-                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants1 ))
+                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariantArrtibuteMaps ))
                     .Include(i => i.AttributeSetTagMaps.Select(s => s.Tag))
                     .SingleOrDefault();
                 if(attrSet != null)
@@ -285,8 +284,7 @@ namespace Colsp.Api.Controllers
                         foreach(AttributeSetMap map in mapList)
                         {
                             if((map.Attribute.ProductStageAttributes != null && map.Attribute.ProductStageAttributes.Count > 0)
-                                || (map.Attribute.ProductStageVariants != null && map.Attribute.ProductStageVariants.Count > 0)
-                                || (map.Attribute.ProductStageVariants1 != null && map.Attribute.ProductStageVariants1.Count > 0))
+                                || (map.Attribute.ProductStageVariantArrtibuteMaps != null && map.Attribute.ProductStageVariantArrtibuteMaps.Count > 0))
                             {
                                 throw new Exception("Cannot delete attribute maping " + map.Attribute.AttributeNameEn + " in attribute set " + attrSet.AttributeSetNameEn + " with product associated");
                             }
@@ -478,8 +476,7 @@ namespace Colsp.Api.Controllers
         {
             var attrSet = db.AttributeSets.Where(w => w.AttributeSetId.Equals(attributeSetId))
                      .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes))
-                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants))
-                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants1))
+                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariantArrtibuteMaps))
                      .Include(i => i.AttributeSetTagMaps.Select(s => s.Tag))
                      .Include(i => i.CategoryAttributeSetMaps.Select(s=>s.GlobalCategory))
                      .SingleOrDefault();
@@ -518,8 +515,7 @@ namespace Colsp.Api.Controllers
                         attr.Required = map.Required;
                         attr.Filterable = map.Filterable;
                         attr.ProductCount = (map.Attribute.ProductStageAttributes != null ? map.Attribute.ProductStageAttributes.Count : 0)
-                                            + (map.Attribute.ProductStageVariants != null ? map.Attribute.ProductStageVariants.Count : 0)
-                                            + (map.Attribute.ProductStageVariants1 != null ? map.Attribute.ProductStageVariants1.Count : 0);
+                                            + (map.Attribute.ProductStageVariantArrtibuteMaps != null ? map.Attribute.ProductStageVariantArrtibuteMaps.Count : 0);
                         attr.Status = map.Attribute.Status;
                         response.Attributes.Add(attr);
                     }

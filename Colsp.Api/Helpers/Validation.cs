@@ -8,11 +8,15 @@ namespace Colsp.Api.Helpers
 {
     public class Validation
     {
-        public static string ValidateString(string val,string fieldName, bool required, int maxLenght, bool isAlphanumeric)
+        public static string ValidateString(string val,string fieldName, bool required, int maxLenght, bool isAlphanumeric, string defaultVal = null)
         {
             
             if(required && string.IsNullOrWhiteSpace(val))
             {
+                if (string.IsNullOrEmpty(defaultVal))
+                {
+                    return defaultVal;
+                }
                 throw new Exception(fieldName + " is a required field");
             }
             if (string.IsNullOrWhiteSpace(val)) { return val; }
@@ -33,10 +37,14 @@ namespace Colsp.Api.Helpers
             return val;
         }
 
-        public static decimal? ValidateDecimal(decimal? val, string fieldName, bool required, int maxLenght, int decimalPlace,bool isPositive)
+        public static decimal? ValidateDecimal(decimal? val, string fieldName, bool required, int maxLenght, int decimalPlace,bool isPositive, decimal? defaultVal = null)
         {
             if(required && val == null)
             {
+                if (defaultVal != null)
+                {
+                    return defaultVal;
+                }
                 throw new Exception(fieldName + " is a required field");
             }
             if(val == null)
@@ -86,6 +94,23 @@ namespace Colsp.Api.Helpers
             }
             return val;
 
+        }
+
+        public static int? ValidationInteger(int? val,string fieldName, bool required, int maxLenght, int? defaultVal)
+        {
+            if (required && val == null)
+            {
+                if(defaultVal != null)
+                {
+                    return defaultVal.Value;
+                }
+                throw new Exception(fieldName + " is a required field");
+            }
+            if(val > maxLenght)
+            {
+                throw new Exception(fieldName + " field must be no larger than " + maxLenght + "");
+            }
+            return val;
         }
 
     }

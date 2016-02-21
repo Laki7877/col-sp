@@ -220,7 +220,7 @@ namespace Colsp.Api.Controllers
                                     ProductNameEn = varJ != null ? varJ.ProductNameEn : stage.ProductNameEn,
                                     ProductNameTh = varJ != null ? varJ.ProductNameTh : stage.ProductNameTh,
                                     Pid = varJ != null ? varJ.Pid : stage.Pid,
-                                    VariantValue = varJ != null ? varJ.ValueEn1 + " , " + varJ.ValueEn2 : null,
+                                    VariantValue = "", //todo
                                     Status = varJ != null ? varJ.Status : stage.Status,
                                     MasterImg = proImgJoin.Select(s => new ImageRequest { ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o => o.position),
                                     VariantImg = varImgJoin.Select(s => new ImageRequest { ImageId = s.ImageId, url = s.ImageUrlEn, tmpPath = s.Path, position = s.Position }).OrderBy(o => o.position),
@@ -543,7 +543,7 @@ namespace Colsp.Api.Controllers
                 #endregion
                 #region Setup Inventory
                 Inventory masterInventory = new Inventory();
-                masterInventory.Quantity = request.MasterVariant.Quantity;
+                masterInventory.Quantity = Validation.ValidationInteger(request.MasterVariant.Quantity, "Quantity", true, Int32.MaxValue, 0).Value;
                 masterInventory.SaftyStockSeller = request.MasterVariant.SafetyStock;
                 if (request.MasterVariant.StockType != null)
                 {
@@ -645,19 +645,84 @@ namespace Colsp.Api.Controllers
                         variant.Status = request.Status;
                         if (variantRq.FirstAttribute != null && variantRq.FirstAttribute.AttributeId != null)
                         {
-                            variant.Attribute1Id = variantRq.FirstAttribute.AttributeId;
-                            variant.ValueEn1 = variantRq.FirstAttribute.ValueEn;
+                            if(variantRq.FirstAttribute.AttributeValues != null && variantRq.FirstAttribute.AttributeValues.Count > 0)
+                            {
+                                foreach(AttributeValueRequest val in variantRq.FirstAttribute.AttributeValues)
+                                {
+                                    variant.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap() {
+                                        VariantId = variant.VariantId,
+                                        AttributeId = variantRq.FirstAttribute.AttributeId.Value,
+                                        Value = string.Concat("((",val.AttributeValueId,"))"),
+                                        IsAttributeValue = true,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now
+                                    });
+                                }
+                            }else if (!string.IsNullOrWhiteSpace(variantRq.FirstAttribute.ValueEn))
+                            {
+                                variant.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
+                                {
+                                    VariantId = variant.VariantId,
+                                    AttributeId = variantRq.FirstAttribute.AttributeId.Value,
+                                    Value = variantRq.FirstAttribute.ValueEn,
+                                    IsAttributeValue = true,
+                                    CreatedBy = this.User.UserRequest().Email,
+                                    CreatedDt = DateTime.Now,
+                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedDt = DateTime.Now
+                                });
+                            }
+                            else
+                            {
+                                throw new Exception("Invalid variant value");
+                            }
                         }
                         if (variantRq.SecondAttribute != null && variantRq.SecondAttribute.AttributeId != null)
                         {
-                            variant.Attribute2Id = variantRq.SecondAttribute.AttributeId;
-                            variant.ValueEn2 = variantRq.SecondAttribute.ValueEn;
+                            if (variantRq.SecondAttribute.AttributeValues != null && variantRq.SecondAttribute.AttributeValues.Count > 0)
+                            {
+                                foreach (AttributeValueRequest val in variantRq.SecondAttribute.AttributeValues)
+                                {
+                                    variant.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
+                                    {
+                                        VariantId = variant.VariantId,
+                                        AttributeId = variantRq.SecondAttribute.AttributeId.Value,
+                                        Value = string.Concat("((", val.AttributeValueId, "))"),
+                                        IsAttributeValue = true,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now
+                                    });
+                                }
+                            }
+                            else if (!string.IsNullOrWhiteSpace(variantRq.SecondAttribute.ValueEn))
+                            {
+                                variant.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
+                                {
+                                    VariantId = variant.VariantId,
+                                    AttributeId = variantRq.SecondAttribute.AttributeId.Value,
+                                    Value = variantRq.SecondAttribute.ValueEn,
+                                    IsAttributeValue = true,
+                                    CreatedBy = this.User.UserRequest().Email,
+                                    CreatedDt = DateTime.Now,
+                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedDt = DateTime.Now
+                                });
+                            }
+                            else
+                            {
+                                throw new Exception("Invalid variant value");
+                            }
+                            
                         }
 
 
                         #region Setup Variant Inventory
                         Inventory variantInventory = new Inventory();
-                        variantInventory.Quantity = variantRq.Quantity;
+                        variantInventory.Quantity = Validation.ValidationInteger(variantRq.Quantity, "Quantity", true, Int32.MaxValue, 0).Value;
                         variantInventory.SaftyStockSeller = variantRq.SafetyStock;
                         if (variantRq.StockType != null)
                         {
@@ -742,7 +807,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
                 var stage = db.ProductStages.Where(w => w.ProductId == productId && w.ShopId == shopId)
-                    .Include(i => i.ProductStageVariants)
+                    .Include(i => i.ProductStageVariants.Select(s=>s.ProductStageVariantArrtibuteMaps))
                     .Include(i => i.ProductStageAttributes).SingleOrDefault();
                 if (stage != null)
                 {
@@ -776,7 +841,22 @@ namespace Colsp.Api.Controllers
                                 ProductStageAttribute current = attrList.Where(w => w.AttributeId == attr.AttributeId).SingleOrDefault();
                                 if (current != null)
                                 {
-                                    current.ValueEn = attr.ValueEn;
+                                    if (attr.AttributeValues != null && attr.AttributeValues.Count > 0)
+                                    {
+                                        foreach (AttributeValueRequest val in attr.AttributeValues)
+                                        {
+                                            current.ValueEn = string.Concat("((", val.AttributeValueId, "))");
+                                            break;
+                                        }
+                                    }
+                                    else if (!string.IsNullOrWhiteSpace(attr.ValueEn))
+                                    {
+                                        current.ValueEn = attr.ValueEn;
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Invalid attribute value");
+                                    }
                                     current.UpdatedBy = this.User.UserRequest().Email;
                                     current.UpdatedDt = DateTime.Now;
                                     attrList.Remove(current);
@@ -792,8 +872,22 @@ namespace Colsp.Api.Controllers
                                 attriEntity.Position = index++;
                                 attriEntity.ProductId = stage.ProductId;
                                 attriEntity.AttributeId = attr.AttributeId.Value;
-                                attriEntity.Pid = stage.Pid;
-                                attriEntity.ValueEn = attr.ValueEn;
+                                if (attr.AttributeValues != null && attr.AttributeValues.Count > 0)
+                                {
+                                    foreach (AttributeValueRequest val in attr.AttributeValues)
+                                    {
+                                        attriEntity.ValueEn = string.Concat("((", val.AttributeValueId, "))");
+                                        break;
+                                    }
+                                }
+                                else if (!string.IsNullOrWhiteSpace(attr.ValueEn))
+                                {
+                                    attriEntity.ValueEn = attr.ValueEn;
+                                }
+                                else
+                                {
+                                    throw new Exception("Invalid attribute value");
+                                }
                                 attriEntity.Status = Constant.STATUS_ACTIVE;
                                 attriEntity.CreatedBy = this.User.UserRequest().Email;
                                 attriEntity.CreatedDt = DateTime.Now;
@@ -862,16 +956,155 @@ namespace Colsp.Api.Controllers
                             current.CreatedBy = this.User.UserRequest().Email;
                             current.CreatedDt = DateTime.Now;
                         }
-
+                        List<ProductStageVariantArrtibuteMap> valList = null;
+                        if(current.ProductStageVariantArrtibuteMaps != null && current.ProductStageVariantArrtibuteMaps.Count > 0)
+                        {
+                            valList = current.ProductStageVariantArrtibuteMaps.ToList();
+                        }
                         if (var.FirstAttribute != null && var.FirstAttribute.AttributeId != null)
                         {
-                            current.Attribute1Id = var.FirstAttribute.AttributeId;
-                            current.ValueEn1 = var.FirstAttribute.ValueEn;
+                            if (var.FirstAttribute.AttributeValues != null && var.FirstAttribute.AttributeValues.Count > 0)
+                            {
+                                bool isTmpNew = false;
+                                foreach (AttributeValueRequest val in var.FirstAttribute.AttributeValues)
+                                {
+                                    if(valList == null || valList.Count == 0)
+                                    {
+                                        isTmpNew = true;
+                                    }
+                                    if (!isTmpNew)
+                                    {
+                                        var currentVal =  valList.Where(w => w.AttributeId==var.FirstAttribute.AttributeId && w.Value.Equals(string.Concat("((",val.AttributeValueId,"))"))).SingleOrDefault();
+                                        if(currentVal != null)
+                                        {
+                                            valList.Remove(currentVal);
+                                            
+                                        }
+                                        else
+                                        {
+                                            isTmpNew = true;
+                                        }
+                                    }
+                                    if (isTmpNew)
+                                    {
+                                        current.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
+                                        {
+                                            VariantId = current.VariantId,
+                                            AttributeId = var.FirstAttribute.AttributeId.Value,
+                                            Value = string.Concat("((", val.AttributeValueId, "))"),
+                                            IsAttributeValue = true,
+                                            CreatedBy = this.User.UserRequest().Email,
+                                            CreatedDt = DateTime.Now,
+                                            UpdatedBy = this.User.UserRequest().Email,
+                                            UpdatedDt = DateTime.Now
+                                        });
+                                    }
+                                    
+                                }
+                            }
+                            else if (!string.IsNullOrWhiteSpace(var.FirstAttribute.ValueEn))
+                            {
+                                var currentVal = valList.Where(w => w.AttributeId == var.FirstAttribute.AttributeId).SingleOrDefault();
+                                if (currentVal != null)
+                                {
+                                    currentVal.Value = var.FirstAttribute.ValueEn;
+                                    currentVal.UpdatedBy = this.User.UserRequest().Email;
+                                    currentVal.UpdatedDt = DateTime.Now;
+                                }
+                                else
+                                {
+                                    current.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
+                                    {
+                                        VariantId = current.VariantId,
+                                        AttributeId = var.FirstAttribute.AttributeId.Value,
+                                        Value = var.FirstAttribute.ValueEn,
+                                        IsAttributeValue = true,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Invalid variant value");
+                            }
                         }
                         if (var.SecondAttribute != null && var.SecondAttribute.AttributeId != null)
                         {
-                            current.Attribute2Id = var.SecondAttribute.AttributeId;
-                            current.ValueEn2 = var.SecondAttribute.ValueEn;
+
+                            if (var.SecondAttribute.AttributeValues != null && var.SecondAttribute.AttributeValues.Count > 0)
+                            {
+                                bool isTmpNew = false;
+                                foreach (AttributeValueRequest val in var.SecondAttribute.AttributeValues)
+                                {
+                                    if (valList == null || valList.Count == 0)
+                                    {
+                                        isTmpNew = true;
+                                    }
+                                    if (!isTmpNew)
+                                    {
+                                        var currentVal = valList.Where(w => w.AttributeId == var.SecondAttribute.AttributeId && w.Value.Equals(string.Concat("((", val.AttributeValueId, "))"))).SingleOrDefault();
+                                        if (currentVal != null)
+                                        {
+                                            valList.Remove(currentVal);
+
+                                        }
+                                        else
+                                        {
+                                            isTmpNew = true;
+                                        }
+                                    }
+                                    if (isTmpNew)
+                                    {
+                                        current.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
+                                        {
+                                            VariantId = current.VariantId,
+                                            AttributeId = var.SecondAttribute.AttributeId.Value,
+                                            Value = string.Concat("((", val.AttributeValueId, "))"),
+                                            IsAttributeValue = true,
+                                            CreatedBy = this.User.UserRequest().Email,
+                                            CreatedDt = DateTime.Now,
+                                            UpdatedBy = this.User.UserRequest().Email,
+                                            UpdatedDt = DateTime.Now
+                                        });
+                                    }
+
+                                }
+                            }
+                            else if (!string.IsNullOrWhiteSpace(var.SecondAttribute.ValueEn))
+                            {
+                                var currentVal = valList.Where(w => w.AttributeId == var.SecondAttribute.AttributeId).SingleOrDefault();
+                                if (currentVal != null)
+                                {
+                                    currentVal.Value = var.SecondAttribute.ValueEn;
+                                    currentVal.UpdatedBy = this.User.UserRequest().Email;
+                                    currentVal.UpdatedDt = DateTime.Now;
+                                }
+                                else
+                                {
+                                    current.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
+                                    {
+                                        VariantId = current.VariantId,
+                                        AttributeId = var.SecondAttribute.AttributeId.Value,
+                                        Value = var.SecondAttribute.ValueEn,
+                                        IsAttributeValue = true,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Invalid variant value");
+                            }
+                        }
+                        if(valList != null && valList.Count > 0)
+                        {
+                            db.ProductStageVariantArrtibuteMaps.RemoveRange(valList);
                         }
 
                         SaveChangeInventory(db, current.Pid, var, this.User.UserRequest().Email);
@@ -1159,10 +1392,9 @@ namespace Colsp.Api.Controllers
         {
             int shopId = this.User.ShopRequest().ShopId.Value;
             var stage = db.ProductStages.Where(w => w.ProductId == productId && w.ShopId == shopId)
-                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute))
-                    .Include(i => i.ProductStageVariants.Select(s => s.Attribute1))
                     .Include(i => i.ProductStageAttributes.Select(s => s.Attribute))
-                    .Include(i => i.Brand).SingleOrDefault();
+                    .Include(i => i.Brand)
+                    .Include(i => i.ProductStageVariants.Select(s=>s.ProductStageVariantArrtibuteMaps)).SingleOrDefault();
 
             if (stage != null)
             {
@@ -1171,7 +1403,6 @@ namespace Colsp.Api.Controllers
                 response.MasterVariant.ProductNameEn = stage.ProductNameEn;
                 response.MasterVariant.Sku = stage.Sku;
                 response.MasterVariant.Upc = stage.Upc;
-                response.Brand.BrandId = stage.BrandId;
                 if (stage.Brand != null)
                 {
                     response.Brand.BrandId = stage.Brand.BrandId;
@@ -1235,12 +1466,8 @@ namespace Colsp.Api.Controllers
                 response.ImageFlag = stage.ImageFlag;
                 response.OnlineFlag = stage.OnlineFlag;
                 response.Visibility = stage.Visibility;
-                if (stage.ProductStageVariants != null)
-                {
-                    response.VariantCount = stage.ProductStageVariants.Count;
-                }
                 response.VariantCount = stage.ProductStageVariants.Count;
-                response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes.ToList());
+                response.MasterAttribute = SetupAttributeResponse(stage.ProductStageAttributes);
                 #region Setup Inventory
                 var inventory = (from inv in db.Inventories
                                  where inv.Pid.Equals(stage.Pid)
@@ -1332,10 +1559,57 @@ namespace Colsp.Api.Controllers
                     VariantRequest varient = new VariantRequest();
                     varient.VariantId = variantEntity.VariantId;
                     varient.Pid = variantEntity.Pid;
-                    varient.FirstAttribute.AttributeId = variantEntity.Attribute1Id;
-                    varient.FirstAttribute.ValueEn = variantEntity.ValueEn1;
-                    varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
-                    varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
+
+                    if(variantEntity.ProductStageVariantArrtibuteMaps != null && variantEntity.ProductStageVariantArrtibuteMaps.Count > 0)
+                    {
+                        var joinList = variantEntity.ProductStageVariantArrtibuteMaps
+                            .GroupJoin(db.AttributeValues, p => p.Value, v => v.MapValue, 
+                                (varAttrMap, attrValue) => new { varAttrMap, attrValue }).ToList();
+                        if(joinList != null && joinList.Count > 0)
+                        {
+                            varient.FirstAttribute.AttributeId = joinList[0].varAttrMap.AttributeId;
+                            if (joinList[0].attrValue != null && joinList[0].attrValue.ToList().Count > 0)
+                            {
+                                foreach(var val in joinList[0].attrValue)
+                                {
+                                    varient.FirstAttribute.AttributeValues.Add(new AttributeValueRequest()
+                                    {
+                                        AttributeValueId = val.AttributeValueId,
+                                        AttributeValueEn = val.AttributeValueEn
+                                    });
+                                }
+                            }
+                            else if (!string.IsNullOrWhiteSpace(joinList[0].varAttrMap.Value))
+                            {
+                                varient.FirstAttribute.ValueEn = joinList[0].varAttrMap.Value;
+                            }
+                            
+                            if(joinList.Count > 1)
+                            {
+                                varient.SecondAttribute.AttributeId = joinList[1].varAttrMap.AttributeId;
+                                if (joinList[1].attrValue != null && joinList[1].attrValue.ToList().Count > 0)
+                                {
+                                    foreach (var val in joinList[1].attrValue)
+                                    {
+                                        varient.SecondAttribute.AttributeValues.Add(new AttributeValueRequest()
+                                        {
+                                            AttributeValueId = val.AttributeValueId,
+                                            AttributeValueEn = val.AttributeValueEn
+                                        });
+                                    }
+                                }
+                                else if (!string.IsNullOrWhiteSpace(joinList[1].varAttrMap.Value))
+                                {
+                                    varient.SecondAttribute.ValueEn = joinList[1].varAttrMap.Value;
+                                }
+                            }
+                        }
+                    }
+
+                    //varient.FirstAttribute.AttributeId = variantEntity.Attribute1Id;
+                    //varient.FirstAttribute.ValueEn = variantEntity.ValueEn1;
+                    //varient.SecondAttribute.AttributeId = variantEntity.Attribute2Id;
+                    //varient.SecondAttribute.ValueEn = variantEntity.ValueEn2;
                     varient.DefaultVariant = variantEntity.DefaultVaraint;
                     varient.Display = variantEntity.Display;
                     #region Setup Variant Inventory
@@ -1349,7 +1623,6 @@ namespace Colsp.Api.Controllers
                         varient.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(inventory.StockAvailable)).SingleOrDefault().Key;
                     }
                     #endregion
-
 
                     varient.Images = SetupImgResponse(db, variantEntity.Pid);
                     varient.VideoLinks = SetupVdoResponse(db, variantEntity.Pid);
@@ -1380,6 +1653,39 @@ namespace Colsp.Api.Controllers
             {
                 throw new Exception("Product " + productId + " not found");
             }
+        }
+
+        private List<AttributeRequest> SetupAttributeResponse(ICollection<ProductStageAttribute> productStageAttributes)
+        {
+            List<AttributeRequest> newList = new List<AttributeRequest>();
+            if (productStageAttributes != null)
+            {
+                var joinAttrVal =  productStageAttributes
+                            .GroupJoin(db.AttributeValues, p => p.ValueEn, v => v.MapValue, (proAttrMap, attrValue) => new { proAttrMap, attrValue }).ToList();
+                foreach (var attr in joinAttrVal)
+                {
+                    AttributeRequest attrRq = new AttributeRequest();
+                    attrRq.AttributeId = attr.proAttrMap.AttributeId;
+                    if(attr.attrValue.Count() > 0)
+                    {
+                        attrRq.AttributeValues.Add(new AttributeValueRequest()
+                        {
+                            AttributeValueId = attr.attrValue.ToList()[0].AttributeValueId,
+                            AttributeValueEn = attr.attrValue.ToList()[0].AttributeValueEn
+                        });
+                    }
+                    else if(!string.IsNullOrWhiteSpace(attr.proAttrMap.ValueEn))
+                    {
+                        attrRq.ValueEn = attr.proAttrMap.ValueEn;
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid attribute value");
+                    }
+                    newList.Add(attrRq);
+                }
+            }
+            return newList;
         }
 
         private void SetupProductStageVariant(ProductStageVariant variant, VariantRequest variantRq)
@@ -1669,7 +1975,7 @@ namespace Colsp.Api.Controllers
             }
             masterInventory.UpdatedBy = email;
             masterInventory.UpdatedDt = DateTime.Now;
-            masterInventory.Quantity = variant.Quantity;
+            masterInventory.Quantity = Validation.ValidationInteger(variant.Quantity, "Quantity", true, Int32.MaxValue, 0).Value;
             masterInventory.SaftyStockSeller = variant.SafetyStock;
             if (variant.StockType != null)
             {
@@ -1989,25 +2295,26 @@ namespace Colsp.Api.Controllers
             return featureImgUrl;
         }
 
-        private List<AttributeRequest> SetupAttributeResponse(List<ProductStageAttribute> attriList)
-        {
-            if (attriList != null && attriList.Count > 0)
-            {
-                List<AttributeRequest> newList = new List<AttributeRequest>();
-                foreach (ProductStageAttribute a in attriList)
-                {
-                    AttributeRequest attr = new AttributeRequest();
-                    attr.AttributeId = a.AttributeId;
-                    attr.ValueEn = a.ValueEn;
-                    newList.Add(attr);
-                }
-                return newList;
-            }
-            else
-            {
-                return null;
-            }
-        }
+        //private List<AttributeRequest> SetupAttributeResponse(List<ProductStageAttribute> attriList)
+        //{
+        //    if (attriList != null && attriList.Count > 0)
+        //    {
+
+        //        List<AttributeRequest> newList = new List<AttributeRequest>();
+        //        foreach (ProductStageAttribute a in attriList)
+        //        {
+        //            AttributeRequest attr = new AttributeRequest();
+        //            attr.AttributeId = a.AttributeId;
+        //            attr.ValueEn = a.ValueEn;
+        //            newList.Add(attr);
+        //        }
+        //        return newList;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
 
         private List<VideoLinkRequest> SetupVdoResponse(ColspEntities db, string pid)
         {
@@ -2114,9 +2421,26 @@ namespace Colsp.Api.Controllers
                 ProductStageAttribute attriEntity = new ProductStageAttribute();
                 attriEntity.Position = index++;
                 attriEntity.ProductId = productId;
+
+                if(attr.AttributeValues != null && attr.AttributeValues.Count > 0)
+                {
+                    foreach (AttributeValueRequest val in attr.AttributeValues)
+                    {
+                        attriEntity.ValueEn = string.Concat("((", val.AttributeValueId, "))");
+                        break;
+                    }
+                }
+                else if(!string.IsNullOrWhiteSpace(attr.ValueEn))
+                {
+                    attriEntity.ValueEn = attr.ValueEn;
+                }
+                else
+                {
+                    throw new Exception("Invalid attribute value");
+                }
+
+
                 attriEntity.AttributeId = attr.AttributeId.Value;
-                attriEntity.Pid = pid;
-                attriEntity.ValueEn = attr.ValueEn;
                 attriEntity.Status = Constant.STATUS_ACTIVE;
                 attriEntity.CreatedBy = email;
                 attriEntity.CreatedDt = DateTime.Now;

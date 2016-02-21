@@ -48,7 +48,7 @@ namespace Colsp.Entity.Models
         public string Twitter { get; set; }
         public string Instagram { get; set; }
         public string Pinterest { get; set; }
-        public Nullable<int> StockAlert { get; set; }
+        public int StockAlert { get; set; }
         public Nullable<decimal> Commission { get; set; }
         public Nullable<int> ShopTypeId { get; set; }
         public string UrlKeyEn { get; set; }

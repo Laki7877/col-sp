@@ -20,10 +20,15 @@ namespace Colsp.Api.Extensions
 				iq = iq.OrderBy(_order + " " + _dir);
 			} catch (Exception)
 			{
-				pagination._order = null;
-				pagination.DefaultOnNull();
-				iq = iq.OrderBy(pagination._order + " " + _dir);
-			}
+               
+                pagination._order = null;
+                pagination.DefaultOnNull();
+                if (string.IsNullOrWhiteSpace(pagination._order))
+                {
+                    return iq;
+                }
+                iq = iq.OrderBy(pagination._order + " " + _dir);
+            }
 			return iq.Skip((int)pagination._offset).Take((int)pagination._limit);
 		}
 	}

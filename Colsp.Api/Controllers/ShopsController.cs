@@ -242,7 +242,7 @@ namespace Colsp.Api.Controllers
                 shop.Instagram = request.Instagram;
                 shop.Pinterest = request.Pinterest;
                 shop.Twitter = request.Twitter;
-                shop.StockAlert = request.StockAlert;
+                shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, Int32.MaxValue, 0).Value;
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 if(request.Logo != null)

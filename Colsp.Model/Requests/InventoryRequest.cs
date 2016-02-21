@@ -10,12 +10,13 @@ namespace Colsp.Model.Requests
     {
         public string Pid { get; set; }
         public string SearchText { get; set; }
+        public int? Quantity { get; set; }
 
         public override void DefaultOnNull()
         {
             Pid = GetValueOrDefault(Pid, null);
             SearchText = GetValueOrDefault(SearchText, null);
-            _order = GetValueOrDefault(_order, "Pid");
+            _order = GetValueOrDefault(_order, "Quantity-Defect-OnHold-Reserve");
             base.DefaultOnNull();
         }
     }
