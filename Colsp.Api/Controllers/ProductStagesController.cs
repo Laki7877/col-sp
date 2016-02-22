@@ -223,7 +223,7 @@ namespace Colsp.Api.Controllers
                 var pagedProducts = products.Paginate(request);
                 //create response
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
-                //return
+                //return response
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             //if anything wrong happen return error
@@ -707,7 +707,7 @@ namespace Colsp.Api.Controllers
                                     VariantId = variant.VariantId,
                                     AttributeId = variantRq.FirstAttribute.AttributeId.Value,
                                     Value = variantRq.FirstAttribute.ValueEn,
-                                    IsAttributeValue = true,
+                                    IsAttributeValue = false,
                                     CreatedBy = this.User.UserRequest().Email,
                                     CreatedDt = DateTime.Now,
                                     UpdatedBy = this.User.UserRequest().Email,
@@ -749,7 +749,7 @@ namespace Colsp.Api.Controllers
                                     VariantId = variant.VariantId,
                                     AttributeId = variantRq.SecondAttribute.AttributeId.Value,
                                     Value = variantRq.SecondAttribute.ValueEn,
-                                    IsAttributeValue = true,
+                                    IsAttributeValue = false,
                                     CreatedBy = this.User.UserRequest().Email,
                                     CreatedDt = DateTime.Now,
                                     UpdatedBy = this.User.UserRequest().Email,
@@ -891,12 +891,14 @@ namespace Colsp.Api.Controllers
                                         foreach (AttributeValueRequest val in attr.AttributeValues)
                                         {
                                             current.ValueEn = string.Concat("((", val.AttributeValueId, "))");
+                                            current.IsAttributeValue = true;
                                             break;
                                         }
                                     }
                                     else if (!string.IsNullOrWhiteSpace(attr.ValueEn))
                                     {
                                         current.ValueEn = attr.ValueEn;
+                                        current.IsAttributeValue = false;
                                     }
                                     else
                                     {
@@ -922,6 +924,7 @@ namespace Colsp.Api.Controllers
                                     foreach (AttributeValueRequest val in attr.AttributeValues)
                                     {
                                         attriEntity.ValueEn = string.Concat("((", val.AttributeValueId, "))");
+                                        attriEntity.IsAttributeValue = true;
                                         break;
                                     }
                                 }
@@ -932,6 +935,7 @@ namespace Colsp.Api.Controllers
                                         throw new Exception("Attribute value not allow");
                                     }
                                     attriEntity.ValueEn = attr.ValueEn;
+                                    attriEntity.IsAttributeValue = false;
                                 }
                                 else
                                 {
@@ -1075,7 +1079,7 @@ namespace Colsp.Api.Controllers
                                         VariantId = current.VariantId,
                                         AttributeId = var.FirstAttribute.AttributeId.Value,
                                         Value = var.FirstAttribute.ValueEn,
-                                        IsAttributeValue = true,
+                                        IsAttributeValue = false,
                                         CreatedBy = this.User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
                                         UpdatedBy = this.User.UserRequest().Email,
@@ -1106,7 +1110,6 @@ namespace Colsp.Api.Controllers
                                         if (currentVal != null)
                                         {
                                             valList.Remove(currentVal);
-
                                         }
                                         else
                                         {
@@ -1140,6 +1143,7 @@ namespace Colsp.Api.Controllers
                                         throw new Exception("Attribute value not allow");
                                     }
                                     currentVal.Value = var.SecondAttribute.ValueEn;
+                                    currentVal.IsAttributeValue = false;
                                     currentVal.UpdatedBy = this.User.UserRequest().Email;
                                     currentVal.UpdatedDt = DateTime.Now;
                                 }
@@ -1154,7 +1158,7 @@ namespace Colsp.Api.Controllers
                                         VariantId = current.VariantId,
                                         AttributeId = var.SecondAttribute.AttributeId.Value,
                                         Value = var.SecondAttribute.ValueEn,
-                                        IsAttributeValue = true,
+                                        IsAttributeValue = false,
                                         CreatedBy = this.User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
                                         UpdatedBy = this.User.UserRequest().Email,
@@ -1341,7 +1345,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/ProductStages/Export")]
         [HttpPost]
@@ -1926,117 +1929,6 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-            }
-        }
-
-        [Route("api/ProductStages/Export/test")]
-        [HttpPost]
-        public HttpResponseMessage ExportProducttest(List<ProductStageRequest> request)
-        {
-            MemoryStream stream = null;
-            StreamWriter writer = null;
-            try
-            {
-                stream = new MemoryStream();
-                writer = new StreamWriter(stream);
-                string header = "SKU*,PID,Group ID,Product Status,Product Name (English)*,Product Name (Thai)*,Global Category (ID)*,Local Category (ID),Attribute Set (ID),Product Variation 1 (Option),Product Variation 1 (Value),Product Variation 2 (Option),Product Variation 2 (Value),Brand Name (ID)*,Original Price*,Sale Price,Description (Thai)*,Description (English)*,Short Description (Thai),Short Description (English),Stock Type*,Preparation Time*,Package Dimension - Lenght (mm)*,Package Dimension - Height (mm)*,Package Dimension - Width (mm)*,Weight (g)*,Inventory Amount,Safety Stock Amount";
-                writer.WriteLine(header);
-                StringBuilder sb = null;
-                foreach (ProductStageRequest rq in request)
-                {
-                    sb = new StringBuilder();
-                    if (rq.ProductId == null) { throw new Exception("Product Id cannot be null"); }
-                    var pro = db.ProductStages.Find(rq.ProductId.Value);
-                    if(pro == null)
-                    {
-                        throw new Exception("Cannot find Product with id " + rq.ProductId.Value);
-                    }
-                    sb.Append(pro.Sku); sb.Append(",");
-                    sb.Append(pro.Pid); sb.Append(",");
-                    sb.Append("<Group ID>"); sb.Append(",");
-                    sb.Append(pro.Status); sb.Append(",");
-                    sb.Append(pro.ProductNameEn); sb.Append(",");
-                    sb.Append(pro.ProductNameTh); sb.Append(",");
-                    sb.Append(pro.GlobalCatId); sb.Append(",");
-                    sb.Append(pro.LocalCatId); sb.Append(",");
-                    sb.Append(pro.AttributeSetId); sb.Append(",");
-                    sb.Append("Product Variation 1 (Option)"); sb.Append(",");
-                    sb.Append("Product Variation 1 (Value)"); sb.Append(",");
-                    sb.Append("Product Variation 2 (Option)"); sb.Append(",");
-                    sb.Append("Product Variation 2 (Value)"); sb.Append(",");
-                    sb.Append("Brand Name (ID)*"); sb.Append(",");
-                    sb.Append(pro.OriginalPrice); sb.Append(",");
-                    sb.Append(pro.SalePrice); sb.Append(",");
-                    if (!string.IsNullOrEmpty(pro.DescriptionFullTh))
-                    {
-                        if (pro.DescriptionFullTh.Contains("\""))
-                        {
-                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh.Replace("\"", "\"\""));
-                        }
-                        if (pro.DescriptionFullTh.Contains(","))
-                        {
-                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh);
-                        }
-                        if (pro.DescriptionFullTh.Contains(System.Environment.NewLine))
-                        {
-                            pro.DescriptionFullTh = String.Format("\"{0}\"", pro.DescriptionFullTh);
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(pro.DescriptionFullEn))
-                    {
-                        if (pro.DescriptionFullEn.Contains("\""))
-                        {
-                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn.Replace("\"", "\"\""));
-                        }
-                        if (pro.DescriptionFullEn.Contains(","))
-                        {
-                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn);
-                        }
-                        if (pro.DescriptionFullEn.Contains(System.Environment.NewLine))
-                        {
-                            pro.DescriptionFullEn = String.Format("\"{0}\"", pro.DescriptionFullEn);
-                        }
-                    }
-                    sb.Append("\"" + pro.DescriptionFullTh + "\""); sb.Append(",");
-                    sb.Append("\"" + pro.DescriptionFullEn + "\""); sb.Append(",");
-                    sb.Append(pro.DescriptionShortTh); sb.Append(",");
-                    sb.Append(pro.DescriptionShortEn); sb.Append(",");
-                    sb.Append("Stock Type*"); sb.Append(",");
-                    sb.Append(pro.PrepareDay);  sb.Append(",");
-                    sb.Append(pro.Length); sb.Append(",");
-                    sb.Append(pro.Height); sb.Append(",");
-                    sb.Append(pro.Width); sb.Append(",");
-                    sb.Append(pro.Weight); sb.Append(",");
-                    sb.Append("Inventory Amount"); sb.Append(",");
-                    sb.Append("Safety Stock Amount");
-
-                    writer.WriteLine(sb);
-                }
-                writer.Flush();
-                stream.Position = 0;
-
-                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-                result.Content = new StreamContent(stream);
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream") {
-                    CharSet = Encoding.UTF8.WebName
-                };
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-                result.Content.Headers.ContentDisposition.FileName = "file.csv";
-                return result;
-            }
-            catch (Exception e)
-            {
-                if (writer != null)
-                {
-                    writer.Close();
-                    writer.Dispose();
-                }
-                if (stream != null)
-                {
-                    stream.Close();
-                    stream.Dispose();
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
             }
         }
 
@@ -3058,6 +2950,7 @@ namespace Colsp.Api.Controllers
                     foreach (AttributeValueRequest val in attr.AttributeValues)
                     {
                         attriEntity.ValueEn = string.Concat("((", val.AttributeValueId, "))");
+                        attriEntity.IsAttributeValue = true;
                         break;
                     }
                 }

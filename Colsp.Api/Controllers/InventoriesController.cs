@@ -18,7 +18,6 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-
         [Route("api/Inventories/Search")]
         [HttpPost]
         public HttpResponseMessage GetInventories(ProductRequest request)
@@ -256,7 +255,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/Inventories/{pid}")]
         [HttpPut]

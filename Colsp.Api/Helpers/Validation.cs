@@ -145,7 +145,6 @@ namespace Colsp.Api.Helpers
             return string.Concat(val);
         }
 
-
         public static string ValidaetCSVColumn(DateTime? val)
         {
             if (val == null)
