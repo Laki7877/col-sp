@@ -19,6 +19,7 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Text;
 using Colsp.Api.Filters;
+using System.Text.RegularExpressions;
 
 namespace Colsp.Api.Controllers
 {
@@ -27,16 +28,24 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
         private readonly string root = HttpContext.Current.Server.MapPath("~/Excel");
 
+        /// <summary>
+        /// This endpoint will take in advance search criteria from request
+        /// and return list of product
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>List of product with advance criteria</returns>
         [Route("api/ProductStages/Search")]
         [HttpPost]
         public HttpResponseMessage GetProductStagesAdvance(ProductRequest request)
         {
             try
             {
+                //Request cannot be null
                 if (request == null)
                 {
                     throw new Exception("Invalid request");
                 }
+                //Prepare Query to query table ProductStage
                 var products = (from p in db.ProductStages
                                 where !Constant.STATUS_REMOVE.Equals(p.Status)
                                 select new
@@ -64,54 +73,68 @@ namespace Colsp.Api.Controllers
                                     p.UpdatedDt,
                                     Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn }
                                 });
+                //check if its seller permission
                 if (this.User.HasPermission("View Product"))
                 {
+                    //add shopid criteria for seller request
                     int shopId = this.User.ShopRequest().ShopId.Value;
                     products = products.Where(w => w.Shop.ShopId == shopId);
                 }
+                //set request default value
                 request.DefaultOnNull();
+                //add ProductName criteria
                 if(request.ProductNames != null && request.ProductNames.Count > 0)
                 {
                     products = products.Where(w => request.ProductNames.Any(a => w.ProductNameEn.Contains(a))
                     || request.ProductNames.Any(a => w.ProductNameTh.Contains(a)));
                 }
+                //add Pid criteria
                 if (request.Pids != null && request.Pids.Count > 0)
                 {
                     products = products.Where(w => request.Pids.Any(a => w.Pid.Contains(a)));
                 }
+                //add Sku criteria
                 if (request.Skus != null && request.Skus.Count > 0)
                 {
                     products = products.Where(w => request.Skus.Any(a => w.Sku.Contains(a)));
                 }
+                //add Brand criteria
                 if (request.Brands != null && request.Brands.Count > 0)
                 {
+                    //if request send brand id, add brand id criteria
                     List<int> brandIds = request.Brands.Where(w => w.BrandId != null).Select(s => s.BrandId.Value).ToList();
                     if (brandIds != null && brandIds.Count > 0)
                     {
                         products = products.Where(w => brandIds.Contains(w.Brand.BrandId));
                     }
+                    //if request send brand name, add brand name criteria
                     List<string> brandNames = request.Brands.Where(w => w.BrandNameEn != null).Select(s => s.BrandNameEn).ToList();
                     if (brandNames != null && brandNames.Count > 0)
                     {
                         products = products.Where(w => brandNames.Any(a => w.Brand.BrandNameEn.Contains(a)));
                     }
                 }
+                //add Global category criteria
                 if (request.GlobalCategories != null && request.GlobalCategories.Count > 0)
                 {
+                    //if request send category parent left and right, add category parent left and right criteria
                     var lft = request.GlobalCategories.Where(w=>w.Lft!=null).Select(s => s.Lft).ToList();
                     var rgt = request.GlobalCategories.Where(w => w.Rgt != null).Select(s => s.Rgt).ToList();
                     if (lft != null && lft.Count > 0 && rgt != null && rgt.Count > 0)
                     {
                         products = products.Where(w => lft.Any(a => a <= w.GlobalCategory.Lft) && rgt.Any(a=>a >= w.GlobalCategory.Rgt));
                     }
+                    //if request send category name, add category category name criteria
                     List<string> catNames = request.GlobalCategories.Where(w => w.NameEn != null).Select(s => s.NameEn).ToList();
                     if (catNames != null && catNames.Count > 0)
                     {
                         products = products.Where(w => catNames.Any(a => w.GlobalCategory.NameEn.Contains(a)));
                     }
                 }
+                //add Local category criteria
                 if (request.LocalCategories != null && request.LocalCategories.Count > 0)
                 {
+                    //if request send category parent left and right, add category parent left and right criteria
                     var lft = request.LocalCategories.Where(w => w.Lft != null).Select(s => s.Lft).ToList();
                     var rgt = request.LocalCategories.Where(w => w.Rgt != null).Select(s => s.Rgt).ToList();
 
@@ -119,40 +142,47 @@ namespace Colsp.Api.Controllers
                     {
                         products = products.Where(w => lft.Any(a => a <= w.LocalCategory.Lft) && rgt.Any(a => a >= w.LocalCategory.Rgt));
                     }
+                    //if request send category name, add category category name criteria
                     List<string> catNames = request.LocalCategories.Where(w => w.NameEn != null).Select(s => s.NameEn).ToList();
                     if (catNames != null && catNames.Count > 0)
                     {
                         products = products.Where(w => catNames.Any(a => w.LocalCategory.NameEn.Contains(a)));
                     }
                 }
+                //add Tag criteria
                 if (request.Tags != null && request.Tags.Count > 0)
                 {
                     products = products.Where(w => request.Tags.Any(a => w.Tag.Contains(a)));
                 }
-                if(request.PriceFrom != null)
+                //add sale price(from) criteria
+                if (request.PriceFrom != null)
                 {
                     products = products.Where(w => w.SalePrice >= request.PriceFrom);
                 }
+                //add sale price(to) criteria
                 if (request.PriceTo != null)
                 {
                     products = products.Where(w => w.SalePrice <= request.PriceTo);
                 }
+                //add create date(from) criteria
                 if (request.CreatedDtFrom != null)
                 {
                     DateTime from = Convert.ToDateTime(request.CreatedDtFrom);
                     products = products.Where(w => w.CreatedDt >= from);
                 }
+                //add create date(to) criteria
                 if (request.CreatedDtTo != null)
                 {
                     DateTime to = Convert.ToDateTime(request.CreatedDtTo);
                     products = products.Where(w => w.CreatedDt <= to);
                 }
-
+                //add modify date(from) criteria
                 if (request.ModifyDtFrom != null)
                 {
                     DateTime from = Convert.ToDateTime(request.ModifyDtFrom);
                     products = products.Where(w => w.UpdatedDt >= from);
                 }
+                //add modify date(to) criteria
                 if (request.ModifyDtTo != null)
                 {
                     DateTime to = Convert.ToDateTime(request.ModifyDtTo);
@@ -166,6 +196,7 @@ namespace Colsp.Api.Controllers
                     || p.Pid.Contains(request.SearchText)
                     || p.Upc.Contains(request.SearchText));
                 }
+                //add filter criteria
                 if (!string.IsNullOrEmpty(request._filter))
                 {
                     if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
@@ -185,12 +216,16 @@ namespace Colsp.Api.Controllers
                         products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
-                
+                //count number of products
                 var total = products.Count();
+                //make paginate query from database
                 var pagedProducts = products.Paginate(request);
+                //create response
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+                //return
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
+            //if anything wrong happen return error
             catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
@@ -505,7 +540,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
-
+                Regex rg = new Regex(@"/(\(\()\d+(\)\))/");
                 #region Setup Master Product
                 stage = new ProductStage();
 
@@ -662,6 +697,10 @@ namespace Colsp.Api.Controllers
                                 }
                             }else if (!string.IsNullOrWhiteSpace(variantRq.FirstAttribute.ValueEn))
                             {
+                                if (rg.IsMatch(variantRq.FirstAttribute.ValueEn))
+                                {
+                                    throw new Exception("Attribute value not allow");
+                                }
                                 variant.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
                                 {
                                     VariantId = variant.VariantId,
@@ -700,6 +739,10 @@ namespace Colsp.Api.Controllers
                             }
                             else if (!string.IsNullOrWhiteSpace(variantRq.SecondAttribute.ValueEn))
                             {
+                                if (rg.IsMatch(variantRq.FirstAttribute.ValueEn))
+                                {
+                                    throw new Exception("Attribute value not allow");
+                                }
                                 variant.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
                                 {
                                     VariantId = variant.VariantId,
@@ -811,6 +854,7 @@ namespace Colsp.Api.Controllers
                     .Include(i => i.ProductStageAttributes).SingleOrDefault();
                 if (stage != null)
                 {
+                    Regex rg = new Regex(@"/(\(\()\d+(\)\))/");
                     if (stage.Status == null || !stage.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
                     {
                         throw new Exception("Product is not allow");
@@ -882,6 +926,10 @@ namespace Colsp.Api.Controllers
                                 }
                                 else if (!string.IsNullOrWhiteSpace(attr.ValueEn))
                                 {
+                                    if (rg.IsMatch(attriEntity.ValueEn))
+                                    {
+                                        throw new Exception("Attribute value not allow");
+                                    }
                                     attriEntity.ValueEn = attr.ValueEn;
                                 }
                                 else
@@ -1007,12 +1055,20 @@ namespace Colsp.Api.Controllers
                                 var currentVal = valList.Where(w => w.AttributeId == var.FirstAttribute.AttributeId).SingleOrDefault();
                                 if (currentVal != null)
                                 {
+                                    if (rg.IsMatch(var.FirstAttribute.ValueEn))
+                                    {
+                                        throw new Exception("Attribute value not allow");
+                                    }
                                     currentVal.Value = var.FirstAttribute.ValueEn;
                                     currentVal.UpdatedBy = this.User.UserRequest().Email;
                                     currentVal.UpdatedDt = DateTime.Now;
                                 }
                                 else
                                 {
+                                    if (rg.IsMatch(var.FirstAttribute.ValueEn))
+                                    {
+                                        throw new Exception("Attribute value not allow");
+                                    }
                                     current.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
                                     {
                                         VariantId = current.VariantId,
@@ -1078,12 +1134,20 @@ namespace Colsp.Api.Controllers
                                 var currentVal = valList.Where(w => w.AttributeId == var.SecondAttribute.AttributeId).SingleOrDefault();
                                 if (currentVal != null)
                                 {
+                                    if (rg.IsMatch(var.SecondAttribute.ValueEn))
+                                    {
+                                        throw new Exception("Attribute value not allow");
+                                    }
                                     currentVal.Value = var.SecondAttribute.ValueEn;
                                     currentVal.UpdatedBy = this.User.UserRequest().Email;
                                     currentVal.UpdatedDt = DateTime.Now;
                                 }
                                 else
                                 {
+                                    if (rg.IsMatch(var.SecondAttribute.ValueEn))
+                                    {
+                                        throw new Exception("Attribute value not allow");
+                                    }
                                     current.ProductStageVariantArrtibuteMaps.Add(new ProductStageVariantArrtibuteMap()
                                     {
                                         VariantId = current.VariantId,
@@ -2432,6 +2496,11 @@ namespace Colsp.Api.Controllers
                 }
                 else if(!string.IsNullOrWhiteSpace(attr.ValueEn))
                 {
+                    Regex rg = new Regex(@"/(\(\()\d+(\)\))/");
+                    if (rg.IsMatch(attr.ValueEn))
+                    {
+                        throw new Exception("Attribute value not allow");
+                    }
                     attriEntity.ValueEn = attr.ValueEn;
                 }
                 else
