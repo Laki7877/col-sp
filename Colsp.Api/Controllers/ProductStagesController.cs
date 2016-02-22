@@ -20,6 +20,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using Colsp.Api.Filters;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace Colsp.Api.Controllers
 {
@@ -1341,9 +1342,596 @@ namespace Colsp.Api.Controllers
             }
         }
 
+
         [Route("api/ProductStages/Export")]
         [HttpPost]
-        public HttpResponseMessage ExportProduct(List<ProductStageRequest> request)
+        public HttpResponseMessage ExportProduct(ExportRequest request)
+        {
+            MemoryStream stream = null;
+            StreamWriter writer = null;
+            try
+            {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                #region Query
+                var shopId = this.User.ShopRequest().ShopId.Value;
+                var productList = (
+                             from mast in db.ProductStages
+                             join variant in db.ProductStageVariants on mast.ProductId equals variant.ProductId into varJoin
+                             from vari in varJoin.DefaultIfEmpty()
+                             where  mast.ProductId == 4 || mast.ProductId == 2
+                             select new
+                             {
+                                 Status = vari != null ? vari.Status : mast.Status,
+                                 Sku = vari != null ? vari.Sku : mast.Sku,
+                                 Pid = vari != null ? vari.Pid : mast.Pid,
+                                 Upc = vari != null ? vari.Upc : mast.Upc,
+                                 ProductId = vari != null ? vari.ProductId : mast.ProductId,
+                                 GroupNameEn = mast.ProductNameEn,
+                                 GroupNameTh = mast.ProductNameTh,
+                                 ProductNameEn = vari != null ? vari.ProductNameEn : mast.ProductNameEn,
+                                 ProductNameTh = vari != null ? vari.ProductNameTh : mast.ProductNameTh,
+                                 DefaultVaraint = vari != null ? vari.DefaultVaraint == true ? "Yes" : "No" : "Yes",
+                                 mast.Brand.BrandNameEn,
+                                 mast.GlobalCatId,
+                                 mast.LocalCatId,
+                                 OriginalPrice = vari != null ? vari.OriginalPrice : mast.OriginalPrice,
+                                 SalePrice = vari != null ? vari.SalePrice : mast.SalePrice,
+                                 DescriptionShortEn = vari != null ? vari.DescriptionShortEn:mast.DescriptionShortEn,
+                                 DescriptionShortTh = vari != null ? vari.DescriptionShortTh : mast.DescriptionShortTh,
+                                 DescriptionFullEn = vari != null ? vari.DescriptionFullEn : mast.DescriptionFullEn,
+                                 DescriptionFullTh = vari != null ? vari.DescriptionFullTh : mast.DescriptionFullTh,
+                                 AttributeSet = new { mast.AttributeSetId, mast.AttributeSet.AttributeSetNameEn, Attribute = mast.AttributeSet.AttributeSetMaps.Select(s=>s.Attribute) },
+                                 mast.PrepareDay,
+                                 Length = vari != null ? vari.Length:mast.Length,
+                                 Height = vari != null ? vari.Height : mast.Height,
+                                 Width = vari != null ? vari.Width : mast.Width,
+                                 Weight = vari != null ? vari.Weight : mast.Weight,
+                                 mast.Tag,
+                                 mast.MetaTitleEn,
+                                 mast.MetaTitleTh,
+                                 mast.MetaDescriptionEn,
+                                 mast.MetaDescriptionTh,
+                                 mast.MetaKeyEn,
+                                 mast.MetaKeyTh,
+                                 mast.UrlEn,
+                                 mast.BoostWeight,
+                                 mast.EffectiveDate,
+                                 mast.EffectiveTime,
+                                 mast.ExpiryDate,
+                                 mast.ExpiryTime,
+                                 mast.Remark,
+                                 VariantAttribute = vari.ProductStageVariantArrtibuteMaps.Select(s => new
+                                 {
+                                     s.Attribute.AttributeNameEn,
+                                     Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.Value) select tt.AttributeValueEn).FirstOrDefault()
+                                         :s.Value,
+                                 }),
+                                 MasterAttribute = mast.ProductStageAttributes.Select(s=> new
+                                 {
+                                     s.AttributeId,
+                                     s.Attribute.AttributeNameEn,
+                                     ValueEn =  s.IsAttributeValue ?  
+                                                (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault() 
+                                                : s.ValueEn,
+                                 }),
+                                 RelatedProduct = (from rel in db.ProductStageRelateds where rel.Pid1.Equals(mast.Pid) select rel.Pid2).ToList(),
+                                 Inventory = vari != null ? (from inv in db.Inventories where inv.Pid.Equals(vari.Pid) select inv).FirstOrDefault() :
+                                              (from inv in db.Inventories where inv.Pid.Equals(mast.Pid) select inv).FirstOrDefault(),
+                             }).ToList();
+                #endregion
+                #region Initiate Header
+                int i = 0;
+                Dictionary<string, int> headDic = new Dictionary<string, int>();
+                if (request.ProductStatus)
+                {
+                    headDic.Add("Product Status",i++);
+                }
+                if (request.SKU)
+                {
+                    headDic.Add("SKU*", i++);
+                }
+                if (request.PID)
+                {
+                    headDic.Add("PID", i++);
+                }
+                if (request.UPC)
+                {
+                    headDic.Add("UPC", i++);
+                }
+                if (request.GroupID)
+                {
+                    headDic.Add("Group ID", i++);
+                }
+                if (request.GroupNameEn)
+                {
+                    headDic.Add("Group Name (English)", i++);
+                }
+                if (request.GroupNameTh)
+                {
+                    headDic.Add("Group Name (Thai)", i++);
+                }
+                if (request.DefaultVariant)
+                {
+                    headDic.Add("Default Variant", i++);
+                }
+                if (request.ProductNameEn)
+                {
+                    headDic.Add("Product Name (English)*", i++);
+                }
+                if (request.ProductNameTh)
+                {
+                    headDic.Add("Product Name (Thai)*", i++);
+                }
+                if (request.BrandName)
+                {
+                    headDic.Add("Brand Name*", i++);
+                }
+                if (request.GlobalCategory)
+                {
+                    headDic.Add("Global Category ID*", i++);
+                }
+                if (request.LocalCategory)
+                {
+                    headDic.Add("Local Category ID*", i++);
+                }
+                if (request.OriginalPrice)
+                {
+                    headDic.Add("Original Price*", i++);
+                }
+                if (request.SalePrice)
+                {
+                    headDic.Add("Sale Price", i++);
+                }
+                if (request.DescriptionEn)
+                {
+                    headDic.Add("Description (English)*", i++);
+                }
+                if (request.DescriptionTh)
+                {
+                    headDic.Add("Description (Thai)*", i++);
+                }
+                if (request.ShortDescriptionEn)
+                {
+                    headDic.Add("Short Description (English)", i++);
+                }
+                if (request.ShortDescriptionTh)
+                {
+                    headDic.Add("Short Description (Thai)", i++);
+                }
+                if (request.PreparationTime)
+                {
+                    headDic.Add("Preparation Time*", i++);
+                }
+                if (request.PackageLenght)
+                {
+                    headDic.Add("Package Dimension - Lenght (mm)*", i++);
+                }
+                if (request.PackageHeight)
+                {
+                    headDic.Add("Package Dimension - Height (mm)*", i++);
+                }
+                if (request.PackageWidth)
+                {
+                    headDic.Add("Package Dimension - Width (mm)*", i++);
+                }
+                if (request.PackageWeight)
+                {
+                    headDic.Add("Package -Weight (g)*", i++);
+                }
+
+                if (request.InventoryAmount)
+                {
+                    headDic.Add("Inventory Amount", i++);
+                }
+                if (request.SafetytockAmount)
+                {
+                    headDic.Add("Safety Stock Amount", i++);
+                }
+                if (request.SearchTag)
+                {
+                    headDic.Add("Search Tag*", i++);
+                }
+                if (request.RelatedProducts)
+                {
+                    headDic.Add("Related Products", i++);
+                }
+                if (request.MetaTitleEn)
+                {
+                    headDic.Add("Meta Title (English)", i++);
+                }
+                if (request.MetaTitleTh)
+                {
+                    headDic.Add("Meta Title (Thai)", i++);
+                }
+                if (request.MetaDescriptionEn)
+                {
+                    headDic.Add("Meta Description (English)", i++);
+                }
+                if (request.MetaDescriptionTh)
+                {
+                    headDic.Add("Meta Description (Thai)", i++);
+                }
+                if (request.MetaKeywordEn)
+                {
+                    headDic.Add("Meta Keywords (English)", i++);
+                }
+                if (request.MetaKeywordTh)
+                {
+                    headDic.Add("Meta Keywords (Thai)", i++);
+                }
+                if (request.ProductURLKeyEn)
+                {
+                    headDic.Add("Product URL Key(English)", i++);
+                }
+                if (request.ProductBoostingWeight)
+                {
+                    headDic.Add("Product Boosting Weight", i++);
+                }
+                if (request.EffectiveDate)
+                {
+                    headDic.Add("Effective Date", i++);
+                }
+                if (request.EffectiveTime)
+                {
+                    headDic.Add("Effective Time", i++);
+                }
+
+                if (request.ExpiryDate)
+                {
+                    headDic.Add("Expiry Date", i++);
+                }
+                if (request.ExpiryTime)
+                {
+                    headDic.Add("Expiry Time", i++);
+                }
+                if (request.Remark)
+                {
+                    headDic.Add("Remark", i++);
+                }
+                #endregion
+                List<List<string>> rs = new List<List<string>>();
+                foreach (var p in productList)
+                {
+                    List<string> bodyList = new List<string>();
+                    #region Assign Value
+                    if (request.ProductStatus)
+                    {
+                        if (Constant.PRODUCT_STATUS_DRAFT.Equals(p.Status))
+                        {
+                            bodyList.Add(Validation.ValidaetCSVColumn("Draft"));
+                        }
+                        else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(p.Status))
+                        {
+                            bodyList.Add(Validation.ValidaetCSVColumn("Wait for Approval"));
+                        }
+                        else if (Constant.PRODUCT_STATUS_APPROVE.Equals(p.Status))
+                        {
+                            bodyList.Add(Validation.ValidaetCSVColumn("Approve"));
+                        }
+                        else if (Constant.PRODUCT_STATUS_NOT_APPROVE.Equals(p.Status))
+                        {
+                            bodyList.Add(Validation.ValidaetCSVColumn("Not Approve"));
+                        }
+                    }
+                    if (request.SKU)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Sku));
+                    }
+                    if (request.PID)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Pid));
+                    }
+                    if (request.UPC)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Upc));
+                    }
+                    if (request.GroupID)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.ProductId));
+                    }
+                    if (request.GroupNameEn)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.GroupNameEn));
+                    }
+                    if (request.GroupNameTh)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.GroupNameTh));
+                    }
+                    if (request.DefaultVariant)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.DefaultVaraint));
+                    }
+                    if (request.ProductNameEn)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.ProductNameEn));
+                    }
+                    if (request.ProductNameTh)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.ProductNameTh));
+                    }
+                    if (request.BrandName)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.BrandNameEn));
+                    }
+                    if (request.GlobalCategory)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.GlobalCatId));
+                    }
+                    if (request.LocalCategory)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.LocalCatId));
+                    }
+                    if (request.OriginalPrice)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.OriginalPrice));
+                    }
+                    if (request.SalePrice)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.SalePrice));
+                    }
+                    if (request.DescriptionEn)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.DescriptionFullEn));
+                    }
+                    if (request.DescriptionTh)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.DescriptionFullTh));
+                    }
+                    if (request.ShortDescriptionEn)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.DescriptionShortEn));
+                    }
+                    if (request.ShortDescriptionTh)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.DescriptionShortTh));
+                    }
+                    if (request.PreparationTime)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.PrepareDay));
+                    }
+                    if (request.PackageLenght)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Length));
+                    }
+                    if (request.PackageHeight)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Height));
+                    }
+                    if (request.PackageWidth)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Width));
+                    }
+                    if (request.PackageWeight)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Weight));
+                    }
+
+                    if (request.InventoryAmount)
+                    {
+                        if (p.Inventory != null)
+                        {
+                            bodyList.Add(Validation.ValidaetCSVColumn(p.Inventory.Quantity));
+                        }
+                        else
+                        {
+                            bodyList.Add(string.Empty);
+                        }
+                    }
+                    if (request.SafetytockAmount)
+                    {
+                        if (p.Inventory != null)
+                        {
+                            bodyList.Add(Validation.ValidaetCSVColumn(p.Inventory.SaftyStockSeller));
+                        }
+                        else
+                        {
+                            bodyList.Add(string.Empty);
+                        }
+                    }
+                    if (request.SearchTag)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Tag));
+                    }
+                    if (request.RelatedProducts)
+                    {
+                        if (p.RelatedProduct != null && p.RelatedProduct.Count > 0)
+                        {
+                            bodyList.Add(Validation.ValidaetCSVColumn(string.Join(",", p.RelatedProduct)));
+                        }
+                        else
+                        {
+                            bodyList.Add(string.Empty);
+                        }
+                    }
+                    if (request.MetaTitleEn)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.MetaTitleEn));
+                    }
+                    if (request.MetaTitleTh)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.MetaTitleTh));
+                    }
+                    if (request.MetaDescriptionEn)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.MetaDescriptionEn));
+                    }
+                    if (request.MetaDescriptionTh)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.MetaDescriptionTh));
+                    }
+                    if (request.MetaKeywordEn)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.MetaKeyEn));
+                    }
+                    if (request.MetaKeywordTh)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.MetaKeyTh));
+                    }
+                    if (request.ProductURLKeyEn)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.UrlEn));
+                    }
+                    if (request.ProductBoostingWeight)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.BoostWeight));
+                    }
+                    if (request.EffectiveDate)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.EffectiveDate));
+                    }
+                    if (request.EffectiveTime)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.EffectiveTime));
+                    }
+
+                    if (request.ExpiryDate)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.ExpiryDate));
+                    }
+                    if (request.ExpiryTime)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.ExpiryTime));
+                    }
+                    if (request.Remark)
+                    {
+                        bodyList.Add(Validation.ValidaetCSVColumn(p.Remark));
+                    }
+                    #endregion
+                    #region Attibute Section
+                    if (request.AttributeSets != null && request.AttributeSets.Count > 0)
+                    {
+                        if (p.AttributeSet != null)
+                        {
+                            var set = request.AttributeSets.Where(w => w.AttributeSetId == p.AttributeSet.AttributeSetId).SingleOrDefault();
+                            if (set != null)
+                            {
+                                if (!headDic.ContainsKey("Attribute Set"))
+                                {
+                                    headDic.Add("Attribute Set",i++);
+                                    headDic.Add(" Variation Option 1", i++);
+                                    headDic.Add(" Variation Option 2", i++);
+                                }
+                                bodyList.Add(Validation.ValidaetCSVColumn(p.AttributeSet.AttributeSetNameEn));
+                                if (p.VariantAttribute != null && p.VariantAttribute.ToList().Count > 0)
+                                {
+                                    bodyList.Add(Validation.ValidaetCSVColumn(p.VariantAttribute.ToList()[0].AttributeNameEn));
+                                    if(p.VariantAttribute.ToList().Count > 1)
+                                    {
+                                        bodyList.Add(Validation.ValidaetCSVColumn(p.VariantAttribute.ToList()[1].AttributeNameEn));
+                                    }
+                                    else
+                                    {
+                                        bodyList.Add(string.Empty);
+                                    }
+                                }
+                                else
+                                {
+                                    bodyList.Add(string.Empty);
+                                    bodyList.Add(string.Empty);
+                                }
+                                foreach (var attr in p.AttributeSet.Attribute)
+                                {
+                                    if (!headDic.ContainsKey(attr.AttributeNameEn))
+                                    {
+                                        headDic.Add(attr.AttributeNameEn, i++);
+                                    }
+                                    bodyList.Add(string.Empty);
+                                }
+                                if(p.MasterAttribute != null && p.MasterAttribute.ToList().Count > 0)
+                                {
+                                    foreach (var masterValue in p.MasterAttribute)
+                                    {
+                                        if (headDic.ContainsKey(masterValue.AttributeNameEn))
+                                        {
+                                            int desColumn = headDic[masterValue.AttributeNameEn];
+                                            for(int j = bodyList.Count;j <= desColumn; j++)
+                                            {
+                                                bodyList.Add(string.Empty);
+                                            }
+                                            bodyList[desColumn] = masterValue.ValueEn;
+                                        }
+                                    }
+                                }
+                                if (p.VariantAttribute != null && p.VariantAttribute.ToList().Count > 0)
+                                {
+                                    foreach (var variantValue in p.VariantAttribute)
+                                    {
+                                        if (headDic.ContainsKey(variantValue.AttributeNameEn))
+                                        {
+                                            int desColumn = headDic[variantValue.AttributeNameEn];
+                                            for (int j = bodyList.Count; j <= desColumn; j++)
+                                            {
+                                                bodyList.Add(string.Empty);
+                                            }
+                                            bodyList[desColumn] = variantValue.Value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+                    rs.Add(bodyList);
+                }
+                #region Write header
+                string headers = string.Empty;
+                foreach (KeyValuePair<string, int> entry in headDic)
+                {
+                    headers += string.Concat(entry.Key, ",");
+                }
+                stream = new MemoryStream();
+                writer = new StreamWriter(stream);
+                writer.WriteLine(headers);
+                #endregion
+                #region Write body
+                foreach (List<string> r in rs)
+                {
+                    foreach (string body in r)
+                    {
+                        writer.Write(body+",");
+                    }
+                    writer.WriteLine();
+                }
+                #endregion
+                #region Create Response
+                writer.Flush();
+                stream.Position = 0;
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StreamContent(stream);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
+                {
+                    CharSet = Encoding.UTF8.WebName
+                };
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = "file.csv";
+                #endregion
+                return result;
+            }
+            catch (Exception e)
+            {
+                #region close writer
+                if (writer != null)
+                {
+                    writer.Close();
+                    writer.Dispose();
+                }
+                if (stream != null)
+                {
+                    stream.Close();
+                    stream.Dispose();
+                }
+                #endregion
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Export/test")]
+        [HttpPost]
+        public HttpResponseMessage ExportProducttest(List<ProductStageRequest> request)
         {
             MemoryStream stream = null;
             StreamWriter writer = null;
@@ -2358,27 +2946,6 @@ namespace Colsp.Api.Controllers
             }
             return featureImgUrl;
         }
-
-        //private List<AttributeRequest> SetupAttributeResponse(List<ProductStageAttribute> attriList)
-        //{
-        //    if (attriList != null && attriList.Count > 0)
-        //    {
-
-        //        List<AttributeRequest> newList = new List<AttributeRequest>();
-        //        foreach (ProductStageAttribute a in attriList)
-        //        {
-        //            AttributeRequest attr = new AttributeRequest();
-        //            attr.AttributeId = a.AttributeId;
-        //            attr.ValueEn = a.ValueEn;
-        //            newList.Add(attr);
-        //        }
-        //        return newList;
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //}
 
         private List<VideoLinkRequest> SetupVdoResponse(ColspEntities db, string pid)
         {

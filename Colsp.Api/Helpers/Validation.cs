@@ -113,5 +113,57 @@ namespace Colsp.Api.Helpers
             return val;
         }
 
+        public static string ValidaetCSVColumn(string val)
+        {
+            if (string.IsNullOrWhiteSpace(val))
+            {
+                return string.Empty;
+            }
+            val = val.Trim();
+            if (val.Contains(","))
+            {
+                val = string.Concat(@"""",val,@"""");
+            }
+            return string.Concat(val);
+        }
+
+        public static string ValidaetCSVColumn(int? val)
+        {
+            if (val == null)
+            {
+                return string.Empty;
+            }
+            return string.Concat(val);
+        }
+
+        public static string ValidaetCSVColumn(decimal? val)
+        {
+            if (val == null)
+            {
+                return string.Empty;
+            }
+            return string.Concat(val);
+        }
+
+
+        public static string ValidaetCSVColumn(DateTime? val)
+        {
+            if (val == null)
+            {
+                return string.Empty;
+            }
+            return val.Value.ToString("MMMM dd, yyyy");
+        }
+
+        public static string ValidaetCSVColumn(TimeSpan? val)
+        {
+            if (val == null)
+            {
+                return string.Empty;
+            }
+            return val.Value.ToString(@"hh\:mm");
+        }
+
+
     }
 }

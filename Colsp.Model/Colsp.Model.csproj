@@ -49,7 +49,7 @@
     <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
     <Compile Include="Requests\CouponRequest.cs" />
-    <Compile Include="Requests\ExcelRequest.cs" />
+    <Compile Include="Requests\ExportRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />
