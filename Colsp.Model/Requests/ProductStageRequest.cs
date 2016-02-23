@@ -37,6 +37,8 @@ namespace Colsp.Model.Requests
         public bool? Visibility { get; set; }
         public int? VariantCount { get; set; }
         public ControlFlag ControlFlags { get; set; }
+        public string GroupId { get; set; }
+
 
         public ProductStageRequest()
         {

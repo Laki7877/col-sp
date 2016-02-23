@@ -47,11 +47,16 @@ namespace Colsp.Model.Requests
     {
         public List<OrderRequest> Order { get; set; }
         public FilterByRequest FilterBy { get; set; }
+        public List<String> Include { get; set; }
+        public List<String> Exclude { get; set; }
+
 
         public ConditionRequest()
         {
             Order = new List<OrderRequest>();
             FilterBy = new FilterByRequest();
+            Include = new List<string>();
+            Exclude = new List<string>();
         }
 
     }
@@ -70,8 +75,7 @@ namespace Colsp.Model.Requests
         public List<CategoryRequest> GlobalCategories { get; set; }
         public List<CategoryRequest> LocalCategories { get; set; }
         public List<ShopRequest> Shops { get; set; }
-        public List<String> Include { get; set; }
-        public List<String> Exclude { get; set; }
+        
 
         public FilterByRequest()
         {
@@ -79,8 +83,7 @@ namespace Colsp.Model.Requests
             Emails = new List<string>();
             GlobalCategories = new List<CategoryRequest>();
             LocalCategories = new List<CategoryRequest>();
-            Include = new List<string>();
-            Exclude = new List<string>();
+           
         }
     }
 

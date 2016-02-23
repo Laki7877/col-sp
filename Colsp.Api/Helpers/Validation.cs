@@ -8,6 +8,35 @@ namespace Colsp.Api.Helpers
 {
     public class Validation
     {
+        public static DateTime? ValidateDateTime(string val,string fieldName,bool required,DateTime? defaultVal = null)
+        {
+            if (required && string.IsNullOrWhiteSpace(val))
+            {
+                if(defaultVal != null)
+                {
+                    return defaultVal;
+                }
+                throw new Exception(fieldName + " is a required field");
+            }
+            if(val == null)
+            {
+                return null;
+            }
+            val = val.Trim();
+            if (string.IsNullOrEmpty(val))
+            {
+                return null;
+            }
+            try
+            {
+                return Convert.ToDateTime(val);
+            }
+            catch
+            {
+                throw new Exception(fieldName + " invalid date format");
+            }
+        }
+
         public static string ValidateString(string val,string fieldName, bool required, int maxLenght, bool isAlphanumeric, string defaultVal = null)
         {
             
@@ -113,7 +142,7 @@ namespace Colsp.Api.Helpers
             return val;
         }
 
-        public static string ValidaetCSVColumn(string val)
+        public static string ValidateCSVColumn(string val)
         {
             if (string.IsNullOrWhiteSpace(val))
             {
@@ -127,7 +156,7 @@ namespace Colsp.Api.Helpers
             return string.Concat(val);
         }
 
-        public static string ValidaetCSVColumn(int? val)
+        public static string ValidateCSVColumn(int? val)
         {
             if (val == null)
             {
@@ -136,7 +165,7 @@ namespace Colsp.Api.Helpers
             return string.Concat(val);
         }
 
-        public static string ValidaetCSVColumn(decimal? val)
+        public static string ValidateCSVColumn(decimal? val)
         {
             if (val == null)
             {
@@ -145,7 +174,7 @@ namespace Colsp.Api.Helpers
             return string.Concat(val);
         }
 
-        public static string ValidaetCSVColumn(DateTime? val)
+        public static string ValidateCSVColumn(DateTime? val)
         {
             if (val == null)
             {
@@ -154,7 +183,7 @@ namespace Colsp.Api.Helpers
             return val.Value.ToString("MMMM dd, yyyy");
         }
 
-        public static string ValidaetCSVColumn(TimeSpan? val)
+        public static string ValidateCSVColumn(TimeSpan? val)
         {
             if (val == null)
             {
@@ -163,6 +192,47 @@ namespace Colsp.Api.Helpers
             return val.Value.ToString(@"hh\:mm");
         }
 
+        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key)
+        {
+            if (dic.ContainsKey(key))
+            {
+                string val = list[dic[key]];
+                if(!string.IsNullOrWhiteSpace(val))
+                {
+                    val = val.Trim();
+                    return val;
+                }
+            }
+            return null;
+        }
+
+        public static DateTime? ValidateCSVDatetimeColumn(Dictionary<string, int> dic, List<string> list, string key)
+        {
+            if (dic.ContainsKey(key))
+            {
+                string val = list[dic[key]];
+                if (!string.IsNullOrWhiteSpace(val))
+                {
+                    val = val.Trim();
+                    return DateTime.Parse(val);
+                }
+            }
+            return null;
+        }
+
+        public static TimeSpan? ValidateCSVTimeSpanColumn(Dictionary<string, int> dic, List<string> list, string key)
+        {
+            if (dic.ContainsKey(key))
+            {
+                string val = list[dic[key]];
+                if (!string.IsNullOrWhiteSpace(val))
+                {
+                    val = val.Trim();
+                    return TimeSpan.Parse(val);
+                }
+            }
+            return null;
+        }
 
     }
 }

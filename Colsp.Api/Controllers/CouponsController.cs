@@ -13,6 +13,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Data.Entity.SqlServer;
 using System.Data.Entity;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -82,6 +83,7 @@ namespace Colsp.Api.Controllers
                 var couponList = db.Coupons
                     .Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status))
                     .Select(s=> new {
+                        s.CouponId,
                         s.CouponName,
                         s.CouponCode,
                         s.Status,
@@ -152,17 +154,11 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("You don't have a right permission");
                 }
-                coupon.CouponName = request.CouponName;
-                coupon.CouponCode = request.CouponCode;
-                coupon.Status = request.Status;
-                if (!string.IsNullOrWhiteSpace(request.ExpireDate))
-                {
-                    coupon.ExpireDate = Convert.ToDateTime(request.ExpireDate);
-                }
-                if (!string.IsNullOrWhiteSpace(request.StartDate))
-                {
-                    coupon.StartDate = Convert.ToDateTime(request.StartDate);
-                }
+                coupon.CouponName = Validation.ValidateString(request.CouponName, "Coupon Name",true,300,false);
+                coupon.CouponCode = Validation.ValidateString(request.CouponCode, "Coupon Code", true, 50, true); ;
+                coupon.Status = Validation.ValidateString(request.Status,"Status",true,2,true);
+                coupon.ExpireDate = Validation.ValidateDateTime(request.ExpireDate, "Expire Date",false);
+                coupon.StartDate = Validation.ValidateDateTime(request.StartDate, "Start Date",false);
                 coupon.Action = request.Action.Type;
                 coupon.DiscountAmount = request.Action.DiscountAmount;
                 coupon.MaximumAmount = request.Action.MaximumAmount;
@@ -194,6 +190,7 @@ namespace Colsp.Api.Controllers
                     }
                     if(request.Conditions.FilterBy != null)
                     {
+                        coupon.FilterBy = request.Conditions.FilterBy.Type;
                         if ("Brand".Equals(request.Conditions.FilterBy.Type))
                         {
                             if(request.Conditions.FilterBy.Brands != null && request.Conditions.FilterBy.Brands.Count > 0)
@@ -279,38 +276,38 @@ namespace Colsp.Api.Controllers
                                 }
                             }
                         }
-                        if (request.Conditions.FilterBy.Include != null && request.Conditions.FilterBy.Include.Count  > 0)
+
+                    }
+                    if (request.Conditions.Include != null && request.Conditions.Include.Count > 0)
+                    {
+                        foreach (string pid in request.Conditions.Include)
                         {
-                            foreach(string pid in request.Conditions.FilterBy.Include)
-                            {
-                                CouponPidMap map = new CouponPidMap();
-                                map.CouponId = coupon.CouponId;
-                                map.Pid = pid;
-                                map.Filter = Constant.COUPON_FILTER_INCLUDE;
-                                map.CreatedBy = this.User.UserRequest().Email;
-                                map.CreatedDt = DateTime.Now;
-                                map.UpdatedBy = this.User.UserRequest().Email;
-                                map.UpdatedDt = DateTime.Now;
-                                db.CouponPidMaps.Add(map);
-                            }
-                        }
-                        if (request.Conditions.FilterBy.Exclude != null && request.Conditions.FilterBy.Exclude.Count > 0)
-                        {
-                            foreach (string pid in request.Conditions.FilterBy.Exclude)
-                            {
-                                CouponPidMap map = new CouponPidMap();
-                                map.CouponId = coupon.CouponId;
-                                map.Pid = pid;
-                                map.Filter = Constant.COUPON_FILTER_EXCLUDE;
-                                map.CreatedBy = this.User.UserRequest().Email;
-                                map.CreatedDt = DateTime.Now;
-                                map.UpdatedBy = this.User.UserRequest().Email;
-                                map.UpdatedDt = DateTime.Now;
-                                db.CouponPidMaps.Add(map);
-                            }
+                            CouponPidMap map = new CouponPidMap();
+                            map.CouponId = coupon.CouponId;
+                            map.Pid = pid;
+                            map.Filter = Constant.COUPON_FILTER_INCLUDE;
+                            map.CreatedBy = this.User.UserRequest().Email;
+                            map.CreatedDt = DateTime.Now;
+                            map.UpdatedBy = this.User.UserRequest().Email;
+                            map.UpdatedDt = DateTime.Now;
+                            db.CouponPidMaps.Add(map);
                         }
                     }
-                    
+                    if (request.Conditions.Exclude != null && request.Conditions.Exclude.Count > 0)
+                    {
+                        foreach (string pid in request.Conditions.Exclude)
+                        {
+                            CouponPidMap map = new CouponPidMap();
+                            map.CouponId = coupon.CouponId;
+                            map.Pid = pid;
+                            map.Filter = Constant.COUPON_FILTER_EXCLUDE;
+                            map.CreatedBy = this.User.UserRequest().Email;
+                            map.CreatedDt = DateTime.Now;
+                            map.UpdatedBy = this.User.UserRequest().Email;
+                            map.UpdatedDt = DateTime.Now;
+                            db.CouponPidMaps.Add(map);
+                        }
+                    }
                     db.SaveChanges();
                 }
                 return GetCoupon(coupon.CouponId);
@@ -360,7 +357,8 @@ namespace Colsp.Api.Controllers
                         .Include(i=>i.CouponGlobalCatMaps)
                         .Include(i=>i.CouponLocalCatMaps)
                         .Include(i=>i.CouponPidMaps)
-                        .Include(i=>i.CouponShopMaps).SingleOrDefault();
+                        .Include(i=>i.CouponShopMaps)
+                        .Include(i=>i.CouponOrders).SingleOrDefault();
                 }
                 else if(this.User.HasPermission("Manage Global Coupons"))
                 {
@@ -370,7 +368,8 @@ namespace Colsp.Api.Controllers
                         .Include(i => i.CouponGlobalCatMaps)
                         .Include(i => i.CouponLocalCatMaps)
                         .Include(i => i.CouponPidMaps)
-                        .Include(i => i.CouponShopMaps).SingleOrDefault();
+                        .Include(i => i.CouponShopMaps)
+                        .Include(i => i.CouponOrders).SingleOrDefault();
                 }
                 else
                 {
@@ -380,17 +379,11 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find coupon");
                 }
-                coupon.CouponName = request.CouponName;
-                coupon.CouponCode = request.CouponCode;
-                coupon.Status = request.Status;
-                if (!string.IsNullOrWhiteSpace(request.ExpireDate))
-                {
-                    coupon.ExpireDate = Convert.ToDateTime(request.ExpireDate);
-                }
-                if (!string.IsNullOrWhiteSpace(request.StartDate))
-                {
-                    coupon.StartDate = Convert.ToDateTime(request.StartDate);
-                }
+                coupon.CouponName = Validation.ValidateString(request.CouponName, "Coupon Name", true, 300, false);
+                coupon.CouponCode = Validation.ValidateString(request.CouponCode, "Coupon Code", true, 50, true); ;
+                coupon.Status = Validation.ValidateString(request.Status, "Status", true, 2, true);
+                coupon.ExpireDate = Validation.ValidateDateTime(request.ExpireDate, "Expire Date", false);
+                coupon.StartDate = Validation.ValidateDateTime(request.StartDate, "Start Date", false);
                 coupon.Action = request.Action.Type;
                 coupon.DiscountAmount = request.Action.DiscountAmount;
                 coupon.MaximumAmount = request.Action.MaximumAmount;
@@ -398,7 +391,6 @@ namespace Colsp.Api.Controllers
                 coupon.MaximumUser = request.MaximumUser;
                 coupon.UpdatedBy = this.User.UserRequest().Email;
                 coupon.UpdatedDt = DateTime.Now;
-
 
                 var orderList = coupon.CouponOrders.ToList();
                 var brandList = coupon.CouponBrandMaps.ToList();
@@ -451,6 +443,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (request.Conditions.FilterBy != null)
                     {
+                        coupon.FilterBy = request.Conditions.FilterBy.Type;
                         if ("Brand".Equals(request.Conditions.FilterBy.Type))
                         {
                             if (request.Conditions.FilterBy.Brands != null && request.Conditions.FilterBy.Brands.Count > 0)
@@ -651,10 +644,10 @@ namespace Colsp.Api.Controllers
                                 }
                             }
                         }
-                        if (request.Conditions.FilterBy.Include != null && request.Conditions.FilterBy.Include.Count > 0)
+                        if (request.Conditions.Include != null && request.Conditions.Include.Count > 0)
                         {
                             bool addNew = false;
-                            foreach (string pid in request.Conditions.FilterBy.Include)
+                            foreach (string pid in request.Conditions.Include)
                             {
                                 if (includeList == null || includeList.Count == 0)
                                 {
@@ -688,10 +681,10 @@ namespace Colsp.Api.Controllers
                                 }
                             }
                         }
-                        if (request.Conditions.FilterBy.Exclude != null && request.Conditions.FilterBy.Exclude.Count > 0)
+                        if (request.Conditions.Exclude != null && request.Conditions.Exclude.Count > 0)
                         {
                             bool addNew = false;
-                            foreach (string pid in request.Conditions.FilterBy.Exclude)
+                            foreach (string pid in request.Conditions.Exclude)
                             {
 
                                 if (excludeList == null || excludeList.Count == 0)
@@ -782,7 +775,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         protected override void Dispose(bool disposing)
         {

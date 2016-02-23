@@ -1438,7 +1438,9 @@
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <Association Name="FK_AttributeSetTagMap_AttributeSet">
-          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1" />
+          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="AttributeSetTagMap" Type="Self.AttributeSetTagMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AttributeSet">
@@ -1474,7 +1476,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponBrandMap_Brand">
-          <End Role="Brand" Type="Self.Brand" Multiplicity="1" />
+          <End Role="Brand" Type="Self.Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponBrandMap" Type="Self.CouponBrandMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Brand">
@@ -1486,7 +1490,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponBrandMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponBrandMap" Type="Self.CouponBrandMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1498,7 +1504,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponCustomerMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponCustomerMap" Type="Self.CouponCustomerMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1510,7 +1518,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponGlobalCatMap_Brand">
-          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponGlobalCatMap" Type="Self.CouponGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -1522,7 +1532,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponGlobalCatMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponGlobalCatMap" Type="Self.CouponGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1534,7 +1546,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponLocalCatMap_Brand">
-          <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1" />
+          <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponLocalCatMap" Type="Self.CouponLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LocalCategory">
@@ -1546,7 +1560,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponLocalCatMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponLocalCatMap" Type="Self.CouponLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1558,7 +1574,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponOrder_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponOrder" Type="Self.CouponOrder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1570,7 +1588,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponPidMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponPidMap" Type="Self.CouponPidMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1582,7 +1602,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponShopMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponShopMap" Type="Self.CouponShopMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1594,7 +1616,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponShopMap_Shop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponShopMap" Type="Self.CouponShopMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -4990,7 +5014,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_AttributeSetTagMap_AttributeSet">
-          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="1" />
+          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.AttributeSetTagMap" Role="AttributeSetTagMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AttributeSet">
@@ -5086,7 +5112,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponBrandMap_Brand">
-          <End Type="ColspModel.Brand" Role="Brand" Multiplicity="1" />
+          <End Type="ColspModel.Brand" Role="Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponBrandMap" Role="CouponBrandMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Brand">
@@ -5158,7 +5186,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponBrandMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponBrandMap" Role="CouponBrandMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5170,7 +5200,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponCustomerMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponCustomerMap" Role="CouponCustomerMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5182,7 +5214,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponGlobalCatMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponGlobalCatMap" Role="CouponGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5194,7 +5228,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponLocalCatMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponLocalCatMap" Role="CouponLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5206,7 +5242,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponOrder_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponOrder" Role="CouponOrder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5218,7 +5256,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponPidMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponPidMap" Role="CouponPidMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5230,7 +5270,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponShopMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponShopMap" Role="CouponShopMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5242,7 +5284,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponGlobalCatMap_Brand">
-          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1" />
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponGlobalCatMap" Role="CouponGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -5254,7 +5298,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponLocalCatMap_Brand">
-          <End Type="ColspModel.LocalCategory" Role="LocalCategory" Multiplicity="1" />
+          <End Type="ColspModel.LocalCategory" Role="LocalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponLocalCatMap" Role="CouponLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LocalCategory">
@@ -5266,7 +5312,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponShopMap_Shop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponShopMap" Role="CouponShopMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">

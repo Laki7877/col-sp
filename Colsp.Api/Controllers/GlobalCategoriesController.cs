@@ -57,14 +57,7 @@ namespace Colsp.Api.Controllers
                 {
                     globalCat = globalCat.Where(w => w.Visibility == true);
                 }
-                if (globalCat != null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, globalCat);
-                }
-                else
-                {
-                   throw new Exception("Cannot find any global category");
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, globalCat);
             }
             catch (Exception e)
             {
@@ -145,7 +138,12 @@ namespace Colsp.Api.Controllers
                     category.Lft = max.Value + 1;
                     category.Rgt = max.Value + 2;
                 }
-                
+                category.GlobalCategoryPID = new GlobalCategoryPID()
+                {
+                    CategoryId = category.CategoryId,
+                    CategoryAbbreviation = AutoGenerate.NextCatAbbre(db),
+                    CurrentKey = "11111"
+                }; 
                 db.GlobalCategories.Add(category);
                 db.SaveChanges();
 
@@ -299,82 +297,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
-        //[Route("api/GlobalCategories/Shift")]
-        //[HttpPut]
-        //public HttpResponseMessage ShiftChange(CategoryShiftRequest request)
-        //{
-        //    try
-        //    {
-        //        if (request.Child == null)
-        //        {
-        //            throw new Exception("Invalid request");
-        //        }
-        //        var child = db.GlobalCategories.Find(request.Child.Value);
-
-        //        if (child == null)
-        //        {
-        //            throw new Exception("Invalid request");
-        //        }
-        //        var delete = db.GlobalCategories.Where(w => w.Lft >= child.Lft && w.Rgt <= child.Rgt).ToList();
-        //        delete.ForEach(e => e.Status = "TM");
-
-        //        int childSize = child.Rgt.Value - child.Lft.Value + 1;
-        //        delete
-        //        var tmp = db.GlobalCategories.Where(w => w.Rgt > child.Rgt).ToList();
-
-        //        tmp.ForEach(e => { e.Lft = e.Lft > child.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
-        //        var ee = tmp.Where(w => w.CategoryAbbreviation.Equals("15")).ToList();
-        //        db.SaveChanges();
-
-        //        GlobalCategory sibling = null;
-        //        if (request.Sibling != null)
-        //        {
-        //            sibling = db.GlobalCategories.Find(request.Sibling.Value);
-        //            if (sibling == null)
-        //            {
-        //                throw new Exception("Invalid request");
-        //            }
-        //        }
-
-        //        GlobalCategory parent = null;
-        //        if (request.Parent != null)
-        //        {
-        //            parent = db.GlobalCategories.Find(request.Parent.Value);
-        //            if (parent == null)
-        //            {
-        //                throw new Exception("Invalid request");
-        //            }
-        //        }
-
-        //        int x = 1;
-
-        //        if (sibling != null)
-        //        {
-        //            x += sibling.Rgt.Value;
-        //        }
-        //        else if (parent != null)
-        //        {
-        //            x += parent.Lft.Value;
-        //        }
-
-        //        var tmp2 = db.GlobalCategories.Where(w => w.Rgt > x).ToList();
-        //        tmp2.ForEach(e => { e.Lft = e.Lft > x ? e.Lft + childSize : e.Lft; e.Rgt = e.Rgt + childSize; });
-
-        //        delete.ForEach(e => { e.Lft = x; e.Rgt = x + childSize - 1; e.Status = "AT"; });
-        //        var tmp1 = db.GlobalCategories.Where(w => w.Lft >= child.Lft && w.Rgt <= child.Rgt).ToList();
-        //        tmp1.ForEach(e => { e.Lft = e.Lft + x; e.Rgt = e.Rgt + x; });
-
-
-
-        //        db.SaveChanges();
-        //        return Request.CreateResponse(HttpStatusCode.OK);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-        //    }
-        //}
 
         [Route("api/GlobalCategories/Shift")]
         [HttpPut]
@@ -607,7 +529,6 @@ namespace Colsp.Api.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete category " + cat.NameEn + " with product associated");
                     }
                     db.GlobalCategories.Remove(cat);
-                    db.GlobalCategoryPIDs.Remove(db.GlobalCategoryPIDs.Find(cat.CategoryId));
                 }
                 db.SaveChanges();
                 

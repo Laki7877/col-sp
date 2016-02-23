@@ -80,11 +80,11 @@ namespace Colsp.Api.Controllers
                     //All VisibleNot Visible
                     if (string.Equals("Visible", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        attrSet = attrSet.Where(a => a.Status.Equals(Constant.STATUS_VISIBLE));
+                        attrSet = attrSet.Where(a => a.Visibility == true);
                     }
                     else if(string.Equals("NotVisible", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        attrSet = attrSet.Where(a => a.Status.Equals(Constant.STATUS_NOT_VISIBLE));
+                        attrSet = attrSet.Where(a => a.Visibility == false);
                     }
                 }
                 var total = attrSet.Count();
@@ -425,7 +425,7 @@ namespace Colsp.Api.Controllers
                     .Include(i=>i.Products)
                     .Include(i=>i.ProductHistories)
                     .Include(i=>i.AttributeSetMaps)
-                    .Include(i=>i.AttributeSetTagMaps)
+                    //.Include(i=>i.AttributeSetTagMaps)
                     .Include(i=>i.CategoryAttributeSetMaps)
                     .ToList();
                 foreach (AttributeSetRequest setRq in request)
@@ -445,10 +445,10 @@ namespace Colsp.Api.Controllers
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with attribute associated");
                     }
-                    if(current.AttributeSetTagMaps != null && current.AttributeSetTagMaps.Count > 0)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with tag associated");
-                    }
+                    //if(current.AttributeSetTagMaps != null && current.AttributeSetTagMaps.Count > 0)
+                    //{
+                    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with tag associated");
+                    //}
                     if(current.CategoryAttributeSetMaps !=  null && current.CategoryAttributeSetMaps.Count > 0)
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with global category associated");
