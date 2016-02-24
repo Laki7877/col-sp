@@ -15,12 +15,66 @@ using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
+using System.IO;
+using System.Web;
+using System.Configuration;
 
 namespace Colsp.Api.Controllers
 {
     public class ShopsController : ApiController
     {
         private ColspEntities db = new ColspEntities();
+
+
+        private readonly string root = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
+
+        [Route("api/ShopImages")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadFile()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
+                }
+                string tmpFolder = Path.Combine(root, "Shop");
+                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+
+                FileUploadRespond fileUpload = new FileUploadRespond();
+                string fileName = string.Empty;
+                string ext = string.Empty;
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    fileName = fileData.LocalFileName;
+                    string tmp = fileData.Headers.ContentDisposition.FileName;
+                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+                    {
+                        tmp = tmp.Trim('"');
+                    }
+                    ext = Path.GetExtension(tmp);
+                    break;
+                }
+
+                string newName = string.Concat(fileName, ext);
+                File.Move(fileName, newName);
+                fileUpload.tmpPath = newName;
+
+                var name = Path.GetFileName(newName);
+                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+                fileUpload.url = string.Concat(schema, "://", imageUrl, "/Images/Shop/", name);
+
+                return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
 
         [Route("api/Shops")]
         [HttpGet]
@@ -114,6 +168,94 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find shop");
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, shop[0]);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+
+        [Route("api/Shop/Profile")]
+        [HttpGet]
+        public HttpResponseMessage GetShopProfile()
+        {
+            try
+            {
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var shop = db.Shops
+                    .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Select(s => new
+                    {
+                        s.ShopId,
+                        s.ShopNameEn,
+                        s.ShopDescriptionEn,
+                        s.ShopDescriptionTh,
+                        s.ShopAddress,
+                        s.BankAccountName,
+                        s.BankAccountNumber,
+                        s.Facebook,
+                        s.Youtube,
+                        s.Instagram,
+                        s.Pinterest,
+                        s.Twitter,
+                        s.StockAlert,
+                        s.FloatMessageEn,
+                        s.FloatMessageTh,
+                        Logo = new ImageRequest { url=s.ShopImageUrl }
+                    }).ToList();
+                if (shop == null || shop.Count == 0)
+                {
+                    throw new Exception("Cannot find shop");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, shop[0]);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+
+        [Route("api/Shop/Profile")]
+        [HttpPut]
+        public HttpResponseMessage SaveShopProfile(ShopRequest request)
+        {
+            try
+            {
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                var shop = db.Shops.Find(shopId);
+                if (shop == null || shop.Status.Equals(Constant.STATUS_REMOVE))
+                {
+                    throw new Exception("Cannot find shop");
+                }
+                shop.ShopNameEn = request.ShopNameEn;
+                shop.ShopDescriptionEn = request.ShopDescriptionEn;
+                shop.ShopDescriptionTh = request.ShopDescriptionTh;
+                shop.FloatMessageEn = request.FloatMessageEn;
+                shop.FloatMessageTh = request.FloatMessageTh;
+                shop.ShopAddress = request.ShopAddress;
+                shop.BankAccountName = request.BankAccountName;
+                shop.BankAccountNumber = request.BankAccountNumber;
+                shop.Facebook = request.Facebook;
+                shop.Youtube = request.Youtube;
+                shop.Instagram = request.Instagram;
+                shop.Pinterest = request.Pinterest;
+                shop.Twitter = request.Twitter;
+                shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, Int32.MaxValue, 0).Value;
+                shop.UpdatedBy = this.User.UserRequest().Email;
+                shop.UpdatedDt = DateTime.Now;
+                if(request.Logo != null)
+                {
+                    shop.ShopImageUrl = request.Logo.url;
+                }
+                else
+                {
+                    shop.ShopImageUrl = null;
+                }
+                
+                db.SaveChanges();
+                return GetShopProfile();
             }
             catch (Exception e)
             {

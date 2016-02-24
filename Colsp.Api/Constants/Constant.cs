@@ -30,18 +30,11 @@ namespace Colsp.Api.Constants
         public static readonly string USER_TYPE_SELLER = "S";
         public static readonly string SHOP_TYPE = "H";
 
-        #region CMS
-        public static readonly int CMS_SHOP_GOBAL = 0;
 
-        public static readonly int CMS_STATUS_DRAFT = 1;
-        public static readonly int CMS_STATUS_WAIT_FOR_APPROVAL = 4;
-        public static readonly int CMS_STATUS_JUNK = 5;
-        public static readonly int CMS_STATUS_APPROVE = 2;
-        public static readonly int CMS_STATUS_NOT_APPROVE = 3;
+        public static readonly string COUPON_FILTER_INCLUDE = "I";
+        public static readonly string COUPON_FILTER_EXCLUDE = "E";
 
-        public static readonly int CMS_TYPE_STATIC_PAGE = 1;
-        public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;
-        #endregion
-       public static int SHOP_OWNER_GROUP_ID = 2;
+        public static int SHOP_OWNER_GROUP_ID = 2;
+
     }
 }

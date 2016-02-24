@@ -276,8 +276,7 @@ namespace Colsp.Api.Controllers
                 }
                 var setList = db.Attributes
                     .Include(i=>i.ProductStageAttributes)
-                    .Include(i=>i.ProductStageVariants)
-                    .Include(i=>i.ProductStageVariants1)
+                    .Include(i=>i.ProductStageVariantArrtibuteMaps)
                     .Include(i=>i.AttributeValueMaps).ToList();
                 foreach (AttributeRequest setRq in request)
                 {
@@ -287,8 +286,7 @@ namespace Colsp.Api.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                     }
                     if((current.ProductStageAttributes != null && current.ProductStageAttributes.Count > 0 )
-                        || (current.ProductStageVariants != null && current.ProductStageVariants.Count > 0)
-                        || (current.ProductStageVariants1!= null && current.ProductStageVariants1.Count > 0))
+                        || (current.ProductStageVariantArrtibuteMaps != null && current.ProductStageVariantArrtibuteMaps.Count > 0))
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,"Attribute has product or variant associate");
                     }

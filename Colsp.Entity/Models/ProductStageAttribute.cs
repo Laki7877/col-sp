@@ -16,10 +16,10 @@ namespace Colsp.Entity.Models
     {
         public int ProductId { get; set; }
         public int AttributeId { get; set; }
-        public string Pid { get; set; }
         public Nullable<int> Position { get; set; }
         public string ValueEn { get; set; }
         public string ValueTh { get; set; }
+        public bool IsAttributeValue { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

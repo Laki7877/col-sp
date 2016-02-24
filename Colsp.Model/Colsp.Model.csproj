@@ -56,7 +56,7 @@
     <Compile Include="Requests\CMSShopRequest.cs" />
     <Compile Include="Requests\CollectionListRequest.cs" />
     <Compile Include="Requests\CouponRequest.cs" />
-    <Compile Include="Requests\ExcelRequest.cs" />
+    <Compile Include="Requests\ExportRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />

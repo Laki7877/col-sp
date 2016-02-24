@@ -55,6 +55,13 @@ namespace Colsp.Api
             {
                 Directory.CreateDirectory(rootBrandPath);
             }
+
+            string shopTmpPath = "Shop";
+            string rootShopPath = Path.Combine(imgageRootPath, shopTmpPath);
+            if (!Directory.Exists(rootShopPath))
+            {
+                Directory.CreateDirectory(rootShopPath);
+            }
         }
     }
 }

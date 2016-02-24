@@ -12,6 +12,18 @@ namespace Colsp.Model.Requests
 		public string SearchText { get; set; }
         public int? CategoryId { get; set; }
         public int? GlobalCatId { get; set; }
+        public List<string> ProductNames { get; set; }
+        public List<string> Pids { get; set; }
+        public List<string> Skus { get; set; }
+        public List<CategoryRequest> GlobalCategories { get; set; }
+        public List<CategoryRequest> LocalCategories { get; set; }
+        public List<BrandRequest> Brands { get; set; }
+        public List<AttributeSetRequest> AttributeSets { get; set; }
+        public decimal? PriceFrom { get; set; }
+        public decimal? PriceTo { get; set; }
+        public string CreatedDtFrom { get; set; }
+        public string CreatedDtTo { get; set; }
+        public List<string> Tags { get; set; }
         public int? LocalCatId { get; set; }
         public int? AttributeSetId { get; set; }
         public int? AttributeId { get; set; }
@@ -20,8 +32,6 @@ namespace Colsp.Model.Requests
         public int? BrandId { get; set; }
         public int? ShopId { get; set; }
         public List<string> SearchTag { get; set; }
-        public decimal? PriceFrom { get; set; }
-        public decimal? PriceTo { get; set; }
         public string ModifyDtFrom { get; set; }
         public string ModifyDtTo { get; set; }
 
@@ -43,6 +53,14 @@ namespace Colsp.Model.Requests
         public ProductRequest()
         {
             SearchTag = new List<string>();
+            GlobalCategories = new List<CategoryRequest>();
+            LocalCategories = new List<CategoryRequest>();
+            Brands = new List<BrandRequest>();
+            AttributeSets = new List<AttributeSetRequest>();
+            Tags = new List<string>();
+            ProductNames = new List<string>();
+            Pids = new List<string>();
+            Skus = new List<string>();
         }
     }
 }

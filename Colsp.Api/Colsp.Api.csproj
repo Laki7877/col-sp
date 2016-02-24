@@ -204,6 +204,7 @@
     <Compile Include="Controllers\BrandsController.cs" />
     <Compile Include="Controllers\BuyOneGetOneController.cs" />
     <Compile Include="Controllers\CMSManagementController.cs" />
+    <Compile Include="Controllers\CouponConditionsController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\GlobalCategoriesController.cs" />

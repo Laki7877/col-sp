@@ -17,32 +17,10 @@ namespace Colsp.Model.Requests
         public VariantRequest MasterVariant { get; set; }
         public List<AttributeRequest> MasterAttribute { get; set; }
         public List<VariantRequest> Variants { get; set; }
-        //public List<ImageRequest> MasterImages { get; set; }
-        //public List<ImageRequest> MasterImages360 { get; set; }
-        //public List<VideoLinkRequest> VideoLinks { get; set; }
         public SEORequest SEO { get; set; }
-        //public string ProductNameTh { get; set; }
-        //public string ProductNameEn { get; set; }
-        //public string Sku { get; set; }
-        //public string Upc { get; set; }
         public BrandRequest Brand { get; set; }
-        //public decimal? OriginalPrice { get; set; }
-        //public decimal? SalePrice { get; set; }
-        //public string DescriptionFullTh { get; set; }
-        //public string DescriptionFullEn { get; set; }
-        //public string DescriptionShortTh { get; set; }
-        //public string DescriptionShortEn { get; set; }
-        //public int? Quantity { get; set; }
-        //public int? SafetyStock { get; set; }
-        //public string StockType { get; set; }
         public int? ShippingMethod { get; set; }
         public decimal? PrepareDay { get; set; }
-        //public decimal? Length { get; set; }
-        //public decimal? Height { get; set; }
-        //public decimal? Width { get; set; }
-        //public string DimensionUnit { get; set; }
-        //public decimal? Weight { get; set; }
-        //public string WeightUnit { get; set; }
         public List<VariantRequest> RelatedProducts { get; set; }
         public string EffectiveDate { get; set; }
         public string EffectiveTime { get; set; }
@@ -59,6 +37,8 @@ namespace Colsp.Model.Requests
         public bool? Visibility { get; set; }
         public int? VariantCount { get; set; }
         public ControlFlag ControlFlags { get; set; }
+        public string GroupId { get; set; }
+
 
         public ProductStageRequest()
         {

@@ -14,14 +14,14 @@ namespace Colsp.Entity.Models
     
     public partial class ProductStageVariant
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ProductStageVariant()
+        {
+            this.ProductStageVariantArrtibuteMaps = new HashSet<ProductStageVariantArrtibuteMap>();
+        }
+    
         public int VariantId { get; set; }
         public int ProductId { get; set; }
-        public Nullable<int> Attribute1Id { get; set; }
-        public Nullable<int> Attribute2Id { get; set; }
-        public string ValueEn1 { get; set; }
-        public string ValueTh1 { get; set; }
-        public string ValueEn2 { get; set; }
-        public string ValueTh2 { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public string Pid { get; set; }
@@ -53,9 +53,9 @@ namespace Colsp.Entity.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual Attribute Attribute { get; set; }
-        public virtual Attribute Attribute1 { get; set; }
         public virtual ProductStage ProductStage { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageVariantArrtibuteMap> ProductStageVariantArrtibuteMaps { get; set; }
         public virtual Shop Shop { get; set; }
     }
 }

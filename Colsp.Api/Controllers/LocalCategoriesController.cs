@@ -44,20 +44,12 @@ namespace Colsp.Api.Controllers
                                     cat.UpdatedDt,
                                     cat.CreatedDt,
                                     ProductCount = cat.ProductStages.Count,
-                                }).ToList();
-                if (localCat != null && localCat.Count > 0)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, localCat);
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
-                }
-
+                                });
+                return Request.CreateResponse(HttpStatusCode.OK, localCat);
             }
-            catch
+            catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -263,79 +255,57 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopIdRq = this.User.ShopRequest().ShopId.Value;
-                if (shopIdRq == 0)
+                int shopId = this.User.ShopRequest().ShopId.Value;
+                if (shopId == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Shop is invalid. Cannot find shop in session");
+                    throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
-                var catEnList = (from cat in db.LocalCategories
-                                 join proStg in db.ProductStages on cat.CategoryId equals proStg.LocalCatId into j
-                                 from j2 in j.DefaultIfEmpty()
-                                 where cat.ShopId == shopIdRq
-                                 group j2 by cat into g
-                                 select new
-                                 {
-                                     Category = g,
-                                     ProductCount = g.Key.ProductStages.Count
-                                 }).ToList();
+                //var catEnList = (from cat in db.LocalCategories
+                //                 join proStg in db.ProductStages on cat.CategoryId equals proStg.LocalCatId into j
+                //                 from j2 in j.DefaultIfEmpty()
+                //                 where cat.ShopId == shopIdRq
+                //                 group j2 by cat into g
+                //                 select new
+                //                 {
+                //                     Category = g,
+                //                     ProductCount = g.Key.ProductStages.Count
+                //                 }).ToList();
+                var catEnList = db.LocalCategories.Where(w => w.ShopId == shopId).Include(i => i.ProductStages).ToList();
                 foreach (CategoryRequest catRq in request)
                 {
                     if (catRq.Lft == null || catRq.Rgt == null || catRq.Lft >= catRq.Rgt)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node is not properly formated");
+                        throw new Exception("Category " + catRq.NameEn + " is invalid. Node is not properly formated");
                     }
                     var validate = request.Where(w => w.Lft == catRq.Lft || w.Rgt == catRq.Rgt).ToList();
                     if (validate != null && validate.Count > 1)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
+                        throw new Exception("Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
                     }
-                    if (catRq.CategoryId != 0)
+                    if (catRq.CategoryId == 0)
                     {
-                        var catEn = catEnList.Where(w => w.Category.Key.CategoryId == catRq.CategoryId).Select(s => s.Category).SingleOrDefault();
-                        if (catEn == null)
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
-                        }
-                        else
-                        {
-                            catEn.Key.Lft = catRq.Lft;
-                            catEn.Key.Rgt = catRq.Rgt;
-                            catEn.Key.NameEn = catRq.NameEn;
-                            catEn.Key.NameTh = catRq.NameTh;
-                            catEn.Key.UrlKeyEn = catRq.UrlKeyEn;
-                            catEn.Key.Visibility = catRq.Visibility;
-                            catEn.Key.Status = Constant.STATUS_ACTIVE;
-                            catEn.Key.UpdatedBy = this.User.UserRequest().Email;
-                            catEn.Key.UpdatedDt = DateTime.Now;
-                            catEnList.Remove(catEnList.Where(w => w.Category.Key.CategoryId == catEn.Key.CategoryId).SingleOrDefault());
-                        }
+                        throw new Exception("Category " + catRq.NameEn + " is invalid.");
                     }
-                    else
+
+                    var catEn = catEnList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
+                    if (catEn == null)
                     {
-                        LocalCategory catEn = new LocalCategory();
-                        catEn.Lft = catRq.Lft;
-                        catEn.Rgt = catRq.Rgt;
-                        catEn.NameEn = catRq.NameEn;
-                        catEn.NameTh = catRq.NameTh;
-                        catEn.UrlKeyEn = catRq.UrlKeyEn;
-                        catEn.ShopId = shopIdRq;
-                        catEn.Visibility = catRq.Visibility;
-                        catEn.Status = Constant.STATUS_ACTIVE;
-                        catEn.CreatedBy = this.User.UserRequest().Email;
-                        catEn.CreatedDt = DateTime.Now;
-                        catEn.UpdatedBy = this.User.UserRequest().Email;
-                        catEn.UpdatedDt = DateTime.Now;
-                        db.LocalCategories.Add(catEn);
+                        throw new Exception("Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
                     }
+                    catEn.Lft = catRq.Lft;
+                    catEn.Rgt = catRq.Rgt;
+                    catEn.UpdatedBy = this.User.UserRequest().Email;
+                    catEn.UpdatedDt = DateTime.Now;
+                    catEnList.Remove(catEn);
                 }
                 foreach (var cat in catEnList)
                 {
-                    if (cat.ProductCount != 0)
+                    if (cat.ProductStages.Count != 0)
                     {
                         db.Dispose();
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete category " + cat.Category.Key.NameEn + " with product associated");
+                        throw new Exception("Cannot delete category " + cat.NameEn + " with product associated");
                     }
-                    db.LocalCategories.Remove(cat.Category.Key);
+                    db.LocalCategories.Remove(cat);
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -351,7 +321,7 @@ namespace Colsp.Api.Controllers
                            , "URL Key has already been used");
                     }
                 }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
             catch (Exception e)
             {

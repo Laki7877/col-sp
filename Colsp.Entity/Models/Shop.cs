@@ -18,6 +18,7 @@ namespace Colsp.Entity.Models
         public Shop()
         {
             this.Coupons = new HashSet<Coupon>();
+            this.CouponShopMaps = new HashSet<CouponShopMap>();
             this.LocalCategories = new HashSet<LocalCategory>();
             this.Products = new HashSet<Product>();
             this.ProductHistories = new HashSet<ProductHistory>();
@@ -47,7 +48,7 @@ namespace Colsp.Entity.Models
         public string Twitter { get; set; }
         public string Instagram { get; set; }
         public string Pinterest { get; set; }
-        public Nullable<int> StockAlert { get; set; }
+        public int StockAlert { get; set; }
         public Nullable<decimal> Commission { get; set; }
         public Nullable<int> ShopTypeId { get; set; }
         public string UrlKeyEn { get; set; }
@@ -62,6 +63,8 @@ namespace Colsp.Entity.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Coupon> Coupons { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CouponShopMap> CouponShopMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LocalCategory> LocalCategories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

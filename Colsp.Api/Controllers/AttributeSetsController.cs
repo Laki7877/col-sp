@@ -80,11 +80,11 @@ namespace Colsp.Api.Controllers
                     //All VisibleNot Visible
                     if (string.Equals("Visible", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        attrSet = attrSet.Where(a => a.Status.Equals(Constant.STATUS_VISIBLE));
+                        attrSet = attrSet.Where(a => a.Visibility == true);
                     }
                     else if(string.Equals("NotVisible", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        attrSet = attrSet.Where(a => a.Status.Equals(Constant.STATUS_NOT_VISIBLE));
+                        attrSet = attrSet.Where(a => a.Visibility == false);
                     }
                 }
                 var total = attrSet.Count();
@@ -227,8 +227,7 @@ namespace Colsp.Api.Controllers
                 }
                 var attrSet = db.AttributeSets.Where(w => w.AttributeSetId.Equals(attributeSetId))
                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes))
-                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants ))
-                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants1 ))
+                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariantArrtibuteMaps ))
                     .Include(i => i.AttributeSetTagMaps.Select(s => s.Tag))
                     .SingleOrDefault();
                 if(attrSet != null)
@@ -285,8 +284,7 @@ namespace Colsp.Api.Controllers
                         foreach(AttributeSetMap map in mapList)
                         {
                             if((map.Attribute.ProductStageAttributes != null && map.Attribute.ProductStageAttributes.Count > 0)
-                                || (map.Attribute.ProductStageVariants != null && map.Attribute.ProductStageVariants.Count > 0)
-                                || (map.Attribute.ProductStageVariants1 != null && map.Attribute.ProductStageVariants1.Count > 0))
+                                || (map.Attribute.ProductStageVariantArrtibuteMaps != null && map.Attribute.ProductStageVariantArrtibuteMaps.Count > 0))
                             {
                                 throw new Exception("Cannot delete attribute maping " + map.Attribute.AttributeNameEn + " in attribute set " + attrSet.AttributeSetNameEn + " with product associated");
                             }
@@ -427,7 +425,7 @@ namespace Colsp.Api.Controllers
                     .Include(i=>i.Products)
                     .Include(i=>i.ProductHistories)
                     .Include(i=>i.AttributeSetMaps)
-                    .Include(i=>i.AttributeSetTagMaps)
+                    //.Include(i=>i.AttributeSetTagMaps)
                     .Include(i=>i.CategoryAttributeSetMaps)
                     .ToList();
                 foreach (AttributeSetRequest setRq in request)
@@ -447,10 +445,10 @@ namespace Colsp.Api.Controllers
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with attribute associated");
                     }
-                    if(current.AttributeSetTagMaps != null && current.AttributeSetTagMaps.Count > 0)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with tag associated");
-                    }
+                    //if(current.AttributeSetTagMaps != null && current.AttributeSetTagMaps.Count > 0)
+                    //{
+                    //    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with tag associated");
+                    //}
                     if(current.CategoryAttributeSetMaps !=  null && current.CategoryAttributeSetMaps.Count > 0)
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with global category associated");
@@ -478,8 +476,7 @@ namespace Colsp.Api.Controllers
         {
             var attrSet = db.AttributeSets.Where(w => w.AttributeSetId.Equals(attributeSetId))
                      .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes))
-                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants))
-                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariants1))
+                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageVariantArrtibuteMaps))
                      .Include(i => i.AttributeSetTagMaps.Select(s => s.Tag))
                      .Include(i => i.CategoryAttributeSetMaps.Select(s=>s.GlobalCategory))
                      .SingleOrDefault();
@@ -518,8 +515,7 @@ namespace Colsp.Api.Controllers
                         attr.Required = map.Required;
                         attr.Filterable = map.Filterable;
                         attr.ProductCount = (map.Attribute.ProductStageAttributes != null ? map.Attribute.ProductStageAttributes.Count : 0)
-                                            + (map.Attribute.ProductStageVariants != null ? map.Attribute.ProductStageVariants.Count : 0)
-                                            + (map.Attribute.ProductStageVariants1 != null ? map.Attribute.ProductStageVariants1.Count : 0);
+                                            + (map.Attribute.ProductStageVariantArrtibuteMaps != null ? map.Attribute.ProductStageVariantArrtibuteMaps.Count : 0);
                         attr.Status = map.Attribute.Status;
                         response.Attributes.Add(attr);
                     }

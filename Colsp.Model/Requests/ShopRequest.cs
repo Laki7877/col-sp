@@ -16,8 +16,22 @@ namespace Colsp.Model.Requests
         public List<UserRequest> Users { get; set; }
         public ShopTypeRequest ShopType { get; set; }
         public decimal? Commission { get; set; }
+        public string ShopDescriptionEn { get; set; }
+        public string ShopDescriptionTh { get; set; }
+        public string FloatMessageEn { get; set; }
+        public string FloatMessageTh { get; set; }
+        public string ShopAddress { get; set; }
+        public string BankAccountName { get; set; }
+        public string BankAccountNumber { get; set; }
+        public string Facebook { get; set; }
+        public string Youtube { get; set; }
+        public string Instagram { get; set; }
+        public string Pinterest { get; set; }
+        public string Twitter { get; set; }
+        public int? StockAlert { get; set; }
+        public ImageRequest Logo { get; set; }
 
-        public override void DefaultOnNull()
+    public override void DefaultOnNull()
         {
             ShopNameEn = GetValueOrDefault(ShopNameEn, "");
             _order = GetValueOrDefault(_order, "ShopId");
@@ -29,6 +43,7 @@ namespace Colsp.Model.Requests
             ShopOwner = new UserRequest();
             Users = new List<UserRequest>();
             ShopType = new ShopTypeRequest();
+            Logo = new ImageRequest();
         }
     }
 }

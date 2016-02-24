@@ -8,7 +8,7 @@ namespace Colsp.Model.Requests
 {
     public class CategoryRequest
     {
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public string NameEn { get; set; }
         public string NameTh { get; set; }
         public string UrlKeyEn { get; set; }
