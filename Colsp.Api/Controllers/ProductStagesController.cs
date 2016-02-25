@@ -21,6 +21,7 @@ using System.Text;
 using Colsp.Api.Filters;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using CsvHelper;
 
 namespace Colsp.Api.Controllers
 {
@@ -3183,13 +3184,22 @@ namespace Colsp.Api.Controllers
                 writer.WriteLine(headers);
                 #endregion
                 #region Write body
+                var csv = new CsvWriter(writer);
+
                 foreach (List<string> r in rs)
                 {
-                    foreach (string body in r)
+                    /*foreach (string body in r)
                     {
                         writer.Write(body+",");
+                    }*/
+
+                    foreach( string field in r)
+                    {
+                        csv.WriteField(field);
                     }
-                    writer.WriteLine();
+
+                    csv.NextRecord();
+                    //writer.WriteLine();
                 }
                 #endregion
                 #region Create Response
