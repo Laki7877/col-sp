@@ -46,7 +46,8 @@ namespace Colsp.Api.ByOneGetOneFunction
                         newObj.UpdateDate = (DateTime)DateTime.Now;
                         newObj.CreateIP = Model.CreateIP;
                         newObj.UpdateIP = Model.UpdateIP;
-
+                        newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                        newObj.Visibility = Model.Visibility;
                         db.PromotionBuy1Get1Item.Add(newObj);
 
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -89,7 +90,7 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.NameTH                       = Model.NameTH != default(string) ? Model.NameTH : newObj.NameTH;
                             newObj.URLKey                       = Model.URLKey != default(string) ? Model.URLKey : newObj.URLKey;
                             newObj.PIDBuy                       = Model.PIDBuy != default(int) ? Model.PIDBuy : newObj.PIDBuy;
-                            newObj.PIDGet                       = Model.PIDBuy != default(int) ? Model.PIDBuy : newObj.PIDBuy;
+                            newObj.PIDGet                       = Model.PIDGet != default(int) ? Model.PIDGet : newObj.PIDGet;
                             newObj.ShortDescriptionTH           = Model.ShortDescriptionTH != default(string) ? Model.ShortDescriptionTH : newObj.ShortDescriptionTH;
                             newObj.LongDescriptionTH            = Model.LongDescriptionTH != default(string) ? Model.LongDescriptionTH : newObj.LongDescriptionTH;
                             newObj.ShortDescriptionEN           = Model.ShortDescriptionEN != default(string) ? Model.ShortDescriptionEN : newObj.ShortDescriptionEN;
@@ -102,11 +103,13 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.Sequence                     = Model.Sequence ?? newObj.Sequence;
                             newObj.Status                       = Model.Status ?? newObj.Status;
                             newObj.CreateBy                     = Model.CreateBy ?? newObj.CreateBy;
-                            newObj.Createdate                   = (DateTime)Model.Createdate != null ? (DateTime)Model.Createdate : newObj.Createdate ;
+                            newObj.Createdate                   = Model.Createdate != null ? (DateTime)Model.Createdate : newObj.Createdate ;
                             newObj.UpdateBy                     = Model.UpdateBy ?? newObj.UpdateBy;
                             newObj.UpdateDate                   = (DateTime)DateTime.Now  ;
                             newObj.CreateIP                     = Model.CreateIP != default(string) ? Model.CreateIP : newObj.CreateIP;
                             newObj.UpdateIP                     = Model.UpdateIP != default(string) ? Model.UpdateIP : newObj.UpdateIP;
+                            newObj.CMSStatusFlowId              = Model.CMSStatusFlowId.HasValue ? Model.CMSStatusFlowId : newObj.CMSStatusFlowId;
+                            newObj.Visibility                   = Model.Visibility.HasValue ? Model.Visibility : newObj.Visibility;
 
                             db.Entry(newObj).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -163,11 +166,13 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.Sequence = Model.Sequence;
                             newObj.Status = Model.Status;
                             newObj.CreateBy = Model.CreateBy;
-                            newObj.Createdate = (DateTime)Model.Createdate != null ? (DateTime)Model.Createdate : newObj.Createdate;
+                            newObj.Createdate = Model.Createdate != null ? (DateTime)Model.Createdate : newObj.Createdate;
                             newObj.UpdateBy = Model.UpdateBy;
                             newObj.UpdateDate = (DateTime)DateTime.Now;
                             newObj.CreateIP = Model.CreateIP;
                             newObj.UpdateIP = Model.UpdateIP;
+                            newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                            newObj.Visibility = Model.Visibility;
 
                             db.Entry(newObj).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.

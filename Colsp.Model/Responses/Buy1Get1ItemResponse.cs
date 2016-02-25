@@ -31,5 +31,9 @@ namespace Colsp.Model.Responses
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
+        public Nullable<int> CMSStatusFlowId { get; set; }
+        public Nullable<bool> Visibility { get; set; }
+        public string PNameBuy { get; set; }
+        public string PNameGet { get; set; }
     }
 }

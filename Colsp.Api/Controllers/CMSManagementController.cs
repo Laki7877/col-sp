@@ -36,8 +36,8 @@ namespace Colsp.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetByShop([FromUri] CMSShopRequest request)
         {
-            int? shopId = (int?)this.User.ShopRequest().ShopId.Value;
-            //int? shopId = 0;
+            //int? shopId = (int?)this.User.ShopRequest().ShopId.Value;
+            int? shopId = 0;
             try
             {
                 if (!shopId.HasValue)
