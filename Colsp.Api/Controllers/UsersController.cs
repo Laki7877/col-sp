@@ -18,6 +18,7 @@ using Colsp.Api.Services;
 using System.Security.Principal;
 using System.Security.Claims;
 using Colsp.Api.Security;
+using System.Data.SqlClient;
 
 namespace Colsp.Api.Controllers
 {
@@ -157,6 +158,24 @@ namespace Colsp.Api.Controllers
                 db.UserShops.Add(shopMap);
                 db.SaveChanges();
                 return GetUserAdmin(usr.UserId);
+            }
+            catch (DbUpdateException e)
+            {
+                if (usr != null && usr.UserId != 0)
+                {
+                    db.Users.Remove(usr);
+                    db.SaveChanges();
+                }
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "Email has already been used");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {

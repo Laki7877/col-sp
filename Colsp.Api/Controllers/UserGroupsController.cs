@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using Colsp.Api.Constants;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -288,16 +287,19 @@ namespace Colsp.Api.Controllers
             try
             {
                 usrGrp = new UserGroup();
-                usrGrp.GroupNameEn = request.GroupNameEn;
-                usrGrp.GroupNameTh = request.GroupNameTh;
+                usrGrp.GroupNameEn = Validation.ValidateString(request.GroupNameEn, "Role Name",true,100,true);
+                var usrGroupEntity = db.UserGroups.Where(w => w.GroupNameEn.Equals(usrGrp.GroupNameEn) && w.Type.Equals(Constant.USER_TYPE_ADMIN)).FirstOrDefault();
+                if(usrGroupEntity != null)
+                {
+                    throw new Exception("This role name has already been used. Please enter a different role name.");
+                }
+                usrGrp.GroupNameTh = Validation.ValidateString(request.GroupNameTh, "Role Name (Thai)", false, 100, true);
                 usrGrp.Status = Constant.STATUS_ACTIVE;
                 usrGrp.Type = Constant.USER_TYPE_ADMIN;
                 usrGrp.CreatedBy = this.User.UserRequest().Email;
                 usrGrp.CreatedDt = DateTime.Now;
                 usrGrp.UpdatedBy = this.User.UserRequest().Email;
                 usrGrp.UpdatedDt = DateTime.Now;
-                db.UserGroups.Add(usrGrp);
-                db.SaveChanges();
                 if (request.Permission != null)
                 {
                     foreach (PermissionRequest perm in request.Permission)
@@ -313,10 +315,11 @@ namespace Colsp.Api.Controllers
                         map.CreatedDt = DateTime.Now;
                         map.UpdatedBy = this.User.UserRequest().Email;
                         map.UpdatedDt = DateTime.Now;
-                        db.UserGroupPermissionMaps.Add(map);
+                        usrGrp.UserGroupPermissionMaps.Add(map);
                     }
-                    db.SaveChanges();
                 }
+                db.UserGroups.Add(usrGrp);
+                db.SaveChanges();
                 return GetUserGroupAdmin(usrGrp.GroupId);
             }
             catch (Exception e)
@@ -324,12 +327,11 @@ namespace Colsp.Api.Controllers
                 if (usrGrp != null && usrGrp.GroupId != 0)
                 {
                     db.UserGroups.Remove(usrGrp);
+                    db.SaveChanges();
                 }
-                db.SaveChanges();
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/UserGroups/Admin")]
         [HttpDelete]

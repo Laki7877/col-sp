@@ -234,6 +234,21 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/ProductStages/Guidance")]
+        [HttpGet]
+        public HttpResponseMessage GetGuidance(string name)
+        {
+            try
+            {
+                var guidance = db.ImportHeaders.Where(w => w.HeaderName.Contains(name));
+                return Request.CreateResponse(HttpStatusCode.OK, guidance);
+            }
+            catch(Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/ProductStages/All")]
         [HttpGet]
         public HttpResponseMessage GetProductAllStages([FromUri] ProductRequest request)
@@ -408,14 +423,17 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
+
                 stream = new MemoryStream();
                 writer = new StreamWriter(stream);
+                var csv = new CsvWriter(writer);
 
 
                 foreach (string h in header)
                 {
-                    writer.Write(h + ",");
+                    csv.WriteField(h);
                 }
+                csv.NextRecord();
                 writer.Flush();
                 stream.Position = 0;
 
@@ -426,7 +444,7 @@ namespace Colsp.Api.Controllers
                     CharSet = Encoding.UTF8.WebName
                 };
                 result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-                result.Content.Headers.ContentDisposition.FileName = "COL_Template.csv";
+                result.Content.Headers.ContentDisposition.FileName = "file.csv";
                 return result;
             }
             catch (Exception e)
@@ -1007,7 +1025,7 @@ namespace Colsp.Api.Controllers
         public async Task<HttpResponseMessage> UpdatetProduct()
         {
             try
-            {
+            { 
                 if (!Request.Content.IsMimeMultipartContent())
                 {
                     throw new Exception("Content Multimedia");
@@ -1607,7 +1625,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/ProductStages")]
         [HttpGet]
@@ -2536,7 +2553,11 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var productList = db.ProductStages;
+                if (request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var productList = db.ProductStages.Where(w => true);
                 foreach (ProductStageRequest proRq in request)
                 {
                     var pro = productList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
@@ -2561,8 +2582,11 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
-                var productList = db.ProductStages.Where(w => w.ShopId == shopId);
+                if (request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var productList = db.ProductStages.Where(w=>true);
                 foreach (ProductStageRequest proRq in request)
                 {
                     var pro = productList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
@@ -2642,25 +2666,14 @@ namespace Colsp.Api.Controllers
                 }
                 #region Query
 
-                var productIds = request.ProductList.Where(w=>w.ProductId != null).Select(s => s.ProductId.Value).ToList();
-                if(productIds == null || productIds.Count == 0)
-                {
-                    throw new Exception("No product selected");
-                }
-                if(productIds.Count > 2000)
-                {
-                    throw new Exception("Too many product selected");
-                }
-
-                var shopId = this.User.ShopRequest().ShopId.Value;
-
-                var productList = (
+                var query = (
                              from mast in db.ProductStages
                              join variant in db.ProductStageVariants on mast.ProductId equals variant.ProductId into varJoin
                              from vari in varJoin.DefaultIfEmpty()
-                             where productIds.Contains(mast.ProductId) && mast.ShopId == shopId
+                             //where productIds.Contains(mast.ProductId) && mast.ShopId == shopId
                              select new
                              {
+                                 ShopId = vari != null ? vari.ShopId : mast.ShopId,
                                  Status = vari != null ? vari.Status : mast.Status,
                                  Sku = vari != null ? vari.Sku : mast.Sku,
                                  Pid = vari != null ? vari.Pid : mast.Pid,
@@ -2676,13 +2689,13 @@ namespace Colsp.Api.Controllers
                                  mast.LocalCatId,
                                  OriginalPrice = vari != null ? vari.OriginalPrice : mast.OriginalPrice,
                                  SalePrice = vari != null ? vari.SalePrice : mast.SalePrice,
-                                 DescriptionShortEn = vari != null ? vari.DescriptionShortEn:mast.DescriptionShortEn,
+                                 DescriptionShortEn = vari != null ? vari.DescriptionShortEn : mast.DescriptionShortEn,
                                  DescriptionShortTh = vari != null ? vari.DescriptionShortTh : mast.DescriptionShortTh,
                                  DescriptionFullEn = vari != null ? vari.DescriptionFullEn : mast.DescriptionFullEn,
                                  DescriptionFullTh = vari != null ? vari.DescriptionFullTh : mast.DescriptionFullTh,
-                                 AttributeSet = new { mast.AttributeSetId, mast.AttributeSet.AttributeSetNameEn, Attribute = mast.AttributeSet.AttributeSetMaps.Select(s=>s.Attribute) },
+                                 AttributeSet = new { mast.AttributeSetId, mast.AttributeSet.AttributeSetNameEn, Attribute = mast.AttributeSet.AttributeSetMaps.Select(s => s.Attribute) },
                                  mast.PrepareDay,
-                                 Length = vari != null ? vari.Length:mast.Length,
+                                 Length = vari != null ? vari.Length : mast.Length,
                                  Height = vari != null ? vari.Height : mast.Height,
                                  Width = vari != null ? vari.Width : mast.Width,
                                  Weight = vari != null ? vari.Weight : mast.Weight,
@@ -2704,20 +2717,37 @@ namespace Colsp.Api.Controllers
                                  {
                                      s.Attribute.AttributeNameEn,
                                      Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.Value) select tt.AttributeValueEn).FirstOrDefault()
-                                         :s.Value,
+                                         : s.Value,
                                  }),
-                                 MasterAttribute = mast.ProductStageAttributes.Select(s=> new
+                                 MasterAttribute = mast.ProductStageAttributes.Select(s => new
                                  {
                                      s.AttributeId,
                                      s.Attribute.AttributeNameEn,
-                                     ValueEn =  s.IsAttributeValue ?  
-                                                (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault() 
+                                     ValueEn = s.IsAttributeValue ?
+                                                (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault()
                                                 : s.ValueEn,
                                  }),
                                  RelatedProduct = (from rel in db.ProductStageRelateds where rel.Pid1.Equals(mast.Pid) select rel.Pid2).ToList(),
                                  Inventory = vari != null ? (from inv in db.Inventories where inv.Pid.Equals(vari.Pid) select inv).FirstOrDefault() :
                                               (from inv in db.Inventories where inv.Pid.Equals(mast.Pid) select inv).FirstOrDefault(),
-                             }).ToList();
+                             });
+                var productIds = request.ProductList.Where(w=>w.ProductId != null).Select(s => s.ProductId.Value).ToList();
+               
+                if (productIds == null || productIds.Count == 0)
+                {
+                    if (productIds.Count > 2000)
+                    {
+                        throw new Exception("Too many product selected");
+                    }
+                    query = query.Where(w => productIds.Contains(w.ProductId));
+                }
+                if (this.User.ShopRequest() != null)
+                {
+                    var shopId = this.User.ShopRequest().ShopId.Value;
+                    query = query.Where(w => w.ShopId==shopId);
+                }
+                var productList = query.ToList();
+
                 #endregion
                 #region Initiate Header
                 int i = 0;
@@ -3174,18 +3204,18 @@ namespace Colsp.Api.Controllers
                     rs.Add(bodyList);
                 }
                 #region Write header
+
+                stream = new MemoryStream();
+                writer = new StreamWriter(stream);
+                var csv = new CsvWriter(writer);
                 string headers = string.Empty;
                 foreach (KeyValuePair<string, int> entry in headDic)
                 {
-                    headers += string.Concat(entry.Key, ",");
+                    csv.WriteField(entry.Key);
                 }
-                stream = new MemoryStream();
-                writer = new StreamWriter(stream);
-                writer.WriteLine(headers);
+                csv.NextRecord();
                 #endregion
                 #region Write body
-                var csv = new CsvWriter(writer);
-
                 foreach (List<string> r in rs)
                 {
                     /*foreach (string body in r)

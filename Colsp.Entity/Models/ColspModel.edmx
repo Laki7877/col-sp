@@ -518,6 +518,18 @@
           <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CurrentKey" Type="char" MaxLength="5" Nullable="false" />
         </EntityType>
+        <EntityType Name="ImportHeader">
+          <Key>
+            <PropertyRef Name="ImportHeaderId" />
+          </Key>
+          <Property Name="ImportHeaderId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HeaderName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="AcceptedValue" Type="nvarchar" MaxLength="100" />
+          <Property Name="Example" Type="nvarchar" MaxLength="500" />
+          <Property Name="Note" Type="nvarchar" MaxLength="500" />
+          <Property Name="GroupName" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="Inventory">
           <Key>
             <PropertyRef Name="Pid" />
@@ -1240,6 +1252,7 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="CMSStatusFlowId" Type="int" />
+          <Property Name="Visibility" Type="bit" />
         </EntityType>
         <EntityType Name="Shipping">
           <Key>
@@ -1376,7 +1389,7 @@
             <PropertyRef Name="GroupId" />
           </Key>
           <Property Name="GroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="GroupNameEn" Type="nvarchar" MaxLength="100" />
+          <Property Name="GroupNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="GroupNameTh" Type="nvarchar" MaxLength="100" />
           <Property Name="Type" Type="char" MaxLength="1" />
           <Property Name="Status" Type="char" MaxLength="2" />
@@ -1742,7 +1755,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ProductStageVariantArrtibuteMap_Variant">
-          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="1" />
+          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ProductStageVariantArrtibuteMap" Type="Self.ProductStageVariantArrtibuteMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStageVariant">
@@ -2300,7 +2315,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageShop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -2513,6 +2530,7 @@
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryAbbrevation" EntityType="Self.GlobalCategoryAbbrevation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryPID" EntityType="Self.GlobalCategoryPID" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImportHeader" EntityType="Self.ImportHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Inventory" EntityType="Self.Inventory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryHistory" EntityType="Self.InventoryHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCategory" EntityType="Self.LocalCategory" Schema="dbo" store:Type="Tables" />
@@ -2928,6 +2946,7 @@
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
           <EntitySet Name="GlobalCategoryPIDs" EntityType="ColspModel.GlobalCategoryPID" />
+          <EntitySet Name="ImportHeaders" EntityType="ColspModel.ImportHeader" />
           <EntitySet Name="Inventories" EntityType="ColspModel.Inventory" />
           <EntitySet Name="InventoryHistories" EntityType="ColspModel.InventoryHistory" />
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
@@ -3877,6 +3896,18 @@
           <Property Name="CurrentKey" Type="String" Nullable="false" MaxLength="5" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_GlobalCategoryPID_GlobalCategory" FromRole="GlobalCategoryPID" ToRole="GlobalCategory" />
         </EntityType>
+        <EntityType Name="ImportHeader">
+          <Key>
+            <PropertyRef Name="ImportHeaderId" />
+          </Key>
+          <Property Name="ImportHeaderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HeaderName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AcceptedValue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Example" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="GroupName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Inventory">
           <Key>
             <PropertyRef Name="Pid" />
@@ -4669,6 +4700,7 @@
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="CMSStatusFlowId" Type="Int32" />
+          <Property Name="Visibility" Type="Boolean" />
         </EntityType>
         <EntityType Name="Shipping">
           <Key>
@@ -4835,7 +4867,7 @@
             <PropertyRef Name="GroupId" />
           </Key>
           <Property Name="GroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="GroupNameEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="GroupNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="GroupNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -5694,7 +5726,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageShop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -5770,7 +5804,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ProductStageVariantArrtibuteMap_Variant">
-          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="1" />
+          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductStageVariantArrtibuteMap" Role="ProductStageVariantArrtibuteMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStageVariant">
@@ -6488,6 +6524,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ImportHeaders">
+            <EntityTypeMapping TypeName="ColspModel.ImportHeader">
+              <MappingFragment StoreEntitySet="ImportHeader">
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Example" ColumnName="Example" />
+                <ScalarProperty Name="AcceptedValue" ColumnName="AcceptedValue" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="HeaderName" ColumnName="HeaderName" />
+                <ScalarProperty Name="ImportHeaderId" ColumnName="ImportHeaderId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Inventories">
             <EntityTypeMapping TypeName="ColspModel.Inventory">
               <MappingFragment StoreEntitySet="Inventory">
@@ -7202,6 +7251,7 @@
           <EntitySetMapping Name="PromotionBuy1Get1Item">
             <EntityTypeMapping TypeName="ColspModel.PromotionBuy1Get1Item">
               <MappingFragment StoreEntitySet="PromotionBuy1Get1Item">
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
                 <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
                 <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
