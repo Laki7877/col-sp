@@ -63,7 +63,8 @@ namespace Colsp.Api.Controllers
                                   atrS.UpdatedDt,
                                   atrS.CreatedDt,
                                   AttributeCount = atrS.AttributeSetMaps.AsEnumerable().Count(),
-                                  CategoryCount = atrS.CategoryAttributeSetMaps.Count()
+                                  CategoryCount = atrS.CategoryAttributeSetMaps.Count(),
+                                  ProductCount = atrS.ProductStages.Count()
                               };
                 if (request == null)
                 {

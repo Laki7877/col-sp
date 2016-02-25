@@ -2535,8 +2535,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
-                var productList = db.ProductStages.Where(w => w.ShopId == shopId);
+                var productList = db.ProductStages;
                 foreach (ProductStageRequest proRq in request)
                 {
                     var pro = productList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
