@@ -34,6 +34,8 @@ namespace Colsp.Entity.Models
         public string AttributeUnitTh { get; set; }
         public string DisplayNameEn { get; set; }
         public string DisplayNameTh { get; set; }
+        public bool Required { get; set; }
+        public bool Filterable { get; set; }
         public Nullable<bool> VariantStatus { get; set; }
         public string DataType { get; set; }
         public string VariantDataType { get; set; }

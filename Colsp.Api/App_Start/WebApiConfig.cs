@@ -62,6 +62,13 @@ namespace Colsp.Api
             {
                 Directory.CreateDirectory(rootShopPath);
             }
+
+            string excelTmpPath = "~/Import";
+            string rootExcelPath = HttpContext.Current.Server.MapPath(excelTmpPath);
+            if (!Directory.Exists(rootExcelPath))
+            {
+                Directory.CreateDirectory(rootExcelPath);
+            }
         }
     }
 }

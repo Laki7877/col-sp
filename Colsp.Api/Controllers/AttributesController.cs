@@ -121,8 +121,7 @@ namespace Colsp.Api.Controllers
                 attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
-                attribute = db.Attributes.Add(attribute);
-                db.SaveChanges();
+                
                 if (request.AttributeValues != null && request.AttributeValues.Count  > 0)
                 {
                     newList = new List<AttributeValue>();
@@ -131,30 +130,25 @@ namespace Colsp.Api.Controllers
                         AttributeValue value = new AttributeValue();
                         value.AttributeValueEn = val.AttributeValueEn;
                         value.AttributeValueTh = val.AttributeValueTh;
+                        value.MapValue = string.Concat("((", value.AttributeValueId, "))");
                         value.Status = Constant.STATUS_ACTIVE;
                         value.CreatedBy = this.User.UserRequest().Email;
                         value.CreatedDt = DateTime.Now;
                         value.UpdatedBy = this.User.UserRequest().Email;
                         value.UpdatedDt = DateTime.Now;
-                        newList.Add(db.AttributeValues.Add(value));
-                    }
-                    db.SaveChanges();
-                    if(newList != null && newList.Count > 0)
-                    {
-                        foreach(AttributeValue val in newList)
+                        attribute.AttributeValueMaps.Add(new AttributeValueMap()
                         {
-                            AttributeValueMap map = new AttributeValueMap();
-                            map.AttributeId = attribute.AttributeId;
-                            map.AttributeValueId = val.AttributeValueId;
-                            map.CreatedBy = this.User.UserRequest().Email;
-                            map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.UserRequest().Email;
-                            map.UpdatedDt = DateTime.Now;
-                            db.AttributeValueMaps.Add(map);
-                        }
-                        db.SaveChanges();
+                            Attribute = attribute,
+                            AttributeValue = value,
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        });
                     }
                 }
+                db.Attributes.Add(attribute);
+                db.SaveChanges();
                 return GetAttribute(attribute.AttributeId);
             }
             catch (DbUpdateException e)
@@ -192,7 +186,6 @@ namespace Colsp.Api.Controllers
         {
 
             Entity.Models.Attribute attribute = null;
-            List<AttributeValue> newList = null;
             try
             {
                 attribute = db.Attributes.Where(w=>w.AttributeId.Equals(attributeId))
@@ -204,45 +197,61 @@ namespace Colsp.Api.Controllers
                 SetupAttribute(attribute, request);
                 attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.Status = Constant.STATUS_ACTIVE;
+
+                var attributeVal = attribute.AttributeValueMaps.Select(s => s.AttributeValue).ToList();
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
                 {
-                    newList = new List<AttributeValue>();
+                    bool addNew = false;
                     foreach (AttributeValueRequest valRq in request.AttributeValues)
                     {
-                        if(valRq.AttributeValueId != null)
+                        if (attributeVal == null || attributeVal.Count == 0)
                         {
-                            db.AttributeValueMaps.RemoveRange(
-                                db.AttributeValueMaps.Where(w=>w.AttributeId==attribute.AttributeId
-                                &&w.AttributeValueId==valRq.AttributeValueId));
+                            addNew = true;
                         }
-
-                        AttributeValue value = new AttributeValue();
-                        value.AttributeValueEn = valRq.AttributeValueEn;
-                        value.AttributeValueTh = valRq.AttributeValueTh;
-                        value.Status = Constant.STATUS_ACTIVE;
-                        value.CreatedBy = this.User.UserRequest().Email;
-                        value.CreatedDt = DateTime.Now;
-                        value.UpdatedBy = this.User.UserRequest().Email;
-                        value.UpdatedDt = DateTime.Now;
-                        newList.Add(db.AttributeValues.Add(value));
+                        if (!addNew)
+                        {
+                            AttributeValue current = attributeVal.Where(w => w.AttributeValueId == valRq.AttributeValueId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                current.AttributeValueEn = valRq.AttributeValueEn;
+                                current.AttributeValueTh = valRq.AttributeValueTh;
+                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedDt = DateTime.Now;
+                                attributeVal.Remove(current);
+                            }
+                            else
+                            {
+                                addNew = true;
+                            }
+                        }
+                        if (addNew)
+                        {
+                            AttributeValue value = new AttributeValue();
+                            value.AttributeValueEn = valRq.AttributeValueEn;
+                            value.AttributeValueTh = valRq.AttributeValueTh;
+                            value.MapValue = string.Concat("((", value.AttributeValueId, "))");
+                            value.Status = Constant.STATUS_ACTIVE;
+                            value.CreatedBy = this.User.UserRequest().Email;
+                            value.CreatedDt = DateTime.Now;
+                            value.UpdatedBy = this.User.UserRequest().Email;
+                            value.UpdatedDt = DateTime.Now;
+                            attribute.AttributeValueMaps.Add(new AttributeValueMap()
+                            {
+                                Attribute = attribute,
+                                AttributeValue = value,
+                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedDt = DateTime.Now,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now,
+                            });
+                        }
                     }
+                }
+                if(attributeVal != null && attributeVal.Count > 0)
+                {
+                    db.AttributeValues.RemoveRange(attributeVal);
                 }
                 db.SaveChanges();
-                if(newList != null && newList.Count > 0)
-                {
-                    foreach (AttributeValue val in newList)
-                    {
-                        AttributeValueMap map = new AttributeValueMap();
-                        map.AttributeId = attribute.AttributeId;
-                        map.AttributeValueId = val.AttributeValueId;
-                        map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.UserRequest().Email;
-                        map.UpdatedDt = DateTime.Now;
-                        db.AttributeValueMaps.Add(map);
-                    }
-                    db.SaveChanges();
-                }
                 return GetAttribute(attribute.AttributeId);
             }
             catch (DbUpdateException e)
@@ -288,13 +297,13 @@ namespace Colsp.Api.Controllers
                     if((current.ProductStageAttributes != null && current.ProductStageAttributes.Count > 0 )
                         || (current.ProductStageVariantArrtibuteMaps != null && current.ProductStageVariantArrtibuteMaps.Count > 0))
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,"Attribute has product or variant associate");
+                        throw new Exception("Attribute has product or variant associate");
                     }
                     if (current.AttributeValueMaps != null && current.AttributeValueMaps.Count > 0)
                     {
 
                     }
-                    current.Status = Constant.STATUS_REMOVE;
+                    db.Attributes.Remove(current);
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -386,6 +395,8 @@ namespace Colsp.Api.Controllers
                 attribute.VariantDataType = attr.VariantDataType;
                 attribute.VariantStatus = attr.VariantStatus;
                 attribute.AllowHtmlFlag = attr.AllowHtmlFlag;
+                attribute.Required = attr.Required;
+                attribute.Filterable = attr.Filterable;
                 attribute.Status = attr.Status;
 
                 if (attr.AttributeValueMaps != null && attr.AttributeValueMaps.Count > 0)
@@ -436,6 +447,8 @@ namespace Colsp.Api.Controllers
             attribute.VariantDataType = Validation.ValidateString(request.VariantDataType, "Variant Display Type", false, 2, true);
             attribute.VariantStatus = request.VariantStatus;
             attribute.AllowHtmlFlag = request.AllowHtmlFlag;
+            attribute.Filterable = request.Filterable;
+            attribute.Required = request.Required;
         }
 
         protected override void Dispose(bool disposing)

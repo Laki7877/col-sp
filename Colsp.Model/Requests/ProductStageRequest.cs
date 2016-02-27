@@ -80,8 +80,8 @@ namespace Colsp.Model.Requests
         public string DimensionUnit { get; set; }
         public decimal? Weight { get; set; }
         public string WeightUnit { get; set; }
-        public decimal? OriginalPrice { get; set; }
-        public decimal? SalePrice { get; set; }
+        public decimal OriginalPrice { get; set; }
+        public decimal SalePrice { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortTh { get; set; }

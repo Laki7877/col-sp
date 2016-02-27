@@ -36,13 +36,11 @@ namespace Colsp.Entity.Models
         public string Sku { get; set; }
         public string Upc { get; set; }
         public decimal OriginalPrice { get; set; }
-        public Nullable<decimal> SalePrice { get; set; }
+        public decimal SalePrice { get; set; }
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
-        public Nullable<int> Stock { get; set; }
-        public Nullable<int> SafetyStock { get; set; }
         public Nullable<int> ShippingId { get; set; }
         public string FeatureImgUrl { get; set; }
         public string Tag { get; set; }

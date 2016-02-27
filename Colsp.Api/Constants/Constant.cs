@@ -23,7 +23,7 @@ namespace Colsp.Api.Constants
         public static readonly string PRODUCT_STATUS_WAIT_FOR_APPROVAL = "WA";
         public static readonly string PRODUCT_STATUS_JUNK = "JU";
         public static readonly string PRODUCT_STATUS_APPROVE = "AP";
-        public static readonly string PRODUCT_STATUS_NOT_APPROVE = "NP";
+        public static readonly string PRODUCT_STATUS_NOT_APPROVE = "RJ";
 
 
         public static readonly string USER_TYPE_ADMIN = "A";
@@ -34,5 +34,9 @@ namespace Colsp.Api.Constants
         public static readonly string COUPON_FILTER_EXCLUDE = "E";
 
         public static int SHOP_OWNER_GROUP_ID = 2;
+
+        public static string SHOP_GROUP_BU = "BU";
+        public static string SHOP_GROUP_INDY = "IN";
+        public static string SHOP_GROUP_SELLER = "SE";
     }
 }

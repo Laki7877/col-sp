@@ -13,6 +13,7 @@ using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Constants;
+using System.Data.SqlClient;
 
 namespace Colsp.Api.Controllers
 {
@@ -31,16 +32,19 @@ namespace Colsp.Api.Controllers
                     {
                         s.ShopTypeId,
                         s.ShopTypeNameEn,
-                        s.ShopTypeNameTh,
                         Permission = s.ShopTypePermissionMaps.Select(p=> new { p.Permission.PermissionId,p.Permission.PermissionName,p.Permission.PermissionGroup}),
                         s.UpdatedDt,
                         ShopCount = s.Shops.Count
-                    }).OrderBy(o=>o.ShopTypeId);
+                    });
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, shopTypeList);
                 }
                 request.DefaultOnNull();
+                if (!string.IsNullOrWhiteSpace(request.SearchText))
+                {
+                    shopTypeList = shopTypeList.Where(w => w.ShopTypeNameEn.Contains(request.SearchText));
+                }
                 var total = shopTypeList.Count();
                 var pagedUsers = shopTypeList.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedUsers, request, total);
@@ -64,7 +68,6 @@ namespace Colsp.Api.Controllers
                     {
                         s.ShopTypeId,
                         s.ShopTypeNameEn,
-                        s.ShopTypeNameTh,
                         Permission = s.ShopTypePermissionMaps.Select(p => new { p.Permission.PermissionId, p.Permission.PermissionName, p.Permission.PermissionGroup })
                     }).ToList();
                 if(shopTypeList == null || shopTypeList.Count == 0)
@@ -83,17 +86,17 @@ namespace Colsp.Api.Controllers
         [HttpPost]
         public HttpResponseMessage AddShopType(ShopTypeRequest request)
         {
-            ShopType ShopType = null;
+            ShopType shopType = null;
             try
             {
-                ShopType = new ShopType();
-                ShopType.ShopTypeNameEn = request.ShopTypeNameEn;
-                ShopType.Status = Constant.STATUS_ACTIVE;
-                ShopType.CreatedBy = this.User.UserRequest().Email;
-                ShopType.CreatedDt = DateTime.Now;
-                ShopType.UpdatedBy = this.User.UserRequest().Email;
-                ShopType.UpdatedDt = DateTime.Now;
-                db.ShopTypes.Add(ShopType);
+                shopType = new ShopType();
+                shopType.ShopTypeNameEn = request.ShopTypeNameEn;
+                shopType.Status = Constant.STATUS_ACTIVE;
+                shopType.CreatedBy = this.User.UserRequest().Email;
+                shopType.CreatedDt = DateTime.Now;
+                shopType.UpdatedBy = this.User.UserRequest().Email;
+                shopType.UpdatedDt = DateTime.Now;
+                db.ShopTypes.Add(shopType);
                 db.SaveChanges();
                 if (request.Permission != null)
                 {
@@ -105,7 +108,7 @@ namespace Colsp.Api.Controllers
                         }
                         ShopTypePermissionMap map = new ShopTypePermissionMap();
                         map.PermissionId = perm.PermissionId.Value;
-                        map.ShopTypeId = ShopType.ShopTypeId;
+                        map.ShopTypeId = shopType.ShopTypeId;
                         map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
                         map.UpdatedBy = this.User.UserRequest().Email;
@@ -114,13 +117,30 @@ namespace Colsp.Api.Controllers
                     }
                     db.SaveChanges();
                 }
-                return GetShopType(ShopType.ShopTypeId);
+                return GetShopType(shopType.ShopTypeId);
+            }
+            catch (DbUpdateException e)
+            {
+                if (shopType != null && shopType.ShopTypeId != 0)
+                {
+                    db.ShopTypes.Remove(shopType);
+                }
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    SqlException error = ((SqlException)e.InnerException.InnerException);
+                    if (error.Number == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                              , "This role name has already been used. Please enter a different role name.");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
-                if (ShopType != null && ShopType.ShopTypeId != 0)
+                if (shopType != null && shopType.ShopTypeId != 0)
                 {
-                    db.ShopTypes.Remove(ShopType);
+                    db.ShopTypes.Remove(shopType);
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
@@ -182,6 +202,19 @@ namespace Colsp.Api.Controllers
                 db.SaveChanges();
                 return GetShopType(shopType.ShopTypeId);
             }
+            catch (DbUpdateException e)
+            {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    SqlException error = ((SqlException)e.InnerException.InnerException);
+                    if (error.Number == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                              , "This role name has already been used. Please enter a different role name.");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
             catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
@@ -194,19 +227,17 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                foreach (ShopTypeRequest shopTypeRq in request)
+                if(request == null)
                 {
-                    if (shopTypeRq.ShopTypeId == null)
-                    {
-                        throw new Exception("Shop type id cannot be null");
-                    }
-                    var shopType = db.ShopTypes.Find(shopTypeRq.ShopTypeId.Value);
-                    if (shopType == null)
-                    {
-                        throw new Exception("Cannot find user " + shopTypeRq.ShopTypeId.Value);
-                    }
-                    db.ShopTypes.Remove(shopType);
+                    throw new Exception("Invalid request");
                 }
+                var shopTypeIds = request.Where(w => w.ShopTypeId != null).Select(s => s.ShopTypeId).ToList();
+                var shopTypes = db.ShopTypes.Where(w => shopTypeIds.Contains(w.ShopTypeId)).ToList();
+                if(shopTypes == null || shopTypes.Count == 0)
+                {
+                    throw new Exception("No deleted shop type found");
+                }
+                db.ShopTypes.RemoveRange(shopTypes);
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

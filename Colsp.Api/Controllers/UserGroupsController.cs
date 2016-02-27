@@ -20,6 +20,33 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
 
         [Route("api/UserGroups/Seller")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteUserGroupSeller(List<UserGroupRequest> request)
+        {
+
+            try
+            {
+                if (request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var userGroupIds = request.Where(w => w.GroupId != null).Select(s => s.GroupId.Value).ToList();
+                var usrGrp = db.UserGroups.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && userGroupIds.Contains(w.GroupId)).ToList();
+                if (usrGrp == null || usrGrp.Count == 0)
+                {
+                    throw new Exception("No deleted user group found");
+                }
+                db.UserGroups.RemoveRange(usrGrp);
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/UserGroups/Seller")]
         [HttpGet]
         public HttpResponseMessage GetUserGroupSeller([FromUri] UserGroupRequest request)
         {
@@ -97,7 +124,20 @@ namespace Colsp.Api.Controllers
             UserGroup usrGrp = null;
             try
             {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var shopId = this.User.ShopRequest().ShopId.Value;
                 usrGrp = new UserGroup();
+                usrGrp.GroupNameEn = Validation.ValidateString(request.GroupNameEn, "Role Name", true, 100, true);
+                var usrGroupEntity = db.UserGroups.Where(w => w.GroupNameEn.Equals(usrGrp.GroupNameEn) 
+                    && w.Type.Equals(Constant.USER_TYPE_SELLER) 
+                    && w.ShopUserGroupMaps.Any(a=>a.ShopId == shopId)).FirstOrDefault();
+                if (usrGroupEntity != null)
+                {
+                    throw new Exception("This role name has already been used. Please enter a different role name.");
+                }
                 usrGrp.GroupNameEn = request.GroupNameEn;
                 usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.Status = Constant.STATUS_ACTIVE;
@@ -107,7 +147,7 @@ namespace Colsp.Api.Controllers
                 usrGrp.UpdatedBy = this.User.UserRequest().Email;
                 usrGrp.UpdatedDt = DateTime.Now;
                 db.UserGroups.Add(usrGrp);
-                db.SaveChanges();
+                //db.SaveChanges();
                 if (request.Permission != null)
                 {
                     foreach (PermissionRequest perm in request.Permission)
@@ -123,20 +163,22 @@ namespace Colsp.Api.Controllers
                         map.CreatedDt = DateTime.Now;
                         map.UpdatedBy = this.User.UserRequest().Email;
                         map.UpdatedDt = DateTime.Now;
-                        db.UserGroupPermissionMaps.Add(map);
+                        usrGrp.UserGroupPermissionMaps.Add(map);
+                        //db.UserGroupPermissionMaps.Add(map);
                     }
                     
                 }
                 ShopUserGroupMap shopMap = new ShopUserGroupMap();
                 shopMap.GroupId = usrGrp.GroupId;
-                shopMap.ShopId = this.User.ShopRequest().ShopId.Value;
+                shopMap.ShopId = shopId;
                 shopMap.CreatedBy = this.User.UserRequest().Email;
                 shopMap.CreatedDt = DateTime.Now;
                 shopMap.UpdatedBy = this.User.UserRequest().Email;
                 shopMap.UpdatedDt = DateTime.Now;
-                db.ShopUserGroupMaps.Add(shopMap);
+                usrGrp.ShopUserGroupMaps.Add(shopMap);
+                //db.ShopUserGroupMaps.Add(shopMap);
                 db.SaveChanges();
-                return GetUserGroupAdmin(usrGrp.GroupId);
+                return GetUserGroupSeller(usrGrp.GroupId);
             }
             catch (Exception e)
             {
@@ -156,15 +198,10 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = this.User.ShopRequest().ShopId;
-                var tmp = db.UserGroups.Where(w => w.GroupId == usergroupid && w.ShopUserGroupMaps.Any(a => a.ShopId == shopId)).SingleOrDefault();
-                var usrGrp = db.UserGroups.Find(usergroupid);
+                var usrGrp = db.UserGroups.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && w.GroupId == usergroupid && w.ShopUserGroupMaps.Any(a => a.ShopId == shopId)).SingleOrDefault();
                 if (usrGrp == null || usrGrp.Status.Equals(Constant.STATUS_REMOVE))
                 {
                     throw new Exception("User group not found");
-                }
-                if (!usrGrp.Type.Equals(Constant.USER_TYPE_ADMIN))
-                {
-                    throw new Exception("This user group is not admin");
                 }
                 usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.GroupNameEn = request.GroupNameEn;
@@ -210,7 +247,7 @@ namespace Colsp.Api.Controllers
                     db.UserGroupPermissionMaps.RemoveRange(mapList);
                 }
                 db.SaveChanges();
-                return GetUserGroupAdmin(usrGrp.GroupId);
+                return GetUserGroupSeller(usrGrp.GroupId);
             }
             catch (Exception e)
             {
@@ -337,25 +374,16 @@ namespace Colsp.Api.Controllers
         [HttpDelete]
         public HttpResponseMessage DeleteUserGroupAdmin(List<UserGroupRequest> request)
         {
+
             try
             {
-                foreach (UserGroupRequest userGrpRq in request)
+                if (request == null)
                 {
-                    if (userGrpRq.GroupId == null)
-                    {
-                        throw new Exception("User group id cannot be null");
-                    }
-                    var usrGrp = db.UserGroups.Find(userGrpRq.GroupId.Value);
-                    if (usrGrp == null)
-                    {
-                        throw new Exception("Cannot find user " + userGrpRq.GroupId.Value);
-                    }
-                    if (!usrGrp.Type.Equals(Constant.USER_TYPE_ADMIN))
-                    {
-                        throw new Exception("Cannot deleted non admin user " + userGrpRq.GroupId.Value);
-                    }
-                    db.UserGroups.Remove(usrGrp);
+                    throw new Exception("Invalid request");
                 }
+                var userGroupIds = request.Where(w => w.GroupId != null).Select(s => s.GroupId.Value).ToList();
+                var usrGrp = db.UserGroups.Where(w => Constant.USER_TYPE_ADMIN.Equals(w.Type) && userGroupIds.Contains(w.GroupId));
+                db.UserGroups.RemoveRange(usrGrp);
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -364,7 +392,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/UserGroups/Admin/{usergroupid}")]
         [HttpPut]
