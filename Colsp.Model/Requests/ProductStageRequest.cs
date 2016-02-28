@@ -93,11 +93,13 @@ namespace Colsp.Model.Requests
         public int? VariantId { get; set; }
         public bool? Visibility { get; set; }
         public bool? IsVariant { get; set; }
+        public SEORequest SEO { get; set; }
         public List<ImageRequest> MasterImg { get; set; }
         public List<ImageRequest> VariantImg { get; set; }
 
         public VariantRequest()
         {
+            SEO = new SEORequest();
             FirstAttribute = new AttributeRequest();
             SecondAttribute = new AttributeRequest();
             Images = new List<ImageRequest>();

@@ -36,13 +36,19 @@ namespace Colsp.Entity.Models
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
         public string VideoLink { get; set; }
-        public string ShippingMethod { get; set; }
         public decimal Length { get; set; }
         public decimal Height { get; set; }
         public decimal Width { get; set; }
         public string DimensionUnit { get; set; }
         public decimal Weight { get; set; }
         public string WeightUnit { get; set; }
+        public string MetaTitleEn { get; set; }
+        public string MetaTitleTh { get; set; }
+        public string MetaDescriptionEn { get; set; }
+        public string MetaDescriptionTh { get; set; }
+        public string MetaKeyEn { get; set; }
+        public string MetaKeyTh { get; set; }
+        public string UrlEn { get; set; }
         public Nullable<bool> DefaultVaraint { get; set; }
         public bool Visibility { get; set; }
         public string Status { get; set; }

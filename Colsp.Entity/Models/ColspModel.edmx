@@ -1117,13 +1117,19 @@
           <Property Name="DescriptionFullTh" Type="ntext" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="VideoLink" Type="nvarchar" MaxLength="2083" />
-          <Property Name="ShippingMethod" Type="char" MaxLength="10" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="DimensionUnit" Type="char" MaxLength="2" />
           <Property Name="Weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="WeightUnit" Type="char" MaxLength="2" />
+          <Property Name="MetaTitleEn" Type="nvarchar" MaxLength="60" />
+          <Property Name="MetaTitleTh" Type="nvarchar" MaxLength="60" />
+          <Property Name="MetaDescriptionEn" Type="nvarchar" MaxLength="150" />
+          <Property Name="MetaDescriptionTh" Type="nvarchar" MaxLength="150" />
+          <Property Name="MetaKeyEn" Type="nvarchar" MaxLength="630" />
+          <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" />
+          <Property Name="UrlEn" Type="nvarchar" MaxLength="300" />
           <Property Name="DefaultVaraint" Type="bit" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
@@ -2310,7 +2316,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageLocalCatMapProduct">
-          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ProductStageLocalCatMap" Type="Self.ProductStageLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
@@ -4574,13 +4582,19 @@
           <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="VideoLink" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
-          <Property Name="ShippingMethod" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="DimensionUnit" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="Weight" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="WeightUnit" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="MetaTitleEn" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitleTh" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionEn" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionTh" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyEn" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyTh" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="UrlEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DefaultVaraint" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -5730,7 +5744,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductStageLocalCatMapProduct">
-          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1" />
+          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductStageLocalCatMap" Role="ProductStageLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
@@ -7166,13 +7182,19 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="DefaultVaraint" ColumnName="DefaultVaraint" />
+                <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
+                <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />
+                <ScalarProperty Name="MetaKeyEn" ColumnName="MetaKeyEn" />
+                <ScalarProperty Name="MetaDescriptionTh" ColumnName="MetaDescriptionTh" />
+                <ScalarProperty Name="MetaDescriptionEn" ColumnName="MetaDescriptionEn" />
+                <ScalarProperty Name="MetaTitleTh" ColumnName="MetaTitleTh" />
+                <ScalarProperty Name="MetaTitleEn" ColumnName="MetaTitleEn" />
                 <ScalarProperty Name="WeightUnit" ColumnName="WeightUnit" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
                 <ScalarProperty Name="DimensionUnit" ColumnName="DimensionUnit" />
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
-                <ScalarProperty Name="ShippingMethod" ColumnName="ShippingMethod" />
                 <ScalarProperty Name="VideoLink" ColumnName="VideoLink" />
                 <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
                 <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />

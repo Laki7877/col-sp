@@ -72,7 +72,9 @@ namespace Colsp.Model.Requests
         public bool AttributeSet { get; set; }
         public bool VariantOption01 { get; set; }
         public bool VariantOption02 { get; set; }
-        public bool FlagControl { get; set; }
+        public bool FlagControl1 { get; set; }
+        public bool FlagControl2 { get; set; }
+        public bool FlagControl3 { get; set; }
 
         //List of selected product to be exported
         public List<ProductStageRequest> ProductList { get; set; }

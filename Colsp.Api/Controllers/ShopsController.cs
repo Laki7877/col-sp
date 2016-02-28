@@ -20,6 +20,7 @@ using System.IO;
 using System.Web;
 using System.Configuration;
 using System.Data.Entity.SqlServer;
+using Colsp.Api.Services;
 
 namespace Colsp.Api.Controllers
 {
@@ -183,7 +184,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
         [Route("api/Shop/Profile")]
         [HttpGet]
         public HttpResponseMessage GetShopProfile()
@@ -212,7 +212,8 @@ namespace Colsp.Api.Controllers
                         s.FloatMessageTh,
                         GiftWrap = s.GiftWrap == true ? "Available" : "NotAvailable",
                         TaxInvoice = s.TaxInvoice == true ? "Available" : "NotAvailable",
-                        Logo = new ImageRequest { url=s.ShopImageUrl }
+                        Logo = new ImageRequest { url=s.ShopImageUrl },
+                        s.Status
                     }).ToList();
                 if (shop == null || shop.Count == 0)
                 {
@@ -225,7 +226,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/Shop/Profile")]
         [HttpPut]
@@ -261,6 +261,7 @@ namespace Colsp.Api.Controllers
                 shop.Pinterest = request.Pinterest;
                 shop.Twitter = request.Twitter;
                 shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, Int32.MaxValue, 0).Value;
+                shop.Status = request.Status;
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 if(request.Logo != null)
@@ -273,6 +274,7 @@ namespace Colsp.Api.Controllers
                 }
                 
                 db.SaveChanges();
+                Cache.Delete(Request.Headers.Authorization.Parameter);
                 return GetShopProfile();
             }
             catch (Exception e)
@@ -280,7 +282,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/ShopsSeller")]
         [HttpGet]
@@ -595,7 +596,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
 
         //[Route("api/Shops/{sellerId}/ProductStages")]

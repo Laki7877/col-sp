@@ -20,6 +20,7 @@ using System.Security.Claims;
 using Colsp.Api.Security;
 using System.Data.SqlClient;
 using System.Data.Entity.SqlServer;
+using System.Text;
 
 namespace Colsp.Api.Controllers
 {
@@ -741,33 +742,26 @@ namespace Colsp.Api.Controllers
                 if (this.User.ShopRequest() != null)
                 {
                     userList = db.Users.Where(w => w.Email.Equals(email) && w.Password.Equals(request.Password)).ToList();
-                    if (userList == null || userList.Count == 0)
-                    {
-                        throw new Exception("User and password not match");
-                    }
-                    if (string.IsNullOrWhiteSpace(request.NewPassword))
-                    {
-                        throw new Exception("Password cannot be empty");
-                    }
-                    userList[0].Password = request.NewPassword;
-                    db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK);
                 }
                 else
                 {
-                    userList = db.Users.Where(w => w.Email.Equals(email)).ToList();
-                    if (userList == null || userList.Count == 0)
-                    {
-                        throw new Exception("User and password not match");
-                    }
-                    if (string.IsNullOrWhiteSpace(request.Password))
-                    {
-                        throw new Exception("Password cannot be empty");
-                    }
-                    userList[0].Password = request.Password;
-                    db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK);
+                    userList = db.Users.Where(w => w.Email.Equals(request.Email)).ToList();
                 }
+                if (userList == null || userList.Count == 0)
+                {
+                    throw new Exception("User and password not match");
+                }
+                if (string.IsNullOrWhiteSpace(request.NewPassword))
+                {
+                    throw new Exception("Password cannot be empty");
+                }
+                var bytes = Encoding.UTF8.GetBytes(string.Concat(userList[0].Email, ":", userList[0].Password));
+                string basicOld = Convert.ToBase64String(bytes);
+                userList[0].Password = request.NewPassword;
+                db.SaveChanges();
+                Cache.Delete(basicOld);
+                this.User.UserRequest().Password = userList[0].Password;
+                return Request.CreateResponse(HttpStatusCode.OK, Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Concat(userList[0].Email, ":", userList[0].Password))));
             }
             catch (Exception e)
             {

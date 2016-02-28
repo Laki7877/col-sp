@@ -208,7 +208,7 @@ namespace Colsp.Api.Controllers
                               from mast in mastJoin.DefaultIfEmpty()
                               join variant in db.ProductStageVariants on new { inv.Pid, ShopId = shopId } equals new { variant.Pid, variant.ShopId } into varJoin
                               from vari in varJoin.DefaultIfEmpty()
-                              where vari != null || (mast != null && mast.ProductStageVariants.Count == 0)
+                              where (vari != null && vari.Visibility == true) || (mast != null && mast.Visibility == true && mast.ProductStageVariants.Count == 0)
                               select new
                               {
                                   ProductId = mast != null ? mast.ProductId : vari.ProductId,
@@ -247,13 +247,13 @@ namespace Colsp.Api.Controllers
                     }
                     else if (string.Equals("OutOfStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        inven = inven.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SaftyStockSeller);
+                        inven = inven.Where(w => w.Quantity == 0);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
                     else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         inven = inven.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SaftyStockSeller 
-                        && (w.Quantity - w.Defect - w.OnHold - w.Reserve) > 0);
+                        && w.Quantity != 0);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
                 }

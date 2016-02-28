@@ -525,7 +525,7 @@ namespace Colsp.Api.Controllers
                     if (cat.ProductStages.Count != 0)
                     {
                         db.Dispose();
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, " Delete failed. You cannot delete categories with products inside.");
+                        throw new Exception("Cannot delete category <strong>" + cat.NameEn + "</strong> with product associated");
                     }
                     db.GlobalCategories.Remove(cat);
                 }
