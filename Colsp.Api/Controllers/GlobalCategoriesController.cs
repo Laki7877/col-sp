@@ -237,10 +237,9 @@ namespace Colsp.Api.Controllers
                 var setList = db.CategoryAttributeSetMaps.Where(w => w.CategoryId == categoryId).ToList();
                 if (request.AttributeSets != null && request.AttributeSets.Count > 0)
                 {
-                    bool addNew = false;
-
                     foreach (AttributeSetRequest mapRq in request.AttributeSets)
                     {
+                        bool addNew = false;
                         if (setList == null || setList.Count == 0)
                         {
                             addNew = true;

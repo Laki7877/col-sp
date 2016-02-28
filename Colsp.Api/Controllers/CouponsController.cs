@@ -402,12 +402,12 @@ namespace Colsp.Api.Controllers
                 var excludeList = coupon.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).ToList();
                 if (request.Conditions != null)
                 {
-                    
                     if (request.Conditions.Order != null && request.Conditions.Order.Count > 0)
                     {
-                        bool addNew = false;
+                       
                         foreach (OrderRequest o in request.Conditions.Order)
                         {
+                            bool addNew = false;
                             if (orderList == null || orderList.Count == 0)
                             {
                                 addNew = true;
@@ -448,10 +448,10 @@ namespace Colsp.Api.Controllers
                         {
                             if (request.Conditions.FilterBy.Brands != null && request.Conditions.FilterBy.Brands.Count > 0)
                             {
-                                bool addNew = false;
+                               
                                 foreach (BrandRequest b in request.Conditions.FilterBy.Brands)
                                 {
-
+                                    bool addNew = false;
                                     if (brandList == null || brandList.Count == 0)
                                     {
                                         addNew = true;
@@ -488,10 +488,10 @@ namespace Colsp.Api.Controllers
                         {
                             if (request.Conditions.FilterBy.Emails != null && request.Conditions.FilterBy.Emails.Count > 0)
                             {
-                                bool addNew = false;
+                                
                                 foreach (String e in request.Conditions.FilterBy.Emails)
                                 {
-
+                                    bool addNew = false;
                                     if (customerList == null || customerList.Count == 0)
                                     {
                                         addNew = true;
@@ -529,9 +529,10 @@ namespace Colsp.Api.Controllers
                             
                             if (request.Conditions.FilterBy.GlobalCategories != null && request.Conditions.FilterBy.GlobalCategories.Count > 0)
                             {
-                                bool addNew = false;
+                                
                                 foreach (CategoryRequest c in request.Conditions.FilterBy.GlobalCategories)
                                 {
+                                    bool addNew = false;
                                     if (globalCatList == null || globalCatList.Count == 0)
                                     {
                                         addNew = true;
@@ -569,9 +570,10 @@ namespace Colsp.Api.Controllers
                         {
                             if (request.Conditions.FilterBy.LocalCategories != null && request.Conditions.FilterBy.LocalCategories.Count > 0)
                             {
-                                bool addNew = false;
+                               
                                 foreach (CategoryRequest c in request.Conditions.FilterBy.LocalCategories)
                                 {
+                                    bool addNew = false;
                                     if (localCatList == null || localCatList.Count == 0)
                                     {
                                         addNew = true;
@@ -609,9 +611,10 @@ namespace Colsp.Api.Controllers
                             
                             if (request.Conditions.FilterBy.Shops != null && request.Conditions.FilterBy.Shops.Count > 0)
                             {
-                                bool addNew = false;
+                               
                                 foreach (ShopRequest s in request.Conditions.FilterBy.Shops)
                                 {
+                                    bool addNew = false;
                                     if (shopList == null || shopList.Count == 0)
                                     {
                                         addNew = true;
@@ -646,9 +649,10 @@ namespace Colsp.Api.Controllers
                         }
                         if (request.Conditions.Include != null && request.Conditions.Include.Count > 0)
                         {
-                            bool addNew = false;
+                            
                             foreach (string pid in request.Conditions.Include)
                             {
+                                bool addNew = false;
                                 if (includeList == null || includeList.Count == 0)
                                 {
                                     addNew = true;
@@ -683,10 +687,10 @@ namespace Colsp.Api.Controllers
                         }
                         if (request.Conditions.Exclude != null && request.Conditions.Exclude.Count > 0)
                         {
-                            bool addNew = false;
+                            
                             foreach (string pid in request.Conditions.Exclude)
                             {
-
+                                bool addNew = false;
                                 if (excludeList == null || excludeList.Count == 0)
                                 {
                                     addNew = true;

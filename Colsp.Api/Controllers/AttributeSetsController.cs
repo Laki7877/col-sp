@@ -240,7 +240,6 @@ namespace Colsp.Api.Controllers
                     {
                         foreach (AttributeRequest attrRq in request.Attributes)
                         {
-
                             bool addNew = false;
                             if (mapList == null || mapList.Count == 0)
                             {

@@ -201,9 +201,9 @@ namespace Colsp.Api.Controllers
                 var attributeVal = attribute.AttributeValueMaps.Select(s => s.AttributeValue).ToList();
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
                 {
-                    bool addNew = false;
                     foreach (AttributeValueRequest valRq in request.AttributeValues)
                     {
+                        bool addNew = false;
                         if (attributeVal == null || attributeVal.Count == 0)
                         {
                             addNew = true;

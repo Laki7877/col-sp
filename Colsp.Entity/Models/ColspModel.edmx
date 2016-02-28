@@ -1130,6 +1130,7 @@
           <Property Name="MetaKeyEn" Type="nvarchar" MaxLength="630" />
           <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" />
           <Property Name="UrlEn" Type="nvarchar" MaxLength="300" />
+          <Property Name="BoostWeight" Type="int" />
           <Property Name="DefaultVaraint" Type="bit" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
@@ -4595,6 +4596,7 @@
           <Property Name="MetaKeyEn" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="MetaKeyTh" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="UrlEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BoostWeight" Type="Int32" />
           <Property Name="DefaultVaraint" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -7182,6 +7184,7 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="DefaultVaraint" ColumnName="DefaultVaraint" />
+                <ScalarProperty Name="BoostWeight" ColumnName="BoostWeight" />
                 <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
                 <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />
                 <ScalarProperty Name="MetaKeyEn" ColumnName="MetaKeyEn" />

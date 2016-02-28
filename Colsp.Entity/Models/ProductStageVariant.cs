@@ -49,6 +49,7 @@ namespace Colsp.Entity.Models
         public string MetaKeyEn { get; set; }
         public string MetaKeyTh { get; set; }
         public string UrlEn { get; set; }
+        public Nullable<int> BoostWeight { get; set; }
         public Nullable<bool> DefaultVaraint { get; set; }
         public bool Visibility { get; set; }
         public string Status { get; set; }
