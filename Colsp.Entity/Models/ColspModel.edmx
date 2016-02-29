@@ -82,6 +82,7 @@
           <Property Name="AttributeValueId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeValueTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="MapValue" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -158,6 +159,33 @@
           <Property Name="ShortDescriptionTh" Type="nvarchar" MaxLength="300" />
           <Property Name="LongDescriptionTh" Type="ntext" />
           <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSBy1Get1Item">
+          <Key>
+            <PropertyRef Name="CMSBy1Get1ItemId" />
+          </Key>
+          <Property Name="CMSBy1Get1ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="NameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="URLKey" Type="nvarchar" MaxLength="300" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="ShortDetailTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShortDetailEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="500" />
+          <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="500" />
+          <Property Name="CMSStatusFlowId" Type="int" />
+          <Property Name="Status" Type="int" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="Createdate" Type="datetime" />
           <Property Name="UpdateBy" Type="int" />
@@ -333,13 +361,12 @@
           <Property Name="CouponUsed" Type="int" />
           <Property Name="StartDate" Type="datetime" />
           <Property Name="ExpireDate" Type="datetime" />
+          <Property Name="Action" Type="varchar" MaxLength="50" />
           <Property Name="DiscountAmount" Type="money" />
           <Property Name="MaximumAmount" Type="money" />
-          <Property Name="UserPerCustomer" Type="int" />
+          <Property Name="UsagePerCustomer" Type="int" />
           <Property Name="MaximumUser" Type="int" />
-          <Property Name="CriteriaId" Type="int" />
-          <Property Name="CriteriaPrice" Type="money" />
-          <Property Name="FilterBy" Type="int" />
+          <Property Name="FilterBy" Type="varchar" MaxLength="50" />
           <Property Name="CouponType" Type="char" MaxLength="1" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
@@ -364,9 +391,21 @@
           <Key>
             <PropertyRef Name="ConditionId" />
           </Key>
-          <Property Name="ConditionId" Type="int" Nullable="false" />
+          <Property Name="ConditionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ConditionType" Type="char" MaxLength="1" />
           <Property Name="ConditionName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CouponCustomerMap">
+          <Key>
+            <PropertyRef Name="CouponId" />
+            <PropertyRef Name="Email" />
+          </Key>
+          <Property Name="CouponId" Type="int" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="CouponGlobalCatMap">
           <Key>
@@ -394,6 +433,19 @@
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="CouponOrder">
+          <Key>
+            <PropertyRef Name="CouponId" />
+            <PropertyRef Name="Criteria" />
+          </Key>
+          <Property Name="CouponId" Type="int" Nullable="false" />
+          <Property Name="Criteria" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CriteriaPrice" Type="money" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="CouponPidMap">
           <Key>
             <PropertyRef Name="CouponId" />
@@ -406,6 +458,35 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CouponShopMap">
+          <Key>
+            <PropertyRef Name="CouponId" />
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="CouponId" Type="int" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CreditCardType">
+          <Key>
+            <PropertyRef Name="CreditCardTypeId" />
+          </Key>
+          <Property Name="CreditCardTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreditCardTypeCode" Type="nvarchar" MaxLength="5" />
+          <Property Name="CreditCardTypeName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Digit" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -499,11 +580,11 @@
             <PropertyRef Name="Pid" />
           </Key>
           <Property Name="Pid" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Quantity" Type="int" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="QuantityOutStock" Type="int" />
-          <Property Name="Defect" Type="int" />
-          <Property Name="OnHold" Type="int" />
-          <Property Name="Reserve" Type="int" />
+          <Property Name="Defect" Type="int" Nullable="false" />
+          <Property Name="OnHold" Type="int" Nullable="false" />
+          <Property Name="Reserve" Type="int" Nullable="false" />
           <Property Name="MinQuantity" Type="int" />
           <Property Name="MaxQuantity" Type="int" />
           <Property Name="UseDecimal" Type="bit" />
@@ -958,10 +1039,10 @@
           </Key>
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="AttributeId" Type="int" Nullable="false" />
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Position" Type="int" />
           <Property Name="ValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="ValueTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="IsAttributeValue" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -1066,12 +1147,6 @@
           </Key>
           <Property Name="VariantId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProductId" Type="int" Nullable="false" />
-          <Property Name="Attribute1Id" Type="int" />
-          <Property Name="Attribute2Id" Type="int" />
-          <Property Name="ValueEn1" Type="nvarchar" MaxLength="300" />
-          <Property Name="ValueTh1" Type="nvarchar" MaxLength="300" />
-          <Property Name="ValueEn2" Type="nvarchar" MaxLength="300" />
-          <Property Name="ValueTh2" Type="nvarchar" MaxLength="300" />
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" />
           <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
@@ -1103,6 +1178,21 @@
           <Property Name="DefaultVaraint" Type="bit" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ProductStageVariantArrtibuteMap">
+          <Key>
+            <PropertyRef Name="VariantId" />
+            <PropertyRef Name="AttributeId" />
+            <PropertyRef Name="Value" />
+          </Key>
+          <Property Name="VariantId" Type="int" Nullable="false" />
+          <Property Name="AttributeId" Type="int" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="IsAttributeValue" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -1212,6 +1302,59 @@
           <Property Name="CMSStatusFlowId" Type="int" />
           <Property Name="Visibility" Type="bit" />
         </EntityType>
+        <EntityType Name="PromotionOnTopCreditCard">
+          <Key>
+            <PropertyRef Name="OnTopCreditCardId" />
+          </Key>
+          <Property Name="OnTopCreditCardId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="NameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="PaymantId" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="DiscountType" Type="nvarchar" MaxLength="5" />
+          <Property Name="FreeShipping" Type="bit" />
+          <Property Name="DiscountValue" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumOrderAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MaximumDiscountAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IconURLTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="IconURLEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="BankNameEN" Type="nvarchar" MaxLength="100" />
+          <Property Name="BankNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="PromotionCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditNumber">
+          <Key>
+            <PropertyRef Name="OnTopCreditNumberId" />
+          </Key>
+          <Property Name="OnTopCreditNumberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OnTopCreditCardId" Type="int" />
+          <Property Name="CreditCardTypeCode" Type="nvarchar" MaxLength="5" />
+          <Property Name="CreditNumberFormat" Type="nvarchar" MaxLength="20" />
+          <Property Name="Digit" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="Shipping">
           <Key>
             <PropertyRef Name="ShippingId" />
@@ -1247,7 +1390,7 @@
           <Property Name="Twitter" Type="nvarchar" MaxLength="500" />
           <Property Name="Instagram" Type="nvarchar" MaxLength="500" />
           <Property Name="Pinterest" Type="nvarchar" MaxLength="500" />
-          <Property Name="StockAlert" Type="int" />
+          <Property Name="StockAlert" Type="int" Nullable="false" />
           <Property Name="Commission" Type="decimal" Precision="10" Scale="2" />
           <Property Name="ShopTypeId" Type="int" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
@@ -1401,7 +1544,9 @@
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <Association Name="FK_AttributeSetTagMap_AttributeSet">
-          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1" />
+          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="AttributeSetTagMap" Type="Self.AttributeSetTagMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AttributeSet">
@@ -1424,30 +1569,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Coupon_CriteriaCondition">
-          <End Role="CouponCondition" Type="Self.CouponCondition" Multiplicity="0..1" />
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CouponCondition">
-              <PropertyRef Name="ConditionId" />
-            </Principal>
-            <Dependent Role="Coupon">
-              <PropertyRef Name="CriteriaId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Coupon_FilterCondition">
-          <End Role="CouponCondition" Type="Self.CouponCondition" Multiplicity="0..1" />
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CouponCondition">
-              <PropertyRef Name="ConditionId" />
-            </Principal>
-            <Dependent Role="Coupon">
-              <PropertyRef Name="FilterBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Coupon_Shop">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
           <End Role="Coupon" Type="Self.Coupon" Multiplicity="*" />
@@ -1461,7 +1582,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponBrandMap_Brand">
-          <End Role="Brand" Type="Self.Brand" Multiplicity="1" />
+          <End Role="Brand" Type="Self.Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponBrandMap" Type="Self.CouponBrandMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Brand">
@@ -1473,7 +1596,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponBrandMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponBrandMap" Type="Self.CouponBrandMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1484,8 +1609,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CouponCustomerMap_Coupon">
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CouponCustomerMap" Type="Self.CouponCustomerMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="CouponId" />
+            </Principal>
+            <Dependent Role="CouponCustomerMap">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CouponGlobalCatMap_Brand">
-          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponGlobalCatMap" Type="Self.CouponGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -1497,7 +1638,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponGlobalCatMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponGlobalCatMap" Type="Self.CouponGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1509,7 +1652,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponLocalCatMap_Brand">
-          <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1" />
+          <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponLocalCatMap" Type="Self.CouponLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LocalCategory">
@@ -1521,7 +1666,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponLocalCatMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponLocalCatMap" Type="Self.CouponLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1532,8 +1679,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CouponOrder_Coupon">
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CouponOrder" Type="Self.CouponOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="CouponId" />
+            </Principal>
+            <Dependent Role="CouponOrder">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CouponPidMap_Coupon">
-          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1" />
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CouponPidMap" Type="Self.CouponPidMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -1541,6 +1704,34 @@
             </Principal>
             <Dependent Role="CouponPidMap">
               <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CouponShopMap_Coupon">
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CouponShopMap" Type="Self.CouponShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="CouponId" />
+            </Principal>
+            <Dependent Role="CouponShopMap">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CouponShopMap_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CouponShopMap" Type="Self.CouponShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="CouponShopMap">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1648,8 +1839,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-<<<<<<< HEAD
-=======
         <Association Name="FK_ProductStageVariantArrtibuteMap_Attribute">
           <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
           <End Role="ProductStageVariantArrtibuteMap" Type="Self.ProductStageVariantArrtibuteMap" Multiplicity="*" />
@@ -1676,7 +1865,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
->>>>>>> f9f824da5d03a280be6ddf49683341252b5cacad
         <Association Name="FK_ProductStageVideo_Shop">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -2255,30 +2443,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKProductStageVariantAttribute1">
-          <End Role="Attribute" Type="Self.Attribute" Multiplicity="0..1" />
-          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Attribute">
-              <PropertyRef Name="AttributeId" />
-            </Principal>
-            <Dependent Role="ProductStageVariant">
-              <PropertyRef Name="Attribute1Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductStageVariantAttribute2">
-          <End Role="Attribute" Type="Self.Attribute" Multiplicity="0..1" />
-          <End Role="ProductStageVariant" Type="Self.ProductStageVariant" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Attribute">
-              <PropertyRef Name="AttributeId" />
-            </Principal>
-            <Dependent Role="ProductStageVariant">
-              <PropertyRef Name="Attribute2Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKProductStageVariantProduct">
           <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2459,6 +2623,7 @@
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSBrandInShop" EntityType="Self.CMSBrandInShop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSBy1Get1Item" EntityType="Self.CMSBy1Get1Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionGroup" EntityType="Self.CMSCollectionGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionItem" EntityType="Self.CMSCollectionItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionItemGroup" EntityType="Self.CMSCollectionItemGroup" Schema="dbo" store:Type="Tables" />
@@ -2471,9 +2636,13 @@
           <EntitySet Name="Coupon" EntityType="Self.Coupon" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponBrandMap" EntityType="Self.CouponBrandMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponCondition" EntityType="Self.CouponCondition" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CouponCustomerMap" EntityType="Self.CouponCustomerMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponGlobalCatMap" EntityType="Self.CouponGlobalCatMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponLocalCatMap" EntityType="Self.CouponLocalCatMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CouponOrder" EntityType="Self.CouponOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponPidMap" EntityType="Self.CouponPidMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CouponShopMap" EntityType="Self.CouponShopMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CreditCardType" EntityType="Self.CreditCardType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryAbbrevation" EntityType="Self.GlobalCategoryAbbrevation" Schema="dbo" store:Type="Tables" />
@@ -2507,10 +2676,13 @@
           <EntitySet Name="ProductStageLocalCatMap" EntityType="Self.ProductStageLocalCatMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageRelated" EntityType="Self.ProductStageRelated" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageVariant" EntityType="Self.ProductStageVariant" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductStageVariantArrtibuteMap" EntityType="Self.ProductStageVariantArrtibuteMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageVideo" EntityType="Self.ProductStageVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductVariant" EntityType="Self.ProductVariant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductVideo" EntityType="Self.ProductVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PromotionBuy1Get1Item" EntityType="Self.PromotionBuy1Get1Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PromotionOnTopCreditCard" EntityType="Self.PromotionOnTopCreditCard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PromotionOnTopCreditNumber" EntityType="Self.PromotionOnTopCreditNumber" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
@@ -2531,14 +2703,6 @@
             <End Role="Tag" EntitySet="Tag" />
             <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMap" />
           </AssociationSet>
-          <AssociationSet Name="FK_Coupon_CriteriaCondition" Association="Self.FK_Coupon_CriteriaCondition">
-            <End Role="CouponCondition" EntitySet="CouponCondition" />
-            <End Role="Coupon" EntitySet="Coupon" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Coupon_FilterCondition" Association="Self.FK_Coupon_FilterCondition">
-            <End Role="CouponCondition" EntitySet="CouponCondition" />
-            <End Role="Coupon" EntitySet="Coupon" />
-          </AssociationSet>
           <AssociationSet Name="FK_Coupon_Shop" Association="Self.FK_Coupon_Shop">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="Coupon" EntitySet="Coupon" />
@@ -2550,6 +2714,10 @@
           <AssociationSet Name="FK_CouponBrandMap_Coupon" Association="Self.FK_CouponBrandMap_Coupon">
             <End Role="Coupon" EntitySet="Coupon" />
             <End Role="CouponBrandMap" EntitySet="CouponBrandMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponCustomerMap_Coupon" Association="Self.FK_CouponCustomerMap_Coupon">
+            <End Role="Coupon" EntitySet="Coupon" />
+            <End Role="CouponCustomerMap" EntitySet="CouponCustomerMap" />
           </AssociationSet>
           <AssociationSet Name="FK_CouponGlobalCatMap_Brand" Association="Self.FK_CouponGlobalCatMap_Brand">
             <End Role="GlobalCategory" EntitySet="GlobalCategory" />
@@ -2567,9 +2735,21 @@
             <End Role="Coupon" EntitySet="Coupon" />
             <End Role="CouponLocalCatMap" EntitySet="CouponLocalCatMap" />
           </AssociationSet>
+          <AssociationSet Name="FK_CouponOrder_Coupon" Association="Self.FK_CouponOrder_Coupon">
+            <End Role="Coupon" EntitySet="Coupon" />
+            <End Role="CouponOrder" EntitySet="CouponOrder" />
+          </AssociationSet>
           <AssociationSet Name="FK_CouponPidMap_Coupon" Association="Self.FK_CouponPidMap_Coupon">
             <End Role="Coupon" EntitySet="Coupon" />
             <End Role="CouponPidMap" EntitySet="CouponPidMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponShopMap_Coupon" Association="Self.FK_CouponShopMap_Coupon">
+            <End Role="Coupon" EntitySet="Coupon" />
+            <End Role="CouponShopMap" EntitySet="CouponShopMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponShopMap_Shop" Association="Self.FK_CouponShopMap_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="CouponShopMap" EntitySet="CouponShopMap" />
           </AssociationSet>
           <AssociationSet Name="FK_GlobalCategoryPID_GlobalCategory" Association="Self.FK_GlobalCategoryPID_GlobalCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategory" />
@@ -2602,6 +2782,14 @@
           <AssociationSet Name="FK_ProductStageRelated_Shop" Association="Self.FK_ProductStageRelated_Shop">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductStageRelated" EntitySet="ProductStageRelated" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageVariantArrtibuteMap_Attribute" Association="Self.FK_ProductStageVariantArrtibuteMap_Attribute">
+            <End Role="Attribute" EntitySet="Attribute" />
+            <End Role="ProductStageVariantArrtibuteMap" EntitySet="ProductStageVariantArrtibuteMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageVariantArrtibuteMap_Variant" Association="Self.FK_ProductStageVariantArrtibuteMap_Variant">
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
+            <End Role="ProductStageVariantArrtibuteMap" EntitySet="ProductStageVariantArrtibuteMap" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductStageVideo_Shop" Association="Self.FK_ProductStageVideo_Shop">
             <End Role="Shop" EntitySet="Shop" />
@@ -2787,14 +2975,6 @@
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductStage" EntitySet="ProductStage" />
           </AssociationSet>
-          <AssociationSet Name="FKProductStageVariantAttribute1" Association="Self.FKProductStageVariantAttribute1">
-            <End Role="Attribute" EntitySet="Attribute" />
-            <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductStageVariantAttribute2" Association="Self.FKProductStageVariantAttribute2">
-            <End Role="Attribute" EntitySet="Attribute" />
-            <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
-          </AssociationSet>
           <AssociationSet Name="FKProductStageVariantProduct" Association="Self.FKProductStageVariantProduct">
             <End Role="ProductStage" EntitySet="ProductStage" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariant" />
@@ -2852,7 +3032,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ColspModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="ColspEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Attributes" EntityType="ColspModel.Attribute" />
           <EntitySet Name="AttributeSets" EntityType="ColspModel.AttributeSet" />
           <EntitySet Name="AttributeSetMaps" EntityType="ColspModel.AttributeSetMap" />
@@ -2862,6 +3042,7 @@
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="CMSBrandInShops" EntityType="ColspModel.CMSBrandInShop" />
+          <EntitySet Name="CMSBy1Get1Item" EntityType="ColspModel.CMSBy1Get1Item" />
           <EntitySet Name="CMSCollectionGroups" EntityType="ColspModel.CMSCollectionGroup" />
           <EntitySet Name="CMSCollectionItems" EntityType="ColspModel.CMSCollectionItem" />
           <EntitySet Name="CMSCollectionItemGroups" EntityType="ColspModel.CMSCollectionItemGroup" />
@@ -2874,9 +3055,13 @@
           <EntitySet Name="Coupons" EntityType="ColspModel.Coupon" />
           <EntitySet Name="CouponBrandMaps" EntityType="ColspModel.CouponBrandMap" />
           <EntitySet Name="CouponConditions" EntityType="ColspModel.CouponCondition" />
+          <EntitySet Name="CouponCustomerMaps" EntityType="ColspModel.CouponCustomerMap" />
           <EntitySet Name="CouponGlobalCatMaps" EntityType="ColspModel.CouponGlobalCatMap" />
           <EntitySet Name="CouponLocalCatMaps" EntityType="ColspModel.CouponLocalCatMap" />
+          <EntitySet Name="CouponOrders" EntityType="ColspModel.CouponOrder" />
           <EntitySet Name="CouponPidMaps" EntityType="ColspModel.CouponPidMap" />
+          <EntitySet Name="CouponShopMaps" EntityType="ColspModel.CouponShopMap" />
+          <EntitySet Name="CreditCardTypes" EntityType="ColspModel.CreditCardType" />
           <EntitySet Name="Customers" EntityType="ColspModel.Customer" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
@@ -2910,10 +3095,13 @@
           <EntitySet Name="ProductStageLocalCatMaps" EntityType="ColspModel.ProductStageLocalCatMap" />
           <EntitySet Name="ProductStageRelateds" EntityType="ColspModel.ProductStageRelated" />
           <EntitySet Name="ProductStageVariants" EntityType="ColspModel.ProductStageVariant" />
+          <EntitySet Name="ProductStageVariantArrtibuteMaps" EntityType="ColspModel.ProductStageVariantArrtibuteMap" />
           <EntitySet Name="ProductStageVideos" EntityType="ColspModel.ProductStageVideo" />
           <EntitySet Name="ProductVariants" EntityType="ColspModel.ProductVariant" />
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
           <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
+          <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
+          <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
           <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
@@ -2926,6 +3114,10 @@
           <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
           <EntitySet Name="UserShops" EntityType="ColspModel.UserShop" />
           <EntitySet Name="UserStatus" EntityType="ColspModel.UserStatu" />
+          <AssociationSet Name="FK_ProductStageVariantArrtibuteMap_Attribute" Association="ColspModel.FK_ProductStageVariantArrtibuteMap_Attribute">
+            <End Role="Attribute" EntitySet="Attributes" />
+            <End Role="ProductStageVariantArrtibuteMap" EntitySet="ProductStageVariantArrtibuteMaps" />
+          </AssociationSet>
           <AssociationSet Name="FKAttributeSetMapAttribute" Association="ColspModel.FKAttributeSetMapAttribute">
             <End Role="Attribute" EntitySet="Attributes" />
             <End Role="AttributeSetMap" EntitySet="AttributeSetMaps" />
@@ -2949,14 +3141,6 @@
           <AssociationSet Name="FKProductStageAttributeAttribute" Association="ColspModel.FKProductStageAttributeAttribute">
             <End Role="Attribute" EntitySet="Attributes" />
             <End Role="ProductStageAttribute" EntitySet="ProductStageAttributes" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductStageVariantAttribute1" Association="ColspModel.FKProductStageVariantAttribute1">
-            <End Role="Attribute" EntitySet="Attributes" />
-            <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductStageVariantAttribute2" Association="ColspModel.FKProductStageVariantAttribute2">
-            <End Role="Attribute" EntitySet="Attributes" />
-            <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
           </AssociationSet>
           <AssociationSet Name="FKProductVariantAttribute1" Association="ColspModel.FKProductVariantAttribute1">
             <End Role="Attribute" EntitySet="Attributes" />
@@ -3018,14 +3202,6 @@
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="CategoryAttributeSetMap" EntitySet="CategoryAttributeSetMaps" />
           </AssociationSet>
-          <AssociationSet Name="FK_Coupon_CriteriaCondition" Association="ColspModel.FK_Coupon_CriteriaCondition">
-            <End Role="CouponCondition" EntitySet="CouponConditions" />
-            <End Role="Coupon" EntitySet="Coupons" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Coupon_FilterCondition" Association="ColspModel.FK_Coupon_FilterCondition">
-            <End Role="CouponCondition" EntitySet="CouponConditions" />
-            <End Role="Coupon" EntitySet="Coupons" />
-          </AssociationSet>
           <AssociationSet Name="FK_Coupon_Shop" Association="ColspModel.FK_Coupon_Shop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="Coupon" EntitySet="Coupons" />
@@ -3033,6 +3209,10 @@
           <AssociationSet Name="FK_CouponBrandMap_Coupon" Association="ColspModel.FK_CouponBrandMap_Coupon">
             <End Role="Coupon" EntitySet="Coupons" />
             <End Role="CouponBrandMap" EntitySet="CouponBrandMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponCustomerMap_Coupon" Association="ColspModel.FK_CouponCustomerMap_Coupon">
+            <End Role="Coupon" EntitySet="Coupons" />
+            <End Role="CouponCustomerMap" EntitySet="CouponCustomerMaps" />
           </AssociationSet>
           <AssociationSet Name="FK_CouponGlobalCatMap_Coupon" Association="ColspModel.FK_CouponGlobalCatMap_Coupon">
             <End Role="Coupon" EntitySet="Coupons" />
@@ -3042,9 +3222,17 @@
             <End Role="Coupon" EntitySet="Coupons" />
             <End Role="CouponLocalCatMap" EntitySet="CouponLocalCatMaps" />
           </AssociationSet>
+          <AssociationSet Name="FK_CouponOrder_Coupon" Association="ColspModel.FK_CouponOrder_Coupon">
+            <End Role="Coupon" EntitySet="Coupons" />
+            <End Role="CouponOrder" EntitySet="CouponOrders" />
+          </AssociationSet>
           <AssociationSet Name="FK_CouponPidMap_Coupon" Association="ColspModel.FK_CouponPidMap_Coupon">
             <End Role="Coupon" EntitySet="Coupons" />
             <End Role="CouponPidMap" EntitySet="CouponPidMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponShopMap_Coupon" Association="ColspModel.FK_CouponShopMap_Coupon">
+            <End Role="Coupon" EntitySet="Coupons" />
+            <End Role="CouponShopMap" EntitySet="CouponShopMaps" />
           </AssociationSet>
           <AssociationSet Name="FK_CouponGlobalCatMap_Brand" Association="ColspModel.FK_CouponGlobalCatMap_Brand">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
@@ -3053,6 +3241,10 @@
           <AssociationSet Name="FK_CouponLocalCatMap_Brand" Association="ColspModel.FK_CouponLocalCatMap_Brand">
             <End Role="LocalCategory" EntitySet="LocalCategories" />
             <End Role="CouponLocalCatMap" EntitySet="CouponLocalCatMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CouponShopMap_Shop" Association="ColspModel.FK_CouponShopMap_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="CouponShopMap" EntitySet="CouponShopMaps" />
           </AssociationSet>
           <AssociationSet Name="FK_GlobalCategoryPID_GlobalCategory" Association="ColspModel.FK_GlobalCategoryPID_GlobalCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
@@ -3198,6 +3390,10 @@
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductStageRelated" EntitySet="ProductStageRelateds" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductStageVariantArrtibuteMap_Variant" Association="ColspModel.FK_ProductStageVariantArrtibuteMap_Variant">
+            <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
+            <End Role="ProductStageVariantArrtibuteMap" EntitySet="ProductStageVariantArrtibuteMaps" />
+          </AssociationSet>
           <AssociationSet Name="FKProductStageVariantShop" Association="ColspModel.FKProductStageVariantShop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductStageVariant" EntitySet="ProductStageVariants" />
@@ -3279,14 +3475,13 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ProductStageVariantArrtibuteMaps" Relationship="ColspModel.FK_ProductStageVariantArrtibuteMap_Attribute" FromRole="Attribute" ToRole="ProductStageVariantArrtibuteMap" />
           <NavigationProperty Name="AttributeSetMaps" Relationship="ColspModel.FKAttributeSetMapAttribute" FromRole="Attribute" ToRole="AttributeSetMap" />
           <NavigationProperty Name="AttributeValueMaps" Relationship="ColspModel.FKAttributeValueMapAttribute" FromRole="Attribute" ToRole="AttributeValueMap" />
           <NavigationProperty Name="ProductAttributes" Relationship="ColspModel.FKProductAttributeAttribute" FromRole="Attribute" ToRole="ProductAttribute" />
           <NavigationProperty Name="ProductHistoryAttributes" Relationship="ColspModel.FKProductHistoryAttributeAttribute" FromRole="Attribute" ToRole="ProductHistoryAttribute" />
           <NavigationProperty Name="ProductHistoryVariants" Relationship="ColspModel.FKProductHistoryVariantVariant" FromRole="Attribute" ToRole="ProductHistoryVariant" />
           <NavigationProperty Name="ProductStageAttributes" Relationship="ColspModel.FKProductStageAttributeAttribute" FromRole="Attribute" ToRole="ProductStageAttribute" />
-          <NavigationProperty Name="ProductStageVariants" Relationship="ColspModel.FKProductStageVariantAttribute1" FromRole="Attribute" ToRole="ProductStageVariant" />
-          <NavigationProperty Name="ProductStageVariants1" Relationship="ColspModel.FKProductStageVariantAttribute2" FromRole="Attribute" ToRole="ProductStageVariant" />
           <NavigationProperty Name="ProductVariants" Relationship="ColspModel.FKProductVariantAttribute1" FromRole="Attribute" ToRole="ProductVariant" />
           <NavigationProperty Name="ProductVariants1" Relationship="ColspModel.FKProductVariantAttribute2" FromRole="Attribute" ToRole="ProductVariant" />
         </EntityType>
@@ -3348,6 +3543,7 @@
           <Property Name="AttributeValueId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AttributeValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MapValue" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -3433,6 +3629,33 @@
           <Property Name="ShortDescriptionTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="LongDescriptionTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSBy1Get1Item">
+          <Key>
+            <PropertyRef Name="CMSBy1Get1ItemId" />
+          </Key>
+          <Property Name="CMSBy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="ShortDetailTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDetailEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="Createdate" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="Int32" />
@@ -3608,26 +3831,26 @@
           <Property Name="CouponUsed" Type="Int32" />
           <Property Name="StartDate" Type="DateTime" Precision="3" />
           <Property Name="ExpireDate" Type="DateTime" Precision="3" />
+          <Property Name="Action" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DiscountAmount" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="MaximumAmount" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="UserPerCustomer" Type="Int32" />
+          <Property Name="UsagePerCustomer" Type="Int32" />
           <Property Name="MaximumUser" Type="Int32" />
-          <Property Name="CriteriaId" Type="Int32" />
-          <Property Name="CriteriaPrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="FilterBy" Type="Int32" />
+          <Property Name="FilterBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CouponType" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="CouponCondition" Relationship="ColspModel.FK_Coupon_CriteriaCondition" FromRole="Coupon" ToRole="CouponCondition" />
-          <NavigationProperty Name="CouponCondition1" Relationship="ColspModel.FK_Coupon_FilterCondition" FromRole="Coupon" ToRole="CouponCondition" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_Coupon_Shop" FromRole="Coupon" ToRole="Shop" />
           <NavigationProperty Name="CouponBrandMaps" Relationship="ColspModel.FK_CouponBrandMap_Coupon" FromRole="Coupon" ToRole="CouponBrandMap" />
+          <NavigationProperty Name="CouponCustomerMaps" Relationship="ColspModel.FK_CouponCustomerMap_Coupon" FromRole="Coupon" ToRole="CouponCustomerMap" />
           <NavigationProperty Name="CouponGlobalCatMaps" Relationship="ColspModel.FK_CouponGlobalCatMap_Coupon" FromRole="Coupon" ToRole="CouponGlobalCatMap" />
           <NavigationProperty Name="CouponLocalCatMaps" Relationship="ColspModel.FK_CouponLocalCatMap_Coupon" FromRole="Coupon" ToRole="CouponLocalCatMap" />
+          <NavigationProperty Name="CouponOrders" Relationship="ColspModel.FK_CouponOrder_Coupon" FromRole="Coupon" ToRole="CouponOrder" />
           <NavigationProperty Name="CouponPidMaps" Relationship="ColspModel.FK_CouponPidMap_Coupon" FromRole="Coupon" ToRole="CouponPidMap" />
+          <NavigationProperty Name="CouponShopMaps" Relationship="ColspModel.FK_CouponShopMap_Coupon" FromRole="Coupon" ToRole="CouponShopMap" />
         </EntityType>
         <EntityType Name="CouponBrandMap">
           <Key>
@@ -3648,11 +3871,22 @@
           <Key>
             <PropertyRef Name="ConditionId" />
           </Key>
-          <Property Name="ConditionId" Type="Int32" Nullable="false" />
+          <Property Name="ConditionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ConditionType" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="ConditionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Coupons" Relationship="ColspModel.FK_Coupon_CriteriaCondition" FromRole="CouponCondition" ToRole="Coupon" />
-          <NavigationProperty Name="Coupons1" Relationship="ColspModel.FK_Coupon_FilterCondition" FromRole="CouponCondition" ToRole="Coupon" />
+        </EntityType>
+        <EntityType Name="CouponCustomerMap">
+          <Key>
+            <PropertyRef Name="CouponId" />
+            <PropertyRef Name="Email" />
+          </Key>
+          <Property Name="CouponId" Type="Int32" Nullable="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Coupon" Relationship="ColspModel.FK_CouponCustomerMap_Coupon" FromRole="CouponCustomerMap" ToRole="Coupon" />
         </EntityType>
         <EntityType Name="CouponGlobalCatMap">
           <Key>
@@ -3684,6 +3918,20 @@
           <NavigationProperty Name="Coupon" Relationship="ColspModel.FK_CouponLocalCatMap_Coupon" FromRole="CouponLocalCatMap" ToRole="Coupon" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FK_CouponLocalCatMap_Brand" FromRole="CouponLocalCatMap" ToRole="LocalCategory" />
         </EntityType>
+        <EntityType Name="CouponOrder">
+          <Key>
+            <PropertyRef Name="CouponId" />
+            <PropertyRef Name="Criteria" />
+          </Key>
+          <Property Name="CouponId" Type="Int32" Nullable="false" />
+          <Property Name="Criteria" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CriteriaPrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Coupon" Relationship="ColspModel.FK_CouponOrder_Coupon" FromRole="CouponOrder" ToRole="Coupon" />
+        </EntityType>
         <EntityType Name="CouponPidMap">
           <Key>
             <PropertyRef Name="CouponId" />
@@ -3697,6 +3945,37 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Coupon" Relationship="ColspModel.FK_CouponPidMap_Coupon" FromRole="CouponPidMap" ToRole="Coupon" />
+        </EntityType>
+        <EntityType Name="CouponShopMap">
+          <Key>
+            <PropertyRef Name="CouponId" />
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="CouponId" Type="Int32" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Coupon" Relationship="ColspModel.FK_CouponShopMap_Coupon" FromRole="CouponShopMap" ToRole="Coupon" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_CouponShopMap_Shop" FromRole="CouponShopMap" ToRole="Shop" />
+        </EntityType>
+        <EntityType Name="CreditCardType">
+          <Key>
+            <PropertyRef Name="CreditCardTypeId" />
+          </Key>
+          <Property Name="CreditCardTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CreditCardTypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Digit" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -3800,11 +4079,11 @@
             <PropertyRef Name="Pid" />
           </Key>
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="QuantityOutStock" Type="Int32" />
-          <Property Name="Defect" Type="Int32" />
-          <Property Name="OnHold" Type="Int32" />
-          <Property Name="Reserve" Type="Int32" />
+          <Property Name="Defect" Type="Int32" Nullable="false" />
+          <Property Name="OnHold" Type="Int32" Nullable="false" />
+          <Property Name="Reserve" Type="Int32" Nullable="false" />
           <Property Name="MinQuantity" Type="Int32" />
           <Property Name="MaxQuantity" Type="Int32" />
           <Property Name="UseDecimal" Type="Boolean" />
@@ -4310,10 +4589,10 @@
           </Key>
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
-          <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" />
           <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsAttributeValue" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -4427,12 +4706,6 @@
           </Key>
           <Property Name="VariantId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Attribute1Id" Type="Int32" />
-          <Property Name="Attribute2Id" Type="Int32" />
-          <Property Name="ValueEn1" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="ValueTh1" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="ValueEn2" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="ValueTh2" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
@@ -4468,10 +4741,26 @@
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductStageVariantAttribute1" FromRole="ProductStageVariant" ToRole="Attribute" />
-          <NavigationProperty Name="Attribute1" Relationship="ColspModel.FKProductStageVariantAttribute2" FromRole="ProductStageVariant" ToRole="Attribute" />
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FKProductStageVariantProduct" FromRole="ProductStageVariant" ToRole="ProductStage" />
+          <NavigationProperty Name="ProductStageVariantArrtibuteMaps" Relationship="ColspModel.FK_ProductStageVariantArrtibuteMap_Variant" FromRole="ProductStageVariant" ToRole="ProductStageVariantArrtibuteMap" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKProductStageVariantShop" FromRole="ProductStageVariant" ToRole="Shop" />
+        </EntityType>
+        <EntityType Name="ProductStageVariantArrtibuteMap">
+          <Key>
+            <PropertyRef Name="VariantId" />
+            <PropertyRef Name="AttributeId" />
+            <PropertyRef Name="Value" />
+          </Key>
+          <Property Name="VariantId" Type="Int32" Nullable="false" />
+          <Property Name="AttributeId" Type="Int32" Nullable="false" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="IsAttributeValue" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Attribute" Relationship="ColspModel.FK_ProductStageVariantArrtibuteMap_Attribute" FromRole="ProductStageVariantArrtibuteMap" ToRole="Attribute" />
+          <NavigationProperty Name="ProductStageVariant" Relationship="ColspModel.FK_ProductStageVariantArrtibuteMap_Variant" FromRole="ProductStageVariantArrtibuteMap" ToRole="ProductStageVariant" />
         </EntityType>
         <EntityType Name="ProductStageVideo">
           <Key>
@@ -4582,6 +4871,59 @@
           <Property Name="CMSStatusFlowId" Type="Int32" />
           <Property Name="Visibility" Type="Boolean" />
         </EntityType>
+        <EntityType Name="PromotionOnTopCreditCard">
+          <Key>
+            <PropertyRef Name="OnTopCreditCardId" />
+          </Key>
+          <Property Name="OnTopCreditCardId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="PaymantId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DiscountType" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="FreeShipping" Type="Boolean" />
+          <Property Name="DiscountValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumOrderAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaximumDiscountAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IconURLTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="IconURLEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditNumber">
+          <Key>
+            <PropertyRef Name="OnTopCreditNumberId" />
+          </Key>
+          <Property Name="OnTopCreditNumberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OnTopCreditCardId" Type="Int32" />
+          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CreditNumberFormat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Digit" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Shipping">
           <Key>
             <PropertyRef Name="ShippingId" />
@@ -4620,7 +4962,7 @@
           <Property Name="Twitter" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Instagram" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Pinterest" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="StockAlert" Type="Int32" />
+          <Property Name="StockAlert" Type="Int32" Nullable="false" />
           <Property Name="Commission" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="ShopTypeId" Type="Int32" />
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -4633,6 +4975,7 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Coupons" Relationship="ColspModel.FK_Coupon_Shop" FromRole="Shop" ToRole="Coupon" />
+          <NavigationProperty Name="CouponShopMaps" Relationship="ColspModel.FK_CouponShopMap_Shop" FromRole="Shop" ToRole="CouponShopMap" />
           <NavigationProperty Name="LocalCategories" Relationship="ColspModel.FKLocalCategoryShop" FromRole="Shop" ToRole="LocalCategory" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
@@ -4808,6 +5151,18 @@
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
+        <Association Name="FK_ProductStageVariantArrtibuteMap_Attribute">
+          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="1" />
+          <End Type="ColspModel.ProductStageVariantArrtibuteMap" Role="ProductStageVariantArrtibuteMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attribute">
+              <PropertyRef Name="AttributeId" />
+            </Principal>
+            <Dependent Role="ProductStageVariantArrtibuteMap">
+              <PropertyRef Name="AttributeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKAttributeSetMapAttribute">
           <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="1" />
           <End Type="ColspModel.AttributeSetMap" Role="AttributeSetMap" Multiplicity="*" />
@@ -4882,30 +5237,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKProductStageVariantAttribute1">
-          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="0..1" />
-          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Attribute">
-              <PropertyRef Name="AttributeId" />
-            </Principal>
-            <Dependent Role="ProductStageVariant">
-              <PropertyRef Name="Attribute1Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductStageVariantAttribute2">
-          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="0..1" />
-          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Attribute">
-              <PropertyRef Name="AttributeId" />
-            </Principal>
-            <Dependent Role="ProductStageVariant">
-              <PropertyRef Name="Attribute2Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKProductVariantAttribute1">
           <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="0..1" />
           <End Type="ColspModel.ProductVariant" Role="ProductVariant" Multiplicity="*" />
@@ -4931,7 +5262,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_AttributeSetTagMap_AttributeSet">
-          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="1" />
+          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.AttributeSetTagMap" Role="AttributeSetTagMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AttributeSet">
@@ -5029,7 +5362,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponBrandMap_Brand">
-          <End Type="ColspModel.Brand" Role="Brand" Multiplicity="1" />
+          <End Type="ColspModel.Brand" Role="Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponBrandMap" Role="CouponBrandMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Brand">
@@ -5088,30 +5423,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Coupon_CriteriaCondition">
-          <End Type="ColspModel.CouponCondition" Role="CouponCondition" Multiplicity="0..1" />
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CouponCondition">
-              <PropertyRef Name="ConditionId" />
-            </Principal>
-            <Dependent Role="Coupon">
-              <PropertyRef Name="CriteriaId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Coupon_FilterCondition">
-          <End Type="ColspModel.CouponCondition" Role="CouponCondition" Multiplicity="0..1" />
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CouponCondition">
-              <PropertyRef Name="ConditionId" />
-            </Principal>
-            <Dependent Role="Coupon">
-              <PropertyRef Name="FilterBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Coupon_Shop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
           <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="*" />
@@ -5125,7 +5436,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponBrandMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponBrandMap" Role="CouponBrandMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5136,8 +5449,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CouponCustomerMap_Coupon">
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.CouponCustomerMap" Role="CouponCustomerMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="CouponId" />
+            </Principal>
+            <Dependent Role="CouponCustomerMap">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CouponGlobalCatMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponGlobalCatMap" Role="CouponGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5149,7 +5478,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponLocalCatMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponLocalCatMap" Role="CouponLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5160,8 +5491,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CouponOrder_Coupon">
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.CouponOrder" Role="CouponOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="CouponId" />
+            </Principal>
+            <Dependent Role="CouponOrder">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CouponPidMap_Coupon">
-          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1" />
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponPidMap" Role="CouponPidMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coupon">
@@ -5172,8 +5519,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CouponShopMap_Coupon">
+          <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.CouponShopMap" Role="CouponShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="CouponId" />
+            </Principal>
+            <Dependent Role="CouponShopMap">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CouponGlobalCatMap_Brand">
-          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1" />
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponGlobalCatMap" Role="CouponGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -5185,7 +5548,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CouponLocalCatMap_Brand">
-          <End Type="ColspModel.LocalCategory" Role="LocalCategory" Multiplicity="1" />
+          <End Type="ColspModel.LocalCategory" Role="LocalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.CouponLocalCatMap" Role="CouponLocalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LocalCategory">
@@ -5193,6 +5558,20 @@
             </Principal>
             <Dependent Role="CouponLocalCatMap">
               <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CouponShopMap_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.CouponShopMap" Role="CouponShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="CouponShopMap">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5654,8 +6033,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-<<<<<<< HEAD
-=======
         <Association Name="FK_ProductStageVariantArrtibuteMap_Variant">
           <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -5670,7 +6047,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
->>>>>>> f9f824da5d03a280be6ddf49683341252b5cacad
         <Association Name="FKProductStageVariantShop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />
@@ -5850,7 +6226,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ColspModelStoreContainer" CdmEntityContainer="Entities">
+        <EntityContainerMapping StorageEntityContainer="ColspModelStoreContainer" CdmEntityContainer="ColspEntities">
           <EntitySetMapping Name="Attributes">
             <EntityTypeMapping TypeName="ColspModel.Attribute">
               <MappingFragment StoreEntitySet="Attribute">
@@ -5931,6 +6307,7 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="MapValue" ColumnName="MapValue" />
                 <ScalarProperty Name="AttributeValueTh" ColumnName="AttributeValueTh" />
                 <ScalarProperty Name="AttributeValueEn" ColumnName="AttributeValueEn" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
@@ -6013,6 +6390,34 @@
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
                 <ScalarProperty Name="CMSId" ColumnName="CMSId" />
                 <ScalarProperty Name="CMSBrandInShopId" ColumnName="CMSBrandInShopId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSBy1Get1Item">
+            <EntityTypeMapping TypeName="ColspModel.CMSBy1Get1Item">
+              <MappingFragment StoreEntitySet="CMSBy1Get1Item">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="ShortDetailEN" ColumnName="ShortDetailEN" />
+                <ScalarProperty Name="ShortDetailTH" ColumnName="ShortDetailTH" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="CMSBy1Get1ItemId" ColumnName="CMSBy1Get1ItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6191,12 +6596,11 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="CouponType" ColumnName="CouponType" />
                 <ScalarProperty Name="FilterBy" ColumnName="FilterBy" />
-                <ScalarProperty Name="CriteriaPrice" ColumnName="CriteriaPrice" />
-                <ScalarProperty Name="CriteriaId" ColumnName="CriteriaId" />
                 <ScalarProperty Name="MaximumUser" ColumnName="MaximumUser" />
-                <ScalarProperty Name="UserPerCustomer" ColumnName="UserPerCustomer" />
+                <ScalarProperty Name="UsagePerCustomer" ColumnName="UsagePerCustomer" />
                 <ScalarProperty Name="MaximumAmount" ColumnName="MaximumAmount" />
                 <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
                 <ScalarProperty Name="ExpireDate" ColumnName="ExpireDate" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="CouponUsed" ColumnName="CouponUsed" />
@@ -6230,6 +6634,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CouponCustomerMaps">
+            <EntityTypeMapping TypeName="ColspModel.CouponCustomerMap">
+              <MappingFragment StoreEntitySet="CouponCustomerMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="CouponId" ColumnName="CouponId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CouponGlobalCatMaps">
             <EntityTypeMapping TypeName="ColspModel.CouponGlobalCatMap">
               <MappingFragment StoreEntitySet="CouponGlobalCatMap">
@@ -6256,6 +6672,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CouponOrders">
+            <EntityTypeMapping TypeName="ColspModel.CouponOrder">
+              <MappingFragment StoreEntitySet="CouponOrder">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CriteriaPrice" ColumnName="CriteriaPrice" />
+                <ScalarProperty Name="Criteria" ColumnName="Criteria" />
+                <ScalarProperty Name="CouponId" ColumnName="CouponId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CouponPidMaps">
             <EntityTypeMapping TypeName="ColspModel.CouponPidMap">
               <MappingFragment StoreEntitySet="CouponPidMap">
@@ -6266,6 +6695,36 @@
                 <ScalarProperty Name="Filter" ColumnName="Filter" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="CouponId" ColumnName="CouponId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CouponShopMaps">
+            <EntityTypeMapping TypeName="ColspModel.CouponShopMap">
+              <MappingFragment StoreEntitySet="CouponShopMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="CouponId" ColumnName="CouponId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CreditCardTypes">
+            <EntityTypeMapping TypeName="ColspModel.CreditCardType">
+              <MappingFragment StoreEntitySet="CreditCardType">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Digit" ColumnName="Digit" />
+                <ScalarProperty Name="CreditCardTypeName" ColumnName="CreditCardTypeName" />
+                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
+                <ScalarProperty Name="CreditCardTypeId" ColumnName="CreditCardTypeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6837,10 +7296,10 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsAttributeValue" ColumnName="IsAttributeValue" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="Position" ColumnName="Position" />
-                <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
               </MappingFragment>
@@ -6979,13 +7438,21 @@
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
-                <ScalarProperty Name="ValueTh2" ColumnName="ValueTh2" />
-                <ScalarProperty Name="ValueEn2" ColumnName="ValueEn2" />
-                <ScalarProperty Name="ValueTh1" ColumnName="ValueTh1" />
-                <ScalarProperty Name="ValueEn1" ColumnName="ValueEn1" />
-                <ScalarProperty Name="Attribute2Id" ColumnName="Attribute2Id" />
-                <ScalarProperty Name="Attribute1Id" ColumnName="Attribute1Id" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="VariantId" ColumnName="VariantId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductStageVariantArrtibuteMaps">
+            <EntityTypeMapping TypeName="ColspModel.ProductStageVariantArrtibuteMap">
+              <MappingFragment StoreEntitySet="ProductStageVariantArrtibuteMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsAttributeValue" ColumnName="IsAttributeValue" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
                 <ScalarProperty Name="VariantId" ColumnName="VariantId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -7095,6 +7562,61 @@
                 <ScalarProperty Name="NameTH" ColumnName="NameTH" />
                 <ScalarProperty Name="NameEN" ColumnName="NameEN" />
                 <ScalarProperty Name="PromotionBuy1Get1ItemId" ColumnName="PromotionBuy1Get1ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditCards">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditCard">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditCard">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
+                <ScalarProperty Name="BankNameTH" ColumnName="BankNameTH" />
+                <ScalarProperty Name="BankNameEN" ColumnName="BankNameEN" />
+                <ScalarProperty Name="IconURLEN" ColumnName="IconURLEN" />
+                <ScalarProperty Name="IconURLTH" ColumnName="IconURLTH" />
+                <ScalarProperty Name="MaximumDiscountAmount" ColumnName="MaximumDiscountAmount" />
+                <ScalarProperty Name="MinimumOrderAmount" ColumnName="MinimumOrderAmount" />
+                <ScalarProperty Name="DiscountValue" ColumnName="DiscountValue" />
+                <ScalarProperty Name="FreeShipping" ColumnName="FreeShipping" />
+                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="PaymantId" ColumnName="PaymantId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditNumbers">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditNumber">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditNumber">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Digit" ColumnName="Digit" />
+                <ScalarProperty Name="CreditNumberFormat" ColumnName="CreditNumberFormat" />
+                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+                <ScalarProperty Name="OnTopCreditNumberId" ColumnName="OnTopCreditNumberId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -15,13 +15,21 @@ namespace Colsp.Entity.Models
     public partial class CMSBy1Get1Item
     {
         public int CMSBy1Get1ItemId { get; set; }
-        public Nullable<int> CMSId { get; set; }
-        public string PIDBy { get; set; }
-        public string PIDGet { get; set; }
-        public string ProductBoxBadge { get; set; }
-        public Nullable<int> Sequence { get; set; }
-        public Nullable<int> CMSCollectionGroupId { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public string NameEN { get; set; }
+        public string NameTH { get; set; }
+        public string URLKey { get; set; }
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+        public Nullable<int> ShopId { get; set; }
+        public string ShortDetailTH { get; set; }
+        public string ShortDetailEN { get; set; }
+        public string ShortDescriptionTH { get; set; }
+        public string ShortDescriptionEN { get; set; }
+        public Nullable<int> CMSStatusFlowId { get; set; }
+        public Nullable<int> Status { get; set; }
+        public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public Nullable<int> UpdateBy { get; set; }

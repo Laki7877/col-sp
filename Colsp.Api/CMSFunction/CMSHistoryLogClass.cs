@@ -19,7 +19,7 @@ namespace Colsp.Api.CMSFunction
 {
     public class CMSHistoryLogClass : ApiController
     {
-
+        #region CreateLog
         public void LogCreateCMS(int Id, string Tablename, bool? Status, string Transaction, int UserId, string IP)
         {
             var JsonText = "";
@@ -54,7 +54,7 @@ namespace Colsp.Api.CMSFunction
         }
         #endregion
 
-
+        #region SaveLog
         private bool SaveCMSHistoryLog(int Id, string Tablename, string JsonText, bool? Status, string Transaction, int UserId, string IP)
 
         {

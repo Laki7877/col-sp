@@ -23,7 +23,6 @@ namespace Colsp.Entity.Models
     
         public int ShopTypeId { get; set; }
         public string ShopTypeNameEn { get; set; }
-        public string ShopTypeNameTh { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

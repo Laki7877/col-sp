@@ -35,6 +35,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
         public virtual DbSet<CMSBrandInShop> CMSBrandInShops { get; set; }
+        public virtual DbSet<CMSBy1Get1Item> CMSBy1Get1Item { get; set; }
         public virtual DbSet<CMSCollectionGroup> CMSCollectionGroups { get; set; }
         public virtual DbSet<CMSCollectionItem> CMSCollectionItems { get; set; }
         public virtual DbSet<CMSCollectionItemGroup> CMSCollectionItemGroups { get; set; }
@@ -53,6 +54,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CouponOrder> CouponOrders { get; set; }
         public virtual DbSet<CouponPidMap> CouponPidMaps { get; set; }
         public virtual DbSet<CouponShopMap> CouponShopMaps { get; set; }
+        public virtual DbSet<CreditCardType> CreditCardTypes { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
         public virtual DbSet<GlobalCategoryAbbrevation> GlobalCategoryAbbrevations { get; set; }
@@ -91,6 +93,8 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductVariant> ProductVariants { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
+        public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
+        public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
