@@ -1648,6 +1648,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+<<<<<<< HEAD
+=======
         <Association Name="FK_ProductStageVariantArrtibuteMap_Attribute">
           <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
           <End Role="ProductStageVariantArrtibuteMap" Type="Self.ProductStageVariantArrtibuteMap" Multiplicity="*" />
@@ -1674,6 +1676,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+>>>>>>> f9f824da5d03a280be6ddf49683341252b5cacad
         <Association Name="FK_ProductStageVideo_Shop">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -5651,8 +5654,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+<<<<<<< HEAD
+=======
         <Association Name="FK_ProductStageVariantArrtibuteMap_Variant">
-          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="1" />
+          <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductStageVariantArrtibuteMap" Role="ProductStageVariantArrtibuteMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStageVariant">
@@ -5663,6 +5670,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+>>>>>>> f9f824da5d03a280be6ddf49683341252b5cacad
         <Association Name="FKProductStageVariantShop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ProductStageVariant" Role="ProductStageVariant" Multiplicity="*" />

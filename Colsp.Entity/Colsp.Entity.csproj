@@ -165,6 +165,7 @@
     <Compile Include="Models\CMSBrandInShop.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CMSBy1Get1Item.cs" />
     <Compile Include="Models\CMSCollectionGroup.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -234,6 +235,7 @@
     <Compile Include="Models\CouponShopMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CreditCardType.cs" />
     <Compile Include="Models\Customer.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -348,6 +350,9 @@
     <Compile Include="Models\PromotionBuy1Get1Item.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PromotionBy1Get1Item.cs" />
+    <Compile Include="Models\PromotionOnTopCreditCard.cs" />
+    <Compile Include="Models\PromotionOnTopCreditNumber.cs" />
     <Compile Include="Models\Shipping.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
