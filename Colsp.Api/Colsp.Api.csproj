@@ -189,6 +189,8 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="CMSFunction\CMSHistoryLogClass.cs" />
+    <Compile Include="Controllers\PromotionController.cs" />
     <Compile Include="PromotionFunction\BuyOneGetOneProcess.cs" />
     <Compile Include="CMSFunction\HistoryLogClass.cs" />
     <Compile Include="CMSFunction\CMSProcess.cs" />
