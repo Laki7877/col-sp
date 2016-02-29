@@ -50,7 +50,7 @@ namespace Colsp.Api.CMSFunction
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
-                        cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
+                        //cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                         cms.CreateBy = Model.CreateBy;
                         cms.Createdate = DateTime.Now;
                         cms.CreateIP = Model.CreateIP;
@@ -103,7 +103,7 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
                         cms.CMSStatusFlowId = Model.CMSStatusFlowId;
-                        cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
+                        //cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
@@ -116,17 +116,17 @@ namespace Colsp.Api.CMSFunction
 
                             foreach (var item in Model.CollectionItemList)
                             {
-                                CMSCollectionItem cItem = new CMSCollectionItem();
+                                CMSCollectionListItem cItem = new CMSCollectionListItem();
                                 cItem.CMSId = cms.CMSId;//When saved has id.
                                 cItem.PId = item.PId;
                                 cItem.ProductBoxBadge = item.ProductBoxBadge;
                                 cItem.Sequence = item.Sequence;
                                 cItem.Status = item.Status;
-                                cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId;
+                                //cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId;
                                 cItem.CreateBy = Model.CreateBy;
                                 cItem.Createdate = DateTime.Now;
                                 cItem.CreateIP = Model.CreateIP;
-                                db.CMSCollectionItems.Add(cItem);
+                                db.CMSCollectionListItems.Add(cItem);
                                 db.SaveChanges();
                             }
                             result = cms.CMSId;
@@ -223,7 +223,7 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
                         cms.CMSStatusFlowId = Model.CMSStatusId;
-                        cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
+                        //cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                         cms.Sequence = Model.Sequence;
                         cms.URLKey = Model.URLKey;
                         cms.Visibility = Model.Visibility;
@@ -290,7 +290,7 @@ namespace Colsp.Api.CMSFunction
                         cms.ShopId = Model.ShopId;
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
-                        cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
+                        //cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                         cms.Status = Model.Status;
                         cms.CMSStatusFlowId = Model.CMSStatusId;
                         cms.Sequence = Model.Sequence;
@@ -380,7 +380,7 @@ namespace Colsp.Api.CMSFunction
                             cms.ShopId = Model.ShopId;
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                             cms.ShortDescriptionTH = Model.ShortDescriptionTH;
-                            cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
+                            //cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                             cms.Status = Model.Status;
                             cms.CMSStatusFlowId = Model.CMSStatusFlowId;
                             cms.Sequence = Model.Sequence;
@@ -438,7 +438,7 @@ namespace Colsp.Api.CMSFunction
                             cms.Status = Model.Status;
                             cms.CMSStatusFlowId = Model.CMSStatusFlowId;
                             cms.Sequence = Model.Sequence;
-                            cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
+                            //cms.CMSCollectionGroupId = Model.CMSCollectionGroupId;
                             cms.URLKey = Model.URLKey;
                             cms.Visibility = Model.Visibility;
                             cms.UpdateBy = Model.CreateBy;
@@ -450,7 +450,7 @@ namespace Colsp.Api.CMSFunction
 
                                 foreach (var item in Model.CollectionItemList)
                                 {
-                                    var cItem = db.CMSCollectionItems.Where(c => c.CMSCollectionItemId == item.CMSCollectionItemId).FirstOrDefault();
+                                    var cItem = db.CMSCollectionListItems.Where(c => c.CMSCollectionListItemId == item.CMSCollectionItemId).FirstOrDefault();
                                     if (cItem != null)
                                     {
                                         cItem.CMSId = cms.CMSId;//When saved has id.
@@ -458,7 +458,7 @@ namespace Colsp.Api.CMSFunction
                                         cItem.ProductBoxBadge = item.ProductBoxBadge;
                                         cItem.Sequence = item.Sequence;
                                         cItem.Status = item.Status;
-                                        cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId;
+                                        //cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId;
                                         cItem.UpdateBy = Model.CreateBy;
                                         cItem.UpdateDate = DateTime.Now;
                                         cItem.UpdateIP = Model.CreateIP;
@@ -469,7 +469,7 @@ namespace Colsp.Api.CMSFunction
                                         HistoryLogClass log = new HistoryLogClass();
                                         log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                         HistoryLogClass logCollection = new HistoryLogClass();
-                                        log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
+                                        log.LogCreateCMS(cItem.CMSCollectionListItemId, "CMSCollectionItem", cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
                                     }
                                 }
                                 result = cms.CMSId;
@@ -486,7 +486,7 @@ namespace Colsp.Api.CMSFunction
             }
 
         }
-
+     
 
         //Thanakrit : 20160215 , update only sending field
         public int UpdateCMSStaticPage(CMSCollectionItemRequest Model)
@@ -517,7 +517,7 @@ namespace Colsp.Api.CMSFunction
                                 cms.ShopId = modelItem.ShopId ?? cms.ShopId;
                                 cms.ShortDescriptionEN = modelItem.ShortDescriptionEN != default(string) ? modelItem.ShortDescriptionEN : cms.ShortDescriptionEN;
                                 cms.ShortDescriptionTH = modelItem.ShortDescriptionTH != default(string) ? modelItem.ShortDescriptionTH : cms.ShortDescriptionTH;
-                                cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
+                                //cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
                                 cms.Status = modelItem.Status ?? cms.Status;
                                 cms.CMSStatusFlowId = modelItem.CMSStatusFlowId ?? cms.CMSStatusFlowId;
                                 cms.Sequence = modelItem.Sequence ?? cms.Sequence;
@@ -576,7 +576,7 @@ namespace Colsp.Api.CMSFunction
                                 cms.ShopId = modelItem.ShopId ?? cms.ShopId;
                                 cms.ShortDescriptionEN = modelItem.ShortDescriptionEN != default(string) ? modelItem.ShortDescriptionEN : cms.ShortDescriptionEN;
                                 cms.ShortDescriptionTH = modelItem.ShortDescriptionTH != default(string) ? modelItem.ShortDescriptionTH : cms.ShortDescriptionTH;
-                                cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
+                                //cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
                                 cms.Status = modelItem.Status ?? cms.Status;
                                 cms.CMSStatusFlowId = modelItem.CMSStatusFlowId ?? cms.CMSStatusFlowId;
                                 cms.Sequence = modelItem.Sequence ?? cms.Sequence;
@@ -591,7 +591,7 @@ namespace Colsp.Api.CMSFunction
 
                                     foreach (var item in modelItem.CollectionItemList)
                                     {
-                                        var cItem = db.CMSCollectionItems.Where(c => c.CMSCollectionItemId == item.CMSCollectionItemId).FirstOrDefault();
+                                        var cItem = db.CMSCollectionListItems.Where(c => c.CMSCollectionListItemId == item.CMSCollectionItemId).FirstOrDefault();
                                         if (cItem != null)
                                         {
                                             cItem.CMSId = cms.CMSId != default(int) ? cms.CMSId : cItem.CMSId;//When saved has id.
@@ -599,7 +599,7 @@ namespace Colsp.Api.CMSFunction
                                             cItem.ProductBoxBadge = item.ProductBoxBadge != default(string) ? item.ProductBoxBadge : cItem.ProductBoxBadge;
                                             cItem.Sequence = item.Sequence ?? cItem.Sequence;
                                             cItem.Status = item.Status ?? cItem.Status;
-                                            cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId ?? cItem.CMSCollectionItemGroupId;
+                                            //cItem.CMSCollectionItemGroupId = item.CMSCollectionItemGroupId ?? cItem.CMSCollectionItemGroupId;
                                             cItem.UpdateBy = modelItem.CreateBy ?? cItem.UpdateBy;
                                             cItem.UpdateDate = DateTime.Now;
                                             cItem.UpdateIP = modelItem.CreateIP != default(string) ? modelItem.CreateIP : cItem.CreateIP;
@@ -610,7 +610,7 @@ namespace Colsp.Api.CMSFunction
                                             HistoryLogClass log = new HistoryLogClass();
                                             log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
                                             HistoryLogClass logCollection = new HistoryLogClass();
-                                            log.LogCreateCMS(cItem.CMSCollectionItemId, "CMSCollectionItem", cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
+                                            log.LogCreateCMS(cItem.CMSCollectionListItemId, "CMSCollectionItem", cItem.Status, "Update", (int)cItem.CreateBy, cItem.CreateIP);
                                         }
                                     }
                                     result = cms.CMSId;

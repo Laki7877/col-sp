@@ -53,6 +53,7 @@
     <Compile Include="Requests\CMSCollectionItemRequest.cs" />
     <Compile Include="Requests\CMSMainCategoryRequest.cs" />
     <Compile Include="Requests\CMSSearchForAddRequest.cs" />
+    <Compile Include="Requests\GeneralSearchRequest.cs" />
     <Compile Include="Requests\CMSShopRequest.cs" />
     <Compile Include="Requests\CollectionListRequest.cs" />
     <Compile Include="Requests\CouponRequest.cs" />

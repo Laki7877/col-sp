@@ -97,6 +97,75 @@ namespace Colsp.Api.Controllers
 
         }
 
+        [Route("api/CMSGroupList")]
+        [HttpGet]
+        public IHttpActionResult GetByGroup([FromUri] GeneralSearchRequest request)
+        {
+            //int? shopId = (int?)this.User.ShopRequest().ShopId.Value;
+            //int? shopId = 0;
+            try
+            {
+                //if (!shopId.HasValue)
+                //    return Ok(request);
+                //IQueryable<CMSMaster> CMS;
+                //if (shopId.HasValue && shopId.Equals(Constant.CMS_SHOP_GOBAL))
+                //{
+                //    CMS = (from c in db.CMSMasters
+                //           select c
+                //          ).Take(100);
+                //}
+                //else
+                //{
+                //    CMS = (from c in db.CMSMasters
+                //           where c.ShopId == shopId
+                //           select c
+                //          ).Take(100);
+                //}
+                IQueryable<CMSCollectionGroup> CMS;
+                CMS = (from c in db.CMSCollectionGroups                       
+                       select c
+                          );
+                if (request == null)
+                {
+                    return Ok(CMS);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    CMS = CMS.Where(c => (c.CMSCollectionGroupNameEN.Contains(request.SearchText) || c.CMSCollectionGroupNameTH.Contains(request.SearchText)));
+                }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+
+                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_DRAFT);
+                    }
+                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_APPROVE);
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_NOT_APPROVE);
+                    }
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
+                    }
+                }
+                var total = CMS.Count();
+                var pagedCMS = CMS.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return Ok(request);
+            }
+
+        }
+
         [Route("api/CMSUpdateStatus")]
         [HttpPut]
         public IHttpActionResult UpdateCMSStatusFormCMSList(UpdateCMSStatusRequest model)
@@ -202,9 +271,9 @@ namespace Colsp.Api.Controllers
                             response.URLKey = GetCMS.URLKey;
                             response.Visibility = GetCMS.Visibility;
                             response.CreateDate = (DateTime)GetCMS.Createdate;
-                            response.CMSCollectionGroupId = GetCMS.CMSCollectionGroupId;
+                            //response.CMSCollectionGroupId = GetCMS.CMSCollectionGroupId;
                             List<CollectionItemListResponse> Collection = new List<CollectionItemListResponse>();
-                            var CollectionItemList = db.CMSCollectionItems.Where(c => c.CMSId == CMSId).ToList();
+                            var CollectionItemList = db.CMSCollectionListItems.Where(c => c.CMSId == CMSId).ToList();
                             int CountItem = 0;
                             foreach (var itemCollection in CollectionItemList)
                             {
@@ -214,7 +283,7 @@ namespace Colsp.Api.Controllers
                                 model.ProductBoxBadge = itemCollection.ProductBoxBadge;
                                 model.Sequence = itemCollection.Sequence;
                                 model.Status = itemCollection.Status;
-                                model.CMSCollectionItemGroupId = itemCollection.CMSCollectionItemGroupId;
+                                //model.CMSCollectionItemGroupId = itemCollection.CMSCollectionItemGroupId;
                                 Collection.Add(model);
                                 CountItem++;
                             }
@@ -668,6 +737,121 @@ namespace Colsp.Api.Controllers
         [Route("api/CMSStages/Export")]
         [HttpPost]
         public HttpResponseMessage ExportCollection(List<CMSCollectionItemRequest> request)
+        {
+            MemoryStream stream = null;
+            StreamWriter writer = null;
+            try
+            {
+                stream = new MemoryStream();
+                writer = new StreamWriter(stream);
+                string header = @"Collection ID,Collection English Name,Collection Thai Name,URL Keyword,EffectiveDate,EffectiveTime,ExpiryDate,ExpiryTime,ShopId,CMSCount,ShortDescriptionTH,ShortDescriptionEN,LongDescriptionTH,LongDescriptionEN,Sequence,Collection Status,Visibility";
+                writer.WriteLine(header);
+                StringBuilder sb = null;
+                foreach (CMSCollectionItemRequest rq in request)
+                {
+                    sb = new StringBuilder();
+                    if (rq.CMSId == default(int)) { throw new Exception("Collection Id cannot be null"); }
+                    var coll = db.CMSMasters.Find(rq.CMSId);
+                    var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
+                    var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
+                    if (coll == null)
+                    {
+                        throw new Exception("Cannot find Collection with id " + rq.CMSId);
+                    }
+                    sb.Append(coll.CMSId); sb.Append(",");
+                    sb.Append(coll.CMSNameEN); sb.Append(",");
+                    sb.Append(coll.CMSNameTH); sb.Append(",");
+                    sb.Append(coll.URLKey); sb.Append(",");
+                    //sb.Append(coll.CMSTypeId); sb.Append(",");
+                    //sb.Append(coll.CMSFilterId); sb.Append(",");
+                    sb.Append(coll.EffectiveDate); sb.Append(",");
+                    sb.Append(coll.EffectiveTime); sb.Append(",");
+                    sb.Append(coll.ExpiryDate); sb.Append(",");
+                    sb.Append(coll.ExpiryTime); sb.Append(",");
+                    sb.Append(coll.ShopId); sb.Append(",");
+                    sb.Append(coll.CMSCount); sb.Append(",");
+                    sb.Append(coll.ShortDescriptionTH); sb.Append(",");
+                    sb.Append(coll.ShortDescriptionEN); sb.Append(",");
+                    if (!string.IsNullOrEmpty(coll.LongDescriptionTH))
+                    {
+                        if (coll.LongDescriptionTH.Contains("\""))
+                        {
+                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH.Replace("\"", "\"\""));
+                        }
+                        if (coll.LongDescriptionTH.Contains(","))
+                        {
+                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
+                        }
+                        if (coll.LongDescriptionTH.Contains(System.Environment.NewLine))
+                        {
+                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(coll.LongDescriptionEN))
+                    {
+                        if (coll.LongDescriptionEN.Contains("\""))
+                        {
+                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN.Replace("\"", "\"\""));
+                        }
+                        if (coll.LongDescriptionEN.Contains(","))
+                        {
+                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
+                        }
+                        if (coll.LongDescriptionEN.Contains(System.Environment.NewLine))
+                        {
+                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
+                        }
+                    }
+                    sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
+                    sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
+                    sb.Append(coll.Sequence); sb.Append(",");
+                    //sb.Append(coll.CMSCollectionGroupId); sb.Append(",");
+                    sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
+                    sb.Append(visible); sb.Append(",");
+                    //sb.Append(coll.CreateBy); sb.Append(",");
+                    //sb.Append(coll.Createdate); sb.Append(",");
+                    //sb.Append(coll.UpdateBy); sb.Append(",");
+                    //sb.Append(coll.UpdateDate); sb.Append(",");
+                    //sb.Append(coll.CreateIP); sb.Append(",");
+                    //sb.Append(coll.UpdateIP); sb.Append(",");
+
+
+                    writer.WriteLine(sb);
+                }
+                writer.Flush();
+                stream.Position = 0;
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StreamContent(stream);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
+                {
+                    CharSet = Encoding.UTF8.WebName
+                };
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = "file.csv";
+                return result;
+            }
+            catch (Exception e)
+            {
+                if (writer != null)
+                {
+                    writer.Close();
+                    writer.Dispose();
+                }
+                if (stream != null)
+                {
+                    stream.Close();
+                    stream.Dispose();
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+            }
+        }
+
+
+
+        [Route("api/CMSStages/ExportGroup")]
+        [HttpPost]
+        public HttpResponseMessage ExportCollectionGroup(List<CMSCollectionItemRequest> request)
         {
             MemoryStream stream = null;
             StreamWriter writer = null;

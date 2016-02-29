@@ -14,6 +14,13 @@ namespace Colsp.Entity.Models
     
     public partial class CMSMaster
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public CMSMaster()
+        {
+            this.CMSRelCollectionGroups = new HashSet<CMSRelCollectionGroup>();
+            this.CMSRelCollectionCategories = new HashSet<CMSRelCollectionCategory>();
+        }
+    
         public int CMSId { get; set; }
         public string CMSNameEN { get; set; }
         public string CMSNameTH { get; set; }
@@ -32,7 +39,6 @@ namespace Colsp.Entity.Models
         public string LongDescriptionEN { get; set; }
         public Nullable<int> Sequence { get; set; }
         public Nullable<int> CMSStatusFlowId { get; set; }
-        public Nullable<int> CMSCollectionGroupId { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
@@ -41,5 +47,10 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CMSRelCollectionGroup> CMSRelCollectionGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CMSRelCollectionCategory> CMSRelCollectionCategories { get; set; }
     }
 }

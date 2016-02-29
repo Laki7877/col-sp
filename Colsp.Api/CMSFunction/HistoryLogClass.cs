@@ -92,7 +92,7 @@ namespace Colsp.Api.CMSFunction
         {
             using (ColspEntities db = new ColspEntities())
             {
-                var CMSCollectionItem = from n in db.CMSCollectionItems
+                var CMSCollectionItem = from n in db.CMSCollectionListItems
                                         where n.CMSId == CollectionId
                                         select n;
                 string output = new JavaScriptSerializer().Serialize(CMSCollectionItem);

@@ -193,13 +193,36 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="CMSCollectionCategory">
+          <Key>
+            <PropertyRef Name="CMSCollectionCategoryId" />
+          </Key>
+          <Property Name="CMSCollectionCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionCategoryNameEH" Type="nvarchar" MaxLength="100" />
+          <Property Name="CMSCollectionCategoryNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="CMSStatusFlowId" Type="int" />
+        </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
             <PropertyRef Name="CMSCollectionGroupId" />
           </Key>
           <Property Name="CMSCollectionGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSCollectionGroupNameEH" Type="nvarchar" MaxLength="100" />
           <Property Name="CMSCollectionGroupNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="BannerLocation" Type="nvarchar" MaxLength="400" />
+          <Property Name="BannerConntent" Type="nvarchar" MaxLength="500" />
           <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
@@ -208,17 +231,22 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="CMSStatusFlowId" Type="int" />
+          <Property Name="CMSCollectionGroupNameEN" Type="nvarchar" MaxLength="100" />
         </EntityType>
-        <EntityType Name="CMSCollectionItem">
+        <EntityType Name="CMSCollectionListItem">
           <Key>
-            <PropertyRef Name="CMSCollectionItemId" />
+            <PropertyRef Name="CMSCollectionListItemId" />
           </Key>
-          <Property Name="CMSCollectionItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionListItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CMSId" Type="int" />
           <Property Name="PId" Type="nvarchar" MaxLength="50" />
           <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
           <Property Name="Sequence" Type="int" />
-          <Property Name="CMSCollectionItemGroupId" Type="int" />
           <Property Name="Status" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="Createdate" Type="datetime" />
@@ -226,22 +254,10 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSCollectionItemGroup">
-          <Key>
-            <PropertyRef Name="CMSCollectionItemGroupId" />
-          </Key>
-          <Property Name="CMSCollectionItemGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSCollectionItemGroupNameEH" Type="nvarchar" MaxLength="100" />
-          <Property Name="CMSCollectionItemGroupNameTH" Type="nvarchar" MaxLength="100" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
         </EntityType>
         <EntityType Name="CMSFilter">
           <Key>
@@ -309,7 +325,38 @@
           <Property Name="LongDescriptionEN" Type="ntext" />
           <Property Name="Sequence" Type="int" />
           <Property Name="CMSStatusFlowId" Type="int" />
-          <Property Name="CMSCollectionGroupId" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSRelCollectionCategory">
+          <Key>
+            <PropertyRef Name="CMSRelCollectionCategoryId" />
+          </Key>
+          <Property Name="CMSRelCollectionCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionCategoryId" Type="int" Nullable="false" />
+          <Property Name="CMSId" Type="int" Nullable="false" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSRelCollectionGroup">
+          <Key>
+            <PropertyRef Name="CMSCollectionGroupId" />
+          </Key>
+          <Property Name="CMSRelCollectionGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionGroupId" Type="int" Nullable="false" />
+          <Property Name="CMSId" Type="int" Nullable="false" />
           <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
@@ -1543,6 +1590,42 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <Association Name="FK__CMSRelCol__CMSCo__56B3DD81">
+          <End Role="CMSCollectionGroup" Type="Self.CMSCollectionGroup" Multiplicity="1" />
+          <End Role="CMSRelCollectionGroup" Type="Self.CMSRelCollectionGroup" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="CMSCollectionGroup">
+              <PropertyRef Name="CMSCollectionGroupId" />
+            </Principal>
+            <Dependent Role="CMSRelCollectionGroup">
+              <PropertyRef Name="CMSCollectionGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CMSRelCol__CMSId__57A801BA">
+          <End Role="CMSMaster" Type="Self.CMSMaster" Multiplicity="1" />
+          <End Role="CMSRelCollectionGroup" Type="Self.CMSRelCollectionGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMSMaster">
+              <PropertyRef Name="CMSId" />
+            </Principal>
+            <Dependent Role="CMSRelCollectionGroup">
+              <PropertyRef Name="CMSId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CMSRelCol__CMSId__5E54FF49">
+          <End Role="CMSMaster" Type="Self.CMSMaster" Multiplicity="1" />
+          <End Role="CMSRelCollectionCategory" Type="Self.CMSRelCollectionCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMSMaster">
+              <PropertyRef Name="CMSId" />
+            </Principal>
+            <Dependent Role="CMSRelCollectionCategory">
+              <PropertyRef Name="CMSId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AttributeSetTagMap_AttributeSet">
           <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2624,13 +2707,15 @@
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSBrandInShop" EntityType="Self.CMSBrandInShop" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSBy1Get1Item" EntityType="Self.CMSBy1Get1Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCollectionCategory" EntityType="Self.CMSCollectionCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionGroup" EntityType="Self.CMSCollectionGroup" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CMSCollectionItem" EntityType="Self.CMSCollectionItem" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CMSCollectionItemGroup" EntityType="Self.CMSCollectionItemGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCollectionListItem" EntityType="Self.CMSCollectionListItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSFilter" EntityType="Self.CMSFilter" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSHistoryLog" EntityType="Self.CMSHistoryLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMainCategory" EntityType="Self.CMSMainCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMaster" EntityType="Self.CMSMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSRelCollectionCategory" EntityType="Self.CMSRelCollectionCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSRelCollectionGroup" EntityType="Self.CMSRelCollectionGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSStatusFlow" EntityType="Self.CMSStatusFlow" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSType" EntityType="Self.CMSType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Coupon" EntityType="Self.Coupon" Schema="dbo" store:Type="Tables" />
@@ -2695,6 +2780,18 @@
           <EntitySet Name="UserGroupPermissionMap" EntityType="Self.UserGroupPermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserShop" EntityType="Self.UserShop" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserStatus" EntityType="Self.UserStatus" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__CMSRelCol__CMSCo__56B3DD81" Association="Self.FK__CMSRelCol__CMSCo__56B3DD81">
+            <End Role="CMSCollectionGroup" EntitySet="CMSCollectionGroup" />
+            <End Role="CMSRelCollectionGroup" EntitySet="CMSRelCollectionGroup" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CMSRelCol__CMSId__57A801BA" Association="Self.FK__CMSRelCol__CMSId__57A801BA">
+            <End Role="CMSMaster" EntitySet="CMSMaster" />
+            <End Role="CMSRelCollectionGroup" EntitySet="CMSRelCollectionGroup" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CMSRelCol__CMSId__5E54FF49" Association="Self.FK__CMSRelCol__CMSId__5E54FF49">
+            <End Role="CMSMaster" EntitySet="CMSMaster" />
+            <End Role="CMSRelCollectionCategory" EntitySet="CMSRelCollectionCategory" />
+          </AssociationSet>
           <AssociationSet Name="FK_AttributeSetTagMap_AttributeSet" Association="Self.FK_AttributeSetTagMap_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
             <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMap" />
@@ -3043,13 +3140,15 @@
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="CMSBrandInShops" EntityType="ColspModel.CMSBrandInShop" />
           <EntitySet Name="CMSBy1Get1Item" EntityType="ColspModel.CMSBy1Get1Item" />
+          <EntitySet Name="CMSCollectionCategories" EntityType="ColspModel.CMSCollectionCategory" />
           <EntitySet Name="CMSCollectionGroups" EntityType="ColspModel.CMSCollectionGroup" />
-          <EntitySet Name="CMSCollectionItems" EntityType="ColspModel.CMSCollectionItem" />
-          <EntitySet Name="CMSCollectionItemGroups" EntityType="ColspModel.CMSCollectionItemGroup" />
+          <EntitySet Name="CMSCollectionListItems" EntityType="ColspModel.CMSCollectionListItem" />
           <EntitySet Name="CMSFilters" EntityType="ColspModel.CMSFilter" />
           <EntitySet Name="CMSHistoryLogs" EntityType="ColspModel.CMSHistoryLog" />
           <EntitySet Name="CMSMainCategories" EntityType="ColspModel.CMSMainCategory" />
           <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
+          <EntitySet Name="CMSRelCollectionCategories" EntityType="ColspModel.CMSRelCollectionCategory" />
+          <EntitySet Name="CMSRelCollectionGroups" EntityType="ColspModel.CMSRelCollectionGroup" />
           <EntitySet Name="CMSStatusFlows" EntityType="ColspModel.CMSStatusFlow" />
           <EntitySet Name="CMSTypes" EntityType="ColspModel.CMSType" />
           <EntitySet Name="Coupons" EntityType="ColspModel.Coupon" />
@@ -3201,6 +3300,18 @@
           <AssociationSet Name="FKCategoryAttributeSetMapCategory" Association="ColspModel.FKCategoryAttributeSetMapCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="CategoryAttributeSetMap" EntitySet="CategoryAttributeSetMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CMSRelCol__CMSCo__56B3DD81" Association="ColspModel.FK__CMSRelCol__CMSCo__56B3DD81">
+            <End Role="CMSCollectionGroup" EntitySet="CMSCollectionGroups" />
+            <End Role="CMSRelCollectionGroup" EntitySet="CMSRelCollectionGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CMSRelCol__CMSId__57A801BA" Association="ColspModel.FK__CMSRelCol__CMSId__57A801BA">
+            <End Role="CMSMaster" EntitySet="CMSMasters" />
+            <End Role="CMSRelCollectionGroup" EntitySet="CMSRelCollectionGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CMSRelCol__CMSId__5E54FF49" Association="ColspModel.FK__CMSRelCol__CMSId__5E54FF49">
+            <End Role="CMSMaster" EntitySet="CMSMasters" />
+            <End Role="CMSRelCollectionCategory" EntitySet="CMSRelCollectionCategories" />
           </AssociationSet>
           <AssociationSet Name="FK_Coupon_Shop" Association="ColspModel.FK_Coupon_Shop">
             <End Role="Shop" EntitySet="Shops" />
@@ -3663,13 +3774,36 @@
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CMSCollectionCategory">
+          <Key>
+            <PropertyRef Name="CMSCollectionCategoryId" />
+          </Key>
+          <Property Name="CMSCollectionCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionCategoryNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSCollectionCategoryNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+        </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
             <PropertyRef Name="CMSCollectionGroupId" />
           </Key>
           <Property Name="CMSCollectionGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSCollectionGroupNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CMSCollectionGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="BannerLocation" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="BannerConntent" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
@@ -3678,17 +3812,23 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+          <Property Name="CMSCollectionGroupNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CMSRelCollectionGroup" Relationship="ColspModel.FK__CMSRelCol__CMSCo__56B3DD81" FromRole="CMSCollectionGroup" ToRole="CMSRelCollectionGroup" />
         </EntityType>
-        <EntityType Name="CMSCollectionItem">
+        <EntityType Name="CMSCollectionListItem">
           <Key>
-            <PropertyRef Name="CMSCollectionItemId" />
+            <PropertyRef Name="CMSCollectionListItemId" />
           </Key>
-          <Property Name="CMSCollectionItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionListItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CMSId" Type="Int32" />
           <Property Name="PId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
-          <Property Name="CMSCollectionItemGroupId" Type="Int32" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="Createdate" Type="DateTime" Precision="3" />
@@ -3696,22 +3836,10 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSCollectionItemGroup">
-          <Key>
-            <PropertyRef Name="CMSCollectionItemGroupId" />
-          </Key>
-          <Property Name="CMSCollectionItemGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSCollectionItemGroupNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CMSCollectionItemGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
         </EntityType>
         <EntityType Name="CMSFilter">
           <Key>
@@ -3779,7 +3907,6 @@
           <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
           <Property Name="CMSStatusFlowId" Type="Int32" />
-          <Property Name="CMSCollectionGroupId" Type="Int32" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
@@ -3788,6 +3915,43 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CMSRelCollectionGroups" Relationship="ColspModel.FK__CMSRelCol__CMSId__57A801BA" FromRole="CMSMaster" ToRole="CMSRelCollectionGroup" />
+          <NavigationProperty Name="CMSRelCollectionCategories" Relationship="ColspModel.FK__CMSRelCol__CMSId__5E54FF49" FromRole="CMSMaster" ToRole="CMSRelCollectionCategory" />
+        </EntityType>
+        <EntityType Name="CMSRelCollectionCategory">
+          <Key>
+            <PropertyRef Name="CMSRelCollectionCategoryId" />
+          </Key>
+          <Property Name="CMSRelCollectionCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionCategoryId" Type="Int32" Nullable="false" />
+          <Property Name="CMSId" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CMSMaster" Relationship="ColspModel.FK__CMSRelCol__CMSId__5E54FF49" FromRole="CMSRelCollectionCategory" ToRole="CMSMaster" />
+        </EntityType>
+        <EntityType Name="CMSRelCollectionGroup">
+          <Key>
+            <PropertyRef Name="CMSCollectionGroupId" />
+          </Key>
+          <Property Name="CMSRelCollectionGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionGroupId" Type="Int32" Nullable="false" />
+          <Property Name="CMSId" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CMSCollectionGroup" Relationship="ColspModel.FK__CMSRelCol__CMSCo__56B3DD81" FromRole="CMSRelCollectionGroup" ToRole="CMSCollectionGroup" />
+          <NavigationProperty Name="CMSMaster" Relationship="ColspModel.FK__CMSRelCol__CMSId__57A801BA" FromRole="CMSRelCollectionGroup" ToRole="CMSMaster" />
         </EntityType>
         <EntityType Name="CMSStatusFlow">
           <Key>
@@ -5423,6 +5587,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__CMSRelCol__CMSCo__56B3DD81">
+          <End Type="ColspModel.CMSCollectionGroup" Role="CMSCollectionGroup" Multiplicity="1" />
+          <End Type="ColspModel.CMSRelCollectionGroup" Role="CMSRelCollectionGroup" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="CMSCollectionGroup">
+              <PropertyRef Name="CMSCollectionGroupId" />
+            </Principal>
+            <Dependent Role="CMSRelCollectionGroup">
+              <PropertyRef Name="CMSCollectionGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CMSRelCol__CMSId__57A801BA">
+          <End Type="ColspModel.CMSMaster" Role="CMSMaster" Multiplicity="1" />
+          <End Type="ColspModel.CMSRelCollectionGroup" Role="CMSRelCollectionGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMSMaster">
+              <PropertyRef Name="CMSId" />
+            </Principal>
+            <Dependent Role="CMSRelCollectionGroup">
+              <PropertyRef Name="CMSId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CMSRelCol__CMSId__5E54FF49">
+          <End Type="ColspModel.CMSMaster" Role="CMSMaster" Multiplicity="1" />
+          <End Type="ColspModel.CMSRelCollectionCategory" Role="CMSRelCollectionCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMSMaster">
+              <PropertyRef Name="CMSId" />
+            </Principal>
+            <Dependent Role="CMSRelCollectionCategory">
+              <PropertyRef Name="CMSId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Coupon_Shop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
           <End Type="ColspModel.Coupon" Role="Coupon" Multiplicity="*" />
@@ -6421,9 +6621,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CMSCollectionGroups">
-            <EntityTypeMapping TypeName="ColspModel.CMSCollectionGroup">
-              <MappingFragment StoreEntitySet="CMSCollectionGroup">
+          <EntitySetMapping Name="CMSCollectionCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionCategory">
+              <MappingFragment StoreEntitySet="CMSCollectionCategory">
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
                 <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
@@ -6432,15 +6637,44 @@
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSCollectionCategoryNameTH" ColumnName="CMSCollectionCategoryNameTH" />
+                <ScalarProperty Name="CMSCollectionCategoryNameEH" ColumnName="CMSCollectionCategoryNameEH" />
+                <ScalarProperty Name="CMSCollectionCategoryId" ColumnName="CMSCollectionCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCollectionGroups">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionGroup">
+              <MappingFragment StoreEntitySet="CMSCollectionGroup">
+                <ScalarProperty Name="CMSCollectionGroupNameEN" ColumnName="CMSCollectionGroupNameEN" />
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="BannerConntent" ColumnName="BannerConntent" />
+                <ScalarProperty Name="BannerLocation" ColumnName="BannerLocation" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="CMSCollectionGroupNameTH" ColumnName="CMSCollectionGroupNameTH" />
-                <ScalarProperty Name="CMSCollectionGroupNameEH" ColumnName="CMSCollectionGroupNameEH" />
                 <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CMSCollectionItems">
-            <EntityTypeMapping TypeName="ColspModel.CMSCollectionItem">
-              <MappingFragment StoreEntitySet="CMSCollectionItem">
+          <EntitySetMapping Name="CMSCollectionListItems">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionListItem">
+              <MappingFragment StoreEntitySet="CMSCollectionListItem">
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
                 <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
@@ -6448,29 +6682,11 @@
                 <ScalarProperty Name="Createdate" ColumnName="Createdate" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionItemGroupId" ColumnName="CMSCollectionItemGroupId" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
                 <ScalarProperty Name="PId" ColumnName="PId" />
                 <ScalarProperty Name="CMSId" ColumnName="CMSId" />
-                <ScalarProperty Name="CMSCollectionItemId" ColumnName="CMSCollectionItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSCollectionItemGroups">
-            <EntityTypeMapping TypeName="ColspModel.CMSCollectionItemGroup">
-              <MappingFragment StoreEntitySet="CMSCollectionItemGroup">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionItemGroupNameTH" ColumnName="CMSCollectionItemGroupNameTH" />
-                <ScalarProperty Name="CMSCollectionItemGroupNameEH" ColumnName="CMSCollectionItemGroupNameEH" />
-                <ScalarProperty Name="CMSCollectionItemGroupId" ColumnName="CMSCollectionItemGroupId" />
+                <ScalarProperty Name="CMSCollectionListItemId" ColumnName="CMSCollectionListItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6532,7 +6748,6 @@
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
                 <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
@@ -6551,6 +6766,40 @@
                 <ScalarProperty Name="CMSNameTH" ColumnName="CMSNameTH" />
                 <ScalarProperty Name="CMSNameEN" ColumnName="CMSNameEN" />
                 <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSRelCollectionCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSRelCollectionCategory">
+              <MappingFragment StoreEntitySet="CMSRelCollectionCategory">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+                <ScalarProperty Name="CMSCollectionCategoryId" ColumnName="CMSCollectionCategoryId" />
+                <ScalarProperty Name="CMSRelCollectionCategoryId" ColumnName="CMSRelCollectionCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSRelCollectionGroups">
+            <EntityTypeMapping TypeName="ColspModel.CMSRelCollectionGroup">
+              <MappingFragment StoreEntitySet="CMSRelCollectionGroup">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
+                <ScalarProperty Name="CMSRelCollectionGroupId" ColumnName="CMSRelCollectionGroupId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

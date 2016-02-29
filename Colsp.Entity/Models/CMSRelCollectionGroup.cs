@@ -12,11 +12,11 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSCollectionItemGroup
+    public partial class CMSRelCollectionGroup
     {
-        public int CMSCollectionItemGroupId { get; set; }
-        public string CMSCollectionItemGroupNameEH { get; set; }
-        public string CMSCollectionItemGroupNameTH { get; set; }
+        public int CMSRelCollectionGroupId { get; set; }
+        public int CMSCollectionGroupId { get; set; }
+        public int CMSId { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
@@ -25,5 +25,8 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
+    
+        public virtual CMSCollectionGroup CMSCollectionGroup { get; set; }
+        public virtual CMSMaster CMSMaster { get; set; }
     }
 }
