@@ -18,12 +18,48 @@ using Colsp.Api.Services;
 using System.Security.Principal;
 using System.Security.Claims;
 using Colsp.Api.Security;
+using System.Data.SqlClient;
+using System.Data.Entity.SqlServer;
+using System.Text;
 
 namespace Colsp.Api.Controllers
 {
 	public class UsersController : ApiController
     {
         private ColspEntities db = new ColspEntities();
+
+        [Route("api/Users/Seller")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteUserSeller(List<UserRequest> request)
+        {
+            try
+            {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var shopId = this.User.ShopRequest().ShopId.Value;
+                var userIds = request.Where(w => w.UserId != null).Select(s => s.UserId.Value).ToList();
+                var usr = db.Users.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && userIds.Contains(w.UserId) 
+                && w.UserShops.Any(a=>a.ShopId==shopId)).Include(i=>i.Shops).ToList();
+                if (usr == null || usr.Count == 0)
+                {
+                    throw new Exception("No deleted users found");
+                }
+                var shopOwnerUser = usr.Any(a => a.Shops.Count != 0);
+                if (shopOwnerUser)
+                {
+                    throw new Exception("This user is the shop owner and cannot be deleted. Please contact your administrator for more details.");
+                }
+                db.Users.RemoveRange(usr);
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
 
         [Route("api/Users/Seller")]
         [HttpGet]
@@ -156,7 +192,25 @@ namespace Colsp.Api.Controllers
                 shopMap.UpdatedDt = DateTime.Now;
                 db.UserShops.Add(shopMap);
                 db.SaveChanges();
-                return GetUserAdmin(usr.UserId);
+                return GetUserSeller(usr.UserId);
+            }
+            catch (DbUpdateException e)
+            {
+                if (usr != null && usr.UserId != 0)
+                {
+                    db.Users.Remove(usr);
+                    db.SaveChanges();
+                }
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "The Email already existed in the system. Please enter a different Email.");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -175,14 +229,10 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var usr = db.Users.Find(userId);
+                var usr = db.Users.Where(w => w.UserId == userId && Constant.USER_TYPE_SELLER.Equals(w.Type)).Single();
                 if (usr == null || usr.Status.Equals(Constant.STATUS_REMOVE))
                 {
                     throw new Exception("User not found");
-                }
-                if (!usr.Type.Equals(Constant.USER_TYPE_SELLER))
-                {
-                    throw new Exception("This user is not seller");
                 }
                 usr.Email = Validation.ValidateString(request.Email, "Email", true, 100, false);
                 if (!string.IsNullOrEmpty(request.Password))
@@ -239,7 +289,20 @@ namespace Colsp.Api.Controllers
                     db.UserGroupMaps.RemoveRange(usrGrpList);
                 }
                 db.SaveChanges();
-                return GetUserAdmin(usr.UserId);
+                return GetUserSeller(usr.UserId);
+            }
+            catch (DbUpdateException e)
+            {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "The Email already existed in the system. Please enter a different Email.");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -273,7 +336,8 @@ namespace Colsp.Api.Controllers
                 {
                     userList = userList.Where(a => a.NameEn.Contains(request.SearchText)
                     || a.NameTh.Contains(request.SearchText)
-                    || a.Email.Contains(request.SearchText));
+                    || a.Email.Contains(request.SearchText)
+                    || SqlFunctions.StringConvert((double)a.UserId).Contains(request.SearchText));
                 }
                 var total = userList.Count();
                 var pagedUsers = userList.Paginate(request);
@@ -363,6 +427,24 @@ namespace Colsp.Api.Controllers
                 }
                 return GetUserAdmin(usr.UserId);
             }
+            catch (DbUpdateException e)
+            {
+                if (usr != null && usr.UserId != 0)
+                {
+                    db.Users.Remove(usr);
+                    db.SaveChanges();
+                }
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "The Email already existed in the system. Please enter a different Email.");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
             catch (Exception e)
             {
                 if(usr != null && usr.UserId != 0)
@@ -446,6 +528,19 @@ namespace Colsp.Api.Controllers
                 db.SaveChanges();
                 return GetUserAdmin(usr.UserId);
             }
+            catch (DbUpdateException e)
+            {
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
+                    if (sqlError == 2627)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "The Email already existed in the system. Please enter a different Email.");
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
             catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
@@ -458,24 +553,17 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                
-                foreach (UserRequest userRq in request)
+                if (request == null)
                 {
-                    if(userRq.UserId == null)
-                    {
-                        throw new Exception("User id cannot be null");
-                    }
-                    var usr = db.Users.Find(userRq.UserId.Value);
-                    if (usr == null)
-                    {
-                        throw new Exception("Cannot find user " + userRq.UserId.Value);
-                    }
-                    if (!usr.Type.Equals(Constant.USER_TYPE_ADMIN))
-                    {
-                        throw new Exception("Cannot deleted non admin user " + userRq.UserId.Value);
-                    }
-                    usr.Status = Constant.STATUS_REMOVE;
+                    throw new Exception("Invalid request");
                 }
+                var userIds = request.Where(w => w.UserId != null).Select(s => s.UserId.Value).ToList();
+                var usr = db.Users.Where(w => Constant.USER_TYPE_ADMIN.Equals(w.Type) && userIds.Contains(w.UserId)).ToList();
+                if(usr == null || usr.Count == 0)
+                {
+                    throw new Exception("No deleted users found");
+                }
+                db.Users.RemoveRange(usr);
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -644,24 +732,36 @@ namespace Colsp.Api.Controllers
         }
 
         [Route("api/Users/ChangePassword")]
-        [HttpPost]
+        [HttpPut]
         public HttpResponseMessage ChangePassword(UserRequest request)
         {
             try
             {
                 string email = this.User.UserRequest().Email;
-                var userList = db.Users.Where(w => w.Email.Equals(email) && w.Password.Equals(request.OldPassword)).ToList();
-                if(userList == null || userList.Count == 0)
+                List<User> userList = null;
+                if (this.User.ShopRequest() != null)
+                {
+                    userList = db.Users.Where(w => w.Email.Equals(email) && w.Password.Equals(request.Password)).ToList();
+                }
+                else
+                {
+                    userList = db.Users.Where(w => w.Email.Equals(request.Email)).ToList();
+                }
+                if (userList == null || userList.Count == 0)
                 {
                     throw new Exception("User and password not match");
                 }
-                if (string.IsNullOrEmpty(request.Password))
+                if (string.IsNullOrWhiteSpace(request.NewPassword))
                 {
                     throw new Exception("Password cannot be empty");
                 }
-                userList[0].Password = request.Password;
+                var bytes = Encoding.UTF8.GetBytes(string.Concat(userList[0].Email, ":", userList[0].Password));
+                string basicOld = Convert.ToBase64String(bytes);
+                userList[0].Password = request.NewPassword;
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK);
+                Cache.Delete(basicOld);
+                this.User.UserRequest().Password = userList[0].Password;
+                return Request.CreateResponse(HttpStatusCode.OK, Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Concat(userList[0].Email, ":", userList[0].Password))));
             }
             catch (Exception e)
             {

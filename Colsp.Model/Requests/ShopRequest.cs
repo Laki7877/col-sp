@@ -30,10 +30,14 @@ namespace Colsp.Model.Requests
         public string Twitter { get; set; }
         public int? StockAlert { get; set; }
         public ImageRequest Logo { get; set; }
+        public string SearchText { get; set; }
+        public string ShopGroup { get; set; }
+        public string TaxInvoice { get; set; }
+        public string GiftWrap { get; set; }
 
-    public override void DefaultOnNull()
+        public override void DefaultOnNull()
         {
-            ShopNameEn = GetValueOrDefault(ShopNameEn, "");
+            SearchText = GetValueOrDefault(SearchText, null);
             _order = GetValueOrDefault(_order, "ShopId");
             base.DefaultOnNull();
         }

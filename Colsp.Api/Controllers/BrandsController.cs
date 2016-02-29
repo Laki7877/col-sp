@@ -271,7 +271,7 @@ namespace Colsp.Api.Controllers
                     brand.UpdatedBy = this.User.UserRequest().Email;
                     brand.UpdatedDt = DateTime.Now;
                     db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK);
+                    return GetBrand(brand.BrandId);
                 }
                 else
                 {

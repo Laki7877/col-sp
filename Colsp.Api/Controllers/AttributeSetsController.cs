@@ -63,7 +63,8 @@ namespace Colsp.Api.Controllers
                                   atrS.UpdatedDt,
                                   atrS.CreatedDt,
                                   AttributeCount = atrS.AttributeSetMaps.AsEnumerable().Count(),
-                                  CategoryCount = atrS.CategoryAttributeSetMaps.Count()
+                                  CategoryCount = atrS.CategoryAttributeSetMaps.Count(),
+                                  ProductCount = atrS.ProductStages.Count()
                               };
                 if (request == null)
                 {
@@ -141,8 +142,6 @@ namespace Colsp.Api.Controllers
                         AttributeSetMap map = new AttributeSetMap();
                         map.AttributeId = attr.AttributeId.Value;
                         map.AttributeSetId = set.AttributeSetId;
-                        map.Required = attr.Required;
-                        map.Filterable = attr.Filterable;
                         map.Status = Constant.STATUS_ACTIVE;
                         map.CreatedBy = this.User.UserRequest().Email;
                         map.CreatedDt = DateTime.Now;
@@ -241,7 +240,6 @@ namespace Colsp.Api.Controllers
                     {
                         foreach (AttributeRequest attrRq in request.Attributes)
                         {
-
                             bool addNew = false;
                             if (mapList == null || mapList.Count == 0)
                             {
@@ -252,8 +250,6 @@ namespace Colsp.Api.Controllers
                                 AttributeSetMap current = mapList.Where(w => w.AttributeId == attrRq.AttributeId).SingleOrDefault();
                                 if (current != null)
                                 {
-                                    current.Required = attrRq.Required;
-                                    current.Filterable = attrRq.Filterable;
                                     current.UpdatedBy = this.User.UserRequest().Email;
                                     current.UpdatedDt = DateTime.Now;
                                     mapList.Remove(current);
@@ -267,8 +263,6 @@ namespace Colsp.Api.Controllers
                             {
                                 AttributeSetMap map = new AttributeSetMap();
                                 map.AttributeId = attrRq.AttributeId.Value;
-                                map.Required = attrRq.Required;
-                                map.Filterable = attrRq.Filterable;
                                 map.AttributeSetId = attrSet.AttributeSetId;
                                 map.CreatedBy = this.User.UserRequest().Email;
                                 map.CreatedDt = DateTime.Now;
@@ -512,8 +506,6 @@ namespace Colsp.Api.Controllers
                         attr.VariantDataType = map.Attribute.VariantDataType;
                         attr.VariantStatus = map.Attribute.VariantStatus;
                         attr.AllowHtmlFlag = map.Attribute.AllowHtmlFlag;
-                        attr.Required = map.Required;
-                        attr.Filterable = map.Filterable;
                         attr.ProductCount = (map.Attribute.ProductStageAttributes != null ? map.Attribute.ProductStageAttributes.Count : 0)
                                             + (map.Attribute.ProductStageVariantArrtibuteMaps != null ? map.Attribute.ProductStageVariantArrtibuteMaps.Count : 0);
                         attr.Status = map.Attribute.Status;

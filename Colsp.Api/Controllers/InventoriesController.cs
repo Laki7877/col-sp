@@ -159,21 +159,21 @@ namespace Colsp.Api.Controllers
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
-                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals("NormalStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
+                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) > w.SaftyStockSeller);
+                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
-                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals("OutOfStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
+                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SaftyStockSeller);
+                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
-                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
-                    }
-                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SaftyStockSeller
+                        && (w.Quantity - w.Defect - w.OnHold - w.Reserve) > 0);
+                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
                 }
 
@@ -208,8 +208,8 @@ namespace Colsp.Api.Controllers
                               from mast in mastJoin.DefaultIfEmpty()
                               join variant in db.ProductStageVariants on new { inv.Pid, ShopId = shopId } equals new { variant.Pid, variant.ShopId } into varJoin
                               from vari in varJoin.DefaultIfEmpty()
-                              where vari != null || mast != null
-                             select new
+                              where (vari != null && vari.Visibility == true) || (mast != null && mast.Visibility == true && mast.ProductStageVariants.Count == 0)
+                              select new
                               {
                                   ProductId = mast != null ? mast.ProductId : vari.ProductId,
                                   Sku = vari != null ? vari.Sku : mast.Sku,
@@ -222,27 +222,39 @@ namespace Colsp.Api.Controllers
                                   inv.OnHold,
                                   inv.Reserve,
                                   inv.SaftyStockSeller,
-                                  inv.UpdatedDt
-                              });
+                                  inv.UpdatedDt,
+                                  IsVariant = vari != null ? true : false,
+                                  VariantAttribute = vari.ProductStageVariantArrtibuteMaps.Select(s => new
+                                  {
+                                         s.Attribute.AttributeNameEn,
+                                         Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.Value) select tt.AttributeValueEn).FirstOrDefault()
+                                            : s.Value,
+                                   })
+                             });
                 request.DefaultOnNull();
+                if (!string.IsNullOrWhiteSpace(request.SearchText))
+                {
+                    inven = inven.Where(w => w.Pid.Contains(request.SearchText)
+                    || w.Sku.Contains(request.SearchText)
+                    || w.ProductNameEn.Contains(request.SearchText));
+                }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
-
                     if (string.Equals("NormalStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
+                        inven = inven.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) > w.SaftyStockSeller);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
-                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals("OutOfStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
+                        inven = inven.Where(w => w.Quantity == 0);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
-                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE));
-                    }
-                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                        inven = inven.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SaftyStockSeller 
+                        && w.Quantity != 0);
+                        //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
                 }
                 var total = inven.Count();

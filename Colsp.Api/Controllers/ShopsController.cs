@@ -19,13 +19,14 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Web;
 using System.Configuration;
+using System.Data.Entity.SqlServer;
+using Colsp.Api.Services;
 
 namespace Colsp.Api.Controllers
 {
     public class ShopsController : ApiController
     {
         private ColspEntities db = new ColspEntities();
-
 
         private readonly string root = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
 
@@ -89,16 +90,21 @@ namespace Colsp.Api.Controllers
                         s.ShopNameEn,
                         ShopType = new { s.ShopTypeId, s.ShopType.ShopTypeNameEn },
                         s.Status,
-                        s.UpdatedDt
+                        s.ShopGroup,
+                        s.UpdatedDt,
+                        s.BankAccountName,
+                        s.BankAccountNumber
                     });
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, shopList);
                 }
                 request.DefaultOnNull();
-                if (!string.IsNullOrEmpty(request.ShopNameEn))
+                if (!string.IsNullOrEmpty(request.SearchText))
                 {
-                    shopList = shopList.Where(a => a.ShopNameEn.Contains(request.ShopNameEn));
+                    shopList = shopList.Where(a => a.ShopNameEn.Contains(request.SearchText) 
+                    || SqlFunctions.StringConvert((double)a.ShopId).Contains(request.SearchText)
+                    || a.ShopType.ShopTypeNameEn.Contains(request.SearchText));
                 }
                 var total = shopList.Count();
                 var pagedUsers = shopList.Paginate(request);
@@ -142,6 +148,9 @@ namespace Colsp.Api.Controllers
                         ShopType = new { s.ShopTypeId,s.ShopType.ShopTypeNameEn },
                         s.Status,
                         s.Commission,
+                        s.ShopGroup,
+                        s.BankAccountName,
+                        s.BankAccountNumber,
                         ShopOwner = new
                         {
                             s.User.UserId,
@@ -175,7 +184,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
         [Route("api/Shop/Profile")]
         [HttpGet]
         public HttpResponseMessage GetShopProfile()
@@ -202,7 +210,10 @@ namespace Colsp.Api.Controllers
                         s.StockAlert,
                         s.FloatMessageEn,
                         s.FloatMessageTh,
-                        Logo = new ImageRequest { url=s.ShopImageUrl }
+                        GiftWrap = s.GiftWrap == true ? "Available" : "NotAvailable",
+                        TaxInvoice = s.TaxInvoice == true ? "Available" : "NotAvailable",
+                        Logo = new ImageRequest { url=s.ShopImageUrl },
+                        s.Status
                     }).ToList();
                 if (shop == null || shop.Count == 0)
                 {
@@ -215,7 +226,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/Shop/Profile")]
         [HttpPut]
@@ -230,19 +240,28 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find shop");
                 }
                 shop.ShopNameEn = request.ShopNameEn;
+                if ("Available".Equals(request.GiftWrap))
+                {
+                    shop.GiftWrap = true;
+                }
+                if ("Available".Equals(request.TaxInvoice))
+                {
+                    shop.TaxInvoice = true;
+                }
                 shop.ShopDescriptionEn = request.ShopDescriptionEn;
                 shop.ShopDescriptionTh = request.ShopDescriptionTh;
                 shop.FloatMessageEn = request.FloatMessageEn;
                 shop.FloatMessageTh = request.FloatMessageTh;
                 shop.ShopAddress = request.ShopAddress;
-                shop.BankAccountName = request.BankAccountName;
-                shop.BankAccountNumber = request.BankAccountNumber;
+                //shop.BankAccountName = request.BankAccountName;
+                //shop.BankAccountNumber = request.BankAccountNumber;
                 shop.Facebook = request.Facebook;
                 shop.Youtube = request.Youtube;
                 shop.Instagram = request.Instagram;
                 shop.Pinterest = request.Pinterest;
                 shop.Twitter = request.Twitter;
                 shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, Int32.MaxValue, 0).Value;
+                shop.Status = request.Status;
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 if(request.Logo != null)
@@ -255,6 +274,7 @@ namespace Colsp.Api.Controllers
                 }
                 
                 db.SaveChanges();
+                Cache.Delete(Request.Headers.Authorization.Parameter);
                 return GetShopProfile();
             }
             catch (Exception e)
@@ -262,7 +282,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/ShopsSeller")]
         [HttpGet]
@@ -327,8 +346,11 @@ namespace Colsp.Api.Controllers
 
                 shop = new Shop();
                 shop.Commission = request.Commission;
+                shop.ShopGroup = request.ShopGroup;
                 shop.ShopNameEn = request.ShopNameEn;
                 shop.ShopNameTh = request.ShopNameTh;
+                shop.BankAccountName = request.BankAccountName;
+                shop.BankAccountNumber = request.BankAccountNumber;
                 shop.ShopTypeId = request.ShopType.ShopTypeId;
                 shop.Status = request.Status;
                 shop.CreatedBy = this.User.UserRequest().Email;
@@ -369,20 +391,28 @@ namespace Colsp.Api.Controllers
                     db.Users.Remove(usr);
                     db.SaveChanges();
                 }
+
                 if (shop != null && shop.ShopId != 0)
                 {
                     db.Shops.Remove(shop);
                     db.SaveChanges();
                 }
-                
-
                 if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
                 {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
+                    SqlException error = ((SqlException)e.InnerException.InnerException);
+                    if (error.Number == 2627)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Email has already been used");
+                        if (error.Message.Contains("CK_Shop_ShopNameEn"))
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "This shop name has already been used. Please enter a different shop name.");
+                        }
+                        else if(error.Message.Contains("CK_User_Email"))
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "The Email already existed in the system. Please enter a different Email.");
+                        }
+                        
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
@@ -479,15 +509,51 @@ namespace Colsp.Api.Controllers
                         userShop.UpdatedDt = DateTime.Now;
                     }
                 }
+                shop.ShopGroup = request.ShopGroup;
                 shop.Commission = request.Commission;
                 shop.ShopNameEn = request.ShopNameEn;
                 shop.ShopNameTh = request.ShopNameTh;
                 shop.ShopTypeId = request.ShopType.ShopTypeId;
+                shop.BankAccountName = request.BankAccountName;
+                shop.BankAccountNumber = request.BankAccountNumber;
                 shop.Status = request.Status;
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 db.SaveChanges();
                 return GetShop(shop.ShopId);
+            }
+            catch (DbUpdateException e)
+            {
+                if (usr != null && usr.UserId != 0)
+                {
+                    db.Users.Remove(usr);
+                    db.SaveChanges();
+                }
+
+                if (shop != null && shop.ShopId != 0)
+                {
+                    db.Shops.Remove(shop);
+                    db.SaveChanges();
+                }
+                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
+                {
+                    SqlException error = ((SqlException)e.InnerException.InnerException);
+                    if (error.Number == 2627)
+                    {
+                        if (error.Message.Contains("CK_Shop_ShopNameEn"))
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "Shop name has already been used");
+                        }
+                        else if (error.Message.Contains("CK_User_Email"))
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
+                           , "Email has already been used");
+                        }
+
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -500,6 +566,33 @@ namespace Colsp.Api.Controllers
                     db.Shops.Remove(shop);
                 }
                 db.SaveChanges();
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Shops")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteShop(List<ShopRequest> request)
+        {
+            try
+            {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var shopIds = request.Where(w => w.ShopId != null).Select(s => s.ShopId).ToList();
+                if(shopIds == null || shopIds.Count == 0)
+                {
+                    throw new Exception("No shop selected");
+                }
+                var shops = db.Shops.Where(w => shopIds.Contains(w.ShopId));
+                db.Shops.RemoveRange(shops);
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
+                //db.Users.Remove()
+            }
+            catch (Exception e)
+            {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }

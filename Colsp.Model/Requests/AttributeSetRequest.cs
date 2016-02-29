@@ -30,7 +30,7 @@ namespace Colsp.Model.Requests
         {
             AttributeSetId = GetValueOrDefault(AttributeSetId, null);
             SearchText = GetValueOrDefault(SearchText, null);
-            _order = GetValueOrDefault(_order, "AttributeSetId");
+            _order = GetValueOrDefault(_order, "UpdateDt");
             base.DefaultOnNull();
         }
     }

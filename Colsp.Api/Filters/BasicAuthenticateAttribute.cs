@@ -77,7 +77,7 @@ namespace Colsp.Api.Filters
 
                 if (principal == null)
                 {
-                    throw new Exception("Invalid username or password");
+                    throw new Exception("Invalid Email or Password");
                 }
                 else
                 {
@@ -194,8 +194,9 @@ namespace Colsp.Api.Filters
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
 				var principal = new UsersPrincipal(identity,
-                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
+                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn, Status = s.Status }).ToList(),
                     new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type });
+
 
 				return principal;
 			}

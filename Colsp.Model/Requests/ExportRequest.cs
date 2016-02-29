@@ -12,6 +12,9 @@ namespace Colsp.Model.Requests
     /// </summary>
     public class ExportRequest
     {
+
+        public List<string> Options { get; set; }
+
         //System Information
         public bool ProductStatus { get; set; }
         public bool PID { get; set; }
@@ -43,6 +46,7 @@ namespace Colsp.Model.Requests
 
         //Shipping and Inventory
         public bool StockType { get; set; }
+        public bool ShippingMethod { get; set; }
         public bool PreparationTime { get; set; }
         public bool PackageLenght { get; set; }
         public bool PackageHeight { get; set; }
@@ -65,7 +69,12 @@ namespace Colsp.Model.Requests
         public bool ExpiryDate { get; set; }
         public bool ExpiryTime { get; set; }
         public bool Remark { get; set; }
-
+        public bool AttributeSet { get; set; }
+        public bool VariantOption01 { get; set; }
+        public bool VariantOption02 { get; set; }
+        public bool FlagControl1 { get; set; }
+        public bool FlagControl2 { get; set; }
+        public bool FlagControl3 { get; set; }
 
         //List of selected product to be exported
         public List<ProductStageRequest> ProductList { get; set; }
@@ -74,43 +83,9 @@ namespace Colsp.Model.Requests
         //Constructor
         public ExportRequest()
         {
-            //System Information
-            ProductStatus = false;
-            PID = false;
-            GroupID = false;
-
-            //Vitual Information
-            SKU = false;
-            ProductNameEn = false;
-            ProductNameTh = false;
-            BrandName = false;
-
-            //Category
-            GlobalCategory = false;
-            LocalCategory = false;
-
-            //Price
-            OriginalPrice = false;
-            SalePrice = false;
-
-            //Description
-            DescriptionEn = false;
-            DescriptionTh = false;
-            ShortDescriptionEn = false;
-            ShortDescriptionTh = false;
-
-            //Shipping and Inventory
-            StockType = false;
-            PreparationTime = false;
-            PackageLenght = false;
-            PackageHeight = false;
-            PackageWidth = false;
-            PackageWeight = false;
-            InventoryAmount = false;
-            SafetytockAmount = false;
-
             ProductList = new List<ProductStageRequest>();
             AttributeSets = new List<AttributeSetRequest>();
+            Options = new List<string>();
         }
     }
 }

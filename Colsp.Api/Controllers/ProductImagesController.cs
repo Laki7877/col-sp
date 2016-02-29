@@ -15,6 +15,7 @@ using Colsp.Api.Helpers;
 using System.Net.Http.Headers;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
+using System.Drawing.Imaging;
 
 namespace Colsp.Api.Controllers
 {
@@ -133,6 +134,31 @@ namespace Colsp.Api.Controllers
                 var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
                 await Request.Content.ReadAsMultipartAsync(streamProvider);
 
+                if(streamProvider.FileData == null || streamProvider.FileData.Count == 0)
+                {
+                    throw new Exception("Wrong file format. Please upload only JPG or PNG file. Image size is too small.Please upload 1500x1500 px to 2000x2000 px");
+                }
+
+                using (Image img = Image.FromFile(streamProvider.FileData[0].LocalFileName))
+                {
+                    if (!ImageFormat.Jpeg.Equals(img.RawFormat)
+                        && !ImageFormat.Png.Equals(img.RawFormat))
+                    {
+                        throw new Exception("Wrong file format. Please upload only JPG or PNG file.Image size is too small. Please upload 1500x1500 px to 2000x2000 px");
+                    }
+                    if(img.Width < 1500 || img.Height < 1500)
+                    {
+                        throw new Exception("Image size is too small.The size should be between 1500x1500 px to 2000x2000 px. Square image only and not over 5 mbs per image");
+                    }
+                    if(img.Width > 2000 || img.Height > 2000)
+                    {
+                        throw new Exception("Image size is too big.The size should be between 1500x1500 px to 2000x2000 px. Square image only and not over 5 mbs per image");
+                    }
+                    if(img.Height != img.Width)
+                    {
+                        throw new Exception("The size should be between 1500x1500 px to 2000x2000 px. Square image only and not over 5 mbs per image");
+                    }
+                }
              
                 FileUploadRespond fileUpload = new FileUploadRespond();
                 string fileName = string.Empty;
@@ -161,9 +187,9 @@ namespace Colsp.Api.Controllers
 
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 

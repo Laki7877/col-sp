@@ -80,8 +80,8 @@ namespace Colsp.Model.Requests
         public string DimensionUnit { get; set; }
         public decimal? Weight { get; set; }
         public string WeightUnit { get; set; }
-        public decimal? OriginalPrice { get; set; }
-        public decimal? SalePrice { get; set; }
+        public decimal OriginalPrice { get; set; }
+        public decimal SalePrice { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortTh { get; set; }
@@ -93,11 +93,13 @@ namespace Colsp.Model.Requests
         public int? VariantId { get; set; }
         public bool? Visibility { get; set; }
         public bool? IsVariant { get; set; }
+        public SEORequest SEO { get; set; }
         public List<ImageRequest> MasterImg { get; set; }
         public List<ImageRequest> VariantImg { get; set; }
 
         public VariantRequest()
         {
+            SEO = new SEORequest();
             FirstAttribute = new AttributeRequest();
             SecondAttribute = new AttributeRequest();
             Images = new List<ImageRequest>();

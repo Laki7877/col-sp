@@ -28,8 +28,8 @@ namespace Colsp.Model.Requests
         public bool? ShowGlobalFilterFlag { get; set; }
         public bool? ShowLocalFilterFlag { get; set; }
         public bool? AllowHtmlFlag { get; set; }
-        public bool? Filterable { get; set; }
-        public bool? Required { get; set; }
+        public bool Filterable { get; set; }
+        public bool Required { get; set; }
         public List<AttributeValueRequest> AttributeValues { get; set; }
         public string ValueEn { get; set; }
         public string SearchText { get; set; }

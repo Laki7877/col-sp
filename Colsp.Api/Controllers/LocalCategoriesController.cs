@@ -303,7 +303,7 @@ namespace Colsp.Api.Controllers
                     if (cat.ProductStages.Count != 0)
                     {
                         db.Dispose();
-                        throw new Exception("Cannot delete category " + cat.NameEn + " with product associated");
+                        throw new Exception("Cannot delete category <strong>" + cat.NameEn + "</strong> with product associated");
                     }
                     db.LocalCategories.Remove(cat);
                 }
@@ -354,9 +354,8 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Cannot find category " + catRq.CategoryId);
                     }
-                    current.Visibility = catRq.Visibility.Value;
-                    current.UpdatedBy = this.User.UserRequest().Email;
-                    current.UpdatedDt = DateTime.Now;
+                    var child = catList.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt);
+                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility.Value; f.UpdatedBy = this.User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);

@@ -192,7 +192,7 @@ namespace Colsp.Api.Helpers
             return val.Value.ToString(@"hh\:mm");
         }
 
-        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key)
+        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key,bool require,int maxLenght,HashSet<string> errormessage,int row)
         {
             if (dic.ContainsKey(key))
             {
@@ -200,8 +200,22 @@ namespace Colsp.Api.Helpers
                 if(!string.IsNullOrWhiteSpace(val))
                 {
                     val = val.Trim();
+                    if(require && string.IsNullOrEmpty(val))
+                    {
+                        errormessage.Add(key + " is required at roe " + row);
+                        return null;
+                    }
+                    if(val.Length > maxLenght)
+                    {
+                        errormessage.Add(key + " field must be no longer than " + maxLenght + " characters at roe " + row);
+                        return null;
+                    }
                     return val;
                 }
+            }
+            if (require)
+            {
+                errormessage.Add(key + " is required at roe " + row);
             }
             return null;
         }

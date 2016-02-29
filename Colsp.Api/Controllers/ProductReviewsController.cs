@@ -22,7 +22,7 @@ namespace Colsp.Api.Controllers
 
         [Route("api/ProductReviews")]
         [HttpGet]
-        public HttpResponseMessage GetAttributes([FromUri] ProductReviewRequest request)
+        public HttpResponseMessage GetReviews([FromUri] ProductReviewRequest request)
         {
             try
             {
@@ -51,12 +51,18 @@ namespace Colsp.Api.Controllers
                                   rev.Status,
                                   cus.CustomerId,
                                   Customer = cus != null ? cus.FirstName + " " + cus.LastName : null,
-                                  rev.UpdatedDt
+                                  UpdatedDt = rev.CreatedDt
                               });
 
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, review);
+                }
+                if (!string.IsNullOrWhiteSpace(request.SearchText))
+                {
+                    review = review.Where(w => w.Comment.Contains(request.SearchText)
+                    || w.Pid.Contains(request.SearchText)
+                    || w.Customer.Contains(request.SearchText));
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
