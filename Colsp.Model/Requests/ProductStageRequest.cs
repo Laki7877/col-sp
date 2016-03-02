@@ -96,6 +96,7 @@ namespace Colsp.Model.Requests
         public SEORequest SEO { get; set; }
         public List<ImageRequest> MasterImg { get; set; }
         public List<ImageRequest> VariantImg { get; set; }
+        public decimal? PrepareDay { get; set; }
 
         public VariantRequest()
         {

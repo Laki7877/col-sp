@@ -32,7 +32,11 @@ namespace Colsp.Model.Requests
 
         //Category
         public bool GlobalCategory { get; set; }
+        public bool GlobalCategory01 { get; set; }
+        public bool GlobalCategory02 { get; set; }
         public bool LocalCategory { get; set; }
+        public bool LocalCategory01 { get; set; }
+        public bool LocalCategory02 { get; set; }
 
         //Price
         public bool OriginalPrice { get; set; }

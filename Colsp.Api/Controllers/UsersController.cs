@@ -739,13 +739,14 @@ namespace Colsp.Api.Controllers
             {
                 string email = this.User.UserRequest().Email;
                 List<User> userList = null;
-                if (this.User.ShopRequest() != null)
+
+                if (!string.IsNullOrEmpty(request.Email)&&Constant.USER_TYPE_ADMIN.Equals( this.User.UserRequest().Type))
                 {
-                    userList = db.Users.Where(w => w.Email.Equals(email) && w.Password.Equals(request.Password)).ToList();
+                    userList = db.Users.Where(w => w.Email.Equals(request.Email)).ToList();
                 }
                 else
                 {
-                    userList = db.Users.Where(w => w.Email.Equals(request.Email)).ToList();
+                    userList = db.Users.Where(w => w.Email.Equals(email) && w.Password.Equals(request.Password)).ToList();
                 }
                 if (userList == null || userList.Count == 0)
                 {
