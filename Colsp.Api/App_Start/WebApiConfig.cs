@@ -41,30 +41,62 @@ namespace Colsp.Api
             //enable static image
             config.Routes.IgnoreRoute("ImageRoute", "Images/{file}");
 
+
             //crearte folder for image
-            string imgageRootPath = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
-            string imageTmpFolder = ConfigurationManager.AppSettings[AppSettingKey.IMAGE_TMP_FOLDER];
+            // ~/Images
+            string imgageRootPath = AppSettingKey.IMAGE_ROOT_PATH;
+            // Product Image Tmp folder
+            string imageTmpFolder = AppSettingKey.TMP_FOLDER;
             string rootImagePath = Path.Combine(imgageRootPath, imageTmpFolder);
             if (!Directory.Exists(rootImagePath))
             {
                 Directory.CreateDirectory(rootImagePath);
             }
-            string branTmpPath = "Brand";
-            string rootBrandPath = Path.Combine(imgageRootPath, branTmpPath);
+
+            //Product folder
+            string rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.TMP_FOLDER);
+            if (!Directory.Exists(rootProductPath))
+            {
+                Directory.CreateDirectory(rootProductPath);
+            }
+
+            //Brand folder
+            string rootBrandPath = Path.Combine(imgageRootPath, AppSettingKey.BRAND_FOLDER, AppSettingKey.TMP_FOLDER);
             if (!Directory.Exists(rootBrandPath))
             {
                 Directory.CreateDirectory(rootBrandPath);
             }
 
-            string shopTmpPath = "Shop";
-            string rootShopPath = Path.Combine(imgageRootPath, shopTmpPath);
+            //Shop folder
+            string rootShopPath = Path.Combine(imgageRootPath, AppSettingKey.SHOP_FOLDER, AppSettingKey.TMP_FOLDER);
             if (!Directory.Exists(rootShopPath))
             {
                 Directory.CreateDirectory(rootShopPath);
             }
 
-            string excelTmpPath = "~/Import";
-            string rootExcelPath = HttpContext.Current.Server.MapPath(excelTmpPath);
+            //Attribute Value Folder
+            string rootAttributeValPath = Path.Combine(imgageRootPath, AppSettingKey.ATTRIBUTE_VALUE_FOLDER, AppSettingKey.TMP_FOLDER);
+            if (!Directory.Exists(rootAttributeValPath))
+            {
+                Directory.CreateDirectory(rootAttributeValPath);
+            }
+
+            //Global Category Folder
+            string rootGlobalPath = Path.Combine(imgageRootPath, AppSettingKey.GLOBAL_CAT_FOLDER, AppSettingKey.TMP_FOLDER);
+            if (!Directory.Exists(rootGlobalPath))
+            {
+                Directory.CreateDirectory(rootGlobalPath);
+            }
+
+            //Local Category Folder
+            string rootLocalPath = Path.Combine(imgageRootPath, AppSettingKey.LOCAL_CAT_FOLDER, AppSettingKey.TMP_FOLDER);
+            if (!Directory.Exists(rootLocalPath))
+            {
+                Directory.CreateDirectory(rootLocalPath);
+            }
+
+            //CSV Import folder
+            string rootExcelPath = AppSettingKey.IMPORT_ROOT_PATH;
             if (!Directory.Exists(rootExcelPath))
             {
                 Directory.CreateDirectory(rootExcelPath);

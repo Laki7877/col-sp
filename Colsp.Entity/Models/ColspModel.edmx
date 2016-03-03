@@ -82,6 +82,7 @@
           <Property Name="AttributeValueId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeValueTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" />
           <Property Name="MapValue" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
@@ -3452,6 +3453,7 @@
           <Property Name="AttributeValueId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AttributeValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ImageUrl" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="MapValue" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -6132,6 +6134,7 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="MapValue" ColumnName="MapValue" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
                 <ScalarProperty Name="AttributeValueTh" ColumnName="AttributeValueTh" />
                 <ScalarProperty Name="AttributeValueEn" ColumnName="AttributeValueEn" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />

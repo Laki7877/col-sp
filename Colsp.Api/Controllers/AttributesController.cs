@@ -14,6 +14,8 @@ using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace Colsp.Api.Controllers
 {
@@ -125,11 +127,16 @@ namespace Colsp.Api.Controllers
                 if (request.AttributeValues != null && request.AttributeValues.Count  > 0)
                 {
                     newList = new List<AttributeValue>();
-                    foreach(AttributeValueRequest val in request.AttributeValues)
+                    AttributeValue value = null;
+                    foreach (AttributeValueRequest val in request.AttributeValues)
                     {
-                        AttributeValue value = new AttributeValue();
+                        value = new AttributeValue();
                         value.AttributeValueEn = val.AttributeValueEn;
                         value.AttributeValueTh = val.AttributeValueTh;
+                        if(val.Image != null)
+                        {
+                            value.ImageUrl = val.Image.url;
+                        }
                         value.MapValue = string.Concat("((", value.AttributeValueId, "))");
                         value.Status = Constant.STATUS_ACTIVE;
                         value.CreatedBy = this.User.UserRequest().Email;
@@ -199,6 +206,8 @@ namespace Colsp.Api.Controllers
                 attribute.Status = Constant.STATUS_ACTIVE;
 
                 var attributeVal = attribute.AttributeValueMaps.Select(s => s.AttributeValue).ToList();
+                AttributeValue value = null;
+                AttributeValue current = null;
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
                 {
                     foreach (AttributeValueRequest valRq in request.AttributeValues)
@@ -210,11 +219,19 @@ namespace Colsp.Api.Controllers
                         }
                         if (!addNew)
                         {
-                            AttributeValue current = attributeVal.Where(w => w.AttributeValueId == valRq.AttributeValueId).SingleOrDefault();
+                            current = attributeVal.Where(w => w.AttributeValueId == valRq.AttributeValueId).SingleOrDefault();
                             if (current != null)
                             {
                                 current.AttributeValueEn = valRq.AttributeValueEn;
                                 current.AttributeValueTh = valRq.AttributeValueTh;
+                                if(valRq.Image != null)
+                                {
+                                    current.ImageUrl = valRq.Image.url;
+                                }
+                                else
+                                {
+                                    current.ImageUrl = null;
+                                }
                                 current.UpdatedBy = this.User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 attributeVal.Remove(current);
@@ -226,9 +243,13 @@ namespace Colsp.Api.Controllers
                         }
                         if (addNew)
                         {
-                            AttributeValue value = new AttributeValue();
+                            value = new AttributeValue();
                             value.AttributeValueEn = valRq.AttributeValueEn;
                             value.AttributeValueTh = valRq.AttributeValueTh;
+                            if (valRq.Image != null)
+                            {
+                                value.ImageUrl = valRq.Image.url;
+                            }
                             value.MapValue = string.Concat("((", value.AttributeValueId, "))");
                             value.Status = Constant.STATUS_ACTIVE;
                             value.CreatedBy = this.User.UserRequest().Email;
@@ -369,6 +390,57 @@ namespace Colsp.Api.Controllers
             catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+            }
+        }
+
+        [Route("api/AttributeValueImages")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadFileImage()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
+                }
+                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.ATTRIBUTE_VALUE_FOLDER);
+                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                FileUploadRespond fileUpload = new FileUploadRespond();
+                string fileName = string.Empty;
+                string ext = string.Empty;
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    fileName = fileData.LocalFileName;
+                    Validation.ValidateImage(fileName,100,100,100,100,5,true);
+                    string tmp = fileData.Headers.ContentDisposition.FileName;
+                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+                    {
+                        tmp = tmp.Trim('"');
+                    }
+                    ext = Path.GetExtension(tmp);
+                    break;
+                }
+
+                string newName = string.Concat(fileName, ext);
+                File.Move(fileName, newName);
+                fileUpload.tmpPath = newName;
+
+                var name = Path.GetFileName(newName);
+                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+                fileUpload.url = string.Concat(schema, "://", 
+                    imageUrl, "/", 
+                    AppSettingKey.IMAGE_ROOT_FOLDER,"/",
+                    AppSettingKey.ATTRIBUTE_VALUE_FOLDER, "/", 
+                    name);
+
+                return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
             }
         }
 

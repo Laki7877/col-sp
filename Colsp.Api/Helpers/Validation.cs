@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -248,5 +251,29 @@ namespace Colsp.Api.Helpers
             return null;
         }
 
+
+        public static void ValidateImage(string filename, int minWidth, int minHeight, int maxWidth, int maxHeight,int maxSize,bool isSquare)
+        {
+            using (Image img = Image.FromFile(filename))
+            {
+                if (!ImageFormat.Jpeg.Equals(img.RawFormat)
+                    && !ImageFormat.Png.Equals(img.RawFormat))
+                {
+                    throw new Exception(string.Concat("Wrong file format. Please upload only JPG or PNG file. The size should be between ",minWidth,"x",minHeight," px to ",maxWidth,"x",maxHeight, " px and not over ", maxSize, " mbs per image"));
+                }
+                if (img.Width < minWidth || img.Height < minHeight)
+                {
+                    throw new Exception(string.Concat("Image size is too small. The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image"));
+                }
+                if (img.Width > maxWidth || img.Height > maxHeight)
+                {
+                    throw new Exception(string.Concat("Image size is too big. The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image"));
+                }
+                if (isSquare && img.Height != img.Width)
+                {
+                    throw new Exception(string.Concat("The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image"));
+                }
+            }
+        }
     }
 }

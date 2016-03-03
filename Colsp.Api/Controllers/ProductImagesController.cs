@@ -22,7 +22,6 @@ namespace Colsp.Api.Controllers
     public class ProductImagesController : ApiController
     {
         private ColspEntities db = new ColspEntities();
-        private readonly string root = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
 
         /*
         [Route("api/ProductImages/Upload")]
@@ -130,7 +129,7 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
                 }
-                string tmpFolder = Path.Combine(root, ConfigurationManager.AppSettings[AppSettingKey.IMAGE_TMP_FOLDER]);
+                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.TMP_FOLDER);
                 var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
                 await Request.Content.ReadAsMultipartAsync(streamProvider);
 
@@ -183,7 +182,7 @@ namespace Colsp.Api.Controllers
                 var name = Path.GetFileName(newName);
                 var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
                 var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-                fileUpload.url = string.Concat(schema,"://",imageUrl, "/Images/Tmp/", name);
+                fileUpload.url = string.Concat(schema,"://",imageUrl,"/",AppSettingKey.IMAGE_ROOT_FOLDER,"/",AppSettingKey.TMP_FOLDER,"/", name);
 
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }

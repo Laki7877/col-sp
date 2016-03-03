@@ -113,7 +113,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Swashbuckle.Core.5.0.0\lib\net40\Swashbuckle.Core.dll</HintPath>
+      <HintPath>..\packages\Swashbuckle.Core.5.3.2\lib\net40\Swashbuckle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -222,6 +222,7 @@
     <Compile Include="Filters\ValidateMimeMultipartContentFilter.cs" />
     <Compile Include="Helpers\AutoGenerate.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Helpers\Util.cs" />
     <Compile Include="Helpers\Validation.cs" />
     <Compile Include="Security\UsersPrincipal.cs" />
     <Compile Include="Global.asax.cs">
