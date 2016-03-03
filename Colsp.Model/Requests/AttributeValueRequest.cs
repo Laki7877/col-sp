@@ -12,5 +12,11 @@ namespace Colsp.Model.Requests
         public string AttributeValueEn { get; set; }
         public string AttributeValueTh { get; set; }
         public string Status { get; set; }
+        public ImageRequest Image { get; set; }
+
+        public AttributeValueRequest()
+        {
+            Image = new ImageRequest();
+        }
     }
 }

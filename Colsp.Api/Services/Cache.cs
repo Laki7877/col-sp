@@ -32,7 +32,8 @@ namespace Colsp.Api.Services
             var memoryCache = MemoryCache.Default;
             memoryCache.Dispose();
         }
-		public static void Delete(string key)
+
+        public static void Delete(string key)
 		{
 			var memoryCache = MemoryCache.Default;
 			if (memoryCache.Contains(key))
