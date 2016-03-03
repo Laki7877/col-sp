@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Colsp.Entity.Models;
+using System.Web;
 
 namespace Colsp.Model.Requests
 {
+
     public class OnTopCreditCardRequest
     {
         public string OnTopCreditCardId { get; set; }
@@ -35,14 +38,48 @@ namespace Colsp.Model.Requests
         public int CreateBy { get; set; }
         public string CreateIP { get; set; }
         public List<Carditemlist> CardItemList { get; set; }
-        
+
     }
 
     public class Carditemlist
     {
+        #region Properties
+        private string GetTypeText(string code)
+        {
+            string value = "";
+            try
+            {
+                switch (code)
+                {
+                    case "15A": value = "American Express - (15 digit)"; break;
+                    case "14D": value = "Diners Club - (14 digit)"; break;
+                    case "14C": value = "Carte Blanche - (14 digit)"; break;
+                    case "16D": value = "Discover - (16 digit)"; break;
+                    case "15E": value = "EnRoute - (15 digit)"; break;
+                    case "16J": value = "JCB - (16 digit)"; break;
+                    case "15J": value = "JCB - (15 digit)"; break;
+                    case "16M": value = "Master Card - (16 digit)"; break;
+                    case "13V": value = "Visa - (13 digit)"; break;
+                    case "16V": value = "Visa - (16 digit)"; break;
+                    default:
+                        value = "";
+                        break;
+                }
+                return value;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public List<CreditCardType> Typename { get; set; }
+        #endregion
         public int OnTopCreditNumberId { get; set; }
         public int OnTopCreditCardId { get; set; }
         public string CreditCardTypeCode { get; set; }
+        public string CreditCardTypeText { get { return GetTypeText(this.CreditCardTypeCode); } set { } }
         public string CreditNumberFormat { get; set; }
         public int Digit { get; set; }
         public bool Visibility { get; set; }
