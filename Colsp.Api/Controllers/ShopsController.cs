@@ -151,6 +151,7 @@ namespace Colsp.Api.Controllers
                         s.ShopGroup,
                         s.BankAccountName,
                         s.BankAccountNumber,
+                        Commissions = s.ShopCommissions.Select(sc=>new { sc.CategoryId,sc.Commission}),
                         ShopOwner = new
                         {
                             s.User.UserId,
@@ -381,6 +382,33 @@ namespace Colsp.Api.Controllers
                 map.UpdatedDt = DateTime.Now;
                 db.UserGroupMaps.Add(map);
 
+                if(request.Commissions != null && request.Commissions.Count > 0)
+                {
+                    var catIds = request.Commissions.Where(w => w.CategoryId != null).Select(s => s.CategoryId).ToList();
+                    var globalCategory = db.GlobalCategories.Where(w => catIds.Contains(w.CategoryId)).ToList();
+                    foreach(var catMap in request.Commissions)
+                    {
+                        if(catMap.CategoryId == null && catMap.Commission == null)
+                        {
+                            throw new Exception("Category or commission cannot be null");
+                        }
+                        var category = globalCategory.Where(w => w.CategoryId == catMap.CategoryId.Value).SingleOrDefault();
+                        if(category == null)
+                        {
+                            throw new Exception("Cannot find category " + catMap.CategoryId.Value);
+                        }
+                        shop.ShopCommissions.Add(new Entity.Models.ShopCommission()
+                        {
+                            CategoryId = catMap.CategoryId.Value,
+                            Commission = catMap.Commission.Value,
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        });
+                    }
+                }
+
                 db.SaveChanges();
                 return GetShop(shop.ShopId);
             }
@@ -445,6 +473,7 @@ namespace Colsp.Api.Controllers
                 var shopList = db.Shops
                     .Include(i=>i.User.UserGroupMaps)
                     .Include(i=>i.UserShops)
+                    .Include(i=>i.ShopCommissions)
                     .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).ToList();
                 if (shopList == null || shopList.Count == 0)
                 {
@@ -516,6 +545,63 @@ namespace Colsp.Api.Controllers
                 shop.ShopTypeId = request.ShopType.ShopTypeId;
                 shop.BankAccountName = request.BankAccountName;
                 shop.BankAccountNumber = request.BankAccountNumber;
+                if (request.Commissions != null && request.Commissions.Count > 0)
+                {
+                    var catIds = request.Commissions.Where(w => w.CategoryId != null).Select(s => s.CategoryId).ToList();
+                    var globalCategory = db.GlobalCategories.Where(w => catIds.Contains(w.CategoryId)).ToList();
+                    var commissions = shop.ShopCommissions.ToList();
+                    foreach (var catMap in request.Commissions)
+                    {
+                        if (catMap.CategoryId == null && catMap.Commission == null)
+                        {
+                            throw new Exception("Category or commission cannot be null");
+                        }
+                        var category = globalCategory.Where(w => w.CategoryId == catMap.CategoryId.Value).SingleOrDefault();
+                        if (category == null)
+                        {
+                            throw new Exception("Cannot find category " + catMap.CategoryId.Value);
+                        }
+
+                        bool isNew = false;
+                        if(commissions == null || commissions.Count == 0)
+                        {
+                            isNew = true;
+                        }
+                        if (!isNew)
+                        {
+                            var current = commissions.Where(w => w.CategoryId == catMap.CategoryId.Value).SingleOrDefault();
+                            if(current != null)
+                            {
+                                current.Commission = catMap.Commission.Value;
+                                current.CreatedBy = this.User.UserRequest().Email;
+                                current.CreatedDt = DateTime.Now;
+                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedDt = DateTime.Now;
+                                commissions.Remove(current);
+                            }
+                            else
+                            {
+                                isNew = true;
+                            }
+                        }
+                        if (isNew)
+                        {
+                            shop.ShopCommissions.Add(new Entity.Models.ShopCommission()
+                            {
+                                CategoryId = catMap.CategoryId.Value,
+                                Commission = catMap.Commission.Value,
+                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedDt = DateTime.Now,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now,
+                            });
+                        }
+                    }
+                    if(commissions != null && commissions.Count > 0)
+                    {
+                        db.ShopCommissions.RemoveRange(commissions);
+                    }
+                }
                 shop.Status = request.Status;
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
@@ -597,6 +683,28 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/Shops/Launch")]
+        [HttpGet]
+        public HttpResponseMessage LaunchShop(string status)
+        {
+            try
+            {
+                var shopId = this.User.ShopRequest().ShopId.Value;
+                var shop = db.Shops.Where(w => w.ShopId == shopId).SingleOrDefault();
+                if(shop == null)
+                {
+                    throw new Exception("Shop not found");
+                }
+                shop.Status = status;
+                db.SaveChanges();
+                Cache.Delete(Request.Headers.Authorization.Parameter);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
 
         //[Route("api/Shops/{sellerId}/ProductStages")]
         //[HttpGet]

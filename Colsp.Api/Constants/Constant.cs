@@ -15,6 +15,7 @@ namespace Colsp.Api.Constants
 
         public static readonly string DATA_TYPE_STRING = "ST";
         public static readonly string DATA_TYPE_LIST = "LT";
+        public static readonly string DATA_TYPE_CHECKBOX = "CB";
 
         public static Dictionary<string, int?> STOCK_TYPE = new Dictionary<string, int?>() { {"Stock", 1 }, { "Pre-Order" , 2} };
 
@@ -33,10 +34,14 @@ namespace Colsp.Api.Constants
         public static readonly string COUPON_FILTER_INCLUDE = "I";
         public static readonly string COUPON_FILTER_EXCLUDE = "E";
 
-        public static int SHOP_OWNER_GROUP_ID = 2;
+        public static  int SHOP_OWNER_GROUP_ID = 2;
 
-        public static string SHOP_GROUP_BU = "BU";
-        public static string SHOP_GROUP_INDY = "IN";
-        public static string SHOP_GROUP_SELLER = "SE";
+        public static readonly string SHOP_GROUP_BU = "BU";
+        public static readonly string SHOP_GROUP_INDY = "IN";
+        public static readonly string SHOP_GROUP_SELLER = "SE";
+
+
+        public static readonly string LANG_EN = "EN";
+        public static readonly string LANG_TH = "TH";
     }
 }

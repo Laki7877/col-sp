@@ -17,6 +17,9 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ProductStage()
         {
+            this.BrandFeatureProducts = new HashSet<BrandFeatureProduct>();
+            this.GlobalCatFeatureProducts = new HashSet<GlobalCatFeatureProduct>();
+            this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
             this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
             this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
             this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
@@ -86,8 +89,14 @@ namespace Colsp.Entity.Models
     
         public virtual AttributeSet AttributeSet { get; set; }
         public virtual Brand Brand { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual GlobalCategory GlobalCategory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GlobalCatFeatureProduct> GlobalCatFeatureProducts { get; set; }
         public virtual LocalCategory LocalCategory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -33,6 +33,8 @@ namespace Colsp.Entity.Models
         public virtual DbSet<AttributeValue> AttributeValues { get; set; }
         public virtual DbSet<AttributeValueMap> AttributeValueMaps { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
+        public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
+        public virtual DbSet<BrandImage> BrandImages { get; set; }
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
         public virtual DbSet<CMSBrandInShop> CMSBrandInShops { get; set; }
         public virtual DbSet<CMSCollectionGroup> CMSCollectionGroups { get; set; }
@@ -57,10 +59,14 @@ namespace Colsp.Entity.Models
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
         public virtual DbSet<GlobalCategoryAbbrevation> GlobalCategoryAbbrevations { get; set; }
         public virtual DbSet<GlobalCategoryPID> GlobalCategoryPIDs { get; set; }
+        public virtual DbSet<GlobalCatFeatureProduct> GlobalCatFeatureProducts { get; set; }
+        public virtual DbSet<GlobalCatImage> GlobalCatImages { get; set; }
         public virtual DbSet<ImportHeader> ImportHeaders { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<InventoryHistory> InventoryHistories { get; set; }
         public virtual DbSet<LocalCategory> LocalCategories { get; set; }
+        public virtual DbSet<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
+        public virtual DbSet<LocalCatImage> LocalCatImages { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
@@ -93,6 +99,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
+        public virtual DbSet<ShopCommission> ShopCommissions { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
         public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }

@@ -109,9 +109,17 @@
           </Key>
           <Property Name="BrandId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BrandNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="300" />
+          <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="300" />
           <Property Name="Path" Type="nvarchar" MaxLength="500" />
           <Property Name="PicUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullEn" Type="ntext" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullTh" Type="ntext" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="MetaTitleEn" Type="nvarchar" MaxLength="60" />
           <Property Name="MetaTitleTh" Type="nvarchar" MaxLength="60" />
           <Property Name="MetaDescriptionEn" Type="nvarchar" MaxLength="150" />
@@ -119,9 +127,34 @@
           <Property Name="MetaKeyEn" Type="nvarchar" MaxLength="630" />
           <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" />
           <Property Name="UrlEn" Type="nvarchar" MaxLength="300" />
-          <Property Name="DescriptionEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionTh" Type="nvarchar" MaxLength="500" />
           <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="BrandFeatureProduct">
+          <Key>
+            <PropertyRef Name="BrandId" />
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="BrandId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="BrandImage">
+          <Key>
+            <PropertyRef Name="BrandImageId" />
+            <PropertyRef Name="BrandId" />
+          </Key>
+          <Property Name="BrandImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BrandId" Type="int" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" />
+          <Property Name="EnTh" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -496,6 +529,12 @@
           <Property Name="ProductCount" Type="int" />
           <Property Name="Lft" Type="int" />
           <Property Name="Rgt" Type="int" />
+          <Property Name="DescriptionFullEn" Type="ntext" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullTh" Type="ntext" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
@@ -518,6 +557,33 @@
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CurrentKey" Type="char" MaxLength="5" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GlobalCatFeatureProduct">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="GlobalCatImage">
+          <Key>
+            <PropertyRef Name="CategoryImageId" />
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryImageId" Type="int" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" />
+          <Property Name="EnTh" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <EntityType Name="ImportHeader">
           <Key>
@@ -586,8 +652,45 @@
           <Property Name="ShopId" Type="int" />
           <Property Name="Lft" Type="int" />
           <Property Name="Rgt" Type="int" />
+          <Property Name="DescriptionFullEn" Type="ntext" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionFullTh" Type="ntext" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LocalCatFeatureProduct">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LocalCatImage">
+          <Key>
+            <PropertyRef Name="CategoryImageId" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="CategoryImageId" Type="int" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" />
+          <Property Name="EnTh" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -1309,6 +1412,19 @@
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="ShopCommission">
+          <Key>
+            <PropertyRef Name="ShopId" />
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="Commission" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="ShopType">
           <Key>
             <PropertyRef Name="ShopTypeId" />
@@ -1482,6 +1598,48 @@
             </Principal>
             <Dependent Role="AttributeSetTagMap">
               <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BrandFeatureProduct_Brand">
+          <End Role="Brand" Type="Self.Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="BrandFeatureProduct" Type="Self.BrandFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="BrandId" />
+            </Principal>
+            <Dependent Role="BrandFeatureProduct">
+              <PropertyRef Name="BrandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BrandFeatureProduct_ProductStage">
+          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="BrandFeatureProduct" Type="Self.BrandFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStage">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="BrandFeatureProduct">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BrandImage_Brand">
+          <End Role="Brand" Type="Self.Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="BrandImage" Type="Self.BrandImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="BrandId" />
+            </Principal>
+            <Dependent Role="BrandImage">
+              <PropertyRef Name="BrandId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1665,6 +1823,112 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GlobalCatFeatureProduct_GlobalCategory">
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GlobalCatFeatureProduct" Type="Self.GlobalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GlobalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="GlobalCatFeatureProduct">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GlobalCatFeatureProduct_ProductStage">
+          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GlobalCatFeatureProduct" Type="Self.GlobalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStage">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="GlobalCatFeatureProduct">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GlobalCatImage_GlobalCategory">
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GlobalCatImage" Type="Self.GlobalCatImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GlobalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="GlobalCatImage">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatFeatureProduct_LocalCategory">
+          <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="LocalCatFeatureProduct" Type="Self.LocalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LocalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="LocalCatFeatureProduct">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatFeatureProduct_ProductStage">
+          <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
+          <End Role="LocalCatFeatureProduct" Type="Self.LocalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStage">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="LocalCatFeatureProduct">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatFeatureProduct_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="LocalCatFeatureProduct" Type="Self.LocalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="LocalCatFeatureProduct">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatImage_GlobalCategory">
+          <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="LocalCatImage" Type="Self.LocalCatImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LocalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="LocalCatImage">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatImage_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="LocalCatImage" Type="Self.LocalCatImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="LocalCatImage">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Product_AttributeSet">
           <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
@@ -1804,6 +2068,34 @@
             </Principal>
             <Dependent Role="Shop">
               <PropertyRef Name="ShopTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopCommission_GlobalCategory">
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShopCommission" Type="Self.ShopCommission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GlobalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="ShopCommission">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopCommission_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShopCommission" Type="Self.ShopCommission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ShopCommission">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2537,6 +2829,8 @@
           <EntitySet Name="AttributeValue" EntityType="Self.AttributeValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttributeValueMap" EntityType="Self.AttributeValueMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BrandFeatureProduct" EntityType="Self.BrandFeatureProduct" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BrandImage" EntityType="Self.BrandImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSBrandInShop" EntityType="Self.CMSBrandInShop" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionGroup" EntityType="Self.CMSCollectionGroup" Schema="dbo" store:Type="Tables" />
@@ -2561,10 +2855,14 @@
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryAbbrevation" EntityType="Self.GlobalCategoryAbbrevation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategoryPID" EntityType="Self.GlobalCategoryPID" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GlobalCatFeatureProduct" EntityType="Self.GlobalCatFeatureProduct" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GlobalCatImage" EntityType="Self.GlobalCatImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ImportHeader" EntityType="Self.ImportHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Inventory" EntityType="Self.Inventory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryHistory" EntityType="Self.InventoryHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCategory" EntityType="Self.LocalCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LocalCatFeatureProduct" EntityType="Self.LocalCatFeatureProduct" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LocalCatImage" EntityType="Self.LocalCatImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductAttribute" EntityType="Self.ProductAttribute" Schema="dbo" store:Type="Tables" />
@@ -2597,6 +2895,7 @@
           <EntitySet Name="PromotionBuy1Get1Item" EntityType="Self.PromotionBuy1Get1Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopCommission" EntityType="Self.ShopCommission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopTypePermissionMap" EntityType="Self.ShopTypePermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopUserGroupMap" EntityType="Self.ShopUserGroupMap" Schema="dbo" store:Type="Tables" />
@@ -2615,6 +2914,18 @@
           <AssociationSet Name="FK_AttributeSetTagMap_Tag" Association="Self.FK_AttributeSetTagMap_Tag">
             <End Role="Tag" EntitySet="Tag" />
             <End Role="AttributeSetTagMap" EntitySet="AttributeSetTagMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BrandFeatureProduct_Brand" Association="Self.FK_BrandFeatureProduct_Brand">
+            <End Role="Brand" EntitySet="Brand" />
+            <End Role="BrandFeatureProduct" EntitySet="BrandFeatureProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BrandFeatureProduct_ProductStage" Association="Self.FK_BrandFeatureProduct_ProductStage">
+            <End Role="ProductStage" EntitySet="ProductStage" />
+            <End Role="BrandFeatureProduct" EntitySet="BrandFeatureProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BrandImage_Brand" Association="Self.FK_BrandImage_Brand">
+            <End Role="Brand" EntitySet="Brand" />
+            <End Role="BrandImage" EntitySet="BrandImage" />
           </AssociationSet>
           <AssociationSet Name="FK_Coupon_Shop" Association="Self.FK_Coupon_Shop">
             <End Role="Shop" EntitySet="Shop" />
@@ -2668,6 +2979,38 @@
             <End Role="GlobalCategory" EntitySet="GlobalCategory" />
             <End Role="GlobalCategoryPID" EntitySet="GlobalCategoryPID" />
           </AssociationSet>
+          <AssociationSet Name="FK_GlobalCatFeatureProduct_GlobalCategory" Association="Self.FK_GlobalCatFeatureProduct_GlobalCategory">
+            <End Role="GlobalCategory" EntitySet="GlobalCategory" />
+            <End Role="GlobalCatFeatureProduct" EntitySet="GlobalCatFeatureProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GlobalCatFeatureProduct_ProductStage" Association="Self.FK_GlobalCatFeatureProduct_ProductStage">
+            <End Role="ProductStage" EntitySet="ProductStage" />
+            <End Role="GlobalCatFeatureProduct" EntitySet="GlobalCatFeatureProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GlobalCatImage_GlobalCategory" Association="Self.FK_GlobalCatImage_GlobalCategory">
+            <End Role="GlobalCategory" EntitySet="GlobalCategory" />
+            <End Role="GlobalCatImage" EntitySet="GlobalCatImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatFeatureProduct_LocalCategory" Association="Self.FK_LocalCatFeatureProduct_LocalCategory">
+            <End Role="LocalCategory" EntitySet="LocalCategory" />
+            <End Role="LocalCatFeatureProduct" EntitySet="LocalCatFeatureProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatFeatureProduct_ProductStage" Association="Self.FK_LocalCatFeatureProduct_ProductStage">
+            <End Role="ProductStage" EntitySet="ProductStage" />
+            <End Role="LocalCatFeatureProduct" EntitySet="LocalCatFeatureProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatFeatureProduct_Shop" Association="Self.FK_LocalCatFeatureProduct_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="LocalCatFeatureProduct" EntitySet="LocalCatFeatureProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatImage_GlobalCategory" Association="Self.FK_LocalCatImage_GlobalCategory">
+            <End Role="LocalCategory" EntitySet="LocalCategory" />
+            <End Role="LocalCatImage" EntitySet="LocalCatImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatImage_Shop" Association="Self.FK_LocalCatImage_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="LocalCatImage" EntitySet="LocalCatImage" />
+          </AssociationSet>
           <AssociationSet Name="FK_Product_AttributeSet" Association="Self.FK_Product_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
             <End Role="Product" EntitySet="Product" />
@@ -2711,6 +3054,14 @@
           <AssociationSet Name="FK_Shop_ShopType" Association="Self.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopType" />
             <End Role="Shop" EntitySet="Shop" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopCommission_GlobalCategory" Association="Self.FK_ShopCommission_GlobalCategory">
+            <End Role="GlobalCategory" EntitySet="GlobalCategory" />
+            <End Role="ShopCommission" EntitySet="ShopCommission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopCommission_Shop" Association="Self.FK_ShopCommission_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ShopCommission" EntitySet="ShopCommission" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopTypePermissionMap_Permission" Association="Self.FK_ShopTypePermissionMap_Permission">
             <End Role="Permission" EntitySet="Permission" />
@@ -2953,6 +3304,8 @@
           <EntitySet Name="AttributeValues" EntityType="ColspModel.AttributeValue" />
           <EntitySet Name="AttributeValueMaps" EntityType="ColspModel.AttributeValueMap" />
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
+          <EntitySet Name="BrandFeatureProducts" EntityType="ColspModel.BrandFeatureProduct" />
+          <EntitySet Name="BrandImages" EntityType="ColspModel.BrandImage" />
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="CMSBrandInShops" EntityType="ColspModel.CMSBrandInShop" />
           <EntitySet Name="CMSCollectionGroups" EntityType="ColspModel.CMSCollectionGroup" />
@@ -2977,10 +3330,14 @@
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
           <EntitySet Name="GlobalCategoryAbbrevations" EntityType="ColspModel.GlobalCategoryAbbrevation" />
           <EntitySet Name="GlobalCategoryPIDs" EntityType="ColspModel.GlobalCategoryPID" />
+          <EntitySet Name="GlobalCatFeatureProducts" EntityType="ColspModel.GlobalCatFeatureProduct" />
+          <EntitySet Name="GlobalCatImages" EntityType="ColspModel.GlobalCatImage" />
           <EntitySet Name="ImportHeaders" EntityType="ColspModel.ImportHeader" />
           <EntitySet Name="Inventories" EntityType="ColspModel.Inventory" />
           <EntitySet Name="InventoryHistories" EntityType="ColspModel.InventoryHistory" />
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
+          <EntitySet Name="LocalCatFeatureProducts" EntityType="ColspModel.LocalCatFeatureProduct" />
+          <EntitySet Name="LocalCatImages" EntityType="ColspModel.LocalCatImage" />
           <EntitySet Name="Permissions" EntityType="ColspModel.Permission" />
           <EntitySet Name="Products" EntityType="ColspModel.Product" />
           <EntitySet Name="ProductAttributes" EntityType="ColspModel.ProductAttribute" />
@@ -3013,6 +3370,7 @@
           <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
+          <EntitySet Name="ShopCommissions" EntityType="ColspModel.ShopCommission" />
           <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
           <EntitySet Name="ShopTypePermissionMaps" EntityType="ColspModel.ShopTypePermissionMap" />
           <EntitySet Name="ShopUserGroupMaps" EntityType="ColspModel.ShopUserGroupMap" />
@@ -3092,6 +3450,14 @@
             <End Role="AttributeValue" EntitySet="AttributeValues" />
             <End Role="AttributeValueMap" EntitySet="AttributeValueMaps" />
           </AssociationSet>
+          <AssociationSet Name="FK_BrandFeatureProduct_Brand" Association="ColspModel.FK_BrandFeatureProduct_Brand">
+            <End Role="Brand" EntitySet="Brands" />
+            <End Role="BrandFeatureProduct" EntitySet="BrandFeatureProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BrandImage_Brand" Association="ColspModel.FK_BrandImage_Brand">
+            <End Role="Brand" EntitySet="Brands" />
+            <End Role="BrandImage" EntitySet="BrandImages" />
+          </AssociationSet>
           <AssociationSet Name="FK_CouponBrandMap_Brand" Association="ColspModel.FK_CouponBrandMap_Brand">
             <End Role="Brand" EntitySet="Brands" />
             <End Role="CouponBrandMap" EntitySet="CouponBrandMaps" />
@@ -3107,6 +3473,10 @@
           <AssociationSet Name="FKProductStageBrand" Association="ColspModel.FKProductStageBrand">
             <End Role="Brand" EntitySet="Brands" />
             <End Role="ProductStage" EntitySet="ProductStages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BrandFeatureProduct_ProductStage" Association="ColspModel.FK_BrandFeatureProduct_ProductStage">
+            <End Role="ProductStage" EntitySet="ProductStages" />
+            <End Role="BrandFeatureProduct" EntitySet="BrandFeatureProducts" />
           </AssociationSet>
           <AssociationSet Name="FKCategoryAttributeSetMapCategory" Association="ColspModel.FKCategoryAttributeSetMapCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
@@ -3160,6 +3530,18 @@
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="GlobalCategoryPID" EntitySet="GlobalCategoryPIDs" />
           </AssociationSet>
+          <AssociationSet Name="FK_GlobalCatFeatureProduct_GlobalCategory" Association="ColspModel.FK_GlobalCatFeatureProduct_GlobalCategory">
+            <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+            <End Role="GlobalCatFeatureProduct" EntitySet="GlobalCatFeatureProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GlobalCatImage_GlobalCategory" Association="ColspModel.FK_GlobalCatImage_GlobalCategory">
+            <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+            <End Role="GlobalCatImage" EntitySet="GlobalCatImages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopCommission_GlobalCategory" Association="ColspModel.FK_ShopCommission_GlobalCategory">
+            <End Role="GlobalCategory" EntitySet="GlobalCategories" />
+            <End Role="ShopCommission" EntitySet="ShopCommissions" />
+          </AssociationSet>
           <AssociationSet Name="FKProductGlobalCat" Association="ColspModel.FKProductGlobalCat">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="Product" EntitySet="Products" />
@@ -3183,6 +3565,18 @@
           <AssociationSet Name="FKProductStageGlobalCatMapGlobalCategory" Association="ColspModel.FKProductStageGlobalCatMapGlobalCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="ProductStageGlobalCatMap" EntitySet="ProductStageGlobalCatMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GlobalCatFeatureProduct_ProductStage" Association="ColspModel.FK_GlobalCatFeatureProduct_ProductStage">
+            <End Role="ProductStage" EntitySet="ProductStages" />
+            <End Role="GlobalCatFeatureProduct" EntitySet="GlobalCatFeatureProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatFeatureProduct_LocalCategory" Association="ColspModel.FK_LocalCatFeatureProduct_LocalCategory">
+            <End Role="LocalCategory" EntitySet="LocalCategories" />
+            <End Role="LocalCatFeatureProduct" EntitySet="LocalCatFeatureProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatImage_GlobalCategory" Association="ColspModel.FK_LocalCatImage_GlobalCategory">
+            <End Role="LocalCategory" EntitySet="LocalCategories" />
+            <End Role="LocalCatImage" EntitySet="LocalCatImages" />
           </AssociationSet>
           <AssociationSet Name="FKLocalCategoryShop" Association="ColspModel.FKLocalCategoryShop">
             <End Role="Shop" EntitySet="Shops" />
@@ -3211,6 +3605,18 @@
           <AssociationSet Name="FKProductStageLocalCatMapLocalCategory" Association="ColspModel.FKProductStageLocalCatMapLocalCategory">
             <End Role="LocalCategory" EntitySet="LocalCategories" />
             <End Role="ProductStageLocalCatMap" EntitySet="ProductStageLocalCatMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatFeatureProduct_ProductStage" Association="ColspModel.FK_LocalCatFeatureProduct_ProductStage">
+            <End Role="ProductStage" EntitySet="ProductStages" />
+            <End Role="LocalCatFeatureProduct" EntitySet="LocalCatFeatureProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatFeatureProduct_Shop" Association="ColspModel.FK_LocalCatFeatureProduct_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="LocalCatFeatureProduct" EntitySet="LocalCatFeatureProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocalCatImage_Shop" Association="ColspModel.FK_LocalCatImage_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="LocalCatImage" EntitySet="LocalCatImages" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopTypePermissionMap_Permission" Association="ColspModel.FK_ShopTypePermissionMap_Permission">
             <End Role="Permission" EntitySet="Permissions" />
@@ -3319,6 +3725,10 @@
           <AssociationSet Name="FK_Shop_ShopType" Association="ColspModel.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
             <End Role="Shop" EntitySet="Shops" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopCommission_Shop" Association="ColspModel.FK_ShopCommission_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ShopCommission" EntitySet="ShopCommissions" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="ColspModel.FK_ShopUerGroupMap_Shop">
             <End Role="Shop" EntitySet="Shops" />
@@ -3483,9 +3893,17 @@
           </Key>
           <Property Name="BrandId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="BrandNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BrandNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BrandNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="PicUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FeatureTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="MetaTitleEn" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
           <Property Name="MetaTitleTh" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
           <Property Name="MetaDescriptionEn" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -3493,17 +3911,47 @@
           <Property Name="MetaKeyEn" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="MetaKeyTh" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="UrlEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="BrandFeatureProducts" Relationship="ColspModel.FK_BrandFeatureProduct_Brand" FromRole="Brand" ToRole="BrandFeatureProduct" />
+          <NavigationProperty Name="BrandImages" Relationship="ColspModel.FK_BrandImage_Brand" FromRole="Brand" ToRole="BrandImage" />
           <NavigationProperty Name="CouponBrandMaps" Relationship="ColspModel.FK_CouponBrandMap_Brand" FromRole="Brand" ToRole="CouponBrandMap" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductBrand" FromRole="Brand" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryBrand" FromRole="Brand" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageBrand" FromRole="Brand" ToRole="ProductStage" />
+        </EntityType>
+        <EntityType Name="BrandFeatureProduct">
+          <Key>
+            <PropertyRef Name="BrandId" />
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="BrandId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Brand" Relationship="ColspModel.FK_BrandFeatureProduct_Brand" FromRole="BrandFeatureProduct" ToRole="Brand" />
+          <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_BrandFeatureProduct_ProductStage" FromRole="BrandFeatureProduct" ToRole="ProductStage" />
+        </EntityType>
+        <EntityType Name="BrandImage">
+          <Key>
+            <PropertyRef Name="BrandImageId" />
+            <PropertyRef Name="BrandId" />
+          </Key>
+          <Property Name="BrandImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BrandId" Type="Int32" Nullable="false" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
+          <Property Name="ImageUrl" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="EnTh" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Brand" Relationship="ColspModel.FK_BrandImage_Brand" FromRole="BrandImage" ToRole="Brand" />
         </EntityType>
         <EntityType Name="CategoryAttributeSetMap">
           <Key>
@@ -3895,6 +4343,12 @@
           <Property Name="ProductCount" Type="Int32" />
           <Property Name="Lft" Type="Int32" />
           <Property Name="Rgt" Type="Int32" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FeatureTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -3904,6 +4358,9 @@
           <NavigationProperty Name="CategoryAttributeSetMaps" Relationship="ColspModel.FKCategoryAttributeSetMapCategory" FromRole="GlobalCategory" ToRole="CategoryAttributeSetMap" />
           <NavigationProperty Name="CouponGlobalCatMaps" Relationship="ColspModel.FK_CouponGlobalCatMap_Brand" FromRole="GlobalCategory" ToRole="CouponGlobalCatMap" />
           <NavigationProperty Name="GlobalCategoryPID" Relationship="ColspModel.FK_GlobalCategoryPID_GlobalCategory" FromRole="GlobalCategory" ToRole="GlobalCategoryPID" />
+          <NavigationProperty Name="GlobalCatFeatureProducts" Relationship="ColspModel.FK_GlobalCatFeatureProduct_GlobalCategory" FromRole="GlobalCategory" ToRole="GlobalCatFeatureProduct" />
+          <NavigationProperty Name="GlobalCatImages" Relationship="ColspModel.FK_GlobalCatImage_GlobalCategory" FromRole="GlobalCategory" ToRole="GlobalCatImage" />
+          <NavigationProperty Name="ShopCommissions" Relationship="ColspModel.FK_ShopCommission_GlobalCategory" FromRole="GlobalCategory" ToRole="ShopCommission" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductGlobalCat" FromRole="GlobalCategory" ToRole="Product" />
           <NavigationProperty Name="ProductGlobalCatMaps" Relationship="ColspModel.FKProductGlobalCatMapGlobalCategory" FromRole="GlobalCategory" ToRole="ProductGlobalCatMap" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryGlobalCat" FromRole="GlobalCategory" ToRole="ProductHistory" />
@@ -3927,6 +4384,36 @@
           <Property Name="CategoryAbbreviation" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CurrentKey" Type="String" Nullable="false" MaxLength="5" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_GlobalCategoryPID_GlobalCategory" FromRole="GlobalCategoryPID" ToRole="GlobalCategory" />
+        </EntityType>
+        <EntityType Name="GlobalCatFeatureProduct">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_GlobalCatFeatureProduct_GlobalCategory" FromRole="GlobalCatFeatureProduct" ToRole="GlobalCategory" />
+          <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_GlobalCatFeatureProduct_ProductStage" FromRole="GlobalCatFeatureProduct" ToRole="ProductStage" />
+        </EntityType>
+        <EntityType Name="GlobalCatImage">
+          <Key>
+            <PropertyRef Name="CategoryImageId" />
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryImageId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
+          <Property Name="ImageUrl" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="EnTh" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_GlobalCatImage_GlobalCategory" FromRole="GlobalCatImage" ToRole="GlobalCategory" />
         </EntityType>
         <EntityType Name="ImportHeader">
           <Key>
@@ -3995,6 +4482,12 @@
           <Property Name="ShopId" Type="Int32" />
           <Property Name="Lft" Type="Int32" />
           <Property Name="Rgt" Type="Int32" />
+          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FeatureTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -4002,6 +4495,8 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CouponLocalCatMaps" Relationship="ColspModel.FK_CouponLocalCatMap_Brand" FromRole="LocalCategory" ToRole="CouponLocalCatMap" />
+          <NavigationProperty Name="LocalCatFeatureProducts" Relationship="ColspModel.FK_LocalCatFeatureProduct_LocalCategory" FromRole="LocalCategory" ToRole="LocalCatFeatureProduct" />
+          <NavigationProperty Name="LocalCatImages" Relationship="ColspModel.FK_LocalCatImage_GlobalCategory" FromRole="LocalCategory" ToRole="LocalCatImage" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKLocalCategoryShop" FromRole="LocalCategory" ToRole="Shop" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryLocalCat" FromRole="LocalCategory" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductHistoryLocalCatMaps" Relationship="ColspModel.FKProductHistoryLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductHistoryLocalCatMap" />
@@ -4009,6 +4504,42 @@
           <NavigationProperty Name="ProductLocalCatMaps" Relationship="ColspModel.FKProductLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductLocalCatMap" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageLocalCat" FromRole="LocalCategory" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageLocalCatMaps" Relationship="ColspModel.FKProductStageLocalCatMapLocalCategory" FromRole="LocalCategory" ToRole="ProductStageLocalCatMap" />
+        </EntityType>
+        <EntityType Name="LocalCatFeatureProduct">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FK_LocalCatFeatureProduct_LocalCategory" FromRole="LocalCatFeatureProduct" ToRole="LocalCategory" />
+          <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_LocalCatFeatureProduct_ProductStage" FromRole="LocalCatFeatureProduct" ToRole="ProductStage" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_LocalCatFeatureProduct_Shop" FromRole="LocalCatFeatureProduct" ToRole="Shop" />
+        </EntityType>
+        <EntityType Name="LocalCatImage">
+          <Key>
+            <PropertyRef Name="CategoryImageId" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="CategoryImageId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
+          <Property Name="ImageUrl" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="EnTh" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FK_LocalCatImage_GlobalCategory" FromRole="LocalCatImage" ToRole="LocalCategory" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_LocalCatImage_Shop" FromRole="LocalCatImage" ToRole="Shop" />
         </EntityType>
         <EntityType Name="Permission">
           <Key>
@@ -4440,8 +4971,11 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_ProductStage_AttributeSet" FromRole="ProductStage" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FKProductStageBrand" FromRole="ProductStage" ToRole="Brand" />
+          <NavigationProperty Name="BrandFeatureProducts" Relationship="ColspModel.FK_BrandFeatureProduct_ProductStage" FromRole="ProductStage" ToRole="BrandFeatureProduct" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKProductStageGlobalCat" FromRole="ProductStage" ToRole="GlobalCategory" />
+          <NavigationProperty Name="GlobalCatFeatureProducts" Relationship="ColspModel.FK_GlobalCatFeatureProduct_ProductStage" FromRole="ProductStage" ToRole="GlobalCatFeatureProduct" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductStageLocalCat" FromRole="ProductStage" ToRole="LocalCategory" />
+          <NavigationProperty Name="LocalCatFeatureProducts" Relationship="ColspModel.FK_LocalCatFeatureProduct_ProductStage" FromRole="ProductStage" ToRole="LocalCatFeatureProduct" />
           <NavigationProperty Name="ProductStageAttributes" Relationship="ColspModel.FK_ProductStageAttribute_ProductStage" FromRole="ProductStage" ToRole="ProductStageAttribute" />
           <NavigationProperty Name="ProductStageGlobalCatMaps" Relationship="ColspModel.FKProductStageGlobalCatMapProduct" FromRole="ProductStage" ToRole="ProductStageGlobalCatMap" />
           <NavigationProperty Name="ProductStageLocalCatMaps" Relationship="ColspModel.FKProductStageLocalCatMapProduct" FromRole="ProductStage" ToRole="ProductStageLocalCatMap" />
@@ -4793,6 +5327,8 @@
           <NavigationProperty Name="Coupons" Relationship="ColspModel.FK_Coupon_Shop" FromRole="Shop" ToRole="Coupon" />
           <NavigationProperty Name="CouponShopMaps" Relationship="ColspModel.FK_CouponShopMap_Shop" FromRole="Shop" ToRole="CouponShopMap" />
           <NavigationProperty Name="LocalCategories" Relationship="ColspModel.FKLocalCategoryShop" FromRole="Shop" ToRole="LocalCategory" />
+          <NavigationProperty Name="LocalCatFeatureProducts" Relationship="ColspModel.FK_LocalCatFeatureProduct_Shop" FromRole="Shop" ToRole="LocalCatFeatureProduct" />
+          <NavigationProperty Name="LocalCatImages" Relationship="ColspModel.FK_LocalCatImage_Shop" FromRole="Shop" ToRole="LocalCatImage" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FKProductShop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FKProductHistoryShop" FromRole="Shop" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
@@ -4803,9 +5339,25 @@
           <NavigationProperty Name="ProductStageVideos" Relationship="ColspModel.FK_ProductStageVideo_Shop" FromRole="Shop" ToRole="ProductStageVideo" />
           <NavigationProperty Name="ProductVariants" Relationship="ColspModel.FKProductVariantShop" FromRole="Shop" ToRole="ProductVariant" />
           <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_Shop_ShopType" FromRole="Shop" ToRole="ShopType" />
+          <NavigationProperty Name="ShopCommissions" Relationship="ColspModel.FK_ShopCommission_Shop" FromRole="Shop" ToRole="ShopCommission" />
           <NavigationProperty Name="ShopUserGroupMaps" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="Shop" ToRole="ShopUserGroupMap" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKShopUser" FromRole="Shop" ToRole="User" />
           <NavigationProperty Name="UserShops" Relationship="ColspModel.FKUserShopShop" FromRole="Shop" ToRole="UserShop" />
+        </EntityType>
+        <EntityType Name="ShopCommission">
+          <Key>
+            <PropertyRef Name="ShopId" />
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="Commission" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_ShopCommission_GlobalCategory" FromRole="ShopCommission" ToRole="GlobalCategory" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ShopCommission_Shop" FromRole="ShopCommission" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ShopType">
           <Key>
@@ -5187,6 +5739,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BrandFeatureProduct_Brand">
+          <End Type="ColspModel.Brand" Role="Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.BrandFeatureProduct" Role="BrandFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="BrandId" />
+            </Principal>
+            <Dependent Role="BrandFeatureProduct">
+              <PropertyRef Name="BrandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BrandImage_Brand">
+          <End Type="ColspModel.Brand" Role="Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.BrandImage" Role="BrandImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="BrandId" />
+            </Principal>
+            <Dependent Role="BrandImage">
+              <PropertyRef Name="BrandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CouponBrandMap_Brand">
           <End Type="ColspModel.Brand" Role="Brand" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -5234,6 +5814,20 @@
             </Principal>
             <Dependent Role="ProductStage">
               <PropertyRef Name="BrandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BrandFeatureProduct_ProductStage">
+          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.BrandFeatureProduct" Role="BrandFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStage">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="BrandFeatureProduct">
+              <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5415,6 +6009,48 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GlobalCatFeatureProduct_GlobalCategory">
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.GlobalCatFeatureProduct" Role="GlobalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GlobalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="GlobalCatFeatureProduct">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GlobalCatImage_GlobalCategory">
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.GlobalCatImage" Role="GlobalCatImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GlobalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="GlobalCatImage">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopCommission_GlobalCategory">
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.ShopCommission" Role="ShopCommission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GlobalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="ShopCommission">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKProductGlobalCat">
           <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="0..1" />
           <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
@@ -5483,6 +6119,48 @@
               <PropertyRef Name="CategoryId" />
             </Principal>
             <Dependent Role="ProductStageGlobalCatMap">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GlobalCatFeatureProduct_ProductStage">
+          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.GlobalCatFeatureProduct" Role="GlobalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStage">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="GlobalCatFeatureProduct">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatFeatureProduct_LocalCategory">
+          <End Type="ColspModel.LocalCategory" Role="LocalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.LocalCatFeatureProduct" Role="LocalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LocalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="LocalCatFeatureProduct">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatImage_GlobalCategory">
+          <End Type="ColspModel.LocalCategory" Role="LocalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.LocalCatImage" Role="LocalCatImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LocalCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="LocalCatImage">
               <PropertyRef Name="CategoryId" />
             </Dependent>
           </ReferentialConstraint>
@@ -5570,6 +6248,42 @@
             </Principal>
             <Dependent Role="ProductStageLocalCatMap">
               <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatFeatureProduct_ProductStage">
+          <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1" />
+          <End Type="ColspModel.LocalCatFeatureProduct" Role="LocalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStage">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="LocalCatFeatureProduct">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatFeatureProduct_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.LocalCatFeatureProduct" Role="LocalCatFeatureProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="LocalCatFeatureProduct">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocalCatImage_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.LocalCatImage" Role="LocalCatImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="LocalCatImage">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5923,6 +6637,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopCommission_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.ShopCommission" Role="ShopCommission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ShopCommission">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShopUerGroupMap_Shop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -6162,8 +6890,6 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="DescriptionTh" ColumnName="DescriptionTh" />
-                <ScalarProperty Name="DescriptionEn" ColumnName="DescriptionEn" />
                 <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
                 <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />
                 <ScalarProperty Name="MetaKeyEn" ColumnName="MetaKeyEn" />
@@ -6171,11 +6897,46 @@
                 <ScalarProperty Name="MetaDescriptionEn" ColumnName="MetaDescriptionEn" />
                 <ScalarProperty Name="MetaTitleTh" ColumnName="MetaTitleTh" />
                 <ScalarProperty Name="MetaTitleEn" ColumnName="MetaTitleEn" />
+                <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
+                <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
+                <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
+                <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />
+                <ScalarProperty Name="DescriptionShortEn" ColumnName="DescriptionShortEn" />
+                <ScalarProperty Name="DescriptionFullEn" ColumnName="DescriptionFullEn" />
                 <ScalarProperty Name="PicUrl" ColumnName="PicUrl" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="DisplayNameTh" ColumnName="DisplayNameTh" />
+                <ScalarProperty Name="DisplayNameEn" ColumnName="DisplayNameEn" />
                 <ScalarProperty Name="BrandNameTh" ColumnName="BrandNameTh" />
                 <ScalarProperty Name="BrandNameEn" ColumnName="BrandNameEn" />
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BrandFeatureProducts">
+            <EntityTypeMapping TypeName="ColspModel.BrandFeatureProduct">
+              <MappingFragment StoreEntitySet="BrandFeatureProduct">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BrandImages">
+            <EntityTypeMapping TypeName="ColspModel.BrandImage">
+              <MappingFragment StoreEntitySet="BrandImage">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="EnTh" ColumnName="EnTh" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
+                <ScalarProperty Name="BrandImageId" ColumnName="BrandImageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6556,6 +7317,12 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
+                <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
+                <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
+                <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />
+                <ScalarProperty Name="DescriptionShortEn" ColumnName="DescriptionShortEn" />
+                <ScalarProperty Name="DescriptionFullEn" ColumnName="DescriptionFullEn" />
                 <ScalarProperty Name="Rgt" ColumnName="Rgt" />
                 <ScalarProperty Name="Lft" ColumnName="Lft" />
                 <ScalarProperty Name="ProductCount" ColumnName="ProductCount" />
@@ -6584,6 +7351,33 @@
                 <ScalarProperty Name="CurrentKey" ColumnName="CurrentKey" />
                 <ScalarProperty Name="CategoryAbbreviation" ColumnName="CategoryAbbreviation" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GlobalCatFeatureProducts">
+            <EntityTypeMapping TypeName="ColspModel.GlobalCatFeatureProduct">
+              <MappingFragment StoreEntitySet="GlobalCatFeatureProduct">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GlobalCatImages">
+            <EntityTypeMapping TypeName="ColspModel.GlobalCatImage">
+              <MappingFragment StoreEntitySet="GlobalCatImage">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="EnTh" ColumnName="EnTh" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryImageId" ColumnName="CategoryImageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6653,6 +7447,12 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
+                <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
+                <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
+                <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />
+                <ScalarProperty Name="DescriptionShortEn" ColumnName="DescriptionShortEn" />
+                <ScalarProperty Name="DescriptionFullEn" ColumnName="DescriptionFullEn" />
                 <ScalarProperty Name="Rgt" ColumnName="Rgt" />
                 <ScalarProperty Name="Lft" ColumnName="Lft" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
@@ -6662,6 +7462,35 @@
                 <ScalarProperty Name="NameTh" ColumnName="NameTh" />
                 <ScalarProperty Name="NameEn" ColumnName="NameEn" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LocalCatFeatureProducts">
+            <EntityTypeMapping TypeName="ColspModel.LocalCatFeatureProduct">
+              <MappingFragment StoreEntitySet="LocalCatFeatureProduct">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LocalCatImages">
+            <EntityTypeMapping TypeName="ColspModel.LocalCatImage">
+              <MappingFragment StoreEntitySet="LocalCatImage">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="EnTh" ColumnName="EnTh" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryImageId" ColumnName="CategoryImageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7394,6 +8223,19 @@
                 <ScalarProperty Name="ShopNameTh" ColumnName="ShopNameTh" />
                 <ScalarProperty Name="ShopNameEn" ColumnName="ShopNameEn" />
                 <ScalarProperty Name="ShopOwner" ColumnName="ShopOwner" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShopCommissions">
+            <EntityTypeMapping TypeName="ColspModel.ShopCommission">
+              <MappingFragment StoreEntitySet="ShopCommission">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Commission" ColumnName="Commission" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
               </MappingFragment>
             </EntityTypeMapping>

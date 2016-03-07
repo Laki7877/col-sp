@@ -34,6 +34,8 @@ namespace Colsp.Model.Requests
         public string ShopGroup { get; set; }
         public string TaxInvoice { get; set; }
         public string GiftWrap { get; set; }
+        public bool IsShopReady { get; set; }
+        public List<ShopCommission> Commissions { get; set; }
 
         public override void DefaultOnNull()
         {
@@ -45,9 +47,16 @@ namespace Colsp.Model.Requests
         public ShopRequest()
         {
             ShopOwner = new UserRequest();
+            Commissions = new List<ShopCommission>();
             Users = new List<UserRequest>();
             ShopType = new ShopTypeRequest();
             Logo = new ImageRequest();
         }
+    }
+
+    public class ShopCommission
+    {
+        public int? CategoryId { get; set; }
+        public decimal? Commission { get; set; }
     }
 }

@@ -20,6 +20,8 @@ namespace Colsp.Entity.Models
             this.Coupons = new HashSet<Coupon>();
             this.CouponShopMaps = new HashSet<CouponShopMap>();
             this.LocalCategories = new HashSet<LocalCategory>();
+            this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
+            this.LocalCatImages = new HashSet<LocalCatImage>();
             this.Products = new HashSet<Product>();
             this.ProductHistories = new HashSet<ProductHistory>();
             this.ProductStages = new HashSet<ProductStage>();
@@ -29,6 +31,7 @@ namespace Colsp.Entity.Models
             this.ProductStageVariants = new HashSet<ProductStageVariant>();
             this.ProductStageVideos = new HashSet<ProductStageVideo>();
             this.ProductVariants = new HashSet<ProductVariant>();
+            this.ShopCommissions = new HashSet<ShopCommission>();
             this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
             this.UserShops = new HashSet<UserShop>();
         }
@@ -71,6 +74,10 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LocalCategory> LocalCategories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LocalCatImage> LocalCatImages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistory> ProductHistories { get; set; }
@@ -89,6 +96,8 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductVariant> ProductVariants { get; set; }
         public virtual ShopType ShopType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopCommission> ShopCommissions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         public virtual User User { get; set; }
