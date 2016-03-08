@@ -1,0 +1,9 @@
+diff a/Colsp.Model/Colsp.Model.csproj b/Colsp.Model/Colsp.Model.csproj	(rejected hunks)
+@@ -59,7 +59,6 @@
+     <Compile Include="Requests\CouponRequest.cs" />
+     <Compile Include="Requests\CSVTemplateRequest.cs" />
+     <Compile Include="Requests\ExportRequest.cs" />
+-    <Compile Include="Requests\ImageRequest.cs" />
+     <Compile Include="Requests\ImportHeaderRequest.cs" />
+     <Compile Include="Requests\InventoryRequest.cs" />
+     <Compile Include="Requests\OnTopCreditCardListRequest.cs" />

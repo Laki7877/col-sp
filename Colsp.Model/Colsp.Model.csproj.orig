@@ -62,9 +62,12 @@
     <Compile Include="Requests\ImageRequest.cs" />
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
+<<<<<<< HEAD
     <Compile Include="Requests\OnTopCreditCardListRequest.cs" />
-    <Compile Include="Requests\OnBoardRequest.cs" />
     <Compile Include="Requests\OnTopCreditCardRequest.cs" />
+=======
+    <Compile Include="Requests\OnBoardRequest.cs" />
+>>>>>>> d4c1fc45ca29bfa48acd2fc7ce2ef258322e225d
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />
     <Compile Include="Requests\ProductReviewRequest.cs" />
