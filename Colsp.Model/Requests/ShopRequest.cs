@@ -15,12 +15,13 @@ namespace Colsp.Model.Requests
         public UserRequest ShopOwner { get; set; }
         public List<UserRequest> Users { get; set; }
         public ShopTypeRequest ShopType { get; set; }
-        public decimal? Commission { get; set; }
+        public decimal Commission { get; set; }
         public string ShopDescriptionEn { get; set; }
         public string ShopDescriptionTh { get; set; }
         public string FloatMessageEn { get; set; }
         public string FloatMessageTh { get; set; }
         public string ShopAddress { get; set; }
+        public string BankName { get; set; }
         public string BankAccountName { get; set; }
         public string BankAccountNumber { get; set; }
         public string Facebook { get; set; }
@@ -34,6 +35,8 @@ namespace Colsp.Model.Requests
         public string ShopGroup { get; set; }
         public string TaxInvoice { get; set; }
         public string GiftWrap { get; set; }
+        public bool IsShopReady { get; set; }
+        public List<ShopCommission> Commissions { get; set; }
 
         public override void DefaultOnNull()
         {
@@ -45,9 +48,16 @@ namespace Colsp.Model.Requests
         public ShopRequest()
         {
             ShopOwner = new UserRequest();
+            Commissions = new List<ShopCommission>();
             Users = new List<UserRequest>();
             ShopType = new ShopTypeRequest();
             Logo = new ImageRequest();
         }
+    }
+
+    public class ShopCommission
+    {
+        public int? CategoryId { get; set; }
+        public decimal? Commission { get; set; }
     }
 }

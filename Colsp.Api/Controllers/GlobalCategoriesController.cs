@@ -13,6 +13,10 @@ using Colsp.Api.Helper;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
+using System.IO;
+using Colsp.Model.Responses;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -66,7 +70,7 @@ namespace Colsp.Api.Controllers
         }
 
         [Route("api/GlobalCategories/{categoryId}")]
-        [HttpGet]
+        [HttpGet] 
         public HttpResponseMessage GetGlobalCategory(int categoryId)
         {
             try
@@ -78,6 +82,15 @@ namespace Colsp.Api.Controllers
                                      cat.CategoryId,
                                      cat.NameEn,
                                      cat.NameTh,
+                                     BannerImageEn = cat.GlobalCatImages.Where(w=>Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o=>o.Position).Select(si=>new {
+                                         url = si.ImageUrl,
+                                         position = si.Position
+                                     }),
+                                     BannerImageTh = cat.GlobalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).OrderBy(o => o.Position).Select(si => new {
+                                         url = si.ImageUrl,
+                                         position = si.Position
+                                     }),
+                                     FeatureProducts = cat.GlobalCatFeatureProducts.Select(s=>new { s.ProductId,s.ProductStage.Pid, s.ProductStage.ProductNameEn }),
                                      //cat.CategoryAbbreviation,
                                      //cat.Lft,
                                      //cat.Rgt,
@@ -88,6 +101,7 @@ namespace Colsp.Api.Controllers
                                      //cat.UpdatedDt,
                                      //cat.CreatedDt,
                                      cat.Commission,
+
                                      //ProductCount = cat.ProductStages.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
                                      //               + cat.Products.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
                                      //               + cat.ProductHistories.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)),
@@ -115,13 +129,10 @@ namespace Colsp.Api.Controllers
                 category = new GlobalCategory();
                 string abbr = AutoGenerate.NextCatAbbre(db);
                 category.CategoryAbbreviation = abbr;
-                category.NameEn = request.NameEn;
-                category.NameTh = request.NameTh;
-                category.Commission = request.Commission;
-                category.UrlKeyEn = "";
+                SetupCategory(category, request);
 
                 category.Visibility = request.Visibility;
-                category.Status = request.Status;
+                category.Status = Constant.STATUS_ACTIVE;
                 category.CreatedBy = this.User.UserRequest().Email;
                 category.CreatedDt = DateTime.Now;
                 category.UpdatedBy = this.User.UserRequest().Email;
@@ -143,10 +154,41 @@ namespace Colsp.Api.Controllers
                     CategoryId = category.CategoryId,
                     CategoryAbbreviation = AutoGenerate.NextCatAbbre(db),
                     CurrentKey = "11111"
-                }; 
-                db.GlobalCategories.Add(category);
-                db.SaveChanges();
-
+                };
+                #region Banner Image En
+                if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
+                {
+                    int position = 0;
+                    foreach (ImageRequest img in request.CategoryBannerEn)
+                    {
+                        category.GlobalCatImages.Add(new GlobalCatImage()
+                        {
+                            ImageUrl = img.url,
+                            Position = position++,
+                            EnTh = Constant.LANG_EN,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now
+                        });
+                    }
+                }
+                #endregion
+                #region Banner Image Th
+                if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
+                {
+                    int position = 0;
+                    foreach (ImageRequest img in request.CategoryBannerTh)
+                    {
+                        category.GlobalCatImages.Add(new GlobalCatImage()
+                        {
+                            ImageUrl = img.url,
+                            Position = position++,
+                            EnTh = Constant.LANG_TH,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now
+                        });
+                    }
+                }
+                #endregion
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
                     category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"),"-",category.CategoryId);
@@ -161,17 +203,17 @@ namespace Colsp.Api.Controllers
                    
                     foreach (AttributeSetRequest mapRq in request.AttributeSets)
                     {
-                        CategoryAttributeSetMap map = new CategoryAttributeSetMap();
-                        map.AttributeSetId = mapRq.AttributeSetId.Value;
-                        map.CategoryId = category.CategoryId;
-                        map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.UserRequest().Email;
-                        map.UpdatedDt = DateTime.Now;
-                        category.CategoryAttributeSetMaps.Add(map);
-                        db.CategoryAttributeSetMaps.Add(map);
+                        category.CategoryAttributeSetMaps.Add(new CategoryAttributeSetMap()
+                        {
+                            AttributeSetId = mapRq.AttributeSetId.Value,
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        });
                     }
                 }
+                db.GlobalCategories.Add(category);
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK, category);
             }
@@ -212,14 +254,15 @@ namespace Colsp.Api.Controllers
             {
                 var category = db.GlobalCategories
                     .Include(i => i.CategoryAttributeSetMaps
-                    .Select(s => s.AttributeSet)).Where(w => w.CategoryId == categoryId).SingleOrDefault();
+                    .Select(s => s.AttributeSet))
+                    .Include(i=>i.GlobalCatImages)
+                    .Include(i=>i.GlobalCatFeatureProducts)
+                    .Where(w => w.CategoryId == categoryId).SingleOrDefault();
                 if (category == null)
                 {
                     throw new Exception("Cannot find selected category");
                 }
-                category.NameEn = request.NameEn;
-                category.NameTh = request.NameTh;
-                category.Commission = request.Commission;
+                SetupCategory(category, request);
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
                     category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"),"-", category.CategoryId);
@@ -229,11 +272,154 @@ namespace Colsp.Api.Controllers
                     category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
                 }
                 category.Visibility = request.Visibility;
-                category.Status = request.Status;
+                category.Status = Constant.STATUS_ACTIVE;
                 category.UpdatedBy = this.User.UserRequest().Email;
                 category.UpdatedDt = DateTime.Now;
-
-
+                #region Banner Image En
+                var imageOldEn = category.GlobalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).ToList();
+                if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
+                {
+                    int position = 0;
+                    foreach (ImageRequest img in request.CategoryBannerEn)
+                    {
+                        bool isNew = false;
+                        if (imageOldEn == null || imageOldEn.Count == 0)
+                        {
+                            isNew = true;
+                        }
+                        if (!isNew)
+                        {
+                            var current = imageOldEn.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                current.ImageUrl = img.url;
+                                current.Position = position++;
+                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedDt = DateTime.Now;
+                                imageOldEn.Remove(current);
+                            }
+                            else
+                            {
+                                isNew = true;
+                            }
+                        }
+                        if (isNew)
+                        {
+                            category.GlobalCatImages.Add(new GlobalCatImage()
+                            {
+                                ImageUrl = img.url,
+                                Position = position++,
+                                EnTh = Constant.LANG_EN,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now
+                            });
+                        }
+                    }
+                }
+                if (imageOldEn != null && imageOldEn.Count > 0)
+                {
+                    db.GlobalCatImages.RemoveRange(imageOldEn);
+                }
+                #endregion
+                #region Banner Image Th
+                var imageOldTh = category.GlobalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).ToList();
+                if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
+                {
+                    int position = 0;
+                    foreach (ImageRequest img in request.CategoryBannerTh)
+                    {
+                        bool isNew = false;
+                        if (imageOldTh == null || imageOldTh.Count == 0)
+                        {
+                            isNew = true;
+                        }
+                        if (!isNew)
+                        {
+                            var current = imageOldTh.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                current.ImageUrl = img.url;
+                                current.Position = position++;
+                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedDt = DateTime.Now;
+                                imageOldTh.Remove(current);
+                            }
+                            else
+                            {
+                                isNew = true;
+                            }
+                        }
+                        if (isNew)
+                        {
+                            category.GlobalCatImages.Add(new GlobalCatImage()
+                            {
+                                ImageUrl = img.url,
+                                Position = position++,
+                                EnTh = Constant.LANG_TH,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now
+                            });
+                        }
+                    }
+                }
+                if (imageOldTh != null && imageOldTh.Count > 0)
+                {
+                    db.GlobalCatImages.RemoveRange(imageOldTh);
+                }
+                #endregion
+                #region Global Category Feature Product
+                var pidList = category.GlobalCatFeatureProducts.ToList();
+                if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
+                {
+                    var proStageList = db.ProductStages
+                            .Where(w => w.GlobalCatId == category.CategoryId)
+                            .Select(s => s.ProductId).ToList();
+                    foreach (var pro in request.FeatureProducts)
+                    {
+                        bool isNew = false;
+                        if (pidList == null || pidList.Count == 0)
+                        {
+                            isNew = true;
+                        }
+                        if (!isNew)
+                        {
+                            var current = pidList.Where(w => w.ProductId == pro.ProductId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                pidList.Remove(current);
+                            }
+                            else
+                            {
+                                isNew = true;
+                            }
+                        }
+                        if (isNew)
+                        {
+                            var isPid = proStageList.Where(w => w == pro.ProductId).ToList();
+                            if (isPid != null && isPid.Count > 0)
+                            {
+                                category.GlobalCatFeatureProducts.Add(new GlobalCatFeatureProduct()
+                                {
+                                    ProductId = pro.ProductId,
+                                    CreatedBy = this.User.UserRequest().Email,
+                                    CreatedDt = DateTime.Now,
+                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedDt = DateTime.Now
+                                });
+                            }
+                            else
+                            {
+                                throw new Exception("Pid " + pro.Pid + " is not in this global category.");
+                            }
+                        }
+                    }
+                }
+                if (pidList != null && pidList.Count > 0)
+                {
+                    db.GlobalCatFeatureProducts.RemoveRange(pidList);
+                }
+                #endregion
+                #region Attribute Set
                 var setList = db.CategoryAttributeSetMaps.Where(w => w.CategoryId == categoryId).ToList();
                 if (request.AttributeSets != null && request.AttributeSets.Count > 0)
                 {
@@ -275,6 +461,8 @@ namespace Colsp.Api.Controllers
                 {
                     db.CategoryAttributeSetMaps.RemoveRange(setList);
                 }
+                #endregion
+
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK, category);
             }
@@ -549,6 +737,65 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
+        }
+
+        [Route("api/GlobalCategoryImages")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadFile()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
+                }
+                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.GLOBAL_CAT_FOLDER);
+                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                FileUploadRespond fileUpload = new FileUploadRespond();
+                string fileName = string.Empty;
+                string ext = string.Empty;
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    fileName = fileData.LocalFileName;
+                    string tmp = fileData.Headers.ContentDisposition.FileName;
+                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+                    {
+                        tmp = tmp.Trim('"');
+                    }
+                    ext = Path.GetExtension(tmp);
+                    break;
+                }
+
+                string newName = string.Concat(fileName, ext);
+                File.Move(fileName, newName);
+                fileUpload.tmpPath = newName;
+
+                var name = Path.GetFileName(newName);
+                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+                fileUpload.url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", AppSettingKey.GLOBAL_CAT_FOLDER, "/", name);
+
+                return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
+        private void SetupCategory(GlobalCategory category, CategoryRequest request)
+        {
+            category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true);
+            category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
+            category.Commission = Validation.ValidateDecimal(request.Commission, "Commission (%)", true,20,2,true);
+            category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false);
+            category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false);
+            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false);
+            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false);
+            category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false);
+            category.TitleShowcase = request.TitleShowcase;
         }
 
         protected override void Dispose(bool disposing)

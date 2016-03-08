@@ -34,7 +34,8 @@ namespace Colsp.Model.Requests
         public List<string> SearchTag { get; set; }
         public string ModifyDtFrom { get; set; }
         public string ModifyDtTo { get; set; }
-
+        public int ProductId { get; set; }
+        public string ProductNameEn { get; set; }
 
         public override void DefaultOnNull()
 		{

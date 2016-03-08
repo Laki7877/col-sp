@@ -45,7 +45,7 @@ namespace Colsp.Api.Helpers
             
             if(required && string.IsNullOrWhiteSpace(val))
             {
-                if (string.IsNullOrEmpty(defaultVal))
+                if (defaultVal != null)
                 {
                     return defaultVal;
                 }

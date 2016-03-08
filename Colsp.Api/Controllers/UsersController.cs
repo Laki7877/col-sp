@@ -758,6 +758,7 @@ namespace Colsp.Api.Controllers
                 }
                 var bytes = Encoding.UTF8.GetBytes(string.Concat(userList[0].Email, ":", userList[0].Password));
                 string basicOld = Convert.ToBase64String(bytes);
+                userList[0].PasswordLastChg = userList[0].Password;
                 userList[0].Password = request.NewPassword;
                 db.SaveChanges();
                 Cache.Delete(basicOld);
@@ -778,6 +779,36 @@ namespace Colsp.Api.Controllers
             {
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+
+        [Route("api/Onboarding")]
+        [HttpGet]
+        public HttpResponseMessage Onboarding()
+        {
+            try
+            {
+                bool IsPasswordChange = this.User.UserRequest().IsPasswordChange;
+                var shopId = this.User.ShopRequest().ShopId.Value;
+                var productTotalCount = db.ProductStages.Where(w => w.ShopId == shopId).Count();
+                var shopBanner = db.ShopImages.Where(w => w.ShopId == shopId).Count();
+                var productApprove = db.ProductStages.Where(w => w.ShopId == shopId && Constant.PRODUCT_STATUS_APPROVE.Equals(w.Status)).Count();
+                bool IsProduct = productTotalCount > 0 ? true : false;
+                bool isBanner = shopBanner > 0 ? true : false;
+                bool IsProductApprove = productApprove > 0 ? true : false; 
+                return Request.CreateResponse(new OnBoardRequest()
+                {
+                    AddProduct = IsProduct,
+                    ChangePassword = IsPasswordChange,
+                    ProductApprove = IsProductApprove,
+                    DecorateStore = isBanner,
+                    SetUpShop = this.User.ShopRequest().IsShopReady
+                });
             }
             catch (Exception e)
             {
