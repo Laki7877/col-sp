@@ -39,19 +39,17 @@
         
         
         
+     
         
         
-=======
         
         
         
         
-=======
         
         
         
         
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; product_add
         
         
         
@@ -83,7 +81,6 @@
         
         
         
-<<<<<<< HEAD
         
         
         
@@ -97,29 +94,6 @@
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-<<<<<<< HEAD
         
         
         
@@ -239,7 +213,6 @@
         
         
         
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; 659e4541236a3cd4b017be5e7fd5b7d5bc81730a
         
         
         
@@ -4720,8 +4693,6 @@
         
         
         
-<<<<<<< HEAD
-=======
         
         
         
@@ -7080,22 +7051,6 @@
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
->>>>>>> 659e4541236a3cd4b017be5e7fd5b7d5bc81730a
 
         <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="2.8846434386841224" PointY="13.033205619562979" />
         <EntityTypeShape EntityType="ColspModel.AttributeSet" Width="1.5" PointX="0.32705175333053421" PointY="11.4883010142894" />
@@ -7282,135 +7237,10 @@
         <AssociationConnector Association="ColspModel.FKUserGroupMapUser" />
         <AssociationConnector Association="ColspModel.FKUserShopUser" />
         <AssociationConnector Association="ColspModel.FKUserGroupMapUserGroup" />
-        <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />&gt;&gt;&gt;&gt;&gt;&gt;&gt; product_add
-=======
-        
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; product_add
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      &gt;&gt;&gt;&gt;&gt;&gt;&gt; product_add
-=======
-        
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; product_add
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      </Diagram>
+        <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />
+        <EntityTypeShape EntityType="ColspModel.ProductTag" Width="1.5" PointX="3.30556292985825" PointY="2.8256820006415628" />
+        <AssociationConnector Association="ColspModel.FK_ProductTag_Product" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

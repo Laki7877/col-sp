@@ -24,8 +24,6 @@ namespace Colsp.Entity.Models
             this.ProductHistoryAttributes = new HashSet<ProductHistoryAttribute>();
             this.ProductHistoryVariants = new HashSet<ProductHistoryVariant>();
             this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
-            this.ProductVariants = new HashSet<ProductVariant>();
-            this.ProductVariants1 = new HashSet<ProductVariant>();
         }
     
         public int AttributeId { get; set; }
@@ -67,9 +65,5 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductHistoryVariant> ProductHistoryVariants { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductVariant> ProductVariants { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductVariant> ProductVariants1 { get; set; }
     }
 }

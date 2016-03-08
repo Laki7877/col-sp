@@ -17,57 +17,63 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
+            this.ProductTags = new HashSet<ProductTag>();
             this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
             this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
         }
     
         public int ProductId { get; set; }
-        public Nullable<int> GlobalCatId { get; set; }
+        public Nullable<int> ParentId { get; set; }
+        public int GlobalCatId { get; set; }
         public Nullable<int> LocalCatId { get; set; }
         public int ShopId { get; set; }
+        public int BrandId { get; set; }
         public Nullable<int> AttributeSetId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
-        public Nullable<int> BrandId { get; set; }
         public string Pid { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
         public decimal OriginalPrice { get; set; }
-        public Nullable<decimal> SalePrice { get; set; }
+        public decimal SalePrice { get; set; }
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
-        public Nullable<int> Stock { get; set; }
-        public Nullable<int> SafetyStock { get; set; }
-        public Nullable<int> ShippingId { get; set; }
+        public int ShippingId { get; set; }
+        public int ImageCount { get; set; }
         public string FeatureImgUrl { get; set; }
-        public string Tag { get; set; }
         public decimal PrepareDay { get; set; }
+        public bool LimitIndividualDay { get; set; }
+        public int PrepareMon { get; set; }
+        public int PrepareTue { get; set; }
+        public int PrepareWed { get; set; }
+        public int PrepareThu { get; set; }
+        public int PrepareFri { get; set; }
+        public int PrepareSat { get; set; }
+        public int PrepareSun { get; set; }
         public decimal Length { get; set; }
         public decimal Height { get; set; }
         public decimal Width { get; set; }
         public string DimensionUnit { get; set; }
         public decimal Weight { get; set; }
         public string WeightUnit { get; set; }
-        public string MetaTitle { get; set; }
-        public string MetaDescription { get; set; }
-        public string MetaKey { get; set; }
+        public string MetaTitleEn { get; set; }
+        public string MetaTitleTh { get; set; }
+        public string MetaDescriptionEn { get; set; }
+        public string MetaDescriptionTh { get; set; }
+        public string MetaKeyEn { get; set; }
+        public string MetaKeyTh { get; set; }
         public string UrlEn { get; set; }
-        public string UrlTh { get; set; }
-        public Nullable<int> BoostWeight { get; set; }
+        public int BoostWeight { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<System.TimeSpan> EffectiveTime { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
         public Nullable<System.TimeSpan> ExpiryTime { get; set; }
-        public Nullable<bool> ControlFlag1 { get; set; }
-        public Nullable<bool> ControlFlag2 { get; set; }
-        public Nullable<bool> ControlFlag3 { get; set; }
+        public bool ControlFlag1 { get; set; }
+        public bool ControlFlag2 { get; set; }
+        public bool ControlFlag3 { get; set; }
         public string Remark { get; set; }
-        public bool InfoFlag { get; set; }
-        public bool ImageFlag { get; set; }
-        public bool OnlineFlag { get; set; }
-        public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
@@ -78,6 +84,8 @@ namespace Colsp.Entity.Models
         public virtual Brand Brand { get; set; }
         public virtual GlobalCategory GlobalCategory { get; set; }
         public virtual LocalCategory LocalCategory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductTag> ProductTags { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

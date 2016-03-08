@@ -95,7 +95,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageVariant> ProductStageVariants { get; set; }
         public virtual DbSet<ProductStageVariantArrtibuteMap> ProductStageVariantArrtibuteMaps { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
-        public virtual DbSet<ProductVariant> ProductVariants { get; set; }
+        public virtual DbSet<ProductTag> ProductTags { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
