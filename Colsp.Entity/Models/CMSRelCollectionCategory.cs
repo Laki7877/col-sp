@@ -25,7 +25,5 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
-    
-        public virtual CMSMaster CMSMaster { get; set; }
     }
 }
