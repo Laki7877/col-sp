@@ -390,12 +390,6 @@
     <Compile Include="Models\ShopImage.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ShopCommission.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ShopImage.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ShopType.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

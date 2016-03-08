@@ -26,15 +26,18 @@ namespace Colsp.Api.Constants
         public static readonly string PRODUCT_STATUS_APPROVE = "AP";
         public static readonly string PRODUCT_STATUS_NOT_APPROVE = "RJ";
 
+        
 
         public static readonly string USER_TYPE_ADMIN = "A";
         public static readonly string USER_TYPE_SELLER = "S";
         public static readonly string SHOP_TYPE = "H";
 
+        public static string STATUS_PROMOTION_INACTIVE = "IA";
+        public static string STATUS_PROMOTION_ACTIVE = "AT";
 
         public static readonly string COUPON_FILTER_INCLUDE = "I";
         public static readonly string COUPON_FILTER_EXCLUDE = "E";
-
+                
 
         #region CMS
         public static readonly int CMS_SHOP_GOBAL = 0;
@@ -55,6 +58,7 @@ namespace Colsp.Api.Constants
         public static readonly string SHOP_GROUP_INDY = "IN";
         public static readonly string SHOP_GROUP_SELLER = "SE";
 
+        
 
         public static readonly string LANG_EN = "EN";
         public static readonly string LANG_TH = "TH";

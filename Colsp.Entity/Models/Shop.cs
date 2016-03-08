@@ -41,7 +41,6 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopOwner { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
-        public int MaxLocalCategory { get; set; }
         public bool GiftWrap { get; set; }
         public bool TaxInvoice { get; set; }
         public string ShopGroup { get; set; }
