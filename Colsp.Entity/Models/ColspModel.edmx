@@ -82,6 +82,7 @@
           <Property Name="AttributeValueId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeValueEn" Type="nvarchar" MaxLength="100" />
           <Property Name="AttributeValueTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" />
           <Property Name="MapValue" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
@@ -635,8 +636,8 @@
           <Property Name="MinQuantity" Type="int" />
           <Property Name="MaxQuantity" Type="int" />
           <Property Name="UseDecimal" Type="bit" />
-          <Property Name="SaftyStockSeller" Type="int" />
-          <Property Name="SaftyStockAdmin" Type="int" />
+          <Property Name="SafetyStockSeller" Type="int" />
+          <Property Name="SafetyStockAdmin" Type="int" />
           <Property Name="StockAvailable" Type="int" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
@@ -1038,6 +1039,7 @@
           <Property Name="DescriptionFullTh" Type="ntext" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="ShippingId" Type="int" />
+          <Property Name="ImageCount" Type="int" Nullable="false" />
           <Property Name="FeatureImgUrl" Type="nvarchar" MaxLength="2083" />
           <Property Name="Tag" Type="nvarchar" MaxLength="630" />
           <Property Name="PrepareDay" Type="decimal" Precision="5" Scale="2" Nullable="false" />
@@ -1208,6 +1210,7 @@
           <Property Name="DescriptionFullTh" Type="ntext" />
           <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
           <Property Name="VideoLink" Type="nvarchar" MaxLength="2083" />
+          <Property Name="PrepareDay" Type="decimal" Precision="5" Scale="2" Nullable="false" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
@@ -3654,6 +3657,7 @@
           <Property Name="AttributeValueId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AttributeValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ImageUrl" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="MapValue" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -4251,8 +4255,8 @@
           <Property Name="MinQuantity" Type="Int32" />
           <Property Name="MaxQuantity" Type="Int32" />
           <Property Name="UseDecimal" Type="Boolean" />
-          <Property Name="SaftyStockSeller" Type="Int32" />
-          <Property Name="SaftyStockAdmin" Type="Int32" />
+          <Property Name="SafetyStockSeller" Type="Int32" />
+          <Property Name="SafetyStockAdmin" Type="Int32" />
           <Property Name="StockAvailable" Type="Int32" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
@@ -4694,6 +4698,7 @@
           <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ShippingId" Type="Int32" />
+          <Property Name="ImageCount" Type="Int32" Nullable="false" />
           <Property Name="FeatureImgUrl" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <Property Name="Tag" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="PrepareDay" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
@@ -4884,6 +4889,7 @@
           <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="VideoLink" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+          <Property Name="PrepareDay" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
           <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
@@ -6508,6 +6514,7 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="MapValue" ColumnName="MapValue" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
                 <ScalarProperty Name="AttributeValueTh" ColumnName="AttributeValueTh" />
                 <ScalarProperty Name="AttributeValueEn" ColumnName="AttributeValueEn" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
@@ -7077,8 +7084,8 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="StockAvailable" ColumnName="StockAvailable" />
-                <ScalarProperty Name="SaftyStockAdmin" ColumnName="SaftyStockAdmin" />
-                <ScalarProperty Name="SaftyStockSeller" ColumnName="SaftyStockSeller" />
+                <ScalarProperty Name="SafetyStockAdmin" ColumnName="SafetyStockAdmin" />
+                <ScalarProperty Name="SafetyStockSeller" ColumnName="SafetyStockSeller" />
                 <ScalarProperty Name="UseDecimal" ColumnName="UseDecimal" />
                 <ScalarProperty Name="MaxQuantity" ColumnName="MaxQuantity" />
                 <ScalarProperty Name="MinQuantity" ColumnName="MinQuantity" />
@@ -7516,6 +7523,7 @@
                 <ScalarProperty Name="PrepareDay" ColumnName="PrepareDay" />
                 <ScalarProperty Name="Tag" ColumnName="Tag" />
                 <ScalarProperty Name="FeatureImgUrl" ColumnName="FeatureImgUrl" />
+                <ScalarProperty Name="ImageCount" ColumnName="ImageCount" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
                 <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
                 <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />
@@ -7673,6 +7681,7 @@
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
+                <ScalarProperty Name="PrepareDay" ColumnName="PrepareDay" />
                 <ScalarProperty Name="VideoLink" ColumnName="VideoLink" />
                 <ScalarProperty Name="DescriptionShortTh" ColumnName="DescriptionShortTh" />
                 <ScalarProperty Name="DescriptionFullTh" ColumnName="DescriptionFullTh" />

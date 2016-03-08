@@ -36,6 +36,7 @@ namespace Colsp.Entity.Models
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
         public string VideoLink { get; set; }
+        public decimal PrepareDay { get; set; }
         public decimal Length { get; set; }
         public decimal Height { get; set; }
         public decimal Width { get; set; }

@@ -7,3 +7,1969 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+
+public partial class Attribute
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public Attribute()
+    {
+        this.ProductStageVariantArrtibuteMaps = new HashSet<ProductStageVariantArrtibuteMap>();
+        this.AttributeSetMaps = new HashSet<AttributeSetMap>();
+        this.AttributeValueMaps = new HashSet<AttributeValueMap>();
+        this.ProductAttributes = new HashSet<ProductAttribute>();
+        this.ProductHistoryAttributes = new HashSet<ProductHistoryAttribute>();
+        this.ProductHistoryVariants = new HashSet<ProductHistoryVariant>();
+        this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
+        this.ProductVariants = new HashSet<ProductVariant>();
+        this.ProductVariants1 = new HashSet<ProductVariant>();
+    }
+
+    public int AttributeId { get; set; }
+    public string AttributeNameEn { get; set; }
+    public string AttributeUnitEn { get; set; }
+    public string AttributeUnitTh { get; set; }
+    public string DisplayNameEn { get; set; }
+    public string DisplayNameTh { get; set; }
+    public bool Required { get; set; }
+    public bool Filterable { get; set; }
+    public Nullable<bool> VariantStatus { get; set; }
+    public string DataType { get; set; }
+    public string VariantDataType { get; set; }
+    public string DataValidation { get; set; }
+    public string DefaultValue { get; set; }
+    public Nullable<bool> ShowAdminFlag { get; set; }
+    public Nullable<bool> ShowGlobalSearchFlag { get; set; }
+    public Nullable<bool> ShowLocalSearchFlag { get; set; }
+    public Nullable<bool> ShowGlobalFilterFlag { get; set; }
+    public Nullable<bool> ShowLocalFilterFlag { get; set; }
+    public string Status { get; set; }
+    public Nullable<bool> AllowHtmlFlag { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageVariantArrtibuteMap> ProductStageVariantArrtibuteMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<AttributeSetMap> AttributeSetMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<AttributeValueMap> AttributeValueMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistoryVariant> ProductHistoryVariants { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductVariant> ProductVariants { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductVariant> ProductVariants1 { get; set; }
+}
+
+public partial class AttributeSet
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public AttributeSet()
+    {
+        this.AttributeSetTagMaps = new HashSet<AttributeSetTagMap>();
+        this.Products = new HashSet<Product>();
+        this.ProductHistories = new HashSet<ProductHistory>();
+        this.ProductStages = new HashSet<ProductStage>();
+        this.AttributeSetMaps = new HashSet<AttributeSetMap>();
+        this.CategoryAttributeSetMaps = new HashSet<CategoryAttributeSetMap>();
+    }
+
+    public int AttributeSetId { get; set; }
+    public string AttributeSetNameEn { get; set; }
+    public string AttributeSetDescriptionEn { get; set; }
+    public string AttributeSetDescriptionTh { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<AttributeSetTagMap> AttributeSetTagMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Product> Products { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStage> ProductStages { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<AttributeSetMap> AttributeSetMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
+}
+
+public partial class AttributeSetMap
+{
+    public int AttributeSetId { get; set; }
+    public int AttributeId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Attribute Attribute { get; set; }
+    public virtual AttributeSet AttributeSet { get; set; }
+}
+
+public partial class AttributeSetTagMap
+{
+    public int AttributeSetId { get; set; }
+    public int TagId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual AttributeSet AttributeSet { get; set; }
+    public virtual Tag Tag { get; set; }
+}
+
+public partial class AttributeValue
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public AttributeValue()
+    {
+        this.AttributeValueMaps = new HashSet<AttributeValueMap>();
+    }
+
+    public int AttributeValueId { get; set; }
+    public string AttributeValueEn { get; set; }
+    public string AttributeValueTh { get; set; }
+    public string ImageUrl { get; set; }
+    public string MapValue { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<AttributeValueMap> AttributeValueMaps { get; set; }
+}
+
+public partial class AttributeValueMap
+{
+    public int AttributeId { get; set; }
+    public int AttributeValueId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Attribute Attribute { get; set; }
+    public virtual AttributeValue AttributeValue { get; set; }
+}
+
+public partial class Brand
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public Brand()
+    {
+        this.CouponBrandMaps = new HashSet<CouponBrandMap>();
+        this.Products = new HashSet<Product>();
+        this.ProductHistories = new HashSet<ProductHistory>();
+        this.ProductStages = new HashSet<ProductStage>();
+    }
+
+    public int BrandId { get; set; }
+    public string BrandNameEn { get; set; }
+    public string BrandNameTh { get; set; }
+    public string Path { get; set; }
+    public string PicUrl { get; set; }
+    public string MetaTitleEn { get; set; }
+    public string MetaTitleTh { get; set; }
+    public string MetaDescriptionEn { get; set; }
+    public string MetaDescriptionTh { get; set; }
+    public string MetaKeyEn { get; set; }
+    public string MetaKeyTh { get; set; }
+    public string UrlEn { get; set; }
+    public string DescriptionEn { get; set; }
+    public string DescriptionTh { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponBrandMap> CouponBrandMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Product> Products { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStage> ProductStages { get; set; }
+}
+
+public partial class CategoryAttributeSetMap
+{
+    public int CategoryId { get; set; }
+    public int AttributeSetId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual AttributeSet AttributeSet { get; set; }
+    public virtual GlobalCategory GlobalCategory { get; set; }
+}
+
+public partial class CMSBrandInShop
+{
+    public int CMSBrandInShopId { get; set; }
+    public Nullable<int> CMSId { get; set; }
+    public Nullable<int> BrandId { get; set; }
+    public string BrandNameEN { get; set; }
+    public string BrandNameTH { get; set; }
+    public string Path { get; set; }
+    public string PicUrl { get; set; }
+    public string MetaTitle { get; set; }
+    public string MetaDescription { get; set; }
+    public string MetaKey { get; set; }
+    public string UrlKey { get; set; }
+    public string ShortDescriptionEn { get; set; }
+    public string LongDescriptionEn { get; set; }
+    public string ShortDescriptionTh { get; set; }
+    public string LongDescriptionTh { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class CMSBy1Get1Item
+{
+    public int CMSBy1Get1ItemId { get; set; }
+    public string NameEN { get; set; }
+    public string NameTH { get; set; }
+    public string URLKey { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public string ShortDetailTH { get; set; }
+    public string ShortDetailEN { get; set; }
+    public string ShortDescriptionTH { get; set; }
+    public string ShortDescriptionEN { get; set; }
+    public Nullable<int> CMSStatusFlowId { get; set; }
+    public Nullable<int> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class CMSCollectionCategory
+{
+    public int CMSCollectionCategoryId { get; set; }
+    public string CMSCollectionCategoryNameEH { get; set; }
+    public string CMSCollectionCategoryNameTH { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public Nullable<int> CMSStatusFlowId { get; set; }
+}
+
+public partial class CMSCollectionGroup
+{
+    public int CMSCollectionGroupId { get; set; }
+    public string CMSCollectionGroupNameTH { get; set; }
+    public Nullable<int> Sequence { get; set; }
+    public string BannerLocation { get; set; }
+    public string BannerConntent { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public Nullable<int> CMSStatusFlowId { get; set; }
+    public string CMSCollectionGroupNameEN { get; set; }
+
+    public virtual CMSRelCollectionGroup CMSRelCollectionGroup { get; set; }
+}
+
+public partial class CMSCollectionListItem
+{
+    public int CMSCollectionListItemId { get; set; }
+    public Nullable<int> CMSId { get; set; }
+    public string PId { get; set; }
+    public string ProductBoxBadge { get; set; }
+    public Nullable<int> Sequence { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+}
+
+public partial class CMSFilter
+{
+    public int CMSSortId { get; set; }
+    public string CMSSortNameTH { get; set; }
+    public string CMSSortNameEN { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class CMSHistoryLog
+{
+    public int CMSHistoryLogId { get; set; }
+    public Nullable<int> ChangeId { get; set; }
+    public string CMSTableLog { get; set; }
+    public string TransactionLog { get; set; }
+    public string DetailLog { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public string CreateIP { get; set; }
+}
+
+public partial class CMSMainCategory
+{
+    public int CMSMainCategoryId { get; set; }
+    public Nullable<int> CMSId { get; set; }
+    public string CategoryId { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class CMSMaster
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public CMSMaster()
+    {
+        this.CMSRelCollectionGroups = new HashSet<CMSRelCollectionGroup>();
+        this.CMSRelCollectionCategories = new HashSet<CMSRelCollectionCategory>();
+    }
+
+    public int CMSId { get; set; }
+    public string CMSNameEN { get; set; }
+    public string CMSNameTH { get; set; }
+    public string URLKey { get; set; }
+    public Nullable<int> CMSTypeId { get; set; }
+    public Nullable<int> CMSFilterId { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public Nullable<int> CMSCount { get; set; }
+    public string ShortDescriptionTH { get; set; }
+    public string LongDescriptionTH { get; set; }
+    public string ShortDescriptionEN { get; set; }
+    public string LongDescriptionEN { get; set; }
+    public Nullable<int> Sequence { get; set; }
+    public Nullable<int> CMSStatusFlowId { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CMSRelCollectionGroup> CMSRelCollectionGroups { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CMSRelCollectionCategory> CMSRelCollectionCategories { get; set; }
+}
+
+public partial class CMSRelCollectionCategory
+{
+    public int CMSRelCollectionCategoryId { get; set; }
+    public int CMSCollectionCategoryId { get; set; }
+    public int CMSId { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+
+    public virtual CMSMaster CMSMaster { get; set; }
+}
+
+public partial class CMSRelCollectionGroup
+{
+    public int CMSRelCollectionGroupId { get; set; }
+    public int CMSCollectionGroupId { get; set; }
+    public int CMSId { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+
+    public virtual CMSCollectionGroup CMSCollectionGroup { get; set; }
+    public virtual CMSMaster CMSMaster { get; set; }
+}
+
+public partial class CMSStatusFlow
+{
+    public int CMSStatusId { get; set; }
+    public string CMSStatusName { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class CMSType
+{
+    public int CMSTypeId { get; set; }
+    public string CMSTypeNameTH { get; set; }
+    public string CMSTypeNameEN { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public string CMSTypeCode { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class Coupon
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public Coupon()
+    {
+        this.CouponBrandMaps = new HashSet<CouponBrandMap>();
+        this.CouponCustomerMaps = new HashSet<CouponCustomerMap>();
+        this.CouponGlobalCatMaps = new HashSet<CouponGlobalCatMap>();
+        this.CouponLocalCatMaps = new HashSet<CouponLocalCatMap>();
+        this.CouponOrders = new HashSet<CouponOrder>();
+        this.CouponPidMaps = new HashSet<CouponPidMap>();
+        this.CouponShopMaps = new HashSet<CouponShopMap>();
+    }
+
+    public int CouponId { get; set; }
+    public string CouponCode { get; set; }
+    public string CouponName { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public Nullable<int> CouponQuantity { get; set; }
+    public Nullable<int> CouponUsed { get; set; }
+    public Nullable<System.DateTime> StartDate { get; set; }
+    public Nullable<System.DateTime> ExpireDate { get; set; }
+    public string Action { get; set; }
+    public Nullable<decimal> DiscountAmount { get; set; }
+    public Nullable<decimal> MaximumAmount { get; set; }
+    public Nullable<int> UsagePerCustomer { get; set; }
+    public Nullable<int> MaximumUser { get; set; }
+    public string FilterBy { get; set; }
+    public string CouponType { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Shop Shop { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponBrandMap> CouponBrandMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponCustomerMap> CouponCustomerMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponGlobalCatMap> CouponGlobalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponOrder> CouponOrders { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponShopMap> CouponShopMaps { get; set; }
+}
+
+public partial class CouponBrandMap
+{
+    public int CouponId { get; set; }
+    public int BrandId { get; set; }
+    public string Filter { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Brand Brand { get; set; }
+    public virtual Coupon Coupon { get; set; }
+}
+
+public partial class CouponCondition
+{
+    public int ConditionId { get; set; }
+    public string ConditionType { get; set; }
+    public string ConditionName { get; set; }
+}
+
+public partial class CouponCustomerMap
+{
+    public int CouponId { get; set; }
+    public string Email { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Coupon Coupon { get; set; }
+}
+
+public partial class CouponGlobalCatMap
+{
+    public int CouponId { get; set; }
+    public int CategoryId { get; set; }
+    public string Filter { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Coupon Coupon { get; set; }
+    public virtual GlobalCategory GlobalCategory { get; set; }
+}
+
+public partial class CouponLocalCatMap
+{
+    public int CouponId { get; set; }
+    public int CategoryId { get; set; }
+    public string Filter { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Coupon Coupon { get; set; }
+    public virtual LocalCategory LocalCategory { get; set; }
+}
+
+public partial class CouponOrder
+{
+    public int CouponId { get; set; }
+    public string Criteria { get; set; }
+    public Nullable<decimal> CriteriaPrice { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Coupon Coupon { get; set; }
+}
+
+public partial class CouponPidMap
+{
+    public int CouponId { get; set; }
+    public string Pid { get; set; }
+    public string Filter { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Coupon Coupon { get; set; }
+}
+
+public partial class CouponShopMap
+{
+    public int CouponId { get; set; }
+    public int ShopId { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Coupon Coupon { get; set; }
+    public virtual Shop Shop { get; set; }
+}
+
+public partial class CreditCardType
+{
+    public int CreditCardTypeId { get; set; }
+    public string CreditCardTypeCode { get; set; }
+    public string CreditCardTypeName { get; set; }
+    public Nullable<int> Digit { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class Customer
+{
+    public string CustomerId { get; set; }
+    public string Email { get; set; }
+    public string PasswordHash { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Mobile { get; set; }
+    public bool IsFacebookConnect { get; set; }
+    public Nullable<System.DateTime> BirthDate { get; set; }
+    public byte Gender { get; set; }
+    public string CustId { get; set; }
+    public string ProfileImage { get; set; }
+    public Nullable<System.DateTime> ForgotPasswordOn { get; set; }
+    public string VerifyKey { get; set; }
+    public System.DateTime CreateOn { get; set; }
+    public string CreateBy { get; set; }
+    public Nullable<System.DateTime> UpdateOn { get; set; }
+    public string UpdateBy { get; set; }
+    public bool ReceiveSms { get; set; }
+    public Nullable<int> DefaultAddressId { get; set; }
+    public string ListUserId { get; set; }
+    public string GCListUserId { get; set; }
+    public Nullable<int> ShippingAddressId { get; set; }
+    public string T1CardNo { get; set; }
+    public string TelephoneNo { get; set; }
+    public bool IsActivate { get; set; }
+    public int Role { get; set; }
+    public Nullable<System.DateTime> LastLoginDate { get; set; }
+    public string BranchID { get; set; }
+    public string CustTaxID { get; set; }
+    public string FacebookId { get; set; }
+    public string CustT1CID { get; set; }
+    public string Channel { get; set; }
+}
+
+public partial class GlobalCategory
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public GlobalCategory()
+    {
+        this.CategoryAttributeSetMaps = new HashSet<CategoryAttributeSetMap>();
+        this.CouponGlobalCatMaps = new HashSet<CouponGlobalCatMap>();
+        this.Products = new HashSet<Product>();
+        this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
+        this.ProductHistories = new HashSet<ProductHistory>();
+        this.ProductHistoryGlobalCatMaps = new HashSet<ProductHistoryGlobalCatMap>();
+        this.ProductStages = new HashSet<ProductStage>();
+        this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
+    }
+
+    public int CategoryId { get; set; }
+    public string NameEn { get; set; }
+    public string NameTh { get; set; }
+    public Nullable<decimal> Commission { get; set; }
+    public string CategoryAbbreviation { get; set; }
+    public string UrlKeyEn { get; set; }
+    public string UrlKeyTh { get; set; }
+    public Nullable<int> ProductCount { get; set; }
+    public Nullable<int> Lft { get; set; }
+    public Nullable<int> Rgt { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponGlobalCatMap> CouponGlobalCatMaps { get; set; }
+    public virtual GlobalCategoryPID GlobalCategoryPID { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Product> Products { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStage> ProductStages { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
+}
+
+public partial class GlobalCategoryAbbrevation
+{
+    public int GlobalCategoryAbbrevation1 { get; set; }
+    public string Abbrevation { get; set; }
+    public bool Active { get; set; }
+}
+
+public partial class GlobalCategoryPID
+{
+    public int CategoryId { get; set; }
+    public string CategoryAbbreviation { get; set; }
+    public string CurrentKey { get; set; }
+
+    public virtual GlobalCategory GlobalCategory { get; set; }
+}
+
+public partial class ImportHeader
+{
+    public int ImportHeaderId { get; set; }
+    public string HeaderName { get; set; }
+    public string Description { get; set; }
+    public string AcceptedValue { get; set; }
+    public string Example { get; set; }
+    public string Note { get; set; }
+    public string GroupName { get; set; }
+    public string MapName { get; set; }
+}
+
+public partial class Inventory
+{
+    public string Pid { get; set; }
+    public int Quantity { get; set; }
+    public Nullable<int> QuantityOutStock { get; set; }
+    public int Defect { get; set; }
+    public int OnHold { get; set; }
+    public int Reserve { get; set; }
+    public Nullable<int> MinQuantity { get; set; }
+    public Nullable<int> MaxQuantity { get; set; }
+    public Nullable<bool> UseDecimal { get; set; }
+    public Nullable<int> SafetyStockSeller { get; set; }
+    public Nullable<int> SafetyStockAdmin { get; set; }
+    public Nullable<int> StockAvailable { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class InventoryHistory
+{
+    public int HistoryId { get; set; }
+    public string Pid { get; set; }
+    public string Description { get; set; }
+    public Nullable<int> Quantity { get; set; }
+    public Nullable<int> QuantityOutStock { get; set; }
+    public Nullable<int> MinQuantity { get; set; }
+    public Nullable<int> MaxQuantity { get; set; }
+    public Nullable<bool> UseDecimal { get; set; }
+    public Nullable<int> SafetyStockSeller { get; set; }
+    public Nullable<int> SafetyStockAdmin { get; set; }
+    public Nullable<int> StockAvailable { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class LocalCategory
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public LocalCategory()
+    {
+        this.CouponLocalCatMaps = new HashSet<CouponLocalCatMap>();
+        this.ProductHistories = new HashSet<ProductHistory>();
+        this.ProductHistoryLocalCatMaps = new HashSet<ProductHistoryLocalCatMap>();
+        this.Products = new HashSet<Product>();
+        this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
+        this.ProductStages = new HashSet<ProductStage>();
+        this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
+    }
+
+    public int CategoryId { get; set; }
+    public string NameEn { get; set; }
+    public string NameTh { get; set; }
+    public string UrlKeyEn { get; set; }
+    public string UrlKeyTh { get; set; }
+    public Nullable<int> ProductCount { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public Nullable<int> Lft { get; set; }
+    public Nullable<int> Rgt { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
+    public virtual Shop Shop { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Product> Products { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStage> ProductStages { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
+}
+
+public partial class Permission
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public Permission()
+    {
+        this.ShopTypePermissionMaps = new HashSet<ShopTypePermissionMap>();
+        this.UserGroupPermissionMaps = new HashSet<UserGroupPermissionMap>();
+    }
+
+    public int PermissionId { get; set; }
+    public string PermissionName { get; set; }
+    public string Type { get; set; }
+    public string PermissionGroup { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
+}
+
+public partial class Product
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public Product()
+    {
+        this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
+        this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
+    }
+
+    public int ProductId { get; set; }
+    public Nullable<int> GlobalCatId { get; set; }
+    public Nullable<int> LocalCatId { get; set; }
+    public int ShopId { get; set; }
+    public Nullable<int> AttributeSetId { get; set; }
+    public string ProductNameEn { get; set; }
+    public string ProductNameTh { get; set; }
+    public Nullable<int> BrandId { get; set; }
+    public string Pid { get; set; }
+    public string Sku { get; set; }
+    public string Upc { get; set; }
+    public decimal OriginalPrice { get; set; }
+    public Nullable<decimal> SalePrice { get; set; }
+    public string DescriptionFullEn { get; set; }
+    public string DescriptionShortEn { get; set; }
+    public string DescriptionFullTh { get; set; }
+    public string DescriptionShortTh { get; set; }
+    public Nullable<int> Stock { get; set; }
+    public Nullable<int> SafetyStock { get; set; }
+    public Nullable<int> ShippingId { get; set; }
+    public string FeatureImgUrl { get; set; }
+    public string Tag { get; set; }
+    public decimal PrepareDay { get; set; }
+    public decimal Length { get; set; }
+    public decimal Height { get; set; }
+    public decimal Width { get; set; }
+    public string DimensionUnit { get; set; }
+    public decimal Weight { get; set; }
+    public string WeightUnit { get; set; }
+    public string MetaTitle { get; set; }
+    public string MetaDescription { get; set; }
+    public string MetaKey { get; set; }
+    public string UrlEn { get; set; }
+    public string UrlTh { get; set; }
+    public Nullable<int> BoostWeight { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public Nullable<bool> ControlFlag1 { get; set; }
+    public Nullable<bool> ControlFlag2 { get; set; }
+    public Nullable<bool> ControlFlag3 { get; set; }
+    public string Remark { get; set; }
+    public bool InfoFlag { get; set; }
+    public bool ImageFlag { get; set; }
+    public bool OnlineFlag { get; set; }
+    public bool Visibility { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual AttributeSet AttributeSet { get; set; }
+    public virtual Brand Brand { get; set; }
+    public virtual GlobalCategory GlobalCategory { get; set; }
+    public virtual LocalCategory LocalCategory { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+    public virtual Shipping Shipping { get; set; }
+    public virtual Shop Shop { get; set; }
+}
+
+public partial class ProductAttribute
+{
+    public string Pid { get; set; }
+    public int AttributeId { get; set; }
+    public string ValueEn { get; set; }
+    public string ValueTh { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Attribute Attribute { get; set; }
+}
+
+public partial class ProductGlobalCatMap
+{
+    public int ProductId { get; set; }
+    public int CategoryId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual GlobalCategory GlobalCategory { get; set; }
+    public virtual Product Product { get; set; }
+}
+
+public partial class ProductHistory
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public ProductHistory()
+    {
+        this.ProductHistoryGlobalCatMaps = new HashSet<ProductHistoryGlobalCatMap>();
+        this.ProductHistoryLocalCatMaps = new HashSet<ProductHistoryLocalCatMap>();
+        this.ProductHistoryVariants = new HashSet<ProductHistoryVariant>();
+    }
+
+    public int ProductId { get; set; }
+    public Nullable<int> GlobalCatId { get; set; }
+    public Nullable<int> LocalCatId { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public Nullable<int> SellerId { get; set; }
+    public Nullable<int> AttributeSetId { get; set; }
+    public string ProductNameEn { get; set; }
+    public string ProductNameTh { get; set; }
+    public Nullable<int> BrandId { get; set; }
+    public string Pid { get; set; }
+    public string Sku { get; set; }
+    public string Upc { get; set; }
+    public Nullable<decimal> OriginalPrice { get; set; }
+    public Nullable<decimal> SalePrice { get; set; }
+    public string DescriptionFullEn { get; set; }
+    public string DescriptionShortEn { get; set; }
+    public string DescriptionFullTh { get; set; }
+    public string DescriptionShortTh { get; set; }
+    public Nullable<int> Stock { get; set; }
+    public Nullable<int> SafetyStock { get; set; }
+    public Nullable<int> ShippingId { get; set; }
+    public string FeatureImgUrl { get; set; }
+    public string Tag { get; set; }
+    public Nullable<decimal> PrepareDay { get; set; }
+    public Nullable<decimal> Length { get; set; }
+    public Nullable<decimal> Height { get; set; }
+    public Nullable<decimal> Width { get; set; }
+    public string DimensionUnit { get; set; }
+    public Nullable<decimal> Weight { get; set; }
+    public string WeightUnit { get; set; }
+    public string MetaTitle { get; set; }
+    public string MetaDescription { get; set; }
+    public string MetaKey { get; set; }
+    public string UrlEn { get; set; }
+    public string UrlTh { get; set; }
+    public string BoostWeight { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public Nullable<bool> ControlFlag1 { get; set; }
+    public Nullable<bool> ControlFlag2 { get; set; }
+    public Nullable<bool> ControlFlag3 { get; set; }
+    public string Remark { get; set; }
+    public Nullable<bool> InfoFlag { get; set; }
+    public Nullable<bool> ImageFlag { get; set; }
+    public Nullable<bool> OnlineFlag { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual AttributeSet AttributeSet { get; set; }
+    public virtual Brand Brand { get; set; }
+    public virtual GlobalCategory GlobalCategory { get; set; }
+    public virtual LocalCategory LocalCategory { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
+    public virtual Shipping Shipping { get; set; }
+    public virtual Shop Shop { get; set; }
+    public virtual User User { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistoryVariant> ProductHistoryVariants { get; set; }
+}
+
+public partial class ProductHistoryAttribute
+{
+    public string Pid { get; set; }
+    public int AttributeId { get; set; }
+    public string ValueEn { get; set; }
+    public string ValueTh { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Attribute Attribute { get; set; }
+}
+
+public partial class ProductHistoryGlobalCatMap
+{
+    public int ProductId { get; set; }
+    public int CategoryId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual GlobalCategory GlobalCategory { get; set; }
+    public virtual ProductHistory ProductHistory { get; set; }
+}
+
+public partial class ProductHistoryImage
+{
+    public int ImageId { get; set; }
+    public string Pid { get; set; }
+    public string ImageUrlEn { get; set; }
+    public string ImageUrlTh { get; set; }
+    public Nullable<int> Position { get; set; }
+    public Nullable<bool> FeatureFlag { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class ProductHistoryLocalCatMap
+{
+    public int ProductId { get; set; }
+    public int CategoryId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual LocalCategory LocalCategory { get; set; }
+    public virtual ProductHistory ProductHistory { get; set; }
+}
+
+public partial class ProductHistoryRelated
+{
+    public string Pid1 { get; set; }
+    public string Pid2 { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class ProductHistoryVariant
+{
+    public int ProductId { get; set; }
+    public int VariantId { get; set; }
+    public string ValueEn { get; set; }
+    public string ValueTh { get; set; }
+    public string ProductNameEn { get; set; }
+    public string ProductNameTh { get; set; }
+    public string Pid { get; set; }
+    public string Sku { get; set; }
+    public string Upc { get; set; }
+    public Nullable<decimal> OriginalPrice { get; set; }
+    public Nullable<decimal> SalePrice { get; set; }
+    public string DescriptionFullEn { get; set; }
+    public string DescriptionShortEn { get; set; }
+    public string DescriptionFullTh { get; set; }
+    public string DescriptionShortTh { get; set; }
+    public Nullable<int> Stock { get; set; }
+    public Nullable<int> SaftyStock { get; set; }
+    public string VideoLink { get; set; }
+    public string ShippingMethod { get; set; }
+    public Nullable<decimal> Length { get; set; }
+    public Nullable<decimal> Height { get; set; }
+    public Nullable<decimal> Width { get; set; }
+    public string DimenstionUnit { get; set; }
+    public Nullable<decimal> Weight { get; set; }
+    public Nullable<decimal> DimenstionWeight { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Attribute Attribute { get; set; }
+    public virtual ProductHistory ProductHistory { get; set; }
+}
+
+public partial class ProductHistoryVideo
+{
+    public int VideoId { get; set; }
+    public string Pid { get; set; }
+    public string VideoUrlEn { get; set; }
+    public string VideoUrlTh { get; set; }
+    public Nullable<int> Position { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class ProductImage
+{
+    public int ImageId { get; set; }
+    public string Pid { get; set; }
+    public string Path { get; set; }
+    public string ImageName { get; set; }
+    public string ImageOriginName { get; set; }
+    public string ImageUrlEn { get; set; }
+    public string ImageUrlTh { get; set; }
+    public Nullable<int> Position { get; set; }
+    public Nullable<bool> FeatureFlag { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class ProductLocalCatMap
+{
+    public int ProductId { get; set; }
+    public int CategoryId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual LocalCategory LocalCategory { get; set; }
+    public virtual Product Product { get; set; }
+}
+
+public partial class ProductRelated
+{
+    public string Pid1 { get; set; }
+    public string Pid2 { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class ProductReview
+{
+    public int ProductReviewId { get; set; }
+    public string CustomerId { get; set; }
+    public Nullable<decimal> Rating { get; set; }
+    public string Pid { get; set; }
+    public string Comment { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class ProductStage
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public ProductStage()
+    {
+        this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
+        this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
+        this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
+        this.ProductStageVariants = new HashSet<ProductStageVariant>();
+        this.ProductVariants = new HashSet<ProductVariant>();
+    }
+
+    public int ProductId { get; set; }
+    public Nullable<int> GlobalCatId { get; set; }
+    public Nullable<int> LocalCatId { get; set; }
+    public int ShopId { get; set; }
+    public Nullable<int> AttributeSetId { get; set; }
+    public string ProductNameEn { get; set; }
+    public string ProductNameTh { get; set; }
+    public Nullable<int> BrandId { get; set; }
+    public string Pid { get; set; }
+    public string Sku { get; set; }
+    public string Upc { get; set; }
+    public decimal OriginalPrice { get; set; }
+    public decimal SalePrice { get; set; }
+    public string DescriptionFullEn { get; set; }
+    public string DescriptionShortEn { get; set; }
+    public string DescriptionFullTh { get; set; }
+    public string DescriptionShortTh { get; set; }
+    public Nullable<int> ShippingId { get; set; }
+    public int ImageCount { get; set; }
+    public string FeatureImgUrl { get; set; }
+    public string Tag { get; set; }
+    public decimal PrepareDay { get; set; }
+    public decimal Length { get; set; }
+    public decimal Height { get; set; }
+    public decimal Width { get; set; }
+    public string DimensionUnit { get; set; }
+    public decimal Weight { get; set; }
+    public string WeightUnit { get; set; }
+    public string MetaTitleEn { get; set; }
+    public string MetaTitleTh { get; set; }
+    public string MetaDescriptionEn { get; set; }
+    public string MetaDescriptionTh { get; set; }
+    public string MetaKeyEn { get; set; }
+    public string MetaKeyTh { get; set; }
+    public string UrlEn { get; set; }
+    public Nullable<int> BoostWeight { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public Nullable<bool> ControlFlag1 { get; set; }
+    public Nullable<bool> ControlFlag2 { get; set; }
+    public Nullable<bool> ControlFlag3 { get; set; }
+    public string Remark { get; set; }
+    public bool InfoFlag { get; set; }
+    public bool ImageFlag { get; set; }
+    public bool OnlineFlag { get; set; }
+    public bool Visibility { get; set; }
+    public string InformationTabStatus { get; set; }
+    public string ImageTabStatus { get; set; }
+    public string CategoryTabStatus { get; set; }
+    public string VariantTabStatus { get; set; }
+    public string MoreOptionTabStatus { get; set; }
+    public string RejectReason { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual AttributeSet AttributeSet { get; set; }
+    public virtual Brand Brand { get; set; }
+    public virtual GlobalCategory GlobalCategory { get; set; }
+    public virtual LocalCategory LocalCategory { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
+    public virtual Shipping Shipping { get; set; }
+    public virtual Shop Shop { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageVariant> ProductStageVariants { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductVariant> ProductVariants { get; set; }
+}
+
+public partial class ProductStageAttribute
+{
+    public int ProductId { get; set; }
+    public int AttributeId { get; set; }
+    public Nullable<int> Position { get; set; }
+    public string ValueEn { get; set; }
+    public string ValueTh { get; set; }
+    public bool IsAttributeValue { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Attribute Attribute { get; set; }
+    public virtual ProductStage ProductStage { get; set; }
+}
+
+public partial class ProductStageComment
+{
+    public int CommentId { get; set; }
+    public string Pid { get; set; }
+    public string Comment { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class ProductStageGlobalCatMap
+{
+    public int ProductId { get; set; }
+    public int CategoryId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual GlobalCategory GlobalCategory { get; set; }
+    public virtual ProductStage ProductStage { get; set; }
+}
+
+public partial class ProductStageImage
+{
+    public int ImageId { get; set; }
+    public string Pid { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public string Path { get; set; }
+    public string ImageName { get; set; }
+    public string ImageOriginName { get; set; }
+    public string ImageUrlEn { get; set; }
+    public string ImageUrlTh { get; set; }
+    public Nullable<int> Position { get; set; }
+    public Nullable<bool> FeatureFlag { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Shop Shop { get; set; }
+}
+
+public partial class ProductStageImage360
+{
+    public int ImageId { get; set; }
+    public string Pid { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public string Path { get; set; }
+    public string ImageName { get; set; }
+    public string ImageOriginName { get; set; }
+    public string ImageUrlEn { get; set; }
+    public string ImageUrlTh { get; set; }
+    public Nullable<int> Position { get; set; }
+    public Nullable<bool> FeatureFlag { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Shop Shop { get; set; }
+}
+
+public partial class ProductStageLocalCatMap
+{
+    public int ProductId { get; set; }
+    public int CategoryId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual LocalCategory LocalCategory { get; set; }
+    public virtual ProductStage ProductStage { get; set; }
+}
+
+public partial class ProductStageRelated
+{
+    public string Pid1 { get; set; }
+    public string Pid2 { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Shop Shop { get; set; }
+}
+
+public partial class ProductStageVariant
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public ProductStageVariant()
+    {
+        this.ProductStageVariantArrtibuteMaps = new HashSet<ProductStageVariantArrtibuteMap>();
+    }
+
+    public int VariantId { get; set; }
+    public int ProductId { get; set; }
+    public string ProductNameEn { get; set; }
+    public string ProductNameTh { get; set; }
+    public string Pid { get; set; }
+    public int ShopId { get; set; }
+    public string Sku { get; set; }
+    public string Upc { get; set; }
+    public string Display { get; set; }
+    public decimal OriginalPrice { get; set; }
+    public decimal SalePrice { get; set; }
+    public string DescriptionFullEn { get; set; }
+    public string DescriptionShortEn { get; set; }
+    public string DescriptionFullTh { get; set; }
+    public string DescriptionShortTh { get; set; }
+    public string VideoLink { get; set; }
+    public decimal PrepareDay { get; set; }
+    public decimal Length { get; set; }
+    public decimal Height { get; set; }
+    public decimal Width { get; set; }
+    public string DimensionUnit { get; set; }
+    public decimal Weight { get; set; }
+    public string WeightUnit { get; set; }
+    public string MetaTitleEn { get; set; }
+    public string MetaTitleTh { get; set; }
+    public string MetaDescriptionEn { get; set; }
+    public string MetaDescriptionTh { get; set; }
+    public string MetaKeyEn { get; set; }
+    public string MetaKeyTh { get; set; }
+    public string UrlEn { get; set; }
+    public Nullable<int> BoostWeight { get; set; }
+    public Nullable<bool> DefaultVaraint { get; set; }
+    public bool Visibility { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual ProductStage ProductStage { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageVariantArrtibuteMap> ProductStageVariantArrtibuteMaps { get; set; }
+    public virtual Shop Shop { get; set; }
+}
+
+public partial class ProductStageVariantArrtibuteMap
+{
+    public int VariantId { get; set; }
+    public int AttributeId { get; set; }
+    public string Value { get; set; }
+    public bool IsAttributeValue { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Attribute Attribute { get; set; }
+    public virtual ProductStageVariant ProductStageVariant { get; set; }
+}
+
+public partial class ProductStageVideo
+{
+    public int VideoId { get; set; }
+    public string Pid { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public string VideoUrlEn { get; set; }
+    public string VideoUrlTh { get; set; }
+    public Nullable<int> Position { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Shop Shop { get; set; }
+}
+
+public partial class ProductVariant
+{
+    public int VariantId { get; set; }
+    public int ProductId { get; set; }
+    public Nullable<int> Attribute1Id { get; set; }
+    public Nullable<int> Attribute2Id { get; set; }
+    public string ValueEn1 { get; set; }
+    public string ValueTh1 { get; set; }
+    public string ValueEn2 { get; set; }
+    public string ValueTh2 { get; set; }
+    public string ProductNameEn { get; set; }
+    public string ProductNameTh { get; set; }
+    public string Pid { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public string Sku { get; set; }
+    public string Upc { get; set; }
+    public string Display { get; set; }
+    public Nullable<decimal> OriginalPrice { get; set; }
+    public Nullable<decimal> SalePrice { get; set; }
+    public string DescriptionFullEn { get; set; }
+    public string DescriptionShortEn { get; set; }
+    public string DescriptionFullTh { get; set; }
+    public string DescriptionShortTh { get; set; }
+    public Nullable<int> Stock { get; set; }
+    public Nullable<int> SaftyStock { get; set; }
+    public string VideoLink { get; set; }
+    public string ShippingMethod { get; set; }
+    public decimal Length { get; set; }
+    public decimal Height { get; set; }
+    public decimal Width { get; set; }
+    public string DimensionUnit { get; set; }
+    public decimal Weight { get; set; }
+    public string WeightUnit { get; set; }
+    public Nullable<bool> DefaultVaraint { get; set; }
+    public bool Visibility { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Attribute Attribute { get; set; }
+    public virtual Attribute Attribute1 { get; set; }
+    public virtual ProductStage ProductStage { get; set; }
+    public virtual Shop Shop { get; set; }
+}
+
+public partial class ProductVideo
+{
+    public int VideoId { get; set; }
+    public string Pid { get; set; }
+    public string VideoUrlEn { get; set; }
+    public string VideoUrlTh { get; set; }
+    public Nullable<int> Position { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+}
+
+public partial class PromotionBuy1Get1Item
+{
+    public int PromotionBuy1Get1ItemId { get; set; }
+    public string NameEN { get; set; }
+    public string NameTH { get; set; }
+    public string URLKey { get; set; }
+    public Nullable<int> PIDBuy { get; set; }
+    public Nullable<int> PIDGet { get; set; }
+    public string ShortDescriptionTH { get; set; }
+    public string LongDescriptionTH { get; set; }
+    public string ShortDescriptionEN { get; set; }
+    public string LongDescriptionEN { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public string ProductBoxBadge { get; set; }
+    public Nullable<int> Sequence { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+    public Nullable<int> CMSStatusFlowId { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+}
+
+public partial class PromotionOnTopCreditCard
+{
+    public int OnTopCreditCardId { get; set; }
+    public string NameEN { get; set; }
+    public string NameTH { get; set; }
+    public Nullable<System.DateTime> EffectiveDate { get; set; }
+    public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+    public Nullable<System.DateTime> ExpiryDate { get; set; }
+    public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+    public Nullable<int> ShopId { get; set; }
+    public string PaymantId { get; set; }
+    public string ShortDescriptionTH { get; set; }
+    public string ShortDescriptionEN { get; set; }
+    public string DiscountType { get; set; }
+    public Nullable<bool> FreeShipping { get; set; }
+    public Nullable<decimal> DiscountValue { get; set; }
+    public Nullable<decimal> MinimumOrderAmount { get; set; }
+    public Nullable<decimal> MaximumDiscountAmount { get; set; }
+    public string IconURLTH { get; set; }
+    public string IconURLEN { get; set; }
+    public string BankNameEN { get; set; }
+    public string BankNameTH { get; set; }
+    public string PromotionCode { get; set; }
+    public Nullable<int> Sequence { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class PromotionOnTopCreditNumber
+{
+    public int OnTopCreditNumberId { get; set; }
+    public Nullable<int> OnTopCreditCardId { get; set; }
+    public string CreditCardTypeCode { get; set; }
+    public string CreditNumberFormat { get; set; }
+    public Nullable<int> Digit { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<bool> Visibility { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}
+
+public partial class Shipping
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public Shipping()
+    {
+        this.Products = new HashSet<Product>();
+        this.ProductHistories = new HashSet<ProductHistory>();
+        this.ProductStages = new HashSet<ProductStage>();
+    }
+
+    public int ShippingId { get; set; }
+    public string ShippingMethodEn { get; set; }
+    public string ShippingMethodTh { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Product> Products { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStage> ProductStages { get; set; }
+}
+
+public partial class Shop
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public Shop()
+    {
+        this.Coupons = new HashSet<Coupon>();
+        this.CouponShopMaps = new HashSet<CouponShopMap>();
+        this.LocalCategories = new HashSet<LocalCategory>();
+        this.Products = new HashSet<Product>();
+        this.ProductHistories = new HashSet<ProductHistory>();
+        this.ProductStages = new HashSet<ProductStage>();
+        this.ProductStageImages = new HashSet<ProductStageImage>();
+        this.ProductStageImage360 = new HashSet<ProductStageImage360>();
+        this.ProductStageRelateds = new HashSet<ProductStageRelated>();
+        this.ProductStageVariants = new HashSet<ProductStageVariant>();
+        this.ProductStageVideos = new HashSet<ProductStageVideo>();
+        this.ProductVariants = new HashSet<ProductVariant>();
+        this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
+        this.UserShops = new HashSet<UserShop>();
+    }
+
+    public int ShopId { get; set; }
+    public Nullable<int> ShopOwner { get; set; }
+    public string ShopNameEn { get; set; }
+    public string ShopNameTh { get; set; }
+    public bool GiftWrap { get; set; }
+    public bool TaxInvoice { get; set; }
+    public string ShopGroup { get; set; }
+    public string ShopImageUrl { get; set; }
+    public string ShopDescriptionEn { get; set; }
+    public string ShopDescriptionTh { get; set; }
+    public string ShopAddress { get; set; }
+    public string BankAccountNumber { get; set; }
+    public string BankAccountName { get; set; }
+    public string Facebook { get; set; }
+    public string Youtube { get; set; }
+    public string Twitter { get; set; }
+    public string Instagram { get; set; }
+    public string Pinterest { get; set; }
+    public int StockAlert { get; set; }
+    public Nullable<decimal> Commission { get; set; }
+    public Nullable<int> ShopTypeId { get; set; }
+    public string UrlKeyEn { get; set; }
+    public string UrlKeyTh { get; set; }
+    public string FloatMessageEn { get; set; }
+    public string FloatMessageTh { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Coupon> Coupons { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<CouponShopMap> CouponShopMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<LocalCategory> LocalCategories { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Product> Products { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStage> ProductStages { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageImage> ProductStageImages { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageImage360> ProductStageImage360 { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageRelated> ProductStageRelateds { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageVariant> ProductStageVariants { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductVariant> ProductVariants { get; set; }
+    public virtual ShopType ShopType { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
+    public virtual User User { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<UserShop> UserShops { get; set; }
+}
+
+public partial class ShopType
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public ShopType()
+    {
+        this.Shops = new HashSet<Shop>();
+        this.ShopTypePermissionMaps = new HashSet<ShopTypePermissionMap>();
+    }
+
+    public int ShopTypeId { get; set; }
+    public string ShopTypeNameEn { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Shop> Shops { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
+}
+
+public partial class ShopTypePermissionMap
+{
+    public int ShopTypeId { get; set; }
+    public int PermissionId { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Permission Permission { get; set; }
+    public virtual ShopType ShopType { get; set; }
+}
+
+public partial class ShopUserGroupMap
+{
+    public int ShopId { get; set; }
+    public int GroupId { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Shop Shop { get; set; }
+    public virtual UserGroup UserGroup { get; set; }
+}
+
+public partial class Tag
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public Tag()
+    {
+        this.AttributeSetTagMaps = new HashSet<AttributeSetTagMap>();
+    }
+
+    public int TagId { get; set; }
+    public string TagName { get; set; }
+    public Nullable<int> Count { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<AttributeSetTagMap> AttributeSetTagMaps { get; set; }
+}
+
+public partial class User
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public User()
+    {
+        this.ProductHistories = new HashSet<ProductHistory>();
+        this.Shops = new HashSet<Shop>();
+        this.UserGroupMaps = new HashSet<UserGroupMap>();
+        this.UserShops = new HashSet<UserShop>();
+    }
+
+    public int UserId { get; set; }
+    public string Password { get; set; }
+    public string PasswordLastChg { get; set; }
+    public string Email { get; set; }
+    public string EmployeeId { get; set; }
+    public string Position { get; set; }
+    public string Division { get; set; }
+    public string NameEn { get; set; }
+    public string NameTh { get; set; }
+    public string Type { get; set; }
+    public string Mobile { get; set; }
+    public string Phone { get; set; }
+    public string Fax { get; set; }
+    public string Status { get; set; }
+    public Nullable<int> LoginFailCount { get; set; }
+    public Nullable<System.DateTime> LastLoginDt { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<Shop> Shops { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<UserGroupMap> UserGroupMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<UserShop> UserShops { get; set; }
+}
+
+public partial class UserGroup
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public UserGroup()
+    {
+        this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
+        this.UserGroupMaps = new HashSet<UserGroupMap>();
+        this.UserGroupPermissionMaps = new HashSet<UserGroupPermissionMap>();
+    }
+
+    public int GroupId { get; set; }
+    public string GroupNameEn { get; set; }
+    public string GroupNameTh { get; set; }
+    public string Type { get; set; }
+    public string Status { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<UserGroupMap> UserGroupMaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
+}
+
+public partial class UserGroupMap
+{
+    public int UserId { get; set; }
+    public int GroupId { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual User User { get; set; }
+    public virtual UserGroup UserGroup { get; set; }
+}
+
+public partial class UserGroupPermissionMap
+{
+    public int GroupId { get; set; }
+    public int PermissionId { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Permission Permission { get; set; }
+    public virtual UserGroup UserGroup { get; set; }
+}
+
+public partial class UserShop
+{
+    public int UserId { get; set; }
+    public int ShopId { get; set; }
+    public string CreatedBy { get; set; }
+    public Nullable<System.DateTime> CreatedDt { get; set; }
+    public string UpdatedBy { get; set; }
+    public Nullable<System.DateTime> UpdatedDt { get; set; }
+
+    public virtual Shop Shop { get; set; }
+    public virtual User User { get; set; }
+}
+
+public partial class UserStatu
+{
+    public int UserStatusId { get; set; }
+    public string OnTable { get; set; }
+    public string StatusCode { get; set; }
+    public string Description { get; set; }
+    public Nullable<bool> Status { get; set; }
+    public Nullable<int> CreateBy { get; set; }
+    public Nullable<System.DateTime> Createdate { get; set; }
+    public Nullable<int> UpdateBy { get; set; }
+    public Nullable<System.DateTime> UpdateDate { get; set; }
+    public string CreateIP { get; set; }
+    public string UpdateIP { get; set; }
+}

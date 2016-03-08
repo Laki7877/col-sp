@@ -47,7 +47,7 @@ namespace Colsp.Api.Controllers
                                  inv.Defect,
                                  inv.OnHold,
                                  inv.Reserve,
-                                 inv.SaftyStockSeller,
+                                 inv.SafetyStockSeller,
                                  inv.UpdatedDt,
                                  Brand = vari != null ? vari.ProductStage.Brand != null ? new { vari.ProductStage.Brand.BrandId, vari.ProductStage.Brand.BrandNameEn } : null
                                         : mast.Brand != null ? new { mast.Brand.BrandId, mast.Brand.BrandNameEn } : null,
@@ -161,17 +161,17 @@ namespace Colsp.Api.Controllers
                 {
                     if (string.Equals("NormalStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) > w.SaftyStockSeller);
+                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) > w.SafetyStockSeller);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
                     else if (string.Equals("OutOfStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SaftyStockSeller);
+                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SafetyStockSeller);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
                     else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SaftyStockSeller
+                        products = products.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SafetyStockSeller
                         && (w.Quantity - w.Defect - w.OnHold - w.Reserve) > 0);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
@@ -221,7 +221,7 @@ namespace Colsp.Api.Controllers
                                   inv.Defect,
                                   inv.OnHold,
                                   inv.Reserve,
-                                  inv.SaftyStockSeller,
+                                  inv.SafetyStockSeller,
                                   inv.UpdatedDt,
                                   IsVariant = vari != null ? true : false,
                                   VariantAttribute = vari.ProductStageVariantArrtibuteMaps.Select(s => new
@@ -242,7 +242,7 @@ namespace Colsp.Api.Controllers
                 {
                     if (string.Equals("NormalStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        inven = inven.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) > w.SaftyStockSeller);
+                        inven = inven.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) > w.SafetyStockSeller);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
                     else if (string.Equals("OutOfStock", request._filter, StringComparison.OrdinalIgnoreCase))
@@ -252,7 +252,7 @@ namespace Colsp.Api.Controllers
                     }
                     else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        inven = inven.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SaftyStockSeller 
+                        inven = inven.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SafetyStockSeller
                         && w.Quantity != 0);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }

@@ -42,6 +42,7 @@ namespace Colsp.Entity.Models
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
         public Nullable<int> ShippingId { get; set; }
+        public int ImageCount { get; set; }
         public string FeatureImgUrl { get; set; }
         public string Tag { get; set; }
         public decimal PrepareDay { get; set; }

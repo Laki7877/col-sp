@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Colsp.Entity.Models;
-using System.Web;
+
 
 namespace Colsp.Model.Requests
 {
@@ -74,7 +73,7 @@ namespace Colsp.Model.Requests
             }
         }
 
-        public List<CreditCardType> Typename { get; set; }
+
         #endregion
         public int OnTopCreditNumberId { get; set; }
         public int OnTopCreditCardId { get; set; }
