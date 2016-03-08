@@ -200,13 +200,36 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="CMSCollectionCategory">
+          <Key>
+            <PropertyRef Name="CMSCollectionCategoryId" />
+          </Key>
+          <Property Name="CMSCollectionCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionCategoryNameEH" Type="nvarchar" MaxLength="100" />
+          <Property Name="CMSCollectionCategoryNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="CMSStatusFlowId" Type="int" />
+        </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
             <PropertyRef Name="CMSCollectionGroupId" />
           </Key>
           <Property Name="CMSCollectionGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSCollectionGroupNameEH" Type="nvarchar" MaxLength="100" />
           <Property Name="CMSCollectionGroupNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="BannerLocation" Type="nvarchar" MaxLength="400" />
+          <Property Name="BannerConntent" Type="nvarchar" MaxLength="500" />
           <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
@@ -215,17 +238,22 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="CMSStatusFlowId" Type="int" />
+          <Property Name="CMSCollectionGroupNameEN" Type="nvarchar" MaxLength="100" />
         </EntityType>
-        <EntityType Name="CMSCollectionItem">
+        <EntityType Name="CMSCollectionListItem">
           <Key>
-            <PropertyRef Name="CMSCollectionItemId" />
+            <PropertyRef Name="CMSCollectionListItemId" />
           </Key>
-          <Property Name="CMSCollectionItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionListItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CMSId" Type="int" />
           <Property Name="PId" Type="nvarchar" MaxLength="50" />
           <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
           <Property Name="Sequence" Type="int" />
-          <Property Name="CMSCollectionItemGroupId" Type="int" />
           <Property Name="Status" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="Createdate" Type="datetime" />
@@ -233,22 +261,10 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSCollectionItemGroup">
-          <Key>
-            <PropertyRef Name="CMSCollectionItemGroupId" />
-          </Key>
-          <Property Name="CMSCollectionItemGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSCollectionItemGroupNameEH" Type="nvarchar" MaxLength="100" />
-          <Property Name="CMSCollectionItemGroupNameTH" Type="nvarchar" MaxLength="100" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
         </EntityType>
         <EntityType Name="CMSFilter">
           <Key>
@@ -316,7 +332,38 @@
           <Property Name="LongDescriptionEN" Type="ntext" />
           <Property Name="Sequence" Type="int" />
           <Property Name="CMSStatusFlowId" Type="int" />
-          <Property Name="CMSCollectionGroupId" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSRelCollectionCategory">
+          <Key>
+            <PropertyRef Name="CMSRelCollectionCategoryId" />
+          </Key>
+          <Property Name="CMSRelCollectionCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionCategoryId" Type="int" Nullable="false" />
+          <Property Name="CMSId" Type="int" Nullable="false" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSRelCollectionGroup">
+          <Key>
+            <PropertyRef Name="CMSCollectionGroupId" />
+          </Key>
+          <Property Name="CMSRelCollectionGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCollectionGroupId" Type="int" Nullable="false" />
+          <Property Name="CMSId" Type="int" Nullable="false" />
           <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
@@ -1364,6 +1411,59 @@
           <Property Name="CMSStatusFlowId" Type="int" />
           <Property Name="Visibility" Type="bit" />
         </EntityType>
+        <EntityType Name="PromotionOnTopCreditCard">
+          <Key>
+            <PropertyRef Name="OnTopCreditCardId" />
+          </Key>
+          <Property Name="OnTopCreditCardId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="NameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="PaymantId" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="DiscountType" Type="nvarchar" MaxLength="5" />
+          <Property Name="FreeShipping" Type="bit" />
+          <Property Name="DiscountValue" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumOrderAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MaximumDiscountAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IconURLTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="IconURLEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="BankNameEN" Type="nvarchar" MaxLength="100" />
+          <Property Name="BankNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="PromotionCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditNumber">
+          <Key>
+            <PropertyRef Name="OnTopCreditNumberId" />
+          </Key>
+          <Property Name="OnTopCreditNumberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OnTopCreditCardId" Type="int" />
+          <Property Name="CreditCardTypeCode" Type="nvarchar" MaxLength="5" />
+          <Property Name="CreditNumberFormat" Type="nvarchar" MaxLength="20" />
+          <Property Name="Digit" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="Shipping">
           <Key>
             <PropertyRef Name="ShippingId" />
@@ -1384,7 +1484,8 @@
           <Property Name="ShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ShopOwner" Type="int" />
           <Property Name="ShopNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="ShopNameTh" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShopNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="MaxLocalCategory" Type="int" Nullable="false" />
           <Property Name="GiftWrap" Type="bit" Nullable="false" />
           <Property Name="TaxInvoice" Type="bit" Nullable="false" />
           <Property Name="ShopGroup" Type="char" MaxLength="2" />
@@ -1392,15 +1493,16 @@
           <Property Name="ShopDescriptionEn" Type="nvarchar" MaxLength="500" />
           <Property Name="ShopDescriptionTh" Type="nvarchar" MaxLength="500" />
           <Property Name="ShopAddress" Type="nvarchar" MaxLength="500" />
-          <Property Name="BankAccountNumber" Type="varchar" MaxLength="30" />
-          <Property Name="BankAccountName" Type="nvarchar" MaxLength="50" />
-          <Property Name="Facebook" Type="nvarchar" MaxLength="500" />
-          <Property Name="Youtube" Type="nvarchar" MaxLength="500" />
-          <Property Name="Twitter" Type="nvarchar" MaxLength="500" />
-          <Property Name="Instagram" Type="nvarchar" MaxLength="500" />
-          <Property Name="Pinterest" Type="nvarchar" MaxLength="500" />
+          <Property Name="BankName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="BankAccountNumber" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="BankAccountName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Facebook" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Youtube" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Twitter" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Instagram" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Pinterest" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="StockAlert" Type="int" Nullable="false" />
-          <Property Name="Commission" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Commission" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="ShopTypeId" Type="int" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
@@ -1420,6 +1522,18 @@
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="Commission" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ShopImage">
+          <Key>
+            <PropertyRef Name="ShopId" />
+            <PropertyRef Name="ImageUrl" />
+          </Key>
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -2095,6 +2209,18 @@
               <PropertyRef Name="ShopId" />
             </Principal>
             <Dependent Role="ShopCommission">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopImage_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="ShopImage" Type="Self.ShopImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ShopImage">
               <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
@@ -2833,13 +2959,15 @@
           <EntitySet Name="BrandImage" EntityType="Self.BrandImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryAttributeSetMap" EntityType="Self.CategoryAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSBrandInShop" EntityType="Self.CMSBrandInShop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCollectionCategory" EntityType="Self.CMSCollectionCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCollectionGroup" EntityType="Self.CMSCollectionGroup" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CMSCollectionItem" EntityType="Self.CMSCollectionItem" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CMSCollectionItemGroup" EntityType="Self.CMSCollectionItemGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCollectionListItem" EntityType="Self.CMSCollectionListItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSFilter" EntityType="Self.CMSFilter" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSHistoryLog" EntityType="Self.CMSHistoryLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMainCategory" EntityType="Self.CMSMainCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMaster" EntityType="Self.CMSMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSRelCollectionCategory" EntityType="Self.CMSRelCollectionCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSRelCollectionGroup" EntityType="Self.CMSRelCollectionGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSStatusFlow" EntityType="Self.CMSStatusFlow" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSType" EntityType="Self.CMSType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Coupon" EntityType="Self.Coupon" Schema="dbo" store:Type="Tables" />
@@ -2893,9 +3021,12 @@
           <EntitySet Name="ProductVariant" EntityType="Self.ProductVariant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductVideo" EntityType="Self.ProductVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PromotionBuy1Get1Item" EntityType="Self.PromotionBuy1Get1Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PromotionOnTopCreditCard" EntityType="Self.PromotionOnTopCreditCard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PromotionOnTopCreditNumber" EntityType="Self.PromotionOnTopCreditNumber" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopCommission" EntityType="Self.ShopCommission" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopImage" EntityType="Self.ShopImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopTypePermissionMap" EntityType="Self.ShopTypePermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopUserGroupMap" EntityType="Self.ShopUserGroupMap" Schema="dbo" store:Type="Tables" />
@@ -3062,6 +3193,10 @@
           <AssociationSet Name="FK_ShopCommission_Shop" Association="Self.FK_ShopCommission_Shop">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ShopCommission" EntitySet="ShopCommission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopImage_Shop" Association="Self.FK_ShopImage_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ShopImage" EntitySet="ShopImage" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopTypePermissionMap_Permission" Association="Self.FK_ShopTypePermissionMap_Permission">
             <End Role="Permission" EntitySet="Permission" />
@@ -3308,13 +3443,15 @@
           <EntitySet Name="BrandImages" EntityType="ColspModel.BrandImage" />
           <EntitySet Name="CategoryAttributeSetMaps" EntityType="ColspModel.CategoryAttributeSetMap" />
           <EntitySet Name="CMSBrandInShops" EntityType="ColspModel.CMSBrandInShop" />
+          <EntitySet Name="CMSCollectionCategories" EntityType="ColspModel.CMSCollectionCategory" />
           <EntitySet Name="CMSCollectionGroups" EntityType="ColspModel.CMSCollectionGroup" />
-          <EntitySet Name="CMSCollectionItems" EntityType="ColspModel.CMSCollectionItem" />
-          <EntitySet Name="CMSCollectionItemGroups" EntityType="ColspModel.CMSCollectionItemGroup" />
+          <EntitySet Name="CMSCollectionListItems" EntityType="ColspModel.CMSCollectionListItem" />
           <EntitySet Name="CMSFilters" EntityType="ColspModel.CMSFilter" />
           <EntitySet Name="CMSHistoryLogs" EntityType="ColspModel.CMSHistoryLog" />
           <EntitySet Name="CMSMainCategories" EntityType="ColspModel.CMSMainCategory" />
           <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
+          <EntitySet Name="CMSRelCollectionCategories" EntityType="ColspModel.CMSRelCollectionCategory" />
+          <EntitySet Name="CMSRelCollectionGroups" EntityType="ColspModel.CMSRelCollectionGroup" />
           <EntitySet Name="CMSStatusFlows" EntityType="ColspModel.CMSStatusFlow" />
           <EntitySet Name="CMSTypes" EntityType="ColspModel.CMSType" />
           <EntitySet Name="Coupons" EntityType="ColspModel.Coupon" />
@@ -3368,9 +3505,12 @@
           <EntitySet Name="ProductVariants" EntityType="ColspModel.ProductVariant" />
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
           <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
+          <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
+          <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
           <EntitySet Name="ShopCommissions" EntityType="ColspModel.ShopCommission" />
+          <EntitySet Name="ShopImages" EntityType="ColspModel.ShopImage" />
           <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
           <EntitySet Name="ShopTypePermissionMaps" EntityType="ColspModel.ShopTypePermissionMap" />
           <EntitySet Name="ShopUserGroupMaps" EntityType="ColspModel.ShopUserGroupMap" />
@@ -3730,6 +3870,10 @@
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ShopCommission" EntitySet="ShopCommissions" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShopImage_Shop" Association="ColspModel.FK_ShopImage_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ShopImage" EntitySet="ShopImages" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShopUerGroupMap_Shop" Association="ColspModel.FK_ShopUerGroupMap_Shop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMaps" />
@@ -3995,13 +4139,36 @@
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CMSCollectionCategory">
+          <Key>
+            <PropertyRef Name="CMSCollectionCategoryId" />
+          </Key>
+          <Property Name="CMSCollectionCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionCategoryNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSCollectionCategoryNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+        </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
             <PropertyRef Name="CMSCollectionGroupId" />
           </Key>
           <Property Name="CMSCollectionGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSCollectionGroupNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CMSCollectionGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="BannerLocation" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="BannerConntent" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
@@ -4010,17 +4177,22 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+          <Property Name="CMSCollectionGroupNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="CMSCollectionItem">
+        <EntityType Name="CMSCollectionListItem">
           <Key>
-            <PropertyRef Name="CMSCollectionItemId" />
+            <PropertyRef Name="CMSCollectionListItemId" />
           </Key>
-          <Property Name="CMSCollectionItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionListItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CMSId" Type="Int32" />
           <Property Name="PId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
-          <Property Name="CMSCollectionItemGroupId" Type="Int32" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="Createdate" Type="DateTime" Precision="3" />
@@ -4028,22 +4200,10 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSCollectionItemGroup">
-          <Key>
-            <PropertyRef Name="CMSCollectionItemGroupId" />
-          </Key>
-          <Property Name="CMSCollectionItemGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSCollectionItemGroupNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CMSCollectionItemGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
         </EntityType>
         <EntityType Name="CMSFilter">
           <Key>
@@ -4111,7 +4271,38 @@
           <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
           <Property Name="CMSStatusFlowId" Type="Int32" />
-          <Property Name="CMSCollectionGroupId" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSRelCollectionCategory">
+          <Key>
+            <PropertyRef Name="CMSRelCollectionCategoryId" />
+          </Key>
+          <Property Name="CMSRelCollectionCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionCategoryId" Type="Int32" Nullable="false" />
+          <Property Name="CMSId" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSRelCollectionGroup">
+          <Key>
+            <PropertyRef Name="CMSCollectionGroupId" />
+          </Key>
+          <Property Name="CMSRelCollectionGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCollectionGroupId" Type="Int32" Nullable="false" />
+          <Property Name="CMSId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
@@ -5274,6 +5465,59 @@
           <Property Name="CMSStatusFlowId" Type="Int32" />
           <Property Name="Visibility" Type="Boolean" />
         </EntityType>
+        <EntityType Name="PromotionOnTopCreditCard">
+          <Key>
+            <PropertyRef Name="OnTopCreditCardId" />
+          </Key>
+          <Property Name="OnTopCreditCardId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="PaymantId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DiscountType" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="FreeShipping" Type="Boolean" />
+          <Property Name="DiscountValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumOrderAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaximumDiscountAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IconURLTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="IconURLEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditNumber">
+          <Key>
+            <PropertyRef Name="OnTopCreditNumberId" />
+          </Key>
+          <Property Name="OnTopCreditNumberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OnTopCreditCardId" Type="Int32" />
+          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CreditNumberFormat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Digit" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Shipping">
           <Key>
             <PropertyRef Name="ShippingId" />
@@ -5297,7 +5541,8 @@
           <Property Name="ShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ShopOwner" Type="Int32" />
           <Property Name="ShopNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ShopNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShopNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MaxLocalCategory" Type="Int32" Nullable="false" />
           <Property Name="GiftWrap" Type="Boolean" Nullable="false" />
           <Property Name="TaxInvoice" Type="Boolean" Nullable="false" />
           <Property Name="ShopGroup" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -5305,15 +5550,16 @@
           <Property Name="ShopDescriptionEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ShopDescriptionTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ShopAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="BankAccountNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="BankAccountName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Facebook" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Youtube" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Twitter" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Instagram" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Pinterest" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="BankName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccountNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="BankAccountName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Facebook" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Youtube" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Twitter" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Instagram" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Pinterest" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="StockAlert" Type="Int32" Nullable="false" />
-          <Property Name="Commission" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Commission" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="ShopTypeId" Type="Int32" />
           <Property Name="UrlKeyEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -5340,6 +5586,7 @@
           <NavigationProperty Name="ProductVariants" Relationship="ColspModel.FKProductVariantShop" FromRole="Shop" ToRole="ProductVariant" />
           <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_Shop_ShopType" FromRole="Shop" ToRole="ShopType" />
           <NavigationProperty Name="ShopCommissions" Relationship="ColspModel.FK_ShopCommission_Shop" FromRole="Shop" ToRole="ShopCommission" />
+          <NavigationProperty Name="ShopImages" Relationship="ColspModel.FK_ShopImage_Shop" FromRole="Shop" ToRole="ShopImage" />
           <NavigationProperty Name="ShopUserGroupMaps" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="Shop" ToRole="ShopUserGroupMap" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKShopUser" FromRole="Shop" ToRole="User" />
           <NavigationProperty Name="UserShops" Relationship="ColspModel.FKUserShopShop" FromRole="Shop" ToRole="UserShop" />
@@ -5358,6 +5605,19 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_ShopCommission_GlobalCategory" FromRole="ShopCommission" ToRole="GlobalCategory" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ShopCommission_Shop" FromRole="ShopCommission" ToRole="Shop" />
+        </EntityType>
+        <EntityType Name="ShopImage">
+          <Key>
+            <PropertyRef Name="ShopId" />
+            <PropertyRef Name="ImageUrl" />
+          </Key>
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ShopImage_Shop" FromRole="ShopImage" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ShopType">
           <Key>
@@ -6651,6 +6911,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopImage_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.ShopImage" Role="ShopImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ShopImage">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShopUerGroupMap_Shop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -6981,9 +7253,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CMSCollectionGroups">
-            <EntityTypeMapping TypeName="ColspModel.CMSCollectionGroup">
-              <MappingFragment StoreEntitySet="CMSCollectionGroup">
+          <EntitySetMapping Name="CMSCollectionCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionCategory">
+              <MappingFragment StoreEntitySet="CMSCollectionCategory">
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
                 <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
@@ -6992,15 +7269,44 @@
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSCollectionCategoryNameTH" ColumnName="CMSCollectionCategoryNameTH" />
+                <ScalarProperty Name="CMSCollectionCategoryNameEH" ColumnName="CMSCollectionCategoryNameEH" />
+                <ScalarProperty Name="CMSCollectionCategoryId" ColumnName="CMSCollectionCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCollectionGroups">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionGroup">
+              <MappingFragment StoreEntitySet="CMSCollectionGroup">
+                <ScalarProperty Name="CMSCollectionGroupNameEN" ColumnName="CMSCollectionGroupNameEN" />
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="BannerConntent" ColumnName="BannerConntent" />
+                <ScalarProperty Name="BannerLocation" ColumnName="BannerLocation" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="CMSCollectionGroupNameTH" ColumnName="CMSCollectionGroupNameTH" />
-                <ScalarProperty Name="CMSCollectionGroupNameEH" ColumnName="CMSCollectionGroupNameEH" />
                 <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CMSCollectionItems">
-            <EntityTypeMapping TypeName="ColspModel.CMSCollectionItem">
-              <MappingFragment StoreEntitySet="CMSCollectionItem">
+          <EntitySetMapping Name="CMSCollectionListItems">
+            <EntityTypeMapping TypeName="ColspModel.CMSCollectionListItem">
+              <MappingFragment StoreEntitySet="CMSCollectionListItem">
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
                 <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
@@ -7008,29 +7314,11 @@
                 <ScalarProperty Name="Createdate" ColumnName="Createdate" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionItemGroupId" ColumnName="CMSCollectionItemGroupId" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
                 <ScalarProperty Name="PId" ColumnName="PId" />
                 <ScalarProperty Name="CMSId" ColumnName="CMSId" />
-                <ScalarProperty Name="CMSCollectionItemId" ColumnName="CMSCollectionItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSCollectionItemGroups">
-            <EntityTypeMapping TypeName="ColspModel.CMSCollectionItemGroup">
-              <MappingFragment StoreEntitySet="CMSCollectionItemGroup">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionItemGroupNameTH" ColumnName="CMSCollectionItemGroupNameTH" />
-                <ScalarProperty Name="CMSCollectionItemGroupNameEH" ColumnName="CMSCollectionItemGroupNameEH" />
-                <ScalarProperty Name="CMSCollectionItemGroupId" ColumnName="CMSCollectionItemGroupId" />
+                <ScalarProperty Name="CMSCollectionListItemId" ColumnName="CMSCollectionListItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7092,7 +7380,6 @@
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
                 <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
@@ -7111,6 +7398,40 @@
                 <ScalarProperty Name="CMSNameTH" ColumnName="CMSNameTH" />
                 <ScalarProperty Name="CMSNameEN" ColumnName="CMSNameEN" />
                 <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSRelCollectionCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSRelCollectionCategory">
+              <MappingFragment StoreEntitySet="CMSRelCollectionCategory">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+                <ScalarProperty Name="CMSCollectionCategoryId" ColumnName="CMSCollectionCategoryId" />
+                <ScalarProperty Name="CMSRelCollectionCategoryId" ColumnName="CMSRelCollectionCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSRelCollectionGroups">
+            <EntityTypeMapping TypeName="ColspModel.CMSRelCollectionGroup">
+              <MappingFragment StoreEntitySet="CMSRelCollectionGroup">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+                <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
+                <ScalarProperty Name="CMSRelCollectionGroupId" ColumnName="CMSRelCollectionGroupId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8177,6 +8498,61 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditCards">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditCard">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditCard">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
+                <ScalarProperty Name="BankNameTH" ColumnName="BankNameTH" />
+                <ScalarProperty Name="BankNameEN" ColumnName="BankNameEN" />
+                <ScalarProperty Name="IconURLEN" ColumnName="IconURLEN" />
+                <ScalarProperty Name="IconURLTH" ColumnName="IconURLTH" />
+                <ScalarProperty Name="MaximumDiscountAmount" ColumnName="MaximumDiscountAmount" />
+                <ScalarProperty Name="MinimumOrderAmount" ColumnName="MinimumOrderAmount" />
+                <ScalarProperty Name="DiscountValue" ColumnName="DiscountValue" />
+                <ScalarProperty Name="FreeShipping" ColumnName="FreeShipping" />
+                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="PaymantId" ColumnName="PaymantId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditNumbers">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditNumber">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditNumber">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Digit" ColumnName="Digit" />
+                <ScalarProperty Name="CreditNumberFormat" ColumnName="CreditNumberFormat" />
+                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+                <ScalarProperty Name="OnTopCreditNumberId" ColumnName="OnTopCreditNumberId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Shippings">
             <EntityTypeMapping TypeName="ColspModel.Shipping">
               <MappingFragment StoreEntitySet="Shipping">
@@ -8213,6 +8589,7 @@
                 <ScalarProperty Name="Facebook" ColumnName="Facebook" />
                 <ScalarProperty Name="BankAccountName" ColumnName="BankAccountName" />
                 <ScalarProperty Name="BankAccountNumber" ColumnName="BankAccountNumber" />
+                <ScalarProperty Name="BankName" ColumnName="BankName" />
                 <ScalarProperty Name="ShopAddress" ColumnName="ShopAddress" />
                 <ScalarProperty Name="ShopDescriptionTh" ColumnName="ShopDescriptionTh" />
                 <ScalarProperty Name="ShopDescriptionEn" ColumnName="ShopDescriptionEn" />
@@ -8220,6 +8597,7 @@
                 <ScalarProperty Name="ShopGroup" ColumnName="ShopGroup" />
                 <ScalarProperty Name="TaxInvoice" ColumnName="TaxInvoice" />
                 <ScalarProperty Name="GiftWrap" ColumnName="GiftWrap" />
+                <ScalarProperty Name="MaxLocalCategory" ColumnName="MaxLocalCategory" />
                 <ScalarProperty Name="ShopNameTh" ColumnName="ShopNameTh" />
                 <ScalarProperty Name="ShopNameEn" ColumnName="ShopNameEn" />
                 <ScalarProperty Name="ShopOwner" ColumnName="ShopOwner" />
@@ -8236,6 +8614,18 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Commission" ColumnName="Commission" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShopImages">
+            <EntityTypeMapping TypeName="ColspModel.ShopImage">
+              <MappingFragment StoreEntitySet="ShopImage">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
               </MappingFragment>
             </EntityTypeMapping>

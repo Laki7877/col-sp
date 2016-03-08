@@ -149,6 +149,8 @@ namespace Colsp.Api.Controllers
                         s.Status,
                         s.Commission,
                         s.ShopGroup,
+                        s.MaxLocalCategory,
+                        s.BankName,
                         s.BankAccountName,
                         s.BankAccountNumber,
                         Commissions = s.ShopCommissions.Select(sc=>new { sc.CategoryId,sc.Commission}),
@@ -348,12 +350,13 @@ namespace Colsp.Api.Controllers
                 shop = new Shop();
                 shop.Commission = request.Commission;
                 shop.ShopGroup = request.ShopGroup;
-                shop.ShopNameEn = request.ShopNameEn;
-                shop.ShopNameTh = request.ShopNameTh;
-                shop.BankAccountName = request.BankAccountName;
-                shop.BankAccountNumber = request.BankAccountNumber;
+                shop.ShopNameEn = Validation.ValidateString(request.ShopNameEn, "Shop Name", true, 100, false);
+                shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false,string.Empty);
+                shop.BankName = Validation.ValidateString(request.BankName, "Bank Name", true, 100, false);
+                shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
+                shop.BankAccountNumber = Validation.ValidateString(request.BankAccountNumber, "Bank Account Number", true, 100, false);
                 shop.ShopTypeId = request.ShopType.ShopTypeId;
-                shop.Status = request.Status;
+                shop.Status =  Validation.ValidateString(request.Status, "Status", true, 2, false);
                 shop.CreatedBy = this.User.UserRequest().Email;
                 shop.CreatedDt = DateTime.Now;
                 shop.UpdatedBy = this.User.UserRequest().Email;
@@ -519,6 +522,7 @@ namespace Colsp.Api.Controllers
                         usr.UpdatedDt = DateTime.Now;
                         db.Users.Add(usr);
                         db.SaveChanges();
+
                         UserGroupMap map = new UserGroupMap();
                         map.UserId = usr.UserId;
                         map.GroupId = Constant.SHOP_OWNER_GROUP_ID;

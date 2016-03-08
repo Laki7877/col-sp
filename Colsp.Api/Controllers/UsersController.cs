@@ -796,15 +796,17 @@ namespace Colsp.Api.Controllers
                 bool IsPasswordChange = this.User.UserRequest().IsPasswordChange;
                 var shopId = this.User.ShopRequest().ShopId.Value;
                 var productTotalCount = db.ProductStages.Where(w => w.ShopId == shopId).Count();
+                var shopBanner = db.ShopImages.Where(w => w.ShopId == shopId).Count();
                 var productApprove = db.ProductStages.Where(w => w.ShopId == shopId && Constant.PRODUCT_STATUS_APPROVE.Equals(w.Status)).Count();
                 bool IsProduct = productTotalCount > 0 ? true : false;
+                bool isBanner = shopBanner > 0 ? true : false;
                 bool IsProductApprove = productApprove > 0 ? true : false; 
                 return Request.CreateResponse(new OnBoardRequest()
                 {
                     AddProduct = IsProduct,
                     ChangePassword = IsPasswordChange,
                     ProductApprove = IsProductApprove,
-                    DecorateStore = true,
+                    DecorateStore = isBanner,
                     SetUpShop = this.User.ShopRequest().IsShopReady
                 });
             }

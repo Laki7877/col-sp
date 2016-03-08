@@ -62,6 +62,8 @@ namespace Colsp.Api.Controllers
                                   atrS.Status,
                                   atrS.UpdatedDt,
                                   atrS.CreatedDt,
+                                  AttributeSetMaps = atrS.AttributeSetMaps.Select(s=>new { Attribute = s.Attribute }),
+                                  AttributeSetTagMaps = atrS.AttributeSetTagMaps.Select(s=>new { Tag = s.Tag }),
                                   AttributeCount = atrS.AttributeSetMaps.Count(),
                                   CategoryCount = atrS.CategoryAttributeSetMaps.Count(),
                                   ProductCount = atrS.ProductStages.Count()

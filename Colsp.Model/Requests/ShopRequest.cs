@@ -15,12 +15,13 @@ namespace Colsp.Model.Requests
         public UserRequest ShopOwner { get; set; }
         public List<UserRequest> Users { get; set; }
         public ShopTypeRequest ShopType { get; set; }
-        public decimal? Commission { get; set; }
+        public decimal Commission { get; set; }
         public string ShopDescriptionEn { get; set; }
         public string ShopDescriptionTh { get; set; }
         public string FloatMessageEn { get; set; }
         public string FloatMessageTh { get; set; }
         public string ShopAddress { get; set; }
+        public string BankName { get; set; }
         public string BankAccountName { get; set; }
         public string BankAccountNumber { get; set; }
         public string Facebook { get; set; }

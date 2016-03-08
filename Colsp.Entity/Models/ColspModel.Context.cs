@@ -37,13 +37,15 @@ namespace Colsp.Entity.Models
         public virtual DbSet<BrandImage> BrandImages { get; set; }
         public virtual DbSet<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
         public virtual DbSet<CMSBrandInShop> CMSBrandInShops { get; set; }
+        public virtual DbSet<CMSCollectionCategory> CMSCollectionCategories { get; set; }
         public virtual DbSet<CMSCollectionGroup> CMSCollectionGroups { get; set; }
-        public virtual DbSet<CMSCollectionItem> CMSCollectionItems { get; set; }
-        public virtual DbSet<CMSCollectionItemGroup> CMSCollectionItemGroups { get; set; }
+        public virtual DbSet<CMSCollectionListItem> CMSCollectionListItems { get; set; }
         public virtual DbSet<CMSFilter> CMSFilters { get; set; }
         public virtual DbSet<CMSHistoryLog> CMSHistoryLogs { get; set; }
         public virtual DbSet<CMSMainCategory> CMSMainCategories { get; set; }
         public virtual DbSet<CMSMaster> CMSMasters { get; set; }
+        public virtual DbSet<CMSRelCollectionCategory> CMSRelCollectionCategories { get; set; }
+        public virtual DbSet<CMSRelCollectionGroup> CMSRelCollectionGroups { get; set; }
         public virtual DbSet<CMSStatusFlow> CMSStatusFlows { get; set; }
         public virtual DbSet<CMSType> CMSTypes { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
@@ -97,9 +99,12 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductVariant> ProductVariants { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
+        public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
+        public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopCommission> ShopCommissions { get; set; }
+        public virtual DbSet<ShopImage> ShopImages { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
         public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }

@@ -32,6 +32,7 @@ namespace Colsp.Entity.Models
             this.ProductStageVideos = new HashSet<ProductStageVideo>();
             this.ProductVariants = new HashSet<ProductVariant>();
             this.ShopCommissions = new HashSet<ShopCommission>();
+            this.ShopImages = new HashSet<ShopImage>();
             this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
             this.UserShops = new HashSet<UserShop>();
         }
@@ -40,6 +41,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopOwner { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
+        public int MaxLocalCategory { get; set; }
         public bool GiftWrap { get; set; }
         public bool TaxInvoice { get; set; }
         public string ShopGroup { get; set; }
@@ -47,6 +49,7 @@ namespace Colsp.Entity.Models
         public string ShopDescriptionEn { get; set; }
         public string ShopDescriptionTh { get; set; }
         public string ShopAddress { get; set; }
+        public string BankName { get; set; }
         public string BankAccountNumber { get; set; }
         public string BankAccountName { get; set; }
         public string Facebook { get; set; }
@@ -55,7 +58,7 @@ namespace Colsp.Entity.Models
         public string Instagram { get; set; }
         public string Pinterest { get; set; }
         public int StockAlert { get; set; }
-        public Nullable<decimal> Commission { get; set; }
+        public decimal Commission { get; set; }
         public Nullable<int> ShopTypeId { get; set; }
         public string UrlKeyEn { get; set; }
         public string UrlKeyTh { get; set; }
@@ -98,6 +101,8 @@ namespace Colsp.Entity.Models
         public virtual ShopType ShopType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopCommission> ShopCommissions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopImage> ShopImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         public virtual User User { get; set; }
