@@ -33,7 +33,5 @@ namespace Colsp.Entity.Models
         public Nullable<System.TimeSpan> ExpiryTime { get; set; }
         public Nullable<int> CMSStatusFlowId { get; set; }
         public string CMSCollectionGroupNameEN { get; set; }
-    
-        public virtual CMSRelCollectionGroup CMSRelCollectionGroup { get; set; }
     }
 }

@@ -18,6 +18,8 @@ namespace Colsp.Entity.Models
         public LocalCategory()
         {
             this.CouponLocalCatMaps = new HashSet<CouponLocalCatMap>();
+            this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
+            this.LocalCatImages = new HashSet<LocalCatImage>();
             this.ProductHistories = new HashSet<ProductHistory>();
             this.ProductHistoryLocalCatMaps = new HashSet<ProductHistoryLocalCatMap>();
             this.Products = new HashSet<Product>();
@@ -35,6 +37,12 @@ namespace Colsp.Entity.Models
         public Nullable<int> ShopId { get; set; }
         public Nullable<int> Lft { get; set; }
         public Nullable<int> Rgt { get; set; }
+        public string DescriptionFullEn { get; set; }
+        public string DescriptionShortEn { get; set; }
+        public string DescriptionFullTh { get; set; }
+        public string DescriptionShortTh { get; set; }
+        public string FeatureTitle { get; set; }
+        public bool TitleShowcase { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
@@ -44,6 +52,10 @@ namespace Colsp.Entity.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LocalCatImage> LocalCatImages { get; set; }
         public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistory> ProductHistories { get; set; }

@@ -19,6 +19,9 @@ namespace Colsp.Entity.Models
         {
             this.CategoryAttributeSetMaps = new HashSet<CategoryAttributeSetMap>();
             this.CouponGlobalCatMaps = new HashSet<CouponGlobalCatMap>();
+            this.GlobalCatFeatureProducts = new HashSet<GlobalCatFeatureProduct>();
+            this.GlobalCatImages = new HashSet<GlobalCatImage>();
+            this.ShopCommissions = new HashSet<ShopCommission>();
             this.Products = new HashSet<Product>();
             this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
             this.ProductHistories = new HashSet<ProductHistory>();
@@ -37,6 +40,12 @@ namespace Colsp.Entity.Models
         public Nullable<int> ProductCount { get; set; }
         public Nullable<int> Lft { get; set; }
         public Nullable<int> Rgt { get; set; }
+        public string DescriptionFullEn { get; set; }
+        public string DescriptionShortEn { get; set; }
+        public string DescriptionFullTh { get; set; }
+        public string DescriptionShortTh { get; set; }
+        public string FeatureTitle { get; set; }
+        public bool TitleShowcase { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
@@ -49,6 +58,12 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponGlobalCatMap> CouponGlobalCatMaps { get; set; }
         public virtual GlobalCategoryPID GlobalCategoryPID { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GlobalCatFeatureProduct> GlobalCatFeatureProducts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GlobalCatImage> GlobalCatImages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopCommission> ShopCommissions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
