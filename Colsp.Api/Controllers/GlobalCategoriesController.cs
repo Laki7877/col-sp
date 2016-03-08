@@ -138,16 +138,16 @@ namespace Colsp.Api.Controllers
                 category.UpdatedBy = this.User.UserRequest().Email;
                 category.UpdatedDt = DateTime.Now;
                 
-                int? max = db.GlobalCategories.Max(m => m.Rgt);
-                if(max == null)
+                int max = db.GlobalCategories.Select(s=>s.Rgt).DefaultIfEmpty(0).Max();
+                if(max == 0)
                 {
                     category.Lft = 1;
                     category.Rgt = 2;
                 }
                 else
                 {
-                    category.Lft = max.Value + 1;
-                    category.Rgt = max.Value + 2;
+                    category.Lft = max + 1;
+                    category.Rgt = max + 2;
                 }
                 category.GlobalCategoryPID = new GlobalCategoryPID()
                 {
@@ -195,7 +195,7 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
+                    category.UrlKeyEn = request.UrlKeyEn.Trim().Replace(" ", "-");
                 }
 
                 if (request.AttributeSets != null && request.AttributeSets.Count > 0)
@@ -505,7 +505,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                int childSize = child.Rgt.Value - child.Lft.Value + 1;
+                int childSize = child.Rgt - child.Lft + 1;
                 //delete 
                 db.GlobalCategories.Where(w => w.Rgt <= child.Rgt && w.Lft >= child.Lft).ToList()
                 .ForEach(e => { e.Status = "TM"; });
@@ -517,15 +517,15 @@ namespace Colsp.Api.Controllers
 
                 if (sibling != null)
                 {
-                    x = sibling.Rgt.Value;
+                    x = sibling.Rgt;
                 }
                 else if (parent != null)
                 {
-                    x = parent.Lft.Value;
+                    x = parent.Lft;
                 }
 
-                int offset = x - child.Lft.Value + 1;
-                int size = child.Rgt.Value - child.Lft.Value + 1;
+                int offset = x - child.Lft + 1;
+                int size = child.Rgt - child.Lft + 1;
 
                 db.GlobalCategories.Where(w => w.Lft >= child.Lft && w.Rgt <= child.Rgt && w.Status == "TM").ToList()
                 .ForEach(e => { e.Lft = e.Lft + offset; e.Rgt = e.Rgt + offset; });
@@ -568,7 +568,7 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find category " + catRq.CategoryId);
                     }
                     var child = catList.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt);
-                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility.Value; f.UpdatedBy = this.User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
+                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility; f.UpdatedBy = this.User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -592,7 +592,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Cannot find category");
                     }
-                    int childSize = cat.Rgt.Value - cat.Lft.Value + 1;
+                    int childSize = cat.Rgt - cat.Lft + 1;
                     //delete
                     db.GlobalCategories.Where(w => w.Rgt > cat.Rgt).ToList()
                         .ForEach(e => { e.Lft = e.Lft > cat.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
@@ -787,14 +787,14 @@ namespace Colsp.Api.Controllers
 
         private void SetupCategory(GlobalCategory category, CategoryRequest request)
         {
-            category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true);
-            category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
+            category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true, string.Empty);
+            category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true, string.Empty);
             category.Commission = Validation.ValidateDecimal(request.Commission, "Commission (%)", true,20,2,true);
-            category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false);
-            category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false);
-            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false);
-            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false);
-            category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false);
+            category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false, string.Empty);
+            category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false, string.Empty);
+            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, 500, false, string.Empty);
+            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, 500, false, string.Empty);
+            category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
         }
 

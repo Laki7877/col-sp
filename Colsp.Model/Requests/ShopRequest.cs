@@ -21,6 +21,7 @@ namespace Colsp.Model.Requests
         public string FloatMessageEn { get; set; }
         public string FloatMessageTh { get; set; }
         public string ShopAddress { get; set; }
+        public int MaxLocalCategory { get; set; }
         public string BankName { get; set; }
         public string BankAccountName { get; set; }
         public string BankAccountNumber { get; set; }

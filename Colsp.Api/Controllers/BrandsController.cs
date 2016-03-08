@@ -196,7 +196,6 @@ namespace Colsp.Api.Controllers
                     {
                         response.BrandImage = new ImageRequest();
                         response.BrandImage.url = brand.PicUrl;
-                        response.BrandImage.tmpPath = brand.Path;
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, response);
                 }
@@ -531,36 +530,35 @@ namespace Colsp.Api.Controllers
         private void SetupBrand(Brand brand, BrandRequest request)
         {
             brand.BrandNameEn = Validation.ValidateString(request.BrandNameEn, "Brand Name (English)", true,100,true);
-            brand.BrandNameTh = Validation.ValidateString(request.BrandNameTh, "Brand Name (Thai)", true, 100, false);
+            brand.BrandNameTh = Validation.ValidateString(request.BrandNameTh, "Brand Name (Thai)", true, 100, false, string.Empty);
             brand.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Brand Display Name (Thai)", true, 300, false);
             brand.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Brand Display Name (Thai)", true, 300, false);
-            brand.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, Int32.MaxValue, false);
-            brand.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, Int32.MaxValue, false);
-            brand.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, Int32.MaxValue, false);
-            brand.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, Int32.MaxValue, false);
-            brand.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false);
+            brand.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, Int32.MaxValue, false, string.Empty);
+            brand.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, Int32.MaxValue, false, string.Empty);
+            brand.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, 500, false, string.Empty);
+            brand.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, 500, false, string.Empty);
+            brand.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             brand.TitleShowcase = request.TitleShowcase;
             if (request.SEO != null)
             {
-                brand.MetaDescriptionEn = Validation.ValidateString(request.SEO.MetaDescriptionEn, "Meta Description (English)", false, 500, false);
-                brand.MetaDescriptionTh = Validation.ValidateString(request.SEO.MetaDescriptionTh, "Meta Description (Thai)", false, 500, false);
-                brand.MetaKeyEn = Validation.ValidateString(request.SEO.MetaKeywordEn, "Meta Keywords (English)", false, 500, false);
-                brand.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keywords (Thai)", false, 500, false);
-                brand.MetaTitleEn = Validation.ValidateString(request.SEO.MetaTitleEn, "Meta Title (English)", false, 100, false);
-                brand.MetaTitleTh = Validation.ValidateString(request.SEO.MetaTitleTh, "Meta Title (Thai)", false, 100, false);
+                brand.MetaDescriptionEn = Validation.ValidateString(request.SEO.MetaDescriptionEn, "Meta Description (English)", false, 500, false, string.Empty);
+                brand.MetaDescriptionTh = Validation.ValidateString(request.SEO.MetaDescriptionTh, "Meta Description (Thai)", false, 500, false, string.Empty);
+                brand.MetaKeyEn = Validation.ValidateString(request.SEO.MetaKeywordEn, "Meta Keywords (English)", false, 500, false, string.Empty);
+                brand.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keywords (Thai)", false, 500, false, string.Empty);
+                brand.MetaTitleEn = Validation.ValidateString(request.SEO.MetaTitleEn, "Meta Title (English)", false, 100, false, string.Empty);
+                brand.MetaTitleTh = Validation.ValidateString(request.SEO.MetaTitleTh, "Meta Title (Thai)", false, 100, false, string.Empty);
                // brand.UrlTh = request.SEO.ProductUrlKeyTh;
             }
             if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
             {
-                brand.UrlEn = brand.BrandNameEn;
+                brand.UrlEn = brand.BrandNameEn.Replace(" ", "-");
             }
             else
             {
-                brand.UrlEn = request.SEO.ProductUrlKeyEn;
+                brand.UrlEn = request.SEO.ProductUrlKeyEn.Trim().Replace(" ", "-");
             }
             if (request.BrandImage != null)
             {
-                brand.Path = request.BrandImage.tmpPath;
                 brand.PicUrl = request.BrandImage.url;
             }
         }
