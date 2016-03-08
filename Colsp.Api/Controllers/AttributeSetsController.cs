@@ -62,7 +62,9 @@ namespace Colsp.Api.Controllers
                                   atrS.Status,
                                   atrS.UpdatedDt,
                                   atrS.CreatedDt,
-                                  AttributeCount = atrS.AttributeSetMaps.AsEnumerable().Count(),
+                                  AttributeSetMaps = atrS.AttributeSetMaps.Select(s=>new { Attribute = s.Attribute }),
+                                  AttributeSetTagMaps = atrS.AttributeSetTagMaps.Select(s=>new { Tag = s.Tag }),
+                                  AttributeCount = atrS.AttributeSetMaps.Count(),
                                   CategoryCount = atrS.CategoryAttributeSetMaps.Count(),
                                   ProductCount = atrS.ProductStages.Count()
                               };
@@ -92,9 +94,9 @@ namespace Colsp.Api.Controllers
                 var response = PaginatedResponse.CreateResponse(attrSet.Paginate(request), request, total);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
-            catch
+            catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 

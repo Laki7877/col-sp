@@ -163,6 +163,7 @@ namespace Colsp.Api.Filters
 								u.Email,
 								Shops = u.UserShops.Select(s=>s.Shop),
                                 u.Type,
+                                IsPasswordChange = u.PasswordLastChg != null ? true : false,
                                 Permission = u.UserGroupMaps
                                 .Select(um=>um.UserGroup.UserGroupPermissionMaps
                                 .Select(pm=>new { pm.Permission.PermissionName, pm.Permission.PermissionGroup }))
@@ -194,8 +195,8 @@ namespace Colsp.Api.Filters
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
 				var principal = new UsersPrincipal(identity,
-                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn, Status = s.Status }).ToList(),
-                    new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type });
+                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn, Status = s.Status, IsShopReady = string.IsNullOrWhiteSpace(s.ShopDescriptionEn) ? false : true }).ToList(),
+                    new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type, IsPasswordChange = user.IsPasswordChange });
 
 
 				return principal;

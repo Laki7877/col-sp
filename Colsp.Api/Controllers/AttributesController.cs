@@ -481,6 +481,10 @@ namespace Colsp.Api.Controllers
                         val.AttributeValueEn = map.AttributeValue.AttributeValueEn;
                         val.AttributeValueId = map.AttributeValue.AttributeValueId;
                         val.AttributeValueTh = map.AttributeValue.AttributeValueTh;
+                        val.Image = new ImageRequest()
+                        {
+                            url = map.AttributeValue.ImageUrl
+                        };
                         attribute.AttributeValues.Add(val);
                     }
                 }
@@ -501,7 +505,7 @@ namespace Colsp.Api.Controllers
             attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", false, 2, true);
             if (!string.IsNullOrEmpty(attribute.DataType))
             {
-                if (request.DataType.Equals("LT")
+                if ((Constant.DATA_TYPE_LIST.Equals(request.DataType) || Constant.DATA_TYPE_CHECKBOX.Equals(request.DataType))
                     && (request.AttributeValues == null || request.AttributeValues.Count == 0))
                 {
                     throw new Exception("DataType Dropdown should have at least 1 value");

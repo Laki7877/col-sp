@@ -21,6 +21,7 @@ namespace Colsp.Model.Requests
         public string Position { get; set; }
         public string Division { get; set; }
         public List<UserGroupRequest> UserGroup { get; set; }
+        public bool IsPasswordChange { get; set; }
         public string Type { get; set; }
 
         public override void DefaultOnNull()

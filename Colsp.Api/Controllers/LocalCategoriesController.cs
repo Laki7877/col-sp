@@ -14,6 +14,9 @@ using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using System.Data.SqlClient;
+using Colsp.Api.Helpers;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace Colsp.Api.Controllers
 {
@@ -112,7 +115,29 @@ namespace Colsp.Api.Controllers
             try
             {
                 int shopId = this.User.ShopRequest().ShopId.Value;
-                var cat = db.LocalCategories.Where(w => w.ShopId == shopId && w.CategoryId == categoryId).SingleOrDefault();
+                var cat = db.LocalCategories
+                    .Where(w => w.ShopId == shopId && w.CategoryId == categoryId)
+                    .Select(s => new
+                    {
+                        s.CategoryId,
+                        s.NameEn,
+                        s.NameTh,
+                        s.DescriptionFullEn,
+                        s.DescriptionFullTh,
+                        s.DescriptionShortEn,
+                        s.DescriptionShortTh,
+                        s.FeatureTitle,
+                        s.TitleShowcase,
+                        s.UrlKeyEn,
+                        s.UrlKeyTh,
+                        s.Visibility,
+                        s.ShopId,
+                        s.Lft,
+                        s.Rgt,
+                        FeatureProducts = s.LocalCatFeatureProducts.Select(sc => new { sc.ProductId, sc.ProductStage.Pid, sc.ProductStage.ProductNameEn })
+                    })
+                    .SingleOrDefault();
+                //var cat = db.LocalCategories.Where(w => w.ShopId == shopId && w.CategoryId == categoryId).SingleOrDefault();
                 if(cat == null)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
@@ -134,11 +159,43 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = this.User.ShopRequest().ShopId.Value;
                 category = new LocalCategory();
-                category.NameEn = request.NameEn;
-                category.NameTh = request.NameTh;
                 category.ShopId = shopId;
-                category.UrlKeyEn = "";
-                
+                SetupCategory(category, request);
+
+                #region Banner Image En
+                if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
+                {
+                    int position = 0;
+                    foreach (ImageRequest img in request.CategoryBannerEn)
+                    {
+                        category.LocalCatImages.Add(new LocalCatImage()
+                        {
+                            ImageUrl = img.url,
+                            Position = position++,
+                            EnTh = Constant.LANG_EN,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now
+                        });
+                    }
+                }
+                #endregion
+                #region Banner Image Th
+                if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
+                {
+                    int position = 0;
+                    foreach (ImageRequest img in request.CategoryBannerTh)
+                    {
+                        category.LocalCatImages.Add(new LocalCatImage()
+                        {
+                            ImageUrl = img.url,
+                            Position = position++,
+                            EnTh = Constant.LANG_TH,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now
+                        });
+                    }
+                }
+                #endregion
 
                 category.Visibility = request.Visibility;
                 category.Status = request.Status;
@@ -200,7 +257,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
         [Route("api/LocalCategories/{categoryId}")]
         [HttpPut]
         public HttpResponseMessage SaveChange(int categoryId, CategoryRequest request)
@@ -208,13 +264,15 @@ namespace Colsp.Api.Controllers
             try
             {
                 int shopId = this.User.ShopRequest().ShopId.Value;
-                var category = db.LocalCategories.Where(w => w.CategoryId == categoryId && w.ShopId== shopId).SingleOrDefault();
+                var category = db.LocalCategories
+                    .Where(w => w.CategoryId == categoryId && w.ShopId== shopId)
+                    .Include(i=>i.LocalCatImages)
+                    .Include(i=>i.LocalCatFeatureProducts).SingleOrDefault();
                 if (category == null)
                 {
                     throw new Exception("Cannot find selected category");
                 }
-                category.NameEn = request.NameEn;
-                category.NameTh = request.NameTh;
+                SetupCategory(category, request);
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
                     category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
@@ -223,6 +281,153 @@ namespace Colsp.Api.Controllers
                 {
                     category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
                 }
+
+                #region Banner Image En
+                var imageOldEn = category.LocalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).ToList();
+                if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
+                {
+                    int position = 0;
+                    foreach (ImageRequest img in request.CategoryBannerEn)
+                    {
+                        bool isNew = false;
+                        if (imageOldEn == null || imageOldEn.Count == 0)
+                        {
+                            isNew = true;
+                        }
+                        if (!isNew)
+                        {
+                            var current = imageOldEn.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                current.ImageUrl = img.url;
+                                current.Position = position++;
+                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedDt = DateTime.Now;
+                                imageOldEn.Remove(current);
+                            }
+                            else
+                            {
+                                isNew = true;
+                            }
+                        }
+                        if (isNew)
+                        {
+                            category.LocalCatImages.Add(new LocalCatImage()
+                            {
+                                ImageUrl = img.url,
+                                Position = position++,
+                                EnTh = Constant.LANG_EN,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now
+                            });
+                        }
+                    }
+                }
+                if (imageOldEn != null && imageOldEn.Count > 0)
+                {
+                    db.LocalCatImages.RemoveRange(imageOldEn);
+                }
+                #endregion
+                #region Banner Image Th
+                var imageOldTh = category.LocalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).ToList();
+                if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
+                {
+                    int position = 0;
+                    foreach (ImageRequest img in request.CategoryBannerTh)
+                    {
+                        bool isNew = false;
+                        if (imageOldTh == null || imageOldTh.Count == 0)
+                        {
+                            isNew = true;
+                        }
+                        if (!isNew)
+                        {
+                            var current = imageOldTh.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                current.ImageUrl = img.url;
+                                current.Position = position++;
+                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedDt = DateTime.Now;
+                                imageOldTh.Remove(current);
+                            }
+                            else
+                            {
+                                isNew = true;
+                            }
+                        }
+                        if (isNew)
+                        {
+                            category.LocalCatImages.Add(new LocalCatImage()
+                            {
+                                ImageUrl = img.url,
+                                Position = position++,
+                                EnTh = Constant.LANG_TH,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now
+                            });
+                        }
+                    }
+                }
+                if (imageOldTh != null && imageOldTh.Count > 0)
+                {
+                    db.LocalCatImages.RemoveRange(imageOldTh);
+                }
+                #endregion
+                #region Local Category Feature Product
+                var pidList = category.LocalCatFeatureProducts.ToList();
+                if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
+                {
+                    var proStageList = db.ProductStages
+                            .Where(w => w.LocalCatId == category.CategoryId)
+                            .Select(s => s.ProductId).ToList();
+                    foreach (var pro in request.FeatureProducts)
+                    {
+                        bool isNew = false;
+                        if (pidList == null || pidList.Count == 0)
+                        {
+                            isNew = true;
+                        }
+                        if (!isNew)
+                        {
+                            var current = pidList.Where(w => w.ProductId == pro.ProductId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                pidList.Remove(current);
+                            }
+                            else
+                            {
+                                isNew = true;
+                            }
+                        }
+                        if (isNew)
+                        {
+                            var isPid = proStageList.Where(w => w == pro.ProductId).ToList();
+                            if (isPid != null && isPid.Count > 0)
+                            {
+                                category.LocalCatFeatureProducts.Add(new LocalCatFeatureProduct()
+                                {
+                                    ProductId = pro.ProductId,
+                                    CreatedBy = this.User.UserRequest().Email,
+                                    CreatedDt = DateTime.Now,
+                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedDt = DateTime.Now
+                                });
+                            }
+                            else
+                            {
+                                throw new Exception("Pid " + pro.Pid + " is not in this local category.");
+                            }
+                        }
+                    }
+                }
+                if (pidList != null && pidList.Count > 0)
+                {
+                    db.LocalCatFeatureProducts.RemoveRange(pidList);
+                }
+                #endregion
+
+
                 category.Visibility = request.Visibility;
                 category.Status = request.Status;
                 category.UpdatedBy = this.User.UserRequest().Email;
@@ -366,7 +571,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
         [Route("api/LocalCategories")]
         [HttpDelete]
         public HttpResponseMessage DeteleCategory(List<CategoryRequest> request)
@@ -395,6 +599,65 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
+        }
+
+
+        [Route("api/LocalCategoryImages")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadFile()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
+                }
+                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.LOCAL_CAT_FOLDER);
+                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                FileUploadRespond fileUpload = new FileUploadRespond();
+                string fileName = string.Empty;
+                string ext = string.Empty;
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    fileName = fileData.LocalFileName;
+                    string tmp = fileData.Headers.ContentDisposition.FileName;
+                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+                    {
+                        tmp = tmp.Trim('"');
+                    }
+                    ext = Path.GetExtension(tmp);
+                    break;
+                }
+
+                string newName = string.Concat(fileName, ext);
+                File.Move(fileName, newName);
+                fileUpload.tmpPath = newName;
+
+                var name = Path.GetFileName(newName);
+                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+                fileUpload.url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", AppSettingKey.LOCAL_CAT_FOLDER, "/", name);
+
+                return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
+        private void SetupCategory(LocalCategory category, CategoryRequest request)
+        {
+            category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true);
+            category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
+            category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false);
+            category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false);
+            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false);
+            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false);
+            category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false);
+            category.TitleShowcase = request.TitleShowcase;
         }
 
         protected override void Dispose(bool disposing)
