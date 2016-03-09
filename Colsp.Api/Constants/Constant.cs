@@ -17,7 +17,7 @@ namespace Colsp.Api.Constants
         public static readonly string DATA_TYPE_LIST = "LT";
         public static readonly string DATA_TYPE_CHECKBOX = "CB";
 
-        public static Dictionary<string, int?> STOCK_TYPE = new Dictionary<string, int?>() { { "Stock", 1 }, { "Pre-Order", 2 } };
+        public static Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() { {"Stock", 1 }, { "Pre-Order" , 2} };
 
 
         public static readonly string PRODUCT_STATUS_DRAFT = "DF";
@@ -27,6 +27,7 @@ namespace Colsp.Api.Constants
         public static readonly string PRODUCT_STATUS_NOT_APPROVE = "RJ";
 
         
+
 
         public static readonly string USER_TYPE_ADMIN = "A";
         public static readonly string USER_TYPE_SELLER = "S";
@@ -56,11 +57,14 @@ namespace Colsp.Api.Constants
 
         public static readonly string SHOP_GROUP_BU = "BU";
         public static readonly string SHOP_GROUP_INDY = "IN";
-        public static readonly string SHOP_GROUP_SELLER = "SE";
+        public static readonly string SHOP_GROUP_MERCHANT = "ME";
 
         
 
         public static readonly string LANG_EN = "EN";
         public static readonly string LANG_TH = "TH";
+
+
+        public static readonly int MAX_LOCAL_CATEGORY = 8;
     }
 }

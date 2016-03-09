@@ -86,8 +86,8 @@ namespace Colsp.Model.Requests
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortTh { get; set; }
         public string DescriptionShortEn { get; set; }
-        public int? Quantity { get; set; }
-        public int? SafetyStock { get; set; }
+        public int Quantity { get; set; }
+        public int SafetyStock { get; set; }
         public string StockType { get; set; }
         public bool? DefaultVariant { get; set; }
         public int? VariantId { get; set; }

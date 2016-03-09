@@ -330,6 +330,7 @@ namespace Colsp.Api.Controllers
             User usr = null;
             try
             {
+                #region Shop Onwer
                 usr = new User();
                 usr.Email = Validation.ValidateString(request.ShopOwner.Email, "Email", true, 100, false);
                 usr.Password = request.ShopOwner.Password;
@@ -346,26 +347,20 @@ namespace Colsp.Api.Controllers
                 usr.UpdatedBy = this.User.UserRequest().Email;
                 usr.UpdatedDt = DateTime.Now;
                 db.Users.Add(usr);
+                #endregion
 
                 shop = new Shop();
-                shop.Commission = request.Commission;
-                shop.ShopGroup = request.ShopGroup;
-                shop.ShopNameEn = Validation.ValidateString(request.ShopNameEn, "Shop Name", true, 100, false);
-                shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false,string.Empty);
-                shop.BankName = Validation.ValidateString(request.BankName, "Bank Name", true, 100, false);
-                shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
-                shop.BankAccountNumber = Validation.ValidateString(request.BankAccountNumber, "Bank Account Number", true, 100, false);
-                shop.ShopTypeId = request.ShopType.ShopTypeId;
+                SetupShopAdmin(shop, request);
                 shop.Status =  Validation.ValidateString(request.Status, "Status", true, 2, false);
                 shop.CreatedBy = this.User.UserRequest().Email;
                 shop.CreatedDt = DateTime.Now;
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 db.Shops.Add(shop);
-
+                shop.User = usr;
                 db.SaveChanges();
 
-                shop.ShopOwner = usr.UserId;
+                //shop.ShopOwner = usr.UserId;
 
                 UserShop userShop = new UserShop();
                 userShop.ShopId = shop.ShopId;
@@ -473,6 +468,7 @@ namespace Colsp.Api.Controllers
             Shop shop = null;
             try
             {
+                #region Query
                 var shopList = db.Shops
                     .Include(i=>i.User.UserGroupMaps)
                     .Include(i=>i.UserShops)
@@ -482,8 +478,10 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Shop not found");
                 }
+                #endregion
                 shop = shopList[0];
-                if(shop.User != null)
+                #region Shop Owner
+                if (shop.User != null)
                 {
                     if (shop.User.Email != null && shop.User.Email.Equals(request.ShopOwner.Email))
                     {
@@ -542,13 +540,20 @@ namespace Colsp.Api.Controllers
                         userShop.UpdatedDt = DateTime.Now;
                     }
                 }
-                shop.ShopGroup = request.ShopGroup;
+                #endregion
+                shop.ShopGroup = Validation.ValidateString(request.ShopGroup, "Shop Group", true, 2, false);
+                shop.MaxLocalCategory = request.MaxLocalCategory;
+                if (shop.MaxLocalCategory == 0)
+                {
+                    shop.MaxLocalCategory = Constant.MAX_LOCAL_CATEGORY;
+                }
                 shop.Commission = request.Commission;
-                shop.ShopNameEn = request.ShopNameEn;
-                shop.ShopNameTh = request.ShopNameTh;
-                shop.ShopTypeId = request.ShopType.ShopTypeId;
-                shop.BankAccountName = request.BankAccountName;
-                shop.BankAccountNumber = request.BankAccountNumber;
+                shop.ShopNameEn = Validation.ValidateString(request.ShopNameEn, "Shop Name", true, 100, false);
+                shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false, string.Empty);
+                shop.BankName = Validation.ValidateString(request.BankName, "Bank Name", true, 100, false);
+                shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
+                shop.BankAccountNumber = Validation.ValidateString(request.BankAccountNumber, "Bank Account Number", true, 100, false);
+                #region Shop Commission
                 if (request.Commissions != null && request.Commissions.Count > 0)
                 {
                     var catIds = request.Commissions.Where(w => w.CategoryId != null).Select(s => s.CategoryId).ToList();
@@ -606,7 +611,8 @@ namespace Colsp.Api.Controllers
                         db.ShopCommissions.RemoveRange(commissions);
                     }
                 }
-                shop.Status = request.Status;
+                #endregion
+                shop.Status = Validation.ValidateString(request.Status, "Shop Group", true, 2, false);
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 db.SaveChanges();
@@ -707,6 +713,27 @@ namespace Colsp.Api.Controllers
             catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        public void SetupShopAdmin(Shop shop, ShopRequest request)
+        {
+            shop.ShopGroup = Validation.ValidateString(request.ShopGroup, "Shop Group", true, 2, false);
+            shop.ShopNameEn = Validation.ValidateString(request.ShopNameEn, "Shop Name", true, 100, false);
+            shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false, string.Empty);
+            shop.BankName = Validation.ValidateString(request.BankName, "Bank Name", true, 100, false);
+            shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
+            shop.BankAccountNumber = Validation.ValidateString(request.BankAccountNumber, "Bank Account Number", true, 100, false);
+            shop.Commission = request.Commission;
+            shop.MaxLocalCategory = request.MaxLocalCategory;
+            if(request.ShopType == null)
+            {
+                throw new Exception("Shop type cannot be null");
+            }
+            shop.ShopTypeId = request.ShopType.ShopTypeId;
+            if (shop.MaxLocalCategory == 0)
+            {
+                shop.MaxLocalCategory = Constant.MAX_LOCAL_CATEGORY;
             }
         }
 

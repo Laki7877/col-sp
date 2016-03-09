@@ -51,7 +51,7 @@ namespace Colsp.Api.Helpers
                 }
                 throw new Exception(fieldName + " is a required field");
             }
-            if (string.IsNullOrWhiteSpace(val)) { return val; }
+            if (string.IsNullOrEmpty(val)) { return defaultVal; }
             val = val.Trim();
             if (isAlphanumeric)
             {

@@ -211,6 +211,7 @@ namespace Colsp.Api.Controllers
                               where (vari != null && vari.Visibility == true) || (mast != null && mast.Visibility == true && mast.ProductStageVariants.Count == 0)
                               select new
                               {
+                                  ImageUrl = vari != null ? vari.ProductStage.FeatureImgUrl : mast.FeatureImgUrl,
                                   ProductId = mast != null ? mast.ProductId : vari.ProductId,
                                   Sku = vari != null ? vari.Sku : mast.Sku,
                                   Upc = vari != null ? vari.Upc : mast.Upc,

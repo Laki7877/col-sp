@@ -12,14 +12,15 @@ namespace Colsp.Model.Requests
         public string NameEn { get; set; }
         public string NameTh { get; set; }
         public string UrlKeyEn { get; set; }
+        public string UrlKeyTh { get; set; }
         public string Status { get; set; }
-        public int? Lft { get; set; }
-        public int? Rgt { get; set; }
+        public int Lft { get; set; }
+        public int Rgt { get; set; }
         public int? ShopId { get; set; }
         public string CategoryAbbreviation { get; set; }
         public List<AttributeSetRequest> AttributeSets { get; set; }
         public decimal? Commission { get; set; }
-        public bool? Visibility { get; set; }
+        public bool Visibility { get; set; }
         public List<ImageRequest> CategoryBannerEn { get; set; }
         public List<ImageRequest> CategoryBannerTh { get; set; }
         public string FeatureTitle { get; set; }

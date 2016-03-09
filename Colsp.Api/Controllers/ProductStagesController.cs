@@ -1275,7 +1275,7 @@ namespace Colsp.Api.Controllers
                         string masterPid = AutoGenerate.NextPID(db, product.Value.GlobalCatId);
                         product.Value.Pid = masterPid;
                         int masterQuantity = 0;
-                        int? safetyStock = 0;
+                        int safetyStock = 0;
                         for (int varIndex = 0; varIndex < product.Value.ProductStageVariants.Count; varIndex++)
                         {
                             Tuple<string, int> tmpInventory = new Tuple<string, int>(product.Key, varIndex);

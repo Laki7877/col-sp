@@ -62,7 +62,22 @@ namespace Colsp.Api.Controllers
                                   atrS.Status,
                                   atrS.UpdatedDt,
                                   atrS.CreatedDt,
-                                  AttributeSetMaps = atrS.AttributeSetMaps.Select(s=>new { Attribute = s.Attribute }),
+                                  AttributeSetMaps = atrS.AttributeSetMaps.Select(s=>
+                                  new
+                                  {
+                                      Attribute = new
+                                      {
+                                          s.Attribute.AttributeId,
+                                          s.Attribute.AttributeNameEn,
+                                          s.Attribute.DataType,
+                                          s.Attribute.Required,
+                                          s.Attribute.Status,
+                                          AttributeValueMaps = s.Attribute.AttributeValueMaps.Select(sv=> 
+                                          new {
+                                              AttributeValue = new { sv.AttributeValue.AttributeValueId,sv.AttributeValue.AttributeValueEn, sv.AttributeValue.AttributeValueTh}
+                                          })
+                                      }
+                                  }),
                                   AttributeSetTagMaps = atrS.AttributeSetTagMaps.Select(s=>new { Tag = s.Tag }),
                                   AttributeCount = atrS.AttributeSetMaps.Count(),
                                   CategoryCount = atrS.CategoryAttributeSetMaps.Count(),
