@@ -94,6 +94,12 @@ namespace Colsp.Api
             {
                 Directory.CreateDirectory(rootLocalPath);
             }
+            //Local Category Folder
+            string rootNewsletterPath = Path.Combine(imgageRootPath, AppSettingKey.NEWSLETTER_FOLDER, AppSettingKey.TMP_FOLDER);
+            if (!Directory.Exists(rootNewsletterPath))
+            {
+                Directory.CreateDirectory(rootNewsletterPath);
+            }
 
             //CSV Import folder
             string rootExcelPath = AppSettingKey.IMPORT_ROOT_PATH;

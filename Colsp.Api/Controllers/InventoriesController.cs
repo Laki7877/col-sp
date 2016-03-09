@@ -281,7 +281,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find inventory");
                 }
                 inv.Quantity = Validation.ValidationInteger(request.Quantity,"Quantity",true, Int32.MaxValue,0).Value;
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Inventory");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)

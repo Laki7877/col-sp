@@ -37,7 +37,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("No deleted user group found");
                 }
                 db.UserGroups.RemoveRange(usrGrp);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -147,7 +147,6 @@ namespace Colsp.Api.Controllers
                 usrGrp.UpdatedBy = this.User.UserRequest().Email;
                 usrGrp.UpdatedDt = DateTime.Now;
                 db.UserGroups.Add(usrGrp);
-                //db.SaveChanges();
                 if (request.Permission != null)
                 {
                     foreach (PermissionRequest perm in request.Permission)
@@ -177,7 +176,7 @@ namespace Colsp.Api.Controllers
                 shopMap.UpdatedDt = DateTime.Now;
                 usrGrp.ShopUserGroupMaps.Add(shopMap);
                 //db.ShopUserGroupMaps.Add(shopMap);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 return GetUserGroupSeller(usrGrp.GroupId);
             }
             catch (Exception e)
@@ -185,8 +184,9 @@ namespace Colsp.Api.Controllers
                 if (usrGrp != null && usrGrp.GroupId != 0)
                 {
                     db.UserGroups.Remove(usrGrp);
+                    Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 }
-                db.SaveChanges();
+                
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -246,7 +246,7 @@ namespace Colsp.Api.Controllers
                 {
                     db.UserGroupPermissionMaps.RemoveRange(mapList);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 return GetUserGroupSeller(usrGrp.GroupId);
             }
             catch (Exception e)
@@ -356,7 +356,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 db.UserGroups.Add(usrGrp);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 return GetUserGroupAdmin(usrGrp.GroupId);
             }
             catch (Exception e)
@@ -364,7 +364,7 @@ namespace Colsp.Api.Controllers
                 if (usrGrp != null && usrGrp.GroupId != 0)
                 {
                     db.UserGroups.Remove(usrGrp);
-                    db.SaveChanges();
+                    Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
@@ -384,7 +384,7 @@ namespace Colsp.Api.Controllers
                 var userGroupIds = request.Where(w => w.GroupId != null).Select(s => s.GroupId.Value).ToList();
                 var usrGrp = db.UserGroups.Where(w => Constant.USER_TYPE_ADMIN.Equals(w.Type) && userGroupIds.Contains(w.GroupId));
                 db.UserGroups.RemoveRange(usrGrp);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -451,7 +451,7 @@ namespace Colsp.Api.Controllers
                 {
                     db.UserGroupPermissionMaps.RemoveRange(mapList);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 return GetUserGroupAdmin(usrGrp.GroupId);
             }
             catch (Exception e)

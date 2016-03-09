@@ -54,6 +54,7 @@
     <Compile Include="Requests\ImageRequest.cs" />
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
+    <Compile Include="Requests\NewsletterRequest.cs" />
     <Compile Include="Requests\OnBoardRequest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />

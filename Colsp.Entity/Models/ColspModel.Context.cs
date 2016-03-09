@@ -44,6 +44,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSHistoryLog> CMSHistoryLogs { get; set; }
         public virtual DbSet<CMSMainCategory> CMSMainCategories { get; set; }
         public virtual DbSet<CMSMaster> CMSMasters { get; set; }
+        public virtual DbSet<CMSProductCategory> CMSProductCategories { get; set; }
         public virtual DbSet<CMSRelCollectionCategory> CMSRelCollectionCategories { get; set; }
         public virtual DbSet<CMSRelCollectionGroup> CMSRelCollectionGroups { get; set; }
         public virtual DbSet<CMSStatusFlow> CMSStatusFlows { get; set; }
@@ -69,6 +70,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<LocalCategory> LocalCategories { get; set; }
         public virtual DbSet<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
         public virtual DbSet<LocalCatImage> LocalCatImages { get; set; }
+        public virtual DbSet<Newsletter> Newsletters { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }

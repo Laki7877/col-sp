@@ -19,7 +19,7 @@ namespace Colsp.Api.Constants
         public static readonly string ATTRIBUTE_VALUE_FOLDER = ConfigurationManager.AppSettings["AttributeValueFolder"];
         public static readonly string GLOBAL_CAT_FOLDER = ConfigurationManager.AppSettings["GlobalCatFolder"];
         public static readonly string LOCAL_CAT_FOLDER = ConfigurationManager.AppSettings["LocalCatFolder"];
-
+        public static readonly string NEWSLETTER_FOLDER = ConfigurationManager.AppSettings["NewsletterFolder"];
 
         //CSV Root
         public static readonly string IMPORT_ROOT_FOLDER = ConfigurationManager.AppSettings["ImportTmpFolder"];

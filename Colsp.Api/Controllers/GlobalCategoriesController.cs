@@ -214,34 +214,11 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 db.GlobalCategories.Add(category);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK, category);
-            }
-            catch (DbUpdateException e)
-            {
-                if (category != null && category.CategoryId != 0)
-                {
-                    db.GlobalCategories.Remove(category);
-                    db.SaveChanges();
-                }
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "URL Key has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
-                if (category != null && category.CategoryId != 0)
-                {
-                    db.GlobalCategories.Remove(category);
-                    db.SaveChanges();
-                }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -463,21 +440,8 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
 
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK, category);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "URL Key has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -512,7 +476,7 @@ namespace Colsp.Api.Controllers
                 db.GlobalCategories.Where(w => w.Rgt > child.Rgt).ToList()
                 .ForEach(e => { e.Lft = e.Lft > child.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
 
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 int x = 0;
 
                 if (sibling != null)
@@ -535,7 +499,7 @@ namespace Colsp.Api.Controllers
 
                 db.GlobalCategories.Where(w => w.Status == "TM").ToList()
                 .ForEach(e => { e.Status = "AT"; });
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -570,7 +534,7 @@ namespace Colsp.Api.Controllers
                     var child = catList.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt);
                     child.ToList().ForEach(f => { f.Visibility = catRq.Visibility; f.UpdatedBy = this.User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -599,7 +563,7 @@ namespace Colsp.Api.Controllers
                     db.GlobalCategories.RemoveRange(db.GlobalCategories.Where(w => w.Lft >= cat.Lft && w.Rgt <= cat.Rgt));
                     break;
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -683,7 +647,7 @@ namespace Colsp.Api.Controllers
                 var catEnList = db.GlobalCategories.Include(i=>i.ProductStages).ToList();
                 foreach (CategoryRequest catRq in request)
                 {
-                    if (catRq.Lft == null || catRq.Rgt == null || catRq.Lft >= catRq.Rgt)
+                    if (catRq.Lft >= catRq.Rgt)
                     {
                         throw new Exception("Category " + catRq.NameEn + " is invalid. Node is not properly formated");
                     }
@@ -716,8 +680,8 @@ namespace Colsp.Api.Controllers
                     }
                     db.GlobalCategories.Remove(cat);
                 }
-                db.SaveChanges();
-                
+                Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
+
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (DbUpdateException e)
@@ -745,38 +709,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (!Request.Content.IsMimeMultipartContent())
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
-                }
-                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.GLOBAL_CAT_FOLDER);
-                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
-                await Request.Content.ReadAsMultipartAsync(streamProvider);
-
-                FileUploadRespond fileUpload = new FileUploadRespond();
-                string fileName = string.Empty;
-                string ext = string.Empty;
-                foreach (MultipartFileData fileData in streamProvider.FileData)
-                {
-                    fileName = fileData.LocalFileName;
-                    string tmp = fileData.Headers.ContentDisposition.FileName;
-                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
-                    {
-                        tmp = tmp.Trim('"');
-                    }
-                    ext = Path.GetExtension(tmp);
-                    break;
-                }
-
-                string newName = string.Concat(fileName, ext);
-                File.Move(fileName, newName);
-                fileUpload.tmpPath = newName;
-
-                var name = Path.GetFileName(newName);
-                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-                fileUpload.url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", AppSettingKey.GLOBAL_CAT_FOLDER, "/", name);
-
+                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.GLOBAL_CAT_FOLDER, 1500, 1500, 2000, 2000, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)

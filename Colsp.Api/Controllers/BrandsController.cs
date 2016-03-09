@@ -9,9 +9,6 @@ using Colsp.Api.Constants;
 using Colsp.Model.Responses;
 using Colsp.Api.Extensions;
 using System.Threading.Tasks;
-using System.IO;
-using System.Web;
-using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Collections.Generic;
@@ -31,43 +28,12 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (!Request.Content.IsMimeMultipartContent())
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
-                }
-                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.BRAND_FOLDER);
-                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
-                await Request.Content.ReadAsMultipartAsync(streamProvider);
-
-                FileUploadRespond fileUpload = new FileUploadRespond();
-                string fileName = string.Empty;
-                string ext = string.Empty;
-                foreach (MultipartFileData fileData in streamProvider.FileData)
-                {
-                    fileName = fileData.LocalFileName;
-                    string tmp = fileData.Headers.ContentDisposition.FileName;
-                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
-                    {
-                        tmp = tmp.Trim('"');
-                    }
-                    ext = Path.GetExtension(tmp);
-                    break;
-                }
-
-                string newName = string.Concat(fileName, ext);
-                File.Move(fileName, newName);
-                fileUpload.tmpPath = newName;
-
-                var name = Path.GetFileName(newName);
-                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-                fileUpload.url = string.Concat(schema, "://", imageUrl,"/", AppSettingKey.IMAGE_ROOT_FOLDER,"/", AppSettingKey.BRAND_FOLDER,"/", name);
-
+                FileUploadRespond fileUpload =  await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.BRAND_FOLDER,1500,1500,2000,2000,5,true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,e);
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable,e.Message);
             }
         }
 
@@ -104,26 +70,23 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, brands);
                 }
-                else
+                request.DefaultOnNull();
+                if (request.SearchText != null)
                 {
-                    request.DefaultOnNull();
-                    if (request.SearchText != null)
-                    {
-                        brands = brands.Where(b => b.BrandNameEn.Contains(request.SearchText)
-                        || b.BrandNameTh.Contains(request.SearchText));
-                    }
-                    if (request.BrandId != null)
-                    {
-                        brands = brands.Where(p => p.BrandId.Equals(request.BrandId));
-                    }
-                    var total = brands.Count();
-                    var response = PaginatedResponse.CreateResponse(brands.Paginate(request), request, total);
-                    return Request.CreateResponse(HttpStatusCode.OK, response);
+                    brands = brands.Where(b => b.BrandNameEn.Contains(request.SearchText)
+                    || b.BrandNameTh.Contains(request.SearchText));
                 }
+                if (request.BrandId != null)
+                {
+                    brands = brands.Where(p => p.BrandId.Equals(request.BrandId));
+                }
+                var total = brands.Count();
+                var response = PaginatedResponse.CreateResponse(brands.Paginate(request), request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -204,9 +167,9 @@ namespace Colsp.Api.Controllers
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
                 }
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -218,7 +181,7 @@ namespace Colsp.Api.Controllers
             {
                 if (request == null || request.Count == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
+                    throw new Exception("Invalid request");
                 }
                 var brandList = db.Brands.Include(i => i.ProductStages).ToList();
                 foreach (BrandRequest brandRq in request)
@@ -226,20 +189,20 @@ namespace Colsp.Api.Controllers
                     var current = brandList.Where(w => w.BrandId.Equals(brandRq.BrandId)).SingleOrDefault();
                     if (current == null)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                        throw new Exception(HttpErrorMessage.NotFound);
                     }
                     if (current.ProductStages != null && current.ProductStages.Count > 0)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Brand has product or variant associate");
+                        throw new Exception("Brand has product or variant associate");
                     }
                     current.Status = Constant.STATUS_REMOVE;
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Brand");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -291,31 +254,8 @@ namespace Colsp.Api.Controllers
                 brand.UpdatedBy = this.User.UserRequest().Email;
                 brand.UpdatedDt = DateTime.Now;
                 db.Brands.Add(brand);
-                db.SaveChanges();
-                return GetBrand(brand.BrandId); ;
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        string message = ((SqlException)e.InnerException.InnerException).Message;
-                        if (message.Contains("UrlEn"))
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "URL Key has already been used");
-                        }
-                        else
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "This brand name has already been used");
-                        }
-                        
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                Util.DeadlockRetry(db.SaveChanges, "Brand");
+                return GetBrand(brand.BrandId);
             }
             catch (Exception e)
             {
@@ -331,7 +271,7 @@ namespace Colsp.Api.Controllers
             {
                 if(brandId == 0 || request == null)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
+                    throw new Exception("Invalid request");
                 }
                 var brand = db.Brands.Where(w => w.BrandId == brandId)
                     .Include(i=>i.BrandImages)
@@ -489,37 +429,13 @@ namespace Colsp.Api.Controllers
                     brand.Status = Constant.STATUS_ACTIVE;
                     brand.UpdatedBy = this.User.UserRequest().Email;
                     brand.UpdatedDt = DateTime.Now;
-                    db.SaveChanges();
+                    Util.DeadlockRetry(db.SaveChanges, "Brand");
                     return GetBrand(brand.BrandId);
                 }
                 else
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound,HttpErrorMessage.NotFound);
                 }
-                
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        string message = ((SqlException)e.InnerException.InnerException).Message;
-                        if ("UrlEn".Contains(message))
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "URL Key has already been used");
-                        }
-                        else
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "This brand name has already been used");
-                        }
-
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
             catch (Exception e)
             {

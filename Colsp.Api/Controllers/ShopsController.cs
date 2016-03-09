@@ -36,39 +36,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (!Request.Content.IsMimeMultipartContent())
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
-                }
-                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.SHOP_FOLDER);
-                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
-                await Request.Content.ReadAsMultipartAsync(streamProvider);
-
-
-                FileUploadRespond fileUpload = new FileUploadRespond();
-                string fileName = string.Empty;
-                string ext = string.Empty;
-                foreach (MultipartFileData fileData in streamProvider.FileData)
-                {
-                    fileName = fileData.LocalFileName;
-                    string tmp = fileData.Headers.ContentDisposition.FileName;
-                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
-                    {
-                        tmp = tmp.Trim('"');
-                    }
-                    ext = Path.GetExtension(tmp);
-                    break;
-                }
-
-                string newName = string.Concat(fileName, ext);
-                File.Move(fileName, newName);
-                fileUpload.tmpPath = newName;
-
-                var name = Path.GetFileName(newName);
-                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-                fileUpload.url = string.Concat(schema, "://", imageUrl,"/",AppSettingKey.IMAGE_ROOT_FOLDER,"/",AppSettingKey.SHOP_FOLDER,"/", name);
-
+                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.SHOP_FOLDER, 1500, 1500, 2000, 2000, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
@@ -275,8 +243,8 @@ namespace Colsp.Api.Controllers
                 {
                     shop.ShopImageUrl = null;
                 }
-                
-                db.SaveChanges();
+
+                Util.DeadlockRetry(db.SaveChanges, "Shop");
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 return GetShopProfile();
             }
@@ -358,7 +326,7 @@ namespace Colsp.Api.Controllers
                 shop.UpdatedDt = DateTime.Now;
                 db.Shops.Add(shop);
                 shop.User = usr;
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Shop");
 
                 //shop.ShopOwner = usr.UserId;
 
@@ -407,53 +375,20 @@ namespace Colsp.Api.Controllers
                     }
                 }
 
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShop(shop.ShopId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (usr != null && usr.UserId != 0)
-                {
-                    db.Users.Remove(usr);
-                    db.SaveChanges();
-                }
-
-                if (shop != null && shop.ShopId != 0)
-                {
-                    db.Shops.Remove(shop);
-                    db.SaveChanges();
-                }
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    SqlException error = ((SqlException)e.InnerException.InnerException);
-                    if (error.Number == 2627)
-                    {
-                        if (error.Message.Contains("CK_Shop_ShopNameEn"))
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "This shop name has already been used. Please enter a different shop name.");
-                        }
-                        else if(error.Message.Contains("CK_User_Email"))
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "The Email already existed in the system. Please enter a different Email.");
-                        }
-                        
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
                 if (usr != null && usr.UserId != 0)
                 {
                     db.Users.Remove(usr);
-                    db.SaveChanges();
+                    Util.DeadlockRetry(db.SaveChanges, "Shop");
                 }
                 if (shop != null && shop.ShopId != 0)
                 {
                     db.Shops.Remove(shop);
-                    db.SaveChanges();
+                    Util.DeadlockRetry(db.SaveChanges, "Shop");
                 }
                 
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
@@ -519,7 +454,7 @@ namespace Colsp.Api.Controllers
                         usr.UpdatedBy = this.User.UserRequest().Email;
                         usr.UpdatedDt = DateTime.Now;
                         db.Users.Add(usr);
-                        db.SaveChanges();
+                        Util.DeadlockRetry(db.SaveChanges, "Shop");
 
                         UserGroupMap map = new UserGroupMap();
                         map.UserId = usr.UserId;
@@ -615,41 +550,8 @@ namespace Colsp.Api.Controllers
                 shop.Status = Validation.ValidateString(request.Status, "Shop Group", true, 2, false);
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShop(shop.ShopId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (usr != null && usr.UserId != 0)
-                {
-                    db.Users.Remove(usr);
-                    db.SaveChanges();
-                }
-
-                if (shop != null && shop.ShopId != 0)
-                {
-                    db.Shops.Remove(shop);
-                    db.SaveChanges();
-                }
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    SqlException error = ((SqlException)e.InnerException.InnerException);
-                    if (error.Number == 2627)
-                    {
-                        if (error.Message.Contains("CK_Shop_ShopNameEn"))
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Shop name has already been used");
-                        }
-                        else if (error.Message.Contains("CK_User_Email"))
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Email has already been used");
-                        }
-
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -661,7 +563,7 @@ namespace Colsp.Api.Controllers
                 {
                     db.Shops.Remove(shop);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -683,7 +585,7 @@ namespace Colsp.Api.Controllers
                 }
                 var shops = db.Shops.Where(w => shopIds.Contains(w.ShopId));
                 db.Shops.RemoveRange(shops);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
                 //db.Users.Remove()
             }
@@ -706,7 +608,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Shop not found");
                 }
                 shop.Status = status;
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Shop");
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

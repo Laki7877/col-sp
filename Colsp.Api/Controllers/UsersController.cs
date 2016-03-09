@@ -52,7 +52,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("This user is the shop owner and cannot be deleted. Please contact your administrator for more details.");
                 }
                 db.Users.RemoveRange(usr);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "User");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -163,8 +163,6 @@ namespace Colsp.Api.Controllers
                 usr.CreatedDt = DateTime.Now;
                 usr.UpdatedBy = this.User.UserRequest().Email;
                 usr.UpdatedDt = DateTime.Now;
-                db.Users.Add(usr);
-                db.SaveChanges();
                 if (request.UserGroup != null)
                 {
                     foreach (UserGroupRequest usrGrp in request.UserGroup)
@@ -173,51 +171,35 @@ namespace Colsp.Api.Controllers
                         {
                             throw new Exception("User group id is null");
                         }
-                        UserGroupMap map = new UserGroupMap();
-                        map.UserId = usr.UserId;
-                        map.GroupId = usrGrp.GroupId.Value;
-                        map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.UserRequest().Email;
-                        map.UpdatedDt = DateTime.Now;
-                        db.UserGroupMaps.Add(map);
+                        usr.UserGroupMaps.Add(new UserGroupMap()
+                        {
+                            GroupId = usrGrp.GroupId.Value,
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        });
                     }
                 }
-                UserShop shopMap = new UserShop();
-                shopMap.ShopId = this.User.ShopRequest().ShopId.Value;
-                shopMap.UserId = usr.UserId;
-                shopMap.CreatedBy = this.User.UserRequest().Email;
-                shopMap.CreatedDt = DateTime.Now;
-                shopMap.UpdatedBy = this.User.UserRequest().Email;
-                shopMap.UpdatedDt = DateTime.Now;
-                db.UserShops.Add(shopMap);
-                db.SaveChanges();
+                usr.UserShops.Add(new UserShop()
+                {
+                    ShopId = this.User.ShopRequest().ShopId.Value,
+                    UserId = usr.UserId,
+                    CreatedBy = this.User.UserRequest().Email,
+                    CreatedDt = DateTime.Now,
+                    UpdatedBy = this.User.UserRequest().Email,
+                    UpdatedDt = DateTime.Now,
+                });
+                db.Users.Add(usr);
+                Util.DeadlockRetry(db.SaveChanges, "User");
                 return GetUserSeller(usr.UserId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (usr != null && usr.UserId != 0)
-                {
-                    db.Users.Remove(usr);
-                    db.SaveChanges();
-                }
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "The Email already existed in the system. Please enter a different Email.");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
                 if (usr != null && usr.UserId != 0)
                 {
                     db.Users.Remove(usr);
-                    db.SaveChanges();
+                    Util.DeadlockRetry(db.SaveChanges, "User");
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
@@ -288,21 +270,8 @@ namespace Colsp.Api.Controllers
                 {
                     db.UserGroupMaps.RemoveRange(usrGrpList);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "User");
                 return GetUserSeller(usr.UserId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "The Email already existed in the system. Please enter a different Email.");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -404,8 +373,8 @@ namespace Colsp.Api.Controllers
                 usr.CreatedDt = DateTime.Now;
                 usr.UpdatedBy = this.User.UserRequest().Email;
                 usr.UpdatedDt = DateTime.Now;
-                db.Users.Add(usr);
-                db.SaveChanges();
+               
+
                 if(request.UserGroup != null)
                 {
                     foreach (UserGroupRequest usrGrp in request.UserGroup)
@@ -414,43 +383,26 @@ namespace Colsp.Api.Controllers
                         {
                             throw new Exception("User group id is null");
                         }
-                        UserGroupMap map = new UserGroupMap();
-                        map.UserId = usr.UserId;
-                        map.GroupId = usrGrp.GroupId.Value;
-                        map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.UserRequest().Email;
-                        map.UpdatedDt = DateTime.Now;
-                        db.UserGroupMaps.Add(map);
+                        usr.UserGroupMaps.Add(new UserGroupMap()
+                        {
+                            GroupId = usrGrp.GroupId.Value,
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        });
                     }
-                    db.SaveChanges();
                 }
+                db.Users.Add(usr);
+                Util.DeadlockRetry(db.SaveChanges, "User");
                 return GetUserAdmin(usr.UserId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (usr != null && usr.UserId != 0)
-                {
-                    db.Users.Remove(usr);
-                    db.SaveChanges();
-                }
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "The Email already existed in the system. Please enter a different Email.");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
                 if(usr != null && usr.UserId != 0)
                 {
                     db.Users.Remove(usr);
-                    db.SaveChanges();
+                    Util.DeadlockRetry(db.SaveChanges, "User");
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
@@ -525,21 +477,8 @@ namespace Colsp.Api.Controllers
                 {
                     db.UserGroupMaps.RemoveRange(usrGrpList);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "User");
                 return GetUserAdmin(usr.UserId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "The Email already existed in the system. Please enter a different Email.");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -564,7 +503,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("No deleted users found");
                 }
                 db.Users.RemoveRange(usr);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "User");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -760,7 +699,7 @@ namespace Colsp.Api.Controllers
                 string basicOld = Convert.ToBase64String(bytes);
                 userList[0].PasswordLastChg = userList[0].Password;
                 userList[0].Password = request.NewPassword;
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "User");
                 Cache.Delete(basicOld);
                 this.User.UserRequest().Password = userList[0].Password;
                 return Request.CreateResponse(HttpStatusCode.OK, Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Concat(userList[0].Email, ":", userList[0].Password))));

@@ -219,6 +219,7 @@
           <Property Name="ExpiryDate" Type="date" />
           <Property Name="ExpiryTime" Type="time" Precision="7" />
           <Property Name="CMSStatusFlowId" Type="int" />
+          <Property Name="Sequence" Type="int" />
         </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
@@ -339,6 +340,26 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSProductCategory">
+          <Key>
+            <PropertyRef Name="CMSProductCategoryId" />
+          </Key>
+          <Property Name="CMSProductCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
         </EntityType>
         <EntityType Name="CMSRelCollectionCategory">
           <Key>
@@ -739,6 +760,23 @@
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="Newsletter">
+          <Key>
+            <PropertyRef Name="NewsletterId" />
+          </Key>
+          <Property Name="NewsletterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="VisbleShopGroup" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="Permission">
           <Key>
             <PropertyRef Name="PermissionId" />
@@ -764,8 +802,8 @@
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Sku" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="Upc" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="OriginalPrice" Type="money" Nullable="false" />
-          <Property Name="SalePrice" Type="money" Nullable="false" />
+          <Property Name="OriginalPrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="SalePrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
@@ -773,7 +811,7 @@
           <Property Name="ShippingId" Type="int" Nullable="false" />
           <Property Name="ImageCount" Type="int" Nullable="false" />
           <Property Name="FeatureImgUrl" Type="nvarchar" MaxLength="2083" Nullable="false" />
-          <Property Name="PrepareDay" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="PrepareDay" Type="int" Nullable="false" />
           <Property Name="LimitIndividualDay" Type="bit" Nullable="false" />
           <Property Name="PrepareMon" Type="int" Nullable="false" />
           <Property Name="PrepareTue" Type="int" Nullable="false" />
@@ -812,14 +850,15 @@
         </EntityType>
         <EntityType Name="ProductAttribute">
           <Key>
-            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="Pid" />
             <PropertyRef Name="AttributeId" />
+            <PropertyRef Name="ValueEn" />
           </Key>
-          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="Pid" Type="int" Nullable="false" />
           <Property Name="AttributeId" Type="int" Nullable="false" />
-          <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="ValueEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="ValueTh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="IsAttributeValue" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
@@ -2027,20 +2066,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductAttribute_Product">
-          <End Role="Product" Type="Self.Product" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductAttribute">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ProductHistory_AttributeSet">
           <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="0..1" />
           <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
@@ -2636,9 +2661,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductShop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -2914,6 +2937,7 @@
           <EntitySet Name="CMSHistoryLog" EntityType="Self.CMSHistoryLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMainCategory" EntityType="Self.CMSMainCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMaster" EntityType="Self.CMSMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSProductCategory" EntityType="Self.CMSProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSRelCollectionCategory" EntityType="Self.CMSRelCollectionCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSRelCollectionGroup" EntityType="Self.CMSRelCollectionGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSStatusFlow" EntityType="Self.CMSStatusFlow" Schema="dbo" store:Type="Tables" />
@@ -2939,6 +2963,7 @@
           <EntitySet Name="LocalCategory" EntityType="Self.LocalCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCatFeatureProduct" EntityType="Self.LocalCatFeatureProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCatImage" EntityType="Self.LocalCatImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Newsletter" EntityType="Self.Newsletter" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductAttribute" EntityType="Self.ProductAttribute" Schema="dbo" store:Type="Tables" />
@@ -3093,10 +3118,6 @@
           <AssociationSet Name="FK_Product_AttributeSet" Association="Self.FK_Product_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
             <End Role="Product" EntitySet="Product" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductAttribute_Product" Association="Self.FK_ProductAttribute_Product">
-            <End Role="Product" EntitySet="Product" />
-            <End Role="ProductAttribute" EntitySet="ProductAttribute" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductHistory_AttributeSet" Association="Self.FK_ProductHistory_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSet" />
@@ -3390,6 +3411,7 @@
           <EntitySet Name="CMSHistoryLogs" EntityType="ColspModel.CMSHistoryLog" />
           <EntitySet Name="CMSMainCategories" EntityType="ColspModel.CMSMainCategory" />
           <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
+          <EntitySet Name="CMSProductCategories" EntityType="ColspModel.CMSProductCategory" />
           <EntitySet Name="CMSRelCollectionCategories" EntityType="ColspModel.CMSRelCollectionCategory" />
           <EntitySet Name="CMSRelCollectionGroups" EntityType="ColspModel.CMSRelCollectionGroup" />
           <EntitySet Name="CMSStatusFlows" EntityType="ColspModel.CMSStatusFlow" />
@@ -3415,6 +3437,7 @@
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
           <EntitySet Name="LocalCatFeatureProducts" EntityType="ColspModel.LocalCatFeatureProduct" />
           <EntitySet Name="LocalCatImages" EntityType="ColspModel.LocalCatImage" />
+          <EntitySet Name="Newsletters" EntityType="ColspModel.Newsletter" />
           <EntitySet Name="Permissions" EntityType="ColspModel.Permission" />
           <EntitySet Name="Products" EntityType="ColspModel.Product" />
           <EntitySet Name="ProductAttributes" EntityType="ColspModel.ProductAttribute" />
@@ -3697,10 +3720,6 @@
           <AssociationSet Name="FKUserGroupPermissionMapUserPermission" Association="ColspModel.FKUserGroupPermissionMapUserPermission">
             <End Role="Permission" EntitySet="Permissions" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductAttribute_Product" Association="ColspModel.FK_ProductAttribute_Product">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="ProductAttribute" EntitySet="ProductAttributes" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductTag_Product" Association="ColspModel.FK_ProductTag_Product">
             <End Role="Product" EntitySet="Products" />
@@ -4088,6 +4107,7 @@
           <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
           <Property Name="ExpiryTime" Type="Time" Precision="7" />
           <Property Name="CMSStatusFlowId" Type="Int32" />
+          <Property Name="Sequence" Type="Int32" />
         </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
@@ -4208,6 +4228,26 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSProductCategory">
+          <Key>
+            <PropertyRef Name="CMSProductCategoryId" />
+          </Key>
+          <Property Name="CMSProductCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
         </EntityType>
         <EntityType Name="CMSRelCollectionCategory">
           <Key>
@@ -4658,6 +4698,23 @@
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FK_LocalCatImage_GlobalCategory" FromRole="LocalCatImage" ToRole="LocalCategory" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_LocalCatImage_Shop" FromRole="LocalCatImage" ToRole="Shop" />
         </EntityType>
+        <EntityType Name="Newsletter">
+          <Key>
+            <PropertyRef Name="NewsletterId" />
+          </Key>
+          <Property Name="NewsletterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VisbleShopGroup" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="Permission">
           <Key>
             <PropertyRef Name="PermissionId" />
@@ -4685,8 +4742,8 @@
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Sku" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Upc" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="OriginalPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="SalePrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="OriginalPrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="SalePrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
           <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -4694,7 +4751,7 @@
           <Property Name="ShippingId" Type="Int32" Nullable="false" />
           <Property Name="ImageCount" Type="Int32" Nullable="false" />
           <Property Name="FeatureImgUrl" Type="String" Nullable="false" MaxLength="2083" FixedLength="false" Unicode="true" />
-          <Property Name="PrepareDay" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="PrepareDay" Type="Int32" Nullable="false" />
           <Property Name="LimitIndividualDay" Type="Boolean" Nullable="false" />
           <Property Name="PrepareMon" Type="Int32" Nullable="false" />
           <Property Name="PrepareTue" Type="Int32" Nullable="false" />
@@ -4734,7 +4791,6 @@
           <NavigationProperty Name="Brand" Relationship="ColspModel.FKProductBrand" FromRole="Product" ToRole="Brand" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FKProductGlobalCat" FromRole="Product" ToRole="GlobalCategory" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductLocalCat" FromRole="Product" ToRole="LocalCategory" />
-          <NavigationProperty Name="ProductAttributes" Relationship="ColspModel.FK_ProductAttribute_Product" FromRole="Product" ToRole="ProductAttribute" />
           <NavigationProperty Name="ProductTags" Relationship="ColspModel.FK_ProductTag_Product" FromRole="Product" ToRole="ProductTag" />
           <NavigationProperty Name="ProductGlobalCatMaps" Relationship="ColspModel.FKProductGlobalCatMapProduct" FromRole="Product" ToRole="ProductGlobalCatMap" />
           <NavigationProperty Name="ProductLocalCatMaps" Relationship="ColspModel.FKProductLocalCatMapProduct" FromRole="Product" ToRole="ProductLocalCatMap" />
@@ -4743,14 +4799,15 @@
         </EntityType>
         <EntityType Name="ProductAttribute">
           <Key>
-            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="Pid" />
             <PropertyRef Name="AttributeId" />
+            <PropertyRef Name="ValueEn" />
           </Key>
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Pid" Type="Int32" Nullable="false" />
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
-          <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="IsAttributeValue" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -4758,7 +4815,6 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductAttributeAttribute" FromRole="ProductAttribute" ToRole="Attribute" />
-          <NavigationProperty Name="Product" Relationship="ColspModel.FK_ProductAttribute_Product" FromRole="ProductAttribute" ToRole="Product" />
         </EntityType>
         <EntityType Name="ProductGlobalCatMap">
           <Key>
@@ -6447,20 +6503,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductAttribute_Product">
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="ColspModel.ProductAttribute" Role="ProductAttribute" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="ProductAttribute">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ProductTag_Product">
           <End Type="ColspModel.Product" Role="Product" Multiplicity="1" />
           <End Type="ColspModel.ProductTag" Role="ProductTag" Multiplicity="*" />
@@ -6512,9 +6554,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductShop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -7131,6 +7171,7 @@
           <EntitySetMapping Name="CMSCollectionCategories">
             <EntityTypeMapping TypeName="ColspModel.CMSCollectionCategory">
               <MappingFragment StoreEntitySet="CMSCollectionCategory">
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
                 <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
                 <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
@@ -7273,6 +7314,27 @@
                 <ScalarProperty Name="CMSNameTH" ColumnName="CMSNameTH" />
                 <ScalarProperty Name="CMSNameEN" ColumnName="CMSNameEN" />
                 <ScalarProperty Name="CMSId" ColumnName="CMSId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSProductCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSProductCategory">
+              <MappingFragment StoreEntitySet="CMSProductCategory">
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CMSProductCategoryId" ColumnName="CMSProductCategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7687,6 +7749,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Newsletters">
+            <EntityTypeMapping TypeName="ColspModel.Newsletter">
+              <MappingFragment StoreEntitySet="Newsletter">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="VisbleShopGroup" ColumnName="VisbleShopGroup" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="NewsletterId" ColumnName="NewsletterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Permissions">
             <EntityTypeMapping TypeName="ColspModel.Permission">
               <MappingFragment StoreEntitySet="Permission">
@@ -7769,11 +7849,11 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="IsAttributeValue" ColumnName="IsAttributeValue" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
-                <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
