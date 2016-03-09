@@ -29,7 +29,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
                 var attrList = from attr in db.Attributes
                                where !attr.Status.Equals(Constant.STATUS_REMOVE)
                                select new

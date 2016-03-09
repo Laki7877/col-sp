@@ -57,6 +57,7 @@ namespace Colsp.Api.Helpers
                 try
                 {
                     repositoryMethod();
+                    return;
                 }
                 catch (DbUpdateException e)
                 {
