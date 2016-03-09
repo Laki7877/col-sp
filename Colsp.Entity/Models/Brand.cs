@@ -30,7 +30,6 @@ namespace Colsp.Entity.Models
         public string BrandNameTh { get; set; }
         public string DisplayNameEn { get; set; }
         public string DisplayNameTh { get; set; }
-        public string Path { get; set; }
         public string PicUrl { get; set; }
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortEn { get; set; }

@@ -198,22 +198,22 @@ namespace Colsp.Api.Controllers
                 #endregion
 
                 category.Visibility = request.Visibility;
-                category.Status = request.Status;
+                category.Status = Constant.STATUS_ACTIVE;
                 category.CreatedBy = this.User.UserRequest().Email;
                 category.CreatedDt = DateTime.Now;
                 category.UpdatedBy = this.User.UserRequest().Email;
                 category.UpdatedDt = DateTime.Now;
                 
-                int? max = db.LocalCategories.Where(w=>w.ShopId==shopId).Max(m => m.Rgt);
-                if (max == null)
+                int max = db.LocalCategories.Where(w=>w.ShopId==shopId).Select(s=>s.Rgt).DefaultIfEmpty(0).Max();
+                if (max == 0)
                 {
                     category.Lft = 1;
                     category.Rgt = 2;
                 }
                 else
                 {
-                    category.Lft = max.Value + 1;
-                    category.Rgt = max.Value + 2;
+                    category.Lft = max + 1;
+                    category.Rgt = max + 2;
                 }
                 db.LocalCategories.Add(category);
                 db.SaveChanges();
@@ -560,7 +560,7 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find category " + catRq.CategoryId);
                     }
                     var child = catList.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt);
-                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility.Value; f.UpdatedBy = this.User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
+                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility ; f.UpdatedBy = this.User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
                 }
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -585,7 +585,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Cannot find category");
                     }
-                    int childSize = cat.Rgt.Value - cat.Lft.Value + 1;
+                    int childSize = cat.Rgt - cat.Lft + 1;
                     //delete
                     db.LocalCategories.Where(w => w.Rgt > cat.Rgt && w.ShopId==shopId).ToList()
                         .ForEach(e => { e.Lft = e.Lft > cat.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
@@ -652,11 +652,13 @@ namespace Colsp.Api.Controllers
         {
             category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true);
             category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
-            category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false);
-            category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false);
-            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false);
-            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false);
-            category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false);
+            category.UrlKeyEn = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, true,string.Empty);
+            category.UrlKeyTh = Validation.ValidateString(request.UrlKeyTh, "Url Key (Thai)", true, 100, true, string.Empty);
+            category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false, string.Empty);
+            category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false, string.Empty);
+            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, 500, false, string.Empty);
+            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, 500, false, string.Empty);
+            category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
         }
 

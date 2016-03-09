@@ -33,17 +33,16 @@ namespace Colsp.Entity.Models
         public string NameTh { get; set; }
         public string UrlKeyEn { get; set; }
         public string UrlKeyTh { get; set; }
-        public Nullable<int> ProductCount { get; set; }
-        public Nullable<int> ShopId { get; set; }
-        public Nullable<int> Lft { get; set; }
-        public Nullable<int> Rgt { get; set; }
+        public int ShopId { get; set; }
+        public int Lft { get; set; }
+        public int Rgt { get; set; }
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
-        public Nullable<bool> Visibility { get; set; }
+        public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
