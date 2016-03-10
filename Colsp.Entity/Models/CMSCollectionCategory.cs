@@ -15,7 +15,7 @@ namespace Colsp.Entity.Models
     public partial class CMSCollectionCategory
     {
         public int CMSCollectionCategoryId { get; set; }
-        public string CMSCollectionCategoryNameEH { get; set; }
+        public string CMSCollectionCategoryNameEN { get; set; }
         public string CMSCollectionCategoryNameTH { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
@@ -30,5 +30,6 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> ExpiryDate { get; set; }
         public Nullable<System.TimeSpan> ExpiryTime { get; set; }
         public Nullable<int> CMSStatusFlowId { get; set; }
+        public Nullable<int> Sequence { get; set; }
     }
 }

@@ -45,4 +45,44 @@ namespace Colsp.Model.Responses
         public DateTime CreateDate { get; set; }
     }
 
+    public partial class CMSRelProductCategoryResponse
+    {
+        public int CMSRelProductCategoryId { get; set; }
+        public Nullable<int> ProductId { get; set; }
+        public Nullable<bool> Status { get; set; }
+        public Nullable<int> Sequence { get; set; }
+        public Nullable<bool> Visibility { get; set; }
+        public Nullable<int> CreateBy { get; set; }
+        public Nullable<System.DateTime> Createdate { get; set; }
+        public Nullable<int> UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public string CreateIP { get; set; }
+        public string UpdateIP { get; set; }
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+        public Nullable<int> CMSCollectionCategoryId { get; set; }
+    }
+    public class CMSCollectionCategoryResponse
+    {
+        public int CMSCollectionCategoryId { get; set; }
+        public string CMSCollectionCategoryNameEH { get; set; }
+        public string CMSCollectionCategoryNameTH { get; set; }
+        public Nullable<bool> Status { get; set; }
+        public Nullable<bool> Visibility { get; set; }
+        public Nullable<int> CreateBy { get; set; }
+        public Nullable<System.DateTime> Createdate { get; set; }
+        public Nullable<int> UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public string CreateIP { get; set; }
+        public string UpdateIP { get; set; }
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+        public Nullable<int> CMSStatusFlowId { get; set; }
+        public Nullable<int> Sequence { get; set; }
+        public List<CMSRelProductCategoryResponse> CMSRelProductCategory { get; set; }
+    }
 }

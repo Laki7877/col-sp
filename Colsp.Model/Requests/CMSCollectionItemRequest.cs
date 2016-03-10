@@ -40,7 +40,5 @@ namespace Colsp.Model.Requests
         public string ProductBoxBadge { get; set; }
         public Nullable<int> Sequence { get; set; }
         public Nullable<bool> Status { get; set; }
-    
-    }
-
+    }    
 }

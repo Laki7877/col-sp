@@ -109,25 +109,24 @@
           </Key>
           <Property Name="BrandId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BrandNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" />
-          <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="300" />
-          <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="300" />
-          <Property Name="Path" Type="nvarchar" MaxLength="500" />
-          <Property Name="PicUrl" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullEn" Type="ntext" />
-          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="ntext" />
-          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
-          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="PicUrl" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
-          <Property Name="MetaTitleEn" Type="nvarchar" MaxLength="60" />
-          <Property Name="MetaTitleTh" Type="nvarchar" MaxLength="60" />
-          <Property Name="MetaDescriptionEn" Type="nvarchar" MaxLength="150" />
-          <Property Name="MetaDescriptionTh" Type="nvarchar" MaxLength="150" />
-          <Property Name="MetaKeyEn" Type="nvarchar" MaxLength="630" />
-          <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" />
-          <Property Name="UrlEn" Type="nvarchar" MaxLength="300" />
-          <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="MetaTitleEn" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="MetaTitleTh" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="MetaDescriptionEn" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="MetaDescriptionTh" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="MetaKeyEn" Type="nvarchar" MaxLength="630" Nullable="false" />
+          <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" Nullable="false" />
+          <Property Name="UrlEn" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -205,7 +204,7 @@
             <PropertyRef Name="CMSCollectionCategoryId" />
           </Key>
           <Property Name="CMSCollectionCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSCollectionCategoryNameEH" Type="nvarchar" MaxLength="100" />
+          <Property Name="CMSCollectionCategoryNameEN" Type="nvarchar" MaxLength="100" />
           <Property Name="CMSCollectionCategoryNameTH" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
@@ -220,6 +219,7 @@
           <Property Name="ExpiryDate" Type="date" />
           <Property Name="ExpiryTime" Type="time" Precision="7" />
           <Property Name="CMSStatusFlowId" Type="int" />
+          <Property Name="Sequence" Type="int" />
         </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
@@ -372,6 +372,27 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSRelProductCategory">
+          <Key>
+            <PropertyRef Name="CMSRelProductCategoryId" />
+          </Key>
+          <Property Name="CMSRelProductCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="CMSCollectionCategoryId" Type="int" />
         </EntityType>
         <EntityType Name="CMSStatusFlow">
           <Key>
@@ -573,17 +594,16 @@
           <Property Name="CategoryAbbreviation" Type="char" MaxLength="2" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
-          <Property Name="ProductCount" Type="int" />
-          <Property Name="Lft" Type="int" />
-          <Property Name="Rgt" Type="int" />
-          <Property Name="DescriptionFullEn" Type="ntext" />
-          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="ntext" />
-          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
-          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="Lft" Type="int" Nullable="false" />
+          <Property Name="Rgt" Type="int" Nullable="false" />
+          <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="Visibility" Type="bit" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -651,16 +671,15 @@
           </Key>
           <Property Name="Pid" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
-          <Property Name="QuantityOutStock" Type="int" />
           <Property Name="Defect" Type="int" Nullable="false" />
           <Property Name="OnHold" Type="int" Nullable="false" />
           <Property Name="Reserve" Type="int" Nullable="false" />
-          <Property Name="MinQuantity" Type="int" />
-          <Property Name="MaxQuantity" Type="int" />
-          <Property Name="UseDecimal" Type="bit" />
-          <Property Name="SafetyStockSeller" Type="int" />
-          <Property Name="SafetyStockAdmin" Type="int" />
-          <Property Name="StockAvailable" Type="int" />
+          <Property Name="MinQuantity" Type="int" Nullable="false" />
+          <Property Name="MaxQuantity" Type="int" Nullable="false" />
+          <Property Name="UseDecimal" Type="bit" Nullable="false" />
+          <Property Name="SafetyStockSeller" Type="int" Nullable="false" />
+          <Property Name="SafetyStockAdmin" Type="int" Nullable="false" />
+          <Property Name="StockAvailable" Type="int" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -694,19 +713,18 @@
           <Property Name="NameEn" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="NameTh" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" />
-          <Property Name="ProductCount" Type="int" />
-          <Property Name="ShopId" Type="int" />
-          <Property Name="Lft" Type="int" />
-          <Property Name="Rgt" Type="int" />
-          <Property Name="DescriptionFullEn" Type="ntext" />
-          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" />
-          <Property Name="DescriptionFullTh" Type="ntext" />
-          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" />
-          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="UrlKeyTh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="Lft" Type="int" Nullable="false" />
+          <Property Name="Rgt" Type="int" Nullable="false" />
+          <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="Visibility" Type="bit" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -743,6 +761,22 @@
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="Newsletter">
+          <Key>
+            <PropertyRef Name="NewsletterId" />
+          </Key>
+          <Property Name="NewsletterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="VisbleShopGroup" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="Permission">
           <Key>
             <PropertyRef Name="PermissionId" />
@@ -768,8 +802,8 @@
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Sku" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="Upc" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="OriginalPrice" Type="money" Nullable="false" />
-          <Property Name="SalePrice" Type="money" Nullable="false" />
+          <Property Name="OriginalPrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="SalePrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
@@ -777,7 +811,7 @@
           <Property Name="ShippingId" Type="int" Nullable="false" />
           <Property Name="ImageCount" Type="int" Nullable="false" />
           <Property Name="FeatureImgUrl" Type="nvarchar" MaxLength="2083" Nullable="false" />
-          <Property Name="PrepareDay" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="PrepareDay" Type="int" Nullable="false" />
           <Property Name="LimitIndividualDay" Type="bit" Nullable="false" />
           <Property Name="PrepareMon" Type="int" Nullable="false" />
           <Property Name="PrepareTue" Type="int" Nullable="false" />
@@ -818,12 +852,15 @@
           <Key>
             <PropertyRef Name="Pid" />
             <PropertyRef Name="AttributeId" />
+            <PropertyRef Name="ValueEn" />
           </Key>
-          <Property Name="Pid" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Pid" Type="int" Nullable="false" />
           <Property Name="AttributeId" Type="int" Nullable="false" />
-          <Property Name="ValueEn" Type="nvarchar" MaxLength="100" />
-          <Property Name="ValueTh" Type="nvarchar" MaxLength="100" />
-          <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="ValueEn" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ValueTh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
+          <Property Name="IsAttributeValue" Type="bit" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -2332,7 +2369,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKLocalCategoryShop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="*" />
@@ -2614,9 +2651,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductShop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -2894,6 +2929,7 @@
           <EntitySet Name="CMSMaster" EntityType="Self.CMSMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSRelCollectionCategory" EntityType="Self.CMSRelCollectionCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSRelCollectionGroup" EntityType="Self.CMSRelCollectionGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSRelProductCategory" EntityType="Self.CMSRelProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSStatusFlow" EntityType="Self.CMSStatusFlow" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSType" EntityType="Self.CMSType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Coupon" EntityType="Self.Coupon" Schema="dbo" store:Type="Tables" />
@@ -2917,6 +2953,7 @@
           <EntitySet Name="LocalCategory" EntityType="Self.LocalCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCatFeatureProduct" EntityType="Self.LocalCatFeatureProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCatImage" EntityType="Self.LocalCatImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Newsletter" EntityType="Self.Newsletter" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductAttribute" EntityType="Self.ProductAttribute" Schema="dbo" store:Type="Tables" />
@@ -3365,6 +3402,7 @@
           <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
           <EntitySet Name="CMSRelCollectionCategories" EntityType="ColspModel.CMSRelCollectionCategory" />
           <EntitySet Name="CMSRelCollectionGroups" EntityType="ColspModel.CMSRelCollectionGroup" />
+          <EntitySet Name="CMSRelProductCategories" EntityType="ColspModel.CMSRelProductCategory" />
           <EntitySet Name="CMSStatusFlows" EntityType="ColspModel.CMSStatusFlow" />
           <EntitySet Name="CMSTypes" EntityType="ColspModel.CMSType" />
           <EntitySet Name="Coupons" EntityType="ColspModel.Coupon" />
@@ -3388,6 +3426,7 @@
           <EntitySet Name="LocalCategories" EntityType="ColspModel.LocalCategory" />
           <EntitySet Name="LocalCatFeatureProducts" EntityType="ColspModel.LocalCatFeatureProduct" />
           <EntitySet Name="LocalCatImages" EntityType="ColspModel.LocalCatImage" />
+          <EntitySet Name="Newsletters" EntityType="ColspModel.Newsletter" />
           <EntitySet Name="Permissions" EntityType="ColspModel.Permission" />
           <EntitySet Name="Products" EntityType="ColspModel.Product" />
           <EntitySet Name="ProductAttributes" EntityType="ColspModel.ProductAttribute" />
@@ -3935,25 +3974,24 @@
           </Key>
           <Property Name="BrandId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="BrandNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BrandNameTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="DisplayNameEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="DisplayNameTh" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="PicUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="FeatureTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BrandNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameTh" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="PicUrl" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
-          <Property Name="MetaTitleEn" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
-          <Property Name="MetaTitleTh" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
-          <Property Name="MetaDescriptionEn" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="MetaDescriptionTh" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="MetaKeyEn" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
-          <Property Name="MetaKeyTh" Type="String" MaxLength="630" FixedLength="false" Unicode="true" />
-          <Property Name="UrlEn" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="MetaTitleEn" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitleTh" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionEn" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionTh" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyEn" Type="String" Nullable="false" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyTh" Type="String" Nullable="false" MaxLength="630" FixedLength="false" Unicode="true" />
+          <Property Name="UrlEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -4042,7 +4080,7 @@
             <PropertyRef Name="CMSCollectionCategoryId" />
           </Key>
           <Property Name="CMSCollectionCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSCollectionCategoryNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSCollectionCategoryNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CMSCollectionCategoryNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
@@ -4057,6 +4095,7 @@
           <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
           <Property Name="ExpiryTime" Type="Time" Precision="7" />
           <Property Name="CMSStatusFlowId" Type="Int32" />
+          <Property Name="Sequence" Type="Int32" />
         </EntityType>
         <EntityType Name="CMSCollectionGroup">
           <Key>
@@ -4209,6 +4248,27 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSRelProductCategory">
+          <Key>
+            <PropertyRef Name="CMSRelProductCategoryId" />
+          </Key>
+          <Property Name="CMSRelProductCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="CMSCollectionCategoryId" Type="Int32" />
         </EntityType>
         <EntityType Name="CMSStatusFlow">
           <Key>
@@ -4429,17 +4489,16 @@
           <Property Name="CategoryAbbreviation" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="UrlKeyEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ProductCount" Type="Int32" />
-          <Property Name="Lft" Type="Int32" />
-          <Property Name="Rgt" Type="Int32" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="FeatureTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Lft" Type="Int32" Nullable="false" />
+          <Property Name="Rgt" Type="Int32" Nullable="false" />
+          <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="Visibility" Type="Boolean" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -4523,16 +4582,15 @@
           </Key>
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="QuantityOutStock" Type="Int32" />
           <Property Name="Defect" Type="Int32" Nullable="false" />
           <Property Name="OnHold" Type="Int32" Nullable="false" />
           <Property Name="Reserve" Type="Int32" Nullable="false" />
-          <Property Name="MinQuantity" Type="Int32" />
-          <Property Name="MaxQuantity" Type="Int32" />
-          <Property Name="UseDecimal" Type="Boolean" />
-          <Property Name="SafetyStockSeller" Type="Int32" />
-          <Property Name="SafetyStockAdmin" Type="Int32" />
-          <Property Name="StockAvailable" Type="Int32" />
+          <Property Name="MinQuantity" Type="Int32" Nullable="false" />
+          <Property Name="MaxQuantity" Type="Int32" Nullable="false" />
+          <Property Name="UseDecimal" Type="Boolean" Nullable="false" />
+          <Property Name="SafetyStockSeller" Type="Int32" Nullable="false" />
+          <Property Name="SafetyStockAdmin" Type="Int32" Nullable="false" />
+          <Property Name="StockAvailable" Type="Int32" Nullable="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -4566,19 +4624,18 @@
           <Property Name="NameEn" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NameTh" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="UrlKeyTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ProductCount" Type="Int32" />
-          <Property Name="ShopId" Type="Int32" />
-          <Property Name="Lft" Type="Int32" />
-          <Property Name="Rgt" Type="Int32" />
-          <Property Name="DescriptionFullEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionFullTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="FeatureTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UrlKeyTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="Lft" Type="Int32" Nullable="false" />
+          <Property Name="Rgt" Type="Int32" Nullable="false" />
+          <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="Visibility" Type="Boolean" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -4630,6 +4687,22 @@
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FK_LocalCatImage_GlobalCategory" FromRole="LocalCatImage" ToRole="LocalCategory" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_LocalCatImage_Shop" FromRole="LocalCatImage" ToRole="Shop" />
         </EntityType>
+        <EntityType Name="Newsletter">
+          <Key>
+            <PropertyRef Name="NewsletterId" />
+          </Key>
+          <Property Name="NewsletterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VisbleShopGroup" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="Permission">
           <Key>
             <PropertyRef Name="PermissionId" />
@@ -4657,8 +4730,8 @@
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Sku" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Upc" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="OriginalPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="SalePrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="OriginalPrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="SalePrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
           <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -4666,7 +4739,7 @@
           <Property Name="ShippingId" Type="Int32" Nullable="false" />
           <Property Name="ImageCount" Type="Int32" Nullable="false" />
           <Property Name="FeatureImgUrl" Type="String" Nullable="false" MaxLength="2083" FixedLength="false" Unicode="true" />
-          <Property Name="PrepareDay" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="PrepareDay" Type="Int32" Nullable="false" />
           <Property Name="LimitIndividualDay" Type="Boolean" Nullable="false" />
           <Property Name="PrepareMon" Type="Int32" Nullable="false" />
           <Property Name="PrepareTue" Type="Int32" Nullable="false" />
@@ -4716,12 +4789,15 @@
           <Key>
             <PropertyRef Name="Pid" />
             <PropertyRef Name="AttributeId" />
+            <PropertyRef Name="ValueEn" />
           </Key>
-          <Property Name="Pid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pid" Type="Int32" Nullable="false" />
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
-          <Property Name="ValueEn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ValueTh" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
+          <Property Name="IsAttributeValue" Type="Boolean" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -6260,7 +6336,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKLocalCategoryShop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Type="ColspModel.LocalCategory" Role="LocalCategory" Multiplicity="*" />
@@ -6456,9 +6532,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductShop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -6996,7 +7070,6 @@
                 <ScalarProperty Name="DescriptionShortEn" ColumnName="DescriptionShortEn" />
                 <ScalarProperty Name="DescriptionFullEn" ColumnName="DescriptionFullEn" />
                 <ScalarProperty Name="PicUrl" ColumnName="PicUrl" />
-                <ScalarProperty Name="Path" ColumnName="Path" />
                 <ScalarProperty Name="DisplayNameTh" ColumnName="DisplayNameTh" />
                 <ScalarProperty Name="DisplayNameEn" ColumnName="DisplayNameEn" />
                 <ScalarProperty Name="BrandNameTh" ColumnName="BrandNameTh" />
@@ -7076,6 +7149,7 @@
           <EntitySetMapping Name="CMSCollectionCategories">
             <EntityTypeMapping TypeName="ColspModel.CMSCollectionCategory">
               <MappingFragment StoreEntitySet="CMSCollectionCategory">
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
                 <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
                 <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
@@ -7090,7 +7164,7 @@
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="CMSCollectionCategoryNameTH" ColumnName="CMSCollectionCategoryNameTH" />
-                <ScalarProperty Name="CMSCollectionCategoryNameEH" ColumnName="CMSCollectionCategoryNameEH" />
+                <ScalarProperty Name="CMSCollectionCategoryNameEN" ColumnName="CMSCollectionCategoryNameEN" />
                 <ScalarProperty Name="CMSCollectionCategoryId" ColumnName="CMSCollectionCategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -7252,6 +7326,28 @@
                 <ScalarProperty Name="CMSId" ColumnName="CMSId" />
                 <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
                 <ScalarProperty Name="CMSRelCollectionGroupId" ColumnName="CMSRelCollectionGroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSRelProductCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSRelProductCategory">
+              <MappingFragment StoreEntitySet="CMSRelProductCategory">
+                <ScalarProperty Name="CMSCollectionCategoryId" ColumnName="CMSCollectionCategoryId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CMSRelProductCategoryId" ColumnName="CMSRelProductCategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7466,7 +7562,6 @@
                 <ScalarProperty Name="DescriptionFullEn" ColumnName="DescriptionFullEn" />
                 <ScalarProperty Name="Rgt" ColumnName="Rgt" />
                 <ScalarProperty Name="Lft" ColumnName="Lft" />
-                <ScalarProperty Name="ProductCount" ColumnName="ProductCount" />
                 <ScalarProperty Name="UrlKeyTh" ColumnName="UrlKeyTh" />
                 <ScalarProperty Name="UrlKeyEn" ColumnName="UrlKeyEn" />
                 <ScalarProperty Name="CategoryAbbreviation" ColumnName="CategoryAbbreviation" />
@@ -7552,7 +7647,6 @@
                 <ScalarProperty Name="Reserve" ColumnName="Reserve" />
                 <ScalarProperty Name="OnHold" ColumnName="OnHold" />
                 <ScalarProperty Name="Defect" ColumnName="Defect" />
-                <ScalarProperty Name="QuantityOutStock" ColumnName="QuantityOutStock" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
               </MappingFragment>
@@ -7597,7 +7691,6 @@
                 <ScalarProperty Name="Rgt" ColumnName="Rgt" />
                 <ScalarProperty Name="Lft" ColumnName="Lft" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
-                <ScalarProperty Name="ProductCount" ColumnName="ProductCount" />
                 <ScalarProperty Name="UrlKeyTh" ColumnName="UrlKeyTh" />
                 <ScalarProperty Name="UrlKeyEn" ColumnName="UrlKeyEn" />
                 <ScalarProperty Name="NameTh" ColumnName="NameTh" />
@@ -7632,6 +7725,23 @@
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="CategoryImageId" ColumnName="CategoryImageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Newsletters">
+            <EntityTypeMapping TypeName="ColspModel.Newsletter">
+              <MappingFragment StoreEntitySet="Newsletter">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="VisbleShopGroup" ColumnName="VisbleShopGroup" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="NewsletterId" ColumnName="NewsletterId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7716,6 +7826,8 @@
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsAttributeValue" ColumnName="IsAttributeValue" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />

@@ -638,5 +638,262 @@ namespace Colsp.Api.CMSFunction
 
 
         #endregion
+
+        #region new CMS CATE/COL/GROUP
+        public int CreateCMSCollectionCategory(CMSCollectionCategoryRequest Model)
+        {
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        CMSCollectionCategory cms = new CMSCollectionCategory();
+                      //cms.CMSCollectionCategoryId       = Model.CMSCollectionCategoryId     ;
+                      cms.CMSCollectionCategoryNameEN   = Model.CMSCollectionCategoryNameEN ;
+                      cms.CMSCollectionCategoryNameTH   = Model.CMSCollectionCategoryNameTH ;
+                      cms.Status                        = Model.Status                      ;
+                      cms.Visibility                    = Model.Visibility                  ;
+                      cms.CreateBy                      = Model.CreateBy                    ;
+                      cms.Createdate                    = DateTime.Now                  ;
+                      cms.UpdateBy                      = Model.UpdateBy                    ;
+                      cms.UpdateDate                    = DateTime.Now                  ;
+                      cms.CreateIP                      = Model.CreateIP                    ;
+                      cms.UpdateIP                      = Model.UpdateIP                    ;
+                      cms.EffectiveDate                 = Model.EffectiveDate               ;
+                      cms.EffectiveTime                 = Model.EffectiveTime               ;
+                      cms.ExpiryDate                    = Model.ExpiryDate                  ;
+                      cms.ExpiryTime                    = Model.ExpiryTime                  ;
+                      cms.CMSStatusFlowId               = Model.CMSStatusFlowId             ;
+                      cms.Sequence                      = Model.Sequence                    ;
+
+                        db.CMSCollectionCategories.Add(cms);
+                        if (db.SaveChanges() > 0) //Saved return row save successfully.
+                        {
+                            foreach (var item in Model.CMSRelProductCategory)
+                            {
+                                CMSRelProductCategory cmsRel = new CMSRelProductCategory();
+                                //cmsRel.CMSRelProductCategoryId  = item.CMSRelProductCategoryId ;
+                                cmsRel.ProductId                = item.ProductId               ;
+                                cmsRel.Status                   = true ;                // item.Status                  ;
+                                cmsRel.Sequence                 = item.Sequence                ;
+                                cmsRel.Visibility               = item.Visibility              ;
+                                cmsRel.CreateBy                 = Model.CreateBy    ;//item.CreateBy                ;
+                                cmsRel.Createdate               = Model.Createdate  ;//item.Createdate              ;
+                                cmsRel.UpdateBy                 = Model.UpdateBy    ;//item.UpdateBy                ;
+                                cmsRel.UpdateDate               = Model.UpdateDate  ;//item.UpdateDate              ;
+                                cmsRel.CreateIP                 = Model.CreateIP    ;//item.CreateIP                ;
+                                cmsRel.UpdateIP                 = Model.UpdateIP    ;//item.UpdateIP                ;
+                                cmsRel.EffectiveDate            = null              ;//item.EffectiveDate           ;
+                                cmsRel.EffectiveTime            = null              ;//item.EffectiveTime           ;
+                                cmsRel.ExpiryDate               = null              ;//item.ExpiryDate              ;
+                                cmsRel.ExpiryTime               = null              ;//item.ExpiryTime              ;
+                                cmsRel.CMSCollectionCategoryId = cms.CMSCollectionCategoryId    ;
+                                db.CMSRelProductCategories.Add(cmsRel);
+                                db.SaveChanges();
+                            }
+                            result = cms.CMSCollectionCategoryId;
+                            dbcxtransaction.Commit();
+                            //History Log
+                            HistoryLogClass log = new HistoryLogClass();
+                            log.LogCreateCMS(cms.CMSCollectionCategoryId, "CMSMainCategory", (bool)cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
+                        }
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbcxtransaction.Rollback();
+                        return result;
+                    }
+                }
+            }
+
+        }
+
+        public int EditCMSCollectionCategory(CMSCollectionCategoryRequest Model)
+        {
+            var modelItem = Model;
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    //foreach (var modelItem in Model) {
+                    try
+                    {
+                        var cms = db.CMSCollectionCategories.Where(c => c.CMSCollectionCategoryId == modelItem.CMSCollectionCategoryId).FirstOrDefault();
+                        if (cms != null)
+                        {                                                        
+                            cms.CMSCollectionCategoryNameEN = Model.CMSCollectionCategoryNameEN != default(string) ? Model.CMSCollectionCategoryNameEN : null ;
+                            cms.CMSCollectionCategoryNameTH = Model.CMSCollectionCategoryNameTH != default(string) ? Model.CMSCollectionCategoryNameTH : null;
+                            cms.Status                      = Model.Status ?? null;
+                            cms.Visibility                  = Model.Visibility ?? null;
+                            cms.CreateBy                    = Model.CreateBy ?? null;
+                            cms.Createdate                  = Model.Createdate ?? null;
+                            cms.UpdateBy                    = Model.UpdateBy ?? null;
+                            cms.UpdateDate                  = Model.UpdateDate ?? null;
+                            cms.CreateIP                    = Model.CreateIP != default(string) ? Model.CreateIP : null;
+                            cms.UpdateIP                    = Model.UpdateIP != default(string) ? Model.UpdateIP : null;
+                            cms.EffectiveDate               = Model.EffectiveDate ?? null;
+                            cms.EffectiveTime               = Model.EffectiveTime ?? null;
+                            cms.ExpiryDate                  = Model.ExpiryDate ?? null;
+                            cms.ExpiryTime                  = Model.ExpiryTime ?? null;
+                            cms.CMSStatusFlowId             = Model.CMSStatusFlowId ?? null;
+                            cms.Sequence                    = Model.Sequence  ?? null                  ;
+
+                            db.Entry(cms).State = EntityState.Modified;
+                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            {
+                                //clrear all status like del all
+                                foreach (var item in Model.CMSRelProductCategory)
+                                {
+                                    var cItem = db.CMSRelProductCategories.Where(c => c.CMSRelProductCategoryId == item.CMSRelProductCategoryId).FirstOrDefault();
+                                    if (cItem != null)
+                                    {
+                                        cItem.Status = false;
+                                    }
+                                    db.Entry(cItem).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                };
+
+                                foreach (var item in Model.CMSRelProductCategory)
+                                {
+                                    var cItem = db.CMSRelProductCategories.Where(c => c.CMSRelProductCategoryId == item.CMSRelProductCategoryId).FirstOrDefault();
+                                    if (cItem != null)
+                                    {                                      
+                                        cItem.Status                        = true ;
+                                        cItem.Visibility                    = item.Visibility ?? false ;
+                                        cItem.CreateBy                      = item.CreateBy ?? null ;
+                                        cItem.Createdate                    = item.Createdate ?? null ;
+                                        cItem.UpdateBy                      = item.UpdateBy ?? null ;
+                                        cItem.UpdateDate                    = item.UpdateDate ?? null ;
+                                        cItem.CreateIP                      = item.CreateIP != default(string) ? cms.CreateIP : null ;
+                                        cItem.UpdateIP                      = item.UpdateIP != default(string) ? cms.UpdateIP : null ;
+                                        cItem.EffectiveDate                 = item.EffectiveDate.HasValue ? cms.EffectiveDate : null ;
+                                        cItem.EffectiveTime                 = item.EffectiveTime.HasValue ? cms.EffectiveTime : null ;
+                                        cItem.ExpiryDate                    = item.ExpiryDate.HasValue ? cms.ExpiryDate : null ;
+                                        cItem.ExpiryTime                    = item.ExpiryTime.HasValue ? cms.ExpiryTime : null ;
+                                        cItem.ProductId                     = item.ProductId ?? null ;
+                                        cItem.Sequence                      = item.Sequence ?? null;
+
+                                        db.Entry(cItem).State = EntityState.Modified;
+                                        db.SaveChanges();
+                                        
+                                        //History Log
+                                        HistoryLogClass log = new HistoryLogClass();
+                                        log.LogCreateCMS(cms.CMSCollectionCategoryId, "CMSMainCategory", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);                                       
+                                    }
+                                }
+                                
+                                result = cms.CMSCollectionCategoryId;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        dbcxtransaction.Rollback();
+                        return result;
+                    }
+                    //}
+                    dbcxtransaction.Commit();
+                    return result;
+                }//end db transaction
+            }
+
+        }
+
+        public int UpdateCMSCollectionCategory(CMSCollectionCategoryRequest Model)
+        {
+            var modelItem = Model;
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    //foreach (var modelItem in Model) {
+                    try
+                    {
+                        var cms = db.CMSCollectionCategories.Where(c => c.CMSCollectionCategoryId == modelItem.CMSCollectionCategoryId).FirstOrDefault();
+                        if (cms != null)
+                        {
+                            cms.CMSCollectionCategoryNameEN = Model.CMSCollectionCategoryNameEN != default(string) ? Model.CMSCollectionCategoryNameEN : cms.CMSCollectionCategoryNameEN;
+                            cms.CMSCollectionCategoryNameTH = Model.CMSCollectionCategoryNameTH != default(string) ? Model.CMSCollectionCategoryNameTH : cms.CMSCollectionCategoryNameTH;
+                            cms.Status = Model.Status ?? cms.Status;
+                            cms.Visibility = Model.Visibility ?? cms.Visibility;
+                            cms.CreateBy = Model.CreateBy ?? cms.CreateBy;
+                            cms.Createdate = Model.Createdate ?? cms.Createdate;
+                            cms.UpdateBy = Model.UpdateBy ?? cms.UpdateBy;
+                            cms.UpdateDate = Model.UpdateDate ?? cms.UpdateDate;
+                            cms.CreateIP = Model.CreateIP != default(string) ? Model.CreateIP : cms.CreateIP;
+                            cms.UpdateIP = Model.UpdateIP != default(string) ? Model.UpdateIP : cms.UpdateIP;
+                            cms.EffectiveDate = Model.EffectiveDate ?? cms.EffectiveDate;
+                            cms.EffectiveTime = Model.EffectiveTime ?? cms.EffectiveTime;
+                            cms.ExpiryDate = Model.ExpiryDate ?? cms.ExpiryDate;
+                            cms.ExpiryTime = Model.ExpiryTime ?? cms.ExpiryTime;
+                            cms.CMSStatusFlowId = Model.CMSStatusFlowId ?? cms.CMSStatusFlowId;
+                            cms.Sequence = Model.Sequence ?? cms.Sequence;
+
+                            db.Entry(cms).State = EntityState.Modified;
+                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            {
+                                //clrear all status like del all
+                                foreach (var item in Model.CMSRelProductCategory)
+                                {
+                                    var cItem = db.CMSRelProductCategories.Where(c => c.CMSRelProductCategoryId == item.CMSRelProductCategoryId).FirstOrDefault();
+                                    if (cItem != null)
+                                    {
+                                        cItem.Status = false;
+                                    }
+                                    db.Entry(cItem).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                };
+
+                                foreach (var item in Model.CMSRelProductCategory)
+                                {
+                                    var cItem = db.CMSRelProductCategories.Where(c => c.CMSRelProductCategoryId == item.CMSRelProductCategoryId).FirstOrDefault();
+                                    if (cItem != null)
+                                    {
+                                        cItem.Status = true;
+                                        cItem.Visibility = item.Visibility ?? cItem.Visibility;
+                                        cItem.CreateBy = item.CreateBy ?? cItem.CreateBy;
+                                        cItem.Createdate = item.Createdate ?? cItem.Createdate;
+                                        cItem.UpdateBy = item.UpdateBy ?? cItem.UpdateBy;
+                                        cItem.UpdateDate = item.UpdateDate ?? cItem.UpdateDate;
+                                        cItem.CreateIP = item.CreateIP != default(string) ? cms.CreateIP : cItem.CreateIP;
+                                        cItem.UpdateIP = item.UpdateIP != default(string) ? cms.UpdateIP : cItem.UpdateIP;
+                                        cItem.EffectiveDate = item.EffectiveDate.HasValue ? cms.EffectiveDate : cItem.EffectiveDate;
+                                        cItem.EffectiveTime = item.EffectiveTime.HasValue ? cms.EffectiveTime : cItem.EffectiveTime;
+                                        cItem.ExpiryDate = item.ExpiryDate.HasValue ? cms.ExpiryDate : cItem.ExpiryDate;
+                                        cItem.ExpiryTime = item.ExpiryTime.HasValue ? cms.ExpiryTime : cItem.ExpiryTime;
+                                        cItem.ProductId = item.ProductId ?? cItem.ProductId;
+                                        cItem.Sequence = item.Sequence ?? cItem.Sequence;
+
+                                        db.Entry(cItem).State = EntityState.Modified;
+                                        db.SaveChanges();
+
+                                        //History Log
+                                        HistoryLogClass log = new HistoryLogClass();
+                                        log.LogCreateCMS(cms.CMSCollectionCategoryId, "CMSMainCategory", cms.Status, "Update", (int)cms.UpdateBy, cms.UpdateIP);
+                                    }
+                                }
+
+                                result = cms.CMSCollectionCategoryId;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        dbcxtransaction.Rollback();
+                        return result;
+                    }
+                    //}
+                    dbcxtransaction.Commit();
+                    return result;
+                }//end db transaction
+            }
+
+        }
+        #endregion
     }
 }
