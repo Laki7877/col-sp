@@ -46,26 +46,16 @@
     <Compile Include="Requests\AttributeSetRequest.cs" />
     <Compile Include="Requests\AttributeValueRequest.cs" />
     <Compile Include="Requests\BrandRequest.cs" />
-    <Compile Include="Requests\By1Get1ItemRequest.cs" />
     <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
-    <Compile Include="Requests\CMSBrandInShopRequest.cs" />
-    <Compile Include="Requests\CMSCollectionItemRequest.cs" />
-    <Compile Include="Requests\CMSMainCategoryRequest.cs" />
-    <Compile Include="Requests\CMSSearchForAddRequest.cs" />
-    <Compile Include="Requests\CMSCollectionRequest.cs" />
-    <Compile Include="Requests\GeneralSearchRequest.cs" />
-    <Compile Include="Requests\CMSShopRequest.cs" />
-    <Compile Include="Requests\CollectionListRequest.cs" />
     <Compile Include="Requests\CouponRequest.cs" />
     <Compile Include="Requests\CSVTemplateRequest.cs" />
     <Compile Include="Requests\ExportRequest.cs" />
     <Compile Include="Requests\ImageRequest.cs" />
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
-    <Compile Include="Requests\OnTopCreditCardListRequest.cs" />
+    <Compile Include="Requests\NewsletterRequest.cs" />
     <Compile Include="Requests\OnBoardRequest.cs" />
-    <Compile Include="Requests\OnTopCreditCardRequest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />
     <Compile Include="Requests\ProductReviewRequest.cs" />
@@ -75,18 +65,10 @@
     <Compile Include="Requests\ShopRequest.cs" />
     <Compile Include="Requests\ShopTypeRequest.cs" />
     <Compile Include="Requests\TagRequest.cs" />
-    <Compile Include="Requests\UpdateCMSStatusRequest.cs" />
     <Compile Include="Requests\UserGroupRequest.cs" />
     <Compile Include="Requests\PermissionRequest.cs" />
     <Compile Include="Requests\UserRequest.cs" />
-    <Compile Include="Responses\Buy1Get1ItemRequest.cs" />
-    <Compile Include="Responses\Buy1Get1ItemResponse.cs" />
-    <Compile Include="Responses\CMSCollectionResponse.cs" />
-    <Compile Include="Responses\CollectionItemResponse.cs" />
-    <Compile Include="Responses\CollectionResponse.cs" />
     <Compile Include="Responses\FileUploadRespond.cs" />
-    <Compile Include="Responses\OnTopCreditCardListResponse.cs" />
-    <Compile Include="Responses\OnTopCreditCardResponse.cs" />
     <Compile Include="Responses\PaginatedResponse.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -43,6 +43,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSHistoryLog> CMSHistoryLogs { get; set; }
         public virtual DbSet<CMSMainCategory> CMSMainCategories { get; set; }
         public virtual DbSet<CMSMaster> CMSMasters { get; set; }
+        public virtual DbSet<CMSProductCategory> CMSProductCategories { get; set; }
         public virtual DbSet<CMSRelCollectionCategory> CMSRelCollectionCategories { get; set; }
         public virtual DbSet<CMSRelCollectionGroup> CMSRelCollectionGroups { get; set; }
         public virtual DbSet<CMSRelProductCategory> CMSRelProductCategories { get; set; }

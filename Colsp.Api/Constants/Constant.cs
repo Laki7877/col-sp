@@ -7,6 +7,18 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+        public static int SHOP_OWNER_GROUP_ID = 2;
+        public static readonly Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() { { "Stock", 1 }, { "Pre-Order", 2 } };
+
+        public static readonly int MAX_LOCAL_CATEGORY = 8;
+
+        //SQL exception
+        public static readonly int MAX_RETRY_DEADLOCK = 3;
+        public static readonly string UNIQUE_CONSTRAIN_SUFFIX = "CK";
+        public static readonly string UNIQUE_CONSTRAIN_DELIMETER = "_";
+        public static readonly string UNIQUE_CONSTRAIN_PREFIX = "has already been used.";
+
+
         public static readonly string STATUS_ACTIVE = "AT";
         public static readonly string STATUS_NOT_ACTIVE = "NA";
         public static readonly string STATUS_REMOVE = "RM";
@@ -17,7 +29,7 @@ namespace Colsp.Api.Constants
         public static readonly string DATA_TYPE_LIST = "LT";
         public static readonly string DATA_TYPE_CHECKBOX = "CB";
 
-        public static Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() { {"Stock", 1 }, { "Pre-Order" , 2} };
+       
 
 
         public static readonly string PRODUCT_STATUS_DRAFT = "DF";
@@ -53,7 +65,7 @@ namespace Colsp.Api.Constants
         public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;
         #endregion
 
-        public static  int SHOP_OWNER_GROUP_ID = 2;
+        
 
         public static readonly string SHOP_GROUP_BU = "BU";
         public static readonly string SHOP_GROUP_INDY = "IN";
@@ -65,6 +77,6 @@ namespace Colsp.Api.Constants
         public static readonly string LANG_TH = "TH";
 
 
-        public static readonly int MAX_LOCAL_CATEGORY = 8;
+        
     }
 }

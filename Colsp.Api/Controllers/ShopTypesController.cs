@@ -14,6 +14,7 @@ using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Constants;
 using System.Data.SqlClient;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -96,8 +97,7 @@ namespace Colsp.Api.Controllers
                 shopType.CreatedDt = DateTime.Now;
                 shopType.UpdatedBy = this.User.UserRequest().Email;
                 shopType.UpdatedDt = DateTime.Now;
-                db.ShopTypes.Add(shopType);
-                db.SaveChanges();
+                
                 if (request.Permission != null)
                 {
                     foreach (PermissionRequest perm in request.Permission)
@@ -106,35 +106,20 @@ namespace Colsp.Api.Controllers
                         {
                             throw new Exception("Permission id is null");
                         }
-                        ShopTypePermissionMap map = new ShopTypePermissionMap();
-                        map.PermissionId = perm.PermissionId.Value;
-                        map.ShopTypeId = shopType.ShopTypeId;
-                        map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.UserRequest().Email;
-                        map.UpdatedDt = DateTime.Now;
-                        db.ShopTypePermissionMaps.Add(map);
+                        shopType.ShopTypePermissionMaps.Add(new ShopTypePermissionMap()
+                        {
+                            PermissionId = perm.PermissionId.Value,
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        });
                     }
-                    db.SaveChanges();
+                    
                 }
+                db.ShopTypes.Add(shopType);
+                Util.DeadlockRetry(db.SaveChanges, "ShopType");
                 return GetShopType(shopType.ShopTypeId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (shopType != null && shopType.ShopTypeId != 0)
-                {
-                    db.ShopTypes.Remove(shopType);
-                }
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    SqlException error = ((SqlException)e.InnerException.InnerException);
-                    if (error.Number == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                              , "This role name has already been used. Please enter a different role name.");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -199,21 +184,8 @@ namespace Colsp.Api.Controllers
                 {
                     db.ShopTypePermissionMaps.RemoveRange(mapList);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "ShopType");
                 return GetShopType(shopType.ShopTypeId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    SqlException error = ((SqlException)e.InnerException.InnerException);
-                    if (error.Number == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                              , "This role name has already been used. Please enter a different role name.");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -238,7 +210,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("No deleted shop type found");
                 }
                 db.ShopTypes.RemoveRange(shopTypes);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "ShopType");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)

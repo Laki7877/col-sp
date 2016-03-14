@@ -13,6 +13,7 @@ using Colsp.Model.Requests;
 using Colsp.Model.Responses;
 using Colsp.Api.Extensions;
 using Colsp.Api.Constants;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
 {
@@ -123,7 +124,7 @@ namespace Colsp.Api.Controllers
                     current.UpdatedBy = this.User.UserRequest().Email;
                     current.UpdatedDt = DateTime.Now;
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "ProductReview");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)

@@ -168,24 +168,21 @@ namespace Colsp.Api.Controllers
                 coupon.CreatedDt = DateTime.Now;
                 coupon.UpdatedBy = this.User.UserRequest().Email;
                 coupon.UpdatedDt = DateTime.Now;
-                coupon = db.Coupons.Add(coupon);
-                db.SaveChanges();
-
                 if(request.Conditions != null)
                 {
                     if(request.Conditions.Order != null && request.Conditions.Order.Count > 0)
                     {
                         foreach(OrderRequest o in request.Conditions.Order)
                         {
-                            CouponOrder co = new CouponOrder();
-                            co.CouponId = coupon.CouponId;
-                            co.Criteria = o.Type;
-                            co.CriteriaPrice = o.Value;
-                            co.CreatedBy = this.User.UserRequest().Email;
-                            co.CreatedDt = DateTime.Now;
-                            co.UpdatedBy = this.User.UserRequest().Email;
-                            co.UpdatedDt = DateTime.Now;
-                            db.CouponOrders.Add(co);
+                            coupon.CouponOrders.Add(new CouponOrder()
+                            {
+                                Criteria = o.Type,
+                                CriteriaPrice = o.Value,
+                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedDt = DateTime.Now,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now
+                            });
                         }
                     }
                     if(request.Conditions.FilterBy != null)
@@ -197,14 +194,14 @@ namespace Colsp.Api.Controllers
                             {
                                 foreach (BrandRequest b in request.Conditions.FilterBy.Brands)
                                 {
-                                    CouponBrandMap map = new CouponBrandMap();
-                                    map.CouponId = coupon.CouponId;
-                                    map.BrandId = b.BrandId.Value;
-                                    map.CreatedBy = this.User.UserRequest().Email;
-                                    map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
-                                    map.UpdatedDt = DateTime.Now;
-                                    db.CouponBrandMaps.Add(map);
+                                    coupon.CouponBrandMaps.Add(new CouponBrandMap()
+                                    {
+                                        BrandId = b.BrandId.Value,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now,
+                                    });
                                 }
                             }
                         }
@@ -214,14 +211,14 @@ namespace Colsp.Api.Controllers
                             {
                                 foreach (String e in request.Conditions.FilterBy.Emails)
                                 {
-                                    CouponCustomerMap map = new CouponCustomerMap();
-                                    map.CouponId = coupon.CouponId;
-                                    map.Email = e;
-                                    map.CreatedBy = this.User.UserRequest().Email;
-                                    map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
-                                    map.UpdatedDt = DateTime.Now;
-                                    db.CouponCustomerMaps.Add(map);
+                                    coupon.CouponCustomerMaps.Add(new CouponCustomerMap()
+                                    {
+                                        Email = e,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now,
+                                    });
                                 }
                             }
                         }
@@ -231,14 +228,14 @@ namespace Colsp.Api.Controllers
                             {
                                 foreach (CategoryRequest c in request.Conditions.FilterBy.GlobalCategories)
                                 {
-                                    CouponGlobalCatMap map = new CouponGlobalCatMap();
-                                    map.CouponId = coupon.CouponId;
-                                    map.CategoryId = c.CategoryId.Value;
-                                    map.CreatedBy = this.User.UserRequest().Email;
-                                    map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
-                                    map.UpdatedDt = DateTime.Now;
-                                    db.CouponGlobalCatMaps.Add(map);
+                                    coupon.CouponGlobalCatMaps.Add(new CouponGlobalCatMap()
+                                    {
+                                        CategoryId = c.CategoryId.Value,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now,
+                                    });
                                 }
                             }
                         }
@@ -248,14 +245,14 @@ namespace Colsp.Api.Controllers
                             {
                                 foreach (CategoryRequest c in request.Conditions.FilterBy.LocalCategories)
                                 {
-                                    CouponLocalCatMap map = new CouponLocalCatMap();
-                                    map.CouponId = coupon.CouponId;
-                                    map.CategoryId = c.CategoryId.Value;
-                                    map.CreatedBy = this.User.UserRequest().Email;
-                                    map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
-                                    map.UpdatedDt = DateTime.Now;
-                                    db.CouponLocalCatMaps.Add(map);
+                                    coupon.CouponLocalCatMaps.Add(new CouponLocalCatMap()
+                                    {
+                                        CategoryId = c.CategoryId.Value,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now,
+                                    });
                                 }
                             }
                         }
@@ -265,14 +262,14 @@ namespace Colsp.Api.Controllers
                             {
                                 foreach (ShopRequest s in request.Conditions.FilterBy.Shops)
                                 {
-                                    CouponShopMap map = new CouponShopMap();
-                                    map.CouponId = coupon.CouponId;
-                                    map.ShopId = s.ShopId.Value;
-                                    map.CreatedBy = this.User.UserRequest().Email;
-                                    map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
-                                    map.UpdatedDt = DateTime.Now;
-                                    db.CouponShopMaps.Add(map);
+                                    coupon.CouponShopMaps.Add(new CouponShopMap()
+                                    {
+                                        ShopId = s.ShopId.Value,
+                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now,
+                                    });
                                 }
                             }
                         }
@@ -282,61 +279,40 @@ namespace Colsp.Api.Controllers
                     {
                         foreach (string pid in request.Conditions.Include)
                         {
-                            CouponPidMap map = new CouponPidMap();
-                            map.CouponId = coupon.CouponId;
-                            map.Pid = pid;
-                            map.Filter = Constant.COUPON_FILTER_INCLUDE;
-                            map.CreatedBy = this.User.UserRequest().Email;
-                            map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.UserRequest().Email;
-                            map.UpdatedDt = DateTime.Now;
-                            db.CouponPidMaps.Add(map);
+                            coupon.CouponPidMaps.Add(new CouponPidMap()
+                            {
+                                Pid = pid,
+                                Filter = Constant.COUPON_FILTER_INCLUDE,
+                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedDt = DateTime.Now,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now,
+                            });
                         }
                     }
                     if (request.Conditions.Exclude != null && request.Conditions.Exclude.Count > 0)
                     {
                         foreach (string pid in request.Conditions.Exclude)
                         {
-                            CouponPidMap map = new CouponPidMap();
-                            map.CouponId = coupon.CouponId;
-                            map.Pid = pid;
-                            map.Filter = Constant.COUPON_FILTER_EXCLUDE;
-                            map.CreatedBy = this.User.UserRequest().Email;
-                            map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.UserRequest().Email;
-                            map.UpdatedDt = DateTime.Now;
-                            db.CouponPidMaps.Add(map);
+                            coupon.CouponPidMaps.Add(new CouponPidMap()
+                            {
+                                Pid = pid,
+                                Filter = Constant.COUPON_FILTER_EXCLUDE,
+                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedDt = DateTime.Now,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now,
+                            });
                         }
                     }
-                    db.SaveChanges();
+                    
                 }
+                coupon = db.Coupons.Add(coupon);
+                Util.DeadlockRetry(db.SaveChanges, "Coupon");
                 return GetCoupon(coupon.CouponId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (coupon != null && coupon.CouponId != 0)
-                {
-                    db.Coupons.Remove(coupon);
-                    db.SaveChanges();
-                }
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Coupon code has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
-                if (coupon != null && coupon.CouponId != 0)
-                {
-                    db.Coupons.Remove(coupon);
-                    db.SaveChanges();
-                }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -758,21 +734,8 @@ namespace Colsp.Api.Controllers
                 {
                     db.CouponPidMaps.RemoveRange(excludeList);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Coupon");
                 return GetCoupon(coupon.CouponId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "Coupon code has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {

@@ -192,6 +192,9 @@
     <Compile Include="Models\CMSMaster.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CMSProductCategory.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CMSRelCollectionCategory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

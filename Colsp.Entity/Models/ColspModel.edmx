@@ -204,7 +204,7 @@
             <PropertyRef Name="CMSCollectionCategoryId" />
           </Key>
           <Property Name="CMSCollectionCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CMSCollectionCategoryNameEN" Type="nvarchar" MaxLength="100" />
+          <Property Name="CMSCollectionCategoryNameEH" Type="nvarchar" MaxLength="100" />
           <Property Name="CMSCollectionCategoryNameTH" Type="nvarchar" MaxLength="100" />
           <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
@@ -341,6 +341,26 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="CMSProductCategory">
+          <Key>
+            <PropertyRef Name="CMSProductCategoryId" />
+          </Key>
+          <Property Name="CMSProductCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+        </EntityType>
         <EntityType Name="CMSRelCollectionCategory">
           <Key>
             <PropertyRef Name="CMSRelCollectionCategoryId" />
@@ -372,27 +392,6 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="CMSRelProductCategory">
-          <Key>
-            <PropertyRef Name="CMSRelProductCategoryId" />
-          </Key>
-          <Property Name="CMSRelProductCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ProductId" Type="int" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="Sequence" Type="int" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="EffectiveDate" Type="date" />
-          <Property Name="EffectiveTime" Type="time" Precision="7" />
-          <Property Name="ExpiryDate" Type="date" />
-          <Property Name="ExpiryTime" Type="time" Precision="7" />
-          <Property Name="CMSCollectionCategoryId" Type="int" />
         </EntityType>
         <EntityType Name="CMSStatusFlow">
           <Key>
@@ -772,6 +771,7 @@
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="EffectiveDate" Type="date" />
           <Property Name="ExpiryDate" Type="date" />
+          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -1585,6 +1585,16 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -2927,9 +2937,9 @@
           <EntitySet Name="CMSHistoryLog" EntityType="Self.CMSHistoryLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMainCategory" EntityType="Self.CMSMainCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMaster" EntityType="Self.CMSMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSProductCategory" EntityType="Self.CMSProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSRelCollectionCategory" EntityType="Self.CMSRelCollectionCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSRelCollectionGroup" EntityType="Self.CMSRelCollectionGroup" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CMSRelProductCategory" EntityType="Self.CMSRelProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSStatusFlow" EntityType="Self.CMSStatusFlow" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSType" EntityType="Self.CMSType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Coupon" EntityType="Self.Coupon" Schema="dbo" store:Type="Tables" />
@@ -2993,6 +3003,7 @@
           <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopTypePermissionMap" EntityType="Self.ShopTypePermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopUserGroupMap" EntityType="Self.ShopUserGroupMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
@@ -3400,9 +3411,9 @@
           <EntitySet Name="CMSHistoryLogs" EntityType="ColspModel.CMSHistoryLog" />
           <EntitySet Name="CMSMainCategories" EntityType="ColspModel.CMSMainCategory" />
           <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
+          <EntitySet Name="CMSProductCategories" EntityType="ColspModel.CMSProductCategory" />
           <EntitySet Name="CMSRelCollectionCategories" EntityType="ColspModel.CMSRelCollectionCategory" />
           <EntitySet Name="CMSRelCollectionGroups" EntityType="ColspModel.CMSRelCollectionGroup" />
-          <EntitySet Name="CMSRelProductCategories" EntityType="ColspModel.CMSRelProductCategory" />
           <EntitySet Name="CMSStatusFlows" EntityType="ColspModel.CMSStatusFlow" />
           <EntitySet Name="CMSTypes" EntityType="ColspModel.CMSType" />
           <EntitySet Name="Coupons" EntityType="ColspModel.Coupon" />
@@ -3466,6 +3477,7 @@
           <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
           <EntitySet Name="ShopTypePermissionMaps" EntityType="ColspModel.ShopTypePermissionMap" />
           <EntitySet Name="ShopUserGroupMaps" EntityType="ColspModel.ShopUserGroupMap" />
+          <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
           <EntitySet Name="Tags" EntityType="ColspModel.Tag" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
@@ -4080,7 +4092,7 @@
             <PropertyRef Name="CMSCollectionCategoryId" />
           </Key>
           <Property Name="CMSCollectionCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSCollectionCategoryNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSCollectionCategoryNameEH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CMSCollectionCategoryNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
@@ -4217,6 +4229,26 @@
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CMSProductCategory">
+          <Key>
+            <PropertyRef Name="CMSProductCategoryId" />
+          </Key>
+          <Property Name="CMSProductCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+        </EntityType>
         <EntityType Name="CMSRelCollectionCategory">
           <Key>
             <PropertyRef Name="CMSRelCollectionCategoryId" />
@@ -4248,27 +4280,6 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSRelProductCategory">
-          <Key>
-            <PropertyRef Name="CMSRelProductCategoryId" />
-          </Key>
-          <Property Name="CMSRelProductCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProductId" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="EffectiveTime" Type="Time" Precision="7" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="ExpiryTime" Type="Time" Precision="7" />
-          <Property Name="CMSCollectionCategoryId" Type="Int32" />
         </EntityType>
         <EntityType Name="CMSStatusFlow">
           <Key>
@@ -4698,6 +4709,7 @@
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -5604,6 +5616,16 @@
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ShopUerGroupMap_Shop" FromRole="ShopUserGroupMap" ToRole="Shop" />
           <NavigationProperty Name="UserGroup" Relationship="ColspModel.FK_ShopUerGroupMap_UserGroup" FromRole="ShopUserGroupMap" ToRole="UserGroup" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -7164,7 +7186,7 @@
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="CMSCollectionCategoryNameTH" ColumnName="CMSCollectionCategoryNameTH" />
-                <ScalarProperty Name="CMSCollectionCategoryNameEN" ColumnName="CMSCollectionCategoryNameEN" />
+                <ScalarProperty Name="CMSCollectionCategoryNameEH" ColumnName="CMSCollectionCategoryNameEH" />
                 <ScalarProperty Name="CMSCollectionCategoryId" ColumnName="CMSCollectionCategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -7295,6 +7317,27 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CMSProductCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSProductCategory">
+              <MappingFragment StoreEntitySet="CMSProductCategory">
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CMSProductCategoryId" ColumnName="CMSProductCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CMSRelCollectionCategories">
             <EntityTypeMapping TypeName="ColspModel.CMSRelCollectionCategory">
               <MappingFragment StoreEntitySet="CMSRelCollectionCategory">
@@ -7326,28 +7369,6 @@
                 <ScalarProperty Name="CMSId" ColumnName="CMSId" />
                 <ScalarProperty Name="CMSCollectionGroupId" ColumnName="CMSCollectionGroupId" />
                 <ScalarProperty Name="CMSRelCollectionGroupId" ColumnName="CMSRelCollectionGroupId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSRelProductCategories">
-            <EntityTypeMapping TypeName="ColspModel.CMSRelProductCategory">
-              <MappingFragment StoreEntitySet="CMSRelProductCategory">
-                <ScalarProperty Name="CMSCollectionCategoryId" ColumnName="CMSCollectionCategoryId" />
-                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
-                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="CMSRelProductCategoryId" ColumnName="CMSRelProductCategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7735,6 +7756,7 @@
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
@@ -8569,6 +8591,17 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="GroupId" ColumnName="GroupId" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ColspModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

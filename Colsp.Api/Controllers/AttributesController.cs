@@ -29,7 +29,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
                 var attrList = from attr in db.Attributes
                                where !attr.Status.Equals(Constant.STATUS_REMOVE)
                                select new
@@ -113,7 +112,6 @@ namespace Colsp.Api.Controllers
         public HttpResponseMessage AddAttribute(AttributeRequest request)
         {
             Entity.Models.Attribute attribute = null;
-            List<AttributeValue> newList = null;
             try
             {
                 attribute = new Entity.Models.Attribute();
@@ -126,27 +124,26 @@ namespace Colsp.Api.Controllers
                 
                 if (request.AttributeValues != null && request.AttributeValues.Count  > 0)
                 {
-                    newList = new List<AttributeValue>();
-                    AttributeValue value = null;
+                    AttributeValue attributeValue = null;
                     foreach (AttributeValueRequest val in request.AttributeValues)
                     {
-                        value = new AttributeValue();
-                        value.AttributeValueEn = val.AttributeValueEn;
-                        value.AttributeValueTh = val.AttributeValueTh;
+                        attributeValue = new AttributeValue();
+                        attributeValue.AttributeValueEn = val.AttributeValueEn;
+                        attributeValue.AttributeValueTh = val.AttributeValueTh;
                         if(val.Image != null)
                         {
-                            value.ImageUrl = val.Image.url;
+                            attributeValue.ImageUrl = val.Image.url;
                         }
-                        value.MapValue = string.Concat("((", value.AttributeValueId, "))");
-                        value.Status = Constant.STATUS_ACTIVE;
-                        value.CreatedBy = this.User.UserRequest().Email;
-                        value.CreatedDt = DateTime.Now;
-                        value.UpdatedBy = this.User.UserRequest().Email;
-                        value.UpdatedDt = DateTime.Now;
+                        attributeValue.MapValue = string.Concat("((", attributeValue.AttributeValueId, "))");
+                        attributeValue.Status = Constant.STATUS_ACTIVE;
+                        attributeValue.CreatedBy = this.User.UserRequest().Email;
+                        attributeValue.CreatedDt = DateTime.Now;
+                        attributeValue.UpdatedBy = this.User.UserRequest().Email;
+                        attributeValue.UpdatedDt = DateTime.Now;
                         attribute.AttributeValueMaps.Add(new AttributeValueMap()
                         {
                             Attribute = attribute,
-                            AttributeValue = value,
+                            AttributeValue = attributeValue,
                             CreatedBy = this.User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
                             UpdatedBy = this.User.UserRequest().Email,
@@ -155,33 +152,15 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 db.Attributes.Add(attribute);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 return GetAttribute(attribute.AttributeId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "This attribute name has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
                 if(attribute != null && attribute.AttributeId != 0)
                 {
-                    if (newList != null && newList.Count > 0)
-                    {
-                        db.AttributeValues.RemoveRange(newList);
-                    }
                     db.Attributes.Remove(attribute);
-                    db.SaveChanges();
+                    Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
@@ -272,21 +251,8 @@ namespace Colsp.Api.Controllers
                 {
                     db.AttributeValues.RemoveRange(attributeVal);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 return GetAttribute(attribute.AttributeId);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                              , "This attribute name has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
@@ -302,7 +268,7 @@ namespace Colsp.Api.Controllers
             {
                 if (request == null || request.Count == 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
+                    throw new Exception("Invalid request");
                 }
                 var setList = db.Attributes
                     .Include(i=>i.ProductStageAttributes)
@@ -313,7 +279,7 @@ namespace Colsp.Api.Controllers
                     var current = setList.Where(w => w.AttributeId.Equals(setRq.AttributeId)).SingleOrDefault();
                     if (current == null)
                     {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                        throw new Exception(HttpErrorMessage.NotFound);
                     }
                     if((current.ProductStageAttributes != null && current.ProductStageAttributes.Count > 0 )
                         || (current.ProductStageVariantArrtibuteMaps != null && current.ProductStageVariantArrtibuteMaps.Count > 0))
@@ -326,12 +292,12 @@ namespace Colsp.Api.Controllers
                     }
                     db.Attributes.Remove(current);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-            catch
+            catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -384,12 +350,12 @@ namespace Colsp.Api.Controllers
                     }
                     current.Status = setRq.Status;
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-            catch
+            catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable,e.Message);
             }
         }
 
@@ -399,43 +365,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (!Request.Content.IsMimeMultipartContent())
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
-                }
-                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.ATTRIBUTE_VALUE_FOLDER);
-                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
-                await Request.Content.ReadAsMultipartAsync(streamProvider);
-
-                FileUploadRespond fileUpload = new FileUploadRespond();
-                string fileName = string.Empty;
-                string ext = string.Empty;
-                foreach (MultipartFileData fileData in streamProvider.FileData)
-                {
-                    fileName = fileData.LocalFileName;
-                    Validation.ValidateImage(fileName,100,100,100,100,5,true);
-                    string tmp = fileData.Headers.ContentDisposition.FileName;
-                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
-                    {
-                        tmp = tmp.Trim('"');
-                    }
-                    ext = Path.GetExtension(tmp);
-                    break;
-                }
-
-                string newName = string.Concat(fileName, ext);
-                File.Move(fileName, newName);
-                fileUpload.tmpPath = newName;
-
-                var name = Path.GetFileName(newName);
-                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-                fileUpload.url = string.Concat(schema, "://", 
-                    imageUrl, "/", 
-                    AppSettingKey.IMAGE_ROOT_FOLDER,"/",
-                    AppSettingKey.ATTRIBUTE_VALUE_FOLDER, "/", 
-                    name);
-
+                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.ATTRIBUTE_VALUE_FOLDER, 100, 100, 100, 100, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)

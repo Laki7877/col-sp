@@ -26,11 +26,19 @@ namespace Colsp.Api.Controllers
 
         [Route("api/LocalCategories")]
         [HttpGet]
-        public HttpResponseMessage GetCategoryFromShop()
+        public HttpResponseMessage GetCategoryFromShop([FromUri] ShopRequest request)
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = 0;
+                if (request == null)
+                {
+                    shopId = this.User.ShopRequest().ShopId.Value;
+                }
+                else
+                {
+                    shopId = request.ShopId.Value;
+                }
                 var localCat = (from cat in db.LocalCategories
                                 where cat.ShopId == shopId
                                 select new
@@ -216,7 +224,7 @@ namespace Colsp.Api.Controllers
                     category.Rgt = max + 2;
                 }
                 db.LocalCategories.Add(category);
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
                     category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
@@ -225,33 +233,15 @@ namespace Colsp.Api.Controllers
                 {
                     category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK, category);
-            }
-            catch (DbUpdateException e)
-            {
-                if (category != null && category.CategoryId != 0)
-                {
-                    db.LocalCategories.Remove(category);
-                    db.SaveChanges();
-                }
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "URL Key has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
             }
             catch (Exception e)
             {
                 if (category != null && category.CategoryId != 0)
                 {
                     db.LocalCategories.Remove(category);
-                    db.SaveChanges();
+                    Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
@@ -432,7 +422,7 @@ namespace Colsp.Api.Controllers
                 category.Status = request.Status;
                 category.UpdatedBy = this.User.UserRequest().Email;
                 category.UpdatedDt = DateTime.Now;
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK, category);
             }
             catch (DbUpdateException e)
@@ -478,7 +468,7 @@ namespace Colsp.Api.Controllers
                 var catEnList = db.LocalCategories.Where(w => w.ShopId == shopId).Include(i => i.ProductStages).ToList();
                 foreach (CategoryRequest catRq in request)
                 {
-                    if (catRq.Lft == null || catRq.Rgt == null || catRq.Lft >= catRq.Rgt)
+                    if (catRq.Lft >= catRq.Rgt)
                     {
                         throw new Exception("Category " + catRq.NameEn + " is invalid. Node is not properly formated");
                     }
@@ -512,21 +502,8 @@ namespace Colsp.Api.Controllers
                     }
                     db.LocalCategories.Remove(cat);
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
-            }
-            catch (DbUpdateException e)
-            {
-                if (e != null && e.InnerException != null && e.InnerException.InnerException != null)
-                {
-                    int sqlError = ((SqlException)e.InnerException.InnerException).Number;
-                    if (sqlError == 2627)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable
-                           , "URL Key has already been used");
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
             catch (Exception e)
             {
@@ -562,7 +539,7 @@ namespace Colsp.Api.Controllers
                     var child = catList.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt);
                     child.ToList().ForEach(f => { f.Visibility = catRq.Visibility ; f.UpdatedBy = this.User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -592,7 +569,7 @@ namespace Colsp.Api.Controllers
                     db.LocalCategories.RemoveRange(db.LocalCategories.Where(w => w.Lft >= cat.Lft && w.Rgt <= cat.Rgt && w.ShopId==shopId));
                     break;
                 }
-                db.SaveChanges();
+                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -608,38 +585,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (!Request.Content.IsMimeMultipartContent())
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Content Multimedia");
-                }
-                string tmpFolder = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.LOCAL_CAT_FOLDER);
-                var streamProvider = new MultipartFormDataStreamProvider(tmpFolder);
-                await Request.Content.ReadAsMultipartAsync(streamProvider);
-
-                FileUploadRespond fileUpload = new FileUploadRespond();
-                string fileName = string.Empty;
-                string ext = string.Empty;
-                foreach (MultipartFileData fileData in streamProvider.FileData)
-                {
-                    fileName = fileData.LocalFileName;
-                    string tmp = fileData.Headers.ContentDisposition.FileName;
-                    if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
-                    {
-                        tmp = tmp.Trim('"');
-                    }
-                    ext = Path.GetExtension(tmp);
-                    break;
-                }
-
-                string newName = string.Concat(fileName, ext);
-                File.Move(fileName, newName);
-                fileUpload.tmpPath = newName;
-
-                var name = Path.GetFileName(newName);
-                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-                fileUpload.url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", AppSettingKey.LOCAL_CAT_FOLDER, "/", name);
-
+                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.LOCAL_CAT_FOLDER, 1500, 1500, 2000, 2000, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)

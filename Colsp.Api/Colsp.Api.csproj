@@ -244,6 +244,7 @@
     <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
     <Compile Include="Controllers\InventoriesController.cs" />
     <Compile Include="Controllers\LocalCategoriesController.cs" />
+    <Compile Include="Controllers\NewslettersController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductReviewsController.cs" />
