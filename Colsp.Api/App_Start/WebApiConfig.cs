@@ -1,12 +1,8 @@
 ﻿using Colsp.Api.Constants;
 using Colsp.Api.Filters;
-using System.Configuration;
 using System.IO;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
-using System.Web.Http.Routing;
-using System.Web.Routing;
 
 namespace Colsp.Api
 {

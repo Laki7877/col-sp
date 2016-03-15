@@ -2,31 +2,27 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Api.Constants;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System.IO;
-using System.Web;
-using System.Configuration;
 using System.Data.Entity.SqlServer;
 using Colsp.Api.Services;
+using Cenergy.Dazzle.Admin.Security.Cryptography;
 
 namespace Colsp.Api.Controllers
 {
     public class ShopsController : ApiController
     {
         private ColspEntities db = new ColspEntities();
+        private SaltedSha256PasswordHasher salt = new SaltedSha256PasswordHasher();
 
         //private readonly string root = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings[AppSettingKey.IMAGE_ROOT_PATH]);
 
@@ -41,7 +37,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -107,7 +103,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shop = db.Shops.Include(i=>i.User.UserGroupMaps.Select(ug => ug.UserGroup)).Include(i=>i.ShopType)
-                    .Include(i=>i.UserShops.Select(s=>s.User.UserGroupMaps.Select(ug=>ug.UserGroup)))
+                    .Include(i=>i.UserShopMaps.Select(s=>s.User.UserGroupMaps.Select(ug=>ug.UserGroup)))
                     .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Select(s=>new
                     {
@@ -132,7 +128,7 @@ namespace Colsp.Api.Controllers
                             s.User.Position,
                             UserGroup = s.User.UserGroupMaps.Select(ug=>ug.UserGroup.GroupNameEn)
                         },
-                        Users = s.UserShops.Select(u=> u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
+                        Users = s.UserShopMaps.Select(u=> u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
                         new
                         {
                             u.User.UserId,
@@ -161,7 +157,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 var shop = db.Shops
                     .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Select(s => new
@@ -204,7 +200,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 var shop = db.Shops.Find(shopId);
                 if (shop == null || shop.Status.Equals(Constant.STATUS_REMOVE))
                 {
@@ -224,8 +220,6 @@ namespace Colsp.Api.Controllers
                 shop.FloatMessageEn = request.FloatMessageEn;
                 shop.FloatMessageTh = request.FloatMessageTh;
                 shop.ShopAddress = request.ShopAddress;
-                //shop.BankAccountName = request.BankAccountName;
-                //shop.BankAccountNumber = request.BankAccountNumber;
                 shop.Facebook = request.Facebook;
                 shop.Youtube = request.Youtube;
                 shop.Instagram = request.Instagram;
@@ -260,7 +254,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Select(s => new
                     {
@@ -295,78 +289,67 @@ namespace Colsp.Api.Controllers
         public HttpResponseMessage AddShop(ShopRequest request)
         {
             Shop shop = null;
-            User usr = null;
             try
             {
-                #region Shop Onwer
-                usr = new User();
-                usr.Email = Validation.ValidateString(request.ShopOwner.Email, "Email", true, 100, false);
-                usr.Password = request.ShopOwner.Password;
-                usr.NameEn = request.ShopOwner.NameEn;
-                usr.NameTh = request.ShopOwner.NameTh;
-                usr.Division = request.ShopOwner.Division;
-                usr.Phone = request.ShopOwner.Phone;
-                usr.Position = request.ShopOwner.Position;
-                usr.EmployeeId = request.ShopOwner.EmployeeId;
-                usr.Status = Constant.STATUS_ACTIVE;
-                usr.Type = Constant.USER_TYPE_SELLER;
-                usr.CreatedBy = this.User.UserRequest().Email;
-                usr.CreatedDt = DateTime.Now;
-                usr.UpdatedBy = this.User.UserRequest().Email;
-                usr.UpdatedDt = DateTime.Now;
-                db.Users.Add(usr);
-                #endregion
-
                 shop = new Shop();
                 SetupShopAdmin(shop, request);
-                shop.Status =  Validation.ValidateString(request.Status, "Status", true, 2, false);
+                shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.STATUS_ACTIVE, Constant.STATUS_NOT_ACTIVE });
                 shop.CreatedBy = this.User.UserRequest().Email;
                 shop.CreatedDt = DateTime.Now;
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 db.Shops.Add(shop);
-                shop.User = usr;
-                Util.DeadlockRetry(db.SaveChanges, "Shop");
-
-                //shop.ShopOwner = usr.UserId;
-
-                UserShop userShop = new UserShop();
-                userShop.ShopId = shop.ShopId;
-                userShop.UserId = usr.UserId;
-                userShop.CreatedBy = this.User.UserRequest().Email;
-                userShop.CreatedDt = DateTime.Now;
-                userShop.UpdatedBy = this.User.UserRequest().Email;
-                userShop.UpdatedDt = DateTime.Now;
-                db.UserShops.Add(userShop);
-
-                UserGroupMap map = new UserGroupMap();
-                map.UserId = usr.UserId;
-                map.GroupId = Constant.SHOP_OWNER_GROUP_ID;
-                map.CreatedBy = this.User.UserRequest().Email;
-                map.CreatedDt = DateTime.Now;
-                map.UpdatedBy = this.User.UserRequest().Email;
-                map.UpdatedDt = DateTime.Now;
-                db.UserGroupMaps.Add(map);
-
-                if(request.Commissions != null && request.Commissions.Count > 0)
+                #region Owner
+                User owner = new User();
+                SetupUser(owner, request.ShopOwner);
+                #region Password
+                owner.Password = salt.HashPassword(Validation.ValidateString(request.ShopOwner.Password, "Password", true, 100, false));
+                owner.PasswordLastChg = string.Empty;
+                #endregion
+                owner.Status = Constant.STATUS_ACTIVE;
+                owner.Type = Constant.USER_TYPE_SELLER;
+                owner.CreatedBy = this.User.UserRequest().Email;
+                owner.CreatedDt = DateTime.Now;
+                owner.UpdatedBy = this.User.UserRequest().Email;
+                owner.UpdatedDt = DateTime.Now;
+                owner.UserGroupMaps.Add(new UserGroupMap()
                 {
-                    var catIds = request.Commissions.Where(w => w.CategoryId != null).Select(s => s.CategoryId).ToList();
+                    GroupId = Constant.SHOP_OWNER_GROUP_ID,
+                    CreatedBy = this.User.UserRequest().Email,
+                    CreatedDt = DateTime.Now,
+                    UpdatedBy = this.User.UserRequest().Email,
+                    UpdatedDt = DateTime.Now,
+                });
+                shop.UserShopMaps.Add(new UserShopMap()
+                {
+                    User = owner,
+                    CreatedBy = this.User.UserRequest().Email,
+                    CreatedDt = DateTime.Now,
+                    UpdatedBy = this.User.UserRequest().Email,
+                    UpdatedDt = DateTime.Now,
+                });
+                shop.User = shop.UserShopMaps.ElementAt(0).User;
+                #endregion
+                #region Commission
+                if (request.Commissions != null && request.Commissions.Count > 0)
+                {
+                    var catIds = request.Commissions.Where(w => w.CategoryId != 0).Select(s => s.CategoryId).ToList();
                     var globalCategory = db.GlobalCategories.Where(w => catIds.Contains(w.CategoryId)).ToList();
                     foreach(var catMap in request.Commissions)
                     {
-                        if(catMap.CategoryId == null && catMap.Commission == null)
+                        if(catMap.CategoryId == 0 && catMap.Commission == 0)
                         {
                             throw new Exception("Category or commission cannot be null");
                         }
-                        var category = globalCategory.Where(w => w.CategoryId == catMap.CategoryId.Value).SingleOrDefault();
+                        var category = globalCategory.Where(w => w.CategoryId == catMap.CategoryId).SingleOrDefault();
                         if(category == null)
                         {
-                            throw new Exception("Cannot find category " + catMap.CategoryId.Value);
+                            throw new Exception("Cannot find category " + catMap.CategoryId);
                         }
                         shop.ShopCommissions.Add(new Entity.Models.ShopCommission()
                         {
-                            CategoryId = catMap.CategoryId.Value,
-                            Commission = catMap.Commission.Value,
+                            CategoryId = catMap.CategoryId,
+                            Commission = catMap.Commission,
                             CreatedBy = this.User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
                             UpdatedBy = this.User.UserRequest().Email,
@@ -374,23 +357,19 @@ namespace Colsp.Api.Controllers
                         });
                     }
                 }
-
+                #endregion 
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShop(shop.ShopId);
             }
             catch (Exception e)
             {
-                if (usr != null && usr.UserId != 0)
-                {
-                    db.Users.Remove(usr);
-                    Util.DeadlockRetry(db.SaveChanges, "Shop");
-                }
+                #region Rollback
                 if (shop != null && shop.ShopId != 0)
                 {
                     db.Shops.Remove(shop);
                     Util.DeadlockRetry(db.SaveChanges, "Shop");
                 }
-                
+                #endregion
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -399,14 +378,13 @@ namespace Colsp.Api.Controllers
         [HttpPut]
         public HttpResponseMessage SaveChangeShop([FromUri]int shopId, ShopRequest request)
         {
-            User usr = null;
             Shop shop = null;
             try
             {
                 #region Query
                 var shopList = db.Shops
                     .Include(i=>i.User.UserGroupMaps)
-                    .Include(i=>i.UserShops)
+                    .Include(i=>i.UserShopMaps)
                     .Include(i=>i.ShopCommissions)
                     .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).ToList();
                 if (shopList == null || shopList.Count == 0)
@@ -437,42 +415,42 @@ namespace Colsp.Api.Controllers
                     {
                         shop.User.Status = Constant.STATUS_REMOVE;
                         db.UserGroupMaps.RemoveRange(shop.User.UserGroupMaps);
-                        db.UserShops.RemoveRange(shop.UserShops);
-                        usr = new User();
-                        usr.Email = Validation.ValidateString(request.ShopOwner.Email, "Email", true, 100, false);
-                        usr.Password = request.ShopOwner.Password;
-                        usr.NameEn = request.ShopOwner.NameEn;
-                        usr.NameTh = request.ShopOwner.NameTh;
-                        usr.Division = request.ShopOwner.Division;
-                        usr.Phone = request.ShopOwner.Phone;
-                        usr.Position = request.ShopOwner.Position;
-                        usr.EmployeeId = request.ShopOwner.EmployeeId;
-                        usr.Status = Constant.STATUS_ACTIVE;
-                        usr.Type = Constant.USER_TYPE_SELLER;
-                        usr.CreatedBy = this.User.UserRequest().Email;
-                        usr.CreatedDt = DateTime.Now;
-                        usr.UpdatedBy = this.User.UserRequest().Email;
-                        usr.UpdatedDt = DateTime.Now;
-                        db.Users.Add(usr);
-                        Util.DeadlockRetry(db.SaveChanges, "Shop");
+                        db.UserShopMaps.RemoveRange(shop.UserShopMaps);
 
-                        UserGroupMap map = new UserGroupMap();
-                        map.UserId = usr.UserId;
-                        map.GroupId = Constant.SHOP_OWNER_GROUP_ID;
-                        map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
-                        map.UpdatedBy = this.User.UserRequest().Email;
-                        map.UpdatedDt = DateTime.Now;
-                        db.UserGroupMaps.Add(map);
-                        shop.ShopOwner = usr.UserId;
-
-                        UserShop userShop = new UserShop();
-                        userShop.ShopId = shop.ShopId;
-                        userShop.UserId = usr.UserId;
-                        userShop.CreatedBy = this.User.UserRequest().Email;
-                        userShop.CreatedDt = DateTime.Now;
-                        userShop.UpdatedBy = this.User.UserRequest().Email;
-                        userShop.UpdatedDt = DateTime.Now;
+                        shop.UserShopMaps.Add(new UserShopMap()
+                        {
+                            User = new Entity.Models.User()
+                            {
+                                Email = Validation.ValidateString(request.ShopOwner.Email, "Email", true, 100, false),
+                                Password = request.ShopOwner.Password,
+                                NameEn = request.ShopOwner.NameEn,
+                                NameTh = request.ShopOwner.NameTh,
+                                Division = request.ShopOwner.Division,
+                                Phone = request.ShopOwner.Phone,
+                                Position = request.ShopOwner.Position,
+                                EmployeeId = request.ShopOwner.EmployeeId,
+                                Status = Constant.STATUS_ACTIVE,
+                                Type = Constant.USER_TYPE_SELLER,
+                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedDt = DateTime.Now,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now,
+                                UserGroupMaps = new List<UserGroupMap>() { new UserGroupMap()
+                        {
+                            GroupId = Constant.SHOP_OWNER_GROUP_ID,
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        }}
+                            },
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        });
+                        shop.User = shop.UserShopMaps.ElementAt(0).User;
+                        
                     }
                 }
                 #endregion
@@ -491,19 +469,19 @@ namespace Colsp.Api.Controllers
                 #region Shop Commission
                 if (request.Commissions != null && request.Commissions.Count > 0)
                 {
-                    var catIds = request.Commissions.Where(w => w.CategoryId != null).Select(s => s.CategoryId).ToList();
+                    var catIds = request.Commissions.Where(w => w.CategoryId != 0).Select(s => s.CategoryId).ToList();
                     var globalCategory = db.GlobalCategories.Where(w => catIds.Contains(w.CategoryId)).ToList();
                     var commissions = shop.ShopCommissions.ToList();
                     foreach (var catMap in request.Commissions)
                     {
-                        if (catMap.CategoryId == null && catMap.Commission == null)
+                        if (catMap.CategoryId == 0 && catMap.Commission == 0)
                         {
                             throw new Exception("Category or commission cannot be null");
                         }
-                        var category = globalCategory.Where(w => w.CategoryId == catMap.CategoryId.Value).SingleOrDefault();
+                        var category = globalCategory.Where(w => w.CategoryId == catMap.CategoryId).SingleOrDefault();
                         if (category == null)
                         {
-                            throw new Exception("Cannot find category " + catMap.CategoryId.Value);
+                            throw new Exception("Cannot find category " + catMap.CategoryId);
                         }
 
                         bool isNew = false;
@@ -513,10 +491,10 @@ namespace Colsp.Api.Controllers
                         }
                         if (!isNew)
                         {
-                            var current = commissions.Where(w => w.CategoryId == catMap.CategoryId.Value).SingleOrDefault();
+                            var current = commissions.Where(w => w.CategoryId == catMap.CategoryId).SingleOrDefault();
                             if(current != null)
                             {
-                                current.Commission = catMap.Commission.Value;
+                                current.Commission = catMap.Commission;
                                 current.CreatedBy = this.User.UserRequest().Email;
                                 current.CreatedDt = DateTime.Now;
                                 current.UpdatedBy = this.User.UserRequest().Email;
@@ -532,8 +510,8 @@ namespace Colsp.Api.Controllers
                         {
                             shop.ShopCommissions.Add(new Entity.Models.ShopCommission()
                             {
-                                CategoryId = catMap.CategoryId.Value,
-                                Commission = catMap.Commission.Value,
+                                CategoryId = catMap.CategoryId,
+                                Commission = catMap.Commission,
                                 CreatedBy = this.User.UserRequest().Email,
                                 CreatedDt = DateTime.Now,
                                 UpdatedBy = this.User.UserRequest().Email,
@@ -555,15 +533,6 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                if (usr != null && usr.UserId != 0)
-                {
-                    db.Users.Remove(usr);
-                }
-                if (shop != null && shop.ShopId != 0)
-                {
-                    db.Shops.Remove(shop);
-                }
-                Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -578,7 +547,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopIds = request.Where(w => w.ShopId != null).Select(s => s.ShopId).ToList();
+                var shopIds = request.Where(w => w.ShopId != 0).Select(s => s.ShopId).ToList();
                 if(shopIds == null || shopIds.Count == 0)
                 {
                     throw new Exception("No shop selected");
@@ -601,7 +570,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId.Value;
+                var shopId = this.User.ShopRequest().ShopId;
                 var shop = db.Shops.Where(w => w.ShopId == shopId).SingleOrDefault();
                 if(shop == null)
                 {
@@ -627,16 +596,91 @@ namespace Colsp.Api.Controllers
             shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
             shop.BankAccountNumber = Validation.ValidateString(request.BankAccountNumber, "Bank Account Number", true, 100, false);
             shop.Commission = request.Commission;
-            shop.MaxLocalCategory = request.MaxLocalCategory;
-            if(request.ShopType == null)
+            shop.FloatMessageEn = Validation.ValidateString(request.FloatMessageEn, "Float Message (English)", false, 500, false, string.Empty);
+            shop.FloatMessageTh = Validation.ValidateString(request.FloatMessageTh, "Float Message (Thai)", false, 500, false, string.Empty);
+            shop.UrlKeyEn = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, false, shop.ShopNameEn.Replace(" ","-"));
+            if (request.ShopType == null)
             {
                 throw new Exception("Shop type cannot be null");
             }
             shop.ShopTypeId = request.ShopType.ShopTypeId;
+            shop.MaxLocalCategory = request.MaxLocalCategory;
             if (shop.MaxLocalCategory == 0)
             {
                 shop.MaxLocalCategory = Constant.MAX_LOCAL_CATEGORY;
             }
+            
+            shop.ShopDescriptionEn = Validation.ValidateString(request.ShopDescriptionEn, "Shop Description (English)", false, 500, false, string.Empty);
+            shop.ShopDescriptionTh = Validation.ValidateString(request.ShopDescriptionTh, "Shop Description (Thai)", false, 500, false, string.Empty);
+            shop.FloatMessageEn = Validation.ValidateString(request.FloatMessageEn, "Float Message (English)", false, 500, false, string.Empty);
+            shop.FloatMessageTh = Validation.ValidateString(request.FloatMessageTh, "Float Message (Thai)", false, 500, false, string.Empty);
+            shop.ShopAddress = Validation.ValidateString(request.ShopAddress, "Shop Address", false, 500, false, string.Empty);
+            shop.Facebook = Validation.ValidateString(request.Facebook, "Facebook", false, 500, false, string.Empty);
+            shop.Youtube = Validation.ValidateString(request.Youtube, "Youtube", false, 500, false, string.Empty);
+            shop.Instagram = Validation.ValidateString(request.Instagram, "Instagram", false, 500, false, string.Empty);
+            shop.Pinterest = Validation.ValidateString(request.Pinterest, "Pinterest", false, 500, false, string.Empty);
+            shop.Twitter = Validation.ValidateString(request.Twitter, "Twitter", false, 500, false, string.Empty);
+            shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, Int32.MaxValue, 0).Value;
+            shop.GiftWrap = false;
+            //shop.GiftWarp = Validation.ValidateString(request.GiftWarp, "Gift Warp", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            if (request.Logo != null)
+            {
+                shop.ShopImageUrl = request.Logo.url;
+            }
+            else
+            {
+                shop.ShopImageUrl = string.Empty;
+            }
+
+            if (string.IsNullOrEmpty(shop.Facebook))
+            {
+                shop.Facebook = string.Empty;
+            }
+            if (string.IsNullOrEmpty(shop.Youtube))
+            {
+                shop.Youtube = string.Empty;
+            }
+            if (string.IsNullOrEmpty(shop.Twitter))
+            {
+                shop.Twitter = string.Empty;
+            }
+            if (string.IsNullOrEmpty(shop.Instagram))
+            {
+                shop.Instagram = string.Empty;
+            }
+            if (string.IsNullOrEmpty(shop.Pinterest))
+            {
+                shop.Pinterest = string.Empty;
+            }
+            if (string.IsNullOrEmpty(shop.ShopImageUrl))
+            {
+                shop.ShopImageUrl = string.Empty;
+            }
+            if (string.IsNullOrEmpty(shop.ShopDescriptionEn))
+            {
+                shop.ShopDescriptionEn = string.Empty;
+            }
+            if (string.IsNullOrEmpty(shop.ShopDescriptionTh))
+            {
+                shop.ShopDescriptionTh = string.Empty;
+            }
+            if (string.IsNullOrEmpty(shop.ShopAddress))
+            {
+                shop.ShopAddress = string.Empty;
+            }
+        }
+
+        private void SetupUser(User user, UserRequest request)
+        {
+            user.Email = Validation.ValidateString(request.Email, "Email", true, 100, false);
+            user.NameEn = Validation.ValidateString(request.NameEn, "Name", true, 100, false);
+            user.NameTh = Validation.ValidateString(request.NameTh, "Name", false, 100, false, string.Empty);
+            user.Division = Validation.ValidateString(request.Division, "Division", false, 100, false, string.Empty);
+            user.Phone = Validation.ValidateString(request.Phone, "Phone", true, 100, false);
+            user.Position = Validation.ValidateString(request.Position, "Position", false, 100, false, string.Empty);
+            user.EmployeeId = Validation.ValidateString(request.EmployeeId, "Employee Id", false, 100, false, string.Empty);
+            user.Mobile = Validation.ValidateString(request.Mobile, "Mobile", false, 20, false, string.Empty);
+            user.Fax = Validation.ValidateString(request.Fax, "Fax", false, 20, false, string.Empty);
         }
 
         //[Route("api/Shops/{sellerId}/ProductStages")]

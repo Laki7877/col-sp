@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Colsp.Model.Requests
+﻿namespace Colsp.Model.Requests
 {
     public class InventoryRequest : PaginatedRequest
     {
         public string Pid { get; set; }
         public string SearchText { get; set; }
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
+
+        public InventoryRequest()
+        {
+            Pid = string.Empty;
+            SearchText = string.Empty;
+            Quantity = 0;
+        }
 
         public override void DefaultOnNull()
         {

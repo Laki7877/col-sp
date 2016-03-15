@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace Colsp.Api.Helpers
 {
-    public class Validation
+    public static class Validation
     {
         public static DateTime? ValidateDateTime(string val,string fieldName,bool required,DateTime? defaultVal = null)
         {
@@ -40,7 +38,7 @@ namespace Colsp.Api.Helpers
             }
         }
 
-        public static string ValidateString(string val,string fieldName, bool required, int maxLenght, bool isAlphanumeric, string defaultVal = null)
+        public static string ValidateString(string val,string fieldName, bool required, int maxLenght, bool isAlphanumeric, string defaultVal = null,List<string> valueOnly = null)
         {
             
             if(required && string.IsNullOrWhiteSpace(val))
@@ -49,9 +47,12 @@ namespace Colsp.Api.Helpers
                 {
                     return defaultVal;
                 }
-                throw new Exception(fieldName + " is a required field");
+                throw new Exception(string.Concat(fieldName , " is a required field"));
             }
-            if (string.IsNullOrEmpty(val)) { return defaultVal; }
+            if (string.IsNullOrEmpty(val))
+            {
+                return defaultVal;
+            }
             val = val.Trim();
             if (isAlphanumeric)
             {
@@ -59,12 +60,19 @@ namespace Colsp.Api.Helpers
                 //Regex rg = new Regex(@"^[ก-๙A-Za-z0-9\s]*$");
                 if (!rg.IsMatch(val))
                 {
-                    throw new Exception(fieldName + " only letters and numbers allowed");
+                    throw new Exception(string.Concat(fieldName , " only letters and numbers allowed"));
                 }
             }
             if (val.Length > maxLenght)
             {
-                throw new Exception(fieldName + " field must be no longer than " + maxLenght + " characters");
+                throw new Exception(string.Concat(fieldName , " field must be no longer than " + maxLenght + " characters"));
+            }
+            if (valueOnly != null)
+            {
+                if (!valueOnly.Contains(val))
+                {
+                    throw new Exception(string.Concat(fieldName, " ", string.Join(",", valueOnly), " only"));
+                }
             }
             return val;
         }
@@ -77,21 +85,20 @@ namespace Colsp.Api.Helpers
                 {
                     return defaultVal;
                 }
-                throw new Exception(fieldName + " is a required field");
+                throw new Exception(string.Concat(fieldName , " is a required field"));
             }
             if(val == null)
             {
-
-                return val;
+                return defaultVal;
             }
             if(isPositive && decimal.Compare(val.Value,0) < 0)
             {
-                throw new Exception(fieldName + " cannot be less than 0");
+                throw new Exception(string.Concat(fieldName , " cannot be less than 0"));
             }
             val = decimal.Round(val.Value, decimalPlace, MidpointRounding.AwayFromZero);
             if(val.Value.ToString().Length > maxLenght)
             {
-                throw new Exception(fieldName + " field must be no longer than " + maxLenght + " characters");
+                throw new Exception(string.Concat(fieldName , " field must be no longer than " , maxLenght , " characters"));
             }
             return val;
         }
@@ -251,7 +258,6 @@ namespace Colsp.Api.Helpers
             return null;
         }
 
-
         public static void ValidateImage(string filename, int minWidth, int minHeight, int maxWidth, int maxHeight,int maxSize,bool isSquare)
         {
             using (Image img = Image.FromFile(filename))
@@ -259,19 +265,27 @@ namespace Colsp.Api.Helpers
                 if (!ImageFormat.Jpeg.Equals(img.RawFormat)
                     && !ImageFormat.Png.Equals(img.RawFormat))
                 {
-                    throw new Exception(string.Concat("Wrong file format. Please upload only JPG or PNG file. The size should be between ",minWidth,"x",minHeight," px to ",maxWidth,"x",maxHeight, " px and not over ", maxSize, " mbs per image"));
+                    throw new Exception(string.Concat("Wrong file format. Please upload only JPG or PNG file. The size should be between ",minWidth,"x",minHeight," px to ",maxWidth,"x",maxHeight, " px and not over ", maxSize, " mbs per image."));
                 }
                 if (img.Width < minWidth || img.Height < minHeight)
                 {
-                    throw new Exception(string.Concat("Image size is too small. The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image"));
+                    if(minWidth == maxWidth && minHeight == maxHeight)
+                    {
+                        throw new Exception(string.Concat("The size should be ", minWidth, "x", minHeight, " px and not over ", maxSize, " mbs per image."));
+                    }
+                    throw new Exception(string.Concat("The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image."));
                 }
                 if (img.Width > maxWidth || img.Height > maxHeight)
                 {
-                    throw new Exception(string.Concat("Image size is too big. The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image"));
+                    if (minWidth == maxWidth && minHeight == maxHeight)
+                    {
+                        throw new Exception(string.Concat("The size should be ", minWidth, "x", minHeight, " px and not over ", maxSize, " mbs per image"));
+                    }
+                    throw new Exception(string.Concat("The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image."));
                 }
                 if (isSquare && img.Height != img.Width)
                 {
-                    throw new Exception(string.Concat("The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image"));
+                    throw new Exception(string.Concat("The size should be between ", minWidth, "x", minHeight, " px to ", maxWidth, "x", maxHeight, " px and not over ", maxSize, " mbs per image."));
                 }
             }
         }

@@ -1,14 +1,6 @@
-﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Colsp.Model.Requests
+﻿namespace Colsp.Model.Requests
 {
-	public class PaginatedRequest : Request
+    public class PaginatedRequest : Request
 	{
 		public int? _limit { get; set; }
 		public int? _offset { get; set; }

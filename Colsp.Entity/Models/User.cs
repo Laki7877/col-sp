@@ -17,10 +17,9 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.ProductHistories = new HashSet<ProductHistory>();
             this.Shops = new HashSet<Shop>();
             this.UserGroupMaps = new HashSet<UserGroupMap>();
-            this.UserShops = new HashSet<UserShop>();
+            this.UserShopMaps = new HashSet<UserShopMap>();
         }
     
         public int UserId { get; set; }
@@ -36,21 +35,19 @@ namespace Colsp.Entity.Models
         public string Mobile { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }
-        public string Status { get; set; }
-        public Nullable<int> LoginFailCount { get; set; }
+        public int LoginFailCount { get; set; }
         public Nullable<System.DateTime> LastLoginDt { get; set; }
+        public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductHistory> ProductHistories { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shop> Shops { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserGroupMap> UserGroupMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserShop> UserShops { get; set; }
+        public virtual ICollection<UserShopMap> UserShopMaps { get; set; }
     }
 }

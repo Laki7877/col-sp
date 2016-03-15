@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Colsp.Model.Requests
 {
@@ -10,5 +6,11 @@ namespace Colsp.Model.Requests
     {
         public List<CategoryRequest> GlobalCategories { get; set; }
         public List<AttributeSetRequest> AttributeSets { get; set; }
+            
+        public CSVTemplateRequest()
+        {
+            GlobalCategories = new List<CategoryRequest>();
+            AttributeSets = new List<AttributeSetRequest>();
+        }
     }
 }

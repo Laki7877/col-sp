@@ -16,7 +16,6 @@ namespace Colsp.Entity.Models
     {
         public int AttributeSetId { get; set; }
         public int AttributeId { get; set; }
-        public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }

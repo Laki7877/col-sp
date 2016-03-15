@@ -23,21 +23,19 @@ namespace Colsp.Entity.Models
             this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
             this.LocalCatImages = new HashSet<LocalCatImage>();
             this.Products = new HashSet<Product>();
-            this.ProductHistories = new HashSet<ProductHistory>();
             this.ProductStages = new HashSet<ProductStage>();
+            this.ProductStageGroups = new HashSet<ProductStageGroup>();
             this.ProductStageImages = new HashSet<ProductStageImage>();
-            this.ProductStageImage360 = new HashSet<ProductStageImage360>();
             this.ProductStageRelateds = new HashSet<ProductStageRelated>();
-            this.ProductStageVariants = new HashSet<ProductStageVariant>();
             this.ProductStageVideos = new HashSet<ProductStageVideo>();
             this.ShopCommissions = new HashSet<ShopCommission>();
             this.ShopImages = new HashSet<ShopImage>();
             this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
-            this.UserShops = new HashSet<UserShop>();
+            this.UserShopMaps = new HashSet<UserShopMap>();
         }
     
         public int ShopId { get; set; }
-        public Nullable<int> ShopOwner { get; set; }
+        public int ShopOwner { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
         public int MaxLocalCategory { get; set; }
@@ -60,7 +58,6 @@ namespace Colsp.Entity.Models
         public decimal Commission { get; set; }
         public Nullable<int> ShopTypeId { get; set; }
         public string UrlKeyEn { get; set; }
-        public string UrlKeyTh { get; set; }
         public string FloatMessageEn { get; set; }
         public string FloatMessageTh { get; set; }
         public string Status { get; set; }
@@ -82,17 +79,13 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductHistory> ProductHistories { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStage> ProductStages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageImage> ProductStageImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageImage360> ProductStageImage360 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageRelated> ProductStageRelateds { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageVariant> ProductStageVariants { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
         public virtual ShopType ShopType { get; set; }
@@ -104,6 +97,6 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserShop> UserShops { get; set; }
+        public virtual ICollection<UserShopMap> UserShopMaps { get; set; }
     }
 }

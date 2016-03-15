@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Security.Cryptography;
 
 namespace Cenergy.Dazzle.Admin.Security.Cryptography
 {
-	public class SaltedSha256PasswordHasher : Cenergy.Dazzle.Admin.Security.Cryptography.IPasswordHasher
-	{
+    public class SaltedSha256PasswordHasher : IPasswordHasher
+    {
 		public string HashPassword(string password)
 		{
 			string salt = GenerateSalt();

@@ -14,15 +14,17 @@ namespace Colsp.Entity.Models
     
     public partial class ProductStageRelated
     {
-        public string Pid1 { get; set; }
-        public string Pid2 { get; set; }
-        public Nullable<int> ShopId { get; set; }
+        public string PidParent { get; set; }
+        public string PidChild { get; set; }
+        public int ShopId { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        public virtual ProductStage ProductStage { get; set; }
+        public virtual ProductStage ProductStage1 { get; set; }
         public virtual Shop Shop { get; set; }
     }
 }

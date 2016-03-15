@@ -14,17 +14,19 @@ namespace Colsp.Entity.Models
     
     public partial class InventoryHistory
     {
-        public int HistoryId { get; set; }
+        public int InventoryHistoryId { get; set; }
         public string Pid { get; set; }
-        public string Description { get; set; }
-        public Nullable<int> Quantity { get; set; }
-        public Nullable<int> QuantityOutStock { get; set; }
-        public Nullable<int> MinQuantity { get; set; }
-        public Nullable<int> MaxQuantity { get; set; }
-        public Nullable<bool> UseDecimal { get; set; }
-        public Nullable<int> SafetyStockSeller { get; set; }
-        public Nullable<int> SafetyStockAdmin { get; set; }
-        public Nullable<int> StockAvailable { get; set; }
+        public int Quantity { get; set; }
+        public int Defect { get; set; }
+        public int OnHold { get; set; }
+        public int Reserve { get; set; }
+        public int MinQuantity { get; set; }
+        public int MaxQuantity { get; set; }
+        public bool UseDecimal { get; set; }
+        public int SafetyStockSeller { get; set; }
+        public int SafetyStockAdmin { get; set; }
+        public int StockAvailable { get; set; }
+        public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }

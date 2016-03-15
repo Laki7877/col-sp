@@ -12,10 +12,7 @@ using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
-using System.Data.Entity.Infrastructure;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace Colsp.Api.Controllers
 {
@@ -121,7 +118,7 @@ namespace Colsp.Api.Controllers
                 attribute.UpdatedBy = this.User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
-                
+                #region AttributeValue
                 if (request.AttributeValues != null && request.AttributeValues.Count  > 0)
                 {
                     AttributeValue attributeValue = null;
@@ -151,17 +148,20 @@ namespace Colsp.Api.Controllers
                         });
                     }
                 }
+                #endregion
                 db.Attributes.Add(attribute);
                 Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 return GetAttribute(attribute.AttributeId);
             }
             catch (Exception e)
             {
-                if(attribute != null && attribute.AttributeId != 0)
+                #region Rollback
+                if (attribute != null && attribute.AttributeId != 0)
                 {
                     db.Attributes.Remove(attribute);
                     Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 }
+                #endregion
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -185,6 +185,7 @@ namespace Colsp.Api.Controllers
                 attribute.Status = Constant.STATUS_ACTIVE;
 
                 var attributeVal = attribute.AttributeValueMaps.Select(s => s.AttributeValue).ToList();
+                #region AttributeValue
                 AttributeValue value = null;
                 AttributeValue current = null;
                 if (request.AttributeValues != null && request.AttributeValues.Count > 0)
@@ -251,6 +252,7 @@ namespace Colsp.Api.Controllers
                 {
                     db.AttributeValues.RemoveRange(attributeVal);
                 }
+                #endregion
                 Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 return GetAttribute(attribute.AttributeId);
             }
@@ -272,7 +274,6 @@ namespace Colsp.Api.Controllers
                 }
                 var setList = db.Attributes
                     .Include(i=>i.ProductStageAttributes)
-                    .Include(i=>i.ProductStageVariantArrtibuteMaps)
                     .Include(i=>i.AttributeValueMaps).ToList();
                 foreach (AttributeRequest setRq in request)
                 {
@@ -281,8 +282,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception(HttpErrorMessage.NotFound);
                     }
-                    if((current.ProductStageAttributes != null && current.ProductStageAttributes.Count > 0 )
-                        || (current.ProductStageVariantArrtibuteMaps != null && current.ProductStageVariantArrtibuteMaps.Count > 0))
+                    if(current.ProductStageAttributes != null && current.ProductStageAttributes.Count > 0 )
                     {
                         throw new Exception("Attribute has product or variant associate");
                     }
@@ -315,7 +315,7 @@ namespace Colsp.Api.Controllers
                 }
                 else
                 {
-                    response.AttributeId = null;
+                    response.AttributeId = 0;
                     return AddAttribute(response);
                 }
             }
@@ -382,8 +382,6 @@ namespace Colsp.Api.Controllers
                 AttributeRequest attribute = new AttributeRequest();
                 attribute.AttributeId = attr.AttributeId;
                 attribute.AttributeNameEn = attr.AttributeNameEn;
-                attribute.AttributeUnitEn = attr.AttributeUnitEn;
-                attribute.AttributeUnitTh = attr.AttributeUnitTh;
                 attribute.DataType = attr.DataType;
                 attribute.DataValidation = attr.DataValidation;
                 attribute.DefaultValue = attr.DefaultValue;
@@ -430,27 +428,32 @@ namespace Colsp.Api.Controllers
         private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request)
         {
             attribute.AttributeNameEn = Validation.ValidateString(request.AttributeNameEn, "Attribute Name (English)", true, 100, true);
-            attribute.AttributeUnitEn = Validation.ValidateString(request.AttributeUnitEn, "Attribute Unit (English)", false, 100, true);
-            attribute.AttributeUnitTh = Validation.ValidateString(request.AttributeUnitTh, "Attribute Unit (Thai)", false, 100, true);
-            attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", false, 2, true);
-            if (!string.IsNullOrEmpty(attribute.DataType))
-            {
-                if ((Constant.DATA_TYPE_LIST.Equals(request.DataType) || Constant.DATA_TYPE_CHECKBOX.Equals(request.DataType))
-                    && (request.AttributeValues == null || request.AttributeValues.Count == 0))
-                {
-                    throw new Exception("DataType Dropdown should have at least 1 value");
-                }
-            }
-            attribute.DataValidation = Validation.ValidateString(request.DataValidation, "Input Validation", false, 2, true);
-            attribute.DefaultValue = Validation.ValidateString(request.DefaultValue, "If empty, value equals", false, 100, true);
             attribute.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Display Name (English)", true, 100, true);
             attribute.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Display Name (Thai)", true, 100, true);
+            attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", false, 2, true,string.Empty);
+            if (!string.IsNullOrEmpty(attribute.DataType))
+            {
+                if (request.AttributeValues == null || request.AttributeValues.Count == 0)
+                {
+                    if (Constant.DATA_TYPE_LIST.Equals(request.DataType))
+                    {
+                        throw new Exception("DataType Dropdown should have at least 1 value");
+                    }
+                    else if (Constant.DATA_TYPE_CHECKBOX.Equals(request.DataType))
+                    {
+                        throw new Exception("DataType Checkbox should have at least 1 value");
+                    }
+                }
+            }
+            attribute.DataValidation = Validation.ValidateString(request.DataValidation, "Input Validation", false, 2, true, string.Empty);
+            attribute.DefaultValue = Validation.ValidateString(request.DefaultValue, "If empty, value equals", false, 100, true, string.Empty);
+
             attribute.ShowAdminFlag = request.ShowAdminFlag;
             attribute.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
             attribute.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
             attribute.ShowLocalFilterFlag = request.ShowLocalFilterFlag;
             attribute.ShowLocalSearchFlag = request.ShowLocalSearchFlag;
-            attribute.VariantDataType = Validation.ValidateString(request.VariantDataType, "Variant Display Type", false, 2, true);
+            attribute.VariantDataType = Validation.ValidateString(request.VariantDataType, "Variant Display Type", false, 2, true, string.Empty);
             attribute.VariantStatus = request.VariantStatus;
             attribute.AllowHtmlFlag = request.AllowHtmlFlag;
             attribute.Filterable = request.Filterable;

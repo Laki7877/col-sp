@@ -196,7 +196,6 @@
     <Compile Include="Constants\AppSettingKey.cs" />
     <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
-    <Compile Include="Constants\HttpParameterConstant.cs" />
     <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
@@ -204,7 +203,6 @@
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\GlobalCategoriesController.cs" />
-    <Compile Include="Controllers\GlobalCategoryPIDsController.cs" />
     <Compile Include="Controllers\InventoriesController.cs" />
     <Compile Include="Controllers\LocalCategoriesController.cs" />
     <Compile Include="Controllers\NewslettersController.cs" />
@@ -216,13 +214,11 @@
     <Compile Include="Controllers\ShopsController.cs" />
     <Compile Include="Controllers\ShopTypesController.cs" />
     <Compile Include="Controllers\UserGroupsController.cs" />
-    <Compile Include="Controllers\UserPermissionsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\IPrincipalExtension.cs" />
     <Compile Include="Filters\ClaimsAuthorizeAttribute.cs" />
     <Compile Include="Filters\ValidateMimeMultipartContentFilter.cs" />
     <Compile Include="Helpers\AutoGenerate.cs" />
-    <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\Util.cs" />
     <Compile Include="Helpers\Validation.cs" />
     <Compile Include="Security\IPasswordHasher.cs" />
