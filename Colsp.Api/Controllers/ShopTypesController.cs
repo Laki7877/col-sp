@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Constants;
-using System.Data.SqlClient;
 using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
@@ -203,7 +200,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopTypeIds = request.Where(w => w.ShopTypeId != null).Select(s => s.ShopTypeId).ToList();
+                var shopTypeIds = request.Where(w => w.ShopTypeId != 0).Select(s => s.ShopTypeId).ToList();
                 var shopTypes = db.ShopTypes.Where(w => shopTypeIds.Contains(w.ShopTypeId)).ToList();
                 if(shopTypes == null || shopTypes.Count == 0)
                 {

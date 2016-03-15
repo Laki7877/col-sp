@@ -17,19 +17,16 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AttributeSet()
         {
-            this.AttributeSetTagMaps = new HashSet<AttributeSetTagMap>();
-            this.Products = new HashSet<Product>();
-            this.ProductHistories = new HashSet<ProductHistory>();
-            this.ProductStages = new HashSet<ProductStage>();
+            this.AttributeSetTags = new HashSet<AttributeSetTag>();
+            this.ProductStageGroups = new HashSet<ProductStageGroup>();
             this.AttributeSetMaps = new HashSet<AttributeSetMap>();
-            this.CategoryAttributeSetMaps = new HashSet<CategoryAttributeSetMap>();
+            this.GlobalCatAttributeSetMaps = new HashSet<GlobalCatAttributeSetMap>();
         }
     
         public int AttributeSetId { get; set; }
         public string AttributeSetNameEn { get; set; }
         public string AttributeSetDescriptionEn { get; set; }
-        public string AttributeSetDescriptionTh { get; set; }
-        public Nullable<bool> Visibility { get; set; }
+        public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
@@ -37,16 +34,12 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AttributeSetTagMap> AttributeSetTagMaps { get; set; }
+        public virtual ICollection<AttributeSetTag> AttributeSetTags { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductHistory> ProductHistories { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStage> ProductStages { get; set; }
+        public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AttributeSetMap> AttributeSetMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CategoryAttributeSetMap> CategoryAttributeSetMaps { get; set; }
+        public virtual ICollection<GlobalCatAttributeSetMap> GlobalCatAttributeSetMaps { get; set; }
     }
 }

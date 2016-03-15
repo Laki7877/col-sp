@@ -30,7 +30,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var userGroupIds = request.Where(w => w.GroupId != null).Select(s => s.GroupId.Value).ToList();
+                var userGroupIds = request.Where(w => w.GroupId != 0).Select(s => s.GroupId).ToList();
                 var usrGrp = db.UserGroups.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && userGroupIds.Contains(w.GroupId)).ToList();
                 if (usrGrp == null || usrGrp.Count == 0)
                 {
@@ -52,7 +52,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 var userGroupList = db.UserGroups
                     .Include(i => i.UserGroupPermissionMaps.Select(s => s.Permission))
                     .Include(i => i.UserGroupMaps)
@@ -62,7 +62,7 @@ namespace Colsp.Api.Controllers
                     .Select(s => new {
                         s.GroupId,
                         s.GroupNameEn,
-                        s.GroupNameTh,
+                        //s.GroupNameTh,
                         s.UpdatedDt,
                         //Permission = s.UserGroupPermissionMaps.Select(p => new { p.Permission.PermissionId, p.Permission.PermissionName }),
                         UserCount = s.UserGroupMaps.Count
@@ -74,8 +74,7 @@ namespace Colsp.Api.Controllers
                 request.DefaultOnNull();
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
-                    userGroupList = userGroupList.Where(a => a.GroupNameEn.Contains(request.SearchText)
-                    || a.GroupNameTh.Contains(request.SearchText));
+                    userGroupList = userGroupList.Where(a => a.GroupNameEn.Contains(request.SearchText));
                 }
                 var total = userGroupList.Count();
                 var pagedUsers = userGroupList.Paginate(request);
@@ -94,7 +93,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 var usrGrp = db.UserGroups.Include(i => i.UserGroupPermissionMaps.Select(s => s.Permission))
                     .Where(w => w.GroupId == usergroupid && !w.Status.Equals(Constant.STATUS_REMOVE) 
                         && w.Type.Equals(Constant.USER_TYPE_SELLER)
@@ -102,7 +101,7 @@ namespace Colsp.Api.Controllers
                     .Select(s => new {
                         s.GroupId,
                         s.GroupNameEn,
-                        s.GroupNameTh,
+                        //s.GroupNameTh,
                         Permission = s.UserGroupPermissionMaps.Select(ug => ug.Permission)
                     }).ToList();
                 if (usrGrp == null || usrGrp.Count == 0)
@@ -128,7 +127,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId.Value;
+                var shopId = this.User.ShopRequest().ShopId;
                 usrGrp = new UserGroup();
                 usrGrp.GroupNameEn = Validation.ValidateString(request.GroupNameEn, "Role Name", true, 100, true);
                 var usrGroupEntity = db.UserGroups.Where(w => w.GroupNameEn.Equals(usrGrp.GroupNameEn) 
@@ -139,7 +138,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("This role name has already been used. Please enter a different role name.");
                 }
                 usrGrp.GroupNameEn = request.GroupNameEn;
-                usrGrp.GroupNameTh = request.GroupNameTh;
+                //usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.Status = Constant.STATUS_ACTIVE;
                 usrGrp.Type = Constant.USER_TYPE_SELLER;
                 usrGrp.CreatedBy = this.User.UserRequest().Email;
@@ -203,7 +202,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("User group not found");
                 }
-                usrGrp.GroupNameTh = request.GroupNameTh;
+                //usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.GroupNameEn = request.GroupNameEn;
                 var mapList = db.UserGroupPermissionMaps.Where(w => w.GroupId == usrGrp.GroupId).ToList();
                 if (request.Permission != null && request.Permission.Count > 0)
@@ -264,7 +263,7 @@ namespace Colsp.Api.Controllers
                 var userGroupList = db.UserGroups.Include(i=>i.UserGroupPermissionMaps.Select(s=>s.Permission)).Include(i=>i.UserGroupMaps).Where(w=>w.Type.Equals(Constant.USER_TYPE_ADMIN) && !w.Status.Equals(Constant.STATUS_REMOVE)).Select(s=>new {
                     s.GroupId,
                     s.GroupNameEn,
-                    s.GroupNameTh,
+                    //s.GroupNameTh,
                     s.UpdatedDt,
                     //Permission = s.UserGroupPermissionMaps.Select(p=>new { p.Permission.PermissionId, p.Permission.PermissionName }),
                     UserCount = s.UserGroupMaps.Count
@@ -276,8 +275,7 @@ namespace Colsp.Api.Controllers
                 request.DefaultOnNull();
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
-                    userGroupList = userGroupList.Where(a => a.GroupNameEn.Contains(request.SearchText)
-                    || a.GroupNameTh.Contains(request.SearchText));
+                    userGroupList = userGroupList.Where(a => a.GroupNameEn.Contains(request.SearchText));
                 }
                 var total = userGroupList.Count();
                 var pagedUsers = userGroupList.Paginate(request);
@@ -301,7 +299,7 @@ namespace Colsp.Api.Controllers
                     .Select(s => new {
                         s.GroupId,
                         s.GroupNameEn,
-                        s.GroupNameTh,
+                        //s.GroupNameTh,
                         Permission = s.UserGroupPermissionMaps.Select(ug => ug.Permission)
                     }).ToList();
                 if (usrGrp == null || usrGrp.Count == 0)
@@ -330,7 +328,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("This role name has already been used. Please enter a different role name.");
                 }
-                usrGrp.GroupNameTh = Validation.ValidateString(request.GroupNameTh, "Role Name (Thai)", false, 100, true);
+                //usrGrp.GroupNameTh = Validation.ValidateString(request.GroupNameTh, "Role Name (Thai)", false, 100, true);
                 usrGrp.Status = Constant.STATUS_ACTIVE;
                 usrGrp.Type = Constant.USER_TYPE_ADMIN;
                 usrGrp.CreatedBy = this.User.UserRequest().Email;
@@ -381,7 +379,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var userGroupIds = request.Where(w => w.GroupId != null).Select(s => s.GroupId.Value).ToList();
+                var userGroupIds = request.Where(w => w.GroupId != 0).Select(s => s.GroupId).ToList();
                 var usrGrp = db.UserGroups.Where(w => Constant.USER_TYPE_ADMIN.Equals(w.Type) && userGroupIds.Contains(w.GroupId));
                 db.UserGroups.RemoveRange(usrGrp);
                 Util.DeadlockRetry(db.SaveChanges, "UserGroup");
@@ -408,7 +406,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("This user group is not admin");
                 }
-                usrGrp.GroupNameTh = request.GroupNameTh;
+                //usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.GroupNameEn = request.GroupNameEn;
                 var mapList = db.UserGroupPermissionMaps.Where(w => w.GroupId == usrGrp.GroupId).ToList();
                 if (request.Permission != null && request.Permission.Count > 0)

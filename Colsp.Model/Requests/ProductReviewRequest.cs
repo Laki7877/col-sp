@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Colsp.Model.Requests
+﻿namespace Colsp.Model.Requests
 {
     public class ProductReviewRequest : PaginatedRequest
     {
-        public int? ProductReviewId { get; set; }
+        public int ProductReviewId { get; set; }
         public string Status { get; set; }
         public string Pid { get; set;}
         public string SearchText { get; set; }
+
+        public ProductReviewRequest()
+        {
+            ProductReviewId = 0;
+            Status = string.Empty;
+            Pid = string.Empty;
+            SearchText = string.Empty;
+        }
 
         public override void DefaultOnNull()
         {

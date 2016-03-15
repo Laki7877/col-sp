@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Colsp.Model.Requests
 {
     public class ShopRequest : PaginatedRequest
     {
-        public int? ShopId { get; set; }
+        public int ShopId { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
+        public string UrlKeyEn { get; set; }
         public string Status { get; set; }
         public UserRequest ShopOwner { get; set; }
         public List<UserRequest> Users { get; set; }
@@ -30,7 +27,7 @@ namespace Colsp.Model.Requests
         public string Instagram { get; set; }
         public string Pinterest { get; set; }
         public string Twitter { get; set; }
-        public int? StockAlert { get; set; }
+        public int StockAlert { get; set; }
         public ImageRequest Logo { get; set; }
         public string SearchText { get; set; }
         public string ShopGroup { get; set; }
@@ -39,26 +36,51 @@ namespace Colsp.Model.Requests
         public bool IsShopReady { get; set; }
         public List<ShopCommission> Commissions { get; set; }
 
-        public override void DefaultOnNull()
-        {
-            SearchText = GetValueOrDefault(SearchText, null);
-            _order = GetValueOrDefault(_order, "ShopId");
-            base.DefaultOnNull();
-        }
 
         public ShopRequest()
         {
+            ShopId = 0;
+            ShopNameEn = string.Empty;
+            ShopNameTh = string.Empty;
+            Status = string.Empty;
+            Commission = 0;
+            ShopDescriptionEn = string.Empty;
+            ShopDescriptionTh = string.Empty;
+            FloatMessageEn = string.Empty;
+            FloatMessageTh = string.Empty;
+            ShopAddress = string.Empty;
+            MaxLocalCategory = 0;
+            BankName = string.Empty;
+            BankAccountName = string.Empty;
+            BankAccountNumber = string.Empty;
+            Facebook = string.Empty;
+            Youtube = string.Empty;
+            Instagram = string.Empty;
+            Pinterest = string.Empty;
+            Twitter = string.Empty;
+            StockAlert = 0;
+            SearchText = string.Empty;
+            ShopGroup = string.Empty;
+            TaxInvoice = string.Empty;
+            GiftWrap = string.Empty;
+            IsShopReady = false;
+
             ShopOwner = new UserRequest();
             Commissions = new List<ShopCommission>();
             Users = new List<UserRequest>();
             ShopType = new ShopTypeRequest();
             Logo = new ImageRequest();
         }
+
+        public override void DefaultOnNull()
+        {
+            SearchText = GetValueOrDefault(SearchText, string.Empty);
+            _order = GetValueOrDefault(_order, "ShopId");
+            base.DefaultOnNull();
+        }
+
+        
     }
 
-    public class ShopCommission
-    {
-        public int? CategoryId { get; set; }
-        public decimal? Commission { get; set; }
-    }
+    
 }

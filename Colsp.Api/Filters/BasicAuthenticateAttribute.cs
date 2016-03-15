@@ -12,12 +12,17 @@ using Colsp.Api.Services;
 using Colsp.Entity.Models;
 using Colsp.Api.Security;
 using Colsp.Model.Requests;
+using Cenergy.Dazzle.Admin.Security.Cryptography;
+using System.Data.Entity;
+using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Filters
 {
 	public class BasicAuthenticateAttribute : System.Attribute, IAuthenticationFilter
 	{
-		public bool AllowMultiple
+        private SaltedSha256PasswordHasher salt = new SaltedSha256PasswordHasher();
+
+        public bool AllowMultiple
 		{
 			get
 			{
@@ -61,7 +66,7 @@ namespace Colsp.Api.Filters
                 }
 
                 var userNameAndPassword = ExtractUserNameAndPassword(authorization.Parameter);
-
+                
                 // Check for parsed username password
                 if (userNameAndPassword == null)
                 {
@@ -72,6 +77,7 @@ namespace Colsp.Api.Filters
                 var email = userNameAndPassword.Item1;
                 var password = userNameAndPassword.Item2;
 
+                
                 // Authenticate
                 IPrincipal principal = await AuthenticateAsync(email, password, cancellationToken);
 
@@ -154,31 +160,24 @@ namespace Colsp.Api.Filters
 				// TODO: salt the password
 				// Query authenticated user-permission
 				var user = await Task.Run(() =>
-					db.Users.Where(u => u.Email.Equals(email) && u.Password.Equals(password))
-							.Select(u => new
-							{
-								u.UserId,
-								u.NameEn,
-								u.NameTh,
-								u.Email,
-								Shops = u.UserShops.Select(s=>s.Shop),
-                                u.Type,
-                                IsPasswordChange = u.PasswordLastChg != null ? true : false,
-                                Permission = u.UserGroupMaps
-                                .Select(um=>um.UserGroup.UserGroupPermissionMaps
-                                .Select(pm=>new { pm.Permission.PermissionName, pm.Permission.PermissionGroup }))
-                            })
-							.FirstOrDefault()
+					db.Users.Where(u => u.Email.Equals(email))
+                    .Include(i=>i.UserGroupMaps
+                        .Select(s=>s.UserGroup.UserGroupPermissionMaps
+                        .Select(sp=>sp.Permission)))
+                    .Include(i=>i.UserShopMaps.Select(s=>s.Shop))
+                    .FirstOrDefault()
 				);
-
-				// Check for user
-				if (user == null)
+                
+                // Check for user
+                if (user == null || !salt.CheckPassword(password, user.Password))
 				{
-					return null;
+                    user.LoginFailCount = user.LoginFailCount + 1;
+                    Util.DeadlockRetry(db.SaveChanges, "User");
+                    return null;
 				}
-
+                
                 // Get all permissions
-                var userPermissions = user.Permission;
+                var userPermissions = user.UserGroupMaps.Select(s=>s.UserGroup.UserGroupPermissionMaps.Select(sp=>sp.Permission));
 
                 // Assign claims
                 var claims = new List<Claim>();
@@ -195,11 +194,13 @@ namespace Colsp.Api.Filters
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
 				var principal = new UsersPrincipal(identity,
-                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn, Status = s.Status, IsShopReady = string.IsNullOrWhiteSpace(s.ShopDescriptionEn) ? false : true }).ToList(),
-                    new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type, IsPasswordChange = user.IsPasswordChange });
+                    user.Shops == null ? null : user.UserShopMaps.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.Shop.ShopNameEn, Status = s.Shop.Status, IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true }).ToList(),
+                    new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type, IsPasswordChange = string.IsNullOrEmpty(user.PasswordLastChg) ? false : true });
 
-
-				return principal;
+                user.LastLoginDt = DateTime.Now;
+                user.LoginFailCount = 0;
+                Util.DeadlockRetry(db.SaveChanges, "User");
+                return principal;
 			}
 		}
 

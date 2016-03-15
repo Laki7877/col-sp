@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Api.Constants;
 using Colsp.Model.Requests;
@@ -16,7 +15,6 @@ using Colsp.Model.Responses;
 using System.Data.SqlClient;
 using Colsp.Api.Helpers;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace Colsp.Api.Controllers
 {
@@ -33,11 +31,11 @@ namespace Colsp.Api.Controllers
                 int shopId = 0;
                 if (request == null)
                 {
-                    shopId = this.User.ShopRequest().ShopId.Value;
+                    shopId = this.User.ShopRequest().ShopId;
                 }
                 else
                 {
-                    shopId = request.ShopId.Value;
+                    shopId = request.ShopId;
                 }
                 var localCat = (from cat in db.LocalCategories
                                 where cat.ShopId == shopId
@@ -54,7 +52,7 @@ namespace Colsp.Api.Controllers
                                     cat.Status,
                                     cat.UpdatedDt,
                                     cat.CreatedDt,
-                                    ProductCount = cat.ProductStages.Count,
+                                    ProductCount = cat.ProductStageGroups.Count,
                                 });
                 return Request.CreateResponse(HttpStatusCode.OK, localCat);
             }
@@ -70,18 +68,22 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
                 request.DefaultOnNull();
-                IQueryable<ProductStage> products = null;
-                products = db.ProductStages.Where(p => true);
+                var products = db.ProductStages.Where(w => true);
+                //var products = db.ProductStageGroups.Where(p => true);
                 if (request.SearchText != null)
                 {
                     products = products.Where(p => p.Sku.Contains(request.SearchText)
                     || p.ProductNameEn.Contains(request.SearchText)
                     || p.ProductNameTh.Contains(request.SearchText));
                 }
-                if (request.CategoryId != null)
+                if (request.CategoryId != 0)
                 {
-                    products = products.Where(p => p.LocalCatId == request.CategoryId);
+                    products = products.Where(p => p.ProductStageGroup.LocalCatId == request.CategoryId);
                 }
                 else
                 {
@@ -100,8 +102,8 @@ namespace Colsp.Api.Controllers
                                                     p.OriginalPrice,
                                                     p.SalePrice,
                                                     p.Status,
-                                                    p.ImageFlag,
-                                                    p.InfoFlag,
+                                                    p.ProductStageGroup.ImageFlag,
+                                                    p.ProductStageGroup.InfoFlag,
                                                     Modified = p.UpdatedDt,
                                                     ImageUrl = m.Where(w=>w.FeatureFlag == true).FirstOrDefault().ImageUrlEn,
                                                 }
@@ -112,7 +114,7 @@ namespace Colsp.Api.Controllers
             }
             catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
 
@@ -122,33 +124,61 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
-                var cat = db.LocalCategories
-                    .Where(w => w.ShopId == shopId && w.CategoryId == categoryId)
-                    .Select(s => new
-                    {
-                        s.CategoryId,
-                        s.NameEn,
-                        s.NameTh,
-                        s.DescriptionFullEn,
-                        s.DescriptionFullTh,
-                        s.DescriptionShortEn,
-                        s.DescriptionShortTh,
-                        s.FeatureTitle,
-                        s.TitleShowcase,
-                        s.UrlKeyEn,
-                        s.UrlKeyTh,
-                        s.Visibility,
-                        s.ShopId,
-                        s.Lft,
-                        s.Rgt,
-                        FeatureProducts = s.LocalCatFeatureProducts.Select(sc => new { sc.ProductId, sc.ProductStage.Pid, sc.ProductStage.ProductNameEn })
-                    })
-                    .SingleOrDefault();
+                int shopId = this.User.ShopRequest().ShopId;
+                var cat = (from localCat in db.LocalCategories
+                          join featureProduct in db.LocalCatFeatureProducts on localCat.CategoryId equals featureProduct.CategoryId into featureJoin
+                          from featureProduct in featureJoin.DefaultIfEmpty()
+                          join productGroup in db.ProductStageGroups on featureProduct.ProductId equals productGroup.ProductId into productGroupJoin
+                          from productGroup in productGroupJoin.DefaultIfEmpty()
+                          join stage in db.ProductStages on productGroup.ProductId equals stage.ProductId into stageJoin
+                          from stage in stageJoin.DefaultIfEmpty()
+                          where localCat.ShopId == shopId && featureProduct == null || (featureProduct != null && productGroup != null && stage != null && stage.IsVariant==false) 
+                          select new
+                          {
+                              localCat.CategoryId,
+                              localCat.NameEn,
+                              localCat.NameTh,
+                              localCat.DescriptionFullEn,
+                              localCat.DescriptionFullTh,
+                              localCat.DescriptionShortEn,
+                              localCat.DescriptionShortTh,
+                              localCat.FeatureTitle,
+                              localCat.TitleShowcase,
+                              localCat.UrlKeyEn,
+                              localCat.UrlKeyTh,
+                              localCat.Visibility,
+                              localCat.ShopId,
+                              localCat.Lft,
+                              localCat.Rgt,
+                              FeatureProducts = featureProduct == null ? null : productGroup == null ? null : stage == null ? null :
+                              new { stage.ProductId, stage.Pid, stage.ProductNameEn }
+                          }).SingleOrDefault();
+                //var cat = db.LocalCategories
+                //    .Where(w => w.ShopId == shopId && w.CategoryId == categoryId)
+                //    .Select(s => new
+                //    {
+                //        s.CategoryId,
+                //        s.NameEn,
+                //        s.NameTh,
+                //        s.DescriptionFullEn,
+                //        s.DescriptionFullTh,
+                //        s.DescriptionShortEn,
+                //        s.DescriptionShortTh,
+                //        s.FeatureTitle,
+                //        s.TitleShowcase,
+                //        s.UrlKeyEn,
+                //        s.UrlKeyTh,
+                //        s.Visibility,
+                //        s.ShopId,
+                //        s.Lft,
+                //        s.Rgt,
+                //        FeatureProducts = s.LocalCatFeatureProducts.Select(sc => new { sc.ProductId, sc.ProductStage.Pid, sc.ProductStage.ProductNameEn })
+                //    })
+                //    .SingleOrDefault();
                 //var cat = db.LocalCategories.Where(w => w.ShopId == shopId && w.CategoryId == categoryId).SingleOrDefault();
                 if(cat == null)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    throw new Exception(HttpErrorMessage.NotFound);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, cat);
             }
@@ -165,7 +195,7 @@ namespace Colsp.Api.Controllers
             LocalCategory category = null;
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 category = new LocalCategory();
                 category.ShopId = shopId;
                 SetupCategory(category, request);
@@ -253,7 +283,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 var category = db.LocalCategories
                     .Where(w => w.CategoryId == categoryId && w.ShopId== shopId)
                     .Include(i=>i.LocalCatImages)
@@ -369,7 +399,7 @@ namespace Colsp.Api.Controllers
                 if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
                 {
                     var proStageList = db.ProductStages
-                            .Where(w => w.LocalCatId == category.CategoryId)
+                            .Where(w => w.ProductStageGroup.LocalCatId == category.CategoryId)
                             .Select(s => s.ProductId).ToList();
                     foreach (var pro in request.FeatureProducts)
                     {
@@ -450,7 +480,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 if (shopId == 0)
                 {
                     throw new Exception("Shop is invalid. Cannot find shop in session");
@@ -465,7 +495,7 @@ namespace Colsp.Api.Controllers
                 //                     Category = g,
                 //                     ProductCount = g.Key.ProductStages.Count
                 //                 }).ToList();
-                var catEnList = db.LocalCategories.Where(w => w.ShopId == shopId).Include(i => i.ProductStages).ToList();
+                var catEnList = db.LocalCategories.Where(w => w.ShopId == shopId).Include(i => i.ProductStageGroups).ToList();
                 foreach (CategoryRequest catRq in request)
                 {
                     if (catRq.Lft >= catRq.Rgt)
@@ -495,7 +525,7 @@ namespace Colsp.Api.Controllers
                 }
                 foreach (var cat in catEnList)
                 {
-                    if (cat.ProductStages.Count != 0)
+                    if (cat.ProductStageGroups.Count != 0)
                     {
                         db.Dispose();
                         throw new Exception("Cannot delete category <strong>" + cat.NameEn + "</strong> with product associated");
@@ -522,7 +552,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 var catList = db.LocalCategories.Where(w=>w.ShopId==shopId).ToList();
                 if (catList == null || catList.Count == 0)
                 {
@@ -554,7 +584,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId.Value;
+                int shopId = this.User.ShopRequest().ShopId;
                 foreach (CategoryRequest rq in request)
                 {
                     var cat = db.LocalCategories.Where(w=>w.CategoryId==rq.CategoryId && w.ShopId==shopId).SingleOrDefault();

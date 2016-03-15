@@ -1,7 +1,6 @@
-﻿using System;
-namespace Cenergy.Dazzle.Admin.Security.Cryptography
+﻿namespace Cenergy.Dazzle.Admin.Security.Cryptography
 {
-	interface IPasswordHasher
+    interface IPasswordHasher
 	{
 		bool CheckPassword(string plainTextPassword, string hashedPassword);
 		string HashPassword(string password);

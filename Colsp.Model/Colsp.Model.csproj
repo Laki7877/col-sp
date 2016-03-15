@@ -42,32 +42,41 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Requests\ActionRequest.cs" />
     <Compile Include="Requests\AttributeRequest.cs" />
     <Compile Include="Requests\AttributeSetRequest.cs" />
     <Compile Include="Requests\AttributeValueRequest.cs" />
     <Compile Include="Requests\BrandRequest.cs" />
     <Compile Include="Requests\CategoryRequest.cs" />
+    <Compile Include="Requests\CategoryShiftRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
+    <Compile Include="Requests\ConditionRequest.cs" />
+    <Compile Include="Requests\ControlFlagRequest.cs" />
     <Compile Include="Requests\CouponRequest.cs" />
     <Compile Include="Requests\CSVTemplateRequest.cs" />
     <Compile Include="Requests\ExportRequest.cs" />
+    <Compile Include="Requests\FilterByRequest.cs" />
     <Compile Include="Requests\ImageRequest.cs" />
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
     <Compile Include="Requests\NewsletterRequest.cs" />
     <Compile Include="Requests\OnBoardRequest.cs" />
+    <Compile Include="Requests\OrderRequest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />
     <Compile Include="Requests\ProductRequest.cs" />
     <Compile Include="Requests\ProductReviewRequest.cs" />
     <Compile Include="Requests\ProductStageRequest.cs" />
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\SEORequest.cs" />
+    <Compile Include="Requests\ShopCommission.cs" />
     <Compile Include="Requests\ShopRequest.cs" />
     <Compile Include="Requests\ShopTypeRequest.cs" />
     <Compile Include="Requests\TagRequest.cs" />
     <Compile Include="Requests\UserGroupRequest.cs" />
     <Compile Include="Requests\PermissionRequest.cs" />
     <Compile Include="Requests\UserRequest.cs" />
+    <Compile Include="Requests\VariantRequest.cs" />
+    <Compile Include="Requests\VideoLinkRequest.cs" />
     <Compile Include="Responses\FileUploadRespond.cs" />
     <Compile Include="Responses\PaginatedResponse.cs" />
   </ItemGroup>

@@ -1,13 +1,10 @@
 ﻿using Colsp.Model.Requests;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Colsp.Model.Responses
 {
-	public class PaginatedResponse
+    public class PaginatedResponse
 	{
 		// Factory method
 		public static PaginatedResponse CreateResponse(IQueryable data, PaginatedRequest pagination, int total)

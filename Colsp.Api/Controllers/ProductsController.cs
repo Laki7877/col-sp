@@ -1,17 +1,9 @@
-﻿using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
+﻿using System.Linq;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
-using Colsp.Model.Requests;
-using Colsp.Model.Responses;
-using Colsp.Api.Filters;
-using Colsp.Api.Extensions;
 namespace Colsp.Api.Controllers
 {
-	public class ProductsController : ApiController
+    public class ProductsController : ApiController
     {
         private ColspEntities db = new ColspEntities();
 
@@ -24,9 +16,9 @@ namespace Colsp.Api.Controllers
             base.Dispose(disposing);
         }
 
-        private bool ProductExists(int id)
-        {
-            return db.Products.Count(e => e.ProductId == id) > 0;
-        }
+        //private bool ProductExists(int id)
+        //{
+        //    return db.Products.Count(e => e.ProductId == id) > 0;
+        //}
     }
 }

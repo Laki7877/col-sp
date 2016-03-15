@@ -1,15 +1,12 @@
 ﻿using Colsp.Api.Security;
 using Colsp.Model.Requests;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Web;
 
 namespace Colsp.Api.Extensions
 {
-	public static class IPrincipalExtension
+    public static class IPrincipalExtension
 	{
 		public static bool HasPermission(this IPrincipal p, string permission)
 		{

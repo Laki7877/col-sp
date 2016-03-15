@@ -9,8 +9,6 @@ using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using Colsp.Api.Constants;
 using Colsp.Model.Responses;
-using System.Data.Entity.Infrastructure;
-using System.Data.SqlClient;
 using System.Data.Entity.SqlServer;
 using System.Data.Entity;
 using Colsp.Api.Helpers;
@@ -42,12 +40,19 @@ namespace Colsp.Api.Controllers
                              };
                 if(this.User.HasPermission("View Promotion"))
                 {
-                    var shopId = this.User.ShopRequest().ShopId.Value;
+                    var shopId = this.User.ShopRequest().ShopId;
                     coupon = coupon.Where(w => w.ShopId == shopId && w.CouponType.Equals(Constant.USER_TYPE_SELLER));
                 }
                 else if(this.User.HasPermission("Manage Global Coupons"))
                 {
-                    coupon = coupon.Where(w => w.CouponType.Equals(Constant.USER_TYPE_ADMIN));
+                    if (request.IsGlobalCoupon)
+                    {
+                        coupon = coupon.Where(w => w.CouponType.Equals(Constant.USER_TYPE_ADMIN));
+                    }
+                    else
+                    {
+                        coupon = coupon.Where(w => w.CouponType.Equals(Constant.USER_TYPE_SELLER));
+                    }
                 }
                 else
                 {
@@ -112,7 +117,7 @@ namespace Colsp.Api.Controllers
                     });
                 if (this.User.HasPermission("View Promotion"))
                 {
-                    var shopId = this.User.ShopRequest().ShopId.Value;
+                    var shopId = this.User.ShopRequest().ShopId;
                     couponList = couponList.Where(w => w.ShopId == shopId);
                 }
                 var c = couponList.ToList();
@@ -196,7 +201,8 @@ namespace Colsp.Api.Controllers
                                 {
                                     coupon.CouponBrandMaps.Add(new CouponBrandMap()
                                     {
-                                        BrandId = b.BrandId.Value,
+                                        BrandId = b.BrandId,
+                                        Filter = Constant.COUPON_FILTER_INCLUDE,
                                         CreatedBy = this.User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
                                         UpdatedBy = this.User.UserRequest().Email,
@@ -230,7 +236,8 @@ namespace Colsp.Api.Controllers
                                 {
                                     coupon.CouponGlobalCatMaps.Add(new CouponGlobalCatMap()
                                     {
-                                        CategoryId = c.CategoryId.Value,
+                                        CategoryId = c.CategoryId,
+                                        Filter = Constant.COUPON_FILTER_INCLUDE,
                                         CreatedBy = this.User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
                                         UpdatedBy = this.User.UserRequest().Email,
@@ -247,7 +254,8 @@ namespace Colsp.Api.Controllers
                                 {
                                     coupon.CouponLocalCatMaps.Add(new CouponLocalCatMap()
                                     {
-                                        CategoryId = c.CategoryId.Value,
+                                        CategoryId = c.CategoryId,
+                                        Filter = Constant.COUPON_FILTER_INCLUDE,
                                         CreatedBy = this.User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
                                         UpdatedBy = this.User.UserRequest().Email,
@@ -264,7 +272,7 @@ namespace Colsp.Api.Controllers
                                 {
                                     coupon.CouponShopMaps.Add(new CouponShopMap()
                                     {
-                                        ShopId = s.ShopId.Value,
+                                        ShopId = s.ShopId,
                                         CreatedBy = this.User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
                                         UpdatedBy = this.User.UserRequest().Email,
@@ -326,7 +334,7 @@ namespace Colsp.Api.Controllers
             {
                 if(this.User.HasPermission("Edit Promotion"))
                 {
-                    int shopId = this.User.ShopRequest().ShopId.Value;
+                    int shopId = this.User.ShopRequest().ShopId;
                     coupon = db.Coupons.Where(w => w.CouponId == couponId && w.ShopId == shopId)
                         .Include(i=>i.CouponBrandMaps)
                         .Include(i=>i.CouponCustomerMaps)
@@ -450,7 +458,7 @@ namespace Colsp.Api.Controllers
                                     {
                                         CouponBrandMap map = new CouponBrandMap();
                                         map.CouponId = coupon.CouponId;
-                                        map.BrandId = b.BrandId.Value;
+                                        map.BrandId = b.BrandId;
                                         map.CreatedBy = this.User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
                                         map.UpdatedBy = this.User.UserRequest().Email;
@@ -531,7 +539,7 @@ namespace Colsp.Api.Controllers
                                     {
                                         CouponGlobalCatMap map = new CouponGlobalCatMap();
                                         map.CouponId = coupon.CouponId;
-                                        map.CategoryId = c.CategoryId.Value;
+                                        map.CategoryId = c.CategoryId;
                                         map.CreatedBy = this.User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
                                         map.UpdatedBy = this.User.UserRequest().Email;
@@ -572,7 +580,7 @@ namespace Colsp.Api.Controllers
                                     {
                                         CouponLocalCatMap map = new CouponLocalCatMap();
                                         map.CouponId = coupon.CouponId;
-                                        map.CategoryId = c.CategoryId.Value;
+                                        map.CategoryId = c.CategoryId;
                                         map.CreatedBy = this.User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
                                         map.UpdatedBy = this.User.UserRequest().Email;
@@ -613,7 +621,7 @@ namespace Colsp.Api.Controllers
                                     {
                                         CouponShopMap map = new CouponShopMap();
                                         map.CouponId = coupon.CouponId;
-                                        map.ShopId = s.ShopId.Value;
+                                        map.ShopId = s.ShopId;
                                         map.CreatedBy = this.User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
                                         map.UpdatedBy = this.User.UserRequest().Email;

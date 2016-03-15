@@ -1,14 +1,12 @@
 ﻿using Colsp.Api.Constants;
 using Colsp.Model.Responses;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Colsp.Api.Helpers
 {
@@ -19,7 +17,7 @@ namespace Colsp.Api.Helpers
         {
             if (!Request.Content.IsMimeMultipartContent())
             {
-                throw new Exception("Content Multimedia");
+                throw new Exception("In valid content multi-media");
             }
             var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(rootPath, folderName));
             await Request.Content.ReadAsMultipartAsync(streamProvider);
@@ -29,7 +27,17 @@ namespace Colsp.Api.Helpers
             foreach (MultipartFileData fileData in streamProvider.FileData)
             {
                 fileName = fileData.LocalFileName;
-                Validation.ValidateImage(fileName, minWidth, minHeight, maxWidth, maxHeight, maxSize, isSquare);
+                bool isLogo = false;
+                bool.TryParse(streamProvider.FormData["IsLogo"], out isLogo);
+                if (isLogo)
+                {
+                    Validation.ValidateImage(fileName, 100, 100, 100, 100, Int32.MaxValue, true);
+                }
+                else
+                {
+                    Validation.ValidateImage(fileName, minWidth, minHeight, maxWidth, maxHeight, maxSize, isSquare);
+                }
+                
                 string tmp = fileData.Headers.ContentDisposition.FileName;
                 if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
                 {
@@ -74,31 +82,28 @@ namespace Colsp.Api.Helpers
                                 break;
                             case 4060:
                                 // Invalid Database
-                                throw new Exception("Invalid Database");
+                                throw sqlException;
                             case 18456:
                                 // Login Failed
-                                throw new Exception("Database Login Failed");
+                                throw sqlException;
                             case 547:
                                 // ForeignKey Violation
-                                throw new Exception("Invalid entry in " + tableName);
+                                throw sqlException;
                             case 2627:
                                 // Unique Index/Constriant Violation
                                 var splitMessage = sqlException.Message.Split('\'');
                                 if(splitMessage.Length > 1)
                                 {
-                                    var message = splitMessage.ElementAt(1).Replace(
-                                        Constant.UNIQUE_CONSTRAIN_SUFFIX 
-                                        + Constant.UNIQUE_CONSTRAIN_DELIMETER 
-                                        + tableName 
-                                        + Constant.UNIQUE_CONSTRAIN_DELIMETER
-                                        , string.Empty);
-                                    message = message.Replace(Constant.UNIQUE_CONSTRAIN_DELIMETER, " ");
-                                    throw new Exception(string.Concat(message," ", Constant.UNIQUE_CONSTRAIN_PREFIX));
+                                    var message = splitMessage.ElementAt(1)
+                                        .Replace(Constant.UNIQUE_CONSTRAIN_PREFIX, string.Empty)
+                                        .Replace(tableName, string.Empty)
+                                        .Replace(Constant.UNIQUE_CONSTRAIN_DELIMETER, " ");
+                                    throw new Exception(string.Concat(message," ", Constant.UNIQUE_CONSTRAIN_SURFFIX));
                                 }
                                 throw sqlException;
                             case 2601:
                                 // Unique Index/Constriant Violation (Primary key violation)
-                                throw new Exception("Duplicate entry in " + tableName);
+                                throw sqlException;
                             default:
                                 // throw a general DAL Exception
                                 throw sqlException;
@@ -110,6 +115,7 @@ namespace Colsp.Api.Helpers
                     throw e;
                 }
             }
+            throw new Exception("Wait sometime and try again");
         }
 
     }

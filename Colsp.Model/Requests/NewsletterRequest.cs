@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Colsp.Model.Requests
 {
@@ -13,7 +9,17 @@ namespace Colsp.Model.Requests
         public string Description { get; set; }
         public string VisbleShopGroup { get; set; }
         public ImageRequest Image { get; set; }
+        public List<ShopRequest> Shops { get; set; }
 
+        public NewsletterRequest()
+        {
+            NewsletterId = 0;
+            Subject = string.Empty;
+            Description = string.Empty;
+            VisbleShopGroup = string.Empty;
+            Shops = new List<ShopRequest>();
+            Image = new ImageRequest();
+        }
 
         public override void DefaultOnNull()
         {

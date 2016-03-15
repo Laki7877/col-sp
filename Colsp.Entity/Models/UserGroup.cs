@@ -24,7 +24,6 @@ namespace Colsp.Entity.Models
     
         public int GroupId { get; set; }
         public string GroupNameEn { get; set; }
-        public string GroupNameTh { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }

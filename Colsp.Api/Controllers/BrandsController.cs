@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.Entity;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Data.SqlClient;
 using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers
@@ -44,27 +42,14 @@ namespace Colsp.Api.Controllers
             try
             {
 
-                //var attrList = from brand in db.Brands
-                //               where !brand.Status.Equals(Constant.STATUS_REMOVE)
-                //               select new
-                //               {
-                //                   brand.BrandNameEn,
-                //                   brand.BrandNameTh,
-                //                   brand.PicUrl,
-                //                   brand.DisplayNameTh,
-                //                   brand.VariantStatus,
-                //                   brand.DataType,
-                //                   brand.Status,
-                //                   brand.CreatedDt,
-                //                   brand.UpdatedDts
-                //               };
-
-
-
-                IQueryable<Brand> brands = null;
-                // List all brand
-                brands = db.Brands.Where(p => !p.Status.Equals(Constant.STATUS_REMOVE));
-                //brands = brands.Where(b => b.Status.Equals(Constant.STATUS_ACTIVE));
+                var brands = from brand in db.Brands
+                               select new
+                               {
+                                   brand.BrandId,
+                                   brand.BrandNameEn,
+                                   brand.BrandNameTh,
+                                   brand.UpdatedDt
+                               };
 
                 if (request == null)
                 {
@@ -76,7 +61,7 @@ namespace Colsp.Api.Controllers
                     brands = brands.Where(b => b.BrandNameEn.Contains(request.SearchText)
                     || b.BrandNameTh.Contains(request.SearchText));
                 }
-                if (request.BrandId != null)
+                if (request.BrandId != 0)
                 {
                     brands = brands.Where(p => p.BrandId.Equals(request.BrandId));
                 }
@@ -98,7 +83,7 @@ namespace Colsp.Api.Controllers
             {
                 var brand = db.Brands
                     .Where(w => w.BrandId == brandId).Include(i => i.BrandImages)
-                    .Include(i=>i.BrandFeatureProducts.Select(s=>s.ProductStage)).SingleOrDefault();
+                    .Include(i=>i.BrandFeatureProducts.Select(s=>s.ProductStageGroup.ProductStages)).SingleOrDefault();
                 if(brand != null)
                 {
                     BrandRequest response = new BrandRequest();
@@ -108,7 +93,7 @@ namespace Colsp.Api.Controllers
                     response.DisplayNameEn = brand.DisplayNameEn;
                     response.DisplayNameTh = brand.DisplayNameTh;
                     response.DescriptionFullEn = brand.DescriptionFullEn;
-                    response.DescriptionFullTh = brand.DescriptionFullEn;
+                    response.DescriptionFullTh = brand.DescriptionFullTh;
                     response.DescriptionShortEn = brand.DescriptionShortEn;
                     response.DescriptionShortTh = brand.DescriptionShortTh;
                     response.SEO = new SEORequest();
@@ -149,9 +134,9 @@ namespace Colsp.Api.Controllers
                         {
                             response.FeatureProducts.Add(new ProductRequest()
                             {
-                                ProductId = pro.ProductStage.ProductId,
-                                Pid = pro.ProductStage.Pid,
-                                ProductNameEn = pro.ProductStage.ProductNameEn
+                                ProductId = pro.ProductStageGroup.ProductId,
+                                Pid = pro.ProductStageGroup.ProductStages.Where(w=>w.IsVariant==false).SingleOrDefault().Pid,
+                                ProductNameEn = pro.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().ProductNameEn
                             });
                         }
                     }
@@ -183,7 +168,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var brandList = db.Brands.Include(i => i.ProductStages).ToList();
+                var brandList = db.Brands.Include(i => i.ProductStageGroups).ToList();
                 foreach (BrandRequest brandRq in request)
                 {
                     var current = brandList.Where(w => w.BrandId.Equals(brandRq.BrandId)).SingleOrDefault();
@@ -191,7 +176,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception(HttpErrorMessage.NotFound);
                     }
-                    if (current.ProductStages != null && current.ProductStages.Count > 0)
+                    if (current.ProductStageGroups != null && current.ProductStageGroups.Count > 0)
                     {
                         throw new Exception("Brand has product or variant associate");
                     }
@@ -376,8 +361,8 @@ namespace Colsp.Api.Controllers
                     var brandProList = brand.BrandFeatureProducts.ToList();
                     if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
                     {
-                        int? brandIdTmp = brand.BrandId;
-                        var proStageList = db.ProductStages
+                        int brandIdTmp = brand.BrandId;
+                        var proStageList = db.ProductStageGroups
                             .Where(w => w.BrandId==brandIdTmp)
                             .Select(s=>s.ProductId).ToList();
                         foreach (var pro in request.FeatureProducts)
@@ -451,8 +436,8 @@ namespace Colsp.Api.Controllers
             brand.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Brand Display Name (Thai)", true, 300, false);
             brand.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, Int32.MaxValue, false, string.Empty);
             brand.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, Int32.MaxValue, false, string.Empty);
-            brand.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, 500, false, string.Empty);
-            brand.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, 500, false, string.Empty);
+            brand.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Brand Description (English)", false, 500, false, string.Empty);
+            brand.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Brand Description (Thai)", false, 500, false, string.Empty);
             brand.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             brand.TitleShowcase = request.TitleShowcase;
             if (request.SEO != null)

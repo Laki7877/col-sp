@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.Linq;
-using System.Web;
+﻿using System.Configuration;
 
 namespace Colsp.Api.Services
 {
-	public class Config : ConfigurationSection
+    public class Config : ConfigurationSection
 	{
 		#region Global
 		public static readonly Config config = (Config)ConfigurationManager.GetSection("colsp");

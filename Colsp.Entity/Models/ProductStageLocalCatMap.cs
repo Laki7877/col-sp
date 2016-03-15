@@ -14,15 +14,14 @@ namespace Colsp.Entity.Models
     
     public partial class ProductStageLocalCatMap
     {
-        public int ProductId { get; set; }
+        public long ProductId { get; set; }
         public int CategoryId { get; set; }
-        public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         public virtual LocalCategory LocalCategory { get; set; }
-        public virtual ProductStage ProductStage { get; set; }
+        public virtual ProductStageGroup ProductStageGroup { get; set; }
     }
 }
