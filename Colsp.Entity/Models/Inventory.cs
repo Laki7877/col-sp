@@ -29,5 +29,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
+    
+        public virtual ProductStage ProductStage { get; set; }
     }
 }
