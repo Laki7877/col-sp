@@ -504,7 +504,7 @@ namespace Colsp.Api.Controllers
                             {
                                 var resultBrand = (from g in db.Brands
                                                    join p in db.Products on g.BrandId equals p.BrandId
-                                                   where  p.GlobalCategory.CategoryId == request.CategoryId &&(g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
+                                                   where p.GlobalCategory.CategoryId == request.CategoryId && (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
                                                    select new
                                                    {
                                                        g.BrandId,
@@ -656,6 +656,47 @@ namespace Colsp.Api.Controllers
             }
         }
 
+
+        [Route("api/CMSSearchCategory")]
+        [HttpGet]
+        public IHttpActionResult CMSSearchCategory([FromUri]CMSCategoryProductGetListRequest request)
+        {
+
+            try
+            {
+                dynamic response = string.Empty;
+                if (string.IsNullOrWhiteSpace(request._order))
+                    request._order = "CMSCollectionCategoryId";
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    var result = (from g in db.CMSCategoryProducts
+                                  where (g.CMSCollectionCategoryNameEN.Contains(request.SearchText) || g.CMSCollectionCategoryNameTH.Contains(request.SearchText))
+                                  select new
+                                  {
+                                      g.CMSCollectionCategoryId,
+                                      g.CMSCollectionCategoryNameEN,
+                                      g.CMSCollectionCategoryNameTH,
+                                      g.Status,
+                                      g.Visibility
+                                  }
+                               ).Take(100);
+
+                    if (request == null)
+                    {
+                        return Ok(result);
+                    }
+                    request.DefaultOnNull();
+                    var total = result.Count();
+                    var pagedCMS = result.Paginate(request);
+                    response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return Ok(request);
+            }
+        }
         #endregion
 
 
