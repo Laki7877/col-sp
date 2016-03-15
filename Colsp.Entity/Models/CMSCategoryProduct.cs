@@ -12,14 +12,15 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSCollectionListItem
+    public partial class CMSCategoryProduct
     {
-        public int CMSCollectionListItemId { get; set; }
-        public Nullable<int> CMSId { get; set; }
-        public string PId { get; set; }
-        public string ProductBoxBadge { get; set; }
-        public Nullable<int> Sequence { get; set; }
+        public int CMSCollectionCategoryId { get; set; }
+        public string CMSCollectionCategoryNameEN { get; set; }
+        public string CMSCollectionCategoryNameTH { get; set; }
+        public string BannerLocation { get; set; }
+        public string BannerConntent { get; set; }
         public Nullable<bool> Status { get; set; }
+        public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public Nullable<int> UpdateBy { get; set; }

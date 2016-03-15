@@ -15,7 +15,7 @@ namespace Colsp.Entity.Models
     public partial class LocalCatFeatureProduct
     {
         public int CategoryId { get; set; }
-        public int ProductId { get; set; }
+        public long ProductId { get; set; }
         public int ShopId { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
@@ -23,7 +23,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         public virtual LocalCategory LocalCategory { get; set; }
-        public virtual ProductStage ProductStage { get; set; }
+        public virtual ProductStageGroup ProductStageGroup { get; set; }
         public virtual Shop Shop { get; set; }
     }
 }

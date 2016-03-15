@@ -16,7 +16,7 @@ namespace Colsp.Entity.Models
     {
         public int CouponId { get; set; }
         public string Criteria { get; set; }
-        public Nullable<decimal> CriteriaPrice { get; set; }
+        public decimal CriteriaPrice { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }

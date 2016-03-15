@@ -35,14 +35,14 @@ namespace Colsp.Api.CMSFunction
                     JsonText = this.GetJsonCollectionItem(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
                     break;
-                case "CMSMainCategory":
-                    JsonText = this.GetJsonMainCategory(Id);
-                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
-                    break;
-                case "CMSBrandInShop":
-                    JsonText = this.GetJsonBrandInShop(Id);
-                    this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
-                    break;
+                //case "CMSMainCategory":
+                //    JsonText = this.GetJsonMainCategory(Id);
+                //    this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
+                //    break;
+                //case "CMSBrandInShop":
+                //    JsonText = this.GetJsonBrandInShop(Id);
+                //    this.SaveCMSHistoryLog(Id, Tablename, JsonText, (bool?)Status, Transaction, UserId, IP);
+                //    break;
                 case "CMSBY1GET1ITEM":
                     JsonText = this.GetJsonCMSBy1Get1Item(Id);
                     this.SaveCMSHistoryLog(Id, Tablename, JsonText, Status, Transaction, UserId, IP);
@@ -92,7 +92,7 @@ namespace Colsp.Api.CMSFunction
         {
             using (ColspEntities db = new ColspEntities())
             {
-                var CMSCollectionItem = from n in db.CMSCollectionListItems
+                var CMSCollectionItem = from n in db.CMSCategoryProductItems
                                         where n.CMSId == CollectionId
                                         select n;
                 string output = new JavaScriptSerializer().Serialize(CMSCollectionItem);
@@ -123,27 +123,27 @@ namespace Colsp.Api.CMSFunction
 
         }
 
-        private string GetJsonMainCategory(int MainId)
-        {
-            using (ColspEntities db = new ColspEntities())
-            {
-                var CMSMainCat = db.CMSMainCategories.Where(c => c.CMSId == MainId).ToList();
-                string output = new JavaScriptSerializer().Serialize(CMSMainCat);
-                return output;
-            }
-        }
+        //private string GetJsonMainCategory(int MainId)
+        //{
+        //    using (ColspEntities db = new ColspEntities())
+        //    {
+        //        var CMSMainCat = db.CMSMainCategories.Where(c => c.CMSId == MainId).ToList();
+        //        string output = new JavaScriptSerializer().Serialize(CMSMainCat);
+        //        return output;
+        //    }
+        //}
 
-        private string GetJsonBrandInShop(int BrandId)
-        {
-            using (ColspEntities db = new ColspEntities())
-            {
-                var CMSBrandInShop = db.CMSBrandInShops.Where(c => c.CMSId == BrandId).ToList();
-                string output = new JavaScriptSerializer().Serialize(CMSBrandInShop);
-                return output;
+        //private string GetJsonBrandInShop(int BrandId)
+        //{
+        //    using (ColspEntities db = new ColspEntities())
+        //    {
+        //        var CMSBrandInShop = db.CMSBrandInShops.Where(c => c.CMSId == BrandId).ToList();
+        //        string output = new JavaScriptSerializer().Serialize(CMSBrandInShop);
+        //        return output;
 
 
-            }
-        }
+        //    }
+        //}
 
         private string GetJsonCMSBy1Get1Item(int id)
         {

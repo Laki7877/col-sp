@@ -20,31 +20,24 @@ namespace Colsp.Entity.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Mobile { get; set; }
+        public string TelephoneNo { get; set; }
         public bool IsFacebookConnect { get; set; }
+        public bool IsT1CConnect { get; set; }
         public Nullable<System.DateTime> BirthDate { get; set; }
         public byte Gender { get; set; }
-        public string CustId { get; set; }
-        public string ProfileImage { get; set; }
         public Nullable<System.DateTime> ForgotPasswordOn { get; set; }
         public string VerifyKey { get; set; }
+        public bool ReceiveSms { get; set; }
+        public string T1CardNo { get; set; }
+        public bool IsActivate { get; set; }
+        public int Role { get; set; }
+        public Nullable<System.DateTime> LastLoginDate { get; set; }
+        public string CustTaxID { get; set; }
+        public string FacebookId { get; set; }
+        public string CustT1CID { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
-        public bool ReceiveSms { get; set; }
-        public Nullable<int> DefaultAddressId { get; set; }
-        public string ListUserId { get; set; }
-        public string GCListUserId { get; set; }
-        public Nullable<int> ShippingAddressId { get; set; }
-        public string T1CardNo { get; set; }
-        public string TelephoneNo { get; set; }
-        public bool IsActivate { get; set; }
-        public int Role { get; set; }
-        public Nullable<System.DateTime> LastLoginDate { get; set; }
-        public string BranchID { get; set; }
-        public string CustTaxID { get; set; }
-        public string FacebookId { get; set; }
-        public string CustT1CID { get; set; }
-        public string Channel { get; set; }
     }
 }

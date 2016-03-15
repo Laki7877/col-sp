@@ -12,10 +12,11 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GlobalCategoryAbbrevation
+    public partial class TBRoleUserTmp
     {
-        public int GlobalCategoryAbbrevation1 { get; set; }
-        public string Abbrevation { get; set; }
-        public bool Active { get; set; }
+        public int RoleID { get; set; }
+        public string UserID { get; set; }
+        public System.DateTime Createon { get; set; }
+        public string Createby { get; set; }
     }
 }

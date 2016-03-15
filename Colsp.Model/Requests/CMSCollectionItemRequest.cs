@@ -31,11 +31,11 @@ namespace Colsp.Model.Requests
         public List<CollectionItemList> CollectionItemList { get; set; }
         public int? CMSStatusFlowId { get; set; }
         public int? Sequence { get; set; }
-        public int? CMSCollectionGroupId { get; set; }
+        public int? CMSGroupId { get; set; }
     }
     public class CollectionItemList {
-        public int? CMSCollectionItemGroupId { get; set; }
-        public int CMSCollectionItemId { get; set; }
+        public int? CMSCollectionCategoryId { get; set; }
+        public int CMSCollectionListItemId { get; set; }
         public string PId { get; set; }
         public string ProductBoxBadge { get; set; }
         public Nullable<int> Sequence { get; set; }

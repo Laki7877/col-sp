@@ -14,8 +14,10 @@ namespace Colsp.Entity.Models
     
     public partial class ShopImage
     {
+        public int ShopImageId { get; set; }
         public int ShopId { get; set; }
         public string ImageUrl { get; set; }
+        public int Position { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }

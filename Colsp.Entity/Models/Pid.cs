@@ -12,12 +12,9 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GlobalCategoryPID
+    public partial class Pid
     {
-        public int CategoryId { get; set; }
-        public string CategoryAbbreviation { get; set; }
-        public string CurrentKey { get; set; }
-    
-        public virtual GlobalCategory GlobalCategory { get; set; }
+        public int Id { get; set; }
+        public string CurrentPid { get; set; }
     }
 }

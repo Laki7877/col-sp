@@ -289,7 +289,7 @@ namespace Colsp.Api.Controllers
                                 });
                 if (this.User.HasPermission("View Product"))
                 {
-                    int shopId = this.User.ShopRequest().ShopId.Value;
+                    int shopId = this.User.ShopRequest().ShopId;
                     products = products.Where(w => w.ShopId == shopId);
                 }
                 request.DefaultOnNull();

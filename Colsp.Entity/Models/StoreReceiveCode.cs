@@ -12,20 +12,14 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ODMUser
+    public partial class StoreReceiveCode
     {
-        public string UserId { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
-        public string Email { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string BranchCode { get; set; }
-        public bool IsActive { get; set; }
+        public string InvNo { get; set; }
+        public string ReceiveCode { get; set; }
+        public int Status { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
-        public Nullable<System.DateTime> LastActivity { get; set; }
     }
 }

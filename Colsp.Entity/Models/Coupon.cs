@@ -30,15 +30,15 @@ namespace Colsp.Entity.Models
         public string CouponCode { get; set; }
         public string CouponName { get; set; }
         public Nullable<int> ShopId { get; set; }
-        public Nullable<int> CouponQuantity { get; set; }
-        public Nullable<int> CouponUsed { get; set; }
+        public int CouponQuantity { get; set; }
+        public int CouponUsed { get; set; }
         public Nullable<System.DateTime> StartDate { get; set; }
         public Nullable<System.DateTime> ExpireDate { get; set; }
         public string Action { get; set; }
-        public Nullable<decimal> DiscountAmount { get; set; }
-        public Nullable<decimal> MaximumAmount { get; set; }
-        public Nullable<int> UsagePerCustomer { get; set; }
-        public Nullable<int> MaximumUser { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal MaximumAmount { get; set; }
+        public int UsagePerCustomer { get; set; }
+        public int MaximumUser { get; set; }
         public string FilterBy { get; set; }
         public string CouponType { get; set; }
         public string Status { get; set; }

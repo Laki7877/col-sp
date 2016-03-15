@@ -12,18 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductStageVariantArrtibuteMap
+    public partial class GlobalCatAttributeSetMap
     {
-        public int VariantId { get; set; }
-        public int AttributeId { get; set; }
-        public string Value { get; set; }
-        public bool IsAttributeValue { get; set; }
+        public int CategoryId { get; set; }
+        public int AttributeSetId { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual Attribute Attribute { get; set; }
-        public virtual ProductStageVariant ProductStageVariant { get; set; }
+        public virtual AttributeSet AttributeSet { get; set; }
+        public virtual GlobalCategory GlobalCategory { get; set; }
     }
 }

@@ -12,20 +12,15 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ODMUser
+    public partial class AppAuth
     {
-        public string UserId { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
-        public string Email { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string BranchCode { get; set; }
-        public bool IsActive { get; set; }
+        public string AppId { get; set; }
+        public string SecretKey { get; set; }
+        public string AppName { get; set; }
+        public Nullable<System.DateTime> ExpiredDate { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
-        public Nullable<System.DateTime> LastActivity { get; set; }
     }
 }

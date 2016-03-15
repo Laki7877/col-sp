@@ -59,7 +59,7 @@ namespace Colsp.Entity.Models
         public string KillerPoint3Th { get; set; }
         public string Installment { get; set; }
         public int TheOneCardEarn { get; set; }
-        public string GiftWrap { get; set; }
+        public string GiftWarp { get; set; }
         public decimal Length { get; set; }
         public decimal Height { get; set; }
         public decimal Width { get; set; }
@@ -74,8 +74,6 @@ namespace Colsp.Entity.Models
         public string MetaKeyTh { get; set; }
         public string UrlEn { get; set; }
         public int BoostWeight { get; set; }
-        public bool DefaultVaraint { get; set; }
-        public string Display { get; set; }
         public bool IsVariant { get; set; }
         public int VariantCount { get; set; }
         public bool Visibility { get; set; }

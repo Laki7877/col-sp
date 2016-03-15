@@ -770,7 +770,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 AutoGenerate.GeneratePid(db,group.ProductStages);
-                group.ProductId = db.GetNextProductStageGroupId().Single().Value;
+                //group.ProductId = db.GetNextProductStageGroupId().Single();
                 db.ProductStageGroups.Add(group);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 SetupGroupAfterSave(group,db,true);
@@ -1151,7 +1151,7 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             group.TheOneCardEarn = request.TheOneCardEarn;
-            group.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            //group.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             group.EffectiveDate = request.EffectiveDate;
             group.ExpireDate = request.ExpireDate;
             group.ControlFlag1 = request.ControlFlags.Flag1;
@@ -1315,7 +1315,7 @@ namespace Colsp.Api.Controllers
             variant.KillerPoint3Th = Validation.ValidateString(request.KillerPoint3Th, "Killer Point 3 (Thai)", false, 100, false, string.Empty);
             variant.Installment = Validation.ValidateString(request.Installment, "Installment", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.TheOneCardEarn = request.TheOneCardEarn;
-            variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+           // variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.Length = Validation.ValidateDecimal(request.Length, "Length", true, 11, 2, true,0).Value;
             variant.Height = Validation.ValidateDecimal(request.Height, "Height", true, 11, 2, true,0).Value;
             variant.Width = Validation.ValidateDecimal(request.Width, "Width", true, 11, 2, true,0).Value;
@@ -1331,8 +1331,8 @@ namespace Colsp.Api.Controllers
             variant.UrlEn = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product Url Key", false, 300, false, string.Empty);
             variant.BoostWeight = request.SEO.ProductBoostingWeight;
             variant.Visibility = request.Visibility;
-            variant.DefaultVaraint = request.DefaultVariant;
-            variant.Display = Validation.ValidateString(request.Display, "Display", true, 20, true, Constant.VARIANT_DISPLAY_GROUP, new List<string>() { Constant.VARIANT_DISPLAY_GROUP, Constant.VARIANT_DISPLAY_INDIVIDUAL });
+           // variant.DefaultVaraint = request.DefaultVariant;
+           // variant.Display = Validation.ValidateString(request.Display, "Display", true, 20, true, Constant.VARIANT_DISPLAY_GROUP, new List<string>() { Constant.VARIANT_DISPLAY_GROUP, Constant.VARIANT_DISPLAY_INDIVIDUAL });
             #endregion
             #region Shipping
             if (request.ShippingMethod == 0)
@@ -1717,7 +1717,7 @@ namespace Colsp.Api.Controllers
             response.KillerPoint3Th = variant.KillerPoint3Th;
             response.Installment = variant.Installment;
             response.TheOneCardEarn = variant.TheOneCardEarn;
-            response.GiftWrap = variant.GiftWrap;
+         //   response.GiftWrap = variant.GiftWrap;
             response.Length = variant.Length;
             response.Height = variant.Height;
             response.Width = variant.Width;
@@ -1733,11 +1733,11 @@ namespace Colsp.Api.Controllers
             response.SEO.ProductUrlKeyEn = variant.UrlEn;
             response.SEO.ProductBoostingWeight = variant.BoostWeight;
             response.Visibility = variant.Visibility;
-            response.DefaultVariant = variant.DefaultVaraint;
+         //   response.DefaultVariant = variant.DefaultVaraint;
             response.Quantity = variant.Inventory.Quantity;
             response.SafetyStock = variant.Inventory.SafetyStockSeller;
             response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
-            response.Display = variant.Display;
+       //     response.Display = variant.Display;
             if (variant.ProductStageImages != null && variant.ProductStageImages.Count > 0)
             {
                 variant.ProductStageImages = variant.ProductStageImages.OrderBy(o => o.Position).ToList();
@@ -1811,7 +1811,7 @@ namespace Colsp.Api.Controllers
                 response.Tags = product.ProductStageTags.Select(s => s.Tag).ToList();
             }
             response.TheOneCardEarn = product.TheOneCardEarn;
-            response.GiftWrap = product.GiftWrap;
+          //  response.GiftWrap = product.GiftWrap;
             response.EffectiveDate = product.EffectiveDate;
             response.ExpireDate = product.ExpireDate;
             response.ControlFlags.Flag1 = product.ControlFlag1;

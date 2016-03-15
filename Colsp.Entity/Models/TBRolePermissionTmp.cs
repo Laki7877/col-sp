@@ -12,16 +12,11 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GlobalCatFeatureProduct
+    public partial class TBRolePermissionTmp
     {
-        public int CategoryId { get; set; }
-        public long ProductId { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
-    
-        public virtual GlobalCategory GlobalCategory { get; set; }
-        public virtual ProductStageGroup ProductStageGroup { get; set; }
+        public int RoleID { get; set; }
+        public int PermissionID { get; set; }
+        public System.DateTime Createon { get; set; }
+        public string Createby { get; set; }
     }
 }

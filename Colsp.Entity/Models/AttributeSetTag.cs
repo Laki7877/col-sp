@@ -12,16 +12,15 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GlobalCatFeatureProduct
+    public partial class AttributeSetTag
     {
-        public int CategoryId { get; set; }
-        public long ProductId { get; set; }
+        public int AttributeSetId { get; set; }
+        public string Tag { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual GlobalCategory GlobalCategory { get; set; }
-        public virtual ProductStageGroup ProductStageGroup { get; set; }
+        public virtual AttributeSet AttributeSet { get; set; }
     }
 }

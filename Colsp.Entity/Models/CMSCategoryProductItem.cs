@@ -12,13 +12,14 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSCollectionCategory
+    public partial class CMSCategoryProductItem
     {
-        public int CMSCollectionCategoryId { get; set; }
-        public string CMSCollectionCategoryNameEN { get; set; }
-        public string CMSCollectionCategoryNameTH { get; set; }
+        public int CMSCollectionListItemId { get; set; }
+        public Nullable<int> CMSId { get; set; }
+        public string PId { get; set; }
+        public string ProductBoxBadge { get; set; }
+        public Nullable<int> Sequence { get; set; }
         public Nullable<bool> Status { get; set; }
-        public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public Nullable<int> UpdateBy { get; set; }
@@ -29,7 +30,5 @@ namespace Colsp.Entity.Models
         public Nullable<System.TimeSpan> EffectiveTime { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
         public Nullable<System.TimeSpan> ExpiryTime { get; set; }
-        public Nullable<int> CMSStatusFlowId { get; set; }
-        public Nullable<int> Sequence { get; set; }
     }
 }

@@ -12,16 +12,15 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GlobalCatFeatureProduct
+    public partial class CustomerToken
     {
-        public int CategoryId { get; set; }
-        public long ProductId { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
-    
-        public virtual GlobalCategory GlobalCategory { get; set; }
-        public virtual ProductStageGroup ProductStageGroup { get; set; }
+        public string CustomerId { get; set; }
+        public string Token { get; set; }
+        public string Browser { get; set; }
+        public string UserDevice { get; set; }
+        public string Os { get; set; }
+        public string WebAgent { get; set; }
+        public string IpAddress { get; set; }
+        public System.DateTime CreateOn { get; set; }
     }
 }

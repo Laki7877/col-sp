@@ -12,16 +12,11 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GlobalCatFeatureProduct
+    public partial class Province
     {
-        public int CategoryId { get; set; }
-        public long ProductId { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
-    
-        public virtual GlobalCategory GlobalCategory { get; set; }
-        public virtual ProductStageGroup ProductStageGroup { get; set; }
+        public int ProvinceId { get; set; }
+        public string ProvinceName { get; set; }
+        public string ProvinceNameEn { get; set; }
+        public byte ProvinceType { get; set; }
     }
 }

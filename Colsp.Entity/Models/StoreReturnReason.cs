@@ -12,17 +12,14 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AttributeSetTagMap
+    public partial class StoreReturnReason
     {
-        public int AttributeSetId { get; set; }
-        public int TagId { get; set; }
-        public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
-    
-        public virtual AttributeSet AttributeSet { get; set; }
-        public virtual Tag Tag { get; set; }
+        public int ReasonId { get; set; }
+        public string Reason { get; set; }
+        public int Status { get; set; }
+        public System.DateTime CreateOn { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public string UpdateBy { get; set; }
     }
 }

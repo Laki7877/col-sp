@@ -12,11 +12,15 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSRelCollectionGroup
+    public partial class CMSGroup
     {
-        public int CMSRelCollectionGroupId { get; set; }
-        public int CMSCollectionGroupId { get; set; }
-        public int CMSId { get; set; }
+        public int CMSGroupId { get; set; }
+        public string CMSGroupNameTH { get; set; }
+        public string CMSGroupNameEN { get; set; }
+        public string BannerLocation { get; set; }
+        public string BannerConntent { get; set; }
+        public Nullable<int> Sequence { get; set; }
+        public Nullable<int> ShopId { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
@@ -25,5 +29,9 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
     }
 }

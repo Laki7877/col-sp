@@ -23,5 +23,6 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         public virtual Coupon Coupon { get; set; }
+        public virtual ProductStage ProductStage { get; set; }
     }
 }
