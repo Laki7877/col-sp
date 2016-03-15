@@ -10,7 +10,7 @@ namespace Colsp.Model.Requests
     {
         public string SearchType { get; set; }
         public string SearchText { get; set; }
-
+        public int? CategoryId { get; set; }
         public override void DefaultOnNull()
         {
             SearchType = GetValueOrDefault(SearchType, null);
