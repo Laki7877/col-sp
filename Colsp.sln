@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colsp.Model", "Colsp.Model\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colsp.ApiTests", "Colsp.ApiTests\Colsp.ApiTests.csproj", "{DB4B2009-7D20-47AC-898B-58241B726044}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colsp.Logic", "Colsp.Logic\Colsp.Logic.csproj", "{7AB75EDD-88FB-4C4A-B092-DF49DF9A6B87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DB4B2009-7D20-47AC-898B-58241B726044}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB4B2009-7D20-47AC-898B-58241B726044}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB4B2009-7D20-47AC-898B-58241B726044}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AB75EDD-88FB-4C4A-B092-DF49DF9A6B87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AB75EDD-88FB-4C4A-B092-DF49DF9A6B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AB75EDD-88FB-4C4A-B092-DF49DF9A6B87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AB75EDD-88FB-4C4A-B092-DF49DF9A6B87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
