@@ -198,9 +198,9 @@ namespace Colsp.Api.CMSFunction
         /// <summary>
         /// param as 
         /// </summary>
-        public bool CreateCMSMainCategory(CMSGroupRequest Model)
+        public int CreateCMSGroup(CMSGroupRequest Model)
         {
-            bool result = false;
+            int result = 0;
             using (ColspEntities db = new ColspEntities())
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
@@ -232,7 +232,7 @@ namespace Colsp.Api.CMSFunction
                             //cItem.CreateIP = Model.IP;
                             //db.CMSMainCategories.Add(cItem);
                             //db.SaveChanges();
-                            //dbcxtransaction.Commit();
+                            dbcxtransaction.Commit();
                             //History Log
                             //HistoryLogClass log = new HistoryLogClass();
                             //log.LogCreateCMS(cms.CMSId, "CMS", cms.Status, "Create", (int)cms.CreateBy, cms.CreateIP);
@@ -240,7 +240,7 @@ namespace Colsp.Api.CMSFunction
                             //HistoryLogClass logCollection = new HistoryLogClass();
                           // log.LogCreateCMS(cItem.CMSMainCategoryId, "CMSCollectionItem", cItem.Status, "Create", (int)cItem.CreateBy, cItem.CreateIP);
 
-                            result = true;
+                            result = cms.CMSGroupId;
 
                         }
                         return result;

@@ -52,6 +52,7 @@
     <Compile Include="Requests\CategoryShiftRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
     <Compile Include="Requests\CMSBrandInShopRequest.cs" />
+    <Compile Include="Requests\CMSCategoryProductGetListRequest.cs" />
     <Compile Include="Requests\CMSCollectionCategoryRequest.cs" />
     <Compile Include="Requests\CMSCollectionItemRequest.cs" />
     <Compile Include="Requests\CMSGroupRequest.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Responses\Buy1Get1ItemRequest.cs" />
     <Compile Include="Responses\Buy1Get1ItemResponse.cs" />
     <Compile Include="Responses\CMSCollectionResponse.cs" />
+    <Compile Include="Responses\CMSGroupResponse.cs" />
     <Compile Include="Responses\CollectionItemResponse.cs" />
     <Compile Include="Responses\CollectionResponse.cs" />
     <Compile Include="Responses\FileUploadRespond.cs" />

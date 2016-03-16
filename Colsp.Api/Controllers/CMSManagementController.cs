@@ -17,6 +17,7 @@ using System.IO;
 using System.Text;
 using System.Net.Http.Headers;
 
+
 namespace Colsp.Api.Controllers
 {
     public class CMSManagementController : ApiController
@@ -96,7 +97,7 @@ namespace Colsp.Api.Controllers
             }
 
         }
-        
+
         [Route("api/CMSUpdateStatus")]
         [HttpPut]
         public IHttpActionResult UpdateCMSStatusFormCMSList(UpdateCMSStatusRequest model)
@@ -162,9 +163,75 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/CMSGroup")]
+        [HttpPost]
+        public HttpResponseMessage Action(CMSGroupRequest model)
+        {
+            try
+            {
+                if (model != null)
+                {
+                    int CMSGroupId = 0;
+                    CMSProcess cmsGroup = new CMSProcess();
+                    CMSGroupId = cmsGroup.CreateCMSGroup(model);
+                    return GetCMSGroup(CMSGroupId);
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
+            }
+        }
 
 
         #region Get CMS List
+        [Route("api/CMSGroup/{CMSGroupId}")]
+        [HttpPost]
+        public HttpResponseMessage GetCMSGroup(int? CMSGroupId)
+        {
+            try
+            {
+                CMSGroupResponse response = new CMSGroupResponse();
+                if (CMSGroupId != null && CMSGroupId.HasValue)
+                {
+                    if (CMSGroupId == 0)
+                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "CMS ID is invalid. Cannot find CMSId in System");
+                    using (ColspEntities db = new ColspEntities())
+                    {
+                        var GetCMS = db.CMSGroups.Where(c => c.CMSGroupId == CMSGroupId).FirstOrDefault();
+                        if (GetCMS != null)
+                        {
+                            response.CMSGroupId = GetCMS.CMSGroupId;
+                            response.CreateBy = GetCMS.CreateBy;
+                            response.CMSGroupNameEN = GetCMS.CMSGroupNameEN;
+                            response.CMSGroupNameTH = GetCMS.CMSGroupNameTH;
+                            response.BannerConntent = GetCMS.BannerConntent;
+                            response.BannerLocation = GetCMS.BannerLocation;
+                            response.Sequence = (int)GetCMS.Sequence;
+                            response.ShopId = GetCMS.ShopId;
+                            return Request.CreateResponse(HttpStatusCode.OK, response);
+                        }
+                        else
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Cannot find CMS ID in System");
+                        }
+                    }
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+            }
+        }
+
         [Route("api/CMSStages/{CMSId}")]
         [HttpGet]
         public HttpResponseMessage GetCollection(int? CMSId)
@@ -407,49 +474,55 @@ namespace Colsp.Api.Controllers
                             request._order = "BrandId";
                         if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
                         {
-
-                            var resultBrand = (from g in db.Brands
-                                               join p in db.Products on g.BrandId equals p.BrandId
-                                               where p.ShopId == shopId
-                                               select new
-                                               {
-                                                   g.BrandId,
-                                                   g.BrandNameEn,
-                                                   g.BrandNameTh,
-                                                   g.Status
-
-                                               }
-                                        ).Take(100);
-                            if (request == null)
+                            if (!request.CategoryId.HasValue)
                             {
-                                return Ok(resultBrand);
+                                var resultBrand = (from g in db.Brands
+                                                   join p in db.Products on g.BrandId equals p.BrandId
+                                                   where p.ShopId == shopId && p.LocalCategory.CategoryId == request.CategoryId && (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
+                                                   select new
+                                                   {
+                                                       g.BrandId,
+                                                       g.BrandNameEn,
+                                                       g.BrandNameTh,
+                                                       g.Status
+
+                                                   }
+                                            ).Take(100);
+                                if (request == null)
+                                {
+                                    return Ok(resultBrand);
+                                }
+                                request.DefaultOnNull();
+                                var totalBrand = resultBrand.Count();
+                                var pagedCMSBrand = resultBrand.Paginate(request);
+                                response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
                             }
-                            request.DefaultOnNull();
-                            var totalBrand = resultBrand.Count();
-                            var pagedCMSBrand = resultBrand.Paginate(request);
-                            response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
                         }
                         else
                         {
-                            var resultBrand = (from g in db.Brands
-                                               where (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
-                                               select new
-                                               {
-                                                   g.BrandId,
-                                                   g.BrandNameEn,
-                                                   g.BrandNameTh,
-                                                   g.Status
-
-                                               }
-                                        ).Take(100);
-                            if (request == null)
+                            if (!request.CategoryId.HasValue)
                             {
-                                return Ok(resultBrand);
+                                var resultBrand = (from g in db.Brands
+                                                   join p in db.Products on g.BrandId equals p.BrandId
+                                                   where p.GlobalCategory.CategoryId == request.CategoryId && (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
+                                                   select new
+                                                   {
+                                                       g.BrandId,
+                                                       g.BrandNameEn,
+                                                       g.BrandNameTh,
+                                                       g.Status
+
+                                                   }
+                                        ).Take(100);
+                                if (request == null)
+                                {
+                                    return Ok(resultBrand);
+                                }
+                                request.DefaultOnNull();
+                                var totalBrand = resultBrand.Count();
+                                var pagedCMSBrand = resultBrand.Paginate(request);
+                                response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
                             }
-                            request.DefaultOnNull();
-                            var totalBrand = resultBrand.Count();
-                            var pagedCMSBrand = resultBrand.Paginate(request);
-                            response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
                         }
                         break;
                     case "SHOP":
@@ -519,7 +592,7 @@ namespace Colsp.Api.Controllers
                                              {
                                                  g.GlobalCatId,
                                                  g.BrandId,
-                                                // g.ProductId,
+                                                 // g.ProductId,
                                                  g.ShopId,
                                                  g.Pid,
                                                  g.ProductNameEn,
@@ -547,7 +620,7 @@ namespace Colsp.Api.Controllers
                                              {
                                                  g.GlobalCatId,
                                                  g.BrandId,
-                                                // g.ProductId,
+                                                 // g.ProductId,
                                                  g.ShopId,
                                                  g.Pid,
                                                  g.ProductNameEn,
@@ -583,6 +656,47 @@ namespace Colsp.Api.Controllers
             }
         }
 
+
+        [Route("api/CMSSearchCategory")]
+        [HttpGet]
+        public IHttpActionResult CMSSearchCategory([FromUri]CMSCategoryProductGetListRequest request)
+        {
+
+            try
+            {
+                dynamic response = string.Empty;
+                if (string.IsNullOrWhiteSpace(request._order))
+                    request._order = "CMSCollectionCategoryId";
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    var result = (from g in db.CMSCategoryProducts
+                                  where (g.CMSCollectionCategoryNameEN.Contains(request.SearchText) || g.CMSCollectionCategoryNameTH.Contains(request.SearchText))
+                                  select new
+                                  {
+                                      g.CMSCollectionCategoryId,
+                                      g.CMSCollectionCategoryNameEN,
+                                      g.CMSCollectionCategoryNameTH,
+                                      g.Status,
+                                      g.Visibility
+                                  }
+                               ).Take(100);
+
+                    if (request == null)
+                    {
+                        return Ok(result);
+                    }
+                    request.DefaultOnNull();
+                    var total = result.Count();
+                    var pagedCMS = result.Paginate(request);
+                    response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return Ok(request);
+            }
+        }
         #endregion
 
 
@@ -969,7 +1083,7 @@ namespace Colsp.Api.Controllers
                 request.DefaultOnNull();
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
-                    CMS = CMS.Where(c => (c.CMSNameEN.Contains(request.SearchText) || c.CMSNameTH.Contains(request.SearchText) ));
+                    CMS = CMS.Where(c => (c.CMSNameEN.Contains(request.SearchText) || c.CMSNameTH.Contains(request.SearchText)));
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
@@ -1117,7 +1231,7 @@ namespace Colsp.Api.Controllers
 
         //                    List<CMSRelProductCategoryResponse> CMSRelProductCategory = new List<CMSRelProductCategoryResponse>();
         //                    var tmpItemList = db.CMSRelProductCategories.Where(c => c.CMSCollectionCategoryId == CategoryId).ToList();
-                           
+
         //                    foreach (var itemCollection in tmpItemList)
         //                    {
         //                        CMSRelProductCategoryResponse model = new CMSRelProductCategoryResponse();
@@ -1137,7 +1251,7 @@ namespace Colsp.Api.Controllers
         //                      model.ExpiryDate                  = itemCollection.ExpiryDate                     ;
         //                      model.ExpiryTime                  = itemCollection.ExpiryTime                     ;
         //                      model.CMSCollectionCategoryId = itemCollection.CMSCollectionCategoryId          ;
-                                
+
         //                        CMSRelProductCategory.Add(model);
         //                    }
         //                    response.CMSRelProductCategory = CMSRelProductCategory;
@@ -1212,7 +1326,7 @@ namespace Colsp.Api.Controllers
         //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
         //    }
         //}
-        
+
 
         //[Route("api/CMSCategoryUpdateItem")]
         //[HttpPost]
