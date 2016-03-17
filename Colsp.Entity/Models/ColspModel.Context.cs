@@ -37,11 +37,13 @@ namespace Colsp.Entity.Models
         public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual DbSet<BrandImage> BrandImages { get; set; }
         public virtual DbSet<City> Cities { get; set; }
-        public virtual DbSet<CMSFilter> CMSFilters { get; set; }
-        public virtual DbSet<CMSHistoryLog> CMSHistoryLogs { get; set; }
+        public virtual DbSet<CMSCategory> CMSCategories { get; set; }
+        public virtual DbSet<CMSGroup> CMSGroups { get; set; }
         public virtual DbSet<CMSMaster> CMSMasters { get; set; }
-        public virtual DbSet<CMSStatusFlow> CMSStatusFlows { get; set; }
-        public virtual DbSet<CMSType> CMSTypes { get; set; }
+        public virtual DbSet<CMSMasterGroupMap> CMSMasterGroupMaps { get; set; }
+        public virtual DbSet<CMSMasterStatu> CMSMasterStatus { get; set; }
+        public virtual DbSet<CMSMasterType> CMSMasterTypes { get; set; }
+        public virtual DbSet<CMSMastserCategoryMap> CMSMastserCategoryMaps { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
@@ -121,8 +123,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
-        public virtual DbSet<CMSGroup> CMSGroups { get; set; }
-        public virtual DbSet<CMSCategoryProduct> CMSCategoryProducts { get; set; }
-        public virtual DbSet<CMSCategoryProductItem> CMSCategoryProductItems { get; set; }
+        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
     }
 }

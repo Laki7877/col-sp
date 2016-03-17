@@ -12,7 +12,6 @@ using Colsp.Api.Extensions;
 using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
-using Colsp.Api.CMSFunction;
 using Colsp.Api.ByOneGetOneFunction;
 using Colsp.Model.Request;
 using Colsp.Api.Helpers;
@@ -62,7 +61,7 @@ namespace Colsp.Api.Controllers
         #region Read By 1 Get 1
         [Route("api/ProBuy1Get1/List")]
         [HttpGet]
-        public HttpResponseMessage ListBuy1Get1Item([FromUri] CMSShopRequest request)
+        public HttpResponseMessage ListBuy1Get1Item([FromUri] CMSMasterAllRequest request)
         {           
             try
             {                
@@ -321,7 +320,7 @@ namespace Colsp.Api.Controllers
                     sb = new StringBuilder();
                     if (rq.PromotionBuy1Get1ItemId == default(int)) { throw new Exception("Buy 1 Get 1 Id cannot be null"); }
                     var coll = db.PromotionBuy1Get1Item.Find(rq.PromotionBuy1Get1ItemId);
-                    var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
+                    var cmsFlowStatus = db.CMSMasterStatus.Find(coll.CMSStatusFlowId);
                     var buyItemName = db.Products.Find(coll.PIDBuy);
                     var getItemName = db.Products.Find(coll.PIDGet);
                     var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
@@ -387,7 +386,7 @@ namespace Colsp.Api.Controllers
                     }
                     sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
                     sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
-                    sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
+                    sb.Append(cmsFlowStatus.CMSMasterStatusNameEN); sb.Append(",");
                     sb.Append(visible); sb.Append(",");
 
 

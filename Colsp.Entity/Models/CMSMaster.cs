@@ -14,24 +14,23 @@ namespace Colsp.Entity.Models
     
     public partial class CMSMaster
     {
-        public int CMSId { get; set; }
-        public string CMSNameEN { get; set; }
-        public string CMSNameTH { get; set; }
-        public string URLKey { get; set; }
+        public int CMSMasterId { get; set; }
+        public string CMSMasterNameEN { get; set; }
+        public string CMSMasterNameTH { get; set; }
+        public string CMSMasterURLKey { get; set; }
         public Nullable<int> CMSTypeId { get; set; }
-        public Nullable<int> CMSFilterId { get; set; }
-        public Nullable<System.DateTime> EffectiveDate { get; set; }
-        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
-        public Nullable<System.DateTime> ExpiryDate { get; set; }
-        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
-        public Nullable<int> ShopId { get; set; }
-        public Nullable<int> CMSCount { get; set; }
+        public Nullable<System.DateTime> CMSMasterEffectiveDate { get; set; }
+        public Nullable<System.TimeSpan> CMSMasterEffectiveTime { get; set; }
+        public Nullable<System.DateTime> CMSMasterExpiryDate { get; set; }
+        public Nullable<System.TimeSpan> CMSMasterExpiryTime { get; set; }
+        public Nullable<int> CMSMasterTotal { get; set; }
         public string ShortDescriptionTH { get; set; }
         public string LongDescriptionTH { get; set; }
         public string ShortDescriptionEN { get; set; }
         public string LongDescriptionEN { get; set; }
         public Nullable<int> Sequence { get; set; }
-        public Nullable<int> CMSStatusFlowId { get; set; }
+        public Nullable<int> CMSMasterStatusId { get; set; }
+        public string LinkToOutside { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }

@@ -57,7 +57,7 @@
     <Compile Include="Requests\CMSCollectionItemRequest.cs" />
     <Compile Include="Requests\CMSGroupRequest.cs" />
     <Compile Include="Requests\CMSSearchForAddRequest.cs" />
-    <Compile Include="Requests\CMSShopRequest.cs" />
+    <Compile Include="Requests\CMSMasterAllRequest.cs" />
     <Compile Include="Requests\CollectionListRequest.cs" />
     <Compile Include="Requests\ConditionRequest.cs" />
     <Compile Include="Requests\ControlFlagRequest.cs" />
@@ -84,7 +84,7 @@
     <Compile Include="Requests\ShopRequest.cs" />
     <Compile Include="Requests\ShopTypeRequest.cs" />
     <Compile Include="Requests\TagRequest.cs" />
-    <Compile Include="Requests\UpdateCMSStatusRequest.cs" />
+    <Compile Include="Requests\CMSMasterItemListRequest.cs" />
     <Compile Include="Requests\UserGroupRequest.cs" />
     <Compile Include="Requests\PermissionRequest.cs" />
     <Compile Include="Requests\UserRequest.cs" />
