@@ -92,7 +92,7 @@
     <Compile Include="Requests\VideoLinkRequest.cs" />
     <Compile Include="Responses\Buy1Get1ItemRequest.cs" />
     <Compile Include="Responses\Buy1Get1ItemResponse.cs" />
-    <Compile Include="Responses\CMSCollectionResponse.cs" />
+    <Compile Include="Responses\CMSMasterResponse.cs" />
     <Compile Include="Responses\CMSGroupResponse.cs" />
     <Compile Include="Responses\CollectionItemResponse.cs" />
     <Compile Include="Responses\CollectionResponse.cs" />

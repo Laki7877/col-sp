@@ -436,12 +436,51 @@ namespace Colsp.Api.CMSFunction
         public void EditBrandInShop() { }
 
 
+        public int EditCMSGroup(CMSGroupRequest Model)
+        {
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var cms = db.CMSGroups.Where(c => c.CMSGroupId == Model.CMSGroupId).FirstOrDefault();
+                        if (cms != null)
+                        {
+                            cms.CMSGroupNameEN = Model.CMSGroupNameEN;
+                            cms.CMSGroupNameTH = Model.CMSGroupNameTH;
+                            cms.Status = Model.Status;
+                            cms.Sequence = Model.Sequence;
+                            cms.Visibility = Model.Visibility;
+                            cms.UpdateBy = Model.CreateBy;
+                            cms.UpdateDate = DateTime.Now;
+                            cms.UpdateIP = Model.CreateIP;
+                            db.Entry(cms).State = EntityState.Modified;
+                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            {
+                                dbcxtransaction.Commit();
+                                result = cms.CMSGroupId;
+                            }
+                        }
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbcxtransaction.Rollback();
+
+                        return result;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region new CMS CATE/COL/GROUP
-        
 
-   
+
+
         #endregion
     }
 }

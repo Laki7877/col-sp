@@ -155,7 +155,7 @@ namespace Colsp.Api.Controllers
                     if (ShopId.HasValue)
                     {
                         CMSProcess cms = new CMSProcess();
-                        CMSResult = cms.CMSUpdateStatus(model,UserId,ShopId);
+                        CMSResult = cms.CMSUpdateStatus(model, UserId, ShopId);
                         return GetCMSALL(CMSResult);
                     }
                 }
@@ -188,7 +188,7 @@ namespace Colsp.Api.Controllers
                         CMSProcess cms = new CMSProcess();
                         CMSId = cms.CreateCMSCollectionItem(model);
                     }
-                    return GetCollectionALL(CMSId);
+                    return GetCMSMasterDetail(CMSId);
                 }
                 else
                 {
@@ -203,7 +203,7 @@ namespace Colsp.Api.Controllers
 
         [Route("api/CMSGroup")]
         [HttpPost]
-        public HttpResponseMessage Action(CMSGroupRequest model)
+        public HttpResponseMessage CMSGroupCreate(CMSGroupRequest model)
         {
             try
             {
@@ -248,6 +248,16 @@ namespace Colsp.Api.Controllers
                             response.CMSGroupNameEN = GetCMS.CMSGroupNameEN;
                             response.CMSGroupNameTH = GetCMS.CMSGroupNameTH;
                             response.Sequence = (int)GetCMS.Sequence;
+                            List<CMSMasterResponse> MasterList = new List<CMSMasterResponse>();
+                            var GetCMSMasterIdList = db.CMSMasterGroupMaps.Where(c => c.CMSMasterGroupId == GetCMS.CMSGroupId).Select(c => c.CMSMasterId).ToList();
+                            foreach (int CMSMasteritem in GetCMSMasterIdList)
+                            {
+                                CMSMasterResponse CMSMaster = new CMSMasterResponse();
+                                CMSMaster = this.GetCMSMasterDetailById(CMSMasteritem);
+                                MasterList.Add(CMSMaster);
+                            }
+                            response.CMSMasterList = MasterList;
+
                             return Request.CreateResponse(HttpStatusCode.OK, response);
                         }
                         else
@@ -269,11 +279,11 @@ namespace Colsp.Api.Controllers
 
         [Route("api/CMSMaster/{CMSId}")]
         [HttpGet]
-        public HttpResponseMessage GetCollectionALL(int? CMSId)
+        public HttpResponseMessage GetCMSMasterDetail(int? CMSId)
         {
             try
             {
-                CMSCollectionResponse response = new CMSCollectionResponse();
+                CMSMasterResponse response = new CMSMasterResponse();
                 if (CMSId != null && CMSId.HasValue)
                 {
                     if (CMSId == 0)
@@ -342,14 +352,14 @@ namespace Colsp.Api.Controllers
                                 model.CMSCategoryId = itemCat.CMSCategoryId;
                                 List<ProductListResponse> ProductList = new List<ProductListResponse>();
                                 var ProductLists = (from map in db.CMSCategoryProductMaps.Where(m => m.CMSCategoryId == itemCat.CMSCategoryId)
-                                                     from cat in db.CMSCategories.Where(c => c.CMSCategoryId == map.CMSCategoryId).DefaultIfEmpty()
+                                                    from cat in db.CMSCategories.Where(c => c.CMSCategoryId == map.CMSCategoryId).DefaultIfEmpty()
                                                     from pro in db.Products.Where(c => c.Pid == map.ProductPID).DefaultIfEmpty()
                                                     select new ProductListResponse
                                                     {
-                                                         CMSCategoryId = (int)map.CMSCategoryId,
-                                                         ProductNameEN = pro.ProductNameEn,
-                                                         ProductNameTH = pro.ProductNameTh
-                                                     });
+                                                        CMSCategoryId = (int)map.CMSCategoryId,
+                                                        ProductNameEN = pro.ProductNameEn,
+                                                        ProductNameTH = pro.ProductNameTh
+                                                    });
                                 CategoryList.Add(model);
                                 CountItem++;
                             }
@@ -373,7 +383,110 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        public CMSMasterResponse GetCMSMasterDetailById(int? CMSId)
+        {
+            CMSMasterResponse response = new CMSMasterResponse();
+            try
+            {
 
+                if (CMSId != null && CMSId.HasValue)
+                {
+                    if (CMSId == 0)
+                        return response;
+                    using (ColspEntities db = new ColspEntities())
+                    {
+                        var GetCMS = db.CMSMasters.Where(c => c.CMSMasterId == CMSId).FirstOrDefault();
+                        if (GetCMS != null)
+                        {
+                            response.CMSMasterId = GetCMS.CMSMasterId;
+                            string CreateBy = string.Empty;
+                            if (GetCMS.CreateBy.HasValue)
+                            {
+                                var by = db.Users.Where(c => c.UserId == GetCMS.CreateBy).FirstOrDefault();
+                                if (by != null)
+                                    CreateBy = by.NameEn;
+                            }
+                            response.CreateBy = CreateBy;
+                            response.CMSMasterNameEN = GetCMS.CMSMasterNameEN;
+                            response.CMSMasterNameTH = GetCMS.CMSMasterNameTH;
+                            string CMSType = string.Empty;
+                            if (GetCMS.CreateBy.HasValue)
+                            {
+                                var Type = db.CMSMasterTypes.Where(c => c.CMSMasterTypeId == GetCMS.CMSTypeId).FirstOrDefault();
+                                if (Type != null)
+                                    CMSType = Type.CMSMasterTypeNameEN;
+                            }
+                            response.CMSType = CMSType;
+                            response.CMSMasterEffectiveDate = GetCMS.CMSMasterEffectiveDate;
+                            response.CMSMasterEffectiveTime = GetCMS.CMSMasterEffectiveTime;
+                            response.CMSMasterExpiryDate = GetCMS.CMSMasterExpiryDate;
+                            response.CMSMasterExpiryTime = GetCMS.CMSMasterExpiryTime;
+                            response.CreateIP = GetCMS.CreateIP;
+                            response.LongDescriptionEN = GetCMS.LongDescriptionEN;
+                            response.LongDescriptionTH = GetCMS.LongDescriptionTH;
+                            response.ShortDescriptionEN = GetCMS.ShortDescriptionEN;
+                            response.ShortDescriptionTH = GetCMS.ShortDescriptionTH;
+                            response.CMSMasterStatusId = GetCMS.CMSMasterStatusId;
+                            string Status = string.Empty;
+                            if (GetCMS.CMSMasterStatusId.HasValue)
+                            {
+                                var st = db.CMSMasterStatus.Where(c => c.CMSMasterStatusId == GetCMS.CMSMasterStatusId).FirstOrDefault();
+                                if (st != null)
+                                    Status = st.CMSMasterStatusNameEN;
+                            }
+                            response.CMSStatus = Status;
+                            response.CMSMasterURLKey = GetCMS.CMSMasterURLKey;
+                            response.Visibility = GetCMS.Visibility;
+                            response.CreateDate = (DateTime)GetCMS.Createdate;
+
+                            List<CategoryListResponse> CategoryList = new List<CategoryListResponse>();
+                            var CategoryLists = (from map in db.CMSMastserCategoryMaps.Where(m => m.CMSMasterId == CMSId)
+                                                 from cat in db.CMSCategories.Where(c => c.CMSCategoryId == map.CMSCategoryId).DefaultIfEmpty()
+                                                 select new
+                                                 {
+                                                     CMSMasterId = map.CMSMasterId,
+                                                     CMSCategoryId = map.CMSCategoryId,
+                                                     CategoryNameEN = cat.CMSCategoryNameEN,
+                                                     CategoryNameTH = cat.CMSCategoryNameTH
+                                                 });
+                            int CountItem = 0;
+                            foreach (var itemCat in CategoryLists)
+                            {
+                                CategoryListResponse model = new CategoryListResponse();
+                                model.CMSMasterId = GetCMS.CMSMasterId;
+                                model.CMSCategoryId = itemCat.CMSCategoryId;
+                                List<ProductListResponse> ProductList = new List<ProductListResponse>();
+                                var ProductLists = (from map in db.CMSCategoryProductMaps.Where(m => m.CMSCategoryId == itemCat.CMSCategoryId)
+                                                    from cat in db.CMSCategories.Where(c => c.CMSCategoryId == map.CMSCategoryId).DefaultIfEmpty()
+                                                    from pro in db.Products.Where(c => c.Pid == map.ProductPID).DefaultIfEmpty()
+                                                    select new ProductListResponse
+                                                    {
+                                                        CMSCategoryId = (int)map.CMSCategoryId,
+                                                        ProductNameEN = pro.ProductNameEn,
+                                                        ProductNameTH = pro.ProductNameTh
+                                                    });
+                                CategoryList.Add(model);
+                                CountItem++;
+                            }
+                            response.CategoryLists = CategoryList;
+                            return response;
+                        }
+                        else
+                        {
+                            return response;
+                        }
+                    }
+                }
+                else
+                {
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                return response;
+            }
+        }
         #endregion
 
         #region Search
@@ -414,6 +527,33 @@ namespace Colsp.Api.Controllers
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.OK, "Update Complete");
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
+            }
+
+
+        }
+
+
+        [Route("api/CMSGroupUpdate")]
+        [HttpPost]
+        public HttpResponseMessage CMSGroupUpdate(CMSGroupRequest model)
+        {
+            try
+            {
+                if (model != null)
+                {
+                    int CMSGroupId = 0;
+                    CMSProcess cmsGroup = new CMSProcess();
+                    CMSGroupId = cmsGroup.EditCMSGroup(model);
+                    return GetCMSGroup(CMSGroupId);
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
+                }
             }
             catch (Exception ex)
             {

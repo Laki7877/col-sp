@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Responses
 {
-    public class CMSCollectionResponse
+    public class CMSMasterResponse
     {
         public int CMSMasterId { get; set; }
         public string CMSMasterNameEN { get; set; }
