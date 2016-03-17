@@ -7,6 +7,7 @@ namespace Colsp.Model.Requests
     {
         public VariantRequest MasterVariant             { get; set; }
         public List<VariantRequest> Variants            { get; set; }
+        public AdminApproveRequest AdminApprove         { get; set; }
         public string Status                            { get; set; }
         public int ShopId                               { get; set; }
         public bool Visibility                          { get; set; }
@@ -21,7 +22,6 @@ namespace Colsp.Model.Requests
         public AttributeSetRequest AttributeSet         { get; set; }
         public List<AttributeRequest> MasterAttribute   { get; set; }
         public List<VariantRequest> RelatedProducts     { get; set; }
-        public SEORequest SEO                           { get; set; }
         public int ShippingMethod                       { get; set; }
         public int PrepareDay                           { get; set; }
         public DateTime? EffectiveDate                  { get; set; }
@@ -54,7 +54,6 @@ namespace Colsp.Model.Requests
             AttributeSet = new AttributeSetRequest();
             MasterAttribute = new List<AttributeRequest>();
             RelatedProducts = new List<VariantRequest>();
-            SEO = new SEORequest();
             ShippingMethod = 1;
             PrepareDay = 0;
             EffectiveDate = null;
@@ -68,6 +67,7 @@ namespace Colsp.Model.Requests
             VariantCount = 0;
             ControlFlags = new ControlFlagRequest();
             GroupId = string.Empty;
+            AdminApprove = new AdminApproveRequest();
         }
     }
 

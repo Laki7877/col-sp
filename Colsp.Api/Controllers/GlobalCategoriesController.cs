@@ -81,11 +81,11 @@ namespace Colsp.Api.Controllers
                                      cat.CategoryId,
                                      cat.NameEn,
                                      cat.NameTh,
-                                     BannerImageEn = cat.GlobalCatImages.Where(w=>Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o=>o.Position).Select(si=>new {
+                                     CategoryBannerEn = cat.GlobalCatImages.Where(w=>Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o=>o.Position).Select(si=>new {
                                          url = si.ImageUrl,
                                          position = si.Position
                                      }),
-                                     BannerImageTh = cat.GlobalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).OrderBy(o => o.Position).Select(si => new {
+                                     CategoryBannerTh = cat.GlobalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).OrderBy(o => o.Position).Select(si => new {
                                          url = si.ImageUrl,
                                          position = si.Position
                                      }),
@@ -96,6 +96,11 @@ namespace Colsp.Api.Controllers
                                             s.ProductStageGroup.ProductStages.Where(w=>w.IsVariant==false).FirstOrDefault().Pid,
                                             s.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault().ProductNameEn
                                         }),
+                                     cat.DescriptionFullEn,
+                                     cat.DescriptionFullTh,
+                                     cat.DescriptionShortEn,
+                                     cat.DescriptionShortTh,
+                                     cat.FeatureTitle,
                                      //cat.CategoryAbbreviation,
                                      //cat.Lft,
                                      //cat.Rgt,
@@ -188,14 +193,8 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 #endregion
-                if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
-                {
-                    category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"),"-",category.CategoryId);
-                }
-                else
-                {
-                    category.UrlKeyEn = request.UrlKeyEn.Trim().Replace(" ", "-");
-                }
+
+                
 
                 if (request.AttributeSets != null && request.AttributeSets.Count > 0)
                 {
@@ -212,6 +211,16 @@ namespace Colsp.Api.Controllers
                         });
                     }
                 }
+                category.CategoryId = db.GlobalCategoryId().SingleOrDefault().Value;
+                if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
+                {
+                    category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                }
+                else
+                {
+                    category.UrlKeyEn = request.UrlKeyEn.Trim().Replace(" ", "-");
+                }
+
                 db.GlobalCategories.Add(category);
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK, category);
@@ -760,8 +769,8 @@ namespace Colsp.Api.Controllers
             category.Commission = Validation.ValidateDecimal(request.Commission, "Commission (%)", true,20,2,true);
             category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false, string.Empty);
             category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false, string.Empty);
-            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, 500, false, string.Empty);
-            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, 500, false, string.Empty);
+            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Category Short Description (English)", false, 500, false, string.Empty);
+            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Category Short Description (Thai)", false, 500, false, string.Empty);
             category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
         }

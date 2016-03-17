@@ -37,6 +37,7 @@ namespace Colsp.Api.Controllers
                                    attr.VariantStatus,
                                    attr.DataType,
                                    attr.Status,
+                                   attr.DefaultAttribute,
                                    attr.UpdatedDt,
                                    AttributeSetCount = attr.AttributeSetMaps.Count()
                                };
@@ -72,6 +73,10 @@ namespace Colsp.Api.Controllers
                     else if (string.Equals("HTMLBox", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         attrList = attrList.Where(a => a.DataType.Equals("HB"));
+                    }
+                    else if (string.Equals("DefaultAttribute", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        attrList = attrList.Where(a => a.DefaultAttribute == true);
                     }
                 }
                 var total = attrList.Count();
@@ -398,6 +403,8 @@ namespace Colsp.Api.Controllers
                 attribute.Required = attr.Required;
                 attribute.Filterable = attr.Filterable;
                 attribute.Status = attr.Status;
+                attribute.DefaultAttribute = attr.DefaultAttribute;
+                attribute.VisibleTo = attr.VisibleTo;
 
                 if (attr.AttributeValueMaps != null && attr.AttributeValueMaps.Count > 0)
                 {
@@ -445,16 +452,24 @@ namespace Colsp.Api.Controllers
                     }
                 }
             }
+            attribute.DefaultAttribute = request.DefaultAttribute;
+            attribute.VariantStatus = request.VariantStatus;
+            if(attribute.DefaultAttribute  && attribute.VariantStatus)
+            {
+                throw new Exception("Default attribute cannot be variant");
+            }
+            attribute.VisibleTo = Validation.ValidateString(request.VisibleTo, "Visible To", false, 2, true, string.Empty, new List<string>() { Constant.ATTRIBUTE_VISIBLE_ADMIN, Constant.ATTRIBUTE_VISIBLE_ALL_USER });
+
+
             attribute.DataValidation = Validation.ValidateString(request.DataValidation, "Input Validation", false, 2, true, string.Empty);
             attribute.DefaultValue = Validation.ValidateString(request.DefaultValue, "If empty, value equals", false, 100, true, string.Empty);
-
             attribute.ShowAdminFlag = request.ShowAdminFlag;
             attribute.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
             attribute.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
             attribute.ShowLocalFilterFlag = request.ShowLocalFilterFlag;
             attribute.ShowLocalSearchFlag = request.ShowLocalSearchFlag;
             attribute.VariantDataType = Validation.ValidateString(request.VariantDataType, "Variant Display Type", false, 2, true, string.Empty);
-            attribute.VariantStatus = request.VariantStatus;
+            
             attribute.AllowHtmlFlag = request.AllowHtmlFlag;
             attribute.Filterable = request.Filterable;
             attribute.Required = request.Required;

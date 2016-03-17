@@ -65,6 +65,9 @@ namespace Colsp.Api.Constants
         public static readonly string SHOP_GROUP_INDY = "IN";
         public static readonly string SHOP_GROUP_MERCHANT = "ME";
 
+        public static readonly string ATTRIBUTE_VISIBLE_ADMIN = "AD";
+        public static readonly string ATTRIBUTE_VISIBLE_ALL_USER = "ME";
+
 
         public static readonly string LANG_EN = "EN";
         public static readonly string LANG_TH = "TH";

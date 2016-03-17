@@ -5,6 +5,7 @@
         public int AttributeValueId { get; set; }
         public string AttributeValueEn { get; set; }
         public string AttributeValueTh { get; set; }
+        public bool CheckboxValue { get; set; }
         public string Status { get; set; }
         public ImageRequest Image { get; set; }
 

@@ -98,6 +98,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
@@ -115,14 +116,14 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
     
-        public virtual ObjectResult<Nullable<long>> GetNextProductStageGroupId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
-        }
-    
         public virtual ObjectResult<Nullable<int>> AttributeValueId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("AttributeValueId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductStageGroupId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
         }
     
         public virtual ObjectResult<Nullable<int>> GlobalCategoryId()
