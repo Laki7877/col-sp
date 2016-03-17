@@ -12,11 +12,10 @@ using Colsp.Api.Extensions;
 using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
-using Colsp.Api.CMSFunction;
 using System.IO;
 using System.Text;
 using System.Net.Http.Headers;
-
+using Colsp.Api.CMSFunction;
 
 namespace Colsp.Api.Controllers
 {
@@ -27,68 +26,106 @@ namespace Colsp.Api.Controllers
         #region GetShopId
         private int GetShopId()
         {
-            var shopId = this.User.Shops().FirstOrDefault();
+            var ShopId = this.User.ShopRequest().ShopId;
             return 0;
         }
         #endregion
 
-        #region Page List
-        [Route("api/CMSShopList")]
+        #region Page List Get All CMS Master
+        [Route("api/CMS/GetAll")]
         [HttpGet]
-        public IHttpActionResult GetByShop([FromUri] CMSShopRequest request)
+        public IHttpActionResult GetCMSALL([FromUri] CMSMasterAllRequest request)
         {
-            //int? shopId = (int?)this.User.ShopRequest().ShopId.Value;
-            int? shopId = 0;
             try
             {
-                if (!shopId.HasValue)
-                    return Ok(request);
                 IQueryable<CMSMaster> CMS;
-                if (shopId.HasValue && shopId.Equals(Constant.CMS_SHOP_GOBAL))
+                dynamic response = string.Empty;
+                if (this.User.UserRequest().Type == Constant.USER_TYPE_ADMIN)
                 {
                     CMS = (from c in db.CMSMasters
                            select c
-                          ).Take(100);
+                               ).Take(100);
+                    if (request == null)
+                    {
+                        return Ok(CMS);
+                    }
+                    request.DefaultOnNull();
+                    if (!string.IsNullOrEmpty(request.SearchText))
+                    {
+                        CMS = CMS.Where(c => (c.CMSMasterNameEN.Contains(request.SearchText) || c.CMSMasterNameTH.Contains(request.SearchText)));
+                    }
+                    if (!string.IsNullOrEmpty(request._filter))
+                    {
+
+                        if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CMS = CMS.Where(p => p.CMSMasterStatusId == Constant.CMS_STATUS_DRAFT);
+                        }
+                        else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CMS = CMS.Where(p => p.CMSMasterStatusId == Constant.CMS_STATUS_APPROVE);
+                        }
+                        else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CMS = CMS.Where(p => p.CMSMasterStatusId == Constant.CMS_STATUS_NOT_APPROVE);
+                        }
+                        else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CMS = CMS.Where(p => p.CMSMasterStatusId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
+                        }
+                    }
+                    var total = CMS.Count();
+                    var pagedCMS = CMS.Paginate(request);
+                    response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
                 }
                 else
                 {
-                    CMS = (from c in db.CMSMasters
-                           where c.ShopId == shopId
-                           select c
-                          ).Take(100);
-                }
-                if (request == null)
-                {
-                    return Ok(CMS);
-                }
-                request.DefaultOnNull();
-                if (!string.IsNullOrEmpty(request.SearchText))
-                {
-                    CMS = CMS.Where(c => (c.CMSNameEN.Contains(request.SearchText) || c.CMSNameTH.Contains(request.SearchText)));
-                }
-                if (!string.IsNullOrEmpty(request._filter))
-                {
+                    int? shopId = (int?)this.User.ShopRequest().ShopId;
 
-                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    if (!shopId.HasValue)
+                        return Ok(request);
+
+                    CMS = (from c in db.CMSMasterGroupMaps
+                           join m in db.CMSMasters on c.CMSMasterId equals m.CMSMasterId
+                           where c.ShopId == shopId
+                           select m
+                          ).Take(100);
+
+                    if (request == null)
                     {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_DRAFT);
+                        return Ok(CMS);
                     }
-                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    request.DefaultOnNull();
+                    if (!string.IsNullOrEmpty(request.SearchText))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_APPROVE);
+                        CMS = CMS.Where(c => (c.CMSMasterNameEN.Contains(request.SearchText) || c.CMSMasterNameTH.Contains(request.SearchText)));
                     }
-                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrEmpty(request._filter))
                     {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_NOT_APPROVE);
+
+                        if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CMS = CMS.Where(p => p.CMSMasterStatusId == Constant.CMS_STATUS_DRAFT);
+                        }
+                        else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CMS = CMS.Where(p => p.CMSMasterStatusId == Constant.CMS_STATUS_APPROVE);
+                        }
+                        else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CMS = CMS.Where(p => p.CMSMasterStatusId == Constant.CMS_STATUS_NOT_APPROVE);
+                        }
+                        else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CMS = CMS.Where(p => p.CMSMasterStatusId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
+                        }
                     }
-                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
-                    }
+                    var total = CMS.Count();
+                    var pagedCMS = CMS.Paginate(request);
+                    response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
                 }
-                var total = CMS.Count();
-                var pagedCMS = CMS.Paginate(request);
-                var response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
+
+
                 return Ok(response);
             }
             catch (Exception ex)
@@ -98,13 +135,12 @@ namespace Colsp.Api.Controllers
 
         }
 
-        [Route("api/CMSUpdateStatus")]
+        [Route("api/CMS/UpdateItemList")]
         [HttpPut]
-        public IHttpActionResult UpdateCMSStatusFormCMSList(UpdateCMSStatusRequest model)
+        public IHttpActionResult UpdateCMSStatusFormCMSList(CMSMasterItemListRequest model)
         {
-            CMSShopRequest CMSResult = new CMSShopRequest();
+            CMSMasterAllRequest CMSResult = new CMSMasterAllRequest();
             CMSResult.SearchText = model.SearchText;
-            //CMSResult.ShopId = model.ShopId;
             CMSResult._direction = model._direction;
             CMSResult._filter = model._filter;
             CMSResult._limit = model._limit;
@@ -114,11 +150,13 @@ namespace Colsp.Api.Controllers
             {
                 if (model != null)
                 {
-                    if (model.ShopId.HasValue)
+                    int? ShopId = this.User.ShopRequest().ShopId;
+                    int UserId = this.User.UserRequest().UserId;
+                    if (ShopId.HasValue)
                     {
                         CMSProcess cms = new CMSProcess();
-                        CMSResult = cms.CMSUpdateStatus(model);
-                        return GetCMSList(CMSResult);
+                        CMSResult = cms.CMSUpdateStatus(model,UserId,ShopId);
+                        return GetCMSALL(CMSResult);
                     }
                 }
                 return Ok(CMSResult);
@@ -150,7 +188,7 @@ namespace Colsp.Api.Controllers
                         CMSProcess cms = new CMSProcess();
                         CMSId = cms.CreateCMSCollectionItem(model);
                     }
-                    return GetCollection(CMSId);
+                    return GetCollectionALL(CMSId);
                 }
                 else
                 {
@@ -209,10 +247,7 @@ namespace Colsp.Api.Controllers
                             response.CreateBy = GetCMS.CreateBy;
                             response.CMSGroupNameEN = GetCMS.CMSGroupNameEN;
                             response.CMSGroupNameTH = GetCMS.CMSGroupNameTH;
-                            response.BannerConntent = GetCMS.BannerConntent;
-                            response.BannerLocation = GetCMS.BannerLocation;
                             response.Sequence = (int)GetCMS.Sequence;
-                            response.ShopId = GetCMS.ShopId;
                             return Request.CreateResponse(HttpStatusCode.OK, response);
                         }
                         else
@@ -232,9 +267,9 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/CMSStages/{CMSId}")]
+        [Route("api/CMSMaster/{CMSId}")]
         [HttpGet]
-        public HttpResponseMessage GetCollection(int? CMSId)
+        public HttpResponseMessage GetCollectionALL(int? CMSId)
         {
             try
             {
@@ -245,47 +280,80 @@ namespace Colsp.Api.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "CMS ID is invalid. Cannot find CMSId in System");
                     using (ColspEntities db = new ColspEntities())
                     {
-                        var GetCMS = db.CMSMasters.Where(c => c.CMSId == CMSId).FirstOrDefault();
+                        var GetCMS = db.CMSMasters.Where(c => c.CMSMasterId == CMSId).FirstOrDefault();
                         if (GetCMS != null)
                         {
-                            response.CMSId = GetCMS.CMSId;
-                            response.CreateBy = GetCMS.CreateBy;
-                            response.CMSNameEN = GetCMS.CMSNameEN;
-                            response.CMSNameTH = GetCMS.CMSNameTH;
-                            response.CMSFilterId = GetCMS.CMSFilterId;
-                            response.CMSTypeId = GetCMS.CMSTypeId;
-                            response.EffectiveDate = GetCMS.EffectiveDate;
-                            response.EffectiveTime = GetCMS.EffectiveTime;
-                            response.ExpiryDate = GetCMS.ExpiryDate;
-                            response.ExpiryTime = GetCMS.ExpiryTime;
+                            response.CMSMasterId = GetCMS.CMSMasterId;
+                            string CreateBy = string.Empty;
+                            if (GetCMS.CreateBy.HasValue)
+                            {
+                                var by = db.Users.Where(c => c.UserId == GetCMS.CreateBy).FirstOrDefault();
+                                if (by != null)
+                                    CreateBy = by.NameEn;
+                            }
+                            response.CreateBy = CreateBy;
+                            response.CMSMasterNameEN = GetCMS.CMSMasterNameEN;
+                            response.CMSMasterNameTH = GetCMS.CMSMasterNameTH;
+                            string CMSType = string.Empty;
+                            if (GetCMS.CreateBy.HasValue)
+                            {
+                                var Type = db.CMSMasterTypes.Where(c => c.CMSMasterTypeId == GetCMS.CMSTypeId).FirstOrDefault();
+                                if (Type != null)
+                                    CMSType = Type.CMSMasterTypeNameEN;
+                            }
+                            response.CMSType = CMSType;
+                            response.CMSMasterEffectiveDate = GetCMS.CMSMasterEffectiveDate;
+                            response.CMSMasterEffectiveTime = GetCMS.CMSMasterEffectiveTime;
+                            response.CMSMasterExpiryDate = GetCMS.CMSMasterExpiryDate;
+                            response.CMSMasterExpiryTime = GetCMS.CMSMasterExpiryTime;
                             response.CreateIP = GetCMS.CreateIP;
                             response.LongDescriptionEN = GetCMS.LongDescriptionEN;
                             response.LongDescriptionTH = GetCMS.LongDescriptionTH;
-                            response.ShopId = GetCMS.ShopId;
                             response.ShortDescriptionEN = GetCMS.ShortDescriptionEN;
                             response.ShortDescriptionTH = GetCMS.ShortDescriptionTH;
-                            response.CMSStatusFlowId = GetCMS.CMSStatusFlowId;
-                            response.URLKey = GetCMS.URLKey;
+                            response.CMSMasterStatusId = GetCMS.CMSMasterStatusId;
+                            string Status = string.Empty;
+                            if (GetCMS.CMSMasterStatusId.HasValue)
+                            {
+                                var st = db.CMSMasterStatus.Where(c => c.CMSMasterStatusId == GetCMS.CMSMasterStatusId).FirstOrDefault();
+                                if (st != null)
+                                    Status = st.CMSMasterStatusNameEN;
+                            }
+                            response.CMSStatus = Status;
+                            response.CMSMasterURLKey = GetCMS.CMSMasterURLKey;
                             response.Visibility = GetCMS.Visibility;
                             response.CreateDate = (DateTime)GetCMS.Createdate;
-                            //response.CMSCollectionGroupId = GetCMS.CMSCollectionGroupId;
-                            List<CollectionItemListResponse> Collection = new List<CollectionItemListResponse>();
-                            var CollectionItemList = db.CMSCategoryProductItems.Where(c => c.CMSId == CMSId).ToList();
+
+                            List<CategoryListResponse> CategoryList = new List<CategoryListResponse>();
+                            var CategoryLists = (from map in db.CMSMastserCategoryMaps.Where(m => m.CMSMasterId == CMSId)
+                                                 from cat in db.CMSCategories.Where(c => c.CMSCategoryId == map.CMSCategoryId).DefaultIfEmpty()
+                                                 select new
+                                                 {
+                                                     CMSMasterId = map.CMSMasterId,
+                                                     CMSCategoryId = map.CMSCategoryId,
+                                                     CategoryNameEN = cat.CMSCategoryNameEN,
+                                                     CategoryNameTH = cat.CMSCategoryNameTH
+                                                 });
                             int CountItem = 0;
-                            foreach (var itemCollection in CollectionItemList)
+                            foreach (var itemCat in CategoryLists)
                             {
-                                CollectionItemListResponse model = new CollectionItemListResponse();
-                                model.CMSId = GetCMS.CMSId;
-                                model.PId = itemCollection.PId;
-                                model.ProductBoxBadge = itemCollection.ProductBoxBadge;
-                                model.Sequence = itemCollection.Sequence;
-                                model.Status = itemCollection.Status;
-                                //model.CMSCollectionItemGroupId = itemCollection.CMSCollectionItemGroupId;
-                                Collection.Add(model);
+                                CategoryListResponse model = new CategoryListResponse();
+                                model.CMSMasterId = GetCMS.CMSMasterId;
+                                model.CMSCategoryId = itemCat.CMSCategoryId;
+                                List<ProductListResponse> ProductList = new List<ProductListResponse>();
+                                var ProductLists = (from map in db.CMSCategoryProductMaps.Where(m => m.CMSCategoryId == itemCat.CMSCategoryId)
+                                                     from cat in db.CMSCategories.Where(c => c.CMSCategoryId == map.CMSCategoryId).DefaultIfEmpty()
+                                                    from pro in db.Products.Where(c => c.Pid == map.ProductPID).DefaultIfEmpty()
+                                                    select new ProductListResponse
+                                                    {
+                                                         CMSCategoryId = (int)map.CMSCategoryId,
+                                                         ProductNameEN = pro.ProductNameEn,
+                                                         ProductNameTH = pro.ProductNameTh
+                                                     });
+                                CategoryList.Add(model);
                                 CountItem++;
                             }
-                            response.CollectionItemList = Collection;
-                            response.CMSCount = CountItem;
+                            response.CategoryLists = CategoryList;
                             return Request.CreateResponse(HttpStatusCode.OK, response);
                         }
                         else
@@ -306,435 +374,14 @@ namespace Colsp.Api.Controllers
         }
 
 
-        public IHttpActionResult GetCMSList(CMSShopRequest request)
-        {
-            int? shopId = (int?)this.User.ShopRequest().ShopId;
-            try
-            {
-                if (!shopId.HasValue)
-                    return Ok(request);
-                IQueryable<CMSMaster> CMS;
-                if (shopId.HasValue && shopId.Equals(Constant.CMS_SHOP_GOBAL))
-                {
-                    CMS = (from c in db.CMSMasters
-                           select c
-                          ).Take(100);
-                }
-                else
-                {
-                    CMS = (from c in db.CMSMasters
-                           where c.ShopId == shopId
-                           select c
-                          ).Take(100);
-                }
-                if (request == null)
-                {
-                    return Ok(CMS);
-                }
-                request.DefaultOnNull();
-                if (!string.IsNullOrEmpty(request.SearchText))
-                {
-                    CMS = CMS.Where(c => (c.CMSNameEN.Contains(request.SearchText) || c.CMSNameTH.Contains(request.SearchText)));
-                }
-                if (!string.IsNullOrEmpty(request._filter))
-                {
-
-                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId.Equals(Constant.CMS_STATUS_DRAFT));
-                    }
-                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId.Equals(Constant.CMS_STATUS_APPROVE));
-                    }
-                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId.Equals(Constant.CMS_STATUS_NOT_APPROVE));
-                    }
-                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL));
-                    }
-                }
-                var total = CMS.Count();
-                var pagedCMS = CMS.Paginate(request);
-                var response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return Ok(request);
-            }
-
-        }
-
-
         #endregion
 
         #region Search
-        [Route("api/CMSSearchForAdd")]
-        [HttpGet]
-        public IHttpActionResult CMSSearchForAdd([FromUri]CMSSearchForAddRequest request)
-        {
-            var UserType = this.User.UserRequest().Type;
-            int? shopId = 0;
-            switch (UserType)
-            {
-                case "A":
-                    shopId = 0;
-                    break;
-                case "S":
-                case "H":
-                    try
-                    {
-                        shopId = this.User.ShopRequest().ShopId;
-                    }
-                    catch (Exception ex)
-                    {
-                        return Ok(request);
-                        throw;
-                    }
 
-                    break;
-                default:
-                    shopId = null;
-                    break;
-            }
-            try
-            {
-                if (!shopId.HasValue)
-                    return Ok(request);
-                dynamic response = string.Empty;
-                switch (request.SearchType.ToUpper())
-                {
-                    case "CATEGORY":
-                        if (string.IsNullOrWhiteSpace(request._order))
-                            request._order = "CategoryId";
-                        if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
-                        {
-                            var result = (from g in db.LocalCategories
-                                          where g.ShopId == shopId
-                                          select new
-                                          {
-                                              g.CategoryId,
-                                              g.NameEn,
-                                              g.NameTh,
-                                              g.Shop.ShopNameEn,
-                                              g.Shop.ShopNameTh,
-                                              g.Status,
-                                              g.Visibility
-                                          }
-                                       ).Take(100);
-
-                            if (request == null)
-                            {
-                                return Ok(result);
-                            }
-                            request.DefaultOnNull();
-                            if (!string.IsNullOrEmpty(request.SearchText))
-                            {
-                                result = result.Where(c => (c.NameEn.Contains(request.SearchText) || c.NameTh.Contains(request.SearchText)));
-                            }
-                            var total = result.Count();
-                            var pagedCMS = result.Paginate(request);
-                            response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
-                        }
-                        else //Global
-                        {
-                            var result = (from g in db.GlobalCategories
-                                          select new
-                                          {
-                                              g.CategoryId,
-                                              g.NameEn,
-                                              g.NameTh,
-                                              g.Status,
-                                              g.Visibility
-                                          }
-                                      ).Take(100);
-
-                            if (request == null)
-                            {
-                                return Ok(result);
-                            }
-                            request.DefaultOnNull();
-                            if (!string.IsNullOrEmpty(request.SearchText))
-                            {
-                                result = result.Where(c => (c.NameEn.Contains(request.SearchText) || c.NameTh.Contains(request.SearchText)));
-                            }
-                            var total = result.Count();
-                            var pagedCMS = result.Paginate(request);
-                            response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
-                        }
-
-
-
-                        break;
-                    case "BRAND":
-                        if (string.IsNullOrWhiteSpace(request._order))
-                            request._order = "BrandId";
-                        if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
-                        {
-                            if (!request.CategoryId.HasValue)
-                            {
-                                var resultBrand = (from g in db.Brands
-                                                   join p in db.Products on g.BrandId equals p.BrandId
-                                                   where p.ShopId == shopId && p.LocalCategory.CategoryId == request.CategoryId && (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
-                                                   select new
-                                                   {
-                                                       g.BrandId,
-                                                       g.BrandNameEn,
-                                                       g.BrandNameTh,
-                                                       g.Status
-
-                                                   }
-                                            ).Take(100);
-                                if (request == null)
-                                {
-                                    return Ok(resultBrand);
-                                }
-                                request.DefaultOnNull();
-                                var totalBrand = resultBrand.Count();
-                                var pagedCMSBrand = resultBrand.Paginate(request);
-                                response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
-                            }
-                        }
-                        else
-                        {
-                            if (!request.CategoryId.HasValue)
-                            {
-                                var resultBrand = (from g in db.Brands
-                                                   join p in db.Products on g.BrandId equals p.BrandId
-                                                   where p.GlobalCategory.CategoryId == request.CategoryId && (g.BrandNameEn.Contains(request.SearchText) || g.BrandNameTh.Contains(request.SearchText))
-                                                   select new
-                                                   {
-                                                       g.BrandId,
-                                                       g.BrandNameEn,
-                                                       g.BrandNameTh,
-                                                       g.Status
-
-                                                   }
-                                        ).Take(100);
-                                if (request == null)
-                                {
-                                    return Ok(resultBrand);
-                                }
-                                request.DefaultOnNull();
-                                var totalBrand = resultBrand.Count();
-                                var pagedCMSBrand = resultBrand.Paginate(request);
-                                response = PaginatedResponse.CreateResponse(pagedCMSBrand, request, totalBrand);
-                            }
-                        }
-                        break;
-                    case "SHOP":
-                        if (string.IsNullOrWhiteSpace(request._order))
-                            request._order = "ShopId";
-                        if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
-                        {
-                            var resultShop = (from g in db.Shops
-                                              where g.ShopId == shopId
-                                              select new
-                                              {
-                                                  g.ShopId,
-                                                  g.ShopNameEn,
-                                                  g.ShopNameTh,
-                                                  g.Status
-
-                                              }
-                                      ).Take(100);
-                            if (request == null)
-                            {
-                                return Ok(resultShop);
-                            }
-                            request.DefaultOnNull();
-                            if (!string.IsNullOrEmpty(request.SearchText))
-                            {
-                                resultShop = resultShop.Where(c => (c.ShopNameEn.Contains(request.SearchText) || c.ShopNameTh.Contains(request.SearchText)));
-                            }
-                            var totalShop = resultShop.Count();
-                            var pagedCMSShop = resultShop.Paginate(request);
-                            response = PaginatedResponse.CreateResponse(pagedCMSShop, request, totalShop);
-                        }
-                        else
-                        {
-                            var resultShop = (from g in db.Shops
-                                              select new
-                                              {
-                                                  g.ShopId,
-                                                  g.ShopNameEn,
-                                                  g.ShopNameTh,
-                                                  g.Status
-
-                                              }
-                                      ).Take(100);
-                            if (request == null)
-                            {
-                                return Ok(resultShop);
-                            }
-                            request.DefaultOnNull();
-                            if (!string.IsNullOrEmpty(request.SearchText))
-                            {
-                                resultShop = resultShop.Where(c => (c.ShopNameEn.Contains(request.SearchText) || c.ShopNameTh.Contains(request.SearchText)));
-                            }
-                            var totalShop = resultShop.Count();
-                            var pagedCMSShop = resultShop.Paginate(request);
-                            response = PaginatedResponse.CreateResponse(pagedCMSShop, request, totalShop);
-                        }
-
-                        break;
-                    case "PRODUCT":
-                        if (string.IsNullOrWhiteSpace(request._order))
-                            request._order = "ProductId";
-                        if (!shopId.Equals(Constant.CMS_SHOP_GOBAL)) //Local
-                        {
-                            var resultPro = (from g in db.Products
-                                             where g.ShopId == shopId
-                                             select new
-                                             {
-                                                 g.GlobalCatId,
-                                                 g.BrandId,
-                                                 // g.ProductId,
-                                                 g.ShopId,
-                                                 g.Pid,
-                                                 g.ProductNameEn,
-                                                 g.ProductNameTh,
-                                                 g.Status
-
-                                             }
-                                           ).Take(100);
-                            if (request == null)
-                            {
-                                return Ok(resultPro);
-                            }
-                            request.DefaultOnNull();
-                            if (!string.IsNullOrEmpty(request.SearchText))
-                            {
-                                resultPro = resultPro.Where(c => (c.ProductNameEn.Contains(request.SearchText) || c.ProductNameTh.Contains(request.SearchText)));
-                            }
-                            var totalPro = resultPro.Count();
-                            var pagedCMSPro = resultPro.Paginate(request);
-                            response = PaginatedResponse.CreateResponse(pagedCMSPro, request, totalPro);
-                        }
-                        else {
-                            var resultPro = (from g in db.Products
-                                             select new
-                                             {
-                                                 g.GlobalCatId,
-                                                 g.BrandId,
-                                                 // g.ProductId,
-                                                 g.ShopId,
-                                                 g.Pid,
-                                                 g.ProductNameEn,
-                                                 g.ProductNameTh,
-                                                 g.Status
-
-                                             }
-                                           ).Take(100);
-                            if (request == null)
-                            {
-                                return Ok(resultPro);
-                            }
-                            request.DefaultOnNull();
-                            if (!string.IsNullOrEmpty(request.SearchText))
-                            {
-                                resultPro = resultPro.Where(c => (c.ProductNameEn.Contains(request.SearchText) || c.ProductNameTh.Contains(request.SearchText)));
-                            }
-                            var totalPro = resultPro.Count();
-                            var pagedCMSPro = resultPro.Paginate(request);
-                            response = PaginatedResponse.CreateResponse(pagedCMSPro, request, totalPro);
-                        }
-
-                        break;
-                    default:
-                        break;
-                }
-
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return Ok(request);
-            }
-        }
-
-
-        [Route("api/CMSSearchCategory")]
-        [HttpGet]
-        public IHttpActionResult CMSSearchCategory([FromUri]CMSCategoryProductGetListRequest request)
-        {
-
-            try
-            {
-                dynamic response = string.Empty;
-                if (string.IsNullOrWhiteSpace(request._order))
-                    request._order = "CMSCollectionCategoryId";
-                if (!string.IsNullOrEmpty(request.SearchText))
-                {
-                    var result = (from g in db.CMSCategoryProducts
-                                  where (g.CMSCollectionCategoryNameEN.Contains(request.SearchText) || g.CMSCollectionCategoryNameTH.Contains(request.SearchText))
-                                  select new
-                                  {
-                                      g.CMSCollectionCategoryId,
-                                      g.CMSCollectionCategoryNameEN,
-                                      g.CMSCollectionCategoryNameTH,
-                                      g.Status,
-                                      g.Visibility
-                                  }
-                               ).Take(100);
-
-                    if (request == null)
-                    {
-                        return Ok(result);
-                    }
-                    request.DefaultOnNull();
-                    var total = result.Count();
-                    var pagedCMS = result.Paginate(request);
-                    response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
-                }
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return Ok(request);
-            }
-        }
         #endregion
 
 
         #region Edit/Update CMS
-        [Route("api/CMSEditStages")]
-        [HttpPost]
-        public HttpResponseMessage EditCMS(CMSCollectionItemRequest model)
-        {
-            try
-            {
-                if (model != null)
-                {
-                    int CMSId = 0;
-                    if (model.CMSTypeId.Equals(Constant.CMS_TYPE_STATIC_PAGE))
-                    {
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.EditCMSStaticPage(model);
-                    }
-                    else if (model.CMSTypeId.Equals(Constant.CMS_TYPE_COLLECTION_PAGE))
-                    {
-                        CMSProcess cms = new CMSProcess();
-                        CMSId = cms.EditCMSCollectionItem(model);
-                    }
-                    return GetCollection(CMSId);
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "");
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
-            }
-        }
-
-        //Thanakrit : 20160215 , add for minified transfer json obj from front end
-        //used it's own data if not transfer
         [Route("api/CMSUpdateStages")]
         [HttpPost]
         public HttpResponseMessage UpdateCMS(List<CMSCollectionItemRequest> model)
@@ -779,233 +426,233 @@ namespace Colsp.Api.Controllers
 
         #region export
 
-        [Route("api/CMSStages/Export")]
-        [HttpPost]
-        public HttpResponseMessage ExportCollection(List<CMSCollectionItemRequest> request)
-        {
-            MemoryStream stream = null;
-            StreamWriter writer = null;
-            try
-            {
-                stream = new MemoryStream();
-                writer = new StreamWriter(stream);
-                string header = @"Collection ID,Collection English Name,Collection Thai Name,URL Keyword,EffectiveDate,EffectiveTime,ExpiryDate,ExpiryTime,ShopId,CMSCount,ShortDescriptionTH,ShortDescriptionEN,LongDescriptionTH,LongDescriptionEN,Sequence,Collection Status,Visibility";
-                writer.WriteLine(header);
-                StringBuilder sb = null;
-                foreach (CMSCollectionItemRequest rq in request)
-                {
-                    sb = new StringBuilder();
-                    if (rq.CMSId == default(int)) { throw new Exception("Collection Id cannot be null"); }
-                    var coll = db.CMSMasters.Find(rq.CMSId);
-                    var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
-                    var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
-                    if (coll == null)
-                    {
-                        throw new Exception("Cannot find Collection with id " + rq.CMSId);
-                    }
-                    sb.Append(coll.CMSId); sb.Append(",");
-                    sb.Append(coll.CMSNameEN); sb.Append(",");
-                    sb.Append(coll.CMSNameTH); sb.Append(",");
-                    sb.Append(coll.URLKey); sb.Append(",");
-                    //sb.Append(coll.CMSTypeId); sb.Append(",");
-                    //sb.Append(coll.CMSFilterId); sb.Append(",");
-                    sb.Append(coll.EffectiveDate); sb.Append(",");
-                    sb.Append(coll.EffectiveTime); sb.Append(",");
-                    sb.Append(coll.ExpiryDate); sb.Append(",");
-                    sb.Append(coll.ExpiryTime); sb.Append(",");
-                    sb.Append(coll.ShopId); sb.Append(",");
-                    sb.Append(coll.CMSCount); sb.Append(",");
-                    sb.Append(coll.ShortDescriptionTH); sb.Append(",");
-                    sb.Append(coll.ShortDescriptionEN); sb.Append(",");
-                    if (!string.IsNullOrEmpty(coll.LongDescriptionTH))
-                    {
-                        if (coll.LongDescriptionTH.Contains("\""))
-                        {
-                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH.Replace("\"", "\"\""));
-                        }
-                        if (coll.LongDescriptionTH.Contains(","))
-                        {
-                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
-                        }
-                        if (coll.LongDescriptionTH.Contains(System.Environment.NewLine))
-                        {
-                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(coll.LongDescriptionEN))
-                    {
-                        if (coll.LongDescriptionEN.Contains("\""))
-                        {
-                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN.Replace("\"", "\"\""));
-                        }
-                        if (coll.LongDescriptionEN.Contains(","))
-                        {
-                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
-                        }
-                        if (coll.LongDescriptionEN.Contains(System.Environment.NewLine))
-                        {
-                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
-                        }
-                    }
-                    sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
-                    sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
-                    sb.Append(coll.Sequence); sb.Append(",");
-                    //sb.Append(coll.CMSCollectionGroupId); sb.Append(",");
-                    sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
-                    sb.Append(visible); sb.Append(",");
-                    //sb.Append(coll.CreateBy); sb.Append(",");
-                    //sb.Append(coll.Createdate); sb.Append(",");
-                    //sb.Append(coll.UpdateBy); sb.Append(",");
-                    //sb.Append(coll.UpdateDate); sb.Append(",");
-                    //sb.Append(coll.CreateIP); sb.Append(",");
-                    //sb.Append(coll.UpdateIP); sb.Append(",");
+        //[Route("api/CMSStages/Export")]
+        //[HttpPost]
+        //public HttpResponseMessage ExportCollection(List<CMSCollectionItemRequest> request)
+        //{
+        //    MemoryStream stream = null;
+        //    StreamWriter writer = null;
+        //    try
+        //    {
+        //        stream = new MemoryStream();
+        //        writer = new StreamWriter(stream);
+        //        string header = @"Collection ID,Collection English Name,Collection Thai Name,URL Keyword,EffectiveDate,EffectiveTime,ExpiryDate,ExpiryTime,ShopId,CMSCount,ShortDescriptionTH,ShortDescriptionEN,LongDescriptionTH,LongDescriptionEN,Sequence,Collection Status,Visibility";
+        //        writer.WriteLine(header);
+        //        StringBuilder sb = null;
+        //        foreach (CMSCollectionItemRequest rq in request)
+        //        {
+        //            sb = new StringBuilder();
+        //            if (rq.CMSId == default(int)) { throw new Exception("Collection Id cannot be null"); }
+        //            var coll = db.CMSMasters.Find(rq.CMSId);
+        //            var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
+        //            var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
+        //            if (coll == null)
+        //            {
+        //                throw new Exception("Cannot find Collection with id " + rq.CMSId);
+        //            }
+        //            sb.Append(coll.CMSId); sb.Append(",");
+        //            sb.Append(coll.CMSNameEN); sb.Append(",");
+        //            sb.Append(coll.CMSNameTH); sb.Append(",");
+        //            sb.Append(coll.URLKey); sb.Append(",");
+        //            //sb.Append(coll.CMSTypeId); sb.Append(",");
+        //            //sb.Append(coll.CMSFilterId); sb.Append(",");
+        //            sb.Append(coll.EffectiveDate); sb.Append(",");
+        //            sb.Append(coll.EffectiveTime); sb.Append(",");
+        //            sb.Append(coll.ExpiryDate); sb.Append(",");
+        //            sb.Append(coll.ExpiryTime); sb.Append(",");
+        //            sb.Append(coll.ShopId); sb.Append(",");
+        //            sb.Append(coll.CMSCount); sb.Append(",");
+        //            sb.Append(coll.ShortDescriptionTH); sb.Append(",");
+        //            sb.Append(coll.ShortDescriptionEN); sb.Append(",");
+        //            if (!string.IsNullOrEmpty(coll.LongDescriptionTH))
+        //            {
+        //                if (coll.LongDescriptionTH.Contains("\""))
+        //                {
+        //                    coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH.Replace("\"", "\"\""));
+        //                }
+        //                if (coll.LongDescriptionTH.Contains(","))
+        //                {
+        //                    coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
+        //                }
+        //                if (coll.LongDescriptionTH.Contains(System.Environment.NewLine))
+        //                {
+        //                    coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
+        //                }
+        //            }
+        //            if (!string.IsNullOrEmpty(coll.LongDescriptionEN))
+        //            {
+        //                if (coll.LongDescriptionEN.Contains("\""))
+        //                {
+        //                    coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN.Replace("\"", "\"\""));
+        //                }
+        //                if (coll.LongDescriptionEN.Contains(","))
+        //                {
+        //                    coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
+        //                }
+        //                if (coll.LongDescriptionEN.Contains(System.Environment.NewLine))
+        //                {
+        //                    coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
+        //                }
+        //            }
+        //            sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
+        //            sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
+        //            sb.Append(coll.Sequence); sb.Append(",");
+        //            //sb.Append(coll.CMSCollectionGroupId); sb.Append(",");
+        //            sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
+        //            sb.Append(visible); sb.Append(",");
+        //            //sb.Append(coll.CreateBy); sb.Append(",");
+        //            //sb.Append(coll.Createdate); sb.Append(",");
+        //            //sb.Append(coll.UpdateBy); sb.Append(",");
+        //            //sb.Append(coll.UpdateDate); sb.Append(",");
+        //            //sb.Append(coll.CreateIP); sb.Append(",");
+        //            //sb.Append(coll.UpdateIP); sb.Append(",");
 
 
-                    writer.WriteLine(sb);
-                }
-                writer.Flush();
-                stream.Position = 0;
+        //            writer.WriteLine(sb);
+        //        }
+        //        writer.Flush();
+        //        stream.Position = 0;
 
-                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-                result.Content = new StreamContent(stream);
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
-                {
-                    CharSet = Encoding.UTF8.WebName
-                };
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-                result.Content.Headers.ContentDisposition.FileName = "file.csv";
-                return result;
-            }
-            catch (Exception e)
-            {
-                if (writer != null)
-                {
-                    writer.Close();
-                    writer.Dispose();
-                }
-                if (stream != null)
-                {
-                    stream.Close();
-                    stream.Dispose();
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
-            }
-        }
-
-
-
-        [Route("api/CMSStages/ExportGroup")]
-        [HttpPost]
-        public HttpResponseMessage ExportCollectionGroup(List<CMSCollectionItemRequest> request)
-        {
-            MemoryStream stream = null;
-            StreamWriter writer = null;
-            try
-            {
-                stream = new MemoryStream();
-                writer = new StreamWriter(stream);
-                string header = @"Collection ID,Collection English Name,Collection Thai Name,URL Keyword,EffectiveDate,EffectiveTime,ExpiryDate,ExpiryTime,ShopId,CMSCount,ShortDescriptionTH,ShortDescriptionEN,LongDescriptionTH,LongDescriptionEN,Sequence,Collection Status,Visibility";
-                writer.WriteLine(header);
-                StringBuilder sb = null;
-                foreach (CMSCollectionItemRequest rq in request)
-                {
-                    sb = new StringBuilder();
-                    if (rq.CMSId == default(int)) { throw new Exception("Collection Id cannot be null"); }
-                    var coll = db.CMSMasters.Find(rq.CMSId);
-                    var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
-                    var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
-                    if (coll == null)
-                    {
-                        throw new Exception("Cannot find Collection with id " + rq.CMSId);
-                    }
-                    sb.Append(coll.CMSId); sb.Append(",");
-                    sb.Append(coll.CMSNameEN); sb.Append(",");
-                    sb.Append(coll.CMSNameTH); sb.Append(",");
-                    sb.Append(coll.URLKey); sb.Append(",");
-                    //sb.Append(coll.CMSTypeId); sb.Append(",");
-                    //sb.Append(coll.CMSFilterId); sb.Append(",");
-                    sb.Append(coll.EffectiveDate); sb.Append(",");
-                    sb.Append(coll.EffectiveTime); sb.Append(",");
-                    sb.Append(coll.ExpiryDate); sb.Append(",");
-                    sb.Append(coll.ExpiryTime); sb.Append(",");
-                    sb.Append(coll.ShopId); sb.Append(",");
-                    sb.Append(coll.CMSCount); sb.Append(",");
-                    sb.Append(coll.ShortDescriptionTH); sb.Append(",");
-                    sb.Append(coll.ShortDescriptionEN); sb.Append(",");
-                    if (!string.IsNullOrEmpty(coll.LongDescriptionTH))
-                    {
-                        if (coll.LongDescriptionTH.Contains("\""))
-                        {
-                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH.Replace("\"", "\"\""));
-                        }
-                        if (coll.LongDescriptionTH.Contains(","))
-                        {
-                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
-                        }
-                        if (coll.LongDescriptionTH.Contains(System.Environment.NewLine))
-                        {
-                            coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(coll.LongDescriptionEN))
-                    {
-                        if (coll.LongDescriptionEN.Contains("\""))
-                        {
-                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN.Replace("\"", "\"\""));
-                        }
-                        if (coll.LongDescriptionEN.Contains(","))
-                        {
-                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
-                        }
-                        if (coll.LongDescriptionEN.Contains(System.Environment.NewLine))
-                        {
-                            coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
-                        }
-                    }
-                    sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
-                    sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
-                    sb.Append(coll.Sequence); sb.Append(",");
-                    //sb.Append(coll.CMSCollectionGroupId); sb.Append(",");
-                    sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
-                    sb.Append(visible); sb.Append(",");
-                    //sb.Append(coll.CreateBy); sb.Append(",");
-                    //sb.Append(coll.Createdate); sb.Append(",");
-                    //sb.Append(coll.UpdateBy); sb.Append(",");
-                    //sb.Append(coll.UpdateDate); sb.Append(",");
-                    //sb.Append(coll.CreateIP); sb.Append(",");
-                    //sb.Append(coll.UpdateIP); sb.Append(",");
+        //        HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+        //        result.Content = new StreamContent(stream);
+        //        result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
+        //        {
+        //            CharSet = Encoding.UTF8.WebName
+        //        };
+        //        result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+        //        result.Content.Headers.ContentDisposition.FileName = "file.csv";
+        //        return result;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (writer != null)
+        //        {
+        //            writer.Close();
+        //            writer.Dispose();
+        //        }
+        //        if (stream != null)
+        //        {
+        //            stream.Close();
+        //            stream.Dispose();
+        //        }
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+        //    }
+        //}
 
 
-                    writer.WriteLine(sb);
-                }
-                writer.Flush();
-                stream.Position = 0;
 
-                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-                result.Content = new StreamContent(stream);
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
-                {
-                    CharSet = Encoding.UTF8.WebName
-                };
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-                result.Content.Headers.ContentDisposition.FileName = "file.csv";
-                return result;
-            }
-            catch (Exception e)
-            {
-                if (writer != null)
-                {
-                    writer.Close();
-                    writer.Dispose();
-                }
-                if (stream != null)
-                {
-                    stream.Close();
-                    stream.Dispose();
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
-            }
-        }
+        //[Route("api/CMSStages/ExportGroup")]
+        //[HttpPost]
+        //public HttpResponseMessage ExportCollectionGroup(List<CMSCollectionItemRequest> request)
+        //{
+        //    MemoryStream stream = null;
+        //    StreamWriter writer = null;
+        //    try
+        //    {
+        //        stream = new MemoryStream();
+        //        writer = new StreamWriter(stream);
+        //        string header = @"Collection ID,Collection English Name,Collection Thai Name,URL Keyword,EffectiveDate,EffectiveTime,ExpiryDate,ExpiryTime,ShopId,CMSCount,ShortDescriptionTH,ShortDescriptionEN,LongDescriptionTH,LongDescriptionEN,Sequence,Collection Status,Visibility";
+        //        writer.WriteLine(header);
+        //        StringBuilder sb = null;
+        //        foreach (CMSCollectionItemRequest rq in request)
+        //        {
+        //            sb = new StringBuilder();
+        //            if (rq.CMSId == default(int)) { throw new Exception("Collection Id cannot be null"); }
+        //            var coll = db.CMSMasters.Find(rq.CMSId);
+        //            var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
+        //            var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
+        //            if (coll == null)
+        //            {
+        //                throw new Exception("Cannot find Collection with id " + rq.CMSId);
+        //            }
+        //            sb.Append(coll.CMSId); sb.Append(",");
+        //            sb.Append(coll.CMSNameEN); sb.Append(",");
+        //            sb.Append(coll.CMSNameTH); sb.Append(",");
+        //            sb.Append(coll.URLKey); sb.Append(",");
+        //            //sb.Append(coll.CMSTypeId); sb.Append(",");
+        //            //sb.Append(coll.CMSFilterId); sb.Append(",");
+        //            sb.Append(coll.EffectiveDate); sb.Append(",");
+        //            sb.Append(coll.EffectiveTime); sb.Append(",");
+        //            sb.Append(coll.ExpiryDate); sb.Append(",");
+        //            sb.Append(coll.ExpiryTime); sb.Append(",");
+        //            sb.Append(coll.ShopId); sb.Append(",");
+        //            sb.Append(coll.CMSCount); sb.Append(",");
+        //            sb.Append(coll.ShortDescriptionTH); sb.Append(",");
+        //            sb.Append(coll.ShortDescriptionEN); sb.Append(",");
+        //            if (!string.IsNullOrEmpty(coll.LongDescriptionTH))
+        //            {
+        //                if (coll.LongDescriptionTH.Contains("\""))
+        //                {
+        //                    coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH.Replace("\"", "\"\""));
+        //                }
+        //                if (coll.LongDescriptionTH.Contains(","))
+        //                {
+        //                    coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
+        //                }
+        //                if (coll.LongDescriptionTH.Contains(System.Environment.NewLine))
+        //                {
+        //                    coll.LongDescriptionTH = String.Format("\"{0}\"", coll.LongDescriptionTH);
+        //                }
+        //            }
+        //            if (!string.IsNullOrEmpty(coll.LongDescriptionEN))
+        //            {
+        //                if (coll.LongDescriptionEN.Contains("\""))
+        //                {
+        //                    coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN.Replace("\"", "\"\""));
+        //                }
+        //                if (coll.LongDescriptionEN.Contains(","))
+        //                {
+        //                    coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
+        //                }
+        //                if (coll.LongDescriptionEN.Contains(System.Environment.NewLine))
+        //                {
+        //                    coll.LongDescriptionEN = String.Format("\"{0}\"", coll.LongDescriptionEN);
+        //                }
+        //            }
+        //            sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
+        //            sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
+        //            sb.Append(coll.Sequence); sb.Append(",");
+        //            //sb.Append(coll.CMSCollectionGroupId); sb.Append(",");
+        //            sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
+        //            sb.Append(visible); sb.Append(",");
+        //            //sb.Append(coll.CreateBy); sb.Append(",");
+        //            //sb.Append(coll.Createdate); sb.Append(",");
+        //            //sb.Append(coll.UpdateBy); sb.Append(",");
+        //            //sb.Append(coll.UpdateDate); sb.Append(",");
+        //            //sb.Append(coll.CreateIP); sb.Append(",");
+        //            //sb.Append(coll.UpdateIP); sb.Append(",");
+
+
+        //            writer.WriteLine(sb);
+        //        }
+        //        writer.Flush();
+        //        stream.Position = 0;
+
+        //        HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+        //        result.Content = new StreamContent(stream);
+        //        result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
+        //        {
+        //            CharSet = Encoding.UTF8.WebName
+        //        };
+        //        result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+        //        result.Content.Headers.ContentDisposition.FileName = "file.csv";
+        //        return result;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (writer != null)
+        //        {
+        //            writer.Close();
+        //            writer.Dispose();
+        //        }
+        //        if (stream != null)
+        //        {
+        //            stream.Close();
+        //            stream.Dispose();
+        //        }
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e);
+        //    }
+        //}
 
         #endregion
 
@@ -1064,57 +711,57 @@ namespace Colsp.Api.Controllers
         //    }
         //}
 
-        [Route("api/CMSCollectionList")]
-        [HttpGet]
-        public IHttpActionResult GetCollectionList([FromUri] GeneralSearchRequest request)
-        {
-            //int? shopId = 0;
-            try
-            {
-                IQueryable<CMSMaster> CMS;
-                CMS = (from c in db.CMSMasters
-                       where c.Status == true
-                       select c
-                          );
-                if (request == null)
-                {
-                    return Ok(CMS);
-                }
-                request.DefaultOnNull();
-                if (!string.IsNullOrEmpty(request.SearchText))
-                {
-                    CMS = CMS.Where(c => (c.CMSNameEN.Contains(request.SearchText) || c.CMSNameTH.Contains(request.SearchText)));
-                }
-                if (!string.IsNullOrEmpty(request._filter))
-                {
+        //[Route("api/CMSCollectionList")]
+        //[HttpGet]
+        //public IHttpActionResult GetCollectionList([FromUri] GeneralSearchRequest request)
+        //{
+        //    //int? shopId = 0;
+        //    try
+        //    {
+        //        IQueryable<CMSMaster> CMS;
+        //        CMS = (from c in db.CMSMasters
+        //               where c.Status == true
+        //               select c
+        //                  );
+        //        if (request == null)
+        //        {
+        //            return Ok(CMS);
+        //        }
+        //        request.DefaultOnNull();
+        //        if (!string.IsNullOrEmpty(request.SearchText))
+        //        {
+        //            CMS = CMS.Where(c => (c.CMSNameEN.Contains(request.SearchText) || c.CMSNameTH.Contains(request.SearchText)));
+        //        }
+        //        if (!string.IsNullOrEmpty(request._filter))
+        //        {
 
-                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_DRAFT);
-                    }
-                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_APPROVE);
-                    }
-                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_NOT_APPROVE);
-                    }
-                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
-                    }
-                }
-                var total = CMS.Count();
-                var pagedCMS = CMS.Paginate(request);
-                var response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return Ok(request);
-            }
-        }
+        //            if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+        //            {
+        //                CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_DRAFT);
+        //            }
+        //            else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+        //            {
+        //                CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_APPROVE);
+        //            }
+        //            else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+        //            {
+        //                CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_NOT_APPROVE);
+        //            }
+        //            else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+        //            {
+        //                CMS = CMS.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
+        //            }
+        //        }
+        //        var total = CMS.Count();
+        //        var pagedCMS = CMS.Paginate(request);
+        //        var response = PaginatedResponse.CreateResponse(pagedCMS, request, total);
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Ok(request);
+        //    }
+        //}
 
         //[Route("api/CMSGroupList")]
         //[HttpGet]

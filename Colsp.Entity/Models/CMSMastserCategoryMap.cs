@@ -12,15 +12,15 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSType
+    public partial class CMSMastserCategoryMap
     {
-        public int CMSTypeId { get; set; }
-        public string CMSTypeNameTH { get; set; }
-        public string CMSTypeNameEN { get; set; }
-        public Nullable<bool> Status { get; set; }
-        public string CMSTypeCode { get; set; }
+        public int CMSMasterCategoryMapId { get; set; }
+        public int CMSMasterId { get; set; }
+        public int CMSCategoryId { get; set; }
+        public int ShopId { get; set; }
+        public Nullable<bool> IsActive { get; set; }
         public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> Createdate { get; set; }
+        public Nullable<System.DateTime> CreateDate { get; set; }
         public Nullable<int> UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }

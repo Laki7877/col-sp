@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Requests
 {
-    public class CMSShopRequest : PaginatedRequest
+    public class CMSMasterAllRequest : PaginatedRequest
     {
         //public int? ShopId { get; set; }
         public string SearchText { get; set; }
