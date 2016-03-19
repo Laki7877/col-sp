@@ -84,5 +84,14 @@ namespace Colsp.Api.Constants
 
         public static readonly string VARIANT_DISPLAY_GROUP = "GROUP";
         public static readonly string VARIANT_DISPLAY_INDIVIDUAL = "INDIVIDUAL";
+
+
+        public static readonly string ORDER_PAYMENT_PENDING = "PP";
+        public static readonly string ORDER_PAYMENT_CONFIRM = "PC";
+        public static readonly string ORDER_PREPARING = "PE";
+        public static readonly string ORDER_READY_TO_SHIP = "RS";
+        public static readonly string ORDER_SHIPPING = "SH";
+        public static readonly string ORDER_DELIVERED = "DE";
+        public static readonly string ORDER_CANCELLED = "CA";
     }
 }

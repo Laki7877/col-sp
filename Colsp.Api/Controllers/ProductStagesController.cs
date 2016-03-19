@@ -601,6 +601,198 @@ namespace Colsp.Api.Controllers
         //    }
         //}
 
+        [Route("api/ProductStages/Master/{productId}")]
+        [HttpPut]
+        public HttpResponseMessage SaveMasterProduct([FromUri]long productId, MasterProductRequest request)
+        {
+            try
+            {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var masterProduct = db.ProductStageMasters.Where(w => w.MasterPid.Equals(request.MasterProduct.Pid)).ToList();
+                if(masterProduct == null || masterProduct.Count == 0)
+                {
+                    throw new Exception("Cannot find master product");
+                }
+                foreach(var child in request.ChildProducts)
+                {
+                    bool isNew = false;
+                    if(masterProduct == null || masterProduct.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = masterProduct.Where(w => w.ChildPid.Equals(child.Pid)).SingleOrDefault();
+                        if(current != null)
+                        {
+                            masterProduct.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        db.ProductStageMasters.Add(new ProductStageMaster()
+                        {
+                            MasterPid = masterProduct[0].MasterPid,
+                            ChildPid = child.Pid,
+                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now
+                        });
+                    }
+                }
+                if(masterProduct != null && masterProduct.Count > 0)
+                {
+                    db.ProductStageMasters.RemoveRange(masterProduct);
+                }
+                Util.DeadlockRetry(db.SaveChanges, "ProductStageMaster");
+                return GetMasterProduct(productId);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Master")]
+        [HttpPost]
+        public HttpResponseMessage AddMasterProduct(MasterProductRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    throw new Exception("Invaide request");
+                }
+                var tmpStage = GetProductStageRequestFromId(db,request.MasterProduct.ProductId);
+                tmpStage.Variants = new List<VariantRequest>();
+                tmpStage.AdminApprove.Information = Constant.PRODUCT_STATUS_APPROVE;
+                tmpStage.AdminApprove.Image = Constant.PRODUCT_STATUS_APPROVE;
+                tmpStage.AdminApprove.Category = Constant.PRODUCT_STATUS_APPROVE;
+                tmpStage.AdminApprove.MoreOption = Constant.PRODUCT_STATUS_APPROVE;
+                tmpStage.AdminApprove.Variation = Constant.PRODUCT_STATUS_APPROVE;
+                tmpStage.Status = Constant.PRODUCT_STATUS_APPROVE;
+                ProductStageGroup group = AddProduct(db, tmpStage,0);
+                if (string.IsNullOrEmpty(request.MasterProduct.Pid))
+                {
+                    throw new Exception("Pid is required for master");
+                }
+                group.ProductStages.ElementAt(0).ProductStageMasters1.Add(new ProductStageMaster()
+                {
+                    ChildPid = request.MasterProduct.Pid,
+                    CreatedBy = this.User.UserRequest().Email,
+                    CreatedDt = DateTime.Now,
+                    UpdatedBy = this.User.UserRequest().Email,
+                    UpdatedDt = DateTime.Now
+                });
+                foreach (var child in request.ChildProducts)
+                {
+                    if (string.IsNullOrEmpty(child.Pid))
+                    {
+                        throw new Exception("Pid is required for child");
+                    }
+                    group.ProductStages.ElementAt(0).ProductStageMasters1.Add(new ProductStageMaster()
+                    {
+                        ChildPid = child.Pid,
+                        CreatedBy = this.User.UserRequest().Email,
+                        CreatedDt = DateTime.Now,
+                        UpdatedBy = this.User.UserRequest().Email,
+                        UpdatedDt = DateTime.Now
+                    });
+                }
+
+                group.ProductStages.ToList().ForEach(e => { e.Pid = null; e.UrlEn = null; e.IsMaster = true; e.IsVariant = false; });
+                AutoGenerate.GeneratePid(db, group.ProductStages);
+                group.ProductId = db.GetNextProductStageGroupId().Single().Value;
+                db.ProductStageGroups.Add(group);
+                Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+                return GetMasterProduct(group.ProductId);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Master/{productId}")]
+        [HttpGet]
+        public HttpResponseMessage GetMasterProduct(long productId)
+        {
+            try
+            {
+                var master = (from mast in db.ProductStageMasters
+                          join stage in db.ProductStages on mast.MasterPid equals stage.Pid
+                          join child in db.ProductStages on mast.ChildPid equals child.Pid
+                          where stage.ProductId == productId
+                          group mast by mast.MasterPid into masterGroup
+                          select new
+                          {
+                              MasterProduct = new
+                              {
+                                  masterGroup.FirstOrDefault().ProductStage1.ProductId,
+                                  masterGroup.FirstOrDefault().ProductStage1.ProductNameEn,
+                                  masterGroup.FirstOrDefault().ProductStage1.Pid
+                               },
+                              ChildProducts = masterGroup.Select(s=> new
+                              {
+                                  s.ProductStage.ProductId,
+                                  s.ProductStage.Pid,
+                                  s.ProductStage.ProductNameEn
+                              }),
+
+                          }).SingleOrDefault();
+                return Request.CreateResponse(HttpStatusCode.OK, master);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Master")]
+        [HttpGet]
+        public HttpResponseMessage GetMasterProduct([FromUri]ProductRequest request)
+        {
+            try
+            {
+
+                var master = (from mast in db.ProductStageMasters
+                              join stage in db.ProductStages on mast.MasterPid equals stage.Pid
+                              group mast by mast.MasterPid into masterGroup
+                              select new
+                              {
+                                  masterGroup.FirstOrDefault().ProductStage1.ProductId,
+                                  masterGroup.FirstOrDefault().ProductStage1.ProductNameEn,
+                                  masterGroup.FirstOrDefault().ProductStage1.Pid,
+                                  ChildPids = masterGroup.Select(s => new
+                                  {
+                                      s.ProductStage.Pid
+                                  }),
+
+                              });
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, master);
+                }
+                request.DefaultOnNull();
+                var total = master.Count();
+                var pagedProducts = master.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/ProductStages/Template")]
         [HttpPost]
         public HttpResponseMessage ExportTemplate(CSVTemplateRequest request)
@@ -803,7 +995,8 @@ namespace Colsp.Api.Controllers
 
                 var products = (
                              from productStage in db.ProductStages
-                             where productStage.ShopId == shopId && (productStage.VariantCount == 0 || productStage.IsVariant == true)
+                             where productStage.ShopId == shopId && 
+                             (productStage.VariantCount == 0 || productStage.IsVariant == true) && productStage.IsMaster == false
                              select new
                              {
                                  productStage.ProductId,
@@ -1096,7 +1289,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var products = (from p in db.ProductStageGroups
-                                where p.ProductStages.Any(a=>a.IsVariant == false)
+                                where p.ProductStages.Any(a=>a.IsVariant == false && a.IsMaster == false)
                                 select new
                                 {
                                     p.ProductStages.FirstOrDefault().Sku,
@@ -1370,7 +1563,7 @@ namespace Colsp.Api.Controllers
         [HttpPost]
         public HttpResponseMessage AddProduct(ProductStageRequest request)
         {
-            ProductStageGroup group = null;
+            
             try
             {
                 #region Validation
@@ -1384,70 +1577,88 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 var shopId = this.User.ShopRequest().ShopId;
-                var attributeList = db.Attributes.Include(i=>i.AttributeValueMaps).ToList();
-                var shippingList = db.Shippings.ToList();
-                #region Setup Group
-                group = new ProductStageGroup();
-                group.ShopId = shopId;
-                SetupGroup(group, request,db);
-                group.CreatedBy = this.User.UserRequest().Email;
-                group.CreatedDt = DateTime.Now;
-                group.UpdatedBy = this.User.UserRequest().Email;
-                group.UpdatedDt = DateTime.Now;
-                #endregion
-                #region Master Variant
-                var masterVariant = new ProductStage();
-                masterVariant.ShopId = shopId;
-                masterVariant.IsVariant = false;
-                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                SetupVariant(masterVariant, request.MasterVariant,db, shippingList);
-                masterVariant.CreatedBy = this.User.UserRequest().Email;
-                masterVariant.CreatedDt = DateTime.Now;
-                masterVariant.UpdatedBy = this.User.UserRequest().Email;
-                masterVariant.UpdatedDt = DateTime.Now;
-                if(request.MasterAttribute != null)
-                {
-                    SetupAttribute(masterVariant, request.MasterAttribute, attributeList,db);
-                }
-                group.ProductStages.Add(masterVariant);
-                #endregion
-                #region Variants
-                if (request.Variants != null)
-                {
-                    masterVariant.VariantCount = request.Variants.Count;
-                    foreach(var variantRq in request.Variants)
-                    {
-                        var variant = new ProductStage();
-                        variant.ShopId = shopId;
-                        variant.IsVariant = true;
-                        variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                        SetupVariant(variant, variantRq,db, shippingList);
-                        variant.CreatedBy = this.User.UserRequest().Email;
-                        variant.CreatedDt = DateTime.Now;
-                        variant.UpdatedBy = this.User.UserRequest().Email;
-                        variant.UpdatedDt = DateTime.Now;
-                        SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList,db);
-                        group.ProductStages.Add(variant);
-                    }
-                }
-                else
-                {
-                    masterVariant.VariantCount = 0;
-                }
-                #endregion
-                AutoGenerate.GeneratePid(db,group.ProductStages);
+                ProductStageGroup group = AddProduct(db, request,shopId);
+                AutoGenerate.GeneratePid(db, group.ProductStages);
                 group.ProductId = db.GetNextProductStageGroupId().Single().Value;
+
+               
+
                 db.ProductStageGroups.Add(group);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 SetupGroupAfterSave(group,db,true);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStageImage");
-
                 return GetProductStage(group.ProductId) ;
             }
             catch (Exception ex)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
             }
+        }
+
+        private ProductStageGroup AddProduct(ColspEntities db, ProductStageRequest request,int shopId)
+        {
+            ProductStageGroup group = null;
+            var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
+            var shippingList = db.Shippings.ToList();
+            #region Setup Group
+            group = new ProductStageGroup();
+            group.ShopId = shopId;
+            SetupGroup(group, request, db);
+            group.CreatedBy = this.User.UserRequest().Email;
+            group.CreatedDt = DateTime.Now;
+            group.UpdatedBy = this.User.UserRequest().Email;
+            group.UpdatedDt = DateTime.Now;
+            #endregion
+            #region Master Variant
+            var masterVariant = new ProductStage();
+            masterVariant.ShopId = shopId;
+            masterVariant.IsVariant = false;
+            if (User.HasPermission("Approve product"))
+            {
+                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
+                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
+            }
+            else
+            {
+                group.Status = Validation.ValidateString(request.Status, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+            }
+            SetupVariant(masterVariant, request.MasterVariant, db, shippingList);
+            masterVariant.CreatedBy = this.User.UserRequest().Email;
+            masterVariant.CreatedDt = DateTime.Now;
+            masterVariant.UpdatedBy = this.User.UserRequest().Email;
+            masterVariant.UpdatedDt = DateTime.Now;
+            if (request.MasterAttribute != null)
+            {
+                SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
+            }
+            group.ProductStages.Add(masterVariant);
+            #endregion
+            #region Variants
+            if (request.Variants != null)
+            {
+                masterVariant.VariantCount = request.Variants.Count;
+                foreach (var variantRq in request.Variants)
+                {
+                    var variant = new ProductStage();
+                    variant.ShopId = shopId;
+                    variant.IsVariant = true;
+                    variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                    SetupVariant(variant, variantRq, db, shippingList);
+                    variant.CreatedBy = this.User.UserRequest().Email;
+                    variant.CreatedDt = DateTime.Now;
+                    variant.UpdatedBy = this.User.UserRequest().Email;
+                    variant.UpdatedDt = DateTime.Now;
+                    SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, db);
+                    group.ProductStages.Add(variant);
+                }
+            }
+            else
+            {
+                masterVariant.VariantCount = 0;
+            }
+            #endregion
+            return group;
         }
 
         [Route("api/ProductStages/{productId}")]
@@ -1508,9 +1719,13 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = this.User.ShopRequest().ShopId;
                 var ids = request.Select(s => s.ProductId).ToList();
-                var producGrouptList = db.ProductStageGroups.Where(w => w.ShopId == shopId && ids.Contains(w.ProductId)).Include(i=>i.ProductStages.Select(s=>s.Inventory));
+                var producGrouptList = db.ProductStageGroups.Where(w => w.ShopId == shopId && ids.Contains(w.ProductId))
+                    .Include(i=>i.ProductStages.Select(s=>s.Inventory))
+                    .Include(i=>i.ProductStages.Select(s=>s.ProductStageMasters))
+                    .Include(i=>i.ProductStageRelateds)
+                    ;
                 //var productApprovedList = db.Products.Where(w => w.ShopId == shopId);
-                var relatedProductList = db.ProductStageRelateds.Where(w => w.ShopId == shopId && (ids.Contains(w.Parent)||ids.Contains(w.Child)));
+                //var relatedProductList = db.ProductStageRelateds.Where(w => w.ShopId == shopId && (ids.Contains(w.Parent)||ids.Contains(w.Child)));
                 foreach (ProductStageRequest proRq in request)
                 {
                     var productGroup = producGrouptList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
@@ -1541,11 +1756,16 @@ namespace Colsp.Api.Controllers
                             UpdatedDt = DateTime.Now,
                         });
                     }
-                    var tmpRelatedProduct = relatedProductList.Where(w => w.Parent == productGroup.ProductId || w.Child == productGroup.ProductId);
-                    if (tmpRelatedProduct != null && tmpRelatedProduct.ToList().Count > 0)
+                    db.ProductStageRelateds.RemoveRange(productGroup.ProductStageRelateds);
+                    foreach(var stage in productGroup.ProductStages)
                     {
-                        db.ProductStageRelateds.RemoveRange(tmpRelatedProduct);
+                        db.ProductStageMasters.RemoveRange(stage.ProductStageMasters);
                     }
+                    //var tmpRelatedProduct = relatedProductList.Where(w => w.Parent == productGroup.ProductId || w.Child == productGroup.ProductId);
+                    //if (tmpRelatedProduct != null && tmpRelatedProduct.ToList().Count > 0)
+                    //{
+                    //    db.ProductStageRelateds.RemoveRange(tmpRelatedProduct);
+                    //}
                     //var productApproved = productApprovedList.Where(w => pids.Contains(w.Pid)).ToList();
                     //productApproved.ForEach(e => e.Status = Constant.STATUS_REMOVE);
                     db.ProductStageGroups.Remove(productGroup);
@@ -1964,7 +2184,7 @@ namespace Colsp.Api.Controllers
             group.ImageTabStatus = Validation.ValidateString(request.AdminApprove.Image, "Image Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.CategoryTabStatus = Validation.ValidateString(request.AdminApprove.Category, "Category Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.MoreOptionTabStatus = Validation.ValidateString(request.AdminApprove.MoreOption, "More Option Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-            group.VariantTabStatus = Validation.ValidateString(request.AdminApprove.Variant, "Variant Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
+            group.VariantTabStatus = Validation.ValidateString(request.AdminApprove.Variation, "Variant Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.RejectReason = Validation.ValidateString(request.AdminApprove.RejectReason, "Reject Reason", true, 500, true, string.Empty);
             group.Visibility = request.Visibility;
             
@@ -2690,7 +2910,7 @@ namespace Colsp.Api.Controllers
             response.AdminApprove.Information = product.InformationTabStatus;
             response.AdminApprove.Image = product.ImageTabStatus;
             response.AdminApprove.Category = product.CategoryTabStatus;
-            response.AdminApprove.Variant = product.VariantTabStatus;
+            response.AdminApprove.Variation = product.VariantTabStatus;
             response.AdminApprove.MoreOption = product.MoreOptionTabStatus;
             response.AdminApprove.RejectReason = product.RejectReason;
             response.InfoFlag = false;

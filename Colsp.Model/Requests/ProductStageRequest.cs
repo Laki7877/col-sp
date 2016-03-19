@@ -35,6 +35,7 @@ namespace Colsp.Model.Requests
         public int VariantCount                         { get; set; }
         public ControlFlagRequest ControlFlags          { get; set; }
         public string GroupId                           { get; set; }
+        public string Pid { get; set; }
 
         public ProductStageRequest()
         {

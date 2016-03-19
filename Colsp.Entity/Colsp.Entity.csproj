@@ -168,6 +168,15 @@
     <Compile Include="Models\BrandImage.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CartDetail.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CartDiscount.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CartHead.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\City.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -318,6 +327,9 @@
     <Compile Include="Models\ProductStageLocalCatMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductStageMaster.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ProductStageRelated.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -367,6 +379,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Table.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBAdminMenuItemTmp.cs">

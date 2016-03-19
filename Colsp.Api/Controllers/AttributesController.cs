@@ -20,6 +20,37 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
+        [Route("api/Attributes/DefaultAttribute")]
+        [HttpGet]
+        public HttpResponseMessage GetDefaultAttribute()
+        {
+            try
+            {
+                var attribute = db.Attributes.Where(w => w.DefaultAttribute == true).Select(s => new
+                {
+                    s.AttributeId,
+                    s.AttributeNameEn,
+                    s.DataType,
+                    s.Required,
+                    s.Status,
+                    s.VariantDataType,
+                    s.VariantStatus,
+                    s.DataValidation,
+                    AttributeValueMaps = s.AttributeValueMaps.Select(sv =>
+                    new {
+                        sv.AttributeId,
+                        sv.AttributeValueId,
+                        AttributeValue = new { sv.AttributeValue.AttributeValueId, sv.AttributeValue.AttributeValueEn, sv.AttributeValue.AttributeValueTh }
+                    })
+                });
+                return Request.CreateResponse(HttpStatusCode.OK, attribute);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/Attributes")]
         [HttpGet]
         public HttpResponseMessage GetAttributes([FromUri] AttributeRequest request)

@@ -38,6 +38,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual DbSet<BrandImage> BrandImages { get; set; }
+        public virtual DbSet<CartDetail> CartDetails { get; set; }
+        public virtual DbSet<CartDiscount> CartDiscounts { get; set; }
+        public virtual DbSet<CartHead> CartHeads { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
@@ -82,6 +85,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageGroup> ProductStageGroups { get; set; }
         public virtual DbSet<ProductStageImage> ProductStageImages { get; set; }
         public virtual DbSet<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
+        public virtual DbSet<ProductStageMaster> ProductStageMasters { get; set; }
         public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
@@ -98,6 +102,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<Table> Tables { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
