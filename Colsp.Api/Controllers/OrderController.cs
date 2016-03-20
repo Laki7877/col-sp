@@ -34,7 +34,10 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Cannot find order");
                     }
-                    order.Status = orderRq.Status;
+                    if (!string.IsNullOrEmpty(orderRq.Status))
+                    {
+                        order.Status = orderRq.Status;
+                    }
                     foreach (var product in orderRq.Products)
                     {
                         var current = order.Products.Where(w => w.Pid.Equals(product.Pid)).SingleOrDefault();
@@ -69,7 +72,12 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find order");
                 }
-                order.Status = request.Status;
+                if (!string.IsNullOrEmpty(request.Status))
+                {
+                    order.Status = request.Status;
+                }
+                
+                order.InvoiceNumber = request.InvoiceNumber;
                 foreach (var product in request.Products)
                 {
                     var current = order.Products.Where(w => w.Pid.Equals(product.Pid)).SingleOrDefault();
@@ -96,19 +104,7 @@ namespace Colsp.Api.Controllers
                 var shopId = this.User.ShopRequest().ShopId;
                 var order = (from or in OrderMockup.OrderList
                              where or.ShopId == shopId && or.OrderId.Equals(orderId)
-                             select new
-                             {
-                                 or.CustomerName,
-                                 or.OrderId,
-                                 or.OrderDate,
-                                 or.ShippingType,
-                                 or.TotalAmt,
-                                 or.Status,
-                                 or.ShipAddress,
-                                 or.BillAddress,
-                                 or.Products,
-                                 or.OrdDiscAmt,
-                             }).SingleOrDefault();
+                             select or).SingleOrDefault();
                 if(order == null)
                 {
                     throw new Exception("Cannot find this order");
@@ -145,6 +141,11 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK,list);
                 }
                 request.DefaultOnNull();
+                if (!string.IsNullOrWhiteSpace(request.SearchText))
+                {
+                    list = list.Where(w => w.OrderId.Contains(request.SearchText) 
+                    || w.CustomerName.Contains(request.SearchText));
+                }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
                     if (string.Equals("PaymentPending", request._filter, StringComparison.OrdinalIgnoreCase))

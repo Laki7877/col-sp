@@ -34,7 +34,7 @@ namespace Colsp.Api.Controllers
                 }
                 retur.CnNumber = request.CnNumber;
                 retur.Status = request.Status;
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return GetReturn(retur.ReturnId);
             }
             catch (Exception e)
             {
@@ -95,35 +95,20 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
                 request.DefaultOnNull();
+                if (!string.IsNullOrWhiteSpace(request.SearchText))
+                {
+                    list = list.Where(w => w.Order.OrderId.Contains(request.SearchText)
+                    || w.ReturnId.Contains(request.SearchText));
+                }
                 if (!string.IsNullOrEmpty(request._filter))
                 {
-                    if (string.Equals("PaymentPending", request._filter, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals("Accepted", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.ORDER_PAYMENT_PENDING));
+                        list = list.Where(p => p.Order.Status.Equals(Constant.RETURN_STATUS_APPROVE));
                     }
-                    else if (string.Equals("PaymentConfirmed", request._filter, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals("Waiting", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.ORDER_PAYMENT_CONFIRM));
-                    }
-                    else if (string.Equals("Preparing", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.ORDER_PREPARING));
-                    }
-                    else if (string.Equals("ReadyToShip", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.ORDER_READY_TO_SHIP));
-                    }
-                    else if (string.Equals("Shipping", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.ORDER_SHIPPING));
-                    }
-                    else if (string.Equals("Delivered", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.ORDER_DELIVERED));
-                    }
-                    else if (string.Equals("Cancelled", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.ORDER_CANCELLED));
+                        list = list.Where(p => p.Order.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
                 var total = list.Count();

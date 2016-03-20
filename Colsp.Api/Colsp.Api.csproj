@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <ApplicationInsightsResourceId>/subscriptions/af67e898-ef30-46f3-9167-e7e82e81320e/resourcegroups/ahancer-sea/providers/microsoft.insights/components/colsp-dev</ApplicationInsightsResourceId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -178,6 +179,7 @@
     <None Include="Properties\PublishProfiles\ahancer-colsp - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\colsp-dev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\colsp-dev - Web Deploy.pubxml" />
+    <Content Include="Service References\Application Insights\ConnectedService.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
