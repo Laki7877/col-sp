@@ -1628,10 +1628,8 @@ namespace Colsp.Api.Controllers
             masterVariant.CreatedDt = DateTime.Now;
             masterVariant.UpdatedBy = this.User.UserRequest().Email;
             masterVariant.UpdatedDt = DateTime.Now;
-            if (request.MasterAttribute != null)
-            {
-                SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
-            }
+            SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
+            SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, db);
             group.ProductStages.Add(masterVariant);
             #endregion
             #region Variants
