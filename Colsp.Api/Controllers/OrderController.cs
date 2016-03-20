@@ -54,6 +54,40 @@ namespace Colsp.Api.Controllers
         }
 
         [Route("api/Orders/{orderId}")]
+        [HttpPut]
+        public HttpResponseMessage SaveChangeOrder([FromUri] string orderId,PurchaseOrderReuest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var shopId = this.User.ShopRequest().ShopId;
+                var order = OrderMockup.OrderList.Where(w => w.ShopId == shopId && w.OrderId.Equals(orderId)).SingleOrDefault();
+                if (order == null)
+                {
+                    throw new Exception("Cannot find order");
+                }
+                order.Status = request.Status;
+                foreach (var product in request.Products)
+                {
+                    var current = order.Products.Where(w => w.Pid.Equals(product.Pid)).SingleOrDefault();
+                    if (current == null)
+                    {
+                        throw new Exception("Cannot find product " + product.Pid);
+                    }
+                    current.Quantity = product.Quantity;
+                }
+                return GetOrder(order.OrderId);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Orders/{orderId}")]
         [HttpGet]
         public HttpResponseMessage GetOrder([FromUri] string orderId)
         {
