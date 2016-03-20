@@ -14,9 +14,9 @@ namespace Colsp.Api.Controllers
 {
     public class OrderController : ApiController
     {
-        [Route("api/Orders/{orderId}")]
+        [Route("api/Orders")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeOrder(PurchaseOrderReuest request)
+        public HttpResponseMessage SaveChangeOrder(List<PurchaseOrderReuest> request)
         {
             try
             {
@@ -25,24 +25,27 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var shopId = this.User.ShopRequest().ShopId;
-                var order = (from or in OrderMockup.OrderList
-                             where or.ShopId == shopId && or.OrderId.Equals(request.OrderId)
-                             select or).SingleOrDefault();
-                if(order == null)
+                var orderIds = request.Select(s => s.OrderId).ToList();
+                var orderList = OrderMockup.OrderList.Where(w => w.ShopId == shopId && orderIds.Contains(w.OrderId)).ToList();
+                foreach (var orderRq in request)
                 {
-                    throw new Exception("Cannot find order");
-                }
-                order.Status = request.Status;
-                foreach(var product in request.Products)
-                {
-                    var current = order.Products.Where(w => w.Pid.Equals(product.Pid)).SingleOrDefault();
-                    if(current == null)
+                    var order = orderList.Where(w => w.OrderId.Equals(orderRq.OrderId)).SingleOrDefault();
+                    if (order == null)
                     {
-                        throw new Exception("Cannot find product " + product.Pid);
+                        throw new Exception("Cannot find order");
                     }
-                    current.Quantity = product.Quantity;
+                    order.Status = orderRq.Status;
+                    foreach (var product in orderRq.Products)
+                    {
+                        var current = order.Products.Where(w => w.Pid.Equals(product.Pid)).SingleOrDefault();
+                        if (current == null)
+                        {
+                            throw new Exception("Cannot find product " + product.Pid);
+                        }
+                        current.Quantity = product.Quantity;
+                    }
                 }
-                return GetOrder(order.OrderId);
+                return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch(Exception e)
             {

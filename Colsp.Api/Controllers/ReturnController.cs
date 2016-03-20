@@ -14,9 +14,9 @@ namespace Colsp.Api.Controllers
 {
     public class ReturnController : ApiController
     {
-        [Route("api/Returns")]
+        [Route("api/Returns/{returnId}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeReturn(ReturnRequest request)
+        public HttpResponseMessage SaveChangeReturn([FromUri] string returnId, ReturnRequest request)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace Colsp.Api.Controllers
                 }
                 var shopId = this.User.ShopRequest().ShopId;
                 var retur = (from or in ReturnMockup.ReturnList
-                             where or.ShopId == shopId && or.ReturnId.Equals(request.Order.OrderId)
+                             where or.ShopId == shopId && or.ReturnId.Equals(returnId)
                              select or).SingleOrDefault();
                 if (retur == null)
                 {
@@ -42,6 +42,28 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/Returns/{returnId}")]
+        [HttpGet]
+        public HttpResponseMessage GetReturn([FromUri] string returnId)
+        {
+            try
+            {
+                var shopId = this.User.ShopRequest().ShopId;
+                var retur = (from re in ReturnMockup.ReturnList
+                             where re.ShopId == shopId && re.ReturnId.Equals(returnId)
+                             select re).SingleOrDefault();
+                if (retur == null)
+                {
+                    throw new Exception("Cannot find this return");
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, retur);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
 
         [Route("api/Returns")]
         [HttpGet]

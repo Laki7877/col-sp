@@ -174,9 +174,10 @@
     </Content>
     <Content Include="Metadata\deploymentTemplates\apiappconfig.azureresource.json" />
     <Content Include="apiapp.json" />
-    <None Include="Properties\PublishProfiles\ahancer-colsp.pubxml" />
-    <None Include="Properties\PublishProfiles\colsp-dev.pubxml" />
-    <None Include="Properties\PublishProfiles\Colsp.Api%28ahancer-sea%29.pubxml" />
+    <None Include="Properties\PublishProfiles\ahancer-colsp - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\ahancer-colsp - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\colsp-dev - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\colsp-dev - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
