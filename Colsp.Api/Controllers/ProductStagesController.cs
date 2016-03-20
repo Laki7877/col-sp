@@ -1482,11 +1482,11 @@ namespace Colsp.Api.Controllers
                     group.Status = Validation.ValidateString(request.Status, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
                     masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
                 }
-
                 SetupVariant(masterVariant, request.MasterVariant,db, shippingList);
                 masterVariant.UpdatedBy = this.User.UserRequest().Email;
                 masterVariant.UpdatedDt = DateTime.Now;
                 SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
+                SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, db);
                 #endregion
                 #region Variants
                 var tmpVariant = group.ProductStages.Where(w => w.IsVariant == true).ToList();
@@ -1579,9 +1579,6 @@ namespace Colsp.Api.Controllers
                 ProductStageGroup group = AddProduct(db, request,shopId);
                 AutoGenerate.GeneratePid(db, group.ProductStages);
                 group.ProductId = db.GetNextProductStageGroupId().Single().Value;
-
-               
-
                 db.ProductStageGroups.Add(group);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 SetupGroupAfterSave(group,db,true);
