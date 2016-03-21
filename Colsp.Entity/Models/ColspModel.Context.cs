@@ -12,6 +12,8 @@ namespace Colsp.Entity.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class ColspEntities : DbContext
     {
@@ -38,12 +40,18 @@ namespace Colsp.Entity.Models
         public virtual DbSet<BrandImage> BrandImages { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<CMSCategory> CMSCategories { get; set; }
+        public virtual DbSet<CMSCategoryCreteriaMap> CMSCategoryCreteriaMaps { get; set; }
+        public virtual DbSet<CMSCategorySchedulerMap> CMSCategorySchedulerMaps { get; set; }
+        public virtual DbSet<CMSCreteria> CMSCreterias { get; set; }
+        public virtual DbSet<CMSCriteriaProductMap> CMSCriteriaProductMaps { get; set; }
         public virtual DbSet<CMSGroup> CMSGroups { get; set; }
         public virtual DbSet<CMSMaster> CMSMasters { get; set; }
         public virtual DbSet<CMSMasterGroupMap> CMSMasterGroupMaps { get; set; }
+        public virtual DbSet<CMSMasterSchedulerMap> CMSMasterSchedulerMaps { get; set; }
+        public virtual DbSet<CMSMasterSchedulerShopMap> CMSMasterSchedulerShopMaps { get; set; }
         public virtual DbSet<CMSMasterStatu> CMSMasterStatus { get; set; }
         public virtual DbSet<CMSMasterType> CMSMasterTypes { get; set; }
-        public virtual DbSet<CMSMastserCategoryMap> CMSMastserCategoryMaps { get; set; }
+        public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
@@ -123,6 +131,25 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
-        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
+    
+        public virtual ObjectResult<Nullable<int>> AttributeValueId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("AttributeValueId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductStageGroupId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GlobalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GlobalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> LocalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("LocalCategoryId");
+        }
     }
 }

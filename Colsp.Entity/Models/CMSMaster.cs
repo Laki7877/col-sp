@@ -31,6 +31,11 @@ namespace Colsp.Entity.Models
         public Nullable<int> Sequence { get; set; }
         public Nullable<int> CMSMasterStatusId { get; set; }
         public string LinkToOutside { get; set; }
+        public Nullable<bool> IsCampaign { get; set; }
+        public Nullable<int> CategoryId { get; set; }
+        public Nullable<int> Brand { get; set; }
+        public Nullable<decimal> MinPrice { get; set; }
+        public Nullable<decimal> MaxPrice { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }

@@ -21,8 +21,8 @@ namespace Colsp.Entity.Models
             this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
             this.ProductStageComments = new HashSet<ProductStageComment>();
             this.ProductStageImages = new HashSet<ProductStageImage>();
-            this.ProductStageMasters = new HashSet<ProductStageMaster>();
-            this.ProductStageMasters1 = new HashSet<ProductStageMaster>();
+            this.ProductStageRelateds = new HashSet<ProductStageRelated>();
+            this.ProductStageRelateds1 = new HashSet<ProductStageRelated>();
             this.ProductStageVideos = new HashSet<ProductStageVideo>();
         }
     
@@ -75,7 +75,6 @@ namespace Colsp.Entity.Models
         public string UrlEn { get; set; }
         public int BoostWeight { get; set; }
         public bool IsVariant { get; set; }
-        public bool IsMaster { get; set; }
         public int VariantCount { get; set; }
         public bool Visibility { get; set; }
         public string Status { get; set; }
@@ -96,9 +95,9 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageImage> ProductStageImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageMaster> ProductStageMasters { get; set; }
+        public virtual ICollection<ProductStageRelated> ProductStageRelateds { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageMaster> ProductStageMasters1 { get; set; }
+        public virtual ICollection<ProductStageRelated> ProductStageRelateds1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
         public virtual Shop Shop { get; set; }

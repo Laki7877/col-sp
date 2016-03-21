@@ -1480,7 +1480,7 @@ namespace Colsp.Api.Controllers
                 else
                 {
                     group.Status = Validation.ValidateString(request.Status, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                    masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
                 }
                 SetupVariant(masterVariant, request.MasterVariant,db, shippingList);
                 masterVariant.UpdatedBy = this.User.UserRequest().Email;
@@ -1529,7 +1529,7 @@ namespace Colsp.Api.Controllers
                         }
                         else
                         {
-                            variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                        variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
                         }
                         SetupVariant(variant, variantRq,db, shippingList);
                         variant.UpdatedBy = this.User.UserRequest().Email;
@@ -1595,20 +1595,20 @@ namespace Colsp.Api.Controllers
         {
             ProductStageGroup group = null;
             var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
-            var shippingList = db.Shippings.ToList();
-            #region Setup Group
-            group = new ProductStageGroup();
-            group.ShopId = shopId;
+                var shippingList = db.Shippings.ToList();
+                #region Setup Group
+                group = new ProductStageGroup();
+                group.ShopId = shopId;
             SetupGroup(group, request, db);
-            group.CreatedBy = this.User.UserRequest().Email;
-            group.CreatedDt = DateTime.Now;
-            group.UpdatedBy = this.User.UserRequest().Email;
-            group.UpdatedDt = DateTime.Now;
-            #endregion
-            #region Master Variant
-            var masterVariant = new ProductStage();
-            masterVariant.ShopId = shopId;
-            masterVariant.IsVariant = false;
+                group.CreatedBy = this.User.UserRequest().Email;
+                group.CreatedDt = DateTime.Now;
+                group.UpdatedBy = this.User.UserRequest().Email;
+                group.UpdatedDt = DateTime.Now;
+                #endregion
+                #region Master Variant
+                var masterVariant = new ProductStage();
+                masterVariant.ShopId = shopId;
+                masterVariant.IsVariant = false;
             if (User.HasPermission("Approve product"))
             {
                 group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
@@ -1620,40 +1620,40 @@ namespace Colsp.Api.Controllers
                 masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
             }
             SetupVariant(masterVariant, request.MasterVariant, db, shippingList);
-            masterVariant.CreatedBy = this.User.UserRequest().Email;
-            masterVariant.CreatedDt = DateTime.Now;
-            masterVariant.UpdatedBy = this.User.UserRequest().Email;
-            masterVariant.UpdatedDt = DateTime.Now;
+                masterVariant.CreatedBy = this.User.UserRequest().Email;
+                masterVariant.CreatedDt = DateTime.Now;
+                masterVariant.UpdatedBy = this.User.UserRequest().Email;
+                masterVariant.UpdatedDt = DateTime.Now;
             SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
             SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, db);
-            group.ProductStages.Add(masterVariant);
-            #endregion
-            #region Variants
-            if (request.Variants != null)
-            {
-                masterVariant.VariantCount = request.Variants.Count;
-                foreach (var variantRq in request.Variants)
+                group.ProductStages.Add(masterVariant);
+                #endregion
+                #region Variants
+                if (request.Variants != null)
                 {
-                    var variant = new ProductStage();
-                    variant.ShopId = shopId;
-                    variant.IsVariant = true;
-                    variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                    masterVariant.VariantCount = request.Variants.Count;
+                foreach (var variantRq in request.Variants)
+                    {
+                        var variant = new ProductStage();
+                        variant.ShopId = shopId;
+                        variant.IsVariant = true;
+                        variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
                     SetupVariant(variant, variantRq, db, shippingList);
-                    variant.CreatedBy = this.User.UserRequest().Email;
-                    variant.CreatedDt = DateTime.Now;
-                    variant.UpdatedBy = this.User.UserRequest().Email;
-                    variant.UpdatedDt = DateTime.Now;
+                        variant.CreatedBy = this.User.UserRequest().Email;
+                        variant.CreatedDt = DateTime.Now;
+                        variant.UpdatedBy = this.User.UserRequest().Email;
+                        variant.UpdatedDt = DateTime.Now;
                     SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, db);
-                    group.ProductStages.Add(variant);
+                        group.ProductStages.Add(variant);
+                    }
                 }
-            }
-            else
-            {
-                masterVariant.VariantCount = 0;
-            }
-            #endregion
+                else
+                {
+                    masterVariant.VariantCount = 0;
+                }
+                #endregion
             return group;
-        }
+            }
 
         [Route("api/ProductStages/{productId}")]
         [HttpGet]
@@ -1890,8 +1890,8 @@ namespace Colsp.Api.Controllers
                                     AttributeValueId = val.AttributeValueId,
                                     AttributeValueEn = val.AttributeValueEn,
                                     CheckboxValue = attr.CheckboxValue
-                                });
-                            }
+                        });
+                    }
                         }
                     }
                    
@@ -2164,7 +2164,7 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             group.TheOneCardEarn = request.TheOneCardEarn;
-            group.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            //group.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             group.EffectiveDate = request.EffectiveDate;
             group.ExpireDate = request.ExpireDate;
             group.ControlFlag1 = request.ControlFlags.Flag1;
@@ -2386,7 +2386,7 @@ namespace Colsp.Api.Controllers
             variant.KillerPoint3Th = Validation.ValidateString(request.KillerPoint3Th, "Killer Point 3 (Thai)", false, 100, false, string.Empty);
             variant.Installment = Validation.ValidateString(request.Installment, "Installment", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.TheOneCardEarn = request.TheOneCardEarn;
-            variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+           // variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.Length = Validation.ValidateDecimal(request.Length, "Length", true, 11, 2, true,0).Value;
             variant.Height = Validation.ValidateDecimal(request.Height, "Height", true, 11, 2, true,0).Value;
             variant.Width = Validation.ValidateDecimal(request.Width, "Width", true, 11, 2, true,0).Value;
@@ -2402,8 +2402,8 @@ namespace Colsp.Api.Controllers
             variant.UrlEn = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product Url Key", false, 300, false, string.Empty);
             variant.BoostWeight = request.SEO.ProductBoostingWeight;
             variant.Visibility = request.Visibility;
-            variant.DefaultVaraint = request.DefaultVariant;
-            variant.Display = Validation.ValidateString(request.Display, "Display", true, 20, true, Constant.VARIANT_DISPLAY_GROUP, new List<string>() { Constant.VARIANT_DISPLAY_GROUP, Constant.VARIANT_DISPLAY_INDIVIDUAL });
+           // variant.DefaultVaraint = request.DefaultVariant;
+           // variant.Display = Validation.ValidateString(request.Display, "Display", true, 20, true, Constant.VARIANT_DISPLAY_GROUP, new List<string>() { Constant.VARIANT_DISPLAY_GROUP, Constant.VARIANT_DISPLAY_INDIVIDUAL });
             #endregion
             #region Shipping
             if (request.ShippingMethod == 0)
@@ -2789,7 +2789,7 @@ namespace Colsp.Api.Controllers
             response.KillerPoint3Th = variant.KillerPoint3Th;
             response.Installment = variant.Installment;
             response.TheOneCardEarn = variant.TheOneCardEarn;
-            response.GiftWrap = variant.GiftWrap;
+         //   response.GiftWrap = variant.GiftWrap;
             response.Length = variant.Length;
             response.Height = variant.Height;
             response.Width = variant.Width;
@@ -2805,11 +2805,11 @@ namespace Colsp.Api.Controllers
             response.SEO.ProductUrlKeyEn = variant.UrlEn;
             response.SEO.ProductBoostingWeight = variant.BoostWeight;
             response.Visibility = variant.Visibility;
-            response.DefaultVariant = variant.DefaultVaraint;
+         //   response.DefaultVariant = variant.DefaultVaraint;
             response.Quantity = variant.Inventory.Quantity;
             response.SafetyStock = variant.Inventory.SafetyStockSeller;
             response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
-            response.Display = variant.Display;
+       //     response.Display = variant.Display;
             if (variant.ProductStageImages != null && variant.ProductStageImages.Count > 0)
             {
                 variant.ProductStageImages = variant.ProductStageImages.OrderBy(o => o.Position).ToList();
@@ -2894,7 +2894,7 @@ namespace Colsp.Api.Controllers
                 response.Tags = product.ProductStageTags.Select(s => s.Tag).ToList();
             }
             response.TheOneCardEarn = product.TheOneCardEarn;
-            response.GiftWrap = product.GiftWrap;
+          //  response.GiftWrap = product.GiftWrap;
             response.EffectiveDate = product.EffectiveDate;
             response.ExpireDate = product.ExpireDate;
             response.ControlFlags.Flag1 = product.ControlFlag1;
