@@ -168,6 +168,15 @@
     <Compile Include="Models\BrandImage.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CartDetail.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CartDiscount.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CartHead.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\City.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -252,9 +261,6 @@
     <Compile Include="Models\CouponShopMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\CreditCardType.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Customer.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -262,6 +268,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerToken.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CustomerWishList.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\District.cs">
@@ -360,6 +369,9 @@
     <Compile Include="Models\ProductStageLocalCatMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductStageMaster.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ProductStageRelated.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -367,6 +379,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageVideo.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductTemp.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PromotionBuy1Get1Item.cs">
@@ -417,6 +432,9 @@
     <Compile Include="Models\StoreReturnReason.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Table.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\TBAdminMenuItemTmp.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -444,6 +462,9 @@
     <Compile Include="Models\TBUserAdminWebTokenTmp.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Theme.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -457,9 +478,6 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserShopMap.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UserStatu.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

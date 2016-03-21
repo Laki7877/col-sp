@@ -12,18 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductStageRelated
+    public partial class ProductStageMaster
     {
-        public long Parent { get; set; }
-        public long Child { get; set; }
-        public int ShopId { get; set; }
+        public string MasterPid { get; set; }
+        public string ChildPid { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual ProductStageGroup ProductStageGroup { get; set; }
-        public virtual ProductStageGroup ProductStageGroup1 { get; set; }
-        public virtual Shop Shop { get; set; }
+        public virtual ProductStage ProductStage { get; set; }
+        public virtual ProductStage ProductStage1 { get; set; }
     }
 }

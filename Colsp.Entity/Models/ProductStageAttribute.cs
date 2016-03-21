@@ -17,6 +17,7 @@ namespace Colsp.Entity.Models
         public string Pid { get; set; }
         public int AttributeId { get; set; }
         public string ValueEn { get; set; }
+        public bool CheckboxValue { get; set; }
         public int Position { get; set; }
         public bool IsAttributeValue { get; set; }
         public string CreatedBy { get; set; }

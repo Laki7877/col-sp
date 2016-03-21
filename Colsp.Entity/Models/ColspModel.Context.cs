@@ -20,7 +20,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -38,6 +37,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual DbSet<BrandImage> BrandImages { get; set; }
+        public virtual DbSet<CartDetail> CartDetails { get; set; }
+        public virtual DbSet<CartDiscount> CartDiscounts { get; set; }
+        public virtual DbSet<CartHead> CartHeads { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<CMSCategory> CMSCategories { get; set; }
         public virtual DbSet<CMSCategoryCreteriaMap> CMSCategoryCreteriaMaps { get; set; }
@@ -61,10 +63,10 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CouponOrder> CouponOrders { get; set; }
         public virtual DbSet<CouponPidMap> CouponPidMaps { get; set; }
         public virtual DbSet<CouponShopMap> CouponShopMaps { get; set; }
-        public virtual DbSet<CreditCardType> CreditCardTypes { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
+        public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
         public virtual DbSet<District> Districts { get; set; }
         public virtual DbSet<GlobalCatAttributeSetMap> GlobalCatAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
@@ -96,12 +98,11 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageGroup> ProductStageGroups { get; set; }
         public virtual DbSet<ProductStageImage> ProductStageImages { get; set; }
         public virtual DbSet<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
+        public virtual DbSet<ProductStageMaster> ProductStageMasters { get; set; }
         public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
-        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
-        public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
-        public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
+        public virtual DbSet<ProductTemp> ProductTemps { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
@@ -114,12 +115,13 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceive> StoreReceives { get; set; }
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
+        public virtual DbSet<Table> Tables { get; set; }
+        public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
-        public virtual DbSet<UserStatu> UserStatus { get; set; }
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
@@ -131,6 +133,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
+        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
+        public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
+        public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
     
         public virtual ObjectResult<Nullable<int>> AttributeValueId()
         {

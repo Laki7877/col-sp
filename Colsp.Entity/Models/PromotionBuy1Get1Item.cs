@@ -38,6 +38,5 @@ namespace Colsp.Entity.Models
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
         public Nullable<int> CMSStatusFlowId { get; set; }
-        public Nullable<bool> Visibility { get; set; }
     }
 }

@@ -26,6 +26,8 @@
           <Property Name="AttributeNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="DefaultAttribute" Type="bit" Nullable="false" />
+          <Property Name="VisibleTo" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="Required" Type="bit" Nullable="false" />
           <Property Name="Filterable" Type="bit" Nullable="false" />
           <Property Name="VariantStatus" Type="bit" Nullable="false" />
@@ -119,7 +121,7 @@
           <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="PicUrl" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="PicUrl" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
           <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
@@ -165,6 +167,46 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CartDetail">
+          <Key>
+            <PropertyRef Name="CartId" />
+            <PropertyRef Name="PID" />
+          </Key>
+          <Property Name="CartId" Type="int" Nullable="false" />
+          <Property Name="PID" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdateOn" Type="smalldatetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CartDiscount">
+          <Key>
+            <PropertyRef Name="CartId" />
+            <PropertyRef Name="PId" />
+          </Key>
+          <Property Name="CartId" Type="int" Nullable="false" />
+          <Property Name="PId" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="PromotionNo" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DiscountType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DiscountRate" Type="decimal" Precision="11" Scale="3" Nullable="false" />
+          <Property Name="DiscountAmt" Type="decimal" Precision="11" Scale="3" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+          <Property Name="CreateBy" Type="int" Nullable="false" />
+          <Property Name="UpdateOn" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+        </EntityType>
+        <EntityType Name="CartHead">
+          <Key>
+            <PropertyRef Name="CartId" />
+          </Key>
+          <Property Name="CartId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdateOn" Type="smalldatetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <EntityType Name="City">
           <Key>
@@ -531,23 +573,6 @@
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
-        <EntityType Name="CreditCardType">
-          <Key>
-            <PropertyRef Name="CreditCardTypeId" />
-          </Key>
-          <Property Name="CreditCardTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CreditCardTypeCode" Type="nvarchar" MaxLength="5" />
-          <Property Name="CreditCardTypeName" Type="nvarchar" MaxLength="100" />
-          <Property Name="Digit" Type="int" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="Visibility" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
-        </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Email" />
@@ -581,10 +606,10 @@
         <EntityType Name="CustomerAddress">
           <Key>
             <PropertyRef Name="AddressId" />
-            <PropertyRef Name="UserId" />
+            <PropertyRef Name="CustomerId" />
           </Key>
           <Property Name="AddressId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
           <Property Name="FirstName" Type="varchar" MaxLength="100" />
           <Property Name="LastName" Type="varchar" MaxLength="100" />
           <Property Name="AddressLine1" Type="nvarchar" MaxLength="55" />
@@ -617,6 +642,14 @@
           <Property Name="IpAddress" Type="varchar" MaxLength="15" />
           <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="CustomerWishList">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="Pid" />
+          </Key>
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
+        </EntityType>
         <EntityType Name="District">
           <Key>
             <PropertyRef Name="DistrictId" />
@@ -642,7 +675,7 @@
           <Key>
             <PropertyRef Name="CategoryId" />
           </Key>
-          <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="NameEn" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="NameTh" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="Commission" Type="decimal" Precision="10" Scale="2" />
@@ -680,7 +713,7 @@
             <PropertyRef Name="CategoryImageId" />
             <PropertyRef Name="CategoryId" />
           </Key>
-          <Property Name="CategoryImageId" Type="int" Nullable="false" />
+          <Property Name="CategoryImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
@@ -749,7 +782,7 @@
           <Key>
             <PropertyRef Name="CategoryId" />
           </Key>
-          <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="NameEn" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="NameTh" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="UrlKeyEn" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -790,7 +823,7 @@
             <PropertyRef Name="CategoryId" />
             <PropertyRef Name="ShopId" />
           </Key>
-          <Property Name="CategoryImageId" Type="int" Nullable="false" />
+          <Property Name="CategoryImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
@@ -1064,7 +1097,7 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Property Name="KillerPoint3Th" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Installment" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="TheOneCardEarn" Type="int" Nullable="false" />
-          <Property Name="GiftWarp" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="GiftWrap" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="Length" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Width" Type="decimal" Precision="10" Scale="2" Nullable="false" />
@@ -1079,7 +1112,10 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" Nullable="false" />
           <Property Name="UrlEn" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="BoostWeight" Type="int" Nullable="false" />
+          <Property Name="DefaultVaraint" Type="bit" Nullable="false" />
+          <Property Name="Display" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="IsVariant" Type="bit" Nullable="false" />
+          <Property Name="IsMaster" Type="bit" Nullable="false" />
           <Property Name="VariantCount" Type="int" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
@@ -1097,6 +1133,7 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="ValueEn" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CheckboxValue" Type="bit" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="IsAttributeValue" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
@@ -1132,14 +1169,14 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Key>
             <PropertyRef Name="ProductId" />
           </Key>
-          <Property Name="ProductId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="GlobalCatId" Type="int" Nullable="false" />
           <Property Name="LocalCatId" Type="int" />
           <Property Name="AttributeSetId" Type="int" />
           <Property Name="BrandId" Type="int" />
           <Property Name="TheOneCardEarn" Type="int" Nullable="false" />
-          <Property Name="GiftWarp" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="GiftWrap" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="EffectiveDate" Type="datetime" />
           <Property Name="ExpireDate" Type="datetime" />
           <Property Name="ControlFlag1" Type="bit" Nullable="false" />
@@ -1192,15 +1229,26 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="ProductStageMaster">
+          <Key>
+            <PropertyRef Name="MasterPid" />
+            <PropertyRef Name="ChildPid" />
+          </Key>
+          <Property Name="MasterPid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="ChildPid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="ProductStageRelated">
           <Key>
-            <PropertyRef Name="PidParent" />
-            <PropertyRef Name="PidChild" />
+            <PropertyRef Name="Parent" />
+            <PropertyRef Name="Child" />
           </Key>
-          <Property Name="PidParent" Type="char" MaxLength="7" Nullable="false" />
-          <Property Name="PidChild" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="Parent" Type="bigint" Nullable="false" />
+          <Property Name="Child" Type="bigint" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
-          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -1228,6 +1276,27 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Property Name="VideoUrlEn" Type="nvarchar" MaxLength="2000" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ProductTemp">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="UrlEn" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="OriginalPrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="SalePrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="JdaCategoryId" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="OnHold" Type="int" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -1261,7 +1330,6 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="CMSStatusFlowId" Type="int" />
-          <Property Name="Visibility" Type="bit" />
         </EntityType>
         <EntityType Name="PromotionOnTopCreditCard">
           <Key>
@@ -1347,8 +1415,8 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Property Name="ShopNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="ShopNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="MaxLocalCategory" Type="int" Nullable="false" />
-          <Property Name="GiftWrap" Type="bit" Nullable="false" />
-          <Property Name="TaxInvoice" Type="bit" Nullable="false" />
+          <Property Name="GiftWrap" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="TaxInvoice" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="ShopGroup" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="ShopImageUrl" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="ShopDescriptionEn" Type="nvarchar" MaxLength="500" Nullable="false" />
@@ -1358,7 +1426,7 @@ warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key
           <Property Name="BankAccountNumber" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="BankAccountName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Facebook" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="Youtube" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="YouTube" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="Twitter" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="Instagram" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="Pinterest" Type="nvarchar" MaxLength="500" Nullable="false" />
@@ -1540,6 +1608,12 @@ warning 6002: The table/view 'colsp.dbo.StoreReturnReason' does not have a prima
           <Property Name="UpdateOn" Type="smalldatetime" />
           <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
         </EntityType>
+        <EntityType Name="Table">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'colsp.dbo.TBAdminMenuItemTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBAdminMenuItemTmp">
@@ -1719,6 +1793,21 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="IpAddress" Type="nchar" MaxLength="15" Nullable="false" />
           <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="Theme">
+          <Key>
+            <PropertyRef Name="ThemeId" />
+          </Key>
+          <Property Name="ThemeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ThemeName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ThemeImage" Type="nvarchar" MaxLength="2000" Nullable="false" />
+          <Property Name="Layout" Type="int" Nullable="false" />
+          <Property Name="HasBanner" Type="bit" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserId" />
@@ -1792,22 +1881,6 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
-        </EntityType>
-        <EntityType Name="UserStatus">
-          <Key>
-            <PropertyRef Name="UserStatusId" />
-          </Key>
-          <Property Name="UserStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="OnTable" Type="nvarchar" MaxLength="50" />
-          <Property Name="StatusCode" Type="nvarchar" MaxLength="5" />
-          <Property Name="Description" Type="nvarchar" MaxLength="100" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
-          <Property Name="UpdateBy" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
-          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <Association Name="FK_AttributeSetTagMap_AttributeSet">
           <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1">
@@ -2349,29 +2422,55 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductStageRelated_PidChild">
+        <Association Name="FK_ProductStageMaster_ChildGroup">
           <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1" />
-          <End Role="ProductStageRelated" Type="Self.ProductStageRelated" Multiplicity="*" />
+          <End Role="ProductStageMaster" Type="Self.ProductStageMaster" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
               <PropertyRef Name="Pid" />
             </Principal>
-            <Dependent Role="ProductStageRelated">
-              <PropertyRef Name="PidChild" />
+            <Dependent Role="ProductStageMaster">
+              <PropertyRef Name="ChildPid" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductStageRelated_PidParent">
+        <Association Name="FK_ProductStageMaster_ParentGroup">
           <End Role="ProductStage" Type="Self.ProductStage" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductStageMaster" Type="Self.ProductStageMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStage">
+              <PropertyRef Name="Pid" />
+            </Principal>
+            <Dependent Role="ProductStageMaster">
+              <PropertyRef Name="MasterPid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageRelated_Child">
+          <End Role="ProductStageGroup" Type="Self.ProductStageGroup" Multiplicity="1" />
+          <End Role="ProductStageRelated" Type="Self.ProductStageRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductStageRelated">
+              <PropertyRef Name="Child" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageRelated_Parent">
+          <End Role="ProductStageGroup" Type="Self.ProductStageGroup" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Role="ProductStageRelated" Type="Self.ProductStageRelated" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ProductStage">
-              <PropertyRef Name="Pid" />
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
             </Principal>
             <Dependent Role="ProductStageRelated">
-              <PropertyRef Name="PidParent" />
+              <PropertyRef Name="Parent" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2423,6 +2522,18 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
               <PropertyRef Name="ShopId" />
             </Principal>
             <Dependent Role="ProductStageVideo">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductTemp_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="ProductTemp" Type="Self.ProductTemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductTemp">
               <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
@@ -2804,6 +2915,9 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BrandFeatureProduct" EntityType="Self.BrandFeatureProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BrandImage" EntityType="Self.BrandImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CartDetail" EntityType="Self.CartDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CartDiscount" EntityType="Self.CartDiscount" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CartHead" EntityType="Self.CartHead" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="City" EntityType="Self.City" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCategory" EntityType="Self.CMSCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCategoryCreteriaMap" EntityType="Self.CMSCategoryCreteriaMap" Schema="dbo" store:Type="Tables" />
@@ -2827,10 +2941,10 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="CouponOrder" EntityType="Self.CouponOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponPidMap" EntityType="Self.CouponPidMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponShopMap" EntityType="Self.CouponShopMap" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CreditCardType" EntityType="Self.CreditCardType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerAddress" EntityType="Self.CustomerAddress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerToken" EntityType="Self.CustomerToken" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerWishList" EntityType="Self.CustomerWishList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="District" EntityType="Self.District" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCatAttributeSetMap" EntityType="Self.GlobalCatAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
@@ -2862,9 +2976,11 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="ProductStageGroup" EntityType="Self.ProductStageGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageImage" EntityType="Self.ProductStageImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageLocalCatMap" EntityType="Self.ProductStageLocalCatMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductStageMaster" EntityType="Self.ProductStageMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageRelated" EntityType="Self.ProductStageRelated" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageTag" EntityType="Self.ProductStageTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageVideo" EntityType="Self.ProductStageVideo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductTemp" EntityType="Self.ProductTemp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PromotionBuy1Get1Item" EntityType="Self.PromotionBuy1Get1Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PromotionOnTopCreditCard" EntityType="Self.PromotionOnTopCreditCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PromotionOnTopCreditNumber" EntityType="Self.PromotionOnTopCreditNumber" Schema="dbo" store:Type="Tables" />
@@ -2880,12 +2996,13 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="StoreReceive" EntityType="Self.StoreReceive" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreReceiveCode" EntityType="Self.StoreReceiveCode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreReturn" EntityType="Self.StoreReturn" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Table" EntityType="Self.Table" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Theme" EntityType="Self.Theme" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroupMap" EntityType="Self.UserGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroupPermissionMap" EntityType="Self.UserGroupPermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserShopMap" EntityType="Self.UserShopMap" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserStatus" EntityType="Self.UserStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ODMRoleUser" EntityType="Self.ODMRoleUser" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ODMRoleUser].[RoleID] AS [RoleID], 
@@ -3179,12 +3296,20 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductStageImage" EntitySet="ProductStageImage" />
           </AssociationSet>
-          <AssociationSet Name="FK_ProductStageRelated_PidChild" Association="Self.FK_ProductStageRelated_PidChild">
+          <AssociationSet Name="FK_ProductStageMaster_ChildGroup" Association="Self.FK_ProductStageMaster_ChildGroup">
             <End Role="ProductStage" EntitySet="ProductStage" />
+            <End Role="ProductStageMaster" EntitySet="ProductStageMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageMaster_ParentGroup" Association="Self.FK_ProductStageMaster_ParentGroup">
+            <End Role="ProductStage" EntitySet="ProductStage" />
+            <End Role="ProductStageMaster" EntitySet="ProductStageMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageRelated_Child" Association="Self.FK_ProductStageRelated_Child">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroup" />
             <End Role="ProductStageRelated" EntitySet="ProductStageRelated" />
           </AssociationSet>
-          <AssociationSet Name="FK_ProductStageRelated_PidParent" Association="Self.FK_ProductStageRelated_PidParent">
-            <End Role="ProductStage" EntitySet="ProductStage" />
+          <AssociationSet Name="FK_ProductStageRelated_Parent" Association="Self.FK_ProductStageRelated_Parent">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroup" />
             <End Role="ProductStageRelated" EntitySet="ProductStageRelated" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductStageRelated_Shop" Association="Self.FK_ProductStageRelated_Shop">
@@ -3202,6 +3327,10 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <AssociationSet Name="FK_ProductStageVideo_Shop" Association="Self.FK_ProductStageVideo_Shop">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductStageVideo" EntitySet="ProductStageVideo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductTemp_Shop" Association="Self.FK_ProductTemp_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductTemp" EntitySet="ProductTemp" />
           </AssociationSet>
           <AssociationSet Name="FK_Shop_ShopType" Association="Self.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopType" />
@@ -3335,6 +3464,9 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="Brands" EntityType="ColspModel.Brand" />
           <EntitySet Name="BrandFeatureProducts" EntityType="ColspModel.BrandFeatureProduct" />
           <EntitySet Name="BrandImages" EntityType="ColspModel.BrandImage" />
+          <EntitySet Name="CartDetails" EntityType="ColspModel.CartDetail" />
+          <EntitySet Name="CartDiscounts" EntityType="ColspModel.CartDiscount" />
+          <EntitySet Name="CartHeads" EntityType="ColspModel.CartHead" />
           <EntitySet Name="Cities" EntityType="ColspModel.City" />
           <EntitySet Name="CMSCategories" EntityType="ColspModel.CMSCategory" />
           <EntitySet Name="CMSCategoryCreteriaMaps" EntityType="ColspModel.CMSCategoryCreteriaMap" />
@@ -3358,10 +3490,10 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="CouponOrders" EntityType="ColspModel.CouponOrder" />
           <EntitySet Name="CouponPidMaps" EntityType="ColspModel.CouponPidMap" />
           <EntitySet Name="CouponShopMaps" EntityType="ColspModel.CouponShopMap" />
-          <EntitySet Name="CreditCardTypes" EntityType="ColspModel.CreditCardType" />
           <EntitySet Name="Customers" EntityType="ColspModel.Customer" />
           <EntitySet Name="CustomerAddresses" EntityType="ColspModel.CustomerAddress" />
           <EntitySet Name="CustomerTokens" EntityType="ColspModel.CustomerToken" />
+          <EntitySet Name="CustomerWishLists" EntityType="ColspModel.CustomerWishList" />
           <EntitySet Name="Districts" EntityType="ColspModel.District" />
           <EntitySet Name="GlobalCatAttributeSetMaps" EntityType="ColspModel.GlobalCatAttributeSetMap" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
@@ -3393,12 +3525,11 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="ProductStageGroups" EntityType="ColspModel.ProductStageGroup" />
           <EntitySet Name="ProductStageImages" EntityType="ColspModel.ProductStageImage" />
           <EntitySet Name="ProductStageLocalCatMaps" EntityType="ColspModel.ProductStageLocalCatMap" />
+          <EntitySet Name="ProductStageMasters" EntityType="ColspModel.ProductStageMaster" />
           <EntitySet Name="ProductStageRelateds" EntityType="ColspModel.ProductStageRelated" />
           <EntitySet Name="ProductStageTags" EntityType="ColspModel.ProductStageTag" />
           <EntitySet Name="ProductStageVideos" EntityType="ColspModel.ProductStageVideo" />
-          <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
-          <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
-          <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
+          <EntitySet Name="ProductTemps" EntityType="ColspModel.ProductTemp" />
           <EntitySet Name="Provinces" EntityType="ColspModel.Province" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
@@ -3411,12 +3542,13 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="StoreReceives" EntityType="ColspModel.StoreReceive" />
           <EntitySet Name="StoreReceiveCodes" EntityType="ColspModel.StoreReceiveCode" />
           <EntitySet Name="StoreReturns" EntityType="ColspModel.StoreReturn" />
+          <EntitySet Name="Tables" EntityType="ColspModel.Table" />
+          <EntitySet Name="Themes" EntityType="ColspModel.Theme" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
           <EntitySet Name="UserGroupMaps" EntityType="ColspModel.UserGroupMap" />
           <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
           <EntitySet Name="UserShopMaps" EntityType="ColspModel.UserShopMap" />
-          <EntitySet Name="UserStatus" EntityType="ColspModel.UserStatu" />
           <EntitySet Name="ODMRoleUsers" EntityType="ColspModel.ODMRoleUser" />
           <EntitySet Name="StoreReturnReasons" EntityType="ColspModel.StoreReturnReason" />
           <EntitySet Name="TBAdminMenuItemTmps" EntityType="ColspModel.TBAdminMenuItemTmp" />
@@ -3636,13 +3768,13 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             <End Role="ProductStage" EntitySet="ProductStages" />
             <End Role="ProductStageImage" EntitySet="ProductStageImages" />
           </AssociationSet>
-          <AssociationSet Name="FK_ProductStageRelated_PidChild" Association="ColspModel.FK_ProductStageRelated_PidChild">
+          <AssociationSet Name="FK_ProductStageMaster_ChildGroup" Association="ColspModel.FK_ProductStageMaster_ChildGroup">
             <End Role="ProductStage" EntitySet="ProductStages" />
-            <End Role="ProductStageRelated" EntitySet="ProductStageRelateds" />
+            <End Role="ProductStageMaster" EntitySet="ProductStageMasters" />
           </AssociationSet>
-          <AssociationSet Name="FK_ProductStageRelated_PidParent" Association="ColspModel.FK_ProductStageRelated_PidParent">
+          <AssociationSet Name="FK_ProductStageMaster_ParentGroup" Association="ColspModel.FK_ProductStageMaster_ParentGroup">
             <End Role="ProductStage" EntitySet="ProductStages" />
-            <End Role="ProductStageRelated" EntitySet="ProductStageRelateds" />
+            <End Role="ProductStageMaster" EntitySet="ProductStageMasters" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductStageVideo_ProductStage" Association="ColspModel.FK_ProductStageVideo_ProductStage">
             <End Role="ProductStage" EntitySet="ProductStages" />
@@ -3659,6 +3791,14 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <AssociationSet Name="FK_ProductStageGroup_Shop" Association="ColspModel.FK_ProductStageGroup_Shop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageRelated_Child" Association="ColspModel.FK_ProductStageRelated_Child">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
+            <End Role="ProductStageRelated" EntitySet="ProductStageRelateds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductStageRelated_Parent" Association="ColspModel.FK_ProductStageRelated_Parent">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
+            <End Role="ProductStageRelated" EntitySet="ProductStageRelateds" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductStageTag_ProductStageGroup" Association="ColspModel.FK_ProductStageTag_ProductStageGroup">
             <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
@@ -3679,6 +3819,10 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <AssociationSet Name="FK_ProductStageVideo_Shop" Association="ColspModel.FK_ProductStageVideo_Shop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductStageVideo" EntitySet="ProductStageVideos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductTemp_Shop" Association="ColspModel.FK_ProductTemp_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductTemp" EntitySet="ProductTemps" />
           </AssociationSet>
           <AssociationSet Name="FK_Shop_ShopType" Association="ColspModel.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
@@ -3728,6 +3872,9 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
+          <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
+          <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
+          <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           </EntityContainer>
         <EntityType Name="AppAuth">
           <Key>
@@ -3750,6 +3897,8 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="AttributeNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DisplayNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DisplayNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DefaultAttribute" Type="Boolean" Nullable="false" />
+          <Property Name="VisibleTo" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="Required" Type="Boolean" Nullable="false" />
           <Property Name="Filterable" Type="Boolean" Nullable="false" />
           <Property Name="VariantStatus" Type="Boolean" Nullable="false" />
@@ -3856,7 +4005,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="BrandNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DisplayNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DisplayNameTh" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="PicUrl" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="PicUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -3910,6 +4059,46 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FK_BrandImage_Brand" FromRole="BrandImage" ToRole="Brand" />
+        </EntityType>
+        <EntityType Name="CartDetail">
+          <Key>
+            <PropertyRef Name="CartId" />
+            <PropertyRef Name="PID" />
+          </Key>
+          <Property Name="CartId" Type="Int32" Nullable="false" />
+          <Property Name="PID" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="0" />
+          <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CartDiscount">
+          <Key>
+            <PropertyRef Name="CartId" />
+            <PropertyRef Name="PId" />
+          </Key>
+          <Property Name="CartId" Type="Int32" Nullable="false" />
+          <Property Name="PId" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="PromotionNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DiscountType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DiscountRate" Type="Decimal" Nullable="false" Precision="11" Scale="3" />
+          <Property Name="DiscountAmt" Type="Decimal" Nullable="false" Precision="11" Scale="3" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreateBy" Type="Int32" Nullable="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CartHead">
+          <Key>
+            <PropertyRef Name="CartId" />
+          </Key>
+          <Property Name="CartId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="0" />
+          <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="City">
           <Key>
@@ -4296,23 +4485,6 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <NavigationProperty Name="Coupon" Relationship="ColspModel.FK_CouponShopMap_Coupon" FromRole="CouponShopMap" ToRole="Coupon" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_CouponShopMap_Shop" FromRole="CouponShopMap" ToRole="Shop" />
         </EntityType>
-        <EntityType Name="CreditCardType">
-          <Key>
-            <PropertyRef Name="CreditCardTypeId" />
-          </Key>
-          <Property Name="CreditCardTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="CreditCardTypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Digit" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Email" />
@@ -4346,10 +4518,10 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
         <EntityType Name="CustomerAddress">
           <Key>
             <PropertyRef Name="AddressId" />
-            <PropertyRef Name="UserId" />
+            <PropertyRef Name="CustomerId" />
           </Key>
           <Property Name="AddressId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
           <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="AddressLine1" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
@@ -4382,6 +4554,14 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="IpAddress" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
         </EntityType>
+        <EntityType Name="CustomerWishList">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="Pid" />
+          </Key>
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+        </EntityType>
         <EntityType Name="District">
           <Key>
             <PropertyRef Name="DistrictId" />
@@ -4409,7 +4589,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Key>
             <PropertyRef Name="CategoryId" />
           </Key>
-          <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="NameEn" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="NameTh" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Commission" Type="Decimal" Precision="10" Scale="2" />
@@ -4457,7 +4637,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             <PropertyRef Name="CategoryImageId" />
             <PropertyRef Name="CategoryId" />
           </Key>
-          <Property Name="CategoryImageId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
@@ -4528,7 +4708,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Key>
             <PropertyRef Name="CategoryId" />
           </Key>
-          <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="NameEn" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NameTh" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UrlKeyEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -4579,7 +4759,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             <PropertyRef Name="CategoryId" />
             <PropertyRef Name="ShopId" />
           </Key>
-          <Property Name="CategoryImageId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
@@ -4849,7 +5029,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="KillerPoint3Th" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Installment" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="TheOneCardEarn" Type="Int32" Nullable="false" />
-          <Property Name="GiftWarp" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="GiftWrap" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Length" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Height" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="Width" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
@@ -4864,7 +5044,10 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="MetaKeyTh" Type="String" Nullable="false" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="UrlEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="BoostWeight" Type="Int32" Nullable="false" />
+          <Property Name="DefaultVaraint" Type="Boolean" Nullable="false" />
+          <Property Name="Display" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsVariant" Type="Boolean" Nullable="false" />
+          <Property Name="IsMaster" Type="Boolean" Nullable="false" />
           <Property Name="VariantCount" Type="Int32" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -4879,8 +5062,8 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <NavigationProperty Name="ProductStageAttributes" Relationship="ColspModel.FK_ProductStageAttribute_ProductStage" FromRole="ProductStage" ToRole="ProductStageAttribute" />
           <NavigationProperty Name="ProductStageComments" Relationship="ColspModel.FK_ProductStageComment_ProductStage" FromRole="ProductStage" ToRole="ProductStageComment" />
           <NavigationProperty Name="ProductStageImages" Relationship="ColspModel.FK_ProductStageImage_ProductStage" FromRole="ProductStage" ToRole="ProductStageImage" />
-          <NavigationProperty Name="ProductStageRelateds" Relationship="ColspModel.FK_ProductStageRelated_PidChild" FromRole="ProductStage" ToRole="ProductStageRelated" />
-          <NavigationProperty Name="ProductStageRelateds1" Relationship="ColspModel.FK_ProductStageRelated_PidParent" FromRole="ProductStage" ToRole="ProductStageRelated" />
+          <NavigationProperty Name="ProductStageMasters" Relationship="ColspModel.FK_ProductStageMaster_ChildGroup" FromRole="ProductStage" ToRole="ProductStageMaster" />
+          <NavigationProperty Name="ProductStageMasters1" Relationship="ColspModel.FK_ProductStageMaster_ParentGroup" FromRole="ProductStage" ToRole="ProductStageMaster" />
           <NavigationProperty Name="ProductStageVideos" Relationship="ColspModel.FK_ProductStageVideo_ProductStage" FromRole="ProductStage" ToRole="ProductStageVideo" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKProductStageShop" FromRole="ProductStage" ToRole="Shop" />
         </EntityType>
@@ -4893,6 +5076,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CheckboxValue" Type="Boolean" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="IsAttributeValue" Type="Boolean" Nullable="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -4933,14 +5117,14 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Key>
             <PropertyRef Name="ProductId" />
           </Key>
-          <Property Name="ProductId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="GlobalCatId" Type="Int32" Nullable="false" />
           <Property Name="LocalCatId" Type="Int32" />
           <Property Name="AttributeSetId" Type="Int32" />
           <Property Name="BrandId" Type="Int32" />
           <Property Name="TheOneCardEarn" Type="Int32" Nullable="false" />
-          <Property Name="GiftWarp" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="GiftWrap" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
           <Property Name="ExpireDate" Type="DateTime" Precision="3" />
           <Property Name="ControlFlag1" Type="Boolean" Nullable="false" />
@@ -4972,6 +5156,8 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FK_ProductStage_ProductStageGroup" FromRole="ProductStageGroup" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageGlobalCatMaps" Relationship="ColspModel.FKProductStageGlobalCatMapProduct" FromRole="ProductStageGroup" ToRole="ProductStageGlobalCatMap" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageGroup_Shop" FromRole="ProductStageGroup" ToRole="Shop" />
+          <NavigationProperty Name="ProductStageRelateds" Relationship="ColspModel.FK_ProductStageRelated_Child" FromRole="ProductStageGroup" ToRole="ProductStageRelated" />
+          <NavigationProperty Name="ProductStageRelateds1" Relationship="ColspModel.FK_ProductStageRelated_Parent" FromRole="ProductStageGroup" ToRole="ProductStageRelated" />
           <NavigationProperty Name="ProductStageTags" Relationship="ColspModel.FK_ProductStageTag_ProductStageGroup" FromRole="ProductStageGroup" ToRole="ProductStageTag" />
           <NavigationProperty Name="ProductStageLocalCatMaps" Relationship="ColspModel.FKProductStageLocalCatMapProduct" FromRole="ProductStageGroup" ToRole="ProductStageLocalCatMap" />
         </EntityType>
@@ -5009,21 +5195,34 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductStageLocalCatMapLocalCategory" FromRole="ProductStageLocalCatMap" ToRole="LocalCategory" />
           <NavigationProperty Name="ProductStageGroup" Relationship="ColspModel.FKProductStageLocalCatMapProduct" FromRole="ProductStageLocalCatMap" ToRole="ProductStageGroup" />
         </EntityType>
-        <EntityType Name="ProductStageRelated">
+        <EntityType Name="ProductStageMaster">
           <Key>
-            <PropertyRef Name="PidParent" />
-            <PropertyRef Name="PidChild" />
+            <PropertyRef Name="MasterPid" />
+            <PropertyRef Name="ChildPid" />
           </Key>
-          <Property Name="PidParent" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
-          <Property Name="PidChild" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
-          <Property Name="ShopId" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="MasterPid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="ChildPid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_ProductStageRelated_PidChild" FromRole="ProductStageRelated" ToRole="ProductStage" />
-          <NavigationProperty Name="ProductStage1" Relationship="ColspModel.FK_ProductStageRelated_PidParent" FromRole="ProductStageRelated" ToRole="ProductStage" />
+          <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_ProductStageMaster_ChildGroup" FromRole="ProductStageMaster" ToRole="ProductStage" />
+          <NavigationProperty Name="ProductStage1" Relationship="ColspModel.FK_ProductStageMaster_ParentGroup" FromRole="ProductStageMaster" ToRole="ProductStage" />
+        </EntityType>
+        <EntityType Name="ProductStageRelated">
+          <Key>
+            <PropertyRef Name="Parent" />
+            <PropertyRef Name="Child" />
+          </Key>
+          <Property Name="Parent" Type="Int64" Nullable="false" />
+          <Property Name="Child" Type="Int64" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ProductStageGroup" Relationship="ColspModel.FK_ProductStageRelated_Child" FromRole="ProductStageRelated" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="ProductStageGroup1" Relationship="ColspModel.FK_ProductStageRelated_Parent" FromRole="ProductStageRelated" ToRole="ProductStageGroup" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageRelated_Shop" FromRole="ProductStageRelated" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ProductStageTag">
@@ -5056,88 +5255,27 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_ProductStageVideo_ProductStage" FromRole="ProductStageVideo" ToRole="ProductStage" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageVideo_Shop" FromRole="ProductStageVideo" ToRole="Shop" />
         </EntityType>
-        <EntityType Name="PromotionBuy1Get1Item">
+        <EntityType Name="ProductTemp">
           <Key>
-            <PropertyRef Name="PromotionBuy1Get1ItemId" />
+            <PropertyRef Name="ProductId" />
           </Key>
-          <Property Name="PromotionBuy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="PIDBuy" Type="Int32" />
-          <Property Name="PIDGet" Type="Int32" />
-          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="EffectiveTime" Type="Time" Precision="7" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="ExpiryTime" Type="Time" Precision="7" />
-          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="CMSStatusFlowId" Type="Int32" />
-          <Property Name="Visibility" Type="Boolean" />
-        </EntityType>
-        <EntityType Name="PromotionOnTopCreditCard">
-          <Key>
-            <PropertyRef Name="OnTopCreditCardId" />
-          </Key>
-          <Property Name="OnTopCreditCardId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="EffectiveTime" Type="Time" Precision="7" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="ExpiryTime" Type="Time" Precision="7" />
-          <Property Name="ShopId" Type="Int32" />
-          <Property Name="PaymantId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="DiscountType" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="FreeShipping" Type="Boolean" />
-          <Property Name="DiscountValue" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="MinimumOrderAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="MaximumDiscountAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="IconURLTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="IconURLEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="BankNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BankNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="PromotionOnTopCreditNumber">
-          <Key>
-            <PropertyRef Name="OnTopCreditNumberId" />
-          </Key>
-          <Property Name="OnTopCreditNumberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OnTopCreditCardId" Type="Int32" />
-          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="CreditNumberFormat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Digit" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="Sku" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="ProductNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameTh" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="UrlEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="OriginalPrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="SalePrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="JdaCategoryId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="OnHold" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductTemp_Shop" FromRole="ProductTemp" ToRole="Shop" />
         </EntityType>
         <EntityType Name="Province">
           <Key>
@@ -5171,8 +5309,8 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="ShopNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ShopNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MaxLocalCategory" Type="Int32" Nullable="false" />
-          <Property Name="GiftWrap" Type="Boolean" Nullable="false" />
-          <Property Name="TaxInvoice" Type="Boolean" Nullable="false" />
+          <Property Name="GiftWrap" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="TaxInvoice" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="ShopGroup" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="ShopImageUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="ShopDescriptionEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -5182,7 +5320,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="BankAccountNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="BankAccountName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Facebook" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Youtube" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="YouTube" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Twitter" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Instagram" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Pinterest" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -5208,6 +5346,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <NavigationProperty Name="ProductStageImages" Relationship="ColspModel.FK_ProductStageImage_Shop" FromRole="Shop" ToRole="ProductStageImage" />
           <NavigationProperty Name="ProductStageRelateds" Relationship="ColspModel.FK_ProductStageRelated_Shop" FromRole="Shop" ToRole="ProductStageRelated" />
           <NavigationProperty Name="ProductStageVideos" Relationship="ColspModel.FK_ProductStageVideo_Shop" FromRole="Shop" ToRole="ProductStageVideo" />
+          <NavigationProperty Name="ProductTemps" Relationship="ColspModel.FK_ProductTemp_Shop" FromRole="Shop" ToRole="ProductTemp" />
           <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_Shop_ShopType" FromRole="Shop" ToRole="ShopType" />
           <NavigationProperty Name="ShopCommissions" Relationship="ColspModel.FK_ShopCommission_Shop" FromRole="Shop" ToRole="ShopCommission" />
           <NavigationProperty Name="ShopImages" Relationship="ColspModel.FK_ShopImage_Shop" FromRole="Shop" ToRole="ShopImage" />
@@ -5374,6 +5513,27 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="UpdateOn" Type="DateTime" Precision="0" />
           <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Table">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Theme">
+          <Key>
+            <PropertyRef Name="ThemeId" />
+          </Key>
+          <Property Name="ThemeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ThemeName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ThemeImage" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="Layout" Type="Int32" Nullable="false" />
+          <Property Name="HasBanner" Type="Boolean" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserId" />
@@ -5459,22 +5619,6 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKUserShopShop" FromRole="UserShopMap" ToRole="Shop" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKUserShopUser" FromRole="UserShopMap" ToRole="User" />
-        </EntityType>
-        <EntityType Name="UserStatu">
-          <Key>
-            <PropertyRef Name="UserStatusId" />
-          </Key>
-          <Property Name="UserStatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OnTable" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StatusCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ODMRoleUser">
           <Key>
@@ -6341,29 +6485,29 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductStageRelated_PidChild">
+        <Association Name="FK_ProductStageMaster_ChildGroup">
           <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1" />
-          <End Type="ColspModel.ProductStageRelated" Role="ProductStageRelated" Multiplicity="*" />
+          <End Type="ColspModel.ProductStageMaster" Role="ProductStageMaster" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
               <PropertyRef Name="Pid" />
             </Principal>
-            <Dependent Role="ProductStageRelated">
-              <PropertyRef Name="PidChild" />
+            <Dependent Role="ProductStageMaster">
+              <PropertyRef Name="ChildPid" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductStageRelated_PidParent">
+        <Association Name="FK_ProductStageMaster_ParentGroup">
           <End Type="ColspModel.ProductStage" Role="ProductStage" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="ColspModel.ProductStageRelated" Role="ProductStageRelated" Multiplicity="*" />
+          <End Type="ColspModel.ProductStageMaster" Role="ProductStageMaster" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStage">
               <PropertyRef Name="Pid" />
             </Principal>
-            <Dependent Role="ProductStageRelated">
-              <PropertyRef Name="PidParent" />
+            <Dependent Role="ProductStageMaster">
+              <PropertyRef Name="MasterPid" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6416,6 +6560,32 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             </Principal>
             <Dependent Role="ProductStageGroup">
               <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageRelated_Child">
+          <End Type="ColspModel.ProductStageGroup" Role="ProductStageGroup" Multiplicity="1" />
+          <End Type="ColspModel.ProductStageRelated" Role="ProductStageRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductStageRelated">
+              <PropertyRef Name="Child" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductStageRelated_Parent">
+          <End Type="ColspModel.ProductStageGroup" Role="ProductStageGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.ProductStageRelated" Role="ProductStageRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductStageRelated">
+              <PropertyRef Name="Parent" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6479,6 +6649,18 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
               <PropertyRef Name="ShopId" />
             </Principal>
             <Dependent Role="ProductStageVideo">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductTemp_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.ProductTemp" Role="ProductTemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductTemp">
               <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
@@ -6645,6 +6827,88 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PromotionBuy1Get1Item">
+          <Key>
+            <PropertyRef Name="PromotionBuy1Get1ItemId" />
+          </Key>
+          <Property Name="PromotionBuy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="PIDBuy" Type="Int32" />
+          <Property Name="PIDGet" Type="Int32" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditCard">
+          <Key>
+            <PropertyRef Name="OnTopCreditCardId" />
+          </Key>
+          <Property Name="OnTopCreditCardId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="PaymantId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DiscountType" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="FreeShipping" Type="Boolean" />
+          <Property Name="DiscountValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumOrderAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaximumDiscountAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IconURLTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="IconURLEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditNumber">
+          <Key>
+            <PropertyRef Name="OnTopCreditNumberId" />
+          </Key>
+          <Property Name="OnTopCreditNumberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OnTopCreditCardId" Type="Int32" />
+          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CreditNumberFormat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Digit" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6686,6 +6950,8 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="VariantStatus" ColumnName="VariantStatus" />
                 <ScalarProperty Name="Filterable" ColumnName="Filterable" />
                 <ScalarProperty Name="Required" ColumnName="Required" />
+                <ScalarProperty Name="VisibleTo" ColumnName="VisibleTo" />
+                <ScalarProperty Name="DefaultAttribute" ColumnName="DefaultAttribute" />
                 <ScalarProperty Name="DisplayNameTh" ColumnName="DisplayNameTh" />
                 <ScalarProperty Name="DisplayNameEn" ColumnName="DisplayNameEn" />
                 <ScalarProperty Name="AttributeNameEn" ColumnName="AttributeNameEn" />
@@ -6814,6 +7080,47 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
                 <ScalarProperty Name="BrandImageId" ColumnName="BrandImageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CartDetails">
+            <EntityTypeMapping TypeName="ColspModel.CartDetail">
+              <MappingFragment StoreEntitySet="CartDetail">
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="CartId" ColumnName="CartId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CartDiscounts">
+            <EntityTypeMapping TypeName="ColspModel.CartDiscount">
+              <MappingFragment StoreEntitySet="CartDiscount">
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="DiscountAmt" ColumnName="DiscountAmt" />
+                <ScalarProperty Name="DiscountRate" ColumnName="DiscountRate" />
+                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
+                <ScalarProperty Name="PromotionNo" ColumnName="PromotionNo" />
+                <ScalarProperty Name="PId" ColumnName="PId" />
+                <ScalarProperty Name="CartId" ColumnName="CartId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CartHeads">
+            <EntityTypeMapping TypeName="ColspModel.CartHead">
+              <MappingFragment StoreEntitySet="CartHead">
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="CartId" ColumnName="CartId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7198,24 +7505,6 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CreditCardTypes">
-            <EntityTypeMapping TypeName="ColspModel.CreditCardType">
-              <MappingFragment StoreEntitySet="CreditCardType">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Digit" ColumnName="Digit" />
-                <ScalarProperty Name="CreditCardTypeName" ColumnName="CreditCardTypeName" />
-                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
-                <ScalarProperty Name="CreditCardTypeId" ColumnName="CreditCardTypeId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="ColspModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
@@ -7267,7 +7556,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="AddressId" ColumnName="AddressId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -7282,6 +7571,14 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="UserDevice" ColumnName="UserDevice" />
                 <ScalarProperty Name="Browser" ColumnName="Browser" />
                 <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerWishLists">
+            <EntityTypeMapping TypeName="ColspModel.CustomerWishList">
+              <MappingFragment StoreEntitySet="CustomerWishList">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -7708,7 +8005,10 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="VariantCount" ColumnName="VariantCount" />
+                <ScalarProperty Name="IsMaster" ColumnName="IsMaster" />
                 <ScalarProperty Name="IsVariant" ColumnName="IsVariant" />
+                <ScalarProperty Name="Display" ColumnName="Display" />
+                <ScalarProperty Name="DefaultVaraint" ColumnName="DefaultVaraint" />
                 <ScalarProperty Name="BoostWeight" ColumnName="BoostWeight" />
                 <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
                 <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />
@@ -7723,7 +8023,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="Width" ColumnName="Width" />
                 <ScalarProperty Name="Height" ColumnName="Height" />
                 <ScalarProperty Name="Length" ColumnName="Length" />
-                <ScalarProperty Name="GiftWarp" ColumnName="GiftWarp" />
+                <ScalarProperty Name="GiftWrap" ColumnName="GiftWrap" />
                 <ScalarProperty Name="TheOneCardEarn" ColumnName="TheOneCardEarn" />
                 <ScalarProperty Name="Installment" ColumnName="Installment" />
                 <ScalarProperty Name="KillerPoint3Th" ColumnName="KillerPoint3Th" />
@@ -7769,6 +8069,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="IsAttributeValue" ColumnName="IsAttributeValue" />
                 <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="CheckboxValue" ColumnName="CheckboxValue" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
@@ -7824,7 +8125,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="ControlFlag1" ColumnName="ControlFlag1" />
                 <ScalarProperty Name="ExpireDate" ColumnName="ExpireDate" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="GiftWarp" ColumnName="GiftWarp" />
+                <ScalarProperty Name="GiftWrap" ColumnName="GiftWrap" />
                 <ScalarProperty Name="TheOneCardEarn" ColumnName="TheOneCardEarn" />
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
                 <ScalarProperty Name="AttributeSetId" ColumnName="AttributeSetId" />
@@ -7866,6 +8167,18 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ProductStageMasters">
+            <EntityTypeMapping TypeName="ColspModel.ProductStageMaster">
+              <MappingFragment StoreEntitySet="ProductStageMaster">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ChildPid" ColumnName="ChildPid" />
+                <ScalarProperty Name="MasterPid" ColumnName="MasterPid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ProductStageRelateds">
             <EntityTypeMapping TypeName="ColspModel.ProductStageRelated">
               <MappingFragment StoreEntitySet="ProductStageRelated">
@@ -7873,10 +8186,9 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
-                <ScalarProperty Name="PidChild" ColumnName="PidChild" />
-                <ScalarProperty Name="PidParent" ColumnName="PidParent" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="Parent" ColumnName="Parent" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7908,89 +8220,25 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PromotionBuy1Get1Item">
-            <EntityTypeMapping TypeName="ColspModel.PromotionBuy1Get1Item">
-              <MappingFragment StoreEntitySet="PromotionBuy1Get1Item">
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
-                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
-                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
-                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
-                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
-                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
-                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
-                <ScalarProperty Name="PIDBuy" ColumnName="PIDBuy" />
-                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
-                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
-                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
-                <ScalarProperty Name="PromotionBuy1Get1ItemId" ColumnName="PromotionBuy1Get1ItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PromotionOnTopCreditCards">
-            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditCard">
-              <MappingFragment StoreEntitySet="PromotionOnTopCreditCard">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
-                <ScalarProperty Name="BankNameTH" ColumnName="BankNameTH" />
-                <ScalarProperty Name="BankNameEN" ColumnName="BankNameEN" />
-                <ScalarProperty Name="IconURLEN" ColumnName="IconURLEN" />
-                <ScalarProperty Name="IconURLTH" ColumnName="IconURLTH" />
-                <ScalarProperty Name="MaximumDiscountAmount" ColumnName="MaximumDiscountAmount" />
-                <ScalarProperty Name="MinimumOrderAmount" ColumnName="MinimumOrderAmount" />
-                <ScalarProperty Name="DiscountValue" ColumnName="DiscountValue" />
-                <ScalarProperty Name="FreeShipping" ColumnName="FreeShipping" />
-                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
-                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
-                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
-                <ScalarProperty Name="PaymantId" ColumnName="PaymantId" />
+          <EntitySetMapping Name="ProductTemps">
+            <EntityTypeMapping TypeName="ColspModel.ProductTemp">
+              <MappingFragment StoreEntitySet="ProductTemp">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="OnHold" ColumnName="OnHold" />
+                <ScalarProperty Name="JdaCategoryId" ColumnName="JdaCategoryId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="OriginalPrice" ColumnName="OriginalPrice" />
+                <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
+                <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
+                <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
-                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
-                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
-                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
-                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PromotionOnTopCreditNumbers">
-            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditNumber">
-              <MappingFragment StoreEntitySet="PromotionOnTopCreditNumber">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Digit" ColumnName="Digit" />
-                <ScalarProperty Name="CreditNumberFormat" ColumnName="CreditNumberFormat" />
-                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
-                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
-                <ScalarProperty Name="OnTopCreditNumberId" ColumnName="OnTopCreditNumberId" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8035,7 +8283,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="Pinterest" ColumnName="Pinterest" />
                 <ScalarProperty Name="Instagram" ColumnName="Instagram" />
                 <ScalarProperty Name="Twitter" ColumnName="Twitter" />
-                <ScalarProperty Name="Youtube" ColumnName="Youtube" />
+                <ScalarProperty Name="YouTube" ColumnName="YouTube" />
                 <ScalarProperty Name="Facebook" ColumnName="Facebook" />
                 <ScalarProperty Name="BankAccountName" ColumnName="BankAccountName" />
                 <ScalarProperty Name="BankAccountNumber" ColumnName="BankAccountNumber" />
@@ -8209,6 +8457,29 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Tables">
+            <EntityTypeMapping TypeName="ColspModel.Table">
+              <MappingFragment StoreEntitySet="Table">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Themes">
+            <EntityTypeMapping TypeName="ColspModel.Theme">
+              <MappingFragment StoreEntitySet="Theme">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="HasBanner" ColumnName="HasBanner" />
+                <ScalarProperty Name="Layout" ColumnName="Layout" />
+                <ScalarProperty Name="ThemeImage" ColumnName="ThemeImage" />
+                <ScalarProperty Name="ThemeName" ColumnName="ThemeName" />
+                <ScalarProperty Name="ThemeId" ColumnName="ThemeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="ColspModel.User">
               <MappingFragment StoreEntitySet="User">
@@ -8282,23 +8553,6 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserStatus">
-            <EntityTypeMapping TypeName="ColspModel.UserStatu">
-              <MappingFragment StoreEntitySet="UserStatus">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
-                <ScalarProperty Name="OnTable" ColumnName="OnTable" />
-                <ScalarProperty Name="UserStatusId" ColumnName="UserStatusId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8450,6 +8704,91 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="Browser" ColumnName="Browser" />
                 <ScalarProperty Name="Token" ColumnName="Token" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionBuy1Get1Item">
+            <EntityTypeMapping TypeName="ColspModel.PromotionBuy1Get1Item">
+              <MappingFragment StoreEntitySet="PromotionBuy1Get1Item">
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
+                <ScalarProperty Name="PIDBuy" ColumnName="PIDBuy" />
+                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="PromotionBuy1Get1ItemId" ColumnName="PromotionBuy1Get1ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditCards">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditCard">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditCard">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
+                <ScalarProperty Name="BankNameTH" ColumnName="BankNameTH" />
+                <ScalarProperty Name="BankNameEN" ColumnName="BankNameEN" />
+                <ScalarProperty Name="IconURLEN" ColumnName="IconURLEN" />
+                <ScalarProperty Name="IconURLTH" ColumnName="IconURLTH" />
+                <ScalarProperty Name="MaximumDiscountAmount" ColumnName="MaximumDiscountAmount" />
+                <ScalarProperty Name="MinimumOrderAmount" ColumnName="MinimumOrderAmount" />
+                <ScalarProperty Name="DiscountValue" ColumnName="DiscountValue" />
+                <ScalarProperty Name="FreeShipping" ColumnName="FreeShipping" />
+                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="PaymantId" ColumnName="PaymantId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditNumbers">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditNumber">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditNumber">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Digit" ColumnName="Digit" />
+                <ScalarProperty Name="CreditNumberFormat" ColumnName="CreditNumberFormat" />
+                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+                <ScalarProperty Name="OnTopCreditNumberId" ColumnName="OnTopCreditNumberId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
