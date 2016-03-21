@@ -26,6 +26,8 @@ namespace Colsp.Entity.Models
         public string AttributeNameEn { get; set; }
         public string DisplayNameEn { get; set; }
         public string DisplayNameTh { get; set; }
+        public bool DefaultAttribute { get; set; }
+        public string VisibleTo { get; set; }
         public bool Required { get; set; }
         public bool Filterable { get; set; }
         public bool VariantStatus { get; set; }

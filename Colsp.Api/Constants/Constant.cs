@@ -53,7 +53,7 @@ namespace Colsp.Api.Constants
         public static readonly string PRODUCT_STATUS_APPROVE = "AP";
         public static readonly string PRODUCT_STATUS_NOT_APPROVE = "RJ";
 
-        
+
 
 
         public static readonly string USER_TYPE_ADMIN = "A";
@@ -65,7 +65,7 @@ namespace Colsp.Api.Constants
 
         public static readonly string COUPON_FILTER_INCLUDE = "I";
         public static readonly string COUPON_FILTER_EXCLUDE = "E";
-                
+
 
         #region CMS
         public static readonly int CMS_SHOP_GOBAL = 0;
@@ -84,7 +84,9 @@ namespace Colsp.Api.Constants
         public static readonly string SHOP_GROUP_INDY = "IN";
         public static readonly string SHOP_GROUP_MERCHANT = "ME";
 
-        
+        public static readonly string ATTRIBUTE_VISIBLE_ADMIN = "AD";
+        public static readonly string ATTRIBUTE_VISIBLE_ALL_USER = "ME";
+
 
         public static readonly string LANG_EN = "EN";
         public static readonly string LANG_TH = "TH";
@@ -101,5 +103,17 @@ namespace Colsp.Api.Constants
 
         public static readonly string VARIANT_DISPLAY_GROUP = "GROUP";
         public static readonly string VARIANT_DISPLAY_INDIVIDUAL = "INDIVIDUAL";
+
+
+        public static readonly string ORDER_PAYMENT_PENDING = "PP";
+        public static readonly string ORDER_PAYMENT_CONFIRM = "PC";
+        public static readonly string ORDER_PREPARING = "PE";
+        public static readonly string ORDER_READY_TO_SHIP = "RS";
+        public static readonly string ORDER_SHIPPING = "SH";
+        public static readonly string ORDER_DELIVERED = "DE";
+        public static readonly string ORDER_CANCELLED = "CA";
+
+        public static readonly string RETURN_STATUS_WAIT_FOR_APPROVAL = "WA";
+        public static readonly string RETURN_STATUS_APPROVE = "AP";
     }
 }

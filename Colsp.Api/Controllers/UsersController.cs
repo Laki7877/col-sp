@@ -35,11 +35,15 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId;
+                var usr = db.Users.Where(w => true);
                 var userIds = request.Where(w => w.UserId != 0).Select(s => s.UserId).ToList();
-                var usr = db.Users.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && userIds.Contains(w.UserId) 
-                && w.UserShopMaps.Any(a=>a.ShopId==shopId)).Include(i=>i.Shops).ToList();
-                if (usr == null || usr.Count == 0)
+                usr = db.Users.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && userIds.Contains(w.UserId));
+                if (User.ShopRequest() != null)
+                {
+                    var shopId = this.User.ShopRequest().ShopId;
+                    usr = usr.Where(w => w.UserShopMaps.Any(a => a.ShopId == shopId));
+                }
+                if (usr == null)
                 {
                     throw new Exception("No deleted users found");
                 }
@@ -64,22 +68,37 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
-                var userList = db.Users
+
+                var tmpUser = db.Users
+                    .Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type))
+                    .Include(i => i.UserGroupMaps)
                     .Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
-                    .Include(i=>i.UserShopMaps)
-                    .Where(w => w.Type.Equals(Constant.USER_TYPE_SELLER) 
-                        && !w.Status.Equals(Constant.STATUS_REMOVE) 
-                        && w.UserShopMaps.Any(a=>a.ShopId== shopId))
-                    .Select(s => new
-                    {
-                        s.UserId,
-                        s.NameEn,
-                        s.NameTh,
-                        s.Email,
-                        s.UpdatedDt,
-                        UserGroup = s.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn)
-                    });
+                    .Include(i=>i.UserShopMaps.Select(s=>s.Shop));
+                if (User.HasPermission("Delete Seller"))
+                {
+
+                }
+                else if (this.User.ShopRequest() != null)
+                {
+                    int shopId = this.User.ShopRequest().ShopId;
+                    tmpUser = tmpUser.Where(w => w.UserShopMaps.Any(a => a.ShopId == shopId));
+                }
+                else
+                {
+                    throw new Exception("No permission to do");
+                }
+
+                var userList = tmpUser.Select(s => new
+                {
+                    s.UserId,
+                    s.NameEn,
+                    s.NameTh,
+                    s.Email,
+                    s.UpdatedDt,
+                    UserGroup = s.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn),
+                    Shops = s.UserShopMaps.Select(sh=>sh.Shop.ShopNameEn)
+                });
+
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, userList);
@@ -90,6 +109,21 @@ namespace Colsp.Api.Controllers
                     userList = userList.Where(a => a.NameEn.Contains(request.SearchText)
                     || a.NameTh.Contains(request.SearchText)
                     || a.Email.Contains(request.SearchText));
+                }
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+                    if (string.Equals("ShopOwner", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        userList = userList.Where(w => w.UserGroup.Any(a=>a.Equals("Shop Owner")));
+                    }
+                    if (string.Equals("NotShopOwner", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        userList = userList.Where(w => w.UserGroup.All(a => !a.Equals("Shop Owner")));
+                    }
+                    if (string.Equals("NoShop", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        userList = userList.Where(w => w.Shops == null);
+                    }
                 }
                 var total = userList.Count();
                 var pagedUsers = userList.Paginate(request);
@@ -729,7 +763,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/Onboarding")]
         [HttpGet]

@@ -23,12 +23,12 @@ namespace Colsp.Model.Requests
         public string BankAccountName { get; set; }
         public string BankAccountNumber { get; set; }
         public string Facebook { get; set; }
-        public string Youtube { get; set; }
+        public string YouTube { get; set; }
         public string Instagram { get; set; }
         public string Pinterest { get; set; }
         public string Twitter { get; set; }
         public int StockAlert { get; set; }
-        public ImageRequest Logo { get; set; }
+        public ImageRequest ShopImage { get; set; }
         public string SearchText { get; set; }
         public string ShopGroup { get; set; }
         public string TaxInvoice { get; set; }
@@ -54,7 +54,7 @@ namespace Colsp.Model.Requests
             BankAccountName = string.Empty;
             BankAccountNumber = string.Empty;
             Facebook = string.Empty;
-            Youtube = string.Empty;
+            YouTube = string.Empty;
             Instagram = string.Empty;
             Pinterest = string.Empty;
             Twitter = string.Empty;
@@ -69,7 +69,7 @@ namespace Colsp.Model.Requests
             Commissions = new List<ShopCommission>();
             Users = new List<UserRequest>();
             ShopType = new ShopTypeRequest();
-            Logo = new ImageRequest();
+            ShopImage = new ImageRequest();
         }
 
         public override void DefaultOnNull()

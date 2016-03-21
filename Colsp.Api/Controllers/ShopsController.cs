@@ -109,7 +109,7 @@ namespace Colsp.Api.Controllers
                     {
                         s.ShopId,
                         s.ShopNameEn,
-                        ShopType = new { s.ShopTypeId,s.ShopType.ShopTypeNameEn },
+                        ShopType = new { s.ShopTypeId, s.ShopType.ShopTypeNameEn },
                         s.Status,
                         s.Commission,
                         s.ShopGroup,
@@ -117,7 +117,7 @@ namespace Colsp.Api.Controllers
                         s.BankName,
                         s.BankAccountName,
                         s.BankAccountNumber,
-                        Commissions = s.ShopCommissions.Select(sc=>new { sc.CategoryId,sc.Commission}),
+                        Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission }),
                         ShopOwner = new
                         {
                             s.User.UserId,
@@ -126,8 +126,22 @@ namespace Colsp.Api.Controllers
                             s.User.Phone,
                             s.User.Status,
                             s.User.Position,
-                            UserGroup = s.User.UserGroupMaps.Select(ug=>ug.UserGroup.GroupNameEn)
+                            UserGroup = s.User.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn)
                         },
+                        ShopImage = new ImageRequest { url = s.ShopImageUrl },
+                        s.ShopDescriptionEn,
+                        s.ShopDescriptionTh,
+                        s.FloatMessageEn,
+                        s.FloatMessageTh,
+                        s.ShopAddress,
+                        s.Facebook,
+                        s.YouTube,
+                        s.Twitter,
+                        s.Instagram,
+                        s.Pinterest,
+                        s.GiftWrap,
+                        s.TaxInvoice,
+                        s.StockAlert,
                         Users = s.UserShopMaps.Select(u=> u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
                         new
                         {
@@ -151,7 +165,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/Shop/Profile")]
+        [Route("api/Shops/Profile")]
         [HttpGet]
         public HttpResponseMessage GetShopProfile()
         {
@@ -164,29 +178,45 @@ namespace Colsp.Api.Controllers
                     {
                         s.ShopId,
                         s.ShopNameEn,
-                        s.ShopDescriptionEn,
-                        s.ShopDescriptionTh,
-                        s.ShopAddress,
+                        ShopType = new { s.ShopTypeId, s.ShopType.ShopTypeNameEn },
+                        s.Status,
+                        s.Commission,
+                        s.ShopGroup,
+                        s.MaxLocalCategory,
+                        s.BankName,
                         s.BankAccountName,
                         s.BankAccountNumber,
-                        s.Facebook,
-                        s.Youtube,
-                        s.Instagram,
-                        s.Pinterest,
-                        s.Twitter,
-                        s.StockAlert,
+                        Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission }),
+                        ShopOwner = new
+                        {
+                            s.User.UserId,
+                            s.User.NameEn,
+                            s.User.Email,
+                            s.User.Phone,
+                            s.User.Status,
+                            s.User.Position,
+                            UserGroup = s.User.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn)
+                        },
+                        ShopImage = new ImageRequest { url = s.ShopImageUrl },
+                        s.ShopDescriptionEn,
+                        s.ShopDescriptionTh,
                         s.FloatMessageEn,
                         s.FloatMessageTh,
-                        GiftWrap = s.GiftWrap == true ? "Available" : "NotAvailable",
-                        TaxInvoice = s.TaxInvoice == true ? "Available" : "NotAvailable",
-                        Logo = new ImageRequest { url=s.ShopImageUrl },
-                        s.Status
-                    }).ToList();
-                if (shop == null || shop.Count == 0)
+                        s.ShopAddress,
+                        s.Facebook,
+                        s.YouTube,
+                        s.Twitter,
+                        s.Instagram,
+                        s.Pinterest,
+                        s.GiftWrap,
+                        s.TaxInvoice,
+                        s.StockAlert
+                    }).SingleOrDefault();
+                if (shop == null)
                 {
                     throw new Exception("Cannot find shop");
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, shop[0]);
+                return Request.CreateResponse(HttpStatusCode.OK,shop);
             }
             catch (Exception e)
             {
@@ -194,50 +224,21 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/Shop/Profile")]
+        [Route("api/Shops/Profile")]
         [HttpPut]
         public HttpResponseMessage SaveShopProfile(ShopRequest request)
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
-                var shop = db.Shops.Find(shopId);
+                int shopId = User.ShopRequest().ShopId;
+                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
                 if (shop == null || shop.Status.Equals(Constant.STATUS_REMOVE))
                 {
                     throw new Exception("Cannot find shop");
                 }
-                shop.ShopNameEn = request.ShopNameEn;
-                if ("Available".Equals(request.GiftWrap))
-                {
-                    shop.GiftWrap = true;
-                }
-                if ("Available".Equals(request.TaxInvoice))
-                {
-                    shop.TaxInvoice = true;
-                }
-                shop.ShopDescriptionEn = request.ShopDescriptionEn;
-                shop.ShopDescriptionTh = request.ShopDescriptionTh;
-                shop.FloatMessageEn = request.FloatMessageEn;
-                shop.FloatMessageTh = request.FloatMessageTh;
-                shop.ShopAddress = request.ShopAddress;
-                shop.Facebook = request.Facebook;
-                shop.Youtube = request.Youtube;
-                shop.Instagram = request.Instagram;
-                shop.Pinterest = request.Pinterest;
-                shop.Twitter = request.Twitter;
-                shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, Int32.MaxValue, 0).Value;
-                shop.Status = request.Status;
-                shop.UpdatedBy = this.User.UserRequest().Email;
+                SetupShopProfile(shop, request);
+                shop.UpdatedBy = User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
-                if(request.Logo != null)
-                {
-                    shop.ShopImageUrl = request.Logo.url;
-                }
-                else
-                {
-                    shop.ShopImageUrl = null;
-                }
-
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 return GetShopProfile();
@@ -248,41 +249,41 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ShopsSeller")]
-        [HttpGet]
-        public HttpResponseMessage GetShopSeller()
-        {
-            try
-            {
-                int shopId = this.User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
-                    .Select(s => new
-                    {
-                        s.ShopId,
-                        s.ShopNameEn,
-                        s.ShopDescriptionEn,
-                        s.ShopDescriptionTh,
-                        s.ShopAddress,
-                        s.BankAccountName,
-                        s.BankAccountNumber,
-                        s.Facebook,
-                        s.Youtube,
-                        s.Twitter,
-                        s.Instagram,
-                        s.Pinterest,
-                        s.StockAlert
-                    }).ToList();
-                if (shop == null || shop.Count == 0)
-                {
-                    throw new Exception("Cannot find shop");
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, shop[0]);
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-            }
-        }
+        //[Route("api/ShopsSeller")]
+        //[HttpGet]
+        //public HttpResponseMessage GetShopSeller()
+        //{
+        //    try
+        //    {
+        //        int shopId = this.User.ShopRequest().ShopId;
+        //        var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
+        //            .Select(s => new
+        //            {
+        //                s.ShopId,
+        //                s.ShopNameEn,
+        //                s.ShopDescriptionEn,
+        //                s.ShopDescriptionTh,
+        //                s.ShopAddress,
+        //                s.BankAccountName,
+        //                s.BankAccountNumber,
+        //                s.Facebook,
+        //                s.Youtube,
+        //                s.Twitter,
+        //                s.Instagram,
+        //                s.Pinterest,
+        //                s.StockAlert
+        //            }).SingleOrDefault();
+        //        if (shop == null)
+        //        {
+        //            throw new Exception("Cannot find shop");
+        //        }
+        //        return Request.CreateResponse(HttpStatusCode.OK, shop);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+        //    }
+        //}
 
         [Route("api/Shops")]
         [HttpPost]
@@ -382,17 +383,17 @@ namespace Colsp.Api.Controllers
             try
             {
                 #region Query
-                var shopList = db.Shops
+                shop = db.Shops
                     .Include(i=>i.User.UserGroupMaps)
                     .Include(i=>i.UserShopMaps)
                     .Include(i=>i.ShopCommissions)
-                    .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).ToList();
-                if (shopList == null || shopList.Count == 0)
+                    .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
+                if (shop == null )
                 {
                     throw new Exception("Shop not found");
                 }
                 #endregion
-                shop = shopList[0];
+                SetupShopAdmin(shop, request);
                 #region Shop Owner
                 if (shop.User != null)
                 {
@@ -454,18 +455,6 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 #endregion
-                shop.ShopGroup = Validation.ValidateString(request.ShopGroup, "Shop Group", true, 2, false);
-                shop.MaxLocalCategory = request.MaxLocalCategory;
-                if (shop.MaxLocalCategory == 0)
-                {
-                    shop.MaxLocalCategory = Constant.MAX_LOCAL_CATEGORY;
-                }
-                shop.Commission = request.Commission;
-                shop.ShopNameEn = Validation.ValidateString(request.ShopNameEn, "Shop Name", true, 100, false);
-                shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false, string.Empty);
-                shop.BankName = Validation.ValidateString(request.BankName, "Bank Name", true, 100, false);
-                shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
-                shop.BankAccountNumber = Validation.ValidateString(request.BankAccountNumber, "Bank Account Number", true, 100, false);
                 #region Shop Commission
                 if (request.Commissions != null && request.Commissions.Count > 0)
                 {
@@ -525,7 +514,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 #endregion
-                shop.Status = Validation.ValidateString(request.Status, "Shop Group", true, 2, false);
+                shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.STATUS_ACTIVE, Constant.STATUS_NOT_ACTIVE });
                 shop.UpdatedBy = this.User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
@@ -587,17 +576,15 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        public void SetupShopAdmin(Shop shop, ShopRequest request)
+        private void SetupShopAdmin(Shop shop, ShopRequest request)
         {
-            shop.ShopGroup = Validation.ValidateString(request.ShopGroup, "Shop Group", true, 2, false);
-            shop.ShopNameEn = Validation.ValidateString(request.ShopNameEn, "Shop Name", true, 100, false);
+            SetupShopProfile(shop, request);
+            shop.ShopGroup = Validation.ValidateString(request.ShopGroup, "Shop Group", true, 2, false, Constant.SHOP_GROUP_MERCHANT, new List<string>() { Constant.SHOP_GROUP_BU, Constant.SHOP_GROUP_INDY,Constant.SHOP_GROUP_MERCHANT });
             shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false, string.Empty);
             shop.BankName = Validation.ValidateString(request.BankName, "Bank Name", true, 100, false);
             shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
             shop.BankAccountNumber = Validation.ValidateString(request.BankAccountNumber, "Bank Account Number", true, 100, false);
             shop.Commission = request.Commission;
-            shop.FloatMessageEn = Validation.ValidateString(request.FloatMessageEn, "Float Message (English)", false, 500, false, string.Empty);
-            shop.FloatMessageTh = Validation.ValidateString(request.FloatMessageTh, "Float Message (Thai)", false, 500, false, string.Empty);
             shop.UrlKeyEn = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, false, shop.ShopNameEn.Replace(" ","-"));
             if (request.ShopType == null)
             {
@@ -609,65 +596,29 @@ namespace Colsp.Api.Controllers
             {
                 shop.MaxLocalCategory = Constant.MAX_LOCAL_CATEGORY;
             }
-            
+        }
+
+        private void SetupShopProfile(Shop shop, ShopRequest request)
+        {
+            shop.ShopNameEn = Validation.ValidateString(request.ShopNameEn, "Shop Name", true, 100, true);
+            shop.ShopImageUrl = string.Empty;
+            if (request.ShopImage != null)
+            {
+                shop.ShopImageUrl = Validation.ValidateString(request.ShopImage.url, "Image", false, 1000, false, string.Empty);
+            }
             shop.ShopDescriptionEn = Validation.ValidateString(request.ShopDescriptionEn, "Shop Description (English)", false, 500, false, string.Empty);
             shop.ShopDescriptionTh = Validation.ValidateString(request.ShopDescriptionTh, "Shop Description (Thai)", false, 500, false, string.Empty);
-            shop.FloatMessageEn = Validation.ValidateString(request.FloatMessageEn, "Float Message (English)", false, 500, false, string.Empty);
-            shop.FloatMessageTh = Validation.ValidateString(request.FloatMessageTh, "Float Message (Thai)", false, 500, false, string.Empty);
+            shop.FloatMessageEn = Validation.ValidateString(request.FloatMessageEn, "Float Message (English)", false, 100, false, string.Empty);
+            shop.FloatMessageTh = Validation.ValidateString(request.FloatMessageTh, "Float Message (Thai)", false, 100, false, string.Empty);
             shop.ShopAddress = Validation.ValidateString(request.ShopAddress, "Shop Address", false, 500, false, string.Empty);
             shop.Facebook = Validation.ValidateString(request.Facebook, "Facebook", false, 500, false, string.Empty);
-            shop.Youtube = Validation.ValidateString(request.Youtube, "Youtube", false, 500, false, string.Empty);
+            shop.YouTube = Validation.ValidateString(request.YouTube, "YouTube", false, 500, false, string.Empty);
             shop.Instagram = Validation.ValidateString(request.Instagram, "Instagram", false, 500, false, string.Empty);
             shop.Pinterest = Validation.ValidateString(request.Pinterest, "Pinterest", false, 500, false, string.Empty);
             shop.Twitter = Validation.ValidateString(request.Twitter, "Twitter", false, 500, false, string.Empty);
+            shop.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            shop.TaxInvoice = Validation.ValidateString(request.TaxInvoice, "Tax Invoice", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, Int32.MaxValue, 0).Value;
-            shop.GiftWrap = false;
-            //shop.GiftWarp = Validation.ValidateString(request.GiftWarp, "Gift Warp", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
-            if (request.Logo != null)
-            {
-                shop.ShopImageUrl = request.Logo.url;
-            }
-            else
-            {
-                shop.ShopImageUrl = string.Empty;
-            }
-
-            if (string.IsNullOrEmpty(shop.Facebook))
-            {
-                shop.Facebook = string.Empty;
-            }
-            if (string.IsNullOrEmpty(shop.Youtube))
-            {
-                shop.Youtube = string.Empty;
-            }
-            if (string.IsNullOrEmpty(shop.Twitter))
-            {
-                shop.Twitter = string.Empty;
-            }
-            if (string.IsNullOrEmpty(shop.Instagram))
-            {
-                shop.Instagram = string.Empty;
-            }
-            if (string.IsNullOrEmpty(shop.Pinterest))
-            {
-                shop.Pinterest = string.Empty;
-            }
-            if (string.IsNullOrEmpty(shop.ShopImageUrl))
-            {
-                shop.ShopImageUrl = string.Empty;
-            }
-            if (string.IsNullOrEmpty(shop.ShopDescriptionEn))
-            {
-                shop.ShopDescriptionEn = string.Empty;
-            }
-            if (string.IsNullOrEmpty(shop.ShopDescriptionTh))
-            {
-                shop.ShopDescriptionTh = string.Empty;
-            }
-            if (string.IsNullOrEmpty(shop.ShopAddress))
-            {
-                shop.ShopAddress = string.Empty;
-            }
         }
 
         private void SetupUser(User user, UserRequest request)
