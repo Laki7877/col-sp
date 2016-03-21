@@ -20,7 +20,7 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
+            Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -89,6 +89,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
+        public virtual DbSet<ProductTemp> ProductTemps { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
@@ -139,6 +140,11 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<Nullable<int>> LocalCategoryId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("LocalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
         }
     }
 }

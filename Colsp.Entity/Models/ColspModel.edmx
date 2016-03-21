@@ -1039,6 +1039,26 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="ProductTemp">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="UrlEn" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="OriginalPrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="SalePrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="JdaCategoryId" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="OnHold" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="Province">
           <Key>
             <PropertyRef Name="ProvinceId" />
@@ -2191,6 +2211,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductTemp_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="ProductTemp" Type="Self.ProductTemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductTemp">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Shop_ShopType">
           <End Role="ShopType" Type="Self.ShopType" Multiplicity="0..1" />
           <End Role="Shop" Type="Self.Shop" Multiplicity="*" />
@@ -2559,6 +2591,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
         </Association>
         <Function Name="AttributeValueId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextProductStageGroupId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetNextProductTempId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GlobalCategoryId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="LocalCategoryId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="ColspModelStoreContainer">
@@ -2623,6 +2656,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ProductStageRelated" EntityType="Self.ProductStageRelated" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageTag" EntityType="Self.ProductStageTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageVideo" EntityType="Self.ProductStageVideo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductTemp" EntityType="Self.ProductTemp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
@@ -2968,6 +3002,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductStageVideo" EntitySet="ProductStageVideo" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductTemp_Shop" Association="Self.FK_ProductTemp_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductTemp" EntitySet="ProductTemp" />
+          </AssociationSet>
           <AssociationSet Name="FK_Shop_ShopType" Association="Self.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopType" />
             <End Role="Shop" EntitySet="Shop" />
@@ -3151,6 +3189,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ProductStageRelateds" EntityType="ColspModel.ProductStageRelated" />
           <EntitySet Name="ProductStageTags" EntityType="ColspModel.ProductStageTag" />
           <EntitySet Name="ProductStageVideos" EntityType="ColspModel.ProductStageVideo" />
+          <EntitySet Name="ProductTemps" EntityType="ColspModel.ProductTemp" />
           <EntitySet Name="Provinces" EntityType="ColspModel.Province" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
@@ -3442,6 +3481,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductStageVideo" EntitySet="ProductStageVideos" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductTemp_Shop" Association="ColspModel.FK_ProductTemp_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductTemp" EntitySet="ProductTemps" />
+          </AssociationSet>
           <AssociationSet Name="FK_Shop_ShopType" Association="ColspModel.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
             <End Role="Shop" EntitySet="Shops" />
@@ -3490,6 +3533,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
+          <FunctionImport Name="GetNextProductTempId" ReturnType="Collection(Int64)" />
           </EntityContainer>
         <EntityType Name="AppAuth">
           <Key>
@@ -4628,6 +4672,27 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="ProductStage" Relationship="ColspModel.FK_ProductStageVideo_ProductStage" FromRole="ProductStageVideo" ToRole="ProductStage" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductStageVideo_Shop" FromRole="ProductStageVideo" ToRole="Shop" />
         </EntityType>
+        <EntityType Name="ProductTemp">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="Sku" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="ProductNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameTh" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="UrlEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="OriginalPrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="SalePrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="JdaCategoryId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="OnHold" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductTemp_Shop" FromRole="ProductTemp" ToRole="Shop" />
+        </EntityType>
         <EntityType Name="Province">
           <Key>
             <PropertyRef Name="ProvinceId" />
@@ -4697,6 +4762,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="ProductStageImages" Relationship="ColspModel.FK_ProductStageImage_Shop" FromRole="Shop" ToRole="ProductStageImage" />
           <NavigationProperty Name="ProductStageRelateds" Relationship="ColspModel.FK_ProductStageRelated_Shop" FromRole="Shop" ToRole="ProductStageRelated" />
           <NavigationProperty Name="ProductStageVideos" Relationship="ColspModel.FK_ProductStageVideo_Shop" FromRole="Shop" ToRole="ProductStageVideo" />
+          <NavigationProperty Name="ProductTemps" Relationship="ColspModel.FK_ProductTemp_Shop" FromRole="Shop" ToRole="ProductTemp" />
           <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_Shop_ShopType" FromRole="Shop" ToRole="ShopType" />
           <NavigationProperty Name="ShopCommissions" Relationship="ColspModel.FK_ShopCommission_Shop" FromRole="Shop" ToRole="ShopCommission" />
           <NavigationProperty Name="ShopImages" Relationship="ColspModel.FK_ShopImage_Shop" FromRole="Shop" ToRole="ShopImage" />
@@ -6013,6 +6079,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductTemp_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.ProductTemp" Role="ProductTemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductTemp">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Shop_ShopType">
           <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="0..1" />
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="*" />
@@ -7235,6 +7313,27 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ProductTemps">
+            <EntityTypeMapping TypeName="ColspModel.ProductTemp">
+              <MappingFragment StoreEntitySet="ProductTemp">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="OnHold" ColumnName="OnHold" />
+                <ScalarProperty Name="JdaCategoryId" ColumnName="JdaCategoryId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="OriginalPrice" ColumnName="OriginalPrice" />
+                <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
+                <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
+                <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Provinces">
             <EntityTypeMapping TypeName="ColspModel.Province">
               <MappingFragment StoreEntitySet="Province">
@@ -7711,6 +7810,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetNextProductTempId" FunctionName="ColspModel.Store.GetNextProductTempId" />
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
