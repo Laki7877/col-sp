@@ -1473,8 +1473,9 @@ namespace Colsp.Api.Controllers
                 var masterVariant = group.ProductStages.Where(w=>w.IsVariant==false).FirstOrDefault();
                 request.MasterVariant.Status = group.Status;
                 SetupVariant(masterVariant, request.MasterVariant, false, email, User.HasPermission("Approve product"), User.HasPermission("Add Product"), db, shippingList);
+                //var tmpAtribute = new List<AttributeRequest>(request.MasterAttribute);
+                //tmpAtribute.AddRange(request.DefaultAttributes);
                 SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
-                SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, email, db);
                 #endregion
                 #region Variants
                 var tmpVariant = group.ProductStages.Where(w => w.IsVariant == true).ToList();
@@ -1779,8 +1780,9 @@ namespace Colsp.Api.Controllers
             masterVariant.ShopId = shopId;
             masterVariant.IsVariant = false;
             SetupVariant(masterVariant, request.MasterVariant, true, email, User.HasPermission("Approve product"), User.HasPermission("Add Product"), db, shippingList);
+            //var tmpAtribute = new List<AttributeRequest>(request.MasterAttribute);
+            //tmpAtribute.AddRange(request.DefaultAttributes);
             SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
-            SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, email, db);
             group.ProductStages.Add(masterVariant);
             #endregion
             #region Variants
@@ -1806,9 +1808,9 @@ namespace Colsp.Api.Controllers
             return group;
         }
 
-        private void SetupAttributeResponse(ProductStage variant, List<AttributeRequest> attributeList,bool isDefault = false)
+        private void SetupAttributeResponse(ProductStage variant, List<AttributeRequest> attributeList)
         {
-            foreach (var attribute in variant.ProductStageAttributes.Where(w=>w.Attribute.DefaultAttribute==isDefault))
+            foreach (var attribute in variant.ProductStageAttributes)
             {
                 if(attributeList.Where(w=>w.AttributeId==attribute.AttributeId).SingleOrDefault() != null)
                 {
@@ -1907,7 +1909,6 @@ namespace Colsp.Api.Controllers
             var masterVariant = product.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault();
             SetupVariantResponse(masterVariant, response.MasterVariant);
             SetupAttributeResponse(masterVariant, response.MasterAttribute);
-            SetupAttributeResponse(masterVariant, response.DefaultAttributes,true);
             var variants = product.ProductStages.Where(w => w.IsVariant == true).ToList();
             foreach (var variant in variants)
             {
@@ -2170,9 +2171,9 @@ namespace Colsp.Api.Controllers
 
         }
 
-        private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList, string email, ColspEntities db, bool isDefault = false)
+        private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList, string email, ColspEntities db)
         {
-            var tmpAttribute = variant.ProductStageAttributes.Where(w=>w.Attribute.DefaultAttribute== isDefault).ToList();
+            var tmpAttribute = variant.ProductStageAttributes.ToList();
             int position = 1;
             foreach (var request in requestList)
             {
