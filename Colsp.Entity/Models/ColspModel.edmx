@@ -217,6 +217,240 @@
           <Property Name="CityName" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="CityNameEn" Type="varchar" MaxLength="30" Nullable="false" />
         </EntityType>
+        <EntityType Name="CMSCategory">
+          <Key>
+            <PropertyRef Name="CMSCategoryId" />
+          </Key>
+          <Property Name="CMSCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCategoryNameEN" Type="nvarchar" MaxLength="100" />
+          <Property Name="CMSCategoryNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="IsCampaign" Type="bit" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSCategoryCreteriaMap">
+          <Key>
+            <PropertyRef Name="CMSCategoryCreteriaMapId" />
+          </Key>
+          <Property Name="CMSCategoryCreteriaMapId" Type="int" Nullable="false" />
+          <Property Name="CMSCreteriaId" Type="int" />
+          <Property Name="CMSCategoryId" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSCategorySchedulerMap">
+          <Key>
+            <PropertyRef Name="CMSCategorySchedulerMapId" />
+          </Key>
+          <Property Name="CMSCategorySchedulerMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSSchedulerId" Type="int" />
+          <Property Name="CMSCategoryId" Type="nchar" MaxLength="10" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSCreteria">
+          <Key>
+            <PropertyRef Name="CMSCreteriaId" />
+          </Key>
+          <Property Name="CMSCreteriaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryId" Type="int" />
+          <Property Name="Brand" Type="int" />
+          <Property Name="MinPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MaxPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSCriteriaProductMap">
+          <Key>
+            <PropertyRef Name="CMSCriteriaProductMapId" />
+          </Key>
+          <Property Name="CMSCriteriaProductMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCriteriaId" Type="int" />
+          <Property Name="ProductPID" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="CMSMasterStatusId" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSGroup">
+          <Key>
+            <PropertyRef Name="CMSGroupId" />
+          </Key>
+          <Property Name="CMSGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSGroupNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="CMSGroupNameEN" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSMaster">
+          <Key>
+            <PropertyRef Name="CMSMasterId" />
+          </Key>
+          <Property Name="CMSMasterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSMasterNameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="CMSMasterNameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="CMSMasterURLKey" Type="nvarchar" MaxLength="300" />
+          <Property Name="CMSTypeId" Type="int" />
+          <Property Name="CMSMasterEffectiveDate" Type="date" />
+          <Property Name="CMSMasterEffectiveTime" Type="time" Precision="7" />
+          <Property Name="CMSMasterExpiryDate" Type="date" />
+          <Property Name="CMSMasterExpiryTime" Type="time" Precision="7" />
+          <Property Name="CMSMasterTotal" Type="int" />
+          <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="500" />
+          <Property Name="LongDescriptionTH" Type="ntext" />
+          <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="500" />
+          <Property Name="LongDescriptionEN" Type="ntext" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="CMSMasterStatusId" Type="int" />
+          <Property Name="LinkToOutside" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsCampaign" Type="bit" />
+          <Property Name="CategoryId" Type="int" />
+          <Property Name="Brand" Type="int" />
+          <Property Name="MinPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MaxPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSMasterGroupMap">
+          <Key>
+            <PropertyRef Name="CMSMasterGroupMapId" />
+          </Key>
+          <Property Name="CMSMasterGroupMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSMasterId" Type="int" Nullable="false" />
+          <Property Name="CMSMasterGroupId" Type="int" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSMasterSchedulerMap">
+          <Key>
+            <PropertyRef Name="CMSMasterSchedulerMapId" />
+          </Key>
+          <Property Name="CMSMasterSchedulerMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSMasterId" Type="int" />
+          <Property Name="CMSSchedulerId" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSMasterSchedulerShopMap">
+          <Key>
+            <PropertyRef Name="CMSMasterSchedulerShopMapId" />
+          </Key>
+          <Property Name="CMSMasterSchedulerShopMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSMasterSchedulerMapId" Type="int" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="IsSendAlertToShop" Type="bit" />
+          <Property Name="IsRead" Type="bit" />
+          <Property Name="IsJoinCampaign" Type="bit" />
+          <Property Name="JoinTotal" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSMasterStatus">
+          <Key>
+            <PropertyRef Name="CMSMasterStatusId" />
+          </Key>
+          <Property Name="CMSMasterStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSMasterStatusCode" Type="nvarchar" MaxLength="5" />
+          <Property Name="CMSMasterStatusNameEN" Type="nvarchar" MaxLength="50" />
+          <Property Name="CMSMasterStatusNameTH" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSMasterType">
+          <Key>
+            <PropertyRef Name="CMSMasterTypeId" />
+          </Key>
+          <Property Name="CMSMasterTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSMasterTypeCode" Type="nvarchar" MaxLength="5" />
+          <Property Name="CMSMasterTypeNameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="CMSMasterTypeNameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CMSScheduler">
+          <Key>
+            <PropertyRef Name="CMSSchedulerId" />
+          </Key>
+          <Property Name="CMSSchedulerId" Type="int" Nullable="false" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="Coupon">
           <Key>
             <PropertyRef Name="CouponId" />
@@ -407,6 +641,14 @@
           <Property Name="WebAgent" Type="varchar" MaxLength="255" />
           <Property Name="IpAddress" Type="varchar" MaxLength="15" />
           <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CustomerWishList">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="Pid" />
+          </Key>
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
         </EntityType>
         <EntityType Name="District">
           <Key>
@@ -1044,6 +1286,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
             <PropertyRef Name="ProductId" />
           </Key>
           <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="Sku" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" Nullable="false" />
@@ -1058,6 +1301,88 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PromotionBuy1Get1Item">
+          <Key>
+            <PropertyRef Name="PromotionBuy1Get1ItemId" />
+          </Key>
+          <Property Name="PromotionBuy1Get1ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="NameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="URLKey" Type="nvarchar" MaxLength="300" />
+          <Property Name="PIDBuy" Type="int" />
+          <Property Name="PIDGet" Type="int" />
+          <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="500" />
+          <Property Name="LongDescriptionTH" Type="ntext" />
+          <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="500" />
+          <Property Name="LongDescriptionEN" Type="ntext" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="CMSStatusFlowId" Type="int" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditCard">
+          <Key>
+            <PropertyRef Name="OnTopCreditCardId" />
+          </Key>
+          <Property Name="OnTopCreditCardId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="NameTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="EffectiveDate" Type="date" />
+          <Property Name="EffectiveTime" Type="time" Precision="7" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="ExpiryTime" Type="time" Precision="7" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="PaymantId" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="DiscountType" Type="nvarchar" MaxLength="5" />
+          <Property Name="FreeShipping" Type="bit" />
+          <Property Name="DiscountValue" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumOrderAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MaximumDiscountAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IconURLTH" Type="nvarchar" MaxLength="300" />
+          <Property Name="IconURLEN" Type="nvarchar" MaxLength="300" />
+          <Property Name="BankNameEN" Type="nvarchar" MaxLength="100" />
+          <Property Name="BankNameTH" Type="nvarchar" MaxLength="100" />
+          <Property Name="PromotionCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditNumber">
+          <Key>
+            <PropertyRef Name="OnTopCreditNumberId" />
+          </Key>
+          <Property Name="OnTopCreditNumberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OnTopCreditCardId" Type="int" />
+          <Property Name="CreditCardTypeCode" Type="nvarchar" MaxLength="5" />
+          <Property Name="CreditNumberFormat" Type="nvarchar" MaxLength="20" />
+          <Property Name="Digit" Type="int" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Visibility" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="Createdate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="Province">
           <Key>
@@ -2609,6 +2934,19 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CartDiscount" EntityType="Self.CartDiscount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CartHead" EntityType="Self.CartHead" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="City" EntityType="Self.City" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCategory" EntityType="Self.CMSCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCategoryCreteriaMap" EntityType="Self.CMSCategoryCreteriaMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCategorySchedulerMap" EntityType="Self.CMSCategorySchedulerMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCreteria" EntityType="Self.CMSCreteria" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCriteriaProductMap" EntityType="Self.CMSCriteriaProductMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSGroup" EntityType="Self.CMSGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSMaster" EntityType="Self.CMSMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSMasterGroupMap" EntityType="Self.CMSMasterGroupMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSMasterSchedulerMap" EntityType="Self.CMSMasterSchedulerMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSMasterSchedulerShopMap" EntityType="Self.CMSMasterSchedulerShopMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSMasterStatus" EntityType="Self.CMSMasterStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSMasterType" EntityType="Self.CMSMasterType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSScheduler" EntityType="Self.CMSScheduler" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Coupon" EntityType="Self.Coupon" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponBrandMap" EntityType="Self.CouponBrandMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponCondition" EntityType="Self.CouponCondition" Schema="dbo" store:Type="Tables" />
@@ -2621,6 +2959,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerAddress" EntityType="Self.CustomerAddress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerToken" EntityType="Self.CustomerToken" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerWishList" EntityType="Self.CustomerWishList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="District" EntityType="Self.District" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCatAttributeSetMap" EntityType="Self.GlobalCatAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
@@ -2657,6 +2996,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ProductStageTag" EntityType="Self.ProductStageTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductStageVideo" EntityType="Self.ProductStageVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductTemp" EntityType="Self.ProductTemp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PromotionBuy1Get1Item" EntityType="Self.PromotionBuy1Get1Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PromotionOnTopCreditCard" EntityType="Self.PromotionOnTopCreditCard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PromotionOnTopCreditNumber" EntityType="Self.PromotionOnTopCreditNumber" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
@@ -3128,6 +3470,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <FunctionImport Name="GetNextProductStageGroupId" ReturnType="Collection(Int64)" />
           <FunctionImport Name="GlobalCategoryId" ReturnType="Collection(Int32)" />
           <FunctionImport Name="LocalCategoryId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextProductTempId" ReturnType="Collection(Int64)" />
           <EntitySet Name="AppAuths" EntityType="ColspModel.AppAuth" />
           <EntitySet Name="Attributes" EntityType="ColspModel.Attribute" />
           <EntitySet Name="AttributeSets" EntityType="ColspModel.AttributeSet" />
@@ -3142,6 +3485,19 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CartDiscounts" EntityType="ColspModel.CartDiscount" />
           <EntitySet Name="CartHeads" EntityType="ColspModel.CartHead" />
           <EntitySet Name="Cities" EntityType="ColspModel.City" />
+          <EntitySet Name="CMSCategories" EntityType="ColspModel.CMSCategory" />
+          <EntitySet Name="CMSCategoryCreteriaMaps" EntityType="ColspModel.CMSCategoryCreteriaMap" />
+          <EntitySet Name="CMSCategorySchedulerMaps" EntityType="ColspModel.CMSCategorySchedulerMap" />
+          <EntitySet Name="CMSCreterias" EntityType="ColspModel.CMSCreteria" />
+          <EntitySet Name="CMSCriteriaProductMaps" EntityType="ColspModel.CMSCriteriaProductMap" />
+          <EntitySet Name="CMSGroups" EntityType="ColspModel.CMSGroup" />
+          <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
+          <EntitySet Name="CMSMasterGroupMaps" EntityType="ColspModel.CMSMasterGroupMap" />
+          <EntitySet Name="CMSMasterSchedulerMaps" EntityType="ColspModel.CMSMasterSchedulerMap" />
+          <EntitySet Name="CMSMasterSchedulerShopMaps" EntityType="ColspModel.CMSMasterSchedulerShopMap" />
+          <EntitySet Name="CMSMasterStatus" EntityType="ColspModel.CMSMasterStatu" />
+          <EntitySet Name="CMSMasterTypes" EntityType="ColspModel.CMSMasterType" />
+          <EntitySet Name="CMSSchedulers" EntityType="ColspModel.CMSScheduler" />
           <EntitySet Name="Coupons" EntityType="ColspModel.Coupon" />
           <EntitySet Name="CouponBrandMaps" EntityType="ColspModel.CouponBrandMap" />
           <EntitySet Name="CouponConditions" EntityType="ColspModel.CouponCondition" />
@@ -3154,6 +3510,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="Customers" EntityType="ColspModel.Customer" />
           <EntitySet Name="CustomerAddresses" EntityType="ColspModel.CustomerAddress" />
           <EntitySet Name="CustomerTokens" EntityType="ColspModel.CustomerToken" />
+          <EntitySet Name="CustomerWishLists" EntityType="ColspModel.CustomerWishList" />
           <EntitySet Name="Districts" EntityType="ColspModel.District" />
           <EntitySet Name="GlobalCatAttributeSetMaps" EntityType="ColspModel.GlobalCatAttributeSetMap" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
@@ -3190,6 +3547,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ProductStageTags" EntityType="ColspModel.ProductStageTag" />
           <EntitySet Name="ProductStageVideos" EntityType="ColspModel.ProductStageVideo" />
           <EntitySet Name="ProductTemps" EntityType="ColspModel.ProductTemp" />
+          <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
+          <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
+          <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           <EntitySet Name="Provinces" EntityType="ColspModel.Province" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
@@ -3533,7 +3893,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
-          <FunctionImport Name="GetNextProductTempId" ReturnType="Collection(Int64)" />
           </EntityContainer>
         <EntityType Name="AppAuth">
           <Key>
@@ -3768,6 +4127,240 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CityName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="CityNameEn" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="CMSCategory">
+          <Key>
+            <PropertyRef Name="CMSCategoryId" />
+          </Key>
+          <Property Name="CMSCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCategoryNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSCategoryNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsCampaign" Type="Boolean" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSCategoryCreteriaMap">
+          <Key>
+            <PropertyRef Name="CMSCategoryCreteriaMapId" />
+          </Key>
+          <Property Name="CMSCategoryCreteriaMapId" Type="Int32" Nullable="false" />
+          <Property Name="CMSCreteriaId" Type="Int32" />
+          <Property Name="CMSCategoryId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSCategorySchedulerMap">
+          <Key>
+            <PropertyRef Name="CMSCategorySchedulerMapId" />
+          </Key>
+          <Property Name="CMSCategorySchedulerMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSSchedulerId" Type="Int32" />
+          <Property Name="CMSCategoryId" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSCreteria">
+          <Key>
+            <PropertyRef Name="CMSCreteriaId" />
+          </Key>
+          <Property Name="CMSCreteriaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryId" Type="Int32" />
+          <Property Name="Brand" Type="Int32" />
+          <Property Name="MinPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaxPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSCriteriaProductMap">
+          <Key>
+            <PropertyRef Name="CMSCriteriaProductMapId" />
+          </Key>
+          <Property Name="CMSCriteriaProductMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCriteriaId" Type="Int32" />
+          <Property Name="ProductPID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="CMSMasterStatusId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSGroup">
+          <Key>
+            <PropertyRef Name="CMSGroupId" />
+          </Key>
+          <Property Name="CMSGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSGroupNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMaster">
+          <Key>
+            <PropertyRef Name="CMSMasterId" />
+          </Key>
+          <Property Name="CMSMasterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterURLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSTypeId" Type="Int32" />
+          <Property Name="CMSMasterEffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="CMSMasterEffectiveTime" Type="Time" Precision="7" />
+          <Property Name="CMSMasterExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="CMSMasterExpiryTime" Type="Time" Precision="7" />
+          <Property Name="CMSMasterTotal" Type="Int32" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="CMSMasterStatusId" Type="Int32" />
+          <Property Name="LinkToOutside" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsCampaign" Type="Boolean" />
+          <Property Name="CategoryId" Type="Int32" />
+          <Property Name="Brand" Type="Int32" />
+          <Property Name="MinPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaxPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMasterGroupMap">
+          <Key>
+            <PropertyRef Name="CMSMasterGroupMapId" />
+          </Key>
+          <Property Name="CMSMasterGroupMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterId" Type="Int32" Nullable="false" />
+          <Property Name="CMSMasterGroupId" Type="Int32" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMasterSchedulerMap">
+          <Key>
+            <PropertyRef Name="CMSMasterSchedulerMapId" />
+          </Key>
+          <Property Name="CMSMasterSchedulerMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterId" Type="Int32" />
+          <Property Name="CMSSchedulerId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMasterSchedulerShopMap">
+          <Key>
+            <PropertyRef Name="CMSMasterSchedulerShopMapId" />
+          </Key>
+          <Property Name="CMSMasterSchedulerShopMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterSchedulerMapId" Type="Int32" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="IsSendAlertToShop" Type="Boolean" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="IsJoinCampaign" Type="Boolean" />
+          <Property Name="JoinTotal" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMasterStatu">
+          <Key>
+            <PropertyRef Name="CMSMasterStatusId" />
+          </Key>
+          <Property Name="CMSMasterStatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterStatusCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterStatusNameEN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterStatusNameTH" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMasterType">
+          <Key>
+            <PropertyRef Name="CMSMasterTypeId" />
+          </Key>
+          <Property Name="CMSMasterTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterTypeNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterTypeNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSScheduler">
+          <Key>
+            <PropertyRef Name="CMSSchedulerId" />
+          </Key>
+          <Property Name="CMSSchedulerId" Type="Int32" Nullable="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Coupon">
           <Key>
             <PropertyRef Name="CouponId" />
@@ -3978,6 +4571,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="WebAgent" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="IpAddress" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="CustomerWishList">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="Pid" />
+          </Key>
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
         </EntityType>
         <EntityType Name="District">
           <Key>
@@ -4677,6 +5278,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="ProductId" />
           </Key>
           <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="Sku" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="ProductNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
@@ -4692,6 +5294,88 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductTemp_Shop" FromRole="ProductTemp" ToRole="Shop" />
+        </EntityType>
+        <EntityType Name="PromotionBuy1Get1Item">
+          <Key>
+            <PropertyRef Name="PromotionBuy1Get1ItemId" />
+          </Key>
+          <Property Name="PromotionBuy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="PIDBuy" Type="Int32" />
+          <Property Name="PIDGet" Type="Int32" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditCard">
+          <Key>
+            <PropertyRef Name="OnTopCreditCardId" />
+          </Key>
+          <Property Name="OnTopCreditCardId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="PaymantId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DiscountType" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="FreeShipping" Type="Boolean" />
+          <Property Name="DiscountValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumOrderAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaximumDiscountAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IconURLTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="IconURLEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditNumber">
+          <Key>
+            <PropertyRef Name="OnTopCreditNumberId" />
+          </Key>
+          <Property Name="OnTopCreditNumberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OnTopCreditCardId" Type="Int32" />
+          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CreditNumberFormat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Digit" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Province">
           <Key>
@@ -6263,6 +6947,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <FunctionImportMapping FunctionImportName="GetNextProductStageGroupId" FunctionName="ColspModel.Store.GetNextProductStageGroupId" />
           <FunctionImportMapping FunctionImportName="GlobalCategoryId" FunctionName="ColspModel.Store.GlobalCategoryId" />
           <FunctionImportMapping FunctionImportName="LocalCategoryId" FunctionName="ColspModel.Store.LocalCategoryId" />
+          <FunctionImportMapping FunctionImportName="GetNextProductTempId" FunctionName="ColspModel.Store.GetNextProductTempId" />
           <EntitySetMapping Name="AppAuths">
             <EntityTypeMapping TypeName="ColspModel.AppAuth">
               <MappingFragment StoreEntitySet="AppAuth">
@@ -6482,6 +7167,253 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CMSCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSCategory">
+              <MappingFragment StoreEntitySet="CMSCategory">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsCampaign" ColumnName="IsCampaign" />
+                <ScalarProperty Name="CMSCategoryNameTH" ColumnName="CMSCategoryNameTH" />
+                <ScalarProperty Name="CMSCategoryNameEN" ColumnName="CMSCategoryNameEN" />
+                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCategoryCreteriaMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSCategoryCreteriaMap">
+              <MappingFragment StoreEntitySet="CMSCategoryCreteriaMap">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
+                <ScalarProperty Name="CMSCreteriaId" ColumnName="CMSCreteriaId" />
+                <ScalarProperty Name="CMSCategoryCreteriaMapId" ColumnName="CMSCategoryCreteriaMapId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCategorySchedulerMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSCategorySchedulerMap">
+              <MappingFragment StoreEntitySet="CMSCategorySchedulerMap">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
+                <ScalarProperty Name="CMSSchedulerId" ColumnName="CMSSchedulerId" />
+                <ScalarProperty Name="CMSCategorySchedulerMapId" ColumnName="CMSCategorySchedulerMapId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCreterias">
+            <EntityTypeMapping TypeName="ColspModel.CMSCreteria">
+              <MappingFragment StoreEntitySet="CMSCreteria">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="MaxPrice" ColumnName="MaxPrice" />
+                <ScalarProperty Name="MinPrice" ColumnName="MinPrice" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CMSCreteriaId" ColumnName="CMSCreteriaId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCriteriaProductMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSCriteriaProductMap">
+              <MappingFragment StoreEntitySet="CMSCriteriaProductMap">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CMSMasterStatusId" ColumnName="CMSMasterStatusId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="ProductPID" ColumnName="ProductPID" />
+                <ScalarProperty Name="CMSCriteriaId" ColumnName="CMSCriteriaId" />
+                <ScalarProperty Name="CMSCriteriaProductMapId" ColumnName="CMSCriteriaProductMapId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSGroups">
+            <EntityTypeMapping TypeName="ColspModel.CMSGroup">
+              <MappingFragment StoreEntitySet="CMSGroup">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="CMSGroupNameEN" ColumnName="CMSGroupNameEN" />
+                <ScalarProperty Name="CMSGroupNameTH" ColumnName="CMSGroupNameTH" />
+                <ScalarProperty Name="CMSGroupId" ColumnName="CMSGroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMasters">
+            <EntityTypeMapping TypeName="ColspModel.CMSMaster">
+              <MappingFragment StoreEntitySet="CMSMaster">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="MaxPrice" ColumnName="MaxPrice" />
+                <ScalarProperty Name="MinPrice" ColumnName="MinPrice" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="IsCampaign" ColumnName="IsCampaign" />
+                <ScalarProperty Name="LinkToOutside" ColumnName="LinkToOutside" />
+                <ScalarProperty Name="CMSMasterStatusId" ColumnName="CMSMasterStatusId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="CMSMasterTotal" ColumnName="CMSMasterTotal" />
+                <ScalarProperty Name="CMSMasterExpiryTime" ColumnName="CMSMasterExpiryTime" />
+                <ScalarProperty Name="CMSMasterExpiryDate" ColumnName="CMSMasterExpiryDate" />
+                <ScalarProperty Name="CMSMasterEffectiveTime" ColumnName="CMSMasterEffectiveTime" />
+                <ScalarProperty Name="CMSMasterEffectiveDate" ColumnName="CMSMasterEffectiveDate" />
+                <ScalarProperty Name="CMSTypeId" ColumnName="CMSTypeId" />
+                <ScalarProperty Name="CMSMasterURLKey" ColumnName="CMSMasterURLKey" />
+                <ScalarProperty Name="CMSMasterNameTH" ColumnName="CMSMasterNameTH" />
+                <ScalarProperty Name="CMSMasterNameEN" ColumnName="CMSMasterNameEN" />
+                <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMasterGroupMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSMasterGroupMap">
+              <MappingFragment StoreEntitySet="CMSMasterGroupMap">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="CMSMasterGroupId" ColumnName="CMSMasterGroupId" />
+                <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
+                <ScalarProperty Name="CMSMasterGroupMapId" ColumnName="CMSMasterGroupMapId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMasterSchedulerMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSMasterSchedulerMap">
+              <MappingFragment StoreEntitySet="CMSMasterSchedulerMap">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CMSSchedulerId" ColumnName="CMSSchedulerId" />
+                <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
+                <ScalarProperty Name="CMSMasterSchedulerMapId" ColumnName="CMSMasterSchedulerMapId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMasterSchedulerShopMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSMasterSchedulerShopMap">
+              <MappingFragment StoreEntitySet="CMSMasterSchedulerShopMap">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="JoinTotal" ColumnName="JoinTotal" />
+                <ScalarProperty Name="IsJoinCampaign" ColumnName="IsJoinCampaign" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="IsSendAlertToShop" ColumnName="IsSendAlertToShop" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="CMSMasterSchedulerMapId" ColumnName="CMSMasterSchedulerMapId" />
+                <ScalarProperty Name="CMSMasterSchedulerShopMapId" ColumnName="CMSMasterSchedulerShopMapId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMasterStatus">
+            <EntityTypeMapping TypeName="ColspModel.CMSMasterStatu">
+              <MappingFragment StoreEntitySet="CMSMasterStatus">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CMSMasterStatusNameTH" ColumnName="CMSMasterStatusNameTH" />
+                <ScalarProperty Name="CMSMasterStatusNameEN" ColumnName="CMSMasterStatusNameEN" />
+                <ScalarProperty Name="CMSMasterStatusCode" ColumnName="CMSMasterStatusCode" />
+                <ScalarProperty Name="CMSMasterStatusId" ColumnName="CMSMasterStatusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMasterTypes">
+            <EntityTypeMapping TypeName="ColspModel.CMSMasterType">
+              <MappingFragment StoreEntitySet="CMSMasterType">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CMSMasterTypeNameEN" ColumnName="CMSMasterTypeNameEN" />
+                <ScalarProperty Name="CMSMasterTypeNameTH" ColumnName="CMSMasterTypeNameTH" />
+                <ScalarProperty Name="CMSMasterTypeCode" ColumnName="CMSMasterTypeCode" />
+                <ScalarProperty Name="CMSMasterTypeId" ColumnName="CMSMasterTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSSchedulers">
+            <EntityTypeMapping TypeName="ColspModel.CMSScheduler">
+              <MappingFragment StoreEntitySet="CMSScheduler">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="CMSSchedulerId" ColumnName="CMSSchedulerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Coupons">
             <EntityTypeMapping TypeName="ColspModel.Coupon">
               <MappingFragment StoreEntitySet="Coupon">
@@ -6672,6 +7604,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="UserDevice" ColumnName="UserDevice" />
                 <ScalarProperty Name="Browser" ColumnName="Browser" />
                 <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerWishLists">
+            <EntityTypeMapping TypeName="ColspModel.CustomerWishList">
+              <MappingFragment StoreEntitySet="CustomerWishList">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -7330,7 +8270,93 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionBuy1Get1Item">
+            <EntityTypeMapping TypeName="ColspModel.PromotionBuy1Get1Item">
+              <MappingFragment StoreEntitySet="PromotionBuy1Get1Item">
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
+                <ScalarProperty Name="PIDBuy" ColumnName="PIDBuy" />
+                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="PromotionBuy1Get1ItemId" ColumnName="PromotionBuy1Get1ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditCards">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditCard">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditCard">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
+                <ScalarProperty Name="BankNameTH" ColumnName="BankNameTH" />
+                <ScalarProperty Name="BankNameEN" ColumnName="BankNameEN" />
+                <ScalarProperty Name="IconURLEN" ColumnName="IconURLEN" />
+                <ScalarProperty Name="IconURLTH" ColumnName="IconURLTH" />
+                <ScalarProperty Name="MaximumDiscountAmount" ColumnName="MaximumDiscountAmount" />
+                <ScalarProperty Name="MinimumOrderAmount" ColumnName="MinimumOrderAmount" />
+                <ScalarProperty Name="DiscountValue" ColumnName="DiscountValue" />
+                <ScalarProperty Name="FreeShipping" ColumnName="FreeShipping" />
+                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="PaymantId" ColumnName="PaymantId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditNumbers">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditNumber">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditNumber">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Digit" ColumnName="Digit" />
+                <ScalarProperty Name="CreditNumberFormat" ColumnName="CreditNumberFormat" />
+                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+                <ScalarProperty Name="OnTopCreditNumberId" ColumnName="OnTopCreditNumberId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7810,7 +8836,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="GetNextProductTempId" FunctionName="ColspModel.Store.GetNextProductTempId" />
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

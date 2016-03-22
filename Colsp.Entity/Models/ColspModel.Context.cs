@@ -42,6 +42,19 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CartDiscount> CartDiscounts { get; set; }
         public virtual DbSet<CartHead> CartHeads { get; set; }
         public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<CMSCategory> CMSCategories { get; set; }
+        public virtual DbSet<CMSCategoryCreteriaMap> CMSCategoryCreteriaMaps { get; set; }
+        public virtual DbSet<CMSCategorySchedulerMap> CMSCategorySchedulerMaps { get; set; }
+        public virtual DbSet<CMSCreteria> CMSCreterias { get; set; }
+        public virtual DbSet<CMSCriteriaProductMap> CMSCriteriaProductMaps { get; set; }
+        public virtual DbSet<CMSGroup> CMSGroups { get; set; }
+        public virtual DbSet<CMSMaster> CMSMasters { get; set; }
+        public virtual DbSet<CMSMasterGroupMap> CMSMasterGroupMaps { get; set; }
+        public virtual DbSet<CMSMasterSchedulerMap> CMSMasterSchedulerMaps { get; set; }
+        public virtual DbSet<CMSMasterSchedulerShopMap> CMSMasterSchedulerShopMaps { get; set; }
+        public virtual DbSet<CMSMasterStatu> CMSMasterStatus { get; set; }
+        public virtual DbSet<CMSMasterType> CMSMasterTypes { get; set; }
+        public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
@@ -54,6 +67,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
+        public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
         public virtual DbSet<District> Districts { get; set; }
         public virtual DbSet<GlobalCatAttributeSetMap> GlobalCatAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
@@ -90,6 +104,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
         public virtual DbSet<ProductTemp> ProductTemps { get; set; }
+        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
+        public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
+        public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }

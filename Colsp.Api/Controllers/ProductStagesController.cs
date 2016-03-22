@@ -678,7 +678,7 @@ namespace Colsp.Api.Controllers
                 tmpStage.AdminApprove.MoreOption = Constant.PRODUCT_STATUS_APPROVE;
                 tmpStage.AdminApprove.Variation = Constant.PRODUCT_STATUS_APPROVE;
                 tmpStage.Status = Constant.PRODUCT_STATUS_APPROVE;
-                ProductStageGroup group = AddProduct(db, tmpStage,0);
+                ProductStageGroup group = SetupProduct(db, tmpStage,0);
                 if (string.IsNullOrEmpty(request.MasterProduct.Pid))
                 {
                     throw new Exception("Pid is required for master");
@@ -1465,28 +1465,16 @@ namespace Colsp.Api.Controllers
                 var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
                 var shippingList = db.Shippings.ToList();
                 #endregion
+                string email = this.User.UserRequest().Email;
                 #region Setup Group
-                SetupGroup(group, request, db);
-                group.UpdatedBy = this.User.UserRequest().Email;
-                group.UpdatedDt = DateTime.Now;
+                SetupGroup(group, request,false,email, User.HasPermission("Approve product"), User.HasPermission("Add Product"), db);
                 #endregion
                 #region Master Variant
                 var masterVariant = group.ProductStages.Where(w=>w.IsVariant==false).FirstOrDefault();
-                if (User.HasPermission("Approve product"))
-                {
-                    group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-                    masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE,Constant.PRODUCT_STATUS_NOT_APPROVE });
-                }
-                else
-                {
-                    group.Status = Validation.ValidateString(request.Status, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                    masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                }
-                SetupVariant(masterVariant, request.MasterVariant,db, shippingList);
-                masterVariant.UpdatedBy = this.User.UserRequest().Email;
-                masterVariant.UpdatedDt = DateTime.Now;
-                SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
-                SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, db);
+                request.MasterVariant.Status = group.Status;
+                SetupVariant(masterVariant, request.MasterVariant, false, email, User.HasPermission("Approve product"), User.HasPermission("Add Product"), db, shippingList);
+                SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
+                SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, email, db);
                 #endregion
                 #region Variants
                 var tmpVariant = group.ProductStages.Where(w => w.IsVariant == true).ToList();
@@ -1519,22 +1507,15 @@ namespace Colsp.Api.Controllers
                             variant = new ProductStage();
                             variant.ShopId = masterVariant.ShopId;
                             variant.IsVariant = true;
-                            variant.CreatedBy = this.User.UserRequest().Email;
+                            variant.CreatedBy = email;
                             variant.CreatedDt = DateTime.Now;
+                            variant.UpdatedBy = email;
+                            variant.UpdatedDt = DateTime.Now;
                             group.ProductStages.Add(variant);
                         }
-                        if (User.HasPermission("Approve product"))
-                        {
-                            variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-                        }
-                        else
-                        {
-                            variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                        }
-                        SetupVariant(variant, variantRq,db, shippingList);
-                        variant.UpdatedBy = this.User.UserRequest().Email;
-                        variant.UpdatedDt = DateTime.Now;
-                        SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, db);
+                        variantRq.Status = group.Status;
+                        SetupVariant(variant, variantRq, false, email, User.HasPermission("Approve product"), User.HasPermission("Add Product"), db, shippingList);
+                        SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
                     }
                 }
                 else
@@ -1576,7 +1557,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 var shopId = this.User.ShopRequest().ShopId;
-                ProductStageGroup group = AddProduct(db, request,shopId);
+                ProductStageGroup group = SetupProduct(db, request,shopId);
                 AutoGenerate.GeneratePid(db, group.ProductStages);
                 group.ProductId = db.GetNextProductStageGroupId().Single().Value;
                 db.ProductStageGroups.Add(group);
@@ -1589,70 +1570,6 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, ex.Message);
             }
-        }
-
-        private ProductStageGroup AddProduct(ColspEntities db, ProductStageRequest request,int shopId)
-        {
-            ProductStageGroup group = null;
-            var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
-            var shippingList = db.Shippings.ToList();
-            #region Setup Group
-            group = new ProductStageGroup();
-            group.ShopId = shopId;
-            SetupGroup(group, request, db);
-            group.CreatedBy = this.User.UserRequest().Email;
-            group.CreatedDt = DateTime.Now;
-            group.UpdatedBy = this.User.UserRequest().Email;
-            group.UpdatedDt = DateTime.Now;
-            #endregion
-            #region Master Variant
-            var masterVariant = new ProductStage();
-            masterVariant.ShopId = shopId;
-            masterVariant.IsVariant = false;
-            if (User.HasPermission("Approve product"))
-            {
-                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-            }
-            else
-            {
-                group.Status = Validation.ValidateString(request.Status, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-            }
-            SetupVariant(masterVariant, request.MasterVariant, db, shippingList);
-            masterVariant.CreatedBy = this.User.UserRequest().Email;
-            masterVariant.CreatedDt = DateTime.Now;
-            masterVariant.UpdatedBy = this.User.UserRequest().Email;
-            masterVariant.UpdatedDt = DateTime.Now;
-            SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
-            SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, db);
-            group.ProductStages.Add(masterVariant);
-            #endregion
-            #region Variants
-            if (request.Variants != null)
-            {
-                masterVariant.VariantCount = request.Variants.Count;
-                foreach (var variantRq in request.Variants)
-                {
-                    var variant = new ProductStage();
-                    variant.ShopId = shopId;
-                    variant.IsVariant = true;
-                    variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                    SetupVariant(variant, variantRq, db, shippingList);
-                    variant.CreatedBy = this.User.UserRequest().Email;
-                    variant.CreatedDt = DateTime.Now;
-                    variant.UpdatedBy = this.User.UserRequest().Email;
-                    variant.UpdatedDt = DateTime.Now;
-                    SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, db);
-                    group.ProductStages.Add(variant);
-                }
-            }
-            else
-            {
-                masterVariant.VariantCount = 0;
-            }
-            #endregion
-            return group;
         }
 
         [Route("api/ProductStages/{productId}")]
@@ -1845,6 +1762,50 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        private ProductStageGroup SetupProduct(ColspEntities db, ProductStageRequest request, int shopId)
+        {
+            ProductStageGroup group = null;
+            var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
+            var shippingList = db.Shippings.ToList();
+            string email = this.User.UserRequest().Email;
+            #region Setup Group
+            group = new ProductStageGroup();
+            group.ShopId = shopId;
+            SetupGroup(group, request, true, email, User.HasPermission("Approve product"), User.HasPermission("Add Product"), db);
+            #endregion
+            #region Master Variant
+            var masterVariant = new ProductStage();
+            request.MasterVariant.Status = group.Status;
+            masterVariant.ShopId = shopId;
+            masterVariant.IsVariant = false;
+            SetupVariant(masterVariant, request.MasterVariant, true, email, User.HasPermission("Approve product"), User.HasPermission("Add Product"), db, shippingList);
+            SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
+            SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, email, db);
+            group.ProductStages.Add(masterVariant);
+            #endregion
+            #region Variants
+            if (request.Variants != null)
+            {
+                masterVariant.VariantCount = request.Variants.Count;
+                foreach (var variantRq in request.Variants)
+                {
+                    var variant = new ProductStage();
+                    variant.ShopId = shopId;
+                    variant.IsVariant = true;
+                    variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                    SetupVariant(variant, variantRq, true, email, User.HasPermission("Approve product"), User.HasPermission("Add Product"), db, shippingList);
+                    SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
+                    group.ProductStages.Add(variant);
+                }
+            }
+            else
+            {
+                masterVariant.VariantCount = 0;
+            }
+            #endregion
+            return group;
+        }
+
         private void SetupAttributeResponse(ProductStage variant, List<AttributeRequest> attributeList)
         {
             foreach (var attribute in variant.ProductStageAttributes)
@@ -1965,8 +1926,22 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupGroup(ProductStageGroup group, ProductStageRequest request, ColspEntities db)
+        private void SetupGroup(ProductStageGroup group, ProductStageRequest request,bool addNew,string email,bool adminPermission,bool sellerPermission, ColspEntities db)
         {
+            #region Status
+            if (adminPermission)
+            {
+                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
+            }
+            else if (sellerPermission)
+            {
+                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+            }
+            else
+            {
+                throw new Exception("Has no permission");
+            }
+            #endregion
             #region Category
             if (request.MainGlobalCategory == null || request.MainGlobalCategory.CategoryId == 0)
             {
@@ -2023,9 +1998,9 @@ namespace Colsp.Api.Controllers
                         group.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
                         {
                             CategoryId = category.CategoryId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -2064,9 +2039,9 @@ namespace Colsp.Api.Controllers
                         group.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
                         {
                             CategoryId = category.CategoryId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -2106,9 +2081,9 @@ namespace Colsp.Api.Controllers
                         group.ProductStageTags.Add(new ProductStageTag()
                         {
                             Tag = tag,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -2120,7 +2095,6 @@ namespace Colsp.Api.Controllers
                 db.ProductStageTags.RemoveRange(tmpTag);
             }
             #endregion
-
             #region Related Product
             var tmpRelated = group.ProductStageRelateds1.ToList();
             if (request.RelatedProducts != null && request.RelatedProducts.Count > 0)
@@ -2150,9 +2124,9 @@ namespace Colsp.Api.Controllers
                         {
                             Child = product.ProductId,
                             ShopId = group.ShopId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = email,
                             UpdatedDt = DateTime.Now
                         });
                     }
@@ -2163,6 +2137,7 @@ namespace Colsp.Api.Controllers
                 db.ProductStageRelateds.RemoveRange(tmpRelated);
             }
             #endregion
+            #region Other field
             group.TheOneCardEarn = request.TheOneCardEarn;
             group.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             group.EffectiveDate = request.EffectiveDate;
@@ -2181,10 +2156,20 @@ namespace Colsp.Api.Controllers
             group.VariantTabStatus = Validation.ValidateString(request.AdminApprove.Variation, "Variant Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.RejectReason = Validation.ValidateString(request.AdminApprove.RejectReason, "Reject Reason", true, 500, true, string.Empty);
             group.Visibility = request.Visibility;
-            
+            #endregion
+            #region Create/Update
+            if (addNew)
+            {
+                group.CreatedBy = email;
+                group.CreatedDt = DateTime.Now;
+            }
+            group.UpdatedBy = email;
+            group.UpdatedDt = DateTime.Now;
+            #endregion
+
         }
 
-        private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList, ColspEntities db)
+        private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList,string email, ColspEntities db)
         {
             var tmpAttribute = variant.ProductStageAttributes.ToList();
             int position = 1;
@@ -2258,7 +2243,7 @@ namespace Colsp.Api.Controllers
                                     if(current.CheckboxValue != checkboxValue)
                                     {
                                         current.CheckboxValue = checkboxValue;
-                                        current.UpdatedBy = this.User.UserRequest().Email;
+                                        current.UpdatedBy = email;
                                         current.UpdatedDt = DateTime.Now;
                                     }
                                     
@@ -2278,9 +2263,9 @@ namespace Colsp.Api.Controllers
                                     ValueEn = value,
                                     Position = position++,
                                     IsAttributeValue = isAttributeValue,
-                                    CreatedBy = this.User.UserRequest().Email,
+                                    CreatedBy = email,
                                     CreatedDt = DateTime.Now,
-                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedBy = email,
                                     UpdatedDt = DateTime.Now,
                                 });
                             }
@@ -2330,9 +2315,9 @@ namespace Colsp.Api.Controllers
                         ValueEn = value,
                         Position = position++,
                         IsAttributeValue = isAttributeValue,
-                        CreatedBy = this.User.UserRequest().Email,
+                        CreatedBy = email,
                         CreatedDt = DateTime.Now,
-                        UpdatedBy = this.User.UserRequest().Email,
+                        UpdatedBy = email,
                         UpdatedDt = DateTime.Now,
                     });
                 }
@@ -2343,8 +2328,22 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupVariant(ProductStage variant,VariantRequest request, ColspEntities db,List<Shipping> shippingList)
+        private void SetupVariant(ProductStage variant,VariantRequest request, bool addNew, string email, bool adminPermission, bool sellerPermission, ColspEntities db,List<Shipping> shippingList)
         {
+            #region Status
+            if (adminPermission)
+            {
+                variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
+            }
+            else if (sellerPermission)
+            {
+                variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+            }
+            else
+            {
+                throw new Exception("Has no permission");
+            }
+            #endregion
             #region Variant Field
             variant.ProductNameTh = Validation.ValidateString(request.ProductNameTh, "Product Name (Thai)", true, 300, true);
             variant.ProductNameEn = Validation.ValidateString(request.ProductNameEn, "Product Name (English)", true, 300, true);
@@ -2477,7 +2476,6 @@ namespace Colsp.Api.Controllers
             }
 
             #endregion
-           
             #region Image
             var tmpImage = variant.ProductStageImages.ToList();
             if (request.Images != null && request.Images.Count > 0)
@@ -2601,6 +2599,15 @@ namespace Colsp.Api.Controllers
             {
                 db.ProductStageVideos.RemoveRange(tmpVideo);
             }
+            #endregion
+            #region Create/Update
+            if (addNew)
+            {
+                variant.CreatedBy = email;
+                variant.CreatedDt = DateTime.Now;
+            }
+            variant.UpdatedBy = email;
+            variant.UpdatedDt = DateTime.Now;
             #endregion
         }
 

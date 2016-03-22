@@ -122,7 +122,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (string.Equals("NoShop", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        userList = userList.Where(w => w.Shops == null);
+                        userList = userList.Where(w => w.Shops.All(a=>a==null));
                     }
                 }
                 var total = userList.Count();
