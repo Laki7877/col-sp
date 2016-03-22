@@ -312,6 +312,9 @@
     <Compile Include="Models\Newsletter.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\NewsletterShopMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ODMPermission.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

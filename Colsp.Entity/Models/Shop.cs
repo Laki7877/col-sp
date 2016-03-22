@@ -22,6 +22,7 @@ namespace Colsp.Entity.Models
             this.LocalCategories = new HashSet<LocalCategory>();
             this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
             this.LocalCatImages = new HashSet<LocalCatImage>();
+            this.NewsletterShopMaps = new HashSet<NewsletterShopMap>();
             this.Products = new HashSet<Product>();
             this.ProductStages = new HashSet<ProductStage>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
@@ -77,6 +78,8 @@ namespace Colsp.Entity.Models
         public virtual ICollection<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LocalCatImage> LocalCatImages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NewsletterShopMap> NewsletterShopMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

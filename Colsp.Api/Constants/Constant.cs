@@ -66,6 +66,10 @@ namespace Colsp.Api.Constants
         public static readonly string COUPON_FILTER_INCLUDE = "I";
         public static readonly string COUPON_FILTER_EXCLUDE = "E";
 
+        public static readonly string NEWSLETTER_FILTER_INCLUDE = "I";
+        public static readonly string NEWSLETTER_FILTER_EXCLUDE = "E";
+
+
         public static readonly string SHOP_GROUP_BU = "BU";
         public static readonly string SHOP_GROUP_INDY = "IN";
         public static readonly string SHOP_GROUP_MERCHANT = "ME";

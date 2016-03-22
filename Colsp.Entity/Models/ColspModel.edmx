@@ -869,10 +869,24 @@
           <Property Name="NewsletterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Subject" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="VisbleShopGroup" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="VisibleShopGroup" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="PublishedDt" Type="datetime" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="NewsletterShopMap">
+          <Key>
+            <PropertyRef Name="NewsletterId" />
+            <PropertyRef Name="ShopId" />
+            <PropertyRef Name="Filter" />
+          </Key>
+          <Property Name="NewsletterId" Type="int" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="Filter" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
@@ -2279,6 +2293,34 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_NewsletterShopMap_Newsletter">
+          <End Role="Newsletter" Type="Self.Newsletter" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="NewsletterShopMap" Type="Self.NewsletterShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Newsletter">
+              <PropertyRef Name="NewsletterId" />
+            </Principal>
+            <Dependent Role="NewsletterShopMap">
+              <PropertyRef Name="NewsletterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NewsletterShopMap_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="NewsletterShopMap" Type="Self.NewsletterShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="NewsletterShopMap">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Product_Brand">
           <End Role="Brand" Type="Self.Brand" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
@@ -3006,6 +3048,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="LocalCatFeatureProduct" EntityType="Self.LocalCatFeatureProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocalCatImage" EntityType="Self.LocalCatImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Newsletter" EntityType="Self.Newsletter" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NewsletterShopMap" EntityType="Self.NewsletterShopMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ODMPermission" EntityType="Self.ODMPermission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ODMProcessLog" EntityType="Self.ODMProcessLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ODMRole" EntityType="Self.ODMRole" Schema="dbo" store:Type="Tables" />
@@ -3286,6 +3329,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shop" EntitySet="Shop" />
             <End Role="LocalCatImage" EntitySet="LocalCatImage" />
           </AssociationSet>
+          <AssociationSet Name="FK_NewsletterShopMap_Newsletter" Association="Self.FK_NewsletterShopMap_Newsletter">
+            <End Role="Newsletter" EntitySet="Newsletter" />
+            <End Role="NewsletterShopMap" EntitySet="NewsletterShopMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NewsletterShopMap_Shop" Association="Self.FK_NewsletterShopMap_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="NewsletterShopMap" EntitySet="NewsletterShopMap" />
+          </AssociationSet>
           <AssociationSet Name="FK_Product_Brand" Association="Self.FK_Product_Brand">
             <End Role="Brand" EntitySet="Brand" />
             <End Role="Product" EntitySet="Product" />
@@ -3558,6 +3609,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="LocalCatFeatureProducts" EntityType="ColspModel.LocalCatFeatureProduct" />
           <EntitySet Name="LocalCatImages" EntityType="ColspModel.LocalCatImage" />
           <EntitySet Name="Newsletters" EntityType="ColspModel.Newsletter" />
+          <EntitySet Name="NewsletterShopMaps" EntityType="ColspModel.NewsletterShopMap" />
           <EntitySet Name="ODMPermissions" EntityType="ColspModel.ODMPermission" />
           <EntitySet Name="ODMProcessLogs" EntityType="ColspModel.ODMProcessLog" />
           <EntitySet Name="ODMRoles" EntityType="ColspModel.ODMRole" />
@@ -3791,6 +3843,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FK_LocalCatImage_Shop" Association="ColspModel.FK_LocalCatImage_Shop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="LocalCatImage" EntitySet="LocalCatImages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NewsletterShopMap_Newsletter" Association="ColspModel.FK_NewsletterShopMap_Newsletter">
+            <End Role="Newsletter" EntitySet="Newsletters" />
+            <End Role="NewsletterShopMap" EntitySet="NewsletterShopMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NewsletterShopMap_Shop" Association="ColspModel.FK_NewsletterShopMap_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="NewsletterShopMap" EntitySet="NewsletterShopMaps" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopTypePermissionMap_Permission" Association="ColspModel.FK_ShopTypePermissionMap_Permission">
             <End Role="Permission" EntitySet="Permissions" />
@@ -4860,7 +4920,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="NewsletterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Subject" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="VisbleShopGroup" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="VisibleShopGroup" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="PublishedDt" Type="DateTime" Precision="3" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -4868,6 +4928,23 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="NewsletterShopMaps" Relationship="ColspModel.FK_NewsletterShopMap_Newsletter" FromRole="Newsletter" ToRole="NewsletterShopMap" />
+        </EntityType>
+        <EntityType Name="NewsletterShopMap">
+          <Key>
+            <PropertyRef Name="NewsletterId" />
+            <PropertyRef Name="ShopId" />
+            <PropertyRef Name="Filter" />
+          </Key>
+          <Property Name="NewsletterId" Type="Int32" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="Filter" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Newsletter" Relationship="ColspModel.FK_NewsletterShopMap_Newsletter" FromRole="NewsletterShopMap" ToRole="Newsletter" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_NewsletterShopMap_Shop" FromRole="NewsletterShopMap" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ODMPermission">
           <Key>
@@ -5508,6 +5585,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="LocalCategories" Relationship="ColspModel.FKLocalCategoryShop" FromRole="Shop" ToRole="LocalCategory" />
           <NavigationProperty Name="LocalCatFeatureProducts" Relationship="ColspModel.FK_LocalCatFeatureProduct_Shop" FromRole="Shop" ToRole="LocalCatFeatureProduct" />
           <NavigationProperty Name="LocalCatImages" Relationship="ColspModel.FK_LocalCatImage_Shop" FromRole="Shop" ToRole="LocalCatImage" />
+          <NavigationProperty Name="NewsletterShopMaps" Relationship="ColspModel.FK_NewsletterShopMap_Shop" FromRole="Shop" ToRole="NewsletterShopMap" />
           <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_Shop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Shop" FromRole="Shop" ToRole="ProductStageGroup" />
@@ -6557,6 +6635,34 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <PropertyRef Name="ShopId" />
             </Principal>
             <Dependent Role="LocalCatImage">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NewsletterShopMap_Newsletter">
+          <End Type="ColspModel.Newsletter" Role="Newsletter" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.NewsletterShopMap" Role="NewsletterShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Newsletter">
+              <PropertyRef Name="NewsletterId" />
+            </Principal>
+            <Dependent Role="NewsletterShopMap">
+              <PropertyRef Name="NewsletterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NewsletterShopMap_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.NewsletterShopMap" Role="NewsletterShopMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="NewsletterShopMap">
               <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
@@ -7911,9 +8017,22 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="PublishedDt" ColumnName="PublishedDt" />
                 <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
-                <ScalarProperty Name="VisbleShopGroup" ColumnName="VisbleShopGroup" />
+                <ScalarProperty Name="VisibleShopGroup" ColumnName="VisibleShopGroup" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="NewsletterId" ColumnName="NewsletterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NewsletterShopMaps">
+            <EntityTypeMapping TypeName="ColspModel.NewsletterShopMap">
+              <MappingFragment StoreEntitySet="NewsletterShopMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Filter" ColumnName="Filter" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="NewsletterId" ColumnName="NewsletterId" />
               </MappingFragment>
             </EntityTypeMapping>

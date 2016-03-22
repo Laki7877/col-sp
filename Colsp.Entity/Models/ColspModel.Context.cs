@@ -81,6 +81,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
         public virtual DbSet<LocalCatImage> LocalCatImages { get; set; }
         public virtual DbSet<Newsletter> Newsletters { get; set; }
+        public virtual DbSet<NewsletterShopMap> NewsletterShopMaps { get; set; }
         public virtual DbSet<ODMPermission> ODMPermissions { get; set; }
         public virtual DbSet<ODMProcessLog> ODMProcessLogs { get; set; }
         public virtual DbSet<ODMRole> ODMRoles { get; set; }
