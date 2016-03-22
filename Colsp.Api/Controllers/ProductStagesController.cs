@@ -2170,9 +2170,9 @@ namespace Colsp.Api.Controllers
 
         }
 
-        private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList,string email, ColspEntities db)
+        private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList, string email, ColspEntities db, bool isDefault = false)
         {
-            var tmpAttribute = variant.ProductStageAttributes.ToList();
+            var tmpAttribute = variant.ProductStageAttributes.Where(w=>w.Attribute.DefaultAttribute== isDefault).ToList();
             int position = 1;
             foreach (var request in requestList)
             {
