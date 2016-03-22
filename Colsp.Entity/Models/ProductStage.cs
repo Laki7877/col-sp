@@ -74,6 +74,7 @@ namespace Colsp.Entity.Models
         public string MetaKeyTh { get; set; }
         public string UrlEn { get; set; }
         public int BoostWeight { get; set; }
+        public int GlobalBoostWeight { get; set; }
         public bool DefaultVaraint { get; set; }
         public string Display { get; set; }
         public bool IsVariant { get; set; }

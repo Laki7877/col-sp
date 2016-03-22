@@ -1112,6 +1112,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="630" Nullable="false" />
           <Property Name="UrlEn" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="BoostWeight" Type="int" Nullable="false" />
+          <Property Name="GlobalBoostWeight" Type="int" Nullable="false" />
           <Property Name="DefaultVaraint" Type="bit" Nullable="false" />
           <Property Name="Display" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="IsVariant" Type="bit" Nullable="false" />
@@ -5062,6 +5063,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="MetaKeyTh" Type="String" Nullable="false" MaxLength="630" FixedLength="false" Unicode="true" />
           <Property Name="UrlEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="BoostWeight" Type="Int32" Nullable="false" />
+          <Property Name="GlobalBoostWeight" Type="Int32" Nullable="false" />
           <Property Name="DefaultVaraint" Type="Boolean" Nullable="false" />
           <Property Name="Display" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsVariant" Type="Boolean" Nullable="false" />
@@ -8042,6 +8044,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="IsVariant" ColumnName="IsVariant" />
                 <ScalarProperty Name="Display" ColumnName="Display" />
                 <ScalarProperty Name="DefaultVaraint" ColumnName="DefaultVaraint" />
+                <ScalarProperty Name="GlobalBoostWeight" ColumnName="GlobalBoostWeight" />
                 <ScalarProperty Name="BoostWeight" ColumnName="BoostWeight" />
                 <ScalarProperty Name="UrlEn" ColumnName="UrlEn" />
                 <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />

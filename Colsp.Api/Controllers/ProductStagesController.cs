@@ -1806,9 +1806,9 @@ namespace Colsp.Api.Controllers
             return group;
         }
 
-        private void SetupAttributeResponse(ProductStage variant, List<AttributeRequest> attributeList)
+        private void SetupAttributeResponse(ProductStage variant, List<AttributeRequest> attributeList,bool isDefault = false)
         {
-            foreach (var attribute in variant.ProductStageAttributes)
+            foreach (var attribute in variant.ProductStageAttributes.Where(w=>w.Attribute.DefaultAttribute=isDefault))
             {
                 if(attributeList.Where(w=>w.AttributeId==attribute.AttributeId).SingleOrDefault() != null)
                 {
@@ -1907,6 +1907,7 @@ namespace Colsp.Api.Controllers
             var masterVariant = product.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault();
             SetupVariantResponse(masterVariant, response.MasterVariant);
             SetupAttributeResponse(masterVariant, response.MasterAttribute);
+            SetupAttributeResponse(masterVariant, response.DefaultAttributes,true);
             var variants = product.ProductStages.Where(w => w.IsVariant == true).ToList();
             foreach (var variant in variants)
             {
