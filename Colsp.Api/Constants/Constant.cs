@@ -4,6 +4,11 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+        public static int SHIPPING_DROP_SHIP_3PL = 1;
+        public static int SHIPPING_FULFILLMENT = 2;
+
+        public static int DEFAULT_BOOSTWEIGHT = 5000;
+
         public static List<char> IGNORE_PID = new List<char>() {
                     '0',
                     'D',

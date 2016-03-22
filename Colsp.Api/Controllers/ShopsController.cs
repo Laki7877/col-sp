@@ -456,11 +456,11 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 #region Shop Commission
+                var commissions = shop.ShopCommissions.ToList();
                 if (request.Commissions != null && request.Commissions.Count > 0)
                 {
                     var catIds = request.Commissions.Where(w => w.CategoryId != 0).Select(s => s.CategoryId).ToList();
                     var globalCategory = db.GlobalCategories.Where(w => catIds.Contains(w.CategoryId)).ToList();
-                    var commissions = shop.ShopCommissions.ToList();
                     foreach (var catMap in request.Commissions)
                     {
                         if (catMap.CategoryId == 0 && catMap.Commission == 0)
@@ -508,10 +508,10 @@ namespace Colsp.Api.Controllers
                             });
                         }
                     }
-                    if(commissions != null && commissions.Count > 0)
-                    {
-                        db.ShopCommissions.RemoveRange(commissions);
-                    }
+                }
+                if (commissions != null && commissions.Count > 0)
+                {
+                    db.ShopCommissions.RemoveRange(commissions);
                 }
                 #endregion
                 shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.STATUS_ACTIVE, Constant.STATUS_NOT_ACTIVE });

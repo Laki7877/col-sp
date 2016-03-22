@@ -1430,7 +1430,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Key>
             <PropertyRef Name="ShippingId" />
           </Key>
-          <Property Name="ShippingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShippingId" Type="int" Nullable="false" />
           <Property Name="ShippingMethodEn" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ShippingMethodTh" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
@@ -5458,7 +5458,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Key>
             <PropertyRef Name="ShippingId" />
           </Key>
-          <Property Name="ShippingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShippingId" Type="Int32" Nullable="false" />
           <Property Name="ShippingMethodEn" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ShippingMethodTh" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
