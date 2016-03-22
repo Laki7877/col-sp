@@ -1808,7 +1808,7 @@ namespace Colsp.Api.Controllers
 
         private void SetupAttributeResponse(ProductStage variant, List<AttributeRequest> attributeList,bool isDefault = false)
         {
-            foreach (var attribute in variant.ProductStageAttributes.Where(w=>w.Attribute.DefaultAttribute=isDefault))
+            foreach (var attribute in variant.ProductStageAttributes.Where(w=>w.Attribute.DefaultAttribute==isDefault))
             {
                 if(attributeList.Where(w=>w.AttributeId==attribute.AttributeId).SingleOrDefault() != null)
                 {

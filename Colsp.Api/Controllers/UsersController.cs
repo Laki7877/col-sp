@@ -96,7 +96,7 @@ namespace Colsp.Api.Controllers
                     s.Email,
                     s.UpdatedDt,
                     UserGroup = s.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn),
-                    Shops = s.UserShopMaps.Select(sh=>sh.Shop.ShopNameEn)
+                    Shops = s.UserShopMaps.Select(sh=>sh.Shop.ShopNameEn),
                 });
 
                 if (request == null)
