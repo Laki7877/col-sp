@@ -68,6 +68,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
+        public virtual DbSet<Deal> Deals { get; set; }
         public virtual DbSet<District> Districts { get; set; }
         public virtual DbSet<GlobalCatAttributeSetMap> GlobalCatAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }

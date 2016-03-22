@@ -109,6 +109,10 @@ namespace Colsp.Api.Controllers
                     {
                         attrList = attrList.Where(a => a.DefaultAttribute == true);
                     }
+                    else if (string.Equals("NoDefaultAttribute", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        attrList = attrList.Where(a => a.DefaultAttribute == false);
+                    }
                 }
                 var total = attrList.Count();
                 var pagedAttribute = attrList.Paginate(request);

@@ -568,7 +568,7 @@ namespace Colsp.Api.Controllers
                 var claimsIdentity = this.User.Identity as ClaimsIdentity;
                 claim.Permission = claimsIdentity.Claims
                     .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
-                claim.Shop = this.User.ShopRequest();
+                claim.Shop = User.ShopRequest();
                 claim.User = new { NameEn = this.User.UserRequest().NameEn , Email = this.User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
                 return Request.CreateResponse(HttpStatusCode.OK, claim);
             }

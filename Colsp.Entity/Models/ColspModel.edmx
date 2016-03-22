@@ -650,6 +650,34 @@
           <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
         </EntityType>
+        <EntityType Name="Deal">
+          <Key>
+            <PropertyRef Name="DealId" />
+          </Key>
+          <Property Name="DealId" Type="int" Nullable="false" />
+          <Property Name="ProductPID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="TitleEN" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="DescriptionEN" Type="nvarchar" MaxLength="500" />
+          <Property Name="AvailableQty" Type="int" Nullable="false" />
+          <Property Name="ReserveQty" Type="int" Nullable="false" />
+          <Property Name="DealEffectiveDate" Type="date" />
+          <Property Name="DealEffectiveTime" Type="time" Precision="7" />
+          <Property Name="DealExpiryDate" Type="date" />
+          <Property Name="DealExpiryTime" Type="time" Precision="7" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="DealPrice" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="LimitQty" Type="int" Nullable="false" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="IsLockUser" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="District">
           <Key>
             <PropertyRef Name="DistrictId" />
@@ -1115,6 +1143,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="GlobalBoostWeight" Type="int" Nullable="false" />
           <Property Name="DefaultVaraint" Type="bit" Nullable="false" />
           <Property Name="Display" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="MiniQtyAllowed" Type="int" Nullable="false" />
+          <Property Name="MaxiQtyAllowed" Type="int" Nullable="false" />
+          <Property Name="UnitPrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="PurchasePrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="IsVariant" Type="bit" Nullable="false" />
           <Property Name="IsMaster" Type="bit" Nullable="false" />
           <Property Name="VariantCount" Type="int" Nullable="false" />
@@ -2961,6 +2993,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CustomerAddress" EntityType="Self.CustomerAddress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerToken" EntityType="Self.CustomerToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerWishList" EntityType="Self.CustomerWishList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Deal" EntityType="Self.Deal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="District" EntityType="Self.District" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCatAttributeSetMap" EntityType="Self.GlobalCatAttributeSetMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GlobalCategory" EntityType="Self.GlobalCategory" Schema="dbo" store:Type="Tables" />
@@ -3512,6 +3545,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CustomerAddresses" EntityType="ColspModel.CustomerAddress" />
           <EntitySet Name="CustomerTokens" EntityType="ColspModel.CustomerToken" />
           <EntitySet Name="CustomerWishLists" EntityType="ColspModel.CustomerWishList" />
+          <EntitySet Name="Deals" EntityType="ColspModel.Deal" />
           <EntitySet Name="Districts" EntityType="ColspModel.District" />
           <EntitySet Name="GlobalCatAttributeSetMaps" EntityType="ColspModel.GlobalCatAttributeSetMap" />
           <EntitySet Name="GlobalCategories" EntityType="ColspModel.GlobalCategory" />
@@ -4581,6 +4615,34 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
         </EntityType>
+        <EntityType Name="Deal">
+          <Key>
+            <PropertyRef Name="DealId" />
+          </Key>
+          <Property Name="DealId" Type="Int32" Nullable="false" />
+          <Property Name="ProductPID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="TitleEN" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AvailableQty" Type="Int32" Nullable="false" />
+          <Property Name="ReserveQty" Type="Int32" Nullable="false" />
+          <Property Name="DealEffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="DealEffectiveTime" Type="Time" Precision="7" />
+          <Property Name="DealExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="DealExpiryTime" Type="Time" Precision="7" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="DealPrice" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="LimitQty" Type="Int32" Nullable="false" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IsLockUser" Type="Boolean" Nullable="false" />
+        </EntityType>
         <EntityType Name="District">
           <Key>
             <PropertyRef Name="DistrictId" />
@@ -5066,6 +5128,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="GlobalBoostWeight" Type="Int32" Nullable="false" />
           <Property Name="DefaultVaraint" Type="Boolean" Nullable="false" />
           <Property Name="Display" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MiniQtyAllowed" Type="Int32" Nullable="false" />
+          <Property Name="MaxiQtyAllowed" Type="Int32" Nullable="false" />
+          <Property Name="UnitPrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="PurchasePrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
           <Property Name="IsVariant" Type="Boolean" Nullable="false" />
           <Property Name="IsMaster" Type="Boolean" Nullable="false" />
           <Property Name="VariantCount" Type="Int32" Nullable="false" />
@@ -7618,6 +7684,35 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Deals">
+            <EntityTypeMapping TypeName="ColspModel.Deal">
+              <MappingFragment StoreEntitySet="Deal">
+                <ScalarProperty Name="IsLockUser" ColumnName="IsLockUser" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
+                <ScalarProperty Name="LimitQty" ColumnName="LimitQty" />
+                <ScalarProperty Name="DealPrice" ColumnName="DealPrice" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DealExpiryTime" ColumnName="DealExpiryTime" />
+                <ScalarProperty Name="DealExpiryDate" ColumnName="DealExpiryDate" />
+                <ScalarProperty Name="DealEffectiveTime" ColumnName="DealEffectiveTime" />
+                <ScalarProperty Name="DealEffectiveDate" ColumnName="DealEffectiveDate" />
+                <ScalarProperty Name="ReserveQty" ColumnName="ReserveQty" />
+                <ScalarProperty Name="AvailableQty" ColumnName="AvailableQty" />
+                <ScalarProperty Name="DescriptionEN" ColumnName="DescriptionEN" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="TitleEN" ColumnName="TitleEN" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ProductPID" ColumnName="ProductPID" />
+                <ScalarProperty Name="DealId" ColumnName="DealId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Districts">
             <EntityTypeMapping TypeName="ColspModel.District">
               <MappingFragment StoreEntitySet="District">
@@ -8042,6 +8137,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="VariantCount" ColumnName="VariantCount" />
                 <ScalarProperty Name="IsMaster" ColumnName="IsMaster" />
                 <ScalarProperty Name="IsVariant" ColumnName="IsVariant" />
+                <ScalarProperty Name="PurchasePrice" ColumnName="PurchasePrice" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="MaxiQtyAllowed" ColumnName="MaxiQtyAllowed" />
+                <ScalarProperty Name="MiniQtyAllowed" ColumnName="MiniQtyAllowed" />
                 <ScalarProperty Name="Display" ColumnName="Display" />
                 <ScalarProperty Name="DefaultVaraint" ColumnName="DefaultVaraint" />
                 <ScalarProperty Name="GlobalBoostWeight" ColumnName="GlobalBoostWeight" />

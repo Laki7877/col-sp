@@ -194,7 +194,7 @@ namespace Colsp.Api.Filters
 				}
 				var identity = new ClaimsIdentity(claims, "Basic");
 				var principal = new UsersPrincipal(identity,
-                    user.Shops == null ? null : user.UserShopMaps.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.Shop.ShopNameEn, Status = s.Shop.Status, IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true }).ToList(),
+                    user.Shops == null ? null : user.UserShopMaps.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.Shop.ShopNameEn, Status = s.Shop.Status,ShopGroup = s.Shop.ShopGroup, IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true }).ToList(),
                     new UserRequest { UserId = user.UserId, Email = user.Email, NameEn = user.NameEn, NameTh = user.NameTh, Type = user.Type, IsPasswordChange = string.IsNullOrEmpty(user.PasswordLastChg) ? false : true });
 
                 user.LastLoginDt = DateTime.Now;

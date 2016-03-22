@@ -77,6 +77,10 @@ namespace Colsp.Entity.Models
         public int GlobalBoostWeight { get; set; }
         public bool DefaultVaraint { get; set; }
         public string Display { get; set; }
+        public int MiniQtyAllowed { get; set; }
+        public int MaxiQtyAllowed { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal PurchasePrice { get; set; }
         public bool IsVariant { get; set; }
         public bool IsMaster { get; set; }
         public int VariantCount { get; set; }

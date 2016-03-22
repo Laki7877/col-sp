@@ -273,6 +273,9 @@
     <Compile Include="Models\CustomerWishList.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Deal.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\District.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
