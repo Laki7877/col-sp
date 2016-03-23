@@ -93,6 +93,10 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Pid> Pids { get; set; }
         public virtual DbSet<PostCode> PostCodes { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
+        public virtual DbSet<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
         public virtual DbSet<ProductStageAttribute> ProductStageAttributes { get; set; }
@@ -105,7 +109,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
-        public virtual DbSet<ProductTemp> ProductTemps { get; set; }
+        public virtual DbSet<ProductTag> ProductTags { get; set; }
+        public virtual DbSet<ProductTmp> ProductTmps { get; set; }
+        public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
         public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
@@ -122,7 +128,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
-        public virtual DbSet<Table> Tables { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }

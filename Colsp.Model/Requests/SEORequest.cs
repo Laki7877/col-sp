@@ -12,6 +12,8 @@
         public string ProductUrlKeyEn          { get; set; }
         public int ProductBoostingWeight       { get; set; }
         public int GlobalProductBoostingWeight { get; set; }
+        public string SeoEn { get; set; }
+        public string SeoTh { get; set; }
 
         public SEORequest()
         {
@@ -23,6 +25,8 @@
             MetaKeywordTh         = string.Empty;
             ProductUrlKeyTh       = string.Empty;
             ProductUrlKeyEn       = string.Empty;
+            SeoEn = string.Empty;
+            SeoTh = string.Empty;
             ProductBoostingWeight = 0;
             GlobalProductBoostingWeight = 0;
         }

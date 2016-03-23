@@ -351,6 +351,18 @@
     <Compile Include="Models\Product.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductAttribute.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductGlobalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductLocalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductRelated.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ProductReview.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -387,7 +399,13 @@
     <Compile Include="Models\ProductStageVideo.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ProductTemp.cs">
+    <Compile Include="Models\ProductTag.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductTmp.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductVideo.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PromotionBuy1Get1Item.cs">
@@ -439,9 +457,6 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Table.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBAdminMenuItemTmp.cs">

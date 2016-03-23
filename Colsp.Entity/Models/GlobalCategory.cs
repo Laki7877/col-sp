@@ -24,6 +24,7 @@ namespace Colsp.Entity.Models
             this.Products = new HashSet<Product>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
             this.ShopCommissions = new HashSet<ShopCommission>();
+            this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
             this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
         }
     
@@ -62,6 +63,8 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopCommission> ShopCommissions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
     }

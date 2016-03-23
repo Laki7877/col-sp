@@ -67,7 +67,7 @@ namespace Colsp.Api.Controllers
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
                     shopList = shopList.Where(a => a.ShopNameEn.Contains(request.SearchText) 
-                    || SqlFunctions.StringConvert((double)a.ShopId).Contains(request.SearchText)
+                    || a.ShopId.ToString().Equals(request.SearchText)
                     || a.ShopType.ShopTypeNameEn.Contains(request.SearchText));
                 }
                 var total = shopList.Count();

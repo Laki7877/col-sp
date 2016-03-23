@@ -329,7 +329,7 @@ namespace Colsp.Api.Controllers
                         s.NameTh,
                         s.Email,
                         s.UpdatedDt,
-                        UserGroup = s.UserGroupMaps.Select(ug=>ug.UserGroup.GroupNameEn)
+                        UserGroup = s.UserGroupMaps.Select(ug=>new { ug.UserGroup.GroupNameEn })
                     });
                 if (request == null)
                 {

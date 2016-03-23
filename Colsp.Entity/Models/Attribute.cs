@@ -20,6 +20,7 @@ namespace Colsp.Entity.Models
             this.AttributeSetMaps = new HashSet<AttributeSetMap>();
             this.AttributeValueMaps = new HashSet<AttributeValueMap>();
             this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
+            this.ProductAttributes = new HashSet<ProductAttribute>();
         }
     
         public int AttributeId { get; set; }
@@ -53,5 +54,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<AttributeValueMap> AttributeValueMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
     }
 }
