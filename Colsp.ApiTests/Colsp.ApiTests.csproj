@@ -46,11 +46,14 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BusinessLogic\CMSLogic_Test.cs" />
     <Compile Include="Controllers\AttributesControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,10 +62,23 @@
       <Project>{BAC72ED0-D579-4052-A59B-5E4FCB8073BA}</Project>
       <Name>Colsp.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Colsp.Entity\Colsp.Entity.csproj">
+      <Project>{4900b20b-c0bc-4f3f-97c0-3df428740322}</Project>
+      <Name>Colsp.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Colsp.Logic\Colsp.Logic.csproj">
+      <Project>{7ab75edd-88fb-4c4a-b092-df49df9a6b87}</Project>
+      <Name>Colsp.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Colsp.Model\Colsp.Model.csproj">
+      <Project>{226b2ad2-649f-4d2d-b17e-e2afb474a274}</Project>
+      <Name>Colsp.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

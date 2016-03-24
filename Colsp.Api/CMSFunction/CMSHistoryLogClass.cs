@@ -64,7 +64,7 @@ namespace Colsp.Api.CMSFunction
             {
                 using (ColspEntities db = new ColspEntities())
                 {
-                    CMSHistoryLog Cmslog = new CMSHistoryLog();
+                    //CMSHistoryLog Cmslog = new CMSHistoryLog();
                     Cmslog.ChangeId = Id;
                     Cmslog.CMSTableLog = Tablename;
                     Cmslog.DetailLog = JsonText;
@@ -73,7 +73,7 @@ namespace Colsp.Api.CMSFunction
                     Cmslog.CreateBy = UserId;
                     Cmslog.Createdate = DateTime.Now;
                     Cmslog.CreateIP = IP;
-                    db.CMSHistoryLogs.Add(Cmslog);
+                    //db.CMSHistoryLogs.Add(Cmslog);
                     if (db.SaveChanges() > 0)
                         result = true;
                     return result;

@@ -12,13 +12,13 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSCategoryProduct
+    public partial class CMSScheduler
     {
-        public int CMSCollectionCategoryId { get; set; }
-        public string CMSCollectionCategoryNameEN { get; set; }
-        public string CMSCollectionCategoryNameTH { get; set; }
-        public string BannerLocation { get; set; }
-        public string BannerConntent { get; set; }
+        public int CMSSchedulerId { get; set; }
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
@@ -27,9 +27,5 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
-        public Nullable<System.DateTime> EffectiveDate { get; set; }
-        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
-        public Nullable<System.DateTime> ExpiryDate { get; set; }
-        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
     }
 }

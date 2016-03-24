@@ -12,14 +12,13 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSGroup
+    public partial class CMSMasterType
     {
-        public int CMSGroupId { get; set; }
-        public string CMSGroupNameTH { get; set; }
-        public string CMSGroupNameEN { get; set; }
-        public Nullable<int> Sequence { get; set; }
+        public int CMSMasterTypeId { get; set; }
+        public string CMSMasterTypeCode { get; set; }
+        public string CMSMasterTypeNameTH { get; set; }
+        public string CMSMasterTypeNameEN { get; set; }
         public Nullable<bool> Status { get; set; }
-        public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public Nullable<int> UpdateBy { get; set; }

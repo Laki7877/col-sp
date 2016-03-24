@@ -12,12 +12,12 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSFilter
+    public partial class CMSCategorySchedulerMap
     {
-        public int CMSSortId { get; set; }
-        public string CMSSortNameTH { get; set; }
-        public string CMSSortNameEN { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public int CMSCategorySchedulerMapId { get; set; }
+        public Nullable<int> CMSSchedulerId { get; set; }
+        public string CMSCategoryId { get; set; }
+        public Nullable<bool> IsActive { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public Nullable<int> UpdateBy { get; set; }

@@ -36,12 +36,25 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual DbSet<BrandImage> BrandImages { get; set; }
+        public virtual DbSet<CartDetail> CartDetails { get; set; }
+        public virtual DbSet<CartDiscount> CartDiscounts { get; set; }
+        public virtual DbSet<CartHead> CartHeads { get; set; }
         public virtual DbSet<City> Cities { get; set; }
-        public virtual DbSet<CMSFilter> CMSFilters { get; set; }
-        public virtual DbSet<CMSHistoryLog> CMSHistoryLogs { get; set; }
+        public virtual DbSet<CMSCategory> CMSCategories { get; set; }
+        public virtual DbSet<CMSCategoryCreteriaMap> CMSCategoryCreteriaMaps { get; set; }
+        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
+        public virtual DbSet<CMSCategorySchedulerMap> CMSCategorySchedulerMaps { get; set; }
+        public virtual DbSet<CMSCreteria> CMSCreterias { get; set; }
+        public virtual DbSet<CMSCriteriaProductMap> CMSCriteriaProductMaps { get; set; }
+        public virtual DbSet<CMSGroup> CMSGroups { get; set; }
         public virtual DbSet<CMSMaster> CMSMasters { get; set; }
-        public virtual DbSet<CMSStatusFlow> CMSStatusFlows { get; set; }
-        public virtual DbSet<CMSType> CMSTypes { get; set; }
+        public virtual DbSet<CMSMasterGroupMap> CMSMasterGroupMaps { get; set; }
+        public virtual DbSet<CMSMasterSchedulerMap> CMSMasterSchedulerMaps { get; set; }
+        public virtual DbSet<CMSMasterSchedulerShopMap> CMSMasterSchedulerShopMaps { get; set; }
+        public virtual DbSet<CMSMasterStatu> CMSMasterStatus { get; set; }
+        public virtual DbSet<CMSMasterType> CMSMasterTypes { get; set; }
+        public virtual DbSet<CMSMastserCategoryMap> CMSMastserCategoryMaps { get; set; }
+        public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
@@ -55,6 +68,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
+        public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
         public virtual DbSet<District> Districts { get; set; }
         public virtual DbSet<GlobalCatAttributeSetMap> GlobalCatAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
@@ -86,9 +100,11 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageGroup> ProductStageGroups { get; set; }
         public virtual DbSet<ProductStageImage> ProductStageImages { get; set; }
         public virtual DbSet<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
+        public virtual DbSet<ProductStageMaster> ProductStageMasters { get; set; }
         public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
+        public virtual DbSet<ProductTemp> ProductTemps { get; set; }
         public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
         public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
@@ -104,6 +120,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceive> StoreReceives { get; set; }
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<Table> Tables { get; set; }
+        public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
@@ -121,8 +140,5 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
-        public virtual DbSet<CMSGroup> CMSGroups { get; set; }
-        public virtual DbSet<CMSCategoryProduct> CMSCategoryProducts { get; set; }
-        public virtual DbSet<CMSCategoryProductItem> CMSCategoryProductItems { get; set; }
     }
 }

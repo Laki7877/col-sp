@@ -54,8 +54,8 @@ namespace Colsp.Api.ByOneGetOneFunction
                         {
                             dbcxtransaction.Commit();
                             ////History Log
-                            HistoryLogClass log = new HistoryLogClass();
-                            log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Create", (int)newObj.CreateBy, newObj.CreateIP);
+                            //HistoryLogClass log = new HistoryLogClass();
+                            //log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Create", (int)newObj.CreateBy, newObj.CreateIP);
                             result = newObj.PromotionBuy1Get1ItemId;
                         }
                         return result;
@@ -116,8 +116,8 @@ namespace Colsp.Api.ByOneGetOneFunction
                             {
                                 dbcxtransaction.Commit();
                                 //History Log
-                                HistoryLogClass log = new HistoryLogClass();
-                                log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Update", (int)newObj.UpdateBy, newObj.UpdateIP);
+                                //HistoryLogClass log = new HistoryLogClass();
+                                //log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Update", (int)newObj.UpdateBy, newObj.UpdateIP);
                                 result = newObj.PromotionBuy1Get1ItemId;
                             }
                         }
@@ -179,8 +179,8 @@ namespace Colsp.Api.ByOneGetOneFunction
                             {
                                 dbcxtransaction.Commit();
                                 //History Log
-                                HistoryLogClass log = new HistoryLogClass();
-                                log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Update", (int)newObj.UpdateBy, newObj.UpdateIP);
+                                //HistoryLogClass log = new HistoryLogClass();
+                                //log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Update", (int)newObj.UpdateBy, newObj.UpdateIP);
                                 result = newObj.PromotionBuy1Get1ItemId;
                             }
                         }

@@ -12,16 +12,12 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSHistoryLog
+    public partial class sysdiagram
     {
-        public int CMSHistoryLogId { get; set; }
-        public Nullable<int> ChangeId { get; set; }
-        public string CMSTableLog { get; set; }
-        public string TransactionLog { get; set; }
-        public string DetailLog { get; set; }
-        public Nullable<bool> Status { get; set; }
-        public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> Createdate { get; set; }
-        public string CreateIP { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

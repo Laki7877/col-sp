@@ -12,16 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSGroup
+    public partial class CMSCreteria
     {
-        public int CMSGroupId { get; set; }
-        public string CMSGroupNameTH { get; set; }
-        public string CMSGroupNameEN { get; set; }
-        public Nullable<int> Sequence { get; set; }
-        public Nullable<bool> Status { get; set; }
-        public Nullable<bool> Visibility { get; set; }
+        public int CMSCreteriaId { get; set; }
+        public Nullable<int> CategoryId { get; set; }
+        public Nullable<int> Brand { get; set; }
+        public Nullable<decimal> MinPrice { get; set; }
+        public Nullable<decimal> MaxPrice { get; set; }
+        public Nullable<bool> IsActive { get; set; }
         public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> Createdate { get; set; }
+        public Nullable<System.DateTime> CreateDate { get; set; }
         public Nullable<int> UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }

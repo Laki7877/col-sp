@@ -321,7 +321,7 @@ namespace Colsp.Api.Controllers
                     sb = new StringBuilder();
                     if (rq.PromotionBuy1Get1ItemId == default(int)) { throw new Exception("Buy 1 Get 1 Id cannot be null"); }
                     var coll = db.PromotionBuy1Get1Item.Find(rq.PromotionBuy1Get1ItemId);
-                    var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
+                    //var cmsFlowStatus = db.CMSStatusFlows.Find(coll.CMSStatusFlowId);
                     var buyItemName = db.Products.Find(coll.PIDBuy);
                     var getItemName = db.Products.Find(coll.PIDGet);
                     var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
@@ -387,7 +387,7 @@ namespace Colsp.Api.Controllers
                     }
                     sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
                     sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
-                    sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
+                    //sb.Append(cmsFlowStatus.CMSStatusName); sb.Append(",");
                     sb.Append(visible); sb.Append(",");
 
 
