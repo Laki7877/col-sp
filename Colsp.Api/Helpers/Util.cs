@@ -109,6 +109,10 @@ namespace Colsp.Api.Helpers
                                 throw sqlException;
                         }
                     }
+                    else
+                    {
+                        throw tmpException;
+                    }
                 }
                 catch (Exception e)
                 {

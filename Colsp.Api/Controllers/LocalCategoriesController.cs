@@ -125,57 +125,38 @@ namespace Colsp.Api.Controllers
             try
             {
                 int shopId = this.User.ShopRequest().ShopId;
-                var cat = (from localCat in db.LocalCategories
-                          join featureProduct in db.LocalCatFeatureProducts on localCat.CategoryId equals featureProduct.CategoryId into featureJoin
-                          from featureProduct in featureJoin.DefaultIfEmpty()
-                          join productGroup in db.ProductStageGroups on featureProduct.ProductId equals productGroup.ProductId into productGroupJoin
-                          from productGroup in productGroupJoin.DefaultIfEmpty()
-                          join stage in db.ProductStages on productGroup.ProductId equals stage.ProductId into stageJoin
-                          from stage in stageJoin.DefaultIfEmpty()
-                          where localCat.ShopId == shopId && featureProduct == null || (featureProduct != null && productGroup != null && stage != null && stage.IsVariant==false) 
-                          select new
-                          {
-                              localCat.CategoryId,
-                              localCat.NameEn,
-                              localCat.NameTh,
-                              localCat.DescriptionFullEn,
-                              localCat.DescriptionFullTh,
-                              localCat.DescriptionShortEn,
-                              localCat.DescriptionShortTh,
-                              localCat.FeatureTitle,
-                              localCat.TitleShowcase,
-                              localCat.UrlKeyEn,
-                              localCat.UrlKeyTh,
-                              localCat.Visibility,
-                              localCat.ShopId,
-                              localCat.Lft,
-                              localCat.Rgt,
-                              FeatureProducts = featureProduct == null ? null : productGroup == null ? null : stage == null ? null :
-                              new { stage.ProductId, stage.Pid, stage.ProductNameEn }
-                          }).SingleOrDefault();
-                //var cat = db.LocalCategories
-                //    .Where(w => w.ShopId == shopId && w.CategoryId == categoryId)
-                //    .Select(s => new
-                //    {
-                //        s.CategoryId,
-                //        s.NameEn,
-                //        s.NameTh,
-                //        s.DescriptionFullEn,
-                //        s.DescriptionFullTh,
-                //        s.DescriptionShortEn,
-                //        s.DescriptionShortTh,
-                //        s.FeatureTitle,
-                //        s.TitleShowcase,
-                //        s.UrlKeyEn,
-                //        s.UrlKeyTh,
-                //        s.Visibility,
-                //        s.ShopId,
-                //        s.Lft,
-                //        s.Rgt,
-                //        FeatureProducts = s.LocalCatFeatureProducts.Select(sc => new { sc.ProductId, sc.ProductStage.Pid, sc.ProductStage.ProductNameEn })
-                //    })
-                //    .SingleOrDefault();
-                //var cat = db.LocalCategories.Where(w => w.ShopId == shopId && w.CategoryId == categoryId).SingleOrDefault();
+                var cat = (from category in db.LocalCategories
+                                 where category.CategoryId == categoryId && category.ShopId == shopId
+                                 select new
+                                 {
+                                     category.CategoryId,
+                                     category.NameEn,
+                                     category.NameTh,
+                                     CategoryBannerEn = category.LocalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o => o.Position).Select(si => new {
+                                         url = si.ImageUrl,
+                                         position = si.Position
+                                     }),
+                                     CategoryBannerTh = category.LocalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).OrderBy(o => o.Position).Select(si => new {
+                                         url = si.ImageUrl,
+                                         position = si.Position
+                                     }),
+                                     FeatureProducts = category.LocalCatFeatureProducts
+                                        .Select(s => new
+                                        {
+                                            s.ProductId,
+                                            s.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault().Pid,
+                                            s.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault().ProductNameEn
+                                        }),
+                                     category.DescriptionFullEn,
+                                     category.DescriptionFullTh,
+                                     category.DescriptionShortEn,
+                                     category.DescriptionShortTh,
+                                     category.FeatureTitle,
+                                     category.UrlKeyEn,
+                                     category.UrlKeyTh,
+                                     category.Visibility,
+                                     category.Status,
+                                 }).SingleOrDefault();
                 if(cat == null)
                 {
                     throw new Exception(HttpErrorMessage.NotFound);
@@ -209,6 +190,7 @@ namespace Colsp.Api.Controllers
                         category.LocalCatImages.Add(new LocalCatImage()
                         {
                             ImageUrl = img.url,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
                             UpdatedBy = this.User.UserRequest().Email,
@@ -226,6 +208,7 @@ namespace Colsp.Api.Controllers
                         category.LocalCatImages.Add(new LocalCatImage()
                         {
                             ImageUrl = img.url,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
                             UpdatedBy = this.User.UserRequest().Email,
@@ -253,8 +236,7 @@ namespace Colsp.Api.Controllers
                     category.Lft = max + 1;
                     category.Rgt = max + 2;
                 }
-                db.LocalCategories.Add(category);
-                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
+                category.CategoryId = db.LocalCategoryId().SingleOrDefault().Value;
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
                     category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
@@ -263,6 +245,8 @@ namespace Colsp.Api.Controllers
                 {
                     category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
                 }
+
+                db.LocalCategories.Add(category);
                 Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK, category);
             }
@@ -632,8 +616,8 @@ namespace Colsp.Api.Controllers
             category.UrlKeyTh = Validation.ValidateString(request.UrlKeyTh, "Url Key (Thai)", true, 100, true, string.Empty);
             category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false, string.Empty);
             category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false, string.Empty);
-            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, 500, false, string.Empty);
-            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, 500, false, string.Empty);
+            category.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Category Short Description (English)", false, 500, false, string.Empty);
+            category.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Category Short Description (Thai)", false, 500, false, string.Empty);
             category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
         }

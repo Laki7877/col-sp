@@ -12,14 +12,12 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CreditCardType
+    public partial class CMSFilter
     {
-        public int CreditCardTypeId { get; set; }
-        public string CreditCardTypeCode { get; set; }
-        public string CreditCardTypeName { get; set; }
-        public Nullable<int> Digit { get; set; }
+        public int CMSSortId { get; set; }
+        public string CMSSortNameTH { get; set; }
+        public string CMSSortNameEN { get; set; }
         public Nullable<bool> Status { get; set; }
-        public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
         public Nullable<int> UpdateBy { get; set; }

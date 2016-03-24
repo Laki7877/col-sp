@@ -15,7 +15,7 @@ namespace Colsp.Entity.Models
     public partial class CustomerAddress
     {
         public int AddressId { get; set; }
-        public string UserId { get; set; }
+        public string CustomerId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AddressLine1 { get; set; }

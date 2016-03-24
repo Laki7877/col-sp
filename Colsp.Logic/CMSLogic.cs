@@ -1,4 +1,5 @@
-﻿using Colsp.Entity.Models;
+﻿
+using Colsp.Entity.Models;
 using Colsp.Model;
 using Colsp.Model.Requests;
 using Colsp.Model.Responses;
@@ -55,7 +56,7 @@ namespace Colsp.Logic
 
                     if (condition.BrandId != null)
                         query = query.Where(x => x.BrandId == condition.BrandId);
-
+                    
                     if (condition.BrandNameEn != null)
                         query = query.Where(x => x.BrandNameEn.Equals(condition.BrandNameEn));
 
@@ -119,7 +120,7 @@ namespace Colsp.Logic
                     
                     row     = db.SaveChanges();
                     success = row > -1;
-                }
+            }
             }
             catch (Exception ex)
             {
@@ -162,7 +163,7 @@ namespace Colsp.Logic
                         {
                             db.CMSCategoryProductMaps.Remove(cmsCategoryProduct);
                         }
-                    }
+            }
                     
                     if (cmsCategory != null)
                     {
@@ -214,7 +215,7 @@ namespace Colsp.Logic
 
                     db.SaveChanges();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -232,6 +233,10 @@ namespace Colsp.Logic
 
 
         #region Start CMS Group Method
+
+        #endregion
+
+        #region Get All CMS Master
 
         #endregion
     }

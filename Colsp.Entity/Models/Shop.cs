@@ -40,8 +40,8 @@ namespace Colsp.Entity.Models
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
         public int MaxLocalCategory { get; set; }
-        public bool GiftWrap { get; set; }
-        public bool TaxInvoice { get; set; }
+        public string GiftWrap { get; set; }
+        public string TaxInvoice { get; set; }
         public string ShopGroup { get; set; }
         public string ShopImageUrl { get; set; }
         public string ShopDescriptionEn { get; set; }
@@ -51,7 +51,7 @@ namespace Colsp.Entity.Models
         public string BankAccountNumber { get; set; }
         public string BankAccountName { get; set; }
         public string Facebook { get; set; }
-        public string Youtube { get; set; }
+        public string YouTube { get; set; }
         public string Twitter { get; set; }
         public string Instagram { get; set; }
         public string Pinterest { get; set; }

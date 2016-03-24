@@ -12,12 +12,10 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class UserStatu
+    public partial class CMSStatusFlow
     {
-        public int UserStatusId { get; set; }
-        public string OnTable { get; set; }
-        public string StatusCode { get; set; }
-        public string Description { get; set; }
+        public int CMSStatusId { get; set; }
+        public string CMSStatusName { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }

@@ -22,6 +22,8 @@ namespace Colsp.Entity.Models
             this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
             this.ProductStages = new HashSet<ProductStage>();
             this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
+            this.ProductStageRelateds = new HashSet<ProductStageRelated>();
+            this.ProductStageRelateds1 = new HashSet<ProductStageRelated>();
             this.ProductStageTags = new HashSet<ProductStageTag>();
             this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
         }
@@ -33,7 +35,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> AttributeSetId { get; set; }
         public Nullable<int> BrandId { get; set; }
         public int TheOneCardEarn { get; set; }
-        public string GiftWarp { get; set; }
+        public string GiftWrap { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<System.DateTime> ExpireDate { get; set; }
         public bool ControlFlag1 { get; set; }
@@ -71,6 +73,10 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
         public virtual Shop Shop { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageRelated> ProductStageRelateds { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageRelated> ProductStageRelateds1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageTag> ProductStageTags { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

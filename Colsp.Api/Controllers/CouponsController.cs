@@ -538,6 +538,7 @@ namespace Colsp.Api.Controllers
                                     if (addNew)
                                     {
                                         CouponGlobalCatMap map = new CouponGlobalCatMap();
+                                        map.Filter = Constant.COUPON_FILTER_INCLUDE;
                                         map.CouponId = coupon.CouponId;
                                         map.CategoryId = c.CategoryId;
                                         map.CreatedBy = this.User.UserRequest().Email;
@@ -579,6 +580,7 @@ namespace Colsp.Api.Controllers
                                     if (addNew)
                                     {
                                         CouponLocalCatMap map = new CouponLocalCatMap();
+                                        map.Filter = Constant.COUPON_FILTER_INCLUDE;
                                         map.CouponId = coupon.CouponId;
                                         map.CategoryId = c.CategoryId;
                                         map.CreatedBy = this.User.UserRequest().Email;
@@ -707,6 +709,10 @@ namespace Colsp.Api.Controllers
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        coupon.FilterBy = string.Empty;
                     }
                 }
 

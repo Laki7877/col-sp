@@ -55,6 +55,9 @@
       <HintPath>..\packages\CacheManager.SystemRuntimeCaching.0.6.1\lib\net45\CacheManager.SystemRuntimeCaching.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Colsp.Logic">
+      <HintPath>..\Colsp.Logic\bin\Debug\Colsp.Logic.dll</HintPath>
+    </Reference>
     <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
       <Private>True</Private>
@@ -226,13 +229,14 @@
     <Compile Include="CMSFunction\GetCMSList.cs" />
     <Compile Include="CMSFunction\GetCMSSearch.cs" />
     <Compile Include="CMSFunction\JsonContent.cs" />
+    <Compile Include="Controllers\CMSController.cs" />
+    <Compile Include="Controllers\PromotionController.cs" />
     <Compile Include="Constants\AppSettingKey.cs" />
     <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
     <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
-    <Compile Include="Controllers\BuyOneGetOneController.cs" />
     <Compile Include="Controllers\CMSManagementController.cs" />
     <Compile Include="Controllers\CouponConditionsController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
@@ -288,6 +292,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
     <Folder Include="NewFolder1\" />
+    <Folder Include="PromotionFunction\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

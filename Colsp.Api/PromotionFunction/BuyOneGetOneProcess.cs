@@ -5,7 +5,6 @@ using System.Web;
 using Colsp.Model.Request;
 using Colsp.Entity.Models;
 using System.Data.Entity;
-using Colsp.Api.CMSFunction;
 
 namespace Colsp.Api.ByOneGetOneFunction
 {
@@ -53,9 +52,6 @@ namespace Colsp.Api.ByOneGetOneFunction
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
                             dbcxtransaction.Commit();
-                            ////History Log
-                            //HistoryLogClass log = new HistoryLogClass();
-                            //log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Create", (int)newObj.CreateBy, newObj.CreateIP);
                             result = newObj.PromotionBuy1Get1ItemId;
                         }
                         return result;
@@ -115,9 +111,6 @@ namespace Colsp.Api.ByOneGetOneFunction
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
                                 dbcxtransaction.Commit();
-                                //History Log
-                                //HistoryLogClass log = new HistoryLogClass();
-                                //log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Update", (int)newObj.UpdateBy, newObj.UpdateIP);
                                 result = newObj.PromotionBuy1Get1ItemId;
                             }
                         }
@@ -178,9 +171,6 @@ namespace Colsp.Api.ByOneGetOneFunction
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
                                 dbcxtransaction.Commit();
-                                //History Log
-                                //HistoryLogClass log = new HistoryLogClass();
-                                //log.LogCreateCMS(newObj.PromotionBuy1Get1ItemId, "ProBy1Get1", newObj.Status, "Update", (int)newObj.UpdateBy, newObj.UpdateIP);
                                 result = newObj.PromotionBuy1Get1ItemId;
                             }
                         }

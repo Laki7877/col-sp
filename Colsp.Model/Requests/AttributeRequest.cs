@@ -28,6 +28,8 @@ namespace Colsp.Model.Requests
         public string ValueEn { get; set; }
         public string SearchText { get; set; }
         public int ProductCount { get; set; }
+        public bool DefaultAttribute { get; set; }
+        public string VisibleTo { get; set; }
 
         public AttributeRequest()
         {
@@ -53,6 +55,7 @@ namespace Colsp.Model.Requests
             ValueEn = string.Empty;
             SearchText = string.Empty;
             ProductCount = 0;
+            DefaultAttribute = false;
             AttributeValues = new List<AttributeValueRequest>();
         }
 
