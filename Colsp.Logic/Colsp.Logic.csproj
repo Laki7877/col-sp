@@ -30,15 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Colsp.Api">
-      <HintPath>..\Colsp.Api\bin\Colsp.Api.dll</HintPath>
-    </Reference>
-    <Reference Include="Colsp.Entity">
-      <HintPath>..\Colsp.Entity\bin\Colsp.Entity.dll</HintPath>
-    </Reference>
-    <Reference Include="Colsp.Model">
-      <HintPath>..\Colsp.Model\bin\Release\Colsp.Model.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -76,6 +67,16 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Colsp.Entity\Colsp.Entity.csproj">
+      <Project>{4900b20b-c0bc-4f3f-97c0-3df428740322}</Project>
+      <Name>Colsp.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Colsp.Model\Colsp.Model.csproj">
+      <Project>{226b2ad2-649f-4d2d-b17e-e2afb474a274}</Project>
+      <Name>Colsp.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

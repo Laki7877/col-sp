@@ -248,6 +248,25 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="CMSCategoryProductMap">
+          <Key>
+            <PropertyRef Name="CMSCategoryProductMapId" />
+          </Key>
+          <Property Name="CMSCategoryProductMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCategoryId" Type="int" />
+          <Property Name="ProductPID" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="CMSMasterStatusId" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="CMSCategorySchedulerMap">
           <Key>
             <PropertyRef Name="CMSCategorySchedulerMapId" />
@@ -2921,6 +2940,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="City" EntityType="Self.City" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCategory" EntityType="Self.CMSCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCategoryCreteriaMap" EntityType="Self.CMSCategoryCreteriaMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCategoryProductMap" EntityType="Self.CMSCategoryProductMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCategorySchedulerMap" EntityType="Self.CMSCategorySchedulerMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCreteria" EntityType="Self.CMSCreteria" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCriteriaProductMap" EntityType="Self.CMSCriteriaProductMap" Schema="dbo" store:Type="Tables" />
@@ -3530,6 +3550,9 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="ProductStageTags" EntityType="ColspModel.ProductStageTag" />
           <EntitySet Name="ProductStageVideos" EntityType="ColspModel.ProductStageVideo" />
           <EntitySet Name="ProductTemps" EntityType="ColspModel.ProductTemp" />
+          <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
+          <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
+          <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           <EntitySet Name="Provinces" EntityType="ColspModel.Province" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
@@ -3872,9 +3895,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
-          <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
-          <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
-          <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
+          <EntitySet Name="CMSCategoryProductMaps" EntityType="ColspModel.CMSCategoryProductMap" />
           </EntityContainer>
         <EntityType Name="AppAuth">
           <Key>
@@ -5276,6 +5297,88 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductTemp_Shop" FromRole="ProductTemp" ToRole="Shop" />
+        </EntityType>
+        <EntityType Name="PromotionBuy1Get1Item">
+          <Key>
+            <PropertyRef Name="PromotionBuy1Get1ItemId" />
+          </Key>
+          <Property Name="PromotionBuy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="PIDBuy" Type="Int32" />
+          <Property Name="PIDGet" Type="Int32" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditCard">
+          <Key>
+            <PropertyRef Name="OnTopCreditCardId" />
+          </Key>
+          <Property Name="OnTopCreditCardId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="PaymantId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DiscountType" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="FreeShipping" Type="Boolean" />
+          <Property Name="DiscountValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumOrderAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaximumDiscountAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IconURLTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="IconURLEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PromotionOnTopCreditNumber">
+          <Key>
+            <PropertyRef Name="OnTopCreditNumberId" />
+          </Key>
+          <Property Name="OnTopCreditNumberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OnTopCreditCardId" Type="Int32" />
+          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CreditNumberFormat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Digit" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Province">
           <Key>
@@ -6827,83 +6930,20 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="PromotionBuy1Get1Item">
+        <EntityType Name="CMSCategoryProductMap">
           <Key>
-            <PropertyRef Name="PromotionBuy1Get1ItemId" />
+            <PropertyRef Name="CMSCategoryProductMapId" />
           </Key>
-          <Property Name="PromotionBuy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="PIDBuy" Type="Int32" />
-          <Property Name="PIDGet" Type="Int32" />
-          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="EffectiveTime" Type="Time" Precision="7" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="ExpiryTime" Type="Time" Precision="7" />
-          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="CMSStatusFlowId" Type="Int32" />
-        </EntityType>
-        <EntityType Name="PromotionOnTopCreditCard">
-          <Key>
-            <PropertyRef Name="OnTopCreditCardId" />
-          </Key>
-          <Property Name="OnTopCreditCardId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="EffectiveTime" Type="Time" Precision="7" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="CMSCategoryProductMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCategoryId" Type="Int32" />
+          <Property Name="ProductPID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ShopId" Type="Int32" />
-          <Property Name="PaymantId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="DiscountType" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="FreeShipping" Type="Boolean" />
-          <Property Name="DiscountValue" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="MinimumOrderAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="MaximumDiscountAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="IconURLTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="IconURLEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="BankNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BankNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CMSMasterStatusId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="PromotionOnTopCreditNumber">
-          <Key>
-            <PropertyRef Name="OnTopCreditNumberId" />
-          </Key>
-          <Property Name="OnTopCreditNumberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OnTopCreditCardId" Type="Int32" />
-          <Property Name="CreditCardTypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="CreditNumberFormat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Digit" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="Int32" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -8242,6 +8282,91 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PromotionBuy1Get1Item">
+            <EntityTypeMapping TypeName="ColspModel.PromotionBuy1Get1Item">
+              <MappingFragment StoreEntitySet="PromotionBuy1Get1Item">
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
+                <ScalarProperty Name="PIDBuy" ColumnName="PIDBuy" />
+                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="PromotionBuy1Get1ItemId" ColumnName="PromotionBuy1Get1ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditCards">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditCard">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditCard">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
+                <ScalarProperty Name="BankNameTH" ColumnName="BankNameTH" />
+                <ScalarProperty Name="BankNameEN" ColumnName="BankNameEN" />
+                <ScalarProperty Name="IconURLEN" ColumnName="IconURLEN" />
+                <ScalarProperty Name="IconURLTH" ColumnName="IconURLTH" />
+                <ScalarProperty Name="MaximumDiscountAmount" ColumnName="MaximumDiscountAmount" />
+                <ScalarProperty Name="MinimumOrderAmount" ColumnName="MinimumOrderAmount" />
+                <ScalarProperty Name="DiscountValue" ColumnName="DiscountValue" />
+                <ScalarProperty Name="FreeShipping" ColumnName="FreeShipping" />
+                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="PaymantId" ColumnName="PaymantId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PromotionOnTopCreditNumbers">
+            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditNumber">
+              <MappingFragment StoreEntitySet="PromotionOnTopCreditNumber">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Digit" ColumnName="Digit" />
+                <ScalarProperty Name="CreditNumberFormat" ColumnName="CreditNumberFormat" />
+                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
+                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
+                <ScalarProperty Name="OnTopCreditNumberId" ColumnName="OnTopCreditNumberId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Provinces">
             <EntityTypeMapping TypeName="ColspModel.Province">
               <MappingFragment StoreEntitySet="Province">
@@ -8707,88 +8832,23 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PromotionBuy1Get1Item">
-            <EntityTypeMapping TypeName="ColspModel.PromotionBuy1Get1Item">
-              <MappingFragment StoreEntitySet="PromotionBuy1Get1Item">
-                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+          <EntitySetMapping Name="CMSCategoryProductMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSCategoryProductMap">
+              <MappingFragment StoreEntitySet="CMSCategoryProductMap">
                 <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
                 <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CMSMasterStatusId" ColumnName="CMSMasterStatusId" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
-                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
-                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
-                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
-                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
-                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
-                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
-                <ScalarProperty Name="PIDBuy" ColumnName="PIDBuy" />
-                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
-                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
-                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
-                <ScalarProperty Name="PromotionBuy1Get1ItemId" ColumnName="PromotionBuy1Get1ItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PromotionOnTopCreditCards">
-            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditCard">
-              <MappingFragment StoreEntitySet="PromotionOnTopCreditCard">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
-                <ScalarProperty Name="BankNameTH" ColumnName="BankNameTH" />
-                <ScalarProperty Name="BankNameEN" ColumnName="BankNameEN" />
-                <ScalarProperty Name="IconURLEN" ColumnName="IconURLEN" />
-                <ScalarProperty Name="IconURLTH" ColumnName="IconURLTH" />
-                <ScalarProperty Name="MaximumDiscountAmount" ColumnName="MaximumDiscountAmount" />
-                <ScalarProperty Name="MinimumOrderAmount" ColumnName="MinimumOrderAmount" />
-                <ScalarProperty Name="DiscountValue" ColumnName="DiscountValue" />
-                <ScalarProperty Name="FreeShipping" ColumnName="FreeShipping" />
-                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
-                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
-                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
-                <ScalarProperty Name="PaymantId" ColumnName="PaymantId" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
-                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
-                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
-                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
-                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PromotionOnTopCreditNumbers">
-            <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditNumber">
-              <MappingFragment StoreEntitySet="PromotionOnTopCreditNumber">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Digit" ColumnName="Digit" />
-                <ScalarProperty Name="CreditNumberFormat" ColumnName="CreditNumberFormat" />
-                <ScalarProperty Name="CreditCardTypeCode" ColumnName="CreditCardTypeCode" />
-                <ScalarProperty Name="OnTopCreditCardId" ColumnName="OnTopCreditCardId" />
-                <ScalarProperty Name="OnTopCreditNumberId" ColumnName="OnTopCreditNumberId" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="ProductPID" ColumnName="ProductPID" />
+                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
+                <ScalarProperty Name="CMSCategoryProductMapId" ColumnName="CMSCategoryProductMapId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

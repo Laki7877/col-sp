@@ -103,6 +103,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
         public virtual DbSet<ProductTemp> ProductTemps { get; set; }
+        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
+        public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
+        public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
@@ -133,9 +136,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
-        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
-        public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
-        public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
+        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
     
         public virtual ObjectResult<Nullable<int>> AttributeValueId()
         {

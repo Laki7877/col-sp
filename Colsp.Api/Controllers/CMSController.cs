@@ -22,17 +22,17 @@ namespace Colsp.Api.Controllers
     public class CMSController : ApiController
     {
 
-        private ColspEntities   db;
-        private CMSLogic        cmsLogic;
+        private ColspEntities db;
+        private CMSLogic cmsLogic;
 
         public CMSController()
         {
-            this.db         = new ColspEntities();
-            this.cmsLogic   = new CMSLogic();
+            this.db = new ColspEntities();
+            this.cmsLogic = new CMSLogic();
         }
 
         #region Get Method
-        
+
         // Get CMS Category List
         [HttpGet]
         [Route("api/CMS/CMSCategory")]
@@ -42,17 +42,17 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = 0;
 
-                var query   = from category in db.CMSCategories select category;
-                
+                var query = from category in db.CMSCategories select category;
+
                 if (shopId != 0)
                 {
                     var cmsCategoryIdList = (from map in db.CMSCategoryProductMaps where map.ShopId == shopId select map).Select(s => s.CMSCategoryId).ToList();
                     query = query.Where(x => cmsCategoryIdList.Contains(x.CMSCategoryId));
                 }
-                    
+
                 if (!string.IsNullOrEmpty(request.SearchText))
                     query = query.Where(x => x.CMSCategoryNameEN.Contains(request.SearchText) || x.CMSCategoryNameTH.Contains(request.SearchText));
-                
+
                 var total = query.Count();
                 var response = PaginatedResponse.CreateResponse(query.Paginate(request), request, total);
 
@@ -63,7 +63,7 @@ namespace Colsp.Api.Controllers
             {
                 throw new Exception(ex.Message + " /api/CMS/GetAllCMSCategory");
             }
-            
+
         }
 
         // Get CMS Category Item
@@ -89,16 +89,16 @@ namespace Colsp.Api.Controllers
 
                                                        }).ToList(),
 
-                                CMSCategoryId       = cate.CMSCategoryId,
-                                CMSCategoryNameEN   = cate.CMSCategoryNameEN,
-                                CMSCategoryNameTH   = cate.CMSCategoryNameTH,
-                                IsActive            = cate.IsActive,
-                                UpdateDate          = cate.UpdateDate
+                                CMSCategoryId = cate.CMSCategoryId,
+                                CMSCategoryNameEN = cate.CMSCategoryNameEN,
+                                CMSCategoryNameTH = cate.CMSCategoryNameTH,
+                                IsActive = cate.IsActive,
+                                UpdateDate = cate.UpdateDate
                             };
-                
+
                 if (!query.Any())
                     Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Category");
-                
+
                 var item = query.First();
                 return Request.CreateResponse(HttpStatusCode.OK, item);
 
@@ -174,7 +174,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 int shopId = 0; //this.User.ShopRequest().ShopId;
-                
+
 
                 //if (!query.Any())
                 //    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
@@ -213,17 +213,21 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = 0; //this.User.ShopRequest().ShopId;
 
-                var query = shopId == 0 
-                                ? (from cate in db.GlobalCategories select new CategoryRequest {
-                                    CategoryId = cate.CategoryId,
-                                    NameEn = cate.NameEn,
-                                    NameTh = cate.NameTh
-                                })
-                                : (from cate in db.LocalCategories select new CategoryRequest {
-                                    CategoryId = cate.CategoryId,
-                                    NameEn = cate.NameEn,
-                                    NameTh = cate.NameTh
-                                });
+                var query = shopId == 0
+                                ? (from cate in db.GlobalCategories
+                                   select new CategoryRequest
+                                   {
+                                       CategoryId = cate.CategoryId,
+                                       NameEn = cate.NameEn,
+                                       NameTh = cate.NameTh
+                                   })
+                                : (from cate in db.LocalCategories
+                                   select new CategoryRequest
+                                   {
+                                       CategoryId = cate.CategoryId,
+                                       NameEn = cate.NameEn,
+                                       NameTh = cate.NameTh
+                                   });
 
 
                 if (!query.Any())
@@ -248,12 +252,12 @@ namespace Colsp.Api.Controllers
             try
             {
                 //int shopId = 0; //this.User.ShopRequest().ShopId;
-                
+
                 if (condition.SearchBy == SearchOption.PID)
                 {
 
                 }
-                
+
                 else if (condition.SearchBy == SearchOption.ProductName)
                 {
 

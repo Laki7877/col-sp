@@ -219,9 +219,6 @@
     <Compile Include="Models\CMSMasterType.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\CMSMastserCategoryMap.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\CMSScheduler.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -265,9 +262,6 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponShopMap.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CreditCardType.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Customer.cs">
@@ -441,9 +435,6 @@
     <Compile Include="Models\StoreReturnReason.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Table.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -490,9 +481,6 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserShopMap.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UserStatu.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
