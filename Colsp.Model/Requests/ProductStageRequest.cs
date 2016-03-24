@@ -37,6 +37,7 @@ namespace Colsp.Model.Requests
         public ControlFlagRequest ControlFlags          { get; set; }
         public string GroupId                           { get; set; }
         public string Pid { get; set; }
+        public List<ProductHistoryRequest> Revisions { get; set; }
 
         public ProductStageRequest()
         {
@@ -71,6 +72,7 @@ namespace Colsp.Model.Requests
             ControlFlags = new ControlFlagRequest();
             GroupId = string.Empty;
             AdminApprove = new AdminApproveRequest();
+            Revisions = new List<ProductHistoryRequest>();
         }
     }
 

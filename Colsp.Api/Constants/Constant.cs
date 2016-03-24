@@ -4,6 +4,11 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+
+        public static int HISTORY_REVISION = 10;
+        public static int TOP_SELLING = 10;
+
+
         public static int SHIPPING_DROP_SHIP_3PL = 1;
         public static int SHIPPING_FULFILLMENT = 2;
 
@@ -105,5 +110,7 @@ namespace Colsp.Api.Constants
 
         public static readonly string RETURN_STATUS_WAIT_FOR_APPROVAL = "WA";
         public static readonly string RETURN_STATUS_APPROVE = "AP";
+
+        public static readonly string NOT_AVAILABLE = "N/A";
     }
 }

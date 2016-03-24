@@ -52,7 +52,7 @@ namespace Colsp.Api.Mockup
                 new PurchaseOrderDetailReuest()
                 {
                     ProductId = 68,
-                    Pid = "111119J",
+                    Pid = "1111189",
                     ProductNameEn = "Test World",
                     Quantity = 1,
                     UnitPrice = 500

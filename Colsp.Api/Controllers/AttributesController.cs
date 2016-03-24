@@ -222,6 +222,7 @@ namespace Colsp.Api.Controllers
                 }
                 SetupAttribute(attribute, request);
                 attribute.UpdatedBy = this.User.UserRequest().Email;
+                attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
 
                 var attributeVal = attribute.AttributeValueMaps.Select(s => s.AttributeValue).ToList();

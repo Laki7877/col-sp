@@ -18,6 +18,7 @@ namespace Colsp.Entity.Models
         public Product()
         {
             this.ProductAttributes = new HashSet<ProductAttribute>();
+            this.ProductReviews = new HashSet<ProductReview>();
             this.ProductTags = new HashSet<ProductTag>();
             this.ProductVideos = new HashSet<ProductVideo>();
             this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
@@ -28,6 +29,7 @@ namespace Colsp.Entity.Models
         public string ParentPid { get; set; }
         public string MasterPid { get; set; }
         public int ShopId { get; set; }
+        public int ShippingId { get; set; }
         public int GlobalCatId { get; set; }
         public Nullable<int> LocalCatId { get; set; }
         public Nullable<int> AttributeSetId { get; set; }
@@ -107,6 +109,9 @@ namespace Colsp.Entity.Models
         public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
+        public virtual Shipping Shipping { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductReview> ProductReviews { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductTag> ProductTags { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

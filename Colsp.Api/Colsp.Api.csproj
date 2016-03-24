@@ -209,6 +209,7 @@
     <Compile Include="Controllers\NewslettersController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
+    <Compile Include="Controllers\ProductHistoriesController.cs" />
     <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductReviewsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />

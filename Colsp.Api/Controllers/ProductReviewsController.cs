@@ -46,7 +46,7 @@ namespace Colsp.Api.Controllers
                                   rev.Status,
                                   cus.CustomerId,
                                   Customer = cus != null ? cus.FirstName + " " + cus.LastName : null,
-                                  UpdatedDt = rev.CreatedDt
+                                  UpdatedDt = rev.CreatedOn
                               });
 
                 //var review = (from rev in db.ProductReviews
@@ -141,10 +141,33 @@ namespace Colsp.Api.Controllers
                     }
                     current.Status = revRq.Status;
                     current.UpdatedBy = this.User.UserRequest().Email;
-                    current.UpdatedDt = DateTime.Now;
+                    current.UpdatedOn = DateTime.Now;
                 }
                 Util.DeadlockRetry(db.SaveChanges, "ProductReview");
                 return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductReviews/Rating")]
+        [HttpGet]
+        public HttpResponseMessage GetAverageRating()
+        {
+            try
+            {
+                var shopId = User.ShopRequest().ShopId;
+                var rating = db.ProductReviews.Where(w=>w.ShopId==shopId).Select(s=>s.Rating).ToList();
+                if(rating == null || rating.Count == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, Constant.NOT_AVAILABLE);
+                }
+
+                var average = rating.Average();
+
+                return Request.CreateResponse(HttpStatusCode.OK, average);
             }
             catch (Exception e)
             {

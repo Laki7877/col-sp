@@ -95,6 +95,14 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
         public virtual DbSet<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductHistory> ProductHistories { get; set; }
+        public virtual DbSet<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
+        public virtual DbSet<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryGroup> ProductHistoryGroups { get; set; }
+        public virtual DbSet<ProductHistoryImage> ProductHistoryImages { get; set; }
+        public virtual DbSet<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
+        public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
         public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
         public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
@@ -169,6 +177,11 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductHistoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductHistoryId");
         }
     }
 }

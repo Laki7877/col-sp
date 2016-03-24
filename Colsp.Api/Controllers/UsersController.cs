@@ -565,7 +565,7 @@ namespace Colsp.Api.Controllers
             {
                 ClaimRequest claim = new ClaimRequest();
                 
-                var claimsIdentity = this.User.Identity as ClaimsIdentity;
+                var claimsIdentity = User.Identity as ClaimsIdentity;
                 claim.Permission = claimsIdentity.Claims
                     .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
                 claim.Shop = User.ShopRequest();
@@ -577,6 +577,27 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
+
+        //[Route("api/Users/Login")]
+        //[HttpPost]
+        //public HttpResponseMessage LoginUser(string username,string password,bool IsAdmin = false)
+        //{
+        //    try
+        //    {
+        //        ClaimRequest claim = new ClaimRequest();
+
+        //        var claimsIdentity = User.Identity as ClaimsIdentity;
+        //        claim.Permission = claimsIdentity.Claims
+        //            .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
+        //        claim.Shop = User.ShopRequest();
+        //        claim.User = new { NameEn = this.User.UserRequest().NameEn, Email = User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+        //    }
+        //}
+
 
         [Route("api/Users/Admin/Login/{userId}")]
         [HttpGet]
