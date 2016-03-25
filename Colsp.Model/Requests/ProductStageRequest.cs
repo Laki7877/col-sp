@@ -21,7 +21,7 @@ namespace Colsp.Model.Requests
         public string GiftWrap                          { get; set; }
         public AttributeSetRequest AttributeSet         { get; set; }
         public List<AttributeRequest> MasterAttribute   { get; set; }
-        public List<AttributeRequest> DefaultAttributes { get; set; }
+        //public List<AttributeRequest> DefaultAttributes { get; set; }
         public List<VariantRequest> RelatedProducts     { get; set; }
         public int ShippingMethod                       { get; set; }
         public int PrepareDay                           { get; set; }
@@ -37,6 +37,7 @@ namespace Colsp.Model.Requests
         public ControlFlagRequest ControlFlags          { get; set; }
         public string GroupId                           { get; set; }
         public string Pid { get; set; }
+        public List<ProductHistoryRequest> Revisions { get; set; }
 
         public ProductStageRequest()
         {
@@ -55,7 +56,7 @@ namespace Colsp.Model.Requests
             GiftWrap = string.Empty;
             AttributeSet = new AttributeSetRequest();
             MasterAttribute = new List<AttributeRequest>();
-            DefaultAttributes = new List<AttributeRequest>();
+            //DefaultAttributes = new List<AttributeRequest>();
             RelatedProducts = new List<VariantRequest>();
             ShippingMethod = 1;
             PrepareDay = 0;
@@ -71,6 +72,7 @@ namespace Colsp.Model.Requests
             ControlFlags = new ControlFlagRequest();
             GroupId = string.Empty;
             AdminApprove = new AdminApproveRequest();
+            Revisions = new List<ProductHistoryRequest>();
         }
     }
 

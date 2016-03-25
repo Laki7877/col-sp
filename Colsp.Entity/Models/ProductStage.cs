@@ -72,10 +72,17 @@ namespace Colsp.Entity.Models
         public string MetaDescriptionTh { get; set; }
         public string MetaKeyEn { get; set; }
         public string MetaKeyTh { get; set; }
+        public string SeoEn { get; set; }
+        public string SeoTh { get; set; }
         public string UrlEn { get; set; }
         public int BoostWeight { get; set; }
+        public int GlobalBoostWeight { get; set; }
         public bool DefaultVaraint { get; set; }
         public string Display { get; set; }
+        public int MiniQtyAllowed { get; set; }
+        public int MaxiQtyAllowed { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal PurchasePrice { get; set; }
         public bool IsVariant { get; set; }
         public bool IsMaster { get; set; }
         public int VariantCount { get; set; }

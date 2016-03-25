@@ -13,6 +13,7 @@ namespace Colsp.Model.Requests
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
         public int ShipQuantity { get; set; }
+        public int ProductId { get; set; }
 
     }
 }

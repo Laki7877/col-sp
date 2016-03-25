@@ -1,10 +1,13 @@
 ﻿using Colsp.Api.Constants;
 using Colsp.Api.Extensions;
+using Colsp.Api.Helpers;
 using Colsp.Api.Mockup;
+using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using Colsp.Model.Responses;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +17,8 @@ namespace Colsp.Api.Controllers
 {
     public class OrderController : ApiController
     {
+        private ColspEntities db = new ColspEntities();
+
         [Route("api/Orders")] 
         [HttpPut]
         public HttpResponseMessage SaveChangeOrder(List<PurchaseOrderReuest> request)
@@ -186,6 +191,100 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
+        }
+
+        [Route("api/Orders/Revenue")]
+        [HttpGet]
+        public HttpResponseMessage GetRevenue([FromUri] PurchaseOrderReuest request)
+        {
+            try
+            {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var shopId = User.ShopRequest().ShopId;
+                IQueryable<PurchaseOrderReuest> order = OrderMockup.OrderList.Where(w=>w.ShopId==shopId).AsQueryable();
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+                    if (string.Equals("Today", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        order = order.Where(p => p.OrderDate == DateTime.Today);
+                    }
+                    else if (string.Equals("ThisWeek", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        DateTime monday =  Util.StartOfWeek(DateTime.Now, DayOfWeek.Monday);
+                        DateTime sunday = Util.StartOfWeek(DateTime.Now, DayOfWeek.Sunday);
+                        order = order.Where(p => p.OrderDate >= monday && p.OrderDate <= sunday);
+                    }
+                    else if (string.Equals("ThisMonth", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                        order = order.Where(p => p.OrderDate >= firstDayOfMonth && p.OrderDate <= lastDayOfMonth);
+                    }
+                    else if (string.Equals("ThisYear", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var firstDayOfYear = new DateTime(DateTime.Today.Year, 1, 1);
+                        var lastDayOfYear = new DateTime(DateTime.Today.Year, 12, 31);
+                        order = order.Where(p => p.OrderDate >= firstDayOfYear && p.OrderDate <= lastDayOfYear);
+                    }
+                }
+                else
+                {
+                    throw new Exception("_filter is required");
+                }
+                var revenue = order.Sum(s => s.GrandTotalAmt);
+                return Request.CreateResponse(HttpStatusCode.OK, revenue);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Orders/TopOrder")]
+        [HttpGet]
+        public HttpResponseMessage GetTopOrder()
+        {
+            try
+            {
+                var shopId = User.ShopRequest().ShopId;
+                var orderDetailList = OrderMockup.OrderList.Where(w => w.ShopId == shopId).SelectMany(s => s.Products).ToList();
+
+                var pids = (from detail in orderDetailList
+                          group detail by detail.Pid into detailGroup
+                          orderby detailGroup.Sum(s=>s.Quantity) descending
+                          select detailGroup.Key
+                          ).Take(Constant.TOP_SELLING).ToList();
+                if(pids == null || pids.Count == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, Constant.NOT_AVAILABLE);
+                }
+
+                var productList = db.Products.Where(w => w.ShopId == shopId && pids.Contains(w.Pid)).Select(s=>new
+                {
+                    s.ProductNameEn,
+                    s.FeatureImgUrl,
+                }).ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, productList);
+
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

@@ -408,6 +408,14 @@ namespace Colsp.Api.Controllers
                 }
                 //usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.GroupNameEn = request.GroupNameEn;
+
+                //Check duplication of role name ,Preen
+                var usrGroupEntity = db.UserGroups.Where(w => w.GroupNameEn.Equals(usrGrp.GroupNameEn) && w.Type.Equals(Constant.USER_TYPE_ADMIN)).FirstOrDefault();
+                if (usrGroupEntity != null)
+                {
+                    throw new Exception("This role name has already been used. Please enter a different role name.");
+                }
+
                 var mapList = db.UserGroupPermissionMaps.Where(w => w.GroupId == usrGrp.GroupId).ToList();
                 if (request.Permission != null && request.Permission.Count > 0)
                 {

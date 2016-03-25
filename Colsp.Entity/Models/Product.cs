@@ -14,9 +14,22 @@ namespace Colsp.Entity.Models
     
     public partial class Product
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Product()
+        {
+            this.ProductAttributes = new HashSet<ProductAttribute>();
+            this.ProductReviews = new HashSet<ProductReview>();
+            this.ProductTags = new HashSet<ProductTag>();
+            this.ProductVideos = new HashSet<ProductVideo>();
+            this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
+            this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
+        }
+    
         public string Pid { get; set; }
-        public string ParentId { get; set; }
+        public string ParentPid { get; set; }
+        public string MasterPid { get; set; }
         public int ShopId { get; set; }
+        public int ShippingId { get; set; }
         public int GlobalCatId { get; set; }
         public Nullable<int> LocalCatId { get; set; }
         public Nullable<int> AttributeSetId { get; set; }
@@ -50,7 +63,13 @@ namespace Colsp.Entity.Models
         public string KillerPoint3Th { get; set; }
         public string Installment { get; set; }
         public int TheOneCardEarn { get; set; }
-        public string GiftWarp { get; set; }
+        public string GiftWrap { get; set; }
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public Nullable<System.DateTime> ExpireDate { get; set; }
+        public bool ControlFlag1 { get; set; }
+        public bool ControlFlag2 { get; set; }
+        public bool ControlFlag3 { get; set; }
+        public string Remark { get; set; }
         public decimal Length { get; set; }
         public decimal Height { get; set; }
         public decimal Width { get; set; }
@@ -63,16 +82,21 @@ namespace Colsp.Entity.Models
         public string MetaDescriptionTh { get; set; }
         public string MetaKeyEn { get; set; }
         public string MetaKeyTh { get; set; }
+        public string SeoEn { get; set; }
+        public string SeoTh { get; set; }
         public string UrlEn { get; set; }
         public int BoostWeight { get; set; }
+        public int GlobalBoostWeight { get; set; }
+        public bool DefaultVaraint { get; set; }
+        public string Display { get; set; }
+        public int MiniQtyAllowed { get; set; }
+        public int MaxiQtyAllowed { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal PurchasePrice { get; set; }
         public bool IsVariant { get; set; }
+        public bool IsMaster { get; set; }
         public int VariantCount { get; set; }
-        public Nullable<System.DateTime> EffectiveDate { get; set; }
-        public Nullable<System.DateTime> ExpireDate { get; set; }
-        public bool ControlFlag1 { get; set; }
-        public bool ControlFlag2 { get; set; }
-        public bool ControlFlag3 { get; set; }
-        public string Remark { get; set; }
+        public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
@@ -83,5 +107,18 @@ namespace Colsp.Entity.Models
         public virtual GlobalCategory GlobalCategory { get; set; }
         public virtual LocalCategory LocalCategory { get; set; }
         public virtual Shop Shop { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
+        public virtual Shipping Shipping { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductReview> ProductReviews { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductTag> ProductTags { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductVideo> ProductVideos { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
     }
 }

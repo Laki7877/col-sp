@@ -76,6 +76,8 @@
     <Compile Include="Requests\OnTopCreditCardListRequest.cs" />
     <Compile Include="Requests\OnTopCreditCardRequest.cs" />
     <Compile Include="Requests\OrderRequest.cs" />
+    <Compile Include="Requests\PendingProduct.cs" />
+    <Compile Include="Requests\ProductHistoryRequest.cs" />
     <Compile Include="Requests\ProductTempRequest.cs" />
     <Compile Include="Requests\PurchaseOrderDetailReuest.cs" />
     <Compile Include="Requests\PurchaseOrderReuest.cs" />

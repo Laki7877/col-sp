@@ -59,6 +59,10 @@
       <Project>{BAC72ED0-D579-4052-A59B-5E4FCB8073BA}</Project>
       <Name>Colsp.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Colsp.Model\Colsp.Model.csproj">
+      <Project>{226b2ad2-649f-4d2d-b17e-e2afb474a274}</Project>
+      <Name>Colsp.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

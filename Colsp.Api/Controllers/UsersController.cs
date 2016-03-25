@@ -96,7 +96,7 @@ namespace Colsp.Api.Controllers
                     s.Email,
                     s.UpdatedDt,
                     UserGroup = s.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn),
-                    Shops = s.UserShopMaps.Select(sh=>sh.Shop.ShopNameEn)
+                    Shops = s.UserShopMaps.Select(sh=>sh.Shop.ShopNameEn),
                 });
 
                 if (request == null)
@@ -122,7 +122,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (string.Equals("NoShop", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        userList = userList.Where(w => w.Shops == null);
+                        userList = userList.Where(w => w.Shops.All(a=>a==null));
                     }
                 }
                 var total = userList.Count();
@@ -329,7 +329,7 @@ namespace Colsp.Api.Controllers
                         s.NameTh,
                         s.Email,
                         s.UpdatedDt,
-                        UserGroup = s.UserGroupMaps.Select(ug=>ug.UserGroup.GroupNameEn)
+                        UserGroup = s.UserGroupMaps.Select(ug=>new { ug.UserGroup.GroupNameEn })
                     });
                 if (request == null)
                 {
@@ -565,10 +565,10 @@ namespace Colsp.Api.Controllers
             {
                 ClaimRequest claim = new ClaimRequest();
                 
-                var claimsIdentity = this.User.Identity as ClaimsIdentity;
+                var claimsIdentity = User.Identity as ClaimsIdentity;
                 claim.Permission = claimsIdentity.Claims
                     .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
-                claim.Shop = this.User.ShopRequest();                
+                claim.Shop = User.ShopRequest();
                 claim.User = new { NameEn = this.User.UserRequest().NameEn , Email = this.User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
                 return Request.CreateResponse(HttpStatusCode.OK, claim);
             }
@@ -577,6 +577,27 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
+
+        //[Route("api/Users/Login")]
+        //[HttpPost]
+        //public HttpResponseMessage LoginUser(string username,string password,bool IsAdmin = false)
+        //{
+        //    try
+        //    {
+        //        ClaimRequest claim = new ClaimRequest();
+
+        //        var claimsIdentity = User.Identity as ClaimsIdentity;
+        //        claim.Permission = claimsIdentity.Claims
+        //            .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
+        //        claim.Shop = User.ShopRequest();
+        //        claim.User = new { NameEn = this.User.UserRequest().NameEn, Email = User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+        //    }
+        //}
+
 
         [Route("api/Users/Admin/Login/{userId}")]
         [HttpGet]

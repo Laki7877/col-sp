@@ -309,8 +309,7 @@ namespace Colsp.Api.Controllers
                     }
                     else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        invenentory = invenentory.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SafetyStockSeller
-                        && w.Quantity != 0);
+                        invenentory = invenentory.Where(w => (w.Quantity - w.Defect - w.OnHold - w.Reserve) <= w.SafetyStockSeller);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_DRAFT));
                     }
                 }
