@@ -156,6 +156,8 @@ namespace Colsp.Api.Controllers
                                      category.UrlKeyTh,
                                      category.Visibility,
                                      category.Status,
+                                     category.Lft,
+                                     category.Rgt
                                  }).SingleOrDefault();
                 if(cat == null)
                 {
@@ -437,7 +439,7 @@ namespace Colsp.Api.Controllers
                 category.UpdatedBy = this.User.UserRequest().Email;
                 category.UpdatedDt = DateTime.Now;
                 Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
-                return Request.CreateResponse(HttpStatusCode.OK, category);
+                return GetLocalCategory(category.CategoryId); ;
             }
             catch (DbUpdateException e)
             {

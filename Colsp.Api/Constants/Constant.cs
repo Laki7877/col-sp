@@ -5,8 +5,10 @@ namespace Colsp.Api.Constants
     public static class Constant
     {
 
-        public static int HISTORY_REVISION = 10;
-        public static int TOP_SELLING = 10;
+        public static readonly string AUTHEN_SCHEMA = "Bearer";
+
+        public static readonly int HISTORY_REVISION = 10;
+        public static readonly int TOP_SELLING = 10;
 
 
         public static int SHIPPING_DROP_SHIP_3PL = 1;
@@ -112,5 +114,7 @@ namespace Colsp.Api.Constants
         public static readonly string RETURN_STATUS_APPROVE = "AP";
 
         public static readonly string NOT_AVAILABLE = "N/A";
+
+        public static readonly double CACHE_TIMEOUT = 60;
     }
 }

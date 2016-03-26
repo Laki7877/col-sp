@@ -240,7 +240,6 @@ namespace Colsp.Api.Controllers
                 shop.UpdatedBy = User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
-                Cache.Delete(Request.Headers.Authorization.Parameter);
                 return GetShopProfile();
             }
             catch (Exception e)

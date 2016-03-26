@@ -102,8 +102,8 @@ namespace Colsp.Api.Controllers
                                      cat.DescriptionShortTh,
                                      cat.FeatureTitle,
                                      //cat.CategoryAbbreviation,
-                                     //cat.Lft,
-                                     //cat.Rgt,
+                                     cat.Lft,
+                                     cat.Rgt,
                                      cat.UrlKeyEn,
                                      cat.UrlKeyTh,
                                      cat.Visibility,
@@ -420,8 +420,6 @@ namespace Colsp.Api.Controllers
                             var current = setList.Where(w => w.AttributeSetId == mapRq.AttributeSetId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = this.User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
                                 setList.Remove(current);
                             }
                             else
@@ -431,14 +429,15 @@ namespace Colsp.Api.Controllers
                         }
                         if (addNew)
                         {
-                            GlobalCatAttributeSetMap map = new GlobalCatAttributeSetMap();
-                            map.AttributeSetId = mapRq.AttributeSetId;
-                            map.CategoryId = category.CategoryId;
-                            map.CreatedBy = this.User.UserRequest().Email;
-                            map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.UserRequest().Email;
-                            map.UpdatedDt = DateTime.Now;
-                            db.GlobalCatAttributeSetMaps.Add(map);
+                            category.GlobalCatAttributeSetMaps.Add(new GlobalCatAttributeSetMap()
+                            {
+                                AttributeSetId = mapRq.AttributeSetId,
+                                CategoryId = category.CategoryId,
+                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedDt = DateTime.Now,
+                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedDt = DateTime.Now,
+                            });
                         }
                     }
                 }
@@ -449,7 +448,7 @@ namespace Colsp.Api.Controllers
                 #endregion
 
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
-                return Request.CreateResponse(HttpStatusCode.OK, category);
+                return GetGlobalCategory(category.CategoryId);
             }
             catch (Exception e)
             {

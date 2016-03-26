@@ -807,7 +807,7 @@ namespace Colsp.Api.Controllers
                         products = products.Where(w => brandIds.Contains(w.Brand.BrandId));
                     }
                     //if request send brand name, add brand name criteria
-                    List<string> brandNames = request.Brands.Where(w => w.BrandNameEn != null).Select(s => s.BrandNameEn).ToList();
+                    List<string> brandNames = request.Brands.Where(w => w.BrandNameEn != null && !string.IsNullOrWhiteSpace(w.BrandNameEn)).Select(s => s.BrandNameEn).ToList();
                     if (brandNames != null && brandNames.Count > 0)
                     {
                         products = products.Where(w => brandNames.Any(a => w.Brand.BrandNameEn.Contains(a)));
@@ -824,7 +824,7 @@ namespace Colsp.Api.Controllers
                         products = products.Where(w => lft.Any(a => a <= w.GlobalCategory.Lft) && rgt.Any(a => a >= w.GlobalCategory.Rgt));
                     }
                     //if request send category name, add category category name criteria
-                    List<string> catNames = request.GlobalCategories.Where(w => w.NameEn != null).Select(s => s.NameEn).ToList();
+                    List<string> catNames = request.GlobalCategories.Where(w => w.NameEn != null && !string.IsNullOrWhiteSpace(w.NameEn)).Select(s => s.NameEn).ToList();
                     if (catNames != null && catNames.Count > 0)
                     {
                         products = products.Where(w => catNames.Any(a => w.GlobalCategory.NameEn.Contains(a)));
@@ -842,7 +842,7 @@ namespace Colsp.Api.Controllers
                         products = products.Where(w => lft.Any(a => a <= w.LocalCategory.Lft) && rgt.Any(a => a >= w.LocalCategory.Rgt));
                     }
                     //if request send category name, add category category name criteria
-                    List<string> catNames = request.LocalCategories.Where(w => w.NameEn != null).Select(s => s.NameEn).ToList();
+                    List<string> catNames = request.LocalCategories.Where(w => w.NameEn != null && !string.IsNullOrWhiteSpace(w.NameEn)).Select(s => s.NameEn).ToList();
                     if (catNames != null && catNames.Count > 0)
                     {
                         products = products.Where(w => catNames.Any(a => w.LocalCategory.NameEn.Contains(a)));
@@ -933,7 +933,7 @@ namespace Colsp.Api.Controllers
 
         [Route("api/ProductStages")]
         [HttpGet]
-        [ClaimsAuthorize(Permission = new string[] { "View Product", "View All Product" })]
+        //[ClaimsAuthorize(Permission = new string[] { "View Product", "View All Products" })]
         public HttpResponseMessage GetProductStages([FromUri] ProductRequest request)
         {
             try

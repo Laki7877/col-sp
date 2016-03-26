@@ -252,6 +252,10 @@ namespace Colsp.Api.Controllers
                 #endregion
                 SetupUser(user, request);
                 #region Password
+                if (!salt.CheckPassword(request.OldPassword,user.Password))
+                {
+                    throw new Exception("Password does not match");
+                }
                 if (!string.IsNullOrEmpty(request.Password))
                 {
                     user.PasswordLastChg = user.Password;
@@ -578,26 +582,95 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        //[Route("api/Users/Login")]
-        //[HttpPost]
-        //public HttpResponseMessage LoginUser(string username,string password,bool IsAdmin = false)
-        //{
-        //    try
-        //    {
-        //        ClaimRequest claim = new ClaimRequest();
+        [Route("api/Users/Login")]
+        [HttpPost]
+        [OverrideAuthentication,OverrideAuthorization]
+        public HttpResponseMessage Login(UserRequest request)
+        {
+            try
+            {
+                string email = request.Email;
+                var user = db.Users.Where(u => u.Email.Equals(email))
+                    .Include(i => i.UserGroupMaps.Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission)))
+                    .Include(i => i.UserShopMaps.Select(s => s.Shop))
+                    .FirstOrDefault();
+                string password = request.Password;
+                if (user == null)
+                {
+                    throw new Exception("Email " + email + " not found");
+                }
+                if (!salt.CheckPassword(password, user.Password))
+                {
+                    user.LoginFailCount = user.LoginFailCount + 1;
+                    Util.DeadlockRetry(db.SaveChanges, "User");
+                    throw new Exception("Email and password not match");
+                }
 
-        //        var claimsIdentity = User.Identity as ClaimsIdentity;
-        //        claim.Permission = claimsIdentity.Claims
-        //            .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
-        //        claim.Shop = User.ShopRequest();
-        //        claim.User = new { NameEn = this.User.UserRequest().NameEn, Email = User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-        //    }
-        //}
+                // Get all permissions
+                var userPermissions = user.UserGroupMaps.Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission));
 
+                var claims = new List<Claim>();
+                foreach (var userGroup in userPermissions)
+                {
+                    foreach (var p in userGroup)
+                    {
+                        if (!claims.Exists(m => m.Value.Equals(p.PermissionName)))
+                        {
+                            Claim claim = new Claim("Permission", p.PermissionName, p.PermissionGroup, null);
+                            claims.Add(claim);
+                        }
+                    }
+                }
+                var identity = new ClaimsIdentity(claims, Constant.AUTHEN_SCHEMA);
+                var token = salt.HashPassword(string.Concat(user.UserId + DateTime.Now.ToString("ddMMyyHHmmss")));
+                var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(token);
+                token = Convert.ToBase64String(plainTextBytes);
+
+                var principal = new UsersPrincipal(identity,
+                    user.Shops == null ? null : user.UserShopMaps.Select(s => new ShopRequest
+                    {
+                        ShopId = s.ShopId,
+                        ShopNameEn = 
+                        s.Shop.ShopNameEn,
+                        Status = s.Shop.Status,
+                        ShopGroup = s.Shop.ShopGroup,
+                        IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true
+                    }).ToList(),
+                    new UserRequest {
+                        UserId = user.UserId,
+                        Email = user.Email,
+                        Token = token,
+                        NameEn = user.NameEn,
+                        NameTh = user.NameTh,
+                        Type = user.Type,
+                        IsPasswordChange = string.IsNullOrEmpty(user.PasswordLastChg) ? false : true,
+                        IsAdmin = Constant.USER_TYPE_ADMIN.Equals(user.Type)
+                    }
+                    ,DateTime.Now);
+
+                user.LastLoginDt = DateTime.Now;
+                user.LoginFailCount = 0;
+                Util.DeadlockRetry(db.SaveChanges, "User");
+                this.User = principal;
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                ClaimRequest claimRs = new ClaimRequest()
+                {
+                    Shop = User.ShopRequest(),
+                    User = User.UserRequest(),
+                    Permission = claimsIdentity.Claims.Where(w => w.Type.Equals("Permission")).Select(s => new
+                    {
+                        Permission = s.Value,
+                        PermissionGroup = s.ValueType
+                    }).ToList()
+                };
+                Cache.Add(token, principal);
+                return Request.CreateResponse(HttpStatusCode.OK, claimRs);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
 
         [Route("api/Users/Admin/Login/{userId}")]
         [HttpGet]
@@ -644,7 +717,7 @@ namespace Colsp.Api.Controllers
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var principal = new UsersPrincipal(identity,
                     user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
-                    this.User.UserRequest());
+                    this.User.UserRequest(),DateTime.Now);
 
                 ClaimRequest claimRq = new ClaimRequest();
 
@@ -709,7 +782,7 @@ namespace Colsp.Api.Controllers
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var principal = new UsersPrincipal(identity,
                     user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
-                    this.User.UserRequest());
+                    this.User.UserRequest(),DateTime.Now);
 
                 ClaimRequest claimRq = new ClaimRequest();
 
@@ -761,8 +834,13 @@ namespace Colsp.Api.Controllers
                 user.Password = salt.HashPassword(request.NewPassword);
                 Util.DeadlockRetry(db.SaveChanges, "User");
                 Cache.Delete(Request.Headers.Authorization.Parameter);
-                this.User.UserRequest().Password = user.Password;
-                return Request.CreateResponse(HttpStatusCode.OK, Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Concat(user.Email, ":", user.Password))));
+
+                return Login(new UserRequest()
+                {
+                    Email = user.Email,
+                    Password = request.NewPassword,
+                    IsAdmin = Constant.USER_TYPE_ADMIN.Equals(user.Type),
+                });
             }
             catch (Exception e)
             {
@@ -813,6 +891,27 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
+
+        [Route("api/Tokens/Validation")]
+        [HttpGet]
+        [OverrideAuthentication, OverrideAuthorization]
+        public HttpResponseMessage TokensValidation()
+        {
+            try
+            {
+                var parameter = Request.Headers.Authorization.Parameter;
+                if(string.IsNullOrWhiteSpace(parameter) || Cache.Get(parameter) == null)
+                {
+                    throw new Exception("Invalid user");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
 
 
         private void SetupUser(User user, UserRequest request)

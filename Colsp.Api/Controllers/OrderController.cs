@@ -90,7 +90,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Cannot find product " + product.Pid);
                     }
-                    current.Quantity = product.Quantity;
+                    current.ShipQuantity = product.ShipQuantity;
                 }
                 return GetOrder(order.OrderId);
             }
@@ -210,33 +210,67 @@ namespace Colsp.Api.Controllers
                 {
                     if (string.Equals("Today", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        order = order.Where(p => p.OrderDate == DateTime.Today);
+                        order = order.Where(p => p.OrderDate >= DateTime.Today && p.OrderDate < DateTime.Today.AddDays(1));
+                        var todayOrder = (from or in order
+                                  group or by or.OrderDate.Hour into hourGroup
+                                  select new
+                                  {
+                                      Key = hourGroup.Key,
+                                      Value = hourGroup.Sum(s => s.GrandTotalAmt)
+                                  }).ToList();
+                        return Request.CreateResponse(HttpStatusCode.OK, todayOrder);
                     }
                     else if (string.Equals("ThisWeek", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         DateTime monday =  Util.StartOfWeek(DateTime.Now, DayOfWeek.Monday);
-                        DateTime sunday = Util.StartOfWeek(DateTime.Now, DayOfWeek.Sunday);
+                        DateTime sunday = Util.StartOfWeek(DateTime.Now.AddDays(7), DayOfWeek.Sunday);
                         order = order.Where(p => p.OrderDate >= monday && p.OrderDate <= sunday);
+                        var weekOrder = from or in order
+                                         group or by or.OrderDate.DayOfWeek into weekGroup
+                                         select new
+                                         {
+                                             Key = weekGroup.Key,
+                                             Value = weekGroup.Sum(s => s.GrandTotalAmt)
+                                         };
+                        return Request.CreateResponse(HttpStatusCode.OK, weekOrder);
                     }
                     else if (string.Equals("ThisMonth", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         var firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
                         var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
                         order = order.Where(p => p.OrderDate >= firstDayOfMonth && p.OrderDate <= lastDayOfMonth);
+                        var monthOrder = from or in order
+                                         group or by or.OrderDate.Day into dayGroup
+                                         select new
+                                         {
+                                             Key = dayGroup.Key,
+                                             Value = dayGroup.Sum(s => s.GrandTotalAmt)
+                                         };
+                        return Request.CreateResponse(HttpStatusCode.OK, monthOrder);
                     }
                     else if (string.Equals("ThisYear", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         var firstDayOfYear = new DateTime(DateTime.Today.Year, 1, 1);
                         var lastDayOfYear = new DateTime(DateTime.Today.Year, 12, 31);
                         order = order.Where(p => p.OrderDate >= firstDayOfYear && p.OrderDate <= lastDayOfYear);
+                        var yearOrder = from or in order
+                                        group or by or.OrderDate.Month into monthGroup
+                                        select new
+                                        {
+                                            Key = monthGroup.Key,
+                                            Value = monthGroup.Sum(s => s.GrandTotalAmt)
+                                        };
+                        return Request.CreateResponse(HttpStatusCode.OK, yearOrder);
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid _filter");
                     }
                 }
                 else
                 {
                     throw new Exception("_filter is required");
                 }
-                var revenue = order.Sum(s => s.GrandTotalAmt);
-                return Request.CreateResponse(HttpStatusCode.OK, revenue);
             }
             catch (Exception e)
             {

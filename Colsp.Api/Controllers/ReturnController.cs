@@ -135,7 +135,7 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, Constant.NOT_AVAILABLE);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, returnCount/orderCount);
+                return Request.CreateResponse(HttpStatusCode.OK, decimal.Multiply(decimal.Divide(returnCount,orderCount),100));
             }
             catch (Exception e)
             {
