@@ -5,8 +5,10 @@ namespace Colsp.Api.Constants
     public static class Constant
     {
 
-        public static int HISTORY_REVISION = 10;
-        public static int TOP_SELLING = 10;
+        public static readonly string AUTHEN_SCHEMA = "Bearer";
+
+        public static readonly int HISTORY_REVISION = 10;
+        public static readonly int TOP_SELLING = 10;
 
 
         public static int SHIPPING_DROP_SHIP_3PL = 1;
@@ -38,9 +40,6 @@ namespace Colsp.Api.Constants
         public static readonly string INVENTORY_STATUS_UPDATE = "UD";
         public static readonly string INVENTORY_STATUS_DELETE = "DE";
 
-        public static readonly string NEWSLETTER_FILTER_INCLUDE = "I";
-        public static readonly string NEWSLETTER_FILTER_EXCLUDE = "E";
-
         //SQL exception
         public static readonly int MAX_RETRY_DEADLOCK = 3;
         public static readonly string UNIQUE_CONSTRAIN_PREFIX = "CK";
@@ -67,31 +66,16 @@ namespace Colsp.Api.Constants
         public static readonly string PRODUCT_STATUS_NOT_APPROVE = "RJ";
 
 
-
-
         public static readonly string USER_TYPE_ADMIN = "A";
         public static readonly string USER_TYPE_SELLER = "S";
         public static readonly string SHOP_TYPE = "H";
 
-        public static string STATUS_PROMOTION_INACTIVE = "IA";
-        public static string STATUS_PROMOTION_ACTIVE = "AT";
-
         public static readonly string COUPON_FILTER_INCLUDE = "I";
         public static readonly string COUPON_FILTER_EXCLUDE = "E";
 
+        public static readonly string NEWSLETTER_FILTER_INCLUDE = "I";
+        public static readonly string NEWSLETTER_FILTER_EXCLUDE = "E";
 
-        #region CMS
-        public static readonly int CMS_SHOP_GOBAL = 0;
-
-        public static readonly int CMS_STATUS_DRAFT = 1;
-        public static readonly int CMS_STATUS_WAIT_FOR_APPROVAL = 4;
-        public static readonly int CMS_STATUS_JUNK = 5;
-        public static readonly int CMS_STATUS_APPROVE = 2;
-        public static readonly int CMS_STATUS_NOT_APPROVE = 3;
-
-        public static readonly int CMS_TYPE_STATIC_PAGE = 1;
-        public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;
-        #endregion
 
         public static readonly string SHOP_GROUP_BU = "BU";
         public static readonly string SHOP_GROUP_INDY = "IN";
@@ -130,5 +114,23 @@ namespace Colsp.Api.Constants
         public static readonly string RETURN_STATUS_APPROVE = "AP";
 
         public static readonly string NOT_AVAILABLE = "N/A";
+
+        public static readonly double CACHE_TIMEOUT = 60;
+
+        #region CMS
+        public static readonly int CMS_SHOP_GOBAL = 0;
+
+        public static readonly int CMS_STATUS_DRAFT = 1;
+        public static readonly int CMS_STATUS_WAIT_FOR_APPROVAL = 4;
+        public static readonly int CMS_STATUS_JUNK = 5;
+        public static readonly int CMS_STATUS_APPROVE = 2;
+        public static readonly int CMS_STATUS_NOT_APPROVE = 3;
+
+        public static readonly int CMS_TYPE_STATIC_PAGE = 1;
+        public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;
+
+        public static string STATUS_PROMOTION_INACTIVE = "IA";
+        public static string STATUS_PROMOTION_ACTIVE = "AT";
+        #endregion
     }
 }

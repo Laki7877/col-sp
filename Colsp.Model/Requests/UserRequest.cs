@@ -21,6 +21,8 @@ namespace Colsp.Model.Requests
         public string Type { get; set; }
         public string Mobile { get; set; }
         public string Fax { get; set; }
+        public bool IsAdmin { get; set; }
+        public string Token { get; set; }
 
         public UserRequest()
         {
