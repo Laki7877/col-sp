@@ -248,13 +248,32 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="CMSCategoryProductMap">
+          <Key>
+            <PropertyRef Name="CMSCategoryProductMapId" />
+          </Key>
+          <Property Name="CMSCategoryProductMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSCategoryId" Type="int" />
+          <Property Name="ProductPID" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="CMSMasterStatusId" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateBy" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="CMSCategorySchedulerMap">
           <Key>
             <PropertyRef Name="CMSCategorySchedulerMapId" />
           </Key>
           <Property Name="CMSCategorySchedulerMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CMSSchedulerId" Type="int" />
-          <Property Name="CMSCategoryId" Type="nchar" MaxLength="10" />
+          <Property Name="CMSCategoryId" Type="int" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="Createdate" Type="datetime" />
@@ -934,7 +953,7 @@
           <Property Name="Createby" Type="varchar" MaxLength="10" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.ODMRoleUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ODMRoleUser">
           <Key>
             <PropertyRef Name="RoleID" />
@@ -990,6 +1009,23 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="WebAgent" Type="varchar" MaxLength="255" />
           <Property Name="IpAddress" Type="nchar" MaxLength="30" />
           <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="PaymentID" />
+          </Key>
+          <Property Name="PaymentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PaymentCode" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="PaymentType" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="PaymentName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="PaymentNameEN" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="PaymentDiscount" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="PaymentStatus" Type="int" Nullable="false" />
+          <Property Name="Createby" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Updateon" Type="datetime" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Permission">
           <Key>
@@ -1944,7 +1980,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.StoreReturnReason' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.StoreReturnReason' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="StoreReturnReason">
           <Key>
             <PropertyRef Name="ReasonId" />
@@ -1959,18 +1995,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.StoreReturnReason' does not have a
           <Property Name="UpdateOn" Type="smalldatetime" />
           <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBAdminMenuItemTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.TBAdminMenuItemTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBAdminMenuItemTmp">
           <Key>
             <PropertyRef Name="Id" />
@@ -1989,31 +2015,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBAdminMenuItemTmp' does not have 
           <Property Name="ClassName" Type="varchar" MaxLength="100" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBCMCity' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="TBCMCity">
-          <Key>
-            <PropertyRef Name="ProvinceID" />
-            <PropertyRef Name="City" />
-            <PropertyRef Name="District" />
-            <PropertyRef Name="CreateOn" />
-            <PropertyRef Name="CreateBy" />
-            <PropertyRef Name="UpdateOn" />
-            <PropertyRef Name="UpdateBy" />
-            <PropertyRef Name="Postcode" />
-            <PropertyRef Name="Remark" />
-          </Key>
-          <Property Name="ProvinceID" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="City" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="District" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
-          <Property Name="CreateBy" Type="varchar" MaxLength="8" Nullable="false" />
-          <Property Name="UpdateOn" Type="smalldatetime" Nullable="false" />
-          <Property Name="UpdateBy" Type="varchar" MaxLength="8" Nullable="false" />
-          <Property Name="Postcode" Type="varchar" MaxLength="5" Nullable="false" />
-          <Property Name="Remark" Type="varchar" MaxLength="100" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBDvMapZone' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.TBDvMapZone' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBDvMapZone">
           <Key>
             <PropertyRef Name="Subzone" />
@@ -2041,7 +2043,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBDvMapZone' does not have a prima
           <Property Name="DCID" Type="varchar" MaxLength="4" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBPermissionTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.TBPermissionTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBPermissionTmp">
           <Key>
             <PropertyRef Name="PermissionId" />
@@ -2056,7 +2058,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBPermissionTmp' does not have a p
           <Property Name="CreateBy" Type="varchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBRolePermissionTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.TBRolePermissionTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBRolePermissionTmp">
           <Key>
             <PropertyRef Name="RoleID" />
@@ -2069,7 +2071,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBRolePermissionTmp' does not have
           <Property Name="Createby" Type="varchar" MaxLength="10" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBRoleTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.TBRoleTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBRoleTmp">
           <Key>
             <PropertyRef Name="RoleID" />
@@ -2084,7 +2086,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBRoleTmp' does not have a primary
           <Property Name="Createby" Type="varchar" MaxLength="100" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBRoleUserTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.TBRoleUserTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBRoleUserTmp">
           <Key>
             <PropertyRef Name="RoleID" />
@@ -2098,7 +2100,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBRoleUserTmp' does not have a pri
           <Property Name="Createby" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.TBUserAdminTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBUserAdminTmp">
           <Key>
             <PropertyRef Name="UserId" />
@@ -2127,7 +2129,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminTmp' does not have a pr
           <Property Name="LastActivity" Type="smalldatetime" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBUserAdminWebTokenTmp">
           <Key>
             <PropertyRef Name="UserId" />
@@ -3616,6 +3618,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="City" EntityType="Self.City" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCategory" EntityType="Self.CMSCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCategoryCreteriaMap" EntityType="Self.CMSCategoryCreteriaMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSCategoryProductMap" EntityType="Self.CMSCategoryProductMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCategorySchedulerMap" EntityType="Self.CMSCategorySchedulerMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCreteria" EntityType="Self.CMSCreteria" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSCriteriaProductMap" EntityType="Self.CMSCriteriaProductMap" Schema="dbo" store:Type="Tables" />
@@ -3661,6 +3664,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ODMUser" EntityType="Self.ODMUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ODMUserMenuItem" EntityType="Self.ODMUserMenuItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ODMUserToken" EntityType="Self.ODMUserToken" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payment" EntityType="Self.Payment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pid" EntityType="Self.Pid" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostCode" EntityType="Self.PostCode" Schema="dbo" store:Type="Tables" />
@@ -3707,7 +3711,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="StoreReceive" EntityType="Self.StoreReceive" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreReceiveCode" EntityType="Self.StoreReceiveCode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreReturn" EntityType="Self.StoreReturn" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Theme" EntityType="Self.Theme" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
@@ -3745,19 +3748,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
     [TBAdminMenuItemTmp].[Seq] AS [Seq], 
     [TBAdminMenuItemTmp].[ClassName] AS [ClassName]
     FROM [dbo].[TBAdminMenuItemTmp] AS [TBAdminMenuItemTmp]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="TBCMCity" EntityType="Self.TBCMCity" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [TBCMCity].[ProvinceID] AS [ProvinceID], 
-    [TBCMCity].[City] AS [City], 
-    [TBCMCity].[District] AS [District], 
-    [TBCMCity].[CreateOn] AS [CreateOn], 
-    [TBCMCity].[CreateBy] AS [CreateBy], 
-    [TBCMCity].[UpdateOn] AS [UpdateOn], 
-    [TBCMCity].[UpdateBy] AS [UpdateBy], 
-    [TBCMCity].[Postcode] AS [Postcode], 
-    [TBCMCity].[Remark] AS [Remark]
-    FROM [dbo].[TBCMCity] AS [TBCMCity]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TBDvMapZone" EntityType="Self.TBDvMapZone" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -4283,6 +4273,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="Cities" EntityType="ColspModel.City" />
           <EntitySet Name="CMSCategories" EntityType="ColspModel.CMSCategory" />
           <EntitySet Name="CMSCategoryCreteriaMaps" EntityType="ColspModel.CMSCategoryCreteriaMap" />
+          <EntitySet Name="CMSCategoryProductMaps" EntityType="ColspModel.CMSCategoryProductMap" />
           <EntitySet Name="CMSCategorySchedulerMaps" EntityType="ColspModel.CMSCategorySchedulerMap" />
           <EntitySet Name="CMSCreterias" EntityType="ColspModel.CMSCreteria" />
           <EntitySet Name="CMSCriteriaProductMaps" EntityType="ColspModel.CMSCriteriaProductMap" />
@@ -4328,6 +4319,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ODMUsers" EntityType="ColspModel.ODMUser" />
           <EntitySet Name="ODMUserMenuItems" EntityType="ColspModel.ODMUserMenuItem" />
           <EntitySet Name="ODMUserTokens" EntityType="ColspModel.ODMUserToken" />
+          <EntitySet Name="Payments" EntityType="ColspModel.Payment" />
           <EntitySet Name="Permissions" EntityType="ColspModel.Permission" />
           <EntitySet Name="Pids" EntityType="ColspModel.Pid" />
           <EntitySet Name="PostCodes" EntityType="ColspModel.PostCode" />
@@ -4374,7 +4366,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="StoreReceives" EntityType="ColspModel.StoreReceive" />
           <EntitySet Name="StoreReceiveCodes" EntityType="ColspModel.StoreReceiveCode" />
           <EntitySet Name="StoreReturns" EntityType="ColspModel.StoreReturn" />
-          <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
           <EntitySet Name="Themes" EntityType="ColspModel.Theme" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
@@ -4384,7 +4375,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ODMRoleUsers" EntityType="ColspModel.ODMRoleUser" />
           <EntitySet Name="StoreReturnReasons" EntityType="ColspModel.StoreReturnReason" />
           <EntitySet Name="TBAdminMenuItemTmps" EntityType="ColspModel.TBAdminMenuItemTmp" />
-          <EntitySet Name="TBCMCities" EntityType="ColspModel.TBCMCity" />
           <EntitySet Name="TBDvMapZones" EntityType="ColspModel.TBDvMapZone" />
           <EntitySet Name="TBPermissionTmps" EntityType="ColspModel.TBPermissionTmp" />
           <EntitySet Name="TBRolePermissionTmps" EntityType="ColspModel.TBRolePermissionTmp" />
@@ -5073,13 +5063,32 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CMSCategoryProductMap">
+          <Key>
+            <PropertyRef Name="CMSCategoryProductMapId" />
+          </Key>
+          <Property Name="CMSCategoryProductMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCategoryId" Type="Int32" />
+          <Property Name="ProductPID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="CMSMasterStatusId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="CMSCategorySchedulerMap">
           <Key>
             <PropertyRef Name="CMSCategorySchedulerMapId" />
           </Key>
           <Property Name="CMSCategorySchedulerMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CMSSchedulerId" Type="Int32" />
-          <Property Name="CMSCategoryId" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="CMSCategoryId" Type="Int32" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="Createdate" Type="DateTime" Precision="3" />
@@ -5856,6 +5865,23 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="WebAgent" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="IpAddress" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="PaymentID" />
+          </Key>
+          <Property Name="PaymentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentType" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentNameEN" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentDiscount" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="PaymentStatus" Type="Int32" Nullable="false" />
+          <Property Name="Createby" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Updateon" Type="DateTime" Precision="3" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Permission">
           <Key>
@@ -6925,16 +6951,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="0" />
           <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="Theme">
           <Key>
             <PropertyRef Name="ThemeId" />
@@ -7076,28 +7092,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Seq" Type="Int32" Nullable="false" />
           <Property Name="ClassName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="TBCMCity">
-          <Key>
-            <PropertyRef Name="ProvinceID" />
-            <PropertyRef Name="City" />
-            <PropertyRef Name="District" />
-            <PropertyRef Name="CreateOn" />
-            <PropertyRef Name="CreateBy" />
-            <PropertyRef Name="UpdateOn" />
-            <PropertyRef Name="UpdateBy" />
-            <PropertyRef Name="Postcode" />
-            <PropertyRef Name="Remark" />
-          </Key>
-          <Property Name="ProvinceID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="City" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="District" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="UpdateOn" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="Postcode" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="Remark" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="TBDvMapZone">
           <Key>
@@ -8841,6 +8835,26 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CMSCategoryProductMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSCategoryProductMap">
+              <MappingFragment StoreEntitySet="CMSCategoryProductMap">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CMSMasterStatusId" ColumnName="CMSMasterStatusId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="ProductPID" ColumnName="ProductPID" />
+                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
+                <ScalarProperty Name="CMSCategoryProductMapId" ColumnName="CMSCategoryProductMapId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CMSCategorySchedulerMaps">
             <EntityTypeMapping TypeName="ColspModel.CMSCategorySchedulerMap">
               <MappingFragment StoreEntitySet="CMSCategorySchedulerMap">
@@ -9593,6 +9607,24 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Browser" ColumnName="Browser" />
                 <ScalarProperty Name="Token" ColumnName="Token" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Payments">
+            <EntityTypeMapping TypeName="ColspModel.Payment">
+              <MappingFragment StoreEntitySet="Payment">
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
+                <ScalarProperty Name="Updateon" ColumnName="Updateon" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Createby" ColumnName="Createby" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+                <ScalarProperty Name="PaymentDiscount" ColumnName="PaymentDiscount" />
+                <ScalarProperty Name="PaymentNameEN" ColumnName="PaymentNameEN" />
+                <ScalarProperty Name="PaymentName" ColumnName="PaymentName" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="PaymentCode" ColumnName="PaymentCode" />
+                <ScalarProperty Name="PaymentID" ColumnName="PaymentID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -10563,17 +10595,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="ColspModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="definition" ColumnName="definition" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Themes">
             <EntityTypeMapping TypeName="ColspModel.Theme">
               <MappingFragment StoreEntitySet="Theme">
@@ -10701,21 +10722,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Controller" ColumnName="Controller" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TBCMCities">
-            <EntityTypeMapping TypeName="ColspModel.TBCMCity">
-              <MappingFragment StoreEntitySet="TBCMCity">
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="Postcode" ColumnName="Postcode" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
-                <ScalarProperty Name="District" ColumnName="District" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="ProvinceID" ColumnName="ProvinceID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

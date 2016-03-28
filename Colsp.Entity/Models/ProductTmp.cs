@@ -12,21 +12,25 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductReview
+    public partial class ProductTmp
     {
-        public long ProductReviewId { get; set; }
-        public string CustomerId { get; set; }
-        public decimal Rating { get; set; }
+        public long ProductId { get; set; }
         public string Pid { get; set; }
+        public string Sku { get; set; }
         public int ShopId { get; set; }
-        public string Comment { get; set; }
-        public string Status { get; set; }
+        public string ProductNameEn { get; set; }
+        public string ProductNameTh { get; set; }
+        public string UrlEn { get; set; }
+        public decimal OriginalPrice { get; set; }
+        public decimal SalePrice { get; set; }
+        public int Quantity { get; set; }
+        public string JdaCategoryId { get; set; }
+        public int OnHold { get; set; }
         public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedOn { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedOn { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual Product Product { get; set; }
         public virtual Shop Shop { get; set; }
     }
 }

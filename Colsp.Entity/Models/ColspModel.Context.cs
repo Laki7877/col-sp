@@ -20,7 +20,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -44,6 +43,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<CMSCategory> CMSCategories { get; set; }
         public virtual DbSet<CMSCategoryCreteriaMap> CMSCategoryCreteriaMaps { get; set; }
+        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
         public virtual DbSet<CMSCategorySchedulerMap> CMSCategorySchedulerMaps { get; set; }
         public virtual DbSet<CMSCreteria> CMSCreterias { get; set; }
         public virtual DbSet<CMSCriteriaProductMap> CMSCriteriaProductMaps { get; set; }
@@ -89,6 +89,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ODMUser> ODMUsers { get; set; }
         public virtual DbSet<ODMUserMenuItem> ODMUserMenuItems { get; set; }
         public virtual DbSet<ODMUserToken> ODMUserTokens { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Pid> Pids { get; set; }
         public virtual DbSet<PostCode> PostCodes { get; set; }
@@ -135,7 +136,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceive> StoreReceives { get; set; }
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
@@ -145,7 +145,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
-        public virtual DbSet<TBCMCity> TBCMCities { get; set; }
         public virtual DbSet<TBDvMapZone> TBDvMapZones { get; set; }
         public virtual DbSet<TBPermissionTmp> TBPermissionTmps { get; set; }
         public virtual DbSet<TBRolePermissionTmp> TBRolePermissionTmps { get; set; }

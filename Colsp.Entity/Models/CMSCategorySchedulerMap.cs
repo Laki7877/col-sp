@@ -16,7 +16,7 @@ namespace Colsp.Entity.Models
     {
         public int CMSCategorySchedulerMapId { get; set; }
         public Nullable<int> CMSSchedulerId { get; set; }
-        public string CMSCategoryId { get; set; }
+        public Nullable<int> CMSCategoryId { get; set; }
         public Nullable<bool> IsActive { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }
