@@ -18,10 +18,13 @@ namespace Colsp.Logic
 
     public enum SearchOption
     {
-        [Description("PID")]
+        [StringValue("PID")]
         PID,
 
-        [Description("Product Name")]
+        [StringValue("SKU")]
+        SKU,
+
+        [StringValue("ProductName")]
         ProductName
     }
 }

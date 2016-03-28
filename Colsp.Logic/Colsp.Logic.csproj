@@ -57,6 +57,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attribute\DisplayValueAttribute.cs" />
+    <Compile Include="Attribute\FlagValueAttribute.cs" />
+    <Compile Include="Attribute\StringCategoryAttribute.cs" />
+    <Compile Include="Attribute\StringValueAttribute.cs" />
     <Compile Include="CMSLogic.cs" />
     <Compile Include="ConditionRequest\ProductCondition.cs" />
     <Compile Include="ConditionRequest\BrandCondition.cs" />
