@@ -46,7 +46,7 @@ namespace Colsp.Api.ByOneGetOneFunction
                         newObj.CreateIP = Model.CreateIP;
                         newObj.UpdateIP = Model.UpdateIP;
                         newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
-                        newObj.Visibility = Model.Visibility;
+                        //newObj.Visibility = Model.Visibility;
                         db.PromotionBuy1Get1Item.Add(newObj);
 
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -105,7 +105,7 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.CreateIP                     = Model.CreateIP != default(string) ? Model.CreateIP : newObj.CreateIP;
                             newObj.UpdateIP                     = Model.UpdateIP != default(string) ? Model.UpdateIP : newObj.UpdateIP;
                             newObj.CMSStatusFlowId              = Model.CMSStatusFlowId.HasValue ? Model.CMSStatusFlowId : newObj.CMSStatusFlowId;
-                            newObj.Visibility                   = Model.Visibility.HasValue ? Model.Visibility : newObj.Visibility;
+                            //newObj.Visibility                   = Model.Visibility.HasValue ? Model.Visibility : newObj.Visibility;
 
                             db.Entry(newObj).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -165,7 +165,7 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.CreateIP = Model.CreateIP;
                             newObj.UpdateIP = Model.UpdateIP;
                             newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
-                            newObj.Visibility = Model.Visibility;
+                            //newObj.Visibility = Model.Visibility;
 
                             db.Entry(newObj).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.

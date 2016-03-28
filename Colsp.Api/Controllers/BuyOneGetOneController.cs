@@ -162,7 +162,7 @@ namespace Colsp.Api.Controllers
                             response.UpdateIP = B1G.UpdateIP;
 
                             response.CMSStatusFlowId = B1G.CMSStatusFlowId;
-                            response.Visibility = B1G.Visibility;
+                            //response.Visibility = B1G.Visibility;
                             response.PNameBuy = tmpPnameBuy;
                             response.PNameGet = tmpPnameGet;
 
@@ -323,7 +323,7 @@ namespace Colsp.Api.Controllers
                     var cmsFlowStatus = db.CMSMasterStatus.Find(coll.CMSStatusFlowId);
                     var buyItemName = db.Products.Find(coll.PIDBuy);
                     var getItemName = db.Products.Find(coll.PIDGet);
-                    var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
+                    //var visible = coll.Visibility != null ? (coll.Visibility == true ? "Visible" : "InVisible") : "unknow";
                     if (coll == null)
                     {
                         throw new Exception("Cannot find Collection with id " + rq.PromotionBuy1Get1ItemId);
@@ -387,7 +387,7 @@ namespace Colsp.Api.Controllers
                     sb.Append("\"" + coll.LongDescriptionTH + "\""); sb.Append(",");
                     sb.Append("\"" + coll.LongDescriptionEN + "\""); sb.Append(",");
                     sb.Append(cmsFlowStatus.CMSMasterStatusNameEN); sb.Append(",");
-                    sb.Append(visible); sb.Append(",");
+                    //sb.Append(visible); sb.Append(",");
 
 
                     writer.WriteLine(sb);

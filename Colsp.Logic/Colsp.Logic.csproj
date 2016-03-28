@@ -30,15 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Colsp.Api">
-      <HintPath>..\Colsp.Api\bin\Colsp.Api.dll</HintPath>
-    </Reference>
-    <Reference Include="Colsp.Entity">
-      <HintPath>..\Colsp.Entity\bin\Colsp.Entity.dll</HintPath>
-    </Reference>
-    <Reference Include="Colsp.Model">
-      <HintPath>..\Colsp.Model\bin\Release\Colsp.Model.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -50,6 +41,14 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.5840.25917, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.6\lib\net40\System.Linq.Dynamic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Web.Http.Common.4.0.20126.16343\lib\net40\System.Web.Http.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,12 +57,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attribute\DisplayValueAttribute.cs" />
+    <Compile Include="Attribute\FlagValueAttribute.cs" />
+    <Compile Include="Attribute\StringCategoryAttribute.cs" />
+    <Compile Include="Attribute\StringValueAttribute.cs" />
     <Compile Include="CMSLogic.cs" />
+    <Compile Include="ConditionRequest\ProductCondition.cs" />
+    <Compile Include="ConditionRequest\BrandCondition.cs" />
+    <Compile Include="Helpers\CMSHelper.cs" />
+    <Compile Include="Helpers\OperationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Colsp.Entity\Colsp.Entity.csproj">
+      <Project>{4900b20b-c0bc-4f3f-97c0-3df428740322}</Project>
+      <Name>Colsp.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Colsp.Model\Colsp.Model.csproj">
+      <Project>{226b2ad2-649f-4d2d-b17e-e2afb474a274}</Project>
+      <Name>Colsp.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
