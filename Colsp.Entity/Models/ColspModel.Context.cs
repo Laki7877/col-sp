@@ -89,6 +89,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ODMUser> ODMUsers { get; set; }
         public virtual DbSet<ODMUserMenuItem> ODMUserMenuItems { get; set; }
         public virtual DbSet<ODMUserToken> ODMUserTokens { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Pid> Pids { get; set; }
         public virtual DbSet<PostCode> PostCodes { get; set; }

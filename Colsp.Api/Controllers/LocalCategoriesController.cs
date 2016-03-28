@@ -178,7 +178,14 @@ namespace Colsp.Api.Controllers
             LocalCategory category = null;
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
+                int shopId = User.ShopRequest().ShopId;
+                string sql = "SELECT COUNT(Category.CategoryId) FROM (SELECT Node.CategoryId FROM LocalCategory AS Node, LocalCategory AS Parent WHERE Node.Lft BETWEEN Parent.Lft AND Parent.Rgt AND Node.ShopId = @shopid AND Parent.ShopId = @shopid GROUP BY Node.CategoryId, node.lft HAVING (COUNT(parent.CategoryId) - 1) = 0) AS Category";
+                var shopCount = db.Database.SqlQuery<int>(sql,new SqlParameter("shopid",shopId)).FirstOrDefault();
+                var maxLocalCategory = db.Shops.Where(w => w.ShopId == shopId).Select(s => s.MaxLocalCategory).SingleOrDefault();
+                if (shopCount >= maxLocalCategory)
+                {
+                    throw new Exception("This shop can have max local category of " + User.ShopRequest().MaxLocalCategory);
+                }
                 category = new LocalCategory();
                 category.ShopId = shopId;
                 SetupCategory(category, request);

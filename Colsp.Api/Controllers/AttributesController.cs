@@ -289,9 +289,10 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-                if(attributeVal != null && attributeVal.Count > 0)
+                if (attributeVal != null && attributeVal.Count > 0)
                 {
-                    db.AttributeValues.RemoveRange(attributeVal);
+                    throw new Exception("Cannot delete attribute value");
+                    //db.AttributeValues.RemoveRange(attributeVal);
                 }
                 #endregion
                 Util.DeadlockRetry(db.SaveChanges, "Attribute");
@@ -494,7 +495,7 @@ namespace Colsp.Api.Controllers
             {
                 throw new Exception("Default attribute cannot be variant");
             }
-            attribute.VisibleTo = Validation.ValidateString(request.VisibleTo, "Visible To", false, 2, true, string.Empty, new List<string>() { Constant.ATTRIBUTE_VISIBLE_ADMIN, Constant.ATTRIBUTE_VISIBLE_ALL_USER });
+            attribute.VisibleTo = Validation.ValidateString(request.VisibleTo, "Visible To", false, 2, false, string.Empty, new List<string>() { Constant.ATTRIBUTE_VISIBLE_ADMIN, Constant.ATTRIBUTE_VISIBLE_ALL_USER, string.Empty });
 
 
             attribute.DataValidation = Validation.ValidateString(request.DataValidation, "Input Validation", false, 2, true, string.Empty);

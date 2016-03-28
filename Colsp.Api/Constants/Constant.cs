@@ -108,7 +108,7 @@ namespace Colsp.Api.Constants
         public static readonly string ORDER_READY_TO_SHIP = "RS";
         public static readonly string ORDER_SHIPPING = "SH";
         public static readonly string ORDER_DELIVERED = "DE";
-        public static readonly string ORDER_CANCELLED = "CA";
+        public static readonly string ORDER_CANCELED = "CA";
 
         public static readonly string RETURN_STATUS_WAIT_FOR_APPROVAL = "WA";
         public static readonly string RETURN_STATUS_APPROVE = "AP";

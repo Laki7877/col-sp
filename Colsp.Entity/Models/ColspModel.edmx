@@ -991,6 +991,23 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="IpAddress" Type="nchar" MaxLength="30" />
           <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="PaymentID" />
+          </Key>
+          <Property Name="PaymentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PaymentCode" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="PaymentType" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="PaymentName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="PaymentNameEN" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="PaymentDiscount" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="PaymentStatus" Type="int" Nullable="false" />
+          <Property Name="Createby" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Updateon" Type="datetime" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Permission">
           <Key>
             <PropertyRef Name="PermissionId" />
@@ -3661,6 +3678,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ODMUser" EntityType="Self.ODMUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ODMUserMenuItem" EntityType="Self.ODMUserMenuItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ODMUserToken" EntityType="Self.ODMUserToken" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payment" EntityType="Self.Payment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pid" EntityType="Self.Pid" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostCode" EntityType="Self.PostCode" Schema="dbo" store:Type="Tables" />
@@ -4328,6 +4346,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ODMUsers" EntityType="ColspModel.ODMUser" />
           <EntitySet Name="ODMUserMenuItems" EntityType="ColspModel.ODMUserMenuItem" />
           <EntitySet Name="ODMUserTokens" EntityType="ColspModel.ODMUserToken" />
+          <EntitySet Name="Payments" EntityType="ColspModel.Payment" />
           <EntitySet Name="Permissions" EntityType="ColspModel.Permission" />
           <EntitySet Name="Pids" EntityType="ColspModel.Pid" />
           <EntitySet Name="PostCodes" EntityType="ColspModel.PostCode" />
@@ -5856,6 +5875,23 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="WebAgent" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="IpAddress" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="PaymentID" />
+          </Key>
+          <Property Name="PaymentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentType" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentNameEN" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentDiscount" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="PaymentStatus" Type="Int32" Nullable="false" />
+          <Property Name="Createby" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Updateon" Type="DateTime" Precision="3" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Permission">
           <Key>
@@ -9593,6 +9629,24 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Browser" ColumnName="Browser" />
                 <ScalarProperty Name="Token" ColumnName="Token" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Payments">
+            <EntityTypeMapping TypeName="ColspModel.Payment">
+              <MappingFragment StoreEntitySet="Payment">
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
+                <ScalarProperty Name="Updateon" ColumnName="Updateon" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Createby" ColumnName="Createby" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+                <ScalarProperty Name="PaymentDiscount" ColumnName="PaymentDiscount" />
+                <ScalarProperty Name="PaymentNameEN" ColumnName="PaymentNameEN" />
+                <ScalarProperty Name="PaymentName" ColumnName="PaymentName" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="PaymentCode" ColumnName="PaymentCode" />
+                <ScalarProperty Name="PaymentID" ColumnName="PaymentID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

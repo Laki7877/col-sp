@@ -50,7 +50,7 @@ namespace Colsp.Api.Controllers
                 var shopOwnerUser = usr.Any(a => a.Shops.Count != 0);
                 if (shopOwnerUser)
                 {
-                    throw new Exception("This user is the shop owner and cannot be deleted. Please contact your administrator for more details.");
+                    throw new Exception("This user is Shop Owner and cannot be deleted. Shop Owner can only be deleted when he does not belong to any shop.");
                 }
                 db.Users.RemoveRange(usr);
                 Util.DeadlockRetry(db.SaveChanges, "User");
@@ -634,7 +634,8 @@ namespace Colsp.Api.Controllers
                         s.Shop.ShopNameEn,
                         Status = s.Shop.Status,
                         ShopGroup = s.Shop.ShopGroup,
-                        IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true
+                        IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true,
+                        //MaxLocalCategory = s.Shop.MaxLocalCategory
                     }).ToList(),
                     new UserRequest {
                         UserId = user.UserId,
@@ -891,6 +892,7 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
+
 
         [Route("api/Tokens/Validation")]
         [HttpGet]

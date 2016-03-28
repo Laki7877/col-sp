@@ -193,9 +193,6 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 #endregion
-
-                
-
                 if (request.AttributeSets != null && request.AttributeSets.Count > 0)
                 {
                    

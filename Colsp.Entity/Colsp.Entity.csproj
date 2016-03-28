@@ -339,6 +339,9 @@
     <Compile Include="Models\ODMUserToken.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Payment.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Permission.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

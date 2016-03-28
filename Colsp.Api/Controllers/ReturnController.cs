@@ -104,11 +104,11 @@ namespace Colsp.Api.Controllers
                 {
                     if (string.Equals("Accepted", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.RETURN_STATUS_APPROVE));
+                        list = list.Where(p => p.Status.Equals(Constant.RETURN_STATUS_APPROVE));
                     }
                     else if (string.Equals("Waiting", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                        list = list.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
                 var total = list.Count();

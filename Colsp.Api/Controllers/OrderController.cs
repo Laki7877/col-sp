@@ -177,9 +177,9 @@ namespace Colsp.Api.Controllers
                     {
                         list = list.Where(p => p.Status.Equals(Constant.ORDER_DELIVERED));
                     }
-                    else if (string.Equals("Cancelled", request._filter, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals("Canceled", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        list = list.Where(p => p.Status.Equals(Constant.ORDER_CANCELLED));
+                        list = list.Where(p => p.Status.Equals(Constant.ORDER_CANCELED));
                     }
                 }
                 var total = list.Count();

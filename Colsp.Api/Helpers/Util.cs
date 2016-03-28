@@ -20,7 +20,15 @@ namespace Colsp.Api.Helpers
                 throw new Exception("In valid content multi-media");
             }
             var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(rootPath, folderName));
-            await Request.Content.ReadAsMultipartAsync(streamProvider);
+            try
+            {
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Image size exceeded " + maxSize + " mb");
+            }
+            
 
             string fileName = string.Empty;
             string ext = string.Empty;

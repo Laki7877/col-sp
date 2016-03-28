@@ -210,7 +210,7 @@ namespace Colsp.Api.Controllers
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
                 }
                 var attrSet = db.AttributeSets.Where(w => w.AttributeSetId.Equals(attributeSetId))
-                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes))
+                    .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes.Select(sa=>sa.ProductStage.ProductStageGroup)))
                     .Include(i => i.AttributeSetTags)
                     .SingleOrDefault();
                 if (attrSet == null)
@@ -222,11 +222,11 @@ namespace Colsp.Api.Controllers
                 attrSet.UpdatedBy = this.User.UserRequest().Email;
                 attrSet.UpdatedDt = DateTime.Now;
                 var attributeIds = request.Attributes.Select(s => s.AttributeId).ToList();
-                var attribute = db.Attributes.Where(w => attributeIds.All(a => a == w.AttributeId && w.DefaultAttribute == true)).Count();
-                if (attribute != 0)
-                {
-                    throw new Exception("Cannot map attribute that is default attribute to attribute set");
-                }
+                //var attribute = db.Attributes.Where(w => attributeIds.All(a => a == w.AttributeId && w.DefaultAttribute == true)).Count();
+                //if (attribute != 0)
+                //{
+                //    throw new Exception("Cannot map attribute that is default attribute to attribute set");
+                //}
                 List<AttributeSetMap> mapList = attrSet.AttributeSetMaps.ToList();
                 if (request.Attributes != null && request.Attributes.Count > 0)
                 {
@@ -269,7 +269,9 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (AttributeSetMap map in mapList)
                     {
-                        if (map.Attribute.ProductStageAttributes != null && map.Attribute.ProductStageAttributes.Count > 0)
+                        if (map.Attribute.ProductStageAttributes != null 
+                            && map.Attribute.ProductStageAttributes.Count > 0
+                            && map.Attribute.ProductStageAttributes.Any(a=>a.ProductStage.ProductStageGroup.AttributeSetId == attributeSetId))
                         {
                             throw new Exception("Cannot delete attribute maping " + map.Attribute.AttributeNameEn + " in attribute set " + attrSet.AttributeSetNameEn + " with product associated");
                         }
