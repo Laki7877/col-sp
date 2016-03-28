@@ -4,6 +4,16 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+
+        public static int HISTORY_REVISION = 10;
+        public static int TOP_SELLING = 10;
+
+
+        public static int SHIPPING_DROP_SHIP_3PL = 1;
+        public static int SHIPPING_FULFILLMENT = 2;
+
+        public static int DEFAULT_BOOSTWEIGHT = 5000;
+
         public static List<char> IGNORE_PID = new List<char>() {
                     '0',
                     'D',
@@ -27,6 +37,9 @@ namespace Colsp.Api.Constants
         public static readonly string INVENTORY_STATUS_ADD = "AD";
         public static readonly string INVENTORY_STATUS_UPDATE = "UD";
         public static readonly string INVENTORY_STATUS_DELETE = "DE";
+
+        public static readonly string NEWSLETTER_FILTER_INCLUDE = "I";
+        public static readonly string NEWSLETTER_FILTER_EXCLUDE = "E";
 
         //SQL exception
         public static readonly int MAX_RETRY_DEADLOCK = 3;
@@ -115,5 +128,7 @@ namespace Colsp.Api.Constants
 
         public static readonly string RETURN_STATUS_WAIT_FOR_APPROVAL = "WA";
         public static readonly string RETURN_STATUS_APPROVE = "AP";
+
+        public static readonly string NOT_AVAILABLE = "N/A";
     }
 }

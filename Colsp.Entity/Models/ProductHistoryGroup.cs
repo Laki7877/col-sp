@@ -12,25 +12,21 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductStageGroup
+    public partial class ProductHistoryGroup
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ProductStageGroup()
+        public ProductHistoryGroup()
         {
-            this.BrandFeatureProducts = new HashSet<BrandFeatureProduct>();
-            this.GlobalCatFeatureProducts = new HashSet<GlobalCatFeatureProduct>();
-            this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
-            this.ProductStages = new HashSet<ProductStage>();
-            this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
-            this.ProductStageRelateds = new HashSet<ProductStageRelated>();
-            this.ProductStageRelateds1 = new HashSet<ProductStageRelated>();
-            this.ProductStageTags = new HashSet<ProductStageTag>();
-            this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
+            this.ProductHistories = new HashSet<ProductHistory>();
+            this.ProductHistoryGlobalCatMaps = new HashSet<ProductHistoryGlobalCatMap>();
+            this.ProductHistoryLocalCatMaps = new HashSet<ProductHistoryLocalCatMap>();
+            this.ProductHistoryTags = new HashSet<ProductHistoryTag>();
         }
     
+        public long HistoryId { get; set; }
         public long ProductId { get; set; }
-        public int ShopId { get; set; }
-        public int GlobalCatId { get; set; }
+        public Nullable<int> ShopId { get; set; }
+        public Nullable<int> GlobalCatId { get; set; }
         public Nullable<int> LocalCatId { get; set; }
         public Nullable<int> AttributeSetId { get; set; }
         public Nullable<int> BrandId { get; set; }
@@ -51,6 +47,7 @@ namespace Colsp.Entity.Models
         public string RejectReason { get; set; }
         public bool Visibility { get; set; }
         public string Status { get; set; }
+        public System.DateTime HistoryDt { get; set; }
         public string ApprovedBy { get; set; }
         public Nullable<System.DateTime> ApprovedDt { get; set; }
         public string SubmittedBy { get; set; }
@@ -62,26 +59,15 @@ namespace Colsp.Entity.Models
     
         public virtual AttributeSet AttributeSet { get; set; }
         public virtual Brand Brand { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual GlobalCategory GlobalCategory { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GlobalCatFeatureProduct> GlobalCatFeatureProducts { get; set; }
         public virtual LocalCategory LocalCategory { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
+        public virtual ICollection<ProductHistory> ProductHistories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStage> ProductStages { get; set; }
+        public virtual ICollection<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
-        public virtual Shop Shop { get; set; }
+        public virtual ICollection<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageRelated> ProductStageRelateds { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageRelated> ProductStageRelateds1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageTag> ProductStageTags { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
+        public virtual ICollection<ProductHistoryTag> ProductHistoryTags { get; set; }
     }
 }

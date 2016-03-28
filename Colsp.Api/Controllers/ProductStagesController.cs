@@ -31,574 +31,229 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
         private readonly string root = HttpContext.Current.Server.MapPath("~/Import");
 
-        //[Route("api/ProductStages/Export")]
-        //[HttpPost]
-        //public HttpResponseMessage ExportProductProducts(ExportRequest request)
-        //{
-        //    MemoryStream stream = null;
-        //    StreamWriter writer = null;
-        //    try
-        //    {
-        //        if (request == null)
-        //        {
-        //            throw new Exception("Invalid request");
-        //        }
-        //        #region Setup Header
-        //        int i = 0;
-        //        Dictionary<string, Tuple<string, int>> headDicTmp = new Dictionary<string, Tuple<string, int>>();
-        //        var guidance = db.ImportHeaders.OrderBy(o => o.ImportHeaderId).ToList();
+        [Route("api/ProductStages/PendingProduct")]
+        [HttpPost]
+        public HttpResponseMessage GroupPendingProduct(PendingProduct request)
+        {
+            try
+            {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
 
-        //        foreach (var current in guidance)
-        //        {
-        //            var op = request.Options.Where(w => w.Equals(current.MapName)).SingleOrDefault();
-        //            if (op == null)
-        //            {
-        //                continue;
-        //            }
-        //            if (!headDicTmp.ContainsKey(current.HeaderName))
-        //            {
-        //                headDicTmp.Add(current.MapName, new Tuple<string, int>(current.HeaderName, i++));
-        //                //if (current.MapName.Equals("PRS")) { request.ProductStatus = true; }
-        //                //if (current.MapName.Equals("GID")) { request.GroupID = true; }
-        //                //if (current.MapName.Equals("DFV")) { request.DefaultVariant = true; }
-        //                //if (current.MapName.Equals("PID")) { request.PID = true; }
-        //                //if (current.MapName.Equals("PNE")) { request.ProductNameEn = true; }
-        //                //if (current.MapName.Equals("PNT")) { request.ProductNameTh = true; }
-        //                //if (current.MapName.Equals("SKU")) { request.SKU = true; }
-        //                //if (current.MapName.Equals("UPC")) { request.UPC = true; }
-        //                //if (current.MapName.Equals("BRN")) { request.BrandName = true; }
-        //                //if (current.MapName.Equals("ORP")) { request.OriginalPrice = true; }
-        //                //if (current.MapName.Equals("SAP")) { request.SalePrice = true; }
-        //                //if (current.MapName.Equals("DCE")) { request.DescriptionEn = true; }
-        //                //if (current.MapName.Equals("DCT")) { request.DescriptionTh = true; }
-        //                //if (current.MapName.Equals("SDE")) { request.ShortDescriptionEn = true; }
-        //                //if (current.MapName.Equals("SDT")) { request.ShortDescriptionTh = true; }
-        //                //if (current.MapName.Equals("KEW")) { request.SearchTag = true; }
-        //                //if (current.MapName.Equals("INA")) { request.InventoryAmount = true; }
-        //                //if (current.MapName.Equals("SSA")) { request.SafetytockAmount = true; }
-        //                //if (current.MapName.Equals("STT")) { request.StockType = true; }
-        //                //if (current.MapName.Equals("SHM")) { request.ShippingMethod = true; }
-        //                //if (current.MapName.Equals("PRT")) { request.PreparationTime = true; }
-        //                //if (current.MapName.Equals("LEN")) { request.PackageLenght = true; }
-        //                //if (current.MapName.Equals("HEI")) { request.PackageHeight = true; }
-        //                //if (current.MapName.Equals("WID")) { request.PackageWidth = true; }
-        //                //if (current.MapName.Equals("WEI")) { request.PackageWeight = true; }
-        //                //if (current.MapName.Equals("GCI")) { request.GlobalCategory = true; }
-        //                //if (current.MapName.Equals("AG1")) { request.GlobalCategory01 = true; }
-        //                //if (current.MapName.Equals("AG2")) { request.GlobalCategory02 = true; }
-        //                //if (current.MapName.Equals("LCI")) { request.LocalCategory = true; }
-        //                //if (current.MapName.Equals("AL1")) { request.LocalCategory01 = true; }
-        //                //if (current.MapName.Equals("AL2")) { request.LocalCategory02 = true; }
-        //                //if (current.MapName.Equals("REP")) { request.RelatedProducts = true; }
-        //                //if (current.MapName.Equals("MTE")) { request.MetaTitleEn = true; }
-        //                //if (current.MapName.Equals("MTT")) { request.MetaTitleTh = true; }
-        //                //if (current.MapName.Equals("MDE")) { request.MetaDescriptionEn = true; }
-        //                //if (current.MapName.Equals("MDT")) { request.MetaDescriptionTh = true; }
-        //                //if (current.MapName.Equals("MKE")) { request.MetaKeywordEn = true; }
-        //                //if (current.MapName.Equals("MKT")) { request.MetaKeywordTh = true; }
-        //                //if (current.MapName.Equals("PUK")) { request.ProductURLKeyEn = true; }
-        //                //if (current.MapName.Equals("PBW")) { request.ProductBoostingWeight = true; }
-        //                //if (current.MapName.Equals("EFD")) { request.EffectiveDate = true; }
-        //                //if (current.MapName.Equals("EFT")) { request.EffectiveTime = true; }
-        //                //if (current.MapName.Equals("EXD")) { request.ExpiryDate = true; }
-        //                //if (current.MapName.Equals("EXT")) { request.ExpiryTime = true; }
-        //                //if (current.MapName.Equals("FL1")) { request.FlagControl1 = true; }
-        //                //if (current.MapName.Equals("FL2")) { request.FlagControl2 = true; }
-        //                //if (current.MapName.Equals("FL3")) { request.FlagControl3 = true; }
-        //                //if (current.MapName.Equals("REM")) { request.Remark = true; }
-        //            }
-        //        }
-        //        #endregion
-        //        #region Query
-        //        var query = (
-        //                     from mast in db.ProductStages
-        //                     join variant in db.ProductStageVariants on mast.ProductId equals variant.ProductId into varJoin
-        //                     from vari in varJoin.DefaultIfEmpty()
-        //                         //where productIds.Contains(mast.ProductId) && mast.ShopId == shopId
-        //                     select new
-        //                     {
-        //                         ShopId = vari != null ? vari.ShopId : mast.ShopId,
-        //                         Status = vari != null ? vari.Status : mast.Status,
-        //                         Sku = vari != null ? vari.Sku : mast.Sku,
-        //                         Pid = vari != null ? vari.Pid : mast.Pid,
-        //                         Upc = vari != null ? vari.Upc : mast.Upc,
-        //                         ProductId = vari != null ? vari.ProductId : mast.ProductId,
-        //                         //GroupNameEn = mast.ProductNameEn,
-        //                         //GroupNameTh = mast.ProductNameTh,
-        //                         ProductNameEn = vari != null ? vari.ProductNameEn : mast.ProductNameEn,
-        //                         ProductNameTh = vari != null ? vari.ProductNameTh : mast.ProductNameTh,
-        //                         DefaultVaraint = vari != null ? vari.DefaultVaraint == true ? "Yes" : "No" : "Yes",
-        //                         ControlFlag1 = mast.ControlFlag1 == true ? "Yes" : "No",
-        //                         ControlFlag2 = mast.ControlFlag2 == true ? "Yes" : "No",
-        //                         ControlFlag3 = mast.ControlFlag3 == true ? "Yes" : "No",
-        //                         mast.Brand.BrandNameEn,
-        //                         mast.GlobalCatId,
-        //                         RelatedGlobalCat = mast.ProductStageGlobalCatMaps.Select(s => s.GlobalCategory.CategoryId),
-        //                         mast.LocalCatId,
-        //                         RelatedLocalCat = mast.ProductStageLocalCatMaps.Select(s => s.LocalCategory.CategoryId),
-        //                         OriginalPrice = vari != null ? vari.OriginalPrice : mast.OriginalPrice,
-        //                         SalePrice = vari != null ? vari.SalePrice : mast.SalePrice,
-        //                         DescriptionShortEn = vari != null ? vari.DescriptionShortEn : mast.DescriptionShortEn,
-        //                         DescriptionShortTh = vari != null ? vari.DescriptionShortTh : mast.DescriptionShortTh,
-        //                         DescriptionFullEn = vari != null ? vari.DescriptionFullEn : mast.DescriptionFullEn,
-        //                         DescriptionFullTh = vari != null ? vari.DescriptionFullTh : mast.DescriptionFullTh,
-        //                         AttributeSet = new { mast.AttributeSetId, mast.AttributeSet.AttributeSetNameEn, Attribute = mast.AttributeSet.AttributeSetMaps.Select(s => s.Attribute) },
-        //                         mast.PrepareDay,
-        //                         Length = vari != null ? vari.Length : mast.Length,
-        //                         Height = vari != null ? vari.Height : mast.Height,
-        //                         Width = vari != null ? vari.Width : mast.Width,
-        //                         Weight = vari != null ? vari.Weight : mast.Weight,
-        //                         mast.Tag,
-        //                         mast.MetaTitleEn,
-        //                         mast.MetaTitleTh,
-        //                         mast.MetaDescriptionEn,
-        //                         mast.MetaDescriptionTh,
-        //                         mast.MetaKeyEn,
-        //                         mast.MetaKeyTh,
-        //                         mast.UrlEn,
-        //                         mast.BoostWeight,
-        //                         mast.EffectiveDate,
-        //                         mast.EffectiveTime,
-        //                         mast.ExpiryDate,
-        //                         mast.ExpiryTime,
-        //                         mast.Remark,
-        //                         mast.Shipping.ShippingMethodEn,
-        //                         VariantAttribute = vari.ProductStageVariantArrtibuteMaps.Select(s => new
-        //                         {
-        //                             s.Attribute.AttributeNameEn,
-        //                             Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.Value) select tt.AttributeValueEn).FirstOrDefault()
-        //                                 : s.Value,
-        //                         }),
-        //                         MasterAttribute = mast.ProductStageAttributes.Select(s => new
-        //                         {
-        //                             s.AttributeId,
-        //                             s.Attribute.AttributeNameEn,
-        //                             ValueEn = s.IsAttributeValue ?
-        //                                        (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault()
-        //                                        : s.ValueEn,
-        //                         }),
-        //                         RelatedProduct = (from rel in db.ProductStageRelateds where rel.Pid1.Equals(mast.Pid) select rel.Pid2).ToList(),
-        //                         Inventory = vari != null ? (from inv in db.Inventories where inv.Pid.Equals(vari.Pid) select inv).FirstOrDefault() :
-        //                                      (from inv in db.Inventories where inv.Pid.Equals(mast.Pid) select inv).FirstOrDefault(),
-        //                     });
-        //        var productIds = request.ProductList.Select(s => s.ProductId).ToList();
+                var shopId = User.ShopRequest().ShopId;
+                string email = User.UserRequest().Email;
+                var pids = request.Variants.Select(s => s.Pid).ToList();
+                var productTemp = db.ProductTmps.Where(w => pids.Any(a => a.Equals(w.Pid))).ToList();
+                var defaultVariantRq = request.Variants.Where(w => w.DefaultVariant == true).SingleOrDefault();
+                if(defaultVariantRq == null)
+                {
+                    throw new Exception("Cannot find default variant");
+                }
 
-        //        if (productIds != null && productIds.Count > 0)
-        //        {
-        //            if (productIds.Count > 2000)
-        //            {
-        //                throw new Exception("Too many product selected");
-        //            }
-        //            query = query.Where(w => productIds.Contains(w.ProductId));
-        //        }
-        //        if (this.User.ShopRequest() != null)
-        //        {
-        //            var shopId = this.User.ShopRequest().ShopId;
-        //            query = query.Where(w => w.ShopId == shopId);
-        //        }
-        //        var productList = query.ToList();
+                var defaultVariant = productTemp.Where(w => w.Pid.Equals(defaultVariantRq.Pid)).SingleOrDefault();
 
-        //        #endregion
-        //        List<List<string>> rs = new List<List<string>>();
-        //        List<string> bodyList = null;
-        //        if (request.AttributeSets != null && request.AttributeSets.Count > 0)
-        //        {
-        //            headDicTmp.Add("ATS", new Tuple<string, int>("Attribute Set", i++));
-        //            headDicTmp.Add("VO1", new Tuple<string, int>("Variation Option 1", i++));
-        //            headDicTmp.Add("VO2", new Tuple<string, int>("Variation Option 2", i++));
-        //        }
-        //        foreach (var p in productList)
-        //        {
-        //            bodyList = new List<string>(new string[headDicTmp.Count]);
-        //            #region Assign Value
-        //            if (request.ProductStatus)
-        //            {
-        //                if (Constant.PRODUCT_STATUS_DRAFT.Equals(p.Status))
-        //                {
-        //                    bodyList[headDicTmp["PRS"].Item2] = "Draft";
-        //                }
-        //                else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(p.Status))
-        //                {
-        //                    bodyList[headDicTmp["PRS"].Item2] = "Wait for Approval";
-        //                }
-        //                else if (Constant.PRODUCT_STATUS_APPROVE.Equals(p.Status))
-        //                {
-        //                    bodyList[headDicTmp["PRS"].Item2] = "Approve";
-        //                }
-        //                else if (Constant.PRODUCT_STATUS_NOT_APPROVE.Equals(p.Status))
-        //                {
-        //                    bodyList[headDicTmp["PRS"].Item2] = "Not Approve";
-        //                }
-        //            }
-        //            if (request.SKU)
-        //            {
-        //                bodyList[headDicTmp["SKU"].Item2] = p.Sku;
-        //            }
-        //            if (request.PID)
-        //            {
-        //                bodyList[headDicTmp["PID"].Item2] = p.Pid;
-        //            }
-        //            if (request.UPC)
-        //            {
-        //                bodyList[headDicTmp["UPC"].Item2] = p.Upc;
-        //            }
-        //            if (request.GroupID)
-        //            {
-        //                bodyList[headDicTmp["GID"].Item2] = string.Concat(p.ProductId);
-        //            }
-        //            if (request.DefaultVariant)
-        //            {
-        //                bodyList[headDicTmp["DFV"].Item2] = p.DefaultVaraint;
-        //            }
-        //            if (request.ProductNameEn)
-        //            {
-        //                bodyList[headDicTmp["PNE"].Item2] = p.ProductNameEn;
-        //            }
-        //            if (request.ProductNameTh)
-        //            {
-        //                bodyList[headDicTmp["PNT"].Item2] = p.ProductNameTh;
-        //            }
-        //            if (request.BrandName)
-        //            {
-        //                bodyList[headDicTmp["BRN"].Item2] = p.BrandNameEn;
-        //            }
-        //            if (request.GlobalCategory)
-        //            {
-        //                bodyList[headDicTmp["GCI"].Item2] = string.Concat(p.GlobalCatId);
-        //            }
-        //            if (request.GlobalCategory01)
-        //            {
-        //                if (p.RelatedGlobalCat != null && p.RelatedGlobalCat.ToList().Count > 0)
-        //                {
-        //                    bodyList[headDicTmp["AG1"].Item2] = string.Concat(p.RelatedGlobalCat.ToList()[0]);
-        //                }
-        //            }
-        //            if (request.GlobalCategory02)
-        //            {
-        //                if (p.RelatedGlobalCat != null && p.RelatedGlobalCat.ToList().Count > 1)
-        //                {
-        //                    bodyList[headDicTmp["AG2"].Item2] = string.Concat(p.RelatedGlobalCat.ToList()[1]);
-        //                }
-        //            }
-        //            if (request.LocalCategory)
-        //            {
-        //                bodyList[headDicTmp["LCI"].Item2] = string.Concat(p.LocalCatId);
-        //            }
-        //            if (request.LocalCategory01)
-        //            {
-        //                if (p.RelatedLocalCat != null && p.RelatedLocalCat.ToList().Count > 0)
-        //                {
-        //                    bodyList[headDicTmp["AL1"].Item2] = string.Concat(p.RelatedLocalCat.ToList()[0]);
-        //                }
-        //            }
-        //            if (request.LocalCategory02)
-        //            {
-        //                if (p.RelatedLocalCat != null && p.RelatedLocalCat.ToList().Count > 1)
-        //                {
-        //                    bodyList[headDicTmp["AL2"].Item2] = string.Concat(p.RelatedLocalCat.ToList()[1]);
-        //                }
-        //            }
-        //            if (request.OriginalPrice)
-        //            {
-        //                bodyList[headDicTmp["ORP"].Item2] = string.Concat(p.OriginalPrice);
-        //            }
-        //            if (request.SalePrice)
-        //            {
-        //                bodyList[headDicTmp["SAP"].Item2] = string.Concat(p.SalePrice);
-        //            }
-        //            if (request.DescriptionEn)
-        //            {
-        //                bodyList[headDicTmp["DCE"].Item2] = p.DescriptionFullEn;
-        //            }
-        //            if (request.DescriptionTh)
-        //            {
-        //                bodyList[headDicTmp["DCT"].Item2] = p.DescriptionFullTh;
-        //            }
-        //            if (request.ShortDescriptionEn)
-        //            {
-        //                bodyList[headDicTmp["SDE"].Item2] = p.DescriptionShortEn;
-        //            }
-        //            if (request.ShortDescriptionTh)
-        //            {
-        //                bodyList[headDicTmp["SDT"].Item2] = p.DescriptionShortTh;
-        //            }
-        //            if (request.PreparationTime)
-        //            {
-        //                bodyList[headDicTmp["PRT"].Item2] = string.Concat(p.PrepareDay);
-        //            }
-        //            if (request.PackageLenght)
-        //            {
-        //                bodyList[headDicTmp["LEN"].Item2] = string.Concat(p.Length);
-        //            }
-        //            if (request.PackageHeight)
-        //            {
-        //                bodyList[headDicTmp["HEI"].Item2] = string.Concat(p.Height);
-        //            }
-        //            if (request.PackageWidth)
-        //            {
-        //                bodyList[headDicTmp["WID"].Item2] = string.Concat(p.Width);
-        //            }
-        //            if (request.PackageWeight)
-        //            {
-        //                bodyList[headDicTmp["WEI"].Item2] = string.Concat(p.Weight);
-        //            }
-
-        //            if (request.InventoryAmount)
-        //            {
-        //                if (p.Inventory != null)
-        //                {
-        //                    bodyList[headDicTmp["INA"].Item2] = string.Concat(p.Inventory.Quantity);
-        //                }
-        //                else
-        //                {
-        //                    bodyList[headDicTmp["INA"].Item2] = string.Empty;
-        //                }
-        //            }
-        //            if (request.StockType)
-        //            {
-        //                if (p.Inventory != null)
-        //                {
-        //                    bodyList[headDicTmp["STT"].Item2] = Constant.STOCK_TYPE.Where(w => w.Value.Equals(p.Inventory.StockAvailable)).SingleOrDefault().Key;
-        //                }
-        //                else
-        //                {
-        //                    bodyList[headDicTmp["STT"].Item2] = string.Empty;
-        //                }
-        //            }
-        //            if (request.ShippingMethod)
-        //            {
-        //                bodyList[headDicTmp["SHM"].Item2] = p.ShippingMethodEn;
-        //            }
-        //            if (request.SafetytockAmount)
-        //            {
-        //                if (p.Inventory != null)
-        //                {
-        //                    bodyList[headDicTmp["SSA"].Item2] = string.Concat(p.Inventory.SafetyStockSeller);
-        //                }
-        //                else
-        //                {
-        //                    bodyList[headDicTmp["SSA"].Item2] = string.Empty;
-        //                }
-        //            }
-        //            if (request.SearchTag)
-        //            {
-        //                bodyList[headDicTmp["KEW"].Item2] = p.Tag;
-        //            }
-        //            if (request.RelatedProducts)
-        //            {
-        //                if (p.RelatedProduct != null && p.RelatedProduct.Count > 0)
-        //                {
-        //                    bodyList[headDicTmp["REP"].Item2] = string.Join(",", p.RelatedProduct);
-        //                }
-        //                else
-        //                {
-        //                    bodyList[headDicTmp["REP"].Item2] = string.Empty;
-        //                }
-        //            }
-        //            if (request.MetaTitleEn)
-        //            {
-        //                bodyList[headDicTmp["MTE"].Item2] = p.MetaTitleEn;
-        //            }
-        //            if (request.MetaTitleTh)
-        //            {
-        //                bodyList[headDicTmp["MTT"].Item2] = p.MetaTitleTh;
-        //            }
-        //            if (request.MetaDescriptionEn)
-        //            {
-        //                bodyList[headDicTmp["MDE"].Item2] = p.MetaDescriptionEn;
-        //            }
-        //            if (request.MetaDescriptionTh)
-        //            {
-        //                bodyList[headDicTmp["MDT"].Item2] = p.MetaDescriptionTh;
-        //            }
-        //            if (request.MetaKeywordEn)
-        //            {
-        //                bodyList[headDicTmp["MKE"].Item2] = p.MetaKeyEn;
-        //            }
-        //            if (request.MetaKeywordTh)
-        //            {
-        //                bodyList[headDicTmp["MKT"].Item2] = p.MetaKeyTh;
-        //            }
-        //            if (request.ProductURLKeyEn)
-        //            {
-        //                bodyList[headDicTmp["PUK"].Item2] = p.UrlEn;
-        //            }
-        //            if (request.ProductBoostingWeight)
-        //            {
-        //                bodyList[headDicTmp["PBW"].Item2] = string.Concat(p.BoostWeight);
-        //            }
-        //            if (request.EffectiveDate)
-        //            {
-        //                if (p.ExpiryDate != null)
-        //                {
-        //                    bodyList[headDicTmp["EFD"].Item2] = p.ExpiryDate.ToString();
-        //                }
-        //            }
-        //            if (request.EffectiveTime)
-        //            {
-        //                if (p.EffectiveTime != null)
-        //                {
-        //                    bodyList[headDicTmp["EFT"].Item2] = p.EffectiveTime.ToString();
-        //                }
-        //            }
-
-        //            if (request.ExpiryDate)
-        //            {
-        //                if (p.ExpiryDate != null)
-        //                {
-        //                    bodyList[headDicTmp["EXD"].Item2] = p.ExpiryDate.ToString();
-        //                }
-        //            }
-        //            if (request.ExpiryTime)
-        //            {
-        //                if (p.ExpiryTime != null)
-        //                {
-        //                    bodyList[headDicTmp["EXT"].Item2] = p.ExpiryTime.ToString();
-        //                }
-        //            }
-        //            if (request.Remark)
-        //            {
-        //                bodyList[headDicTmp["REM"].Item2] = p.Remark;
-        //            }
-        //            if (request.FlagControl1)
-        //            {
-        //                bodyList[headDicTmp["FL1"].Item2] = p.ControlFlag1;
-        //            }
-        //            if (request.FlagControl2)
-        //            {
-        //                bodyList[headDicTmp["FL2"].Item2] = p.ControlFlag2;
-        //            }
-        //            if (request.FlagControl3)
-        //            {
-        //                bodyList[headDicTmp["FL3"].Item2] = p.ControlFlag3;
-        //            }
-
-        //            #endregion
-
-        //            #region Attibute Section
-        //            if (request.AttributeSets != null && request.AttributeSets.Count > 0)
-        //            {
-        //                if (p.AttributeSet != null)
-        //                {
-        //                    var set = request.AttributeSets.Where(w => w.AttributeSetId == p.AttributeSet.AttributeSetId).SingleOrDefault();
-        //                    if (set != null)
-        //                    {
-        //                        //make header for attribute
-        //                        foreach (var attr in p.AttributeSet.Attribute)
-        //                        {
-        //                            if (!headDicTmp.ContainsKey(attr.AttributeNameEn))
-        //                            {
-        //                                headDicTmp.Add(attr.AttributeNameEn, new Tuple<string, int>(attr.AttributeNameEn, i++));
-        //                                bodyList.Add(string.Empty);
-        //                            }
-        //                        }
-
-        //                        bodyList[headDicTmp["ATS"].Item2] = p.AttributeSet.AttributeSetNameEn;
-        //                        //make vaiant option 1 value
-        //                        if (p.VariantAttribute != null && p.VariantAttribute.ToList().Count > 0)
-        //                        {
-        //                            bodyList[headDicTmp["VO1"].Item2] = p.VariantAttribute.ToList()[0].AttributeNameEn;
-        //                        }
-        //                        //make vaiant option 2 value
-        //                        if (p.VariantAttribute != null && p.VariantAttribute.ToList().Count > 1)
-        //                        {
-        //                            bodyList[headDicTmp["VO2"].Item2] = p.VariantAttribute.ToList()[1].AttributeNameEn;
-        //                        }
-        //                        //make master attribute value
-        //                        if (p.MasterAttribute != null && p.MasterAttribute.ToList().Count > 0)
-        //                        {
-        //                            foreach (var masterValue in p.MasterAttribute)
-        //                            {
-        //                                if (headDicTmp.ContainsKey(masterValue.AttributeNameEn))
-        //                                {
-        //                                    int desColumn = headDicTmp[masterValue.AttributeNameEn].Item2;
-        //                                    for (int j = bodyList.Count; j <= desColumn; j++)
-        //                                    {
-        //                                        bodyList.Add(string.Empty);
-        //                                    }
-        //                                    bodyList[desColumn] = masterValue.ValueEn;
-        //                                }
-        //                            }
-        //                        }
-        //                        if (p.VariantAttribute != null && p.VariantAttribute.ToList().Count > 0)
-        //                        {
-        //                            foreach (var variantValue in p.VariantAttribute)
-        //                            {
-        //                                if (headDicTmp.ContainsKey(variantValue.AttributeNameEn))
-        //                                {
-        //                                    int desColumn = headDicTmp[variantValue.AttributeNameEn].Item2;
-        //                                    for (int j = bodyList.Count; j <= desColumn; j++)
-        //                                    {
-        //                                        bodyList.Add(string.Empty);
-        //                                    }
-        //                                    bodyList[desColumn] = variantValue.Value;
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-
-
-        //            #endregion
-        //            rs.Add(bodyList);
-        //        }
-
-        //        #region Write header
-
-        //        stream = new MemoryStream();
-        //        writer = new StreamWriter(stream, Encoding.UTF8);
-        //        var csv = new CsvWriter(writer);
-        //        string headers = string.Empty;
-        //        foreach (KeyValuePair<string, Tuple<string, int>> entry in headDicTmp)
-        //        {
-        //            csv.WriteField(entry.Value.Item1);
-        //        }
-        //        csv.NextRecord();
-        //        #endregion
-        //        #region Write body
-        //        foreach (List<string> r in rs)
-        //        {
-        //            foreach (string field in r)
-        //            {
-        //                csv.WriteField(field);
-        //            }
-        //            csv.NextRecord();
-        //        }
-        //        #endregion
-        //        #region Create Response
-        //        writer.Flush();
-        //        stream.Position = 0;
-
-        //        HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-        //        result.Content = new StreamContent(stream);
-        //        result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
-        //        {
-        //            CharSet = Encoding.UTF8.WebName
-        //        };
-        //        result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-        //        result.Content.Headers.ContentDisposition.FileName = "file.csv";
-        //        #endregion
-        //        return result;
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        #region close writer
-        //        if (writer != null)
-        //        {
-        //            writer.Close();
-        //            writer.Dispose();
-        //        }
-        //        if (stream != null)
-        //        {
-        //            stream.Close();
-        //            stream.Dispose();
-        //        }
-        //        #endregion
-        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-        //    }
-        //}
+                ProductStageGroup group = new ProductStageGroup()
+                {
+                    GlobalCatId = request.Category.CategoryId,
+                    AttributeSetId = request.AttributeSet.AttributeSetId != 0 ? new int?(request.AttributeSet.AttributeSetId) : null,
+                    CategoryTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                    ImageTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                    MoreOptionTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                    InformationTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                    VariantTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                    ControlFlag1 = false,
+                    ControlFlag2 = false,
+                    ControlFlag3 = false,
+                    ImageFlag = false,
+                    InfoFlag = false,
+                    OnlineFlag = false,
+                    RejectReason = string.Empty,
+                    Remark = string.Empty,
+                    Visibility = true,
+                    Status = Constant.PRODUCT_STATUS_DRAFT,
+                    ShopId = shopId,
+                    CreatedBy = email,
+                    CreatedDt = DateTime.Now,
+                    UpdatedBy = email,
+                    UpdatedDt = DateTime.Now
+                };
+                ProductStage masterVariant = new ProductStage()
+                {
+                    ShopId = group.ShopId,
+                    Sku = defaultVariant.Sku,
+                    ProductNameEn = defaultVariant.ProductNameEn,
+                    ProductNameTh = defaultVariant.ProductNameTh,
+                    OriginalPrice = defaultVariant.OriginalPrice,
+                    SalePrice = defaultVariant.SalePrice,
+                    IsMaster = false,
+                    IsVariant = false,
+                    DefaultVaraint = false,
+                    ShippingId = Constant.SHIPPING_FULFILLMENT,
+                    DescriptionFullEn = string.Empty,
+                    DescriptionFullTh = string.Empty,
+                    DescriptionShortEn = string.Empty,
+                    DescriptionShortTh = string.Empty,
+                    Length = 0,
+                    Height = 0,
+                    Width = 0,
+                    DimensionUnit = Constant.DIMENSTION_MM,
+                    Weight = 0,
+                    WeightUnit = Constant.WEIGHT_MEASURE_G,
+                    Display = Constant.VARIANT_DISPLAY_GROUP,
+                    FeatureImgUrl = string.Empty,
+                    GiftWrap = Constant.STATUS_NO,
+                    Installment = Constant.STATUS_NO,
+                    KillerPoint1En = string.Empty,
+                    KillerPoint1Th = string.Empty,
+                    KillerPoint2En = string.Empty,
+                    KillerPoint2Th = string.Empty,
+                    KillerPoint3En = string.Empty,
+                    KillerPoint3Th = string.Empty,
+                    LimitIndividualDay = false,
+                    MaxiQtyAllowed = 0,
+                    BoostWeight = Constant.DEFAULT_BOOSTWEIGHT,
+                    GlobalBoostWeight = Constant.DEFAULT_BOOSTWEIGHT,
+                    ImageCount = 0,
+                    MetaDescriptionEn = string.Empty,
+                    MetaDescriptionTh = string.Empty,
+                    MetaKeyEn = string.Empty,
+                    MetaKeyTh = string.Empty,
+                    MetaTitleEn = string.Empty,
+                    MetaTitleTh = string.Empty,
+                    MiniQtyAllowed = 0,
+                    PrepareDay = 0,
+                    PrepareMon = 0,
+                    PrepareTue = 0,
+                    PrepareWed = 0,
+                    PrepareThu = 0,
+                    PrepareFri = 0,
+                    PrepareSat = 0,
+                    PrepareSun = 0,
+                    PurchasePrice = 0,
+                    TheOneCardEarn = 0,
+                    Visibility = true,
+                    VariantCount = request.Variants.Count,
+                    Upc = string.Empty,
+                    UnitPrice = 0,
+                    Status = group.Status,
+                    CreatedBy = email,
+                    CreatedDt = DateTime.Now,
+                    UpdatedBy = email,
+                    UpdatedDt = DateTime.Now
+                };
+                masterVariant.Inventory = new Inventory()
+                {
+                    Quantity = defaultVariant.Quantity,
+                    CreatedBy = email,
+                    CreatedDt = DateTime.Now,
+                    UpdatedBy = email,
+                    UpdatedDt = DateTime.Now
+                };
+                group.ProductStages.Add(masterVariant);
+                var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
+                foreach (var variantRq in request.Variants)
+                {
+                    var variant = productTemp.Where(w => w.Pid.Equals(variantRq.Pid)).SingleOrDefault();
+                    if(variant == null)
+                    {
+                        throw new Exception("Cannot find pid " + variantRq.Pid);
+                    }
+                    ProductStage variantEntity = new ProductStage()
+                    {
+                        Pid = variant.Pid,
+                        ShopId = group.ShopId,
+                        Sku = variant.Sku,
+                        ProductNameEn = variant.ProductNameEn,
+                        ProductNameTh = variant.ProductNameTh,
+                        UrlEn = defaultVariant.UrlEn,
+                        OriginalPrice = variant.OriginalPrice,
+                        SalePrice = variant.SalePrice,
+                        IsMaster = false,
+                        IsVariant = true,
+                        DefaultVaraint = variantRq.DefaultVariant,
+                        ShippingId = Constant.SHIPPING_FULFILLMENT,
+                        DescriptionFullEn = string.Empty,
+                        DescriptionFullTh = string.Empty,
+                        DescriptionShortEn = string.Empty,
+                        DescriptionShortTh = string.Empty,
+                        Length = 0,
+                        Height = 0,
+                        Width = 0,
+                        DimensionUnit = Constant.DIMENSTION_MM,
+                        Weight = 0,
+                        WeightUnit = Constant.WEIGHT_MEASURE_G,
+                        Display = Constant.VARIANT_DISPLAY_GROUP,
+                        FeatureImgUrl = string.Empty,
+                        GiftWrap = Constant.STATUS_NO,
+                        Installment = Constant.STATUS_NO,
+                        KillerPoint1En = string.Empty,
+                        KillerPoint1Th = string.Empty,
+                        KillerPoint2En = string.Empty,
+                        KillerPoint2Th = string.Empty,
+                        KillerPoint3En = string.Empty,
+                        KillerPoint3Th = string.Empty,
+                        LimitIndividualDay = false,
+                        MaxiQtyAllowed = 0,
+                        BoostWeight = Constant.DEFAULT_BOOSTWEIGHT,
+                        GlobalBoostWeight = Constant.DEFAULT_BOOSTWEIGHT,
+                        ImageCount = 0,
+                        MetaDescriptionEn = string.Empty,
+                        MetaDescriptionTh = string.Empty,
+                        MetaKeyEn = string.Empty,
+                        MetaKeyTh = string.Empty,
+                        MetaTitleEn = string.Empty,
+                        MetaTitleTh = string.Empty,
+                        MiniQtyAllowed = 0,
+                        PrepareDay = 0,
+                        PrepareMon = 0,
+                        PrepareTue = 0,
+                        PrepareWed = 0,
+                        PrepareThu = 0,
+                        PrepareFri = 0,
+                        PrepareSat = 0,
+                        PrepareSun = 0,
+                        PurchasePrice = 0,
+                        TheOneCardEarn = 0,
+                        Visibility = true,
+                        VariantCount = 0,
+                        Upc = string.Empty,
+                        UnitPrice = 0,
+                        Status = group.Status,
+                        CreatedBy = email,
+                        CreatedDt = DateTime.Now,
+                        UpdatedBy = email,
+                        UpdatedDt = DateTime.Now
+                    };
+                    if (string.IsNullOrWhiteSpace(variantEntity.UrlEn))
+                    {
+                        variantEntity.UrlEn = variantEntity.Pid;
+                    }
+                    variantEntity.Inventory = new Inventory()
+                    {
+                        Quantity = variant.Quantity,
+                        CreatedBy = email,
+                        CreatedDt = DateTime.Now,
+                        UpdatedBy = email,
+                        UpdatedDt = DateTime.Now
+                    };
+                    SetupAttribute(variantEntity, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
+                    group.ProductStages.Add(variantEntity);
+                }
+                db.ProductStageGroups.Add(group);
+                db.ProductTmps.RemoveRange(productTemp);
+                AutoGenerate.GeneratePid(db, group.ProductStages);
+                group.ProductId = db.GetNextProductStageGroupId().Single().Value;
+                db.ProductStageGroups.Add(group);
+                Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
 
         [Route("api/ProductStages/Master/{productId}")]
         [HttpPut]
@@ -678,7 +333,7 @@ namespace Colsp.Api.Controllers
                 tmpStage.AdminApprove.MoreOption = Constant.PRODUCT_STATUS_APPROVE;
                 tmpStage.AdminApprove.Variation = Constant.PRODUCT_STATUS_APPROVE;
                 tmpStage.Status = Constant.PRODUCT_STATUS_APPROVE;
-                ProductStageGroup group = AddProduct(db, tmpStage,0);
+                ProductStageGroup group = SetupProduct(db, tmpStage,0);
                 if (string.IsNullOrEmpty(request.MasterProduct.Pid))
                 {
                     throw new Exception("Pid is required for master");
@@ -1317,13 +972,6 @@ namespace Colsp.Api.Controllers
                                     p.VariantTabStatus,
                                     p.MoreOptionTabStatus,
                                     Tags = p.ProductStageTags.Select(s=>s.Tag),
-                                    //PriceTo = p.ProductStageVariants.Max(m => m.SalePrice),
-                                    //PriceFrom = p.ProductStageVariants.Min(m => m.SalePrice),
-                                    //PriceTo = p.ProductStageVariants.Count == 0 ?  p.SalePrice :
-                                    //        p.SalePrice < p.ProductStageVariants.Max(m => m.SalePrice)
-                                    //        ? p.ProductStageVariants.Where(w => true).Max(m => m.SalePrice) : p.SalePrice,
-                                    //PriceFrom = p.SalePrice < p.ProductStageVariants.Where(w => true).Min(m => m.SalePrice)
-                                    //        ? p.SalePrice : p.ProductStageVariants.Where(w => true).Min(m => m.SalePrice),
                                     Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn }
                                 });
                 if (this.User.HasPermission("View Product"))
@@ -1465,28 +1113,19 @@ namespace Colsp.Api.Controllers
                 var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
                 var shippingList = db.Shippings.ToList();
                 #endregion
+                string email = this.User.UserRequest().Email;
+                bool adminPermission = User.HasPermission("Approve product");
+                bool sellerPermission = User.HasPermission("Add Product");
                 #region Setup Group
-                SetupGroup(group, request, db);
-                group.UpdatedBy = this.User.UserRequest().Email;
-                group.UpdatedDt = DateTime.Now;
+                SetupGroup(group, request,false,email, adminPermission, sellerPermission, db);
                 #endregion
                 #region Master Variant
                 var masterVariant = group.ProductStages.Where(w=>w.IsVariant==false).FirstOrDefault();
-                if (User.HasPermission("Approve product"))
-                {
-                    group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-                    masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE,Constant.PRODUCT_STATUS_NOT_APPROVE });
-                }
-                else
-                {
-                    group.Status = Validation.ValidateString(request.Status, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                }
-                SetupVariant(masterVariant, request.MasterVariant,db, shippingList);
-                masterVariant.UpdatedBy = this.User.UserRequest().Email;
-                masterVariant.UpdatedDt = DateTime.Now;
-                SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
-                SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, db);
+                request.MasterVariant.Status = group.Status;
+                SetupVariant(masterVariant, request.MasterVariant, false, email, adminPermission, sellerPermission, db, shippingList);
+                //var tmpAtribute = new List<AttributeRequest>(request.MasterAttribute);
+                //tmpAtribute.AddRange(request.DefaultAttributes);
+                SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
                 #endregion
                 #region Variants
                 var tmpVariant = group.ProductStages.Where(w => w.IsVariant == true).ToList();
@@ -1519,22 +1158,15 @@ namespace Colsp.Api.Controllers
                             variant = new ProductStage();
                             variant.ShopId = masterVariant.ShopId;
                             variant.IsVariant = true;
-                            variant.CreatedBy = this.User.UserRequest().Email;
+                            variant.CreatedBy = email;
                             variant.CreatedDt = DateTime.Now;
+                            variant.UpdatedBy = email;
+                            variant.UpdatedDt = DateTime.Now;
                             group.ProductStages.Add(variant);
                         }
-                        if (User.HasPermission("Approve product"))
-                        {
-                            variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-                        }
-                        else
-                        {
-                        variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                        }
-                        SetupVariant(variant, variantRq,db, shippingList);
-                        variant.UpdatedBy = this.User.UserRequest().Email;
-                        variant.UpdatedDt = DateTime.Now;
-                        SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, db);
+                        variantRq.Status = group.Status;
+                        SetupVariant(variant, variantRq, false, email, adminPermission, sellerPermission, db, shippingList);
+                        SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
                     }
                 }
                 else
@@ -1550,6 +1182,11 @@ namespace Colsp.Api.Controllers
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 SetupGroupAfterSave(group);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStageImage");
+                if (Constant.PRODUCT_STATUS_APPROVE.Equals(group.Status))
+                {
+                    SetupApprovedProduct(group, db);
+                    Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+                }
                 return GetProductStage(group.ProductId);
             }
             catch (Exception e)
@@ -1576,7 +1213,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 var shopId = this.User.ShopRequest().ShopId;
-                ProductStageGroup group = AddProduct(db, request,shopId);
+                ProductStageGroup group = SetupProduct(db, request,shopId);
                 AutoGenerate.GeneratePid(db, group.ProductStages);
                 group.ProductId = db.GetNextProductStageGroupId().Single().Value;
                 db.ProductStageGroups.Add(group);
@@ -1591,70 +1228,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private ProductStageGroup AddProduct(ColspEntities db, ProductStageRequest request,int shopId)
-        {
-            ProductStageGroup group = null;
-            var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
-                var shippingList = db.Shippings.ToList();
-                #region Setup Group
-                group = new ProductStageGroup();
-                group.ShopId = shopId;
-            SetupGroup(group, request, db);
-                group.CreatedBy = this.User.UserRequest().Email;
-                group.CreatedDt = DateTime.Now;
-                group.UpdatedBy = this.User.UserRequest().Email;
-                group.UpdatedDt = DateTime.Now;
-                #endregion
-                #region Master Variant
-                var masterVariant = new ProductStage();
-                masterVariant.ShopId = shopId;
-                masterVariant.IsVariant = false;
-            if (User.HasPermission("Approve product"))
-            {
-                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
-            }
-            else
-            {
-                group.Status = Validation.ValidateString(request.Status, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                masterVariant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-            }
-            SetupVariant(masterVariant, request.MasterVariant, db, shippingList);
-                masterVariant.CreatedBy = this.User.UserRequest().Email;
-                masterVariant.CreatedDt = DateTime.Now;
-                masterVariant.UpdatedBy = this.User.UserRequest().Email;
-                masterVariant.UpdatedDt = DateTime.Now;
-            SetupAttribute(masterVariant, request.MasterAttribute, attributeList, db);
-            SetupAttribute(masterVariant, request.DefaultAttributes, attributeList, db);
-                group.ProductStages.Add(masterVariant);
-                #endregion
-                #region Variants
-                if (request.Variants != null)
-                {
-                    masterVariant.VariantCount = request.Variants.Count;
-                foreach (var variantRq in request.Variants)
-                    {
-                        var variant = new ProductStage();
-                        variant.ShopId = shopId;
-                        variant.IsVariant = true;
-                        variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                    SetupVariant(variant, variantRq, db, shippingList);
-                        variant.CreatedBy = this.User.UserRequest().Email;
-                        variant.CreatedDt = DateTime.Now;
-                        variant.UpdatedBy = this.User.UserRequest().Email;
-                        variant.UpdatedDt = DateTime.Now;
-                    SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, db);
-                        group.ProductStages.Add(variant);
-                    }
-                }
-                else
-                {
-                    masterVariant.VariantCount = 0;
-                }
-                #endregion
-            return group;
-            }
-
         [Route("api/ProductStages/{productId}")]
         [HttpGet]
         public HttpResponseMessage GetProductStage(long productId)
@@ -1662,7 +1235,6 @@ namespace Colsp.Api.Controllers
             try
             {
                 var response = GetProductStageRequestFromId(db, productId);
-
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
@@ -1845,6 +1417,53 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        private ProductStageGroup SetupProduct(ColspEntities db, ProductStageRequest request, int shopId)
+        {
+            bool adminPermission = User.HasPermission("Approve product");
+            bool sellerPermission = User.HasPermission("Add Product");
+            ProductStageGroup group = null;
+            var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
+            var shippingList = db.Shippings.ToList();
+            string email = this.User.UserRequest().Email;
+            #region Setup Group
+            group = new ProductStageGroup();
+            group.ShopId = shopId;
+            SetupGroup(group, request, true, email, adminPermission, sellerPermission, db);
+            #endregion
+            #region Master Variant
+            var masterVariant = new ProductStage();
+            request.MasterVariant.Status = group.Status;
+            masterVariant.ShopId = shopId;
+            masterVariant.IsVariant = false;
+            SetupVariant(masterVariant, request.MasterVariant, true, email, adminPermission, sellerPermission, db, shippingList);
+            //var tmpAtribute = new List<AttributeRequest>(request.MasterAttribute);
+            //tmpAtribute.AddRange(request.DefaultAttributes);
+            SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
+            group.ProductStages.Add(masterVariant);
+            #endregion
+            #region Variants
+            if (request.Variants != null)
+            {
+                masterVariant.VariantCount = request.Variants.Count;
+                foreach (var variantRq in request.Variants)
+                {
+                    var variant = new ProductStage();
+                    variant.ShopId = shopId;
+                    variant.IsVariant = true;
+                    variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                    SetupVariant(variant, variantRq, true, email, adminPermission, sellerPermission, db, shippingList);
+                    SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
+                    group.ProductStages.Add(variant);
+                }
+            }
+            else
+            {
+                masterVariant.VariantCount = 0;
+            }
+            #endregion
+            return group;
+        }
+
         private void SetupAttributeResponse(ProductStage variant, List<AttributeRequest> attributeList)
         {
             foreach (var attribute in variant.ProductStageAttributes)
@@ -1890,8 +1509,8 @@ namespace Colsp.Api.Controllers
                                     AttributeValueId = val.AttributeValueId,
                                     AttributeValueEn = val.AttributeValueEn,
                                     CheckboxValue = attr.CheckboxValue
-                        });
-                    }
+                                });
+                            }
                         }
                     }
                    
@@ -1934,19 +1553,24 @@ namespace Colsp.Api.Controllers
             {
                 throw new Exception("Cannot find product " + productId);
             }
-
+            var historyList = db.ProductHistoryGroups
+                .Where(w => w.ProductId == product.ProductId)
+                .OrderByDescending(o => o.HistoryDt)
+                .Take(Constant.HISTORY_REVISION).ToList();
             ProductStageRequest response = new ProductStageRequest();
-            SetupResponse(product, response);
+            SetupResponse(product, response, historyList);
             return response;
         }
 
-        private void SetupResponse(ProductStageGroup product, ProductStageRequest response)
+        private void SetupResponse(ProductStageGroup group, ProductStageRequest response,List<ProductHistoryGroup> historyList)
         {
-            SetupGroupResponse(product, response);
-            var masterVariant = product.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault();
+            SetupGroupResponse(group, response);
+            var masterVariant = group.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault();
             SetupVariantResponse(masterVariant, response.MasterVariant);
             SetupAttributeResponse(masterVariant, response.MasterAttribute);
-            var variants = product.ProductStages.Where(w => w.IsVariant == true).ToList();
+            response.GiftWrap = masterVariant.GiftWrap;
+            response.TheOneCardEarn = masterVariant.TheOneCardEarn;
+            var variants = group.ProductStages.Where(w => w.IsVariant == true).ToList();
             foreach (var variant in variants)
             {
                 var tmpVariant = new VariantRequest();
@@ -1963,10 +1587,42 @@ namespace Colsp.Api.Controllers
                 }
                 response.Variants.Add(tmpVariant);
             }
+            foreach(var history in historyList)
+            {
+                response.Revisions.Add(new ProductHistoryRequest()
+                {
+                    ApprovedDt = history.ApprovedDt,
+                    HistoryId = history.HistoryId,
+                    SubmittedBy = history.SubmittedBy,
+                    SubmittedDt = history.SubmittedDt
+                });
+            }
         }
 
-        private void SetupGroup(ProductStageGroup group, ProductStageRequest request, ColspEntities db)
+        private void SetupGroup(ProductStageGroup group, ProductStageRequest request,bool addNew,string email,bool adminPermission,bool sellerPermission, ColspEntities db)
         {
+            #region Status
+            if (adminPermission)
+            {
+                if (Constant.PRODUCT_STATUS_DRAFT.Equals(request.Status))
+                {
+                    throw new Exception("Admin cannot make draft product. Status of product edited by admin will be Wait for Approval.");
+                }
+                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() { Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
+            }
+            else if (sellerPermission)
+            {
+                if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(group.Status))
+                {
+                    throw new Exception("Cannot edit Wait for Approval product");
+                }
+                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+            }
+            else
+            {
+                throw new Exception("Has no permission");
+            }
+            #endregion
             #region Category
             if (request.MainGlobalCategory == null || request.MainGlobalCategory.CategoryId == 0)
             {
@@ -2023,9 +1679,9 @@ namespace Colsp.Api.Controllers
                         group.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
                         {
                             CategoryId = category.CategoryId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -2064,9 +1720,9 @@ namespace Colsp.Api.Controllers
                         group.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
                         {
                             CategoryId = category.CategoryId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -2106,9 +1762,9 @@ namespace Colsp.Api.Controllers
                         group.ProductStageTags.Add(new ProductStageTag()
                         {
                             Tag = tag,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -2120,7 +1776,6 @@ namespace Colsp.Api.Controllers
                 db.ProductStageTags.RemoveRange(tmpTag);
             }
             #endregion
-
             #region Related Product
             var tmpRelated = group.ProductStageRelateds1.ToList();
             if (request.RelatedProducts != null && request.RelatedProducts.Count > 0)
@@ -2150,9 +1805,9 @@ namespace Colsp.Api.Controllers
                         {
                             Child = product.ProductId,
                             ShopId = group.ShopId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = email,
                             UpdatedDt = DateTime.Now
                         });
                     }
@@ -2163,8 +1818,7 @@ namespace Colsp.Api.Controllers
                 db.ProductStageRelateds.RemoveRange(tmpRelated);
             }
             #endregion
-            group.TheOneCardEarn = request.TheOneCardEarn;
-            //group.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            #region Other field
             group.EffectiveDate = request.EffectiveDate;
             group.ExpireDate = request.ExpireDate;
             group.ControlFlag1 = request.ControlFlags.Flag1;
@@ -2181,10 +1835,31 @@ namespace Colsp.Api.Controllers
             group.VariantTabStatus = Validation.ValidateString(request.AdminApprove.Variation, "Variant Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.RejectReason = Validation.ValidateString(request.AdminApprove.RejectReason, "Reject Reason", true, 500, true, string.Empty);
             group.Visibility = request.Visibility;
-            
+            #endregion
+            #region Create/Update
+            if (addNew)
+            {
+                group.CreatedBy = email;
+                group.CreatedDt = DateTime.Now;
+            }
+            group.UpdatedBy = email;
+            group.UpdatedDt = DateTime.Now;
+            #endregion
+            #region Submitted and Approved
+            if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(group.Status))
+            {
+                group.SubmittedBy = email;
+                group.SubmittedDt = DateTime.Now;
+            }
+            else if (Constant.PRODUCT_STATUS_APPROVE.Equals(group.Status))
+            {
+                group.ApprovedBy = email;
+                group.ApprovedDt = DateTime.Now;
+            }
+            #endregion
         }
 
-        private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList, ColspEntities db)
+        private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList, string email, ColspEntities db)
         {
             var tmpAttribute = variant.ProductStageAttributes.ToList();
             int position = 1;
@@ -2258,7 +1933,7 @@ namespace Colsp.Api.Controllers
                                     if(current.CheckboxValue != checkboxValue)
                                     {
                                         current.CheckboxValue = checkboxValue;
-                                        current.UpdatedBy = this.User.UserRequest().Email;
+                                        current.UpdatedBy = email;
                                         current.UpdatedDt = DateTime.Now;
                                     }
                                     
@@ -2278,9 +1953,9 @@ namespace Colsp.Api.Controllers
                                     ValueEn = value,
                                     Position = position++,
                                     IsAttributeValue = isAttributeValue,
-                                    CreatedBy = this.User.UserRequest().Email,
+                                    CreatedBy = email,
                                     CreatedDt = DateTime.Now,
-                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedBy = email,
                                     UpdatedDt = DateTime.Now,
                                 });
                             }
@@ -2330,9 +2005,9 @@ namespace Colsp.Api.Controllers
                         ValueEn = value,
                         Position = position++,
                         IsAttributeValue = isAttributeValue,
-                        CreatedBy = this.User.UserRequest().Email,
+                        CreatedBy = email,
                         CreatedDt = DateTime.Now,
-                        UpdatedBy = this.User.UserRequest().Email,
+                        UpdatedBy = email,
                         UpdatedDt = DateTime.Now,
                     });
                 }
@@ -2343,8 +2018,24 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupVariant(ProductStage variant,VariantRequest request, ColspEntities db,List<Shipping> shippingList)
+        private void SetupVariant(ProductStage variant,VariantRequest request, bool addNew, string email, bool adminPermission, bool sellerPermission, ColspEntities db,List<Shipping> shippingList)
         {
+            #region Status
+            if (adminPermission)
+            {
+                variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
+                variant.GlobalBoostWeight = request.SEO.GlobalProductBoostingWeight;
+            }
+            else if (sellerPermission)
+            {
+                variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                variant.GlobalBoostWeight = 0;
+            }
+            else
+            {
+                throw new Exception("Has no permission");
+            }
+            #endregion
             #region Variant Field
             variant.ProductNameTh = Validation.ValidateString(request.ProductNameTh, "Product Name (Thai)", true, 300, true);
             variant.ProductNameEn = Validation.ValidateString(request.ProductNameEn, "Product Name (English)", true, 300, true);
@@ -2386,7 +2077,7 @@ namespace Colsp.Api.Controllers
             variant.KillerPoint3Th = Validation.ValidateString(request.KillerPoint3Th, "Killer Point 3 (Thai)", false, 100, false, string.Empty);
             variant.Installment = Validation.ValidateString(request.Installment, "Installment", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.TheOneCardEarn = request.TheOneCardEarn;
-           // variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.Length = Validation.ValidateDecimal(request.Length, "Length", true, 11, 2, true,0).Value;
             variant.Height = Validation.ValidateDecimal(request.Height, "Height", true, 11, 2, true,0).Value;
             variant.Width = Validation.ValidateDecimal(request.Width, "Width", true, 11, 2, true,0).Value;
@@ -2399,11 +2090,13 @@ namespace Colsp.Api.Controllers
             variant.MetaDescriptionTh = Validation.ValidateString(request.SEO.MetaDescriptionTh, "Meta Description (Thai)", false, 150, false, string.Empty);
             variant.MetaKeyEn = Validation.ValidateString(request.SEO.MetaKeywordEn, "Meta Keyword (English)", false, 150, false, string.Empty);
             variant.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keyword (Thai)", false, 150, false, string.Empty);
+            variant.SeoEn = Validation.ValidateString(request.SEO.SeoEn, "SEO (English)", false, 300, false, string.Empty);
+            variant.SeoTh = Validation.ValidateString(request.SEO.SeoTh, "SEO (Thai)", false, 300, false, string.Empty);
             variant.UrlEn = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product Url Key", false, 300, false, string.Empty);
             variant.BoostWeight = request.SEO.ProductBoostingWeight;
             variant.Visibility = request.Visibility;
-           // variant.DefaultVaraint = request.DefaultVariant;
-           // variant.Display = Validation.ValidateString(request.Display, "Display", true, 20, true, Constant.VARIANT_DISPLAY_GROUP, new List<string>() { Constant.VARIANT_DISPLAY_GROUP, Constant.VARIANT_DISPLAY_INDIVIDUAL });
+            variant.DefaultVaraint = request.DefaultVariant;
+            variant.Display = Validation.ValidateString(request.Display, "Display", true, 20, true, Constant.VARIANT_DISPLAY_GROUP, new List<string>() { Constant.VARIANT_DISPLAY_GROUP, Constant.VARIANT_DISPLAY_INDIVIDUAL });
             #endregion
             #region Shipping
             if (request.ShippingMethod == 0)
@@ -2477,7 +2170,6 @@ namespace Colsp.Api.Controllers
             }
 
             #endregion
-           
             #region Image
             var tmpImage = variant.ProductStageImages.ToList();
             if (request.Images != null && request.Images.Count > 0)
@@ -2601,6 +2293,15 @@ namespace Colsp.Api.Controllers
             {
                 db.ProductStageVideos.RemoveRange(tmpVideo);
             }
+            #endregion
+            #region Create/Update
+            if (addNew)
+            {
+                variant.CreatedBy = email;
+                variant.CreatedDt = DateTime.Now;
+            }
+            variant.UpdatedBy = email;
+            variant.UpdatedDt = DateTime.Now;
             #endregion
         }
 
@@ -2789,7 +2490,7 @@ namespace Colsp.Api.Controllers
             response.KillerPoint3Th = variant.KillerPoint3Th;
             response.Installment = variant.Installment;
             response.TheOneCardEarn = variant.TheOneCardEarn;
-         //   response.GiftWrap = variant.GiftWrap;
+            response.GiftWrap = variant.GiftWrap;
             response.Length = variant.Length;
             response.Height = variant.Height;
             response.Width = variant.Width;
@@ -2804,12 +2505,14 @@ namespace Colsp.Api.Controllers
             response.SEO.MetaKeywordTh = variant.MetaKeyTh;
             response.SEO.ProductUrlKeyEn = variant.UrlEn;
             response.SEO.ProductBoostingWeight = variant.BoostWeight;
+            response.SEO.SeoEn = variant.SeoEn;
+            response.SEO.SeoTh = variant.SeoTh;
             response.Visibility = variant.Visibility;
-         //   response.DefaultVariant = variant.DefaultVaraint;
+            response.DefaultVariant = variant.DefaultVaraint;
             response.Quantity = variant.Inventory.Quantity;
             response.SafetyStock = variant.Inventory.SafetyStockSeller;
             response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
-       //     response.Display = variant.Display;
+            response.Display = variant.Display;
             if (variant.ProductStageImages != null && variant.ProductStageImages.Count > 0)
             {
                 variant.ProductStageImages = variant.ProductStageImages.OrderBy(o => o.Position).ToList();
@@ -2837,26 +2540,26 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupGroupResponse(ProductStageGroup product, ProductStageRequest response)
+        private void SetupGroupResponse(ProductStageGroup group, ProductStageRequest response)
         {
-            response.ProductId = product.ProductId;
-            response.ShopId = product.ShopId;
-            response.MainGlobalCategory = new CategoryRequest() { CategoryId = product.GlobalCatId };
-            if (product.LocalCatId != null)
+            response.ProductId = group.ProductId;
+            response.ShopId = group.ShopId;
+            response.MainGlobalCategory = new CategoryRequest() { CategoryId = group.GlobalCatId };
+            if (group.LocalCatId != null)
             {
-                response.MainLocalCategory = new CategoryRequest() { CategoryId = product.LocalCatId.Value };
+                response.MainLocalCategory = new CategoryRequest() { CategoryId = group.LocalCatId.Value };
             }
-            if (product.Brand != null)
+            if (group.Brand != null)
             {
-                response.Brand = new BrandRequest() { BrandId = product.Brand.BrandId, BrandNameEn = product.Brand.BrandNameEn  };
+                response.Brand = new BrandRequest() { BrandId = group.Brand.BrandId, BrandNameEn = group.Brand.BrandNameEn  };
             }
-            if (product.AttributeSetId != null)
+            if (group.AttributeSetId != null)
             {
-                response.AttributeSet = new AttributeSetRequest() { AttributeSetId = product.AttributeSetId.Value };
+                response.AttributeSet = new AttributeSetRequest() { AttributeSetId = group.AttributeSetId.Value };
             }
-            if (product.ProductStageGlobalCatMaps != null && product.ProductStageGlobalCatMaps.Count > 0)
+            if (group.ProductStageGlobalCatMaps != null && group.ProductStageGlobalCatMaps.Count > 0)
             {
-                foreach (var category in product.ProductStageGlobalCatMaps)
+                foreach (var category in group.ProductStageGlobalCatMaps)
                 {
                     response.GlobalCategories.Add(new CategoryRequest()
                     {
@@ -2866,9 +2569,9 @@ namespace Colsp.Api.Controllers
                     });
                 }
             }
-            if (product.ProductStageLocalCatMaps != null && product.ProductStageLocalCatMaps.Count > 0)
+            if (group.ProductStageLocalCatMaps != null && group.ProductStageLocalCatMaps.Count > 0)
             {
-                foreach (var category in product.ProductStageLocalCatMaps)
+                foreach (var category in group.ProductStageLocalCatMaps)
                 {
                     response.LocalCategories.Add(new CategoryRequest()
                     {
@@ -2878,9 +2581,9 @@ namespace Colsp.Api.Controllers
                     });
                 }
             }
-            if(product.ProductStageRelateds1 != null && product.ProductStageRelateds1.Count > 0)
+            if(group.ProductStageRelateds1 != null && group.ProductStageRelateds1.Count > 0)
             {
-                foreach (var pro in product.ProductStageRelateds1)
+                foreach (var pro in group.ProductStageRelateds1)
                 {
                     response.RelatedProducts.Add(new VariantRequest()
                     {
@@ -2889,31 +2592,1138 @@ namespace Colsp.Api.Controllers
                     });
                 }
             }
-            if (product.ProductStageTags != null && product.ProductStageTags.Count > 0)
+            if (group.ProductStageTags != null && group.ProductStageTags.Count > 0)
             {
-                response.Tags = product.ProductStageTags.Select(s => s.Tag).ToList();
+                response.Tags = group.ProductStageTags.Select(s => s.Tag).ToList();
             }
-            response.TheOneCardEarn = product.TheOneCardEarn;
-          //  response.GiftWrap = product.GiftWrap;
-            response.EffectiveDate = product.EffectiveDate;
-            response.ExpireDate = product.ExpireDate;
-            response.ControlFlags.Flag1 = product.ControlFlag1;
-            response.ControlFlags.Flag2 = product.ControlFlag2;
-            response.ControlFlags.Flag3 = product.ControlFlag3;
-            response.Remark = product.Remark;
-            response.AdminApprove.Information = product.InformationTabStatus;
-            response.AdminApprove.Image = product.ImageTabStatus;
-            response.AdminApprove.Category = product.CategoryTabStatus;
-            response.AdminApprove.Variation = product.VariantTabStatus;
-            response.AdminApprove.MoreOption = product.MoreOptionTabStatus;
-            response.AdminApprove.RejectReason = product.RejectReason;
+            response.EffectiveDate = group.EffectiveDate;
+            response.ExpireDate = group.ExpireDate;
+            response.ControlFlags.Flag1 = group.ControlFlag1;
+            response.ControlFlags.Flag2 = group.ControlFlag2;
+            response.ControlFlags.Flag3 = group.ControlFlag3;
+            response.Remark = group.Remark;
+            response.AdminApprove.Information = group.InformationTabStatus;
+            response.AdminApprove.Image = group.ImageTabStatus;
+            response.AdminApprove.Category = group.CategoryTabStatus;
+            response.AdminApprove.Variation = group.VariantTabStatus;
+            response.AdminApprove.MoreOption = group.MoreOptionTabStatus;
+            response.AdminApprove.RejectReason = group.RejectReason;
             response.InfoFlag = false;
             response.ImageFlag = false;
             response.OnlineFlag = false;
-            response.Visibility = product.Visibility;
-            response.Status = product.Status;
+            response.Visibility = group.Visibility;
+            response.Status = group.Status;
         }
 
+        private void SetupApprovedProduct(ProductStageGroup group, ColspEntities db)
+        {
+            if(group == null)
+            {
+                throw new Exception("Product group cannot be null");
+            }
+            #region History Group
+            ProductHistoryGroup historyGroup = new ProductHistoryGroup()
+            {
+                AttributeSetId = group.AttributeSetId,
+                BrandId = group.BrandId,
+                CategoryTabStatus = group.CategoryTabStatus,
+                ControlFlag1 = group.ControlFlag1,
+                ControlFlag2 = group.ControlFlag2,
+                ControlFlag3 = group.ControlFlag3,
+                CreatedBy = group.CreatedBy,
+                CreatedDt = group.CreatedDt,
+                EffectiveDate = group.EffectiveDate,
+                ExpireDate = group.ExpireDate,
+                GlobalCatId = group.GlobalCatId,
+                ImageFlag = group.ImageFlag,
+                ImageTabStatus = group.ImageTabStatus,
+                InfoFlag = group.InfoFlag,
+                InformationTabStatus = group.InformationTabStatus,
+                LocalCatId = group.LocalCatId,
+                MoreOptionTabStatus = group.MoreOptionTabStatus,
+                OnlineFlag = group.OnlineFlag,
+                ProductId = group.ProductId,
+                RejectReason = group.RejectReason,
+                Remark = group.Remark,
+                ShopId = group.ShopId,
+                Status = group.Status,
+                UpdatedBy = group.UpdatedBy,
+                UpdatedDt = group.UpdatedDt,
+                VariantTabStatus = group.VariantTabStatus,
+                Visibility = group.Visibility,
+                ApprovedBy = group.ApprovedBy,
+                ApprovedDt = group.ApprovedDt,
+                HistoryDt = DateTime.Now,
+                SubmittedBy = group.SubmittedBy,
+                SubmittedDt = group.SubmittedDt
+            };
+            #endregion
+            #region History Global Category
+            foreach (var category in group.ProductStageGlobalCatMaps)
+            {
+                historyGroup.ProductHistoryGlobalCatMaps.Add(new ProductHistoryGlobalCatMap()
+                {
+                    CategoryId = category.CategoryId,
+                    CreatedBy = category.CreatedBy,
+                    CreatedDt = category.CreatedDt,
+                    UpdatedBy = category.UpdatedBy,
+                    UpdatedDt = category.UpdatedDt
+                });
+            }
+            #endregion
+            #region History Local Category
+            foreach (var category in group.ProductStageLocalCatMaps)
+            {
+                historyGroup.ProductHistoryLocalCatMaps.Add(new ProductHistoryLocalCatMap()
+                {
+                    CategoryId = category.CategoryId,
+                    CreatedBy = category.CreatedBy,
+                    CreatedDt = category.CreatedDt,
+                    UpdatedBy = category.UpdatedBy,
+                    UpdatedDt = category.UpdatedDt
+                });
+            }
+            #endregion
+            #region History Tag
+            foreach (var tag in group.ProductStageTags)
+            {
+                historyGroup.ProductHistoryTags.Add(new ProductHistoryTag()
+                {
+                    Tag = tag.Tag,
+                    CreatedBy = tag.CreatedBy,
+                    CreatedDt = tag.CreatedDt,
+                    UpdatedBy = tag.UpdatedBy,
+                    UpdatedDt = tag.UpdatedDt
+                });
+            }
+            #endregion
+            var parent = group.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault();
+            if(parent == null)
+            {
+                throw new Exception("Cannot get parent product");
+            }
+            var pids = group.ProductStages.Select(s => s.Pid).ToList();
+            var productList = db.Products.Where(w => pids.Contains(w.Pid))
+                .Include(i=>i.ProductGlobalCatMaps)
+                .Include(i=>i.ProductLocalCatMaps)
+                .Include(i=>i.ProductTags)
+                .Include(i=>i.ProductVideos)
+                .Include(i=>i.ProductAttributes).ToList();
+            foreach(var stage in group.ProductStages)
+            {
+                bool isNewProduct = false;
+                Product product = null;
+                if (productList == null || productList.Count == 0)
+                {
+                    isNewProduct = true;
+                }
+                if (!isNewProduct)
+                {
+                    var currentProduct = productList.Where(w => w.Pid.Equals(stage.Pid)).SingleOrDefault();
+                    if(currentProduct != null)
+                    {
+                        product = currentProduct;
+                        productList.Remove(currentProduct);
+                    }
+                    else
+                    {
+                        isNewProduct = true;
+                    }
+                }
+
+                if (isNewProduct)
+                {
+                    product = new Product();
+                }
+                #region History
+                ProductHistory history = new ProductHistory()
+                {
+                    ProductId = group.ProductId,
+                    Pid = stage.Pid,
+                    Sku = stage.Sku,
+                    ProductNameEn = stage.ProductNameEn,
+                    ProductNameTh = stage.ProductNameTh,
+                    DescriptionFullEn = stage.DescriptionFullEn,
+                    DescriptionFullTh = stage.DescriptionFullTh,
+                    DescriptionShortEn = stage.DescriptionShortEn,
+                    DescriptionShortTh = stage.DescriptionShortTh,
+                    Length = stage.Length,
+                    Height = stage.Height,
+                    Weight = stage.Weight,
+                    DimensionUnit = stage.DimensionUnit,
+                    Width = stage.Width,
+                    WeightUnit = stage.WeightUnit,
+                    BoostWeight = stage.BoostWeight,
+                    DefaultVaraint = stage.DefaultVaraint,
+                    Display = stage.Display,
+                    FeatureImgUrl = stage.FeatureImgUrl,
+                    GiftWrap = stage.GiftWrap,
+                    GlobalBoostWeight = stage.GlobalBoostWeight,
+                    ImageCount = stage.ImageCount,
+                    Installment = stage.Installment,
+                    IsMaster = stage.IsMaster,
+                    IsVariant = stage.IsMaster,
+                    KillerPoint1En = stage.KillerPoint1En,
+                    KillerPoint1Th = stage.KillerPoint1Th,
+                    KillerPoint2En = stage.KillerPoint2En,
+                    KillerPoint2Th = stage.KillerPoint2Th,
+                    KillerPoint3En = stage.KillerPoint3En,
+                    KillerPoint3Th = stage.KillerPoint3Th,
+                    LimitIndividualDay = stage.LimitIndividualDay,
+                    MaxiQtyAllowed = stage.MaxiQtyAllowed,
+                    MetaDescriptionEn = stage.MetaDescriptionEn,
+                    MetaDescriptionTh = stage.MetaDescriptionTh,
+                    MetaKeyEn = stage.MetaKeyEn,
+                    MetaKeyTh = stage.MetaKeyTh,
+                    MetaTitleEn = stage.MetaTitleEn,
+                    MetaTitleTh = stage.MetaTitleTh,
+                    SeoEn = stage.SeoEn,
+                    SeoTh = stage.SeoTh,
+                    MiniQtyAllowed = stage.MiniQtyAllowed,
+                    OriginalPrice = stage.OriginalPrice,
+                    PrepareDay = stage.PrepareDay,
+                    PrepareFri = stage.PrepareFri,
+                    PrepareMon = stage.PrepareMon,
+                    PrepareSat = stage.PrepareSat,
+                    PrepareSun = stage.PrepareSun,
+                    PrepareThu = stage.PrepareThu,
+                    PrepareTue = stage.PrepareTue,
+                    PrepareWed = stage.PrepareWed,
+                    PurchasePrice = stage.PurchasePrice,
+                    SalePrice = stage.SalePrice,
+                    ShopId = stage.ShopId,
+                    TheOneCardEarn = stage.TheOneCardEarn,
+                    UnitPrice = stage.UnitPrice,
+                    Upc = stage.Upc,
+                    UrlEn = stage.UrlEn,
+                    ShippingId = stage.ShippingId,
+                    VariantCount = stage.VariantCount,
+                    Visibility = stage.Visibility,
+                    Status = stage.Status,
+                    CreatedBy = stage.CreatedBy,
+                    CreatedDt = stage.CreatedDt,
+                    UpdatedBy = stage.UpdatedBy,
+                    UpdatedDt = stage.UpdatedDt,
+                };
+                #endregion
+                #region Setup Product
+                product.Pid = stage.Pid;
+                product.ParentPid = parent.Pid;
+                product.MasterPid = null;
+                product.AttributeSetId = group.AttributeSetId;
+                product.GlobalCatId = group.GlobalCatId;
+                product.LocalCatId = group.LocalCatId;
+                product.BrandId = group.BrandId;
+                product.Sku = stage.Sku;
+                product.ShippingId = stage.ShippingId;
+                product.ProductNameEn = stage.ProductNameEn;
+                product.ProductNameTh = stage.ProductNameTh;
+                product.DescriptionFullEn = stage.DescriptionFullEn;
+                product.DescriptionFullTh = stage.DescriptionFullTh;
+                product.DescriptionShortEn = stage.DescriptionShortEn;
+                product.DescriptionShortTh = stage.DescriptionShortTh;
+                product.Length = stage.Length;
+                product.Height = stage.Height;
+                product.Weight = stage.Weight;
+                product.DimensionUnit = stage.DimensionUnit;
+                product.Width = stage.Width;
+                product.WeightUnit = stage.WeightUnit;
+                product.BoostWeight = stage.BoostWeight;
+                product.DefaultVaraint = stage.DefaultVaraint;
+                product.Display = stage.Display;
+                product.FeatureImgUrl = stage.FeatureImgUrl;
+                product.GiftWrap = stage.GiftWrap;
+                product.GlobalBoostWeight = stage.GlobalBoostWeight;
+                product.ImageCount = stage.ImageCount;
+                product.Installment = stage.Installment;
+                product.IsMaster = stage.IsMaster;
+                product.IsVariant = stage.IsMaster;
+                product.KillerPoint1En = stage.KillerPoint1En;
+                product.KillerPoint1Th = stage.KillerPoint1Th;
+                product.KillerPoint2En = stage.KillerPoint2En;
+                product.KillerPoint2Th = stage.KillerPoint2Th;
+                product.KillerPoint3En = stage.KillerPoint3En;
+                product.KillerPoint3Th = stage.KillerPoint3Th;
+                product.LimitIndividualDay = stage.LimitIndividualDay;
+                product.MaxiQtyAllowed = stage.MaxiQtyAllowed;
+                product.MetaDescriptionEn = stage.MetaDescriptionEn;
+                product.MetaDescriptionTh = stage.MetaDescriptionTh;
+                product.MetaKeyEn = stage.MetaKeyEn;
+                product.MetaKeyTh = stage.MetaKeyTh;
+                product.MetaTitleEn = stage.MetaTitleEn;
+                product.MetaTitleTh = stage.MetaTitleTh;
+                product.SeoEn = stage.SeoEn;
+                product.SeoTh = stage.SeoTh;
+                product.MiniQtyAllowed = stage.MiniQtyAllowed;
+                product.OriginalPrice = stage.OriginalPrice;
+                product.PrepareDay = stage.PrepareDay;
+                product.PrepareFri = stage.PrepareFri;
+                product.PrepareMon = stage.PrepareMon;
+                product.PrepareSat = stage.PrepareSat;
+                product.PrepareSun = stage.PrepareSun;
+                product.PrepareThu = stage.PrepareThu;
+                product.PrepareTue = stage.PrepareTue;
+                product.PrepareWed = stage.PrepareWed;
+                product.PurchasePrice = stage.PurchasePrice;
+                product.SalePrice = stage.SalePrice;
+                product.ShopId = stage.ShopId;
+                product.TheOneCardEarn = stage.TheOneCardEarn;
+                product.UnitPrice = stage.UnitPrice;
+                product.Upc = stage.Upc;
+                product.UrlEn = stage.UrlEn;
+                product.VariantCount = stage.VariantCount;
+                product.Visibility = stage.Visibility;
+                product.ControlFlag1 = group.ControlFlag1;
+                product.ControlFlag2 = group.ControlFlag2;
+                product.ControlFlag3 = group.ControlFlag3;
+                product.EffectiveDate = group.EffectiveDate;
+                product.ExpireDate = group.ExpireDate;
+                product.Remark = group.Remark;
+                product.Status = stage.Status;
+                product.CreatedBy = stage.CreatedBy;
+                product.CreatedDt = stage.CreatedDt;
+                product.UpdatedBy = stage.UpdatedBy;
+                product.UpdatedDt = stage.UpdatedDt;
+                #endregion
+                #region Attribute
+                var attribteList = product.ProductAttributes.ToList();
+                foreach (var attribute in stage.ProductStageAttributes)
+                {
+                    bool isNewAttribute = false;
+                    if(attribteList == null || attribteList.Count == 0)
+                    {
+                        isNewAttribute = false;
+                    }
+                    if (!isNewAttribute)
+                    {
+                        var currentAttribute = attribteList
+                            .Where(w => w.Pid.Equals(stage.Pid) && w.AttributeId == attribute.AttributeId && w.ValueEn.Equals(attribute.ValueEn)).SingleOrDefault();
+                        if(currentAttribute != null)
+                        {
+                            attribteList.Remove(currentAttribute);
+                        }
+                        else
+                        {
+                            isNewAttribute = true;
+                        }
+                    }
+                    if (isNewAttribute)
+                    {
+                        product.ProductAttributes.Add(new ProductAttribute()
+                        {
+                            AttributeId = attribute.AttributeId,
+                            CheckboxValue = attribute.CheckboxValue,
+                            IsAttributeValue = attribute.IsAttributeValue,
+                            Position = attribute.Position,
+                            ValueEn = attribute.ValueEn,
+                            CreatedBy = attribute.CreatedBy,
+                            CreatedDt = attribute.CreatedDt,
+                            UpdatedBy = attribute.UpdatedBy,
+                            UpdatedDt = attribute.UpdatedDt,
+                        });
+                    }
+                    history.ProductHistoryAttributes.Add(new ProductHistoryAttribute()
+                    {
+                        AttributeId = attribute.AttributeId,
+                        CheckboxValue = attribute.CheckboxValue,
+                        IsAttributeValue = attribute.IsAttributeValue,
+                        Position = attribute.Position,
+                        ValueEn = attribute.ValueEn,
+                        CreatedBy = attribute.CreatedBy,
+                        CreatedDt = attribute.CreatedDt,
+                        UpdatedBy = attribute.UpdatedBy,
+                        UpdatedDt = attribute.UpdatedDt,
+                    });
+
+                }
+                if(attribteList != null && attribteList.Count > 0)
+                {
+                    db.ProductAttributes.RemoveRange(attribteList);
+                }
+                #endregion
+                #region Related Global Category
+                var globalCatList = product.ProductGlobalCatMaps.ToList();
+                foreach (var category in group.ProductStageGlobalCatMaps)
+                {
+                    bool isNewGlobalCat = false;
+                    if(globalCatList == null || globalCatList.Count == 0)
+                    {
+                        isNewGlobalCat = true;
+                    }
+                    if (!isNewGlobalCat)
+                    {
+                        var currentGlobalCat = globalCatList.Where(w => w.CategoryId == category.CategoryId).SingleOrDefault();
+                        if(currentGlobalCat != null)
+                        {
+                            globalCatList.Remove(currentGlobalCat);
+                        }
+                        else
+                        {
+                            isNewGlobalCat = true;
+                        }
+                    }
+                    if (isNewGlobalCat)
+                    {
+                        product.ProductGlobalCatMaps.Add(new ProductGlobalCatMap()
+                        {
+                            CategoryId = category.CategoryId,
+                            CreatedBy = category.CreatedBy,
+                            CreatedDt = category.CreatedDt,
+                            UpdatedBy = category.UpdatedBy,
+                            UpdatedDt = category.UpdatedDt
+                        });
+                    }
+                }
+                if(globalCatList != null && globalCatList.Count > 0)
+                {
+                    db.ProductGlobalCatMaps.RemoveRange(globalCatList);
+                }
+
+                #endregion
+                #region Related Local Category
+                var localCatList = product.ProductLocalCatMaps.ToList();
+                foreach (var category in group.ProductStageLocalCatMaps)
+                {
+                    bool isNewLocalCat = false;
+                    if (localCatList == null || localCatList.Count == 0)
+                    {
+                        isNewLocalCat = true;
+                    }
+                    if (!isNewLocalCat)
+                    {
+                        var currentLocalCat = localCatList.Where(w => w.CategoryId == category.CategoryId).SingleOrDefault();
+                        if (currentLocalCat != null)
+                        {
+                            localCatList.Remove(currentLocalCat);
+                        }
+                        else
+                        {
+                            isNewLocalCat = true;
+                        }
+                    }
+                    if (isNewLocalCat)
+                    {
+                        product.ProductLocalCatMaps.Add(new ProductLocalCatMap()
+                        {
+                            CategoryId = category.CategoryId,
+                            CreatedBy = category.CreatedBy,
+                            CreatedDt = category.CreatedDt,
+                            UpdatedBy = category.UpdatedBy,
+                            UpdatedDt = category.UpdatedDt
+                        });
+                    }
+                }
+                if (localCatList != null && localCatList.Count > 0)
+                {
+                    db.ProductLocalCatMaps.RemoveRange(localCatList);
+                }
+                #endregion
+                #region Video
+                var videoList = product.ProductVideos.ToList();
+                foreach (var video in stage.ProductStageVideos)
+                {
+                    bool isNewVideo = false;
+                    if(videoList == null || videoList.Count == 0)
+                    {
+                        isNewVideo = true;
+                    }
+                    if (!isNewVideo)
+                    {
+                        var currentVideo = videoList.Where(w => w.VideoId == video.VideoId).SingleOrDefault();
+                        if(currentVideo != null)
+                        {
+                            videoList.Remove(currentVideo);
+                        }
+                        else
+                        {
+                            isNewVideo = true;
+                        }
+                    }
+                    if (isNewVideo)
+                    {
+                        product.ProductVideos.Add(new ProductVideo()
+                        {
+                            VideoId = video.VideoId,
+                            VideoUrlEn = video.VideoUrlEn,
+                            Position = video.Position,
+                            Status = video.Status,
+                            CreatedBy = video.CreatedBy,
+                            CreatedDt = video.CreatedDt,
+                            UpdatedBy = video.UpdatedBy,
+                            UpdatedDt = video.UpdatedDt
+                        });
+                    }
+                    history.ProductHistoryVideos.Add(new ProductHistoryVideo()
+                    {
+                        VideoUrlEn = video.VideoUrlEn,
+                        Position = video.Position,
+                        Status = video.Status,
+                        CreatedBy = video.CreatedBy,
+                        CreatedDt = video.CreatedDt,
+                        UpdatedBy = video.UpdatedBy,
+                        UpdatedDt = video.UpdatedDt
+                    });
+                }
+                if(videoList != null && videoList.Count  > 0)
+                {
+                    db.ProductVideos.RemoveRange(videoList);
+                }
+                #endregion
+                #region Tag
+                var tagList = product.ProductTags.ToList();
+                foreach (var tag in group.ProductStageTags)
+                {
+                    bool isNewTag = false;
+                    if(tagList == null || tagList.Count == 0)
+                    {
+                        isNewTag = true;
+                    }
+                    if (!isNewTag)
+                    {
+                        var currentTag = tagList.Where(w => w.Tag.Equals(tag.Tag)).SingleOrDefault();
+                        if(currentTag != null)
+                        {
+                            tagList.Remove(currentTag);
+                        }
+                        else
+                        {
+                            isNewTag = true;
+                        }
+                    }
+                    if (isNewTag)
+                    {
+                        product.ProductTags.Add(new ProductTag()
+                        {
+                            Tag = tag.Tag,
+                            CreatedBy = tag.CreatedBy,
+                            CreatedDt = tag.CreatedDt,
+                            UpdatedBy = tag.UpdatedBy,
+                            UpdatedDt = tag.UpdatedDt
+                        });
+                    }
+                }
+                if(tagList != null && tagList.Count > 0)
+                {
+                    db.ProductTags.RemoveRange(tagList);
+                }
+                #endregion
+                //#region Related Product
+                //if (!parent.Equals(stage.Pid))
+                //{
+                //    db.ProductRelateds.Add(new ProductRelated()
+                //    {
+                //        ParentPid = parent.Pid,
+                //        ChildPid =  stage.Pid,
+                //        CreatedBy = parent.CreatedBy,
+                //        CreatedDt = parent.CreatedDt,
+                //        UpdatedBy = parent.UpdatedBy,
+                //        UpdatedDt = parent.UpdatedDt
+                //    });
+                //}
+                //#endregion
+                #region Image
+                foreach(var image in stage.ProductStageImages)
+                {
+                    history.ProductHistoryImages.Add(new ProductHistoryImage()
+                    {
+                        FeatureFlag = image.FeatureFlag,
+                        ImageId = image.ImageId,
+                        ImageName = image.ImageName,
+                        ImageOriginName = image.ImageOriginName,
+                        ImageUrlEn = image.ImageUrlEn,
+                        Pid = image.Pid,
+                        Position = image.Position,
+                        ShopId = image.ShopId,
+                        Status = image.Status,
+                        CreatedBy = image.CreatedBy,
+                        CreatedDt = image.CreatedDt,
+                        UpdatedBy = image.UpdatedBy,
+                        UpdatedDt = image.UpdatedDt,
+                    });
+                }
+                #endregion
+                historyGroup.ProductHistories.Add(history);
+                if (isNewProduct)
+                {
+                    db.Products.Add(product);
+                }
+            }
+            if(productList != null && productList.Count > 0)
+            {
+                productList.ForEach(e => e.Status = Constant.STATUS_REMOVE);
+            }
+            historyGroup.HistoryId = db.GetNextProductHistoryId().SingleOrDefault().Value;
+            db.ProductHistoryGroups.Add(historyGroup);
+        }
+
+        //[Route("api/ProductStages/Export")]
+        //[HttpPost]
+        //public HttpResponseMessage ExportProductProducts(ExportRequest request)
+        //{
+        //    MemoryStream stream = null;
+        //    StreamWriter writer = null;
+        //    try
+        //    {
+        //        if (request == null)
+        //        {
+        //            throw new Exception("Invalid request");
+        //        }
+        //        #region Setup Header
+        //        int i = 0;
+        //        Dictionary<string, Tuple<string, int>> headDicTmp = new Dictionary<string, Tuple<string, int>>();
+        //        var guidance = db.ImportHeaders.OrderBy(o => o.ImportHeaderId).ToList();
+
+        //        foreach (var current in guidance)
+        //        {
+        //            var op = request.Options.Where(w => w.Equals(current.MapName)).SingleOrDefault();
+        //            if (op == null)
+        //            {
+        //                continue;
+        //            }
+        //            if (!headDicTmp.ContainsKey(current.HeaderName))
+        //            {
+        //                headDicTmp.Add(current.MapName, new Tuple<string, int>(current.HeaderName, i++));
+        //                //if (current.MapName.Equals("PRS")) { request.ProductStatus = true; }
+        //                //if (current.MapName.Equals("GID")) { request.GroupID = true; }
+        //                //if (current.MapName.Equals("DFV")) { request.DefaultVariant = true; }
+        //                //if (current.MapName.Equals("PID")) { request.PID = true; }
+        //                //if (current.MapName.Equals("PNE")) { request.ProductNameEn = true; }
+        //                //if (current.MapName.Equals("PNT")) { request.ProductNameTh = true; }
+        //                //if (current.MapName.Equals("SKU")) { request.SKU = true; }
+        //                //if (current.MapName.Equals("UPC")) { request.UPC = true; }
+        //                //if (current.MapName.Equals("BRN")) { request.BrandName = true; }
+        //                //if (current.MapName.Equals("ORP")) { request.OriginalPrice = true; }
+        //                //if (current.MapName.Equals("SAP")) { request.SalePrice = true; }
+        //                //if (current.MapName.Equals("DCE")) { request.DescriptionEn = true; }
+        //                //if (current.MapName.Equals("DCT")) { request.DescriptionTh = true; }
+        //                //if (current.MapName.Equals("SDE")) { request.ShortDescriptionEn = true; }
+        //                //if (current.MapName.Equals("SDT")) { request.ShortDescriptionTh = true; }
+        //                //if (current.MapName.Equals("KEW")) { request.SearchTag = true; }
+        //                //if (current.MapName.Equals("INA")) { request.InventoryAmount = true; }
+        //                //if (current.MapName.Equals("SSA")) { request.SafetytockAmount = true; }
+        //                //if (current.MapName.Equals("STT")) { request.StockType = true; }
+        //                //if (current.MapName.Equals("SHM")) { request.ShippingMethod = true; }
+        //                //if (current.MapName.Equals("PRT")) { request.PreparationTime = true; }
+        //                //if (current.MapName.Equals("LEN")) { request.PackageLenght = true; }
+        //                //if (current.MapName.Equals("HEI")) { request.PackageHeight = true; }
+        //                //if (current.MapName.Equals("WID")) { request.PackageWidth = true; }
+        //                //if (current.MapName.Equals("WEI")) { request.PackageWeight = true; }
+        //                //if (current.MapName.Equals("GCI")) { request.GlobalCategory = true; }
+        //                //if (current.MapName.Equals("AG1")) { request.GlobalCategory01 = true; }
+        //                //if (current.MapName.Equals("AG2")) { request.GlobalCategory02 = true; }
+        //                //if (current.MapName.Equals("LCI")) { request.LocalCategory = true; }
+        //                //if (current.MapName.Equals("AL1")) { request.LocalCategory01 = true; }
+        //                //if (current.MapName.Equals("AL2")) { request.LocalCategory02 = true; }
+        //                //if (current.MapName.Equals("REP")) { request.RelatedProducts = true; }
+        //                //if (current.MapName.Equals("MTE")) { request.MetaTitleEn = true; }
+        //                //if (current.MapName.Equals("MTT")) { request.MetaTitleTh = true; }
+        //                //if (current.MapName.Equals("MDE")) { request.MetaDescriptionEn = true; }
+        //                //if (current.MapName.Equals("MDT")) { request.MetaDescriptionTh = true; }
+        //                //if (current.MapName.Equals("MKE")) { request.MetaKeywordEn = true; }
+        //                //if (current.MapName.Equals("MKT")) { request.MetaKeywordTh = true; }
+        //                //if (current.MapName.Equals("PUK")) { request.ProductURLKeyEn = true; }
+        //                //if (current.MapName.Equals("PBW")) { request.ProductBoostingWeight = true; }
+        //                //if (current.MapName.Equals("EFD")) { request.EffectiveDate = true; }
+        //                //if (current.MapName.Equals("EFT")) { request.EffectiveTime = true; }
+        //                //if (current.MapName.Equals("EXD")) { request.ExpiryDate = true; }
+        //                //if (current.MapName.Equals("EXT")) { request.ExpiryTime = true; }
+        //                //if (current.MapName.Equals("FL1")) { request.FlagControl1 = true; }
+        //                //if (current.MapName.Equals("FL2")) { request.FlagControl2 = true; }
+        //                //if (current.MapName.Equals("FL3")) { request.FlagControl3 = true; }
+        //                //if (current.MapName.Equals("REM")) { request.Remark = true; }
+        //            }
+        //        }
+        //        #endregion
+        //        #region Query
+        //        var query = (
+        //                     from mast in db.ProductStages
+        //                     join variant in db.ProductStageVariants on mast.ProductId equals variant.ProductId into varJoin
+        //                     from vari in varJoin.DefaultIfEmpty()
+        //                         //where productIds.Contains(mast.ProductId) && mast.ShopId == shopId
+        //                     select new
+        //                     {
+        //                         ShopId = vari != null ? vari.ShopId : mast.ShopId,
+        //                         Status = vari != null ? vari.Status : mast.Status,
+        //                         Sku = vari != null ? vari.Sku : mast.Sku,
+        //                         Pid = vari != null ? vari.Pid : mast.Pid,
+        //                         Upc = vari != null ? vari.Upc : mast.Upc,
+        //                         ProductId = vari != null ? vari.ProductId : mast.ProductId,
+        //                         //GroupNameEn = mast.ProductNameEn,
+        //                         //GroupNameTh = mast.ProductNameTh,
+        //                         ProductNameEn = vari != null ? vari.ProductNameEn : mast.ProductNameEn,
+        //                         ProductNameTh = vari != null ? vari.ProductNameTh : mast.ProductNameTh,
+        //                         DefaultVaraint = vari != null ? vari.DefaultVaraint == true ? "Yes" : "No" : "Yes",
+        //                         ControlFlag1 = mast.ControlFlag1 == true ? "Yes" : "No",
+        //                         ControlFlag2 = mast.ControlFlag2 == true ? "Yes" : "No",
+        //                         ControlFlag3 = mast.ControlFlag3 == true ? "Yes" : "No",
+        //                         mast.Brand.BrandNameEn,
+        //                         mast.GlobalCatId,
+        //                         RelatedGlobalCat = mast.ProductStageGlobalCatMaps.Select(s => s.GlobalCategory.CategoryId),
+        //                         mast.LocalCatId,
+        //                         RelatedLocalCat = mast.ProductStageLocalCatMaps.Select(s => s.LocalCategory.CategoryId),
+        //                         OriginalPrice = vari != null ? vari.OriginalPrice : mast.OriginalPrice,
+        //                         SalePrice = vari != null ? vari.SalePrice : mast.SalePrice,
+        //                         DescriptionShortEn = vari != null ? vari.DescriptionShortEn : mast.DescriptionShortEn,
+        //                         DescriptionShortTh = vari != null ? vari.DescriptionShortTh : mast.DescriptionShortTh,
+        //                         DescriptionFullEn = vari != null ? vari.DescriptionFullEn : mast.DescriptionFullEn,
+        //                         DescriptionFullTh = vari != null ? vari.DescriptionFullTh : mast.DescriptionFullTh,
+        //                         AttributeSet = new { mast.AttributeSetId, mast.AttributeSet.AttributeSetNameEn, Attribute = mast.AttributeSet.AttributeSetMaps.Select(s => s.Attribute) },
+        //                         mast.PrepareDay,
+        //                         Length = vari != null ? vari.Length : mast.Length,
+        //                         Height = vari != null ? vari.Height : mast.Height,
+        //                         Width = vari != null ? vari.Width : mast.Width,
+        //                         Weight = vari != null ? vari.Weight : mast.Weight,
+        //                         mast.Tag,
+        //                         mast.MetaTitleEn,
+        //                         mast.MetaTitleTh,
+        //                         mast.MetaDescriptionEn,
+        //                         mast.MetaDescriptionTh,
+        //                         mast.MetaKeyEn,
+        //                         mast.MetaKeyTh,
+        //                         mast.UrlEn,
+        //                         mast.BoostWeight,
+        //                         mast.EffectiveDate,
+        //                         mast.EffectiveTime,
+        //                         mast.ExpiryDate,
+        //                         mast.ExpiryTime,
+        //                         mast.Remark,
+        //                         mast.Shipping.ShippingMethodEn,
+        //                         VariantAttribute = vari.ProductStageVariantArrtibuteMaps.Select(s => new
+        //                         {
+        //                             s.Attribute.AttributeNameEn,
+        //                             Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.Value) select tt.AttributeValueEn).FirstOrDefault()
+        //                                 : s.Value,
+        //                         }),
+        //                         MasterAttribute = mast.ProductStageAttributes.Select(s => new
+        //                         {
+        //                             s.AttributeId,
+        //                             s.Attribute.AttributeNameEn,
+        //                             ValueEn = s.IsAttributeValue ?
+        //                                        (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault()
+        //                                        : s.ValueEn,
+        //                         }),
+        //                         RelatedProduct = (from rel in db.ProductStageRelateds where rel.Pid1.Equals(mast.Pid) select rel.Pid2).ToList(),
+        //                         Inventory = vari != null ? (from inv in db.Inventories where inv.Pid.Equals(vari.Pid) select inv).FirstOrDefault() :
+        //                                      (from inv in db.Inventories where inv.Pid.Equals(mast.Pid) select inv).FirstOrDefault(),
+        //                     });
+        //        var productIds = request.ProductList.Select(s => s.ProductId).ToList();
+
+        //        if (productIds != null && productIds.Count > 0)
+        //        {
+        //            if (productIds.Count > 2000)
+        //            {
+        //                throw new Exception("Too many product selected");
+        //            }
+        //            query = query.Where(w => productIds.Contains(w.ProductId));
+        //        }
+        //        if (this.User.ShopRequest() != null)
+        //        {
+        //            var shopId = this.User.ShopRequest().ShopId;
+        //            query = query.Where(w => w.ShopId == shopId);
+        //        }
+        //        var productList = query.ToList();
+
+        //        #endregion
+        //        List<List<string>> rs = new List<List<string>>();
+        //        List<string> bodyList = null;
+        //        if (request.AttributeSets != null && request.AttributeSets.Count > 0)
+        //        {
+        //            headDicTmp.Add("ATS", new Tuple<string, int>("Attribute Set", i++));
+        //            headDicTmp.Add("VO1", new Tuple<string, int>("Variation Option 1", i++));
+        //            headDicTmp.Add("VO2", new Tuple<string, int>("Variation Option 2", i++));
+        //        }
+        //        foreach (var p in productList)
+        //        {
+        //            bodyList = new List<string>(new string[headDicTmp.Count]);
+        //            #region Assign Value
+        //            if (request.ProductStatus)
+        //            {
+        //                if (Constant.PRODUCT_STATUS_DRAFT.Equals(p.Status))
+        //                {
+        //                    bodyList[headDicTmp["PRS"].Item2] = "Draft";
+        //                }
+        //                else if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(p.Status))
+        //                {
+        //                    bodyList[headDicTmp["PRS"].Item2] = "Wait for Approval";
+        //                }
+        //                else if (Constant.PRODUCT_STATUS_APPROVE.Equals(p.Status))
+        //                {
+        //                    bodyList[headDicTmp["PRS"].Item2] = "Approve";
+        //                }
+        //                else if (Constant.PRODUCT_STATUS_NOT_APPROVE.Equals(p.Status))
+        //                {
+        //                    bodyList[headDicTmp["PRS"].Item2] = "Not Approve";
+        //                }
+        //            }
+        //            if (request.SKU)
+        //            {
+        //                bodyList[headDicTmp["SKU"].Item2] = p.Sku;
+        //            }
+        //            if (request.PID)
+        //            {
+        //                bodyList[headDicTmp["PID"].Item2] = p.Pid;
+        //            }
+        //            if (request.UPC)
+        //            {
+        //                bodyList[headDicTmp["UPC"].Item2] = p.Upc;
+        //            }
+        //            if (request.GroupID)
+        //            {
+        //                bodyList[headDicTmp["GID"].Item2] = string.Concat(p.ProductId);
+        //            }
+        //            if (request.DefaultVariant)
+        //            {
+        //                bodyList[headDicTmp["DFV"].Item2] = p.DefaultVaraint;
+        //            }
+        //            if (request.ProductNameEn)
+        //            {
+        //                bodyList[headDicTmp["PNE"].Item2] = p.ProductNameEn;
+        //            }
+        //            if (request.ProductNameTh)
+        //            {
+        //                bodyList[headDicTmp["PNT"].Item2] = p.ProductNameTh;
+        //            }
+        //            if (request.BrandName)
+        //            {
+        //                bodyList[headDicTmp["BRN"].Item2] = p.BrandNameEn;
+        //            }
+        //            if (request.GlobalCategory)
+        //            {
+        //                bodyList[headDicTmp["GCI"].Item2] = string.Concat(p.GlobalCatId);
+        //            }
+        //            if (request.GlobalCategory01)
+        //            {
+        //                if (p.RelatedGlobalCat != null && p.RelatedGlobalCat.ToList().Count > 0)
+        //                {
+        //                    bodyList[headDicTmp["AG1"].Item2] = string.Concat(p.RelatedGlobalCat.ToList()[0]);
+        //                }
+        //            }
+        //            if (request.GlobalCategory02)
+        //            {
+        //                if (p.RelatedGlobalCat != null && p.RelatedGlobalCat.ToList().Count > 1)
+        //                {
+        //                    bodyList[headDicTmp["AG2"].Item2] = string.Concat(p.RelatedGlobalCat.ToList()[1]);
+        //                }
+        //            }
+        //            if (request.LocalCategory)
+        //            {
+        //                bodyList[headDicTmp["LCI"].Item2] = string.Concat(p.LocalCatId);
+        //            }
+        //            if (request.LocalCategory01)
+        //            {
+        //                if (p.RelatedLocalCat != null && p.RelatedLocalCat.ToList().Count > 0)
+        //                {
+        //                    bodyList[headDicTmp["AL1"].Item2] = string.Concat(p.RelatedLocalCat.ToList()[0]);
+        //                }
+        //            }
+        //            if (request.LocalCategory02)
+        //            {
+        //                if (p.RelatedLocalCat != null && p.RelatedLocalCat.ToList().Count > 1)
+        //                {
+        //                    bodyList[headDicTmp["AL2"].Item2] = string.Concat(p.RelatedLocalCat.ToList()[1]);
+        //                }
+        //            }
+        //            if (request.OriginalPrice)
+        //            {
+        //                bodyList[headDicTmp["ORP"].Item2] = string.Concat(p.OriginalPrice);
+        //            }
+        //            if (request.SalePrice)
+        //            {
+        //                bodyList[headDicTmp["SAP"].Item2] = string.Concat(p.SalePrice);
+        //            }
+        //            if (request.DescriptionEn)
+        //            {
+        //                bodyList[headDicTmp["DCE"].Item2] = p.DescriptionFullEn;
+        //            }
+        //            if (request.DescriptionTh)
+        //            {
+        //                bodyList[headDicTmp["DCT"].Item2] = p.DescriptionFullTh;
+        //            }
+        //            if (request.ShortDescriptionEn)
+        //            {
+        //                bodyList[headDicTmp["SDE"].Item2] = p.DescriptionShortEn;
+        //            }
+        //            if (request.ShortDescriptionTh)
+        //            {
+        //                bodyList[headDicTmp["SDT"].Item2] = p.DescriptionShortTh;
+        //            }
+        //            if (request.PreparationTime)
+        //            {
+        //                bodyList[headDicTmp["PRT"].Item2] = string.Concat(p.PrepareDay);
+        //            }
+        //            if (request.PackageLenght)
+        //            {
+        //                bodyList[headDicTmp["LEN"].Item2] = string.Concat(p.Length);
+        //            }
+        //            if (request.PackageHeight)
+        //            {
+        //                bodyList[headDicTmp["HEI"].Item2] = string.Concat(p.Height);
+        //            }
+        //            if (request.PackageWidth)
+        //            {
+        //                bodyList[headDicTmp["WID"].Item2] = string.Concat(p.Width);
+        //            }
+        //            if (request.PackageWeight)
+        //            {
+        //                bodyList[headDicTmp["WEI"].Item2] = string.Concat(p.Weight);
+        //            }
+
+        //            if (request.InventoryAmount)
+        //            {
+        //                if (p.Inventory != null)
+        //                {
+        //                    bodyList[headDicTmp["INA"].Item2] = string.Concat(p.Inventory.Quantity);
+        //                }
+        //                else
+        //                {
+        //                    bodyList[headDicTmp["INA"].Item2] = string.Empty;
+        //                }
+        //            }
+        //            if (request.StockType)
+        //            {
+        //                if (p.Inventory != null)
+        //                {
+        //                    bodyList[headDicTmp["STT"].Item2] = Constant.STOCK_TYPE.Where(w => w.Value.Equals(p.Inventory.StockAvailable)).SingleOrDefault().Key;
+        //                }
+        //                else
+        //                {
+        //                    bodyList[headDicTmp["STT"].Item2] = string.Empty;
+        //                }
+        //            }
+        //            if (request.ShippingMethod)
+        //            {
+        //                bodyList[headDicTmp["SHM"].Item2] = p.ShippingMethodEn;
+        //            }
+        //            if (request.SafetytockAmount)
+        //            {
+        //                if (p.Inventory != null)
+        //                {
+        //                    bodyList[headDicTmp["SSA"].Item2] = string.Concat(p.Inventory.SafetyStockSeller);
+        //                }
+        //                else
+        //                {
+        //                    bodyList[headDicTmp["SSA"].Item2] = string.Empty;
+        //                }
+        //            }
+        //            if (request.SearchTag)
+        //            {
+        //                bodyList[headDicTmp["KEW"].Item2] = p.Tag;
+        //            }
+        //            if (request.RelatedProducts)
+        //            {
+        //                if (p.RelatedProduct != null && p.RelatedProduct.Count > 0)
+        //                {
+        //                    bodyList[headDicTmp["REP"].Item2] = string.Join(",", p.RelatedProduct);
+        //                }
+        //                else
+        //                {
+        //                    bodyList[headDicTmp["REP"].Item2] = string.Empty;
+        //                }
+        //            }
+        //            if (request.MetaTitleEn)
+        //            {
+        //                bodyList[headDicTmp["MTE"].Item2] = p.MetaTitleEn;
+        //            }
+        //            if (request.MetaTitleTh)
+        //            {
+        //                bodyList[headDicTmp["MTT"].Item2] = p.MetaTitleTh;
+        //            }
+        //            if (request.MetaDescriptionEn)
+        //            {
+        //                bodyList[headDicTmp["MDE"].Item2] = p.MetaDescriptionEn;
+        //            }
+        //            if (request.MetaDescriptionTh)
+        //            {
+        //                bodyList[headDicTmp["MDT"].Item2] = p.MetaDescriptionTh;
+        //            }
+        //            if (request.MetaKeywordEn)
+        //            {
+        //                bodyList[headDicTmp["MKE"].Item2] = p.MetaKeyEn;
+        //            }
+        //            if (request.MetaKeywordTh)
+        //            {
+        //                bodyList[headDicTmp["MKT"].Item2] = p.MetaKeyTh;
+        //            }
+        //            if (request.ProductURLKeyEn)
+        //            {
+        //                bodyList[headDicTmp["PUK"].Item2] = p.UrlEn;
+        //            }
+        //            if (request.ProductBoostingWeight)
+        //            {
+        //                bodyList[headDicTmp["PBW"].Item2] = string.Concat(p.BoostWeight);
+        //            }
+        //            if (request.EffectiveDate)
+        //            {
+        //                if (p.ExpiryDate != null)
+        //                {
+        //                    bodyList[headDicTmp["EFD"].Item2] = p.ExpiryDate.ToString();
+        //                }
+        //            }
+        //            if (request.EffectiveTime)
+        //            {
+        //                if (p.EffectiveTime != null)
+        //                {
+        //                    bodyList[headDicTmp["EFT"].Item2] = p.EffectiveTime.ToString();
+        //                }
+        //            }
+
+        //            if (request.ExpiryDate)
+        //            {
+        //                if (p.ExpiryDate != null)
+        //                {
+        //                    bodyList[headDicTmp["EXD"].Item2] = p.ExpiryDate.ToString();
+        //                }
+        //            }
+        //            if (request.ExpiryTime)
+        //            {
+        //                if (p.ExpiryTime != null)
+        //                {
+        //                    bodyList[headDicTmp["EXT"].Item2] = p.ExpiryTime.ToString();
+        //                }
+        //            }
+        //            if (request.Remark)
+        //            {
+        //                bodyList[headDicTmp["REM"].Item2] = p.Remark;
+        //            }
+        //            if (request.FlagControl1)
+        //            {
+        //                bodyList[headDicTmp["FL1"].Item2] = p.ControlFlag1;
+        //            }
+        //            if (request.FlagControl2)
+        //            {
+        //                bodyList[headDicTmp["FL2"].Item2] = p.ControlFlag2;
+        //            }
+        //            if (request.FlagControl3)
+        //            {
+        //                bodyList[headDicTmp["FL3"].Item2] = p.ControlFlag3;
+        //            }
+
+        //            #endregion
+
+        //            #region Attibute Section
+        //            if (request.AttributeSets != null && request.AttributeSets.Count > 0)
+        //            {
+        //                if (p.AttributeSet != null)
+        //                {
+        //                    var set = request.AttributeSets.Where(w => w.AttributeSetId == p.AttributeSet.AttributeSetId).SingleOrDefault();
+        //                    if (set != null)
+        //                    {
+        //                        //make header for attribute
+        //                        foreach (var attr in p.AttributeSet.Attribute)
+        //                        {
+        //                            if (!headDicTmp.ContainsKey(attr.AttributeNameEn))
+        //                            {
+        //                                headDicTmp.Add(attr.AttributeNameEn, new Tuple<string, int>(attr.AttributeNameEn, i++));
+        //                                bodyList.Add(string.Empty);
+        //                            }
+        //                        }
+
+        //                        bodyList[headDicTmp["ATS"].Item2] = p.AttributeSet.AttributeSetNameEn;
+        //                        //make vaiant option 1 value
+        //                        if (p.VariantAttribute != null && p.VariantAttribute.ToList().Count > 0)
+        //                        {
+        //                            bodyList[headDicTmp["VO1"].Item2] = p.VariantAttribute.ToList()[0].AttributeNameEn;
+        //                        }
+        //                        //make vaiant option 2 value
+        //                        if (p.VariantAttribute != null && p.VariantAttribute.ToList().Count > 1)
+        //                        {
+        //                            bodyList[headDicTmp["VO2"].Item2] = p.VariantAttribute.ToList()[1].AttributeNameEn;
+        //                        }
+        //                        //make master attribute value
+        //                        if (p.MasterAttribute != null && p.MasterAttribute.ToList().Count > 0)
+        //                        {
+        //                            foreach (var masterValue in p.MasterAttribute)
+        //                            {
+        //                                if (headDicTmp.ContainsKey(masterValue.AttributeNameEn))
+        //                                {
+        //                                    int desColumn = headDicTmp[masterValue.AttributeNameEn].Item2;
+        //                                    for (int j = bodyList.Count; j <= desColumn; j++)
+        //                                    {
+        //                                        bodyList.Add(string.Empty);
+        //                                    }
+        //                                    bodyList[desColumn] = masterValue.ValueEn;
+        //                                }
+        //                            }
+        //                        }
+        //                        if (p.VariantAttribute != null && p.VariantAttribute.ToList().Count > 0)
+        //                        {
+        //                            foreach (var variantValue in p.VariantAttribute)
+        //                            {
+        //                                if (headDicTmp.ContainsKey(variantValue.AttributeNameEn))
+        //                                {
+        //                                    int desColumn = headDicTmp[variantValue.AttributeNameEn].Item2;
+        //                                    for (int j = bodyList.Count; j <= desColumn; j++)
+        //                                    {
+        //                                        bodyList.Add(string.Empty);
+        //                                    }
+        //                                    bodyList[desColumn] = variantValue.Value;
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+
+
+        //            #endregion
+        //            rs.Add(bodyList);
+        //        }
+
+        //        #region Write header
+
+        //        stream = new MemoryStream();
+        //        writer = new StreamWriter(stream, Encoding.UTF8);
+        //        var csv = new CsvWriter(writer);
+        //        string headers = string.Empty;
+        //        foreach (KeyValuePair<string, Tuple<string, int>> entry in headDicTmp)
+        //        {
+        //            csv.WriteField(entry.Value.Item1);
+        //        }
+        //        csv.NextRecord();
+        //        #endregion
+        //        #region Write body
+        //        foreach (List<string> r in rs)
+        //        {
+        //            foreach (string field in r)
+        //            {
+        //                csv.WriteField(field);
+        //            }
+        //            csv.NextRecord();
+        //        }
+        //        #endregion
+        //        #region Create Response
+        //        writer.Flush();
+        //        stream.Position = 0;
+
+        //        HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+        //        result.Content = new StreamContent(stream);
+        //        result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
+        //        {
+        //            CharSet = Encoding.UTF8.WebName
+        //        };
+        //        result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+        //        result.Content.Headers.ContentDisposition.FileName = "file.csv";
+        //        #endregion
+        //        return result;
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        #region close writer
+        //        if (writer != null)
+        //        {
+        //            writer.Close();
+        //            writer.Dispose();
+        //        }
+        //        if (stream != null)
+        //        {
+        //            stream.Close();
+        //            stream.Dispose();
+        //        }
+        //        #endregion
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+        //    }
+        //}
         /*
        
 

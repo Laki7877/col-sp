@@ -12,27 +12,17 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Newsletter
+    public partial class NewsletterShopMap
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Newsletter()
-        {
-            this.NewsletterShopMaps = new HashSet<NewsletterShopMap>();
-        }
-    
         public int NewsletterId { get; set; }
-        public string Subject { get; set; }
-        public string Description { get; set; }
-        public string VisibleShopGroup { get; set; }
-        public string ImageUrl { get; set; }
-        public Nullable<System.DateTime> PublishedDt { get; set; }
-        public string Status { get; set; }
+        public int ShopId { get; set; }
+        public string Filter { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NewsletterShopMap> NewsletterShopMaps { get; set; }
+        public virtual Newsletter Newsletter { get; set; }
+        public virtual Shop Shop { get; set; }
     }
 }

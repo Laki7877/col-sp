@@ -25,7 +25,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var productTemp = db.ProductTemps.Where(w => true);
+                var productTemp = db.ProductTmps.Where(w => true);
                 //check if its seller permission
                 if (this.User.HasPermission("Group JDA"))
                 {
@@ -64,7 +64,7 @@ namespace Colsp.Api.Controllers
 
         private bool ProductTempExists(long id)
         {
-            return db.ProductTemps.Count(e => e.ProductId == id) > 0;
+            return db.ProductTmps.Count(e => e.ProductId == id) > 0;
         }
     }
 }

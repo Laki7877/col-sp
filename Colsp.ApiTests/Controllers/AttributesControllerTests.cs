@@ -14,6 +14,7 @@ namespace Colsp.Api.Controllers.Tests
         [TestMethod()]
         public void GetAttributesTest()
         {
+            ProductStagesController controller = new ProductStagesController();
             Assert.Fail();
         }
     }

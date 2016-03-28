@@ -22,8 +22,10 @@ namespace Colsp.Entity.Models
             this.GlobalCatFeatureProducts = new HashSet<GlobalCatFeatureProduct>();
             this.GlobalCatImages = new HashSet<GlobalCatImage>();
             this.Products = new HashSet<Product>();
+            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
             this.ShopCommissions = new HashSet<ShopCommission>();
+            this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
             this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
         }
     
@@ -59,9 +61,13 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopCommission> ShopCommissions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
     }

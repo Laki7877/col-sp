@@ -63,6 +63,7 @@ namespace Colsp.Model.Requests
         public int VariantId { get; set; }
 
         public bool IsVariant { get; set; }
+        public string Status { get; set; }
         public List<ImageRequest> MasterImg { get; set; }
         public List<ImageRequest> VariantImg { get; set; }
 

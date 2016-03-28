@@ -12,20 +12,17 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductStage
+    public partial class ProductHistory
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ProductStage()
+        public ProductHistory()
         {
-            this.CouponPidMaps = new HashSet<CouponPidMap>();
-            this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
-            this.ProductStageComments = new HashSet<ProductStageComment>();
-            this.ProductStageImages = new HashSet<ProductStageImage>();
-            this.ProductStageMasters = new HashSet<ProductStageMaster>();
-            this.ProductStageMasters1 = new HashSet<ProductStageMaster>();
-            this.ProductStageVideos = new HashSet<ProductStageVideo>();
+            this.ProductHistoryAttributes = new HashSet<ProductHistoryAttribute>();
+            this.ProductHistoryImages = new HashSet<ProductHistoryImage>();
+            this.ProductHistoryVideos = new HashSet<ProductHistoryVideo>();
         }
     
+        public long HistoryId { get; set; }
         public string Pid { get; set; }
         public long ProductId { get; set; }
         public int ShopId { get; set; }
@@ -93,23 +90,12 @@ namespace Colsp.Entity.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        public virtual ProductHistoryGroup ProductHistoryGroup { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }
-        public virtual Inventory Inventory { get; set; }
-        public virtual ProductStageGroup ProductStageGroup { get; set; }
-        public virtual Shipping Shipping { get; set; }
+        public virtual ICollection<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
+        public virtual ICollection<ProductHistoryImage> ProductHistoryImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageComment> ProductStageComments { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageImage> ProductStageImages { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageMaster> ProductStageMasters { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageMaster> ProductStageMasters1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
-        public virtual Shop Shop { get; set; }
+        public virtual ICollection<ProductHistoryVideo> ProductHistoryVideos { get; set; }
     }
 }

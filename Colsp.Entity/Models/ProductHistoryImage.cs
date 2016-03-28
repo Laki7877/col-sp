@@ -12,21 +12,23 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductReview
+    public partial class ProductHistoryImage
     {
-        public long ProductReviewId { get; set; }
-        public string CustomerId { get; set; }
-        public decimal Rating { get; set; }
+        public long HistoryId { get; set; }
+        public int ImageId { get; set; }
         public string Pid { get; set; }
         public int ShopId { get; set; }
-        public string Comment { get; set; }
+        public string ImageName { get; set; }
+        public string ImageOriginName { get; set; }
+        public string ImageUrlEn { get; set; }
+        public int Position { get; set; }
+        public bool FeatureFlag { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedOn { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedOn { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual Product Product { get; set; }
-        public virtual Shop Shop { get; set; }
+        public virtual ProductHistory ProductHistory { get; set; }
     }
 }

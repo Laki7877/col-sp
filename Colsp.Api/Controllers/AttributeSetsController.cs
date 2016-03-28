@@ -12,6 +12,7 @@ using System;
 using System.Data.Entity;
 using System.Collections.Generic;
 using Colsp.Api.Helpers;
+using System.Linq.Dynamic;
 
 namespace Colsp.Api.Controllers
 {
@@ -152,8 +153,15 @@ namespace Colsp.Api.Controllers
                 attributeSet.CreatedDt = DateTime.Now;
                 attributeSet.UpdatedBy = this.User.UserRequest().Email;
                 attributeSet.UpdatedDt = DateTime.Now;
-               
-                if(request.Attributes != null && request.Attributes.Count > 0)
+
+                var attributeIds = request.Attributes.Select(s => s.AttributeId).ToList();
+                var attribute = db.Attributes.Where(w => attributeIds.All(a=>a == w.AttributeId && w.DefaultAttribute == true)).Count();
+                if(attribute != 0)
+                {
+                    throw new Exception("Cannot map attribute that is default attribute to attribute set");
+                }
+
+                if (request.Attributes != null && request.Attributes.Count > 0)
                 {
                     foreach (AttributeRequest attr in request.Attributes)
                     {
@@ -187,13 +195,6 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                #region Rollback
-                if (attributeSet != null && attributeSet.AttributeSetId != 0)
-                {
-                    db.AttributeSets.Remove(attributeSet);
-                    Util.DeadlockRetry(db.SaveChanges, "AttributeSet");
-                }
-                #endregion
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -220,6 +221,12 @@ namespace Colsp.Api.Controllers
                 attrSet.Status = Constant.STATUS_ACTIVE;
                 attrSet.UpdatedBy = this.User.UserRequest().Email;
                 attrSet.UpdatedDt = DateTime.Now;
+                var attributeIds = request.Attributes.Select(s => s.AttributeId).ToList();
+                var attribute = db.Attributes.Where(w => attributeIds.All(a => a == w.AttributeId && w.DefaultAttribute == true)).Count();
+                if (attribute != 0)
+                {
+                    throw new Exception("Cannot map attribute that is default attribute to attribute set");
+                }
                 List<AttributeSetMap> mapList = attrSet.AttributeSetMaps.ToList();
                 if (request.Attributes != null && request.Attributes.Count > 0)
                 {

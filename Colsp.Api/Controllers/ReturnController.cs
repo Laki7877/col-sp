@@ -121,5 +121,26 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
+
+        [Route("api/Returns/Rate")]
+        [HttpGet]
+        public HttpResponseMessage GetReturnRate()
+        {
+            try
+            {
+                var shopId = User.ShopRequest().ShopId;
+                var returnCount = ReturnMockup.ReturnList.Where(w => w.ShopId == shopId).ToList().Count;
+                var orderCount = OrderMockup.OrderList.Where(w => w.ShopId == shopId).ToList().Count;
+                if(orderCount == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, Constant.NOT_AVAILABLE);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, returnCount/orderCount);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
     }
 }

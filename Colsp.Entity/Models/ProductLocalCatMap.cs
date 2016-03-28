@@ -12,16 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class TBCMCity
+    public partial class ProductLocalCatMap
     {
-        public string ProvinceID { get; set; }
-        public string City { get; set; }
-        public string District { get; set; }
-        public System.DateTime CreateOn { get; set; }
-        public string CreateBy { get; set; }
-        public System.DateTime UpdateOn { get; set; }
-        public string UpdateBy { get; set; }
-        public string Postcode { get; set; }
-        public string Remark { get; set; }
+        public string Pid { get; set; }
+        public int CategoryId { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDt { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatedDt { get; set; }
+    
+        public virtual LocalCategory LocalCategory { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

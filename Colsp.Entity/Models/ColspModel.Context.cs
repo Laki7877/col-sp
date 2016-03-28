@@ -43,6 +43,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<CMSCategory> CMSCategories { get; set; }
         public virtual DbSet<CMSCategoryCreteriaMap> CMSCategoryCreteriaMaps { get; set; }
+        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
         public virtual DbSet<CMSCategorySchedulerMap> CMSCategorySchedulerMaps { get; set; }
         public virtual DbSet<CMSCreteria> CMSCreterias { get; set; }
         public virtual DbSet<CMSCriteriaProductMap> CMSCriteriaProductMaps { get; set; }
@@ -67,6 +68,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
+        public virtual DbSet<Deal> Deals { get; set; }
         public virtual DbSet<District> Districts { get; set; }
         public virtual DbSet<GlobalCatAttributeSetMap> GlobalCatAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
@@ -79,6 +81,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
         public virtual DbSet<LocalCatImage> LocalCatImages { get; set; }
         public virtual DbSet<Newsletter> Newsletters { get; set; }
+        public virtual DbSet<NewsletterShopMap> NewsletterShopMaps { get; set; }
         public virtual DbSet<ODMPermission> ODMPermissions { get; set; }
         public virtual DbSet<ODMProcessLog> ODMProcessLogs { get; set; }
         public virtual DbSet<ODMRole> ODMRoles { get; set; }
@@ -86,10 +89,23 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ODMUser> ODMUsers { get; set; }
         public virtual DbSet<ODMUserMenuItem> ODMUserMenuItems { get; set; }
         public virtual DbSet<ODMUserToken> ODMUserTokens { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Pid> Pids { get; set; }
         public virtual DbSet<PostCode> PostCodes { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
+        public virtual DbSet<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductHistory> ProductHistories { get; set; }
+        public virtual DbSet<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
+        public virtual DbSet<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryGroup> ProductHistoryGroups { get; set; }
+        public virtual DbSet<ProductHistoryImage> ProductHistoryImages { get; set; }
+        public virtual DbSet<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
+        public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
+        public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
         public virtual DbSet<ProductStageAttribute> ProductStageAttributes { get; set; }
@@ -102,7 +118,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
-        public virtual DbSet<ProductTemp> ProductTemps { get; set; }
+        public virtual DbSet<ProductTag> ProductTags { get; set; }
+        public virtual DbSet<ProductTmp> ProductTmps { get; set; }
+        public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
         public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
@@ -118,7 +136,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceive> StoreReceives { get; set; }
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
-        public virtual DbSet<Table> Tables { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
@@ -128,7 +145,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
-        public virtual DbSet<TBCMCity> TBCMCities { get; set; }
         public virtual DbSet<TBDvMapZone> TBDvMapZones { get; set; }
         public virtual DbSet<TBPermissionTmp> TBPermissionTmps { get; set; }
         public virtual DbSet<TBRolePermissionTmp> TBRolePermissionTmps { get; set; }
@@ -136,7 +152,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
-        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
     
         public virtual ObjectResult<Nullable<int>> AttributeValueId()
         {
@@ -156,6 +171,16 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<Nullable<int>> LocalCategoryId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("LocalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductHistoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductHistoryId");
         }
     }
 }
