@@ -24,7 +24,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var review = (from rev in db.ProductReviews
                               join cus in db.Customers on rev.CustomerId equals cus.CustomerId into cusJoin
                               from cus in cusJoin.DefaultIfEmpty()
@@ -119,7 +119,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var review = (from rev in db.ProductReviews
                               join cus in db.Customers on rev.CustomerId equals cus.CustomerId into cusJoin
                               from cus in cusJoin.DefaultIfEmpty()
@@ -140,7 +140,7 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find review " + revRq.ProductReviewId + " in shop " + shopId);
                     }
                     current.Status = revRq.Status;
-                    current.UpdatedBy = this.User.UserRequest().Email;
+                    current.UpdatedBy = User.UserRequest().Email;
                     current.UpdatedOn = DateTime.Now;
                 }
                 Util.DeadlockRetry(db.SaveChanges, "ProductReview");

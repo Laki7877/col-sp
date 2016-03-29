@@ -17,12 +17,12 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
-            this.ProductAttributes = new HashSet<ProductAttribute>();
-            this.ProductReviews = new HashSet<ProductReview>();
-            this.ProductTags = new HashSet<ProductTag>();
-            this.ProductVideos = new HashSet<ProductVideo>();
-            this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
-            this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
+            ProductAttributes = new HashSet<ProductAttribute>();
+            ProductReviews = new HashSet<ProductReview>();
+            ProductTags = new HashSet<ProductTag>();
+            ProductVideos = new HashSet<ProductVideo>();
+            ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
+            ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
         }
     
         public string Pid { get; set; }

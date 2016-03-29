@@ -27,7 +27,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
 
 
                 var products = (from inv in db.Inventories
@@ -220,7 +220,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if(this.User.ShopRequest() == null)
+                if(User.ShopRequest() == null)
                 {
                     throw new Exception("Your not assigned any shop");
                 }
@@ -229,7 +229,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
 
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
 
                 var invenentory = (from inv in db.Inventories
                                 join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
@@ -335,7 +335,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find inventory");
                 }
-                inv.Quantity = Validation.ValidationInteger(request.Quantity,"Quantity",true, Int32.MaxValue,0).Value;
+                inv.Quantity = Validation.ValidationInteger(request.Quantity,"Quantity",true, int.MaxValue,0).Value;
                 Util.DeadlockRetry(db.SaveChanges, "Inventory");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

@@ -17,11 +17,11 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AttributeSet()
         {
-            this.AttributeSetTags = new HashSet<AttributeSetTag>();
-            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
-            this.ProductStageGroups = new HashSet<ProductStageGroup>();
-            this.AttributeSetMaps = new HashSet<AttributeSetMap>();
-            this.GlobalCatAttributeSetMaps = new HashSet<GlobalCatAttributeSetMap>();
+            AttributeSetTags = new HashSet<AttributeSetTag>();
+            ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
+            ProductStageGroups = new HashSet<ProductStageGroup>();
+            AttributeSetMaps = new HashSet<AttributeSetMap>();
+            GlobalCatAttributeSetMaps = new HashSet<GlobalCatAttributeSetMap>();
         }
     
         public int AttributeSetId { get; set; }

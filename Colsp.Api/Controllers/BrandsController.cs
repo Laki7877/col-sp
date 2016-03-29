@@ -210,7 +210,7 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.url,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now
                         });
                     }
@@ -227,16 +227,16 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.url,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now
                         });
                     }
                 }
                 #endregion
                 brand.Status = Constant.STATUS_ACTIVE;
-                brand.CreatedBy = this.User.UserRequest().Email;
+                brand.CreatedBy = User.UserRequest().Email;
                 brand.CreatedDt = DateTime.Now;
-                brand.UpdatedBy = this.User.UserRequest().Email;
+                brand.UpdatedBy = User.UserRequest().Email;
                 brand.UpdatedDt = DateTime.Now;
                 db.Brands.Add(brand);
                 Util.DeadlockRetry(db.SaveChanges, "Brand");
@@ -284,7 +284,7 @@ namespace Colsp.Api.Controllers
                                 {
                                     current.ImageUrl = img.url;
                                     current.Position = position++;
-                                    current.UpdatedBy = this.User.UserRequest().Email;
+                                    current.UpdatedBy = User.UserRequest().Email;
                                     current.UpdatedDt = DateTime.Now;
                                     imageOldEn.Remove(current);
                                 }
@@ -300,7 +300,7 @@ namespace Colsp.Api.Controllers
                                     ImageUrl = img.url,
                                     Position = position++,
                                     EnTh = Constant.LANG_EN,
-                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedBy = User.UserRequest().Email,
                                     UpdatedDt = DateTime.Now
                                 });
                             }
@@ -330,7 +330,7 @@ namespace Colsp.Api.Controllers
                                 {
                                     current.ImageUrl = img.url;
                                     current.Position = position++;
-                                    current.UpdatedBy = this.User.UserRequest().Email;
+                                    current.UpdatedBy = User.UserRequest().Email;
                                     current.UpdatedDt = DateTime.Now;
                                     imageOldTh.Remove(current);
                                 }
@@ -346,7 +346,7 @@ namespace Colsp.Api.Controllers
                                     ImageUrl = img.url,
                                     Position = position++,
                                     EnTh = Constant.LANG_TH,
-                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedBy = User.UserRequest().Email,
                                     UpdatedDt = DateTime.Now
                                 });
                             }
@@ -393,9 +393,9 @@ namespace Colsp.Api.Controllers
                                     {
                                         BrandId = brand.BrandId,
                                         ProductId = pro.ProductId,
-                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedBy = User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedBy = User.UserRequest().Email,
                                         UpdatedDt = DateTime.Now
                                     });
                                 }
@@ -412,7 +412,7 @@ namespace Colsp.Api.Controllers
                     }
                     #endregion
                     brand.Status = Constant.STATUS_ACTIVE;
-                    brand.UpdatedBy = this.User.UserRequest().Email;
+                    brand.UpdatedBy = User.UserRequest().Email;
                     brand.UpdatedDt = DateTime.Now;
                     Util.DeadlockRetry(db.SaveChanges, "Brand");
                     return GetBrand(brand.BrandId);
@@ -434,8 +434,8 @@ namespace Colsp.Api.Controllers
             brand.BrandNameTh = Validation.ValidateString(request.BrandNameTh, "Brand Name (Thai)", true, 100, false, string.Empty);
             brand.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Brand Display Name (Thai)", true, 300, false);
             brand.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Brand Display Name (Thai)", true, 300, false);
-            brand.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, Int32.MaxValue, false, string.Empty);
-            brand.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, Int32.MaxValue, false, string.Empty);
+            brand.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, int.MaxValue, false, string.Empty);
+            brand.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, int.MaxValue, false, string.Empty);
             brand.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Brand Description (English)", false, 500, false, string.Empty);
             brand.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Brand Description (Thai)", false, 500, false, string.Empty);
             brand.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);

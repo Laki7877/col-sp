@@ -17,8 +17,8 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Shipping()
         {
-            this.Products = new HashSet<Product>();
-            this.ProductStages = new HashSet<ProductStage>();
+            Products = new HashSet<Product>();
+            ProductStages = new HashSet<ProductStage>();
         }
     
         public int ShippingId { get; set; }

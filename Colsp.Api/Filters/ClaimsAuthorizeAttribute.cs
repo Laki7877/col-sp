@@ -16,13 +16,13 @@ namespace Colsp.Api.Filters
 			{
 				return false;
 			}
-			if (this.Permission == null)
+			if (Permission == null)
 			{
 				return false;
 			}
 
 			// Fetch permission from attribute
-			var permissions = this.Permission;
+			var permissions = Permission;
 
 			// Match with the user's permission list
 			var claimsIdentity = HttpContext.Current.User.Identity as ClaimsIdentity;

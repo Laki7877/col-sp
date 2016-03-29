@@ -29,7 +29,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var orderIds = request.Select(s => s.OrderId).ToList();
                 var orderList = OrderMockup.OrderList.Where(w => w.ShopId == shopId && orderIds.Contains(w.OrderId)).ToList();
                 foreach (var orderRq in request)
@@ -71,7 +71,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var order = OrderMockup.OrderList.Where(w => w.ShopId == shopId && w.OrderId.Equals(orderId)).SingleOrDefault();
                 if (order == null)
                 {
@@ -106,7 +106,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var order = (from or in OrderMockup.OrderList
                              where or.ShopId == shopId && or.OrderId.Equals(orderId)
                              select or).SingleOrDefault();
@@ -129,7 +129,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var list = (from or in OrderMockup.OrderList
                             where or.ShopId==shopId
                             select new
@@ -212,12 +212,13 @@ namespace Colsp.Api.Controllers
                     {
                         order = order.Where(p => p.OrderDate >= DateTime.Today && p.OrderDate < DateTime.Today.AddDays(1));
                         var todayOrder = (from or in order
-                                  group or by or.OrderDate.Hour into hourGroup
+                                  group or by or.OrderDate.Hour/2 into hourGroup
                                   select new
                                   {
                                       Key = hourGroup.Key,
                                       Value = hourGroup.Sum(s => s.GrandTotalAmt)
                                   }).ToList();
+
                         return Request.CreateResponse(HttpStatusCode.OK, todayOrder);
                     }
                     else if (string.Equals("ThisWeek", request._filter, StringComparison.OrdinalIgnoreCase))
@@ -297,10 +298,11 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, Constant.NOT_AVAILABLE);
                 }
 
-                var productList = db.Products.Where(w => w.ShopId == shopId && pids.Contains(w.Pid)).Select(s=>new
+                var productList = db.ProductStages.Where(w => w.ShopId == shopId && pids.Contains(w.Pid)).Select(s=>new
                 {
                     s.ProductNameEn,
                     s.FeatureImgUrl,
+                    s.ProductId
                 }).ToList();
 
                 return Request.CreateResponse(HttpStatusCode.OK, productList);

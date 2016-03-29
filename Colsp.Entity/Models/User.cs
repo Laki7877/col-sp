@@ -17,9 +17,9 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.Shops = new HashSet<Shop>();
-            this.UserGroupMaps = new HashSet<UserGroupMap>();
-            this.UserShopMaps = new HashSet<UserShopMap>();
+            Shops = new HashSet<Shop>();
+            UserGroupMaps = new HashSet<UserGroupMap>();
+            UserShopMaps = new HashSet<UserShopMap>();
         }
     
         public int UserId { get; set; }

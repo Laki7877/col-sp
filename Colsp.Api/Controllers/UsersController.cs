@@ -40,7 +40,7 @@ namespace Colsp.Api.Controllers
                 usr = db.Users.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && userIds.Contains(w.UserId));
                 if (User.ShopRequest() != null)
                 {
-                    var shopId = this.User.ShopRequest().ShopId;
+                    var shopId = User.ShopRequest().ShopId;
                     usr = usr.Where(w => w.UserShopMaps.Any(a => a.ShopId == shopId));
                 }
                 if (usr == null)
@@ -78,9 +78,9 @@ namespace Colsp.Api.Controllers
                 {
 
                 }
-                else if (this.User.ShopRequest() != null)
+                else if (User.ShopRequest() != null)
                 {
-                    int shopId = this.User.ShopRequest().ShopId;
+                    int shopId = User.ShopRequest().ShopId;
                     tmpUser = tmpUser.Where(w => w.UserShopMaps.Any(a => a.ShopId == shopId));
                 }
                 else
@@ -142,7 +142,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
+                int shopId = User.ShopRequest().ShopId;
                 var usr = db.Users.Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
                     .Where(w => w.UserId == userId 
                                 && !w.Status.Equals(Constant.STATUS_REMOVE) 
@@ -187,9 +187,9 @@ namespace Colsp.Api.Controllers
                 #endregion
                 user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_SELLER;
-                user.CreatedBy = this.User.UserRequest().Email;
+                user.CreatedBy = User.UserRequest().Email;
                 user.CreatedDt = DateTime.Now;
-                user.UpdatedBy = this.User.UserRequest().Email;
+                user.UpdatedBy = User.UserRequest().Email;
                 user.UpdatedDt = DateTime.Now;
                 #region User Group
                 if (request.UserGroup != null)
@@ -203,20 +203,20 @@ namespace Colsp.Api.Controllers
                         user.UserGroupMaps.Add(new UserGroupMap()
                         {
                             GroupId = usrGrp.GroupId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
                 }
                 user.UserShopMaps.Add(new UserShopMap()
                 {
-                    ShopId = this.User.ShopRequest().ShopId,
+                    ShopId = User.ShopRequest().ShopId,
                     UserId = user.UserId,
-                    CreatedBy = this.User.UserRequest().Email,
+                    CreatedBy = User.UserRequest().Email,
                     CreatedDt = DateTime.Now,
-                    UpdatedBy = this.User.UserRequest().Email,
+                    UpdatedBy = User.UserRequest().Email,
                     UpdatedDt = DateTime.Now,
                 });
                 #endregion
@@ -252,10 +252,10 @@ namespace Colsp.Api.Controllers
                 #endregion
                 SetupUser(user, request);
                 #region Password
-                if (!salt.CheckPassword(request.OldPassword,user.Password))
-                {
-                    throw new Exception("Password does not match");
-                }
+                //if (!salt.CheckPassword(request.OldPassword,user.Password))
+                //{
+                //    throw new Exception("Password does not match");
+                //}
                 if (!string.IsNullOrEmpty(request.Password))
                 {
                     user.PasswordLastChg = user.Password;
@@ -264,7 +264,7 @@ namespace Colsp.Api.Controllers
                 #endregion
                 user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_SELLER;
-                user.UpdatedBy = this.User.UserRequest().Email;
+                user.UpdatedBy = User.UserRequest().Email;
                 user.UpdatedDt = DateTime.Now;
                 #region User Group
                 var usrGrpList = db.UserGroupMaps.Where(w => w.UserId == user.UserId).ToList();
@@ -282,7 +282,7 @@ namespace Colsp.Api.Controllers
                             UserGroupMap current = usrGrpList.Where(w => w.GroupId == grp.GroupId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 usrGrpList.Remove(current);
                             }
@@ -296,9 +296,9 @@ namespace Colsp.Api.Controllers
                             UserGroupMap map = new UserGroupMap();
                             map.UserId = user.UserId;
                             map.GroupId = grp.GroupId;
-                            map.CreatedBy = this.User.UserRequest().Email;
+                            map.CreatedBy = User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.UserRequest().Email;
+                            map.UpdatedBy = User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.UserGroupMaps.Add(map);
                         }
@@ -405,9 +405,9 @@ namespace Colsp.Api.Controllers
                 #endregion
                 user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_ADMIN;
-                user.CreatedBy = this.User.UserRequest().Email;
+                user.CreatedBy = User.UserRequest().Email;
                 user.CreatedDt = DateTime.Now;
-                user.UpdatedBy = this.User.UserRequest().Email;
+                user.UpdatedBy = User.UserRequest().Email;
                 user.UpdatedDt = DateTime.Now;
                 #region User Group
                 if (request.UserGroup != null)
@@ -421,9 +421,9 @@ namespace Colsp.Api.Controllers
                         user.UserGroupMaps.Add(new UserGroupMap()
                         {
                             GroupId = usrGrp.GroupId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -473,7 +473,7 @@ namespace Colsp.Api.Controllers
                 #endregion
                 user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_ADMIN;
-                user.UpdatedBy = this.User.UserRequest().Email;
+                user.UpdatedBy = User.UserRequest().Email;
                 user.UpdatedDt = DateTime.Now;
                 #region User Group
                 var usrGrpList = db.UserGroupMaps.Where(w => w.UserId == user.UserId).ToList();
@@ -491,7 +491,7 @@ namespace Colsp.Api.Controllers
                             UserGroupMap current = usrGrpList.Where(w => w.GroupId == grp.GroupId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 usrGrpList.Remove(current);
                             }
@@ -505,9 +505,9 @@ namespace Colsp.Api.Controllers
                             UserGroupMap map = new UserGroupMap();
                             map.UserId = user.UserId;
                             map.GroupId = grp.GroupId;
-                            map.CreatedBy = this.User.UserRequest().Email;
+                            map.CreatedBy = User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.UserRequest().Email;
+                            map.UpdatedBy = User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.UserGroupMaps.Add(map);
                         }
@@ -573,7 +573,7 @@ namespace Colsp.Api.Controllers
                 claim.Permission = claimsIdentity.Claims
                     .Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
                 claim.Shop = User.ShopRequest();
-                claim.User = new { NameEn = this.User.UserRequest().NameEn , Email = this.User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
+                claim.User = new { NameEn = User.UserRequest().NameEn , Email = User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(User.UserRequest().Type) };
                 return Request.CreateResponse(HttpStatusCode.OK, claim);
             }
             catch (Exception e)
@@ -652,7 +652,7 @@ namespace Colsp.Api.Controllers
                 user.LastLoginDt = DateTime.Now;
                 user.LoginFailCount = 0;
                 Util.DeadlockRetry(db.SaveChanges, "User");
-                this.User = principal;
+                User = principal;
                 var claimsIdentity = User.Identity as ClaimsIdentity;
                 ClaimRequest claimRs = new ClaimRequest()
                 {
@@ -718,14 +718,14 @@ namespace Colsp.Api.Controllers
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var principal = new UsersPrincipal(identity,
                     user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
-                    this.User.UserRequest(),DateTime.Now);
+                    User.UserRequest(),DateTime.Now);
 
                 ClaimRequest claimRq = new ClaimRequest();
 
                 var claimsIdentity = identity;
                 claimRq.Permission = claims.Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
                 claimRq.Shop = principal.ShopRequest();
-                claimRq.User = this.User.UserRequest();
+                claimRq.User = User.UserRequest();
 
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 Cache.Add(Request.Headers.Authorization.Parameter, principal);
@@ -743,7 +743,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                string email = this.User.UserRequest().Email;
+                string email = User.UserRequest().Email;
                 var user = db.Users.Where(u => u.Email == email)
                             .Select(u => new
                             {
@@ -783,14 +783,14 @@ namespace Colsp.Api.Controllers
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var principal = new UsersPrincipal(identity,
                     user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
-                    this.User.UserRequest(),DateTime.Now);
+                    User.UserRequest(),DateTime.Now);
 
                 ClaimRequest claimRq = new ClaimRequest();
 
                 var claimsIdentity = identity;
                 claimRq.Permission = claims.Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
                 claimRq.Shop = principal.ShopRequest();
-                claimRq.User = new { NameEn = this.User.UserRequest().NameEn, Email = this.User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(this.User.UserRequest().Type) };
+                claimRq.User = new { NameEn = User.UserRequest().NameEn, Email = User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(User.UserRequest().Type) };
 
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 Cache.Add(Request.Headers.Authorization.Parameter, principal);
@@ -808,10 +808,10 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                string email = this.User.UserRequest().Email;
+                string email = User.UserRequest().Email;
                 User user = null;
 
-                if (!string.IsNullOrEmpty(request.Email)&&Constant.USER_TYPE_ADMIN.Equals( this.User.UserRequest().Type))
+                if (!string.IsNullOrEmpty(request.Email)&&Constant.USER_TYPE_ADMIN.Equals(User.UserRequest().Type))
                 {
                     user = db.Users.Where(w => w.Email.Equals(request.Email)).ToList().SingleOrDefault();
                 }
@@ -870,8 +870,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                bool IsPasswordChange = this.User.UserRequest().IsPasswordChange;
-                var shopId = this.User.ShopRequest().ShopId;
+                bool IsPasswordChange = User.UserRequest().IsPasswordChange;
+                var shopId = User.ShopRequest().ShopId;
                 var productTotalCount = db.ProductStages.Where(w => w.ShopId == shopId).Count();
                 var shopBanner = db.ShopImages.Where(w => w.ShopId == shopId).Count();
                 var productApprove = db.ProductStages.Where(w => w.ShopId == shopId && Constant.PRODUCT_STATUS_APPROVE.Equals(w.Status)).Count();
@@ -884,7 +884,7 @@ namespace Colsp.Api.Controllers
                     ChangePassword = IsPasswordChange,
                     ProductApprove = IsProductApprove,
                     DecorateStore = isBanner,
-                    SetUpShop = this.User.ShopRequest().IsShopReady
+                    SetUpShop = User.ShopRequest().IsShopReady
                 });
             }
             catch (Exception e)

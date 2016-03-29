@@ -144,6 +144,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
+        public virtual DbSet<PostCodeMap> PostCodeMaps { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
         public virtual DbSet<TBCMCity> TBCMCities { get; set; }

@@ -24,7 +24,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var retur = (from or in ReturnMockup.ReturnList
                              where or.ShopId == shopId && or.ReturnId.Equals(returnId)
                              select or).SingleOrDefault();
@@ -48,7 +48,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var retur = (from re in ReturnMockup.ReturnList
                              where re.ShopId == shopId && re.ReturnId.Equals(returnId)
                              select re).SingleOrDefault();
@@ -71,7 +71,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var list = (from re in ReturnMockup.ReturnList
                             where re.ShopId == shopId
                             select new

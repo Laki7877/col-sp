@@ -17,12 +17,12 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Brand()
         {
-            this.BrandFeatureProducts = new HashSet<BrandFeatureProduct>();
-            this.BrandImages = new HashSet<BrandImage>();
-            this.CouponBrandMaps = new HashSet<CouponBrandMap>();
-            this.Products = new HashSet<Product>();
-            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
-            this.ProductStageGroups = new HashSet<ProductStageGroup>();
+            BrandFeatureProducts = new HashSet<BrandFeatureProduct>();
+            BrandImages = new HashSet<BrandImage>();
+            CouponBrandMaps = new HashSet<CouponBrandMap>();
+            Products = new HashSet<Product>();
+            ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
+            ProductStageGroups = new HashSet<ProductStageGroup>();
         }
     
         public int BrandId { get; set; }

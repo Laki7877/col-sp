@@ -351,6 +351,9 @@
     <Compile Include="Models\PostCode.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PostCodeMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Product.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

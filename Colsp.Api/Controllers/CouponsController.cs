@@ -39,12 +39,12 @@ namespace Colsp.Api.Controllers
                                  Shop = new { c.Shop.ShopNameEn },
                                  c.CouponType
                              };
-                if(this.User.HasPermission("View Promotion"))
+                if(User.HasPermission("View Promotion"))
                 {
-                    var shopId = this.User.ShopRequest().ShopId;
+                    var shopId = User.ShopRequest().ShopId;
                     coupon = coupon.Where(w => w.ShopId == shopId && w.CouponType.Equals(Constant.USER_TYPE_SELLER));
                 }
-                else if(this.User.HasPermission("Manage Global Coupons"))
+                else if(User.HasPermission("Manage Global Coupons"))
                 {
                     if (request.IsGlobalCoupon)
                     {
@@ -116,9 +116,9 @@ namespace Colsp.Api.Controllers
                         }
 
                     });
-                if (this.User.HasPermission("View Promotion"))
+                if (User.HasPermission("View Promotion"))
                 {
-                    var shopId = this.User.ShopRequest().ShopId;
+                    var shopId = User.ShopRequest().ShopId;
                     couponList = couponList.Where(w => w.ShopId == shopId);
                 }
                 var c = couponList.ToList();
@@ -146,13 +146,13 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 coupon = new Coupon();
-                if(this.User.HasPermission("Edit Promotion"))
+                if(User.HasPermission("Edit Promotion"))
                 {
-                    var shopId = this.User.ShopRequest().ShopId;
+                    var shopId = User.ShopRequest().ShopId;
                     coupon.ShopId = shopId;
                     coupon.CouponType = Constant.USER_TYPE_SELLER;
                 }
-                else if (this.User.HasPermission("Manage Global Coupons"))
+                else if (User.HasPermission("Manage Global Coupons"))
                 {
                     coupon.CouponType = Constant.USER_TYPE_ADMIN;
                 }
@@ -170,9 +170,9 @@ namespace Colsp.Api.Controllers
                 coupon.MaximumAmount = request.Action.MaximumAmount;
                 coupon.UsagePerCustomer = request.UsagePerCustomer;
                 coupon.MaximumUser = request.MaximumUser;
-                coupon.CreatedBy = this.User.UserRequest().Email;
+                coupon.CreatedBy = User.UserRequest().Email;
                 coupon.CreatedDt = DateTime.Now;
-                coupon.UpdatedBy = this.User.UserRequest().Email;
+                coupon.UpdatedBy = User.UserRequest().Email;
                 coupon.UpdatedDt = DateTime.Now;
                 if(request.Conditions != null)
                 {
@@ -184,9 +184,9 @@ namespace Colsp.Api.Controllers
                             {
                                 Criteria = o.Type,
                                 CriteriaPrice = o.Value,
-                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedBy = User.UserRequest().Email,
                                 CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedBy = User.UserRequest().Email,
                                 UpdatedDt = DateTime.Now
                             });
                         }
@@ -204,9 +204,9 @@ namespace Colsp.Api.Controllers
                                     {
                                         BrandId = b.BrandId,
                                         Filter = Constant.COUPON_FILTER_INCLUDE,
-                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedBy = User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedBy = User.UserRequest().Email,
                                         UpdatedDt = DateTime.Now,
                                     });
                                 }
@@ -221,9 +221,9 @@ namespace Colsp.Api.Controllers
                                     coupon.CouponCustomerMaps.Add(new CouponCustomerMap()
                                     {
                                         Email = e,
-                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedBy = User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedBy = User.UserRequest().Email,
                                         UpdatedDt = DateTime.Now,
                                     });
                                 }
@@ -239,9 +239,9 @@ namespace Colsp.Api.Controllers
                                     {
                                         CategoryId = c.CategoryId,
                                         Filter = Constant.COUPON_FILTER_INCLUDE,
-                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedBy = User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedBy = User.UserRequest().Email,
                                         UpdatedDt = DateTime.Now,
                                     });
                                 }
@@ -257,9 +257,9 @@ namespace Colsp.Api.Controllers
                                     {
                                         CategoryId = c.CategoryId,
                                         Filter = Constant.COUPON_FILTER_INCLUDE,
-                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedBy = User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedBy = User.UserRequest().Email,
                                         UpdatedDt = DateTime.Now,
                                     });
                                 }
@@ -274,9 +274,9 @@ namespace Colsp.Api.Controllers
                                     coupon.CouponShopMaps.Add(new CouponShopMap()
                                     {
                                         ShopId = s.ShopId,
-                                        CreatedBy = this.User.UserRequest().Email,
+                                        CreatedBy = User.UserRequest().Email,
                                         CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
+                                        UpdatedBy = User.UserRequest().Email,
                                         UpdatedDt = DateTime.Now,
                                     });
                                 }
@@ -292,9 +292,9 @@ namespace Colsp.Api.Controllers
                             {
                                 Pid = pid,
                                 Filter = Constant.COUPON_FILTER_INCLUDE,
-                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedBy = User.UserRequest().Email,
                                 CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedBy = User.UserRequest().Email,
                                 UpdatedDt = DateTime.Now,
                             });
                         }
@@ -307,9 +307,9 @@ namespace Colsp.Api.Controllers
                             {
                                 Pid = pid,
                                 Filter = Constant.COUPON_FILTER_EXCLUDE,
-                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedBy = User.UserRequest().Email,
                                 CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedBy = User.UserRequest().Email,
                                 UpdatedDt = DateTime.Now,
                             });
                         }
@@ -333,9 +333,9 @@ namespace Colsp.Api.Controllers
             Coupon coupon = null;
             try
             {
-                if(this.User.HasPermission("Edit Promotion"))
+                if(User.HasPermission("Edit Promotion"))
                 {
-                    int shopId = this.User.ShopRequest().ShopId;
+                    int shopId = User.ShopRequest().ShopId;
                     coupon = db.Coupons.Where(w => w.CouponId == couponId && w.ShopId == shopId)
                         .Include(i=>i.CouponBrandMaps)
                         .Include(i=>i.CouponCustomerMaps)
@@ -345,7 +345,7 @@ namespace Colsp.Api.Controllers
                         .Include(i=>i.CouponShopMaps)
                         .Include(i=>i.CouponOrders).SingleOrDefault();
                 }
-                else if(this.User.HasPermission("Manage Global Coupons"))
+                else if(User.HasPermission("Manage Global Coupons"))
                 {
                     coupon = db.Coupons.Where(w => w.CouponId == couponId)
                         .Include(i => i.CouponBrandMaps)
@@ -374,7 +374,7 @@ namespace Colsp.Api.Controllers
                 coupon.MaximumAmount = request.Action.MaximumAmount;
                 coupon.UsagePerCustomer = request.UsagePerCustomer;
                 coupon.MaximumUser = request.MaximumUser;
-                coupon.UpdatedBy = this.User.UserRequest().Email;
+                coupon.UpdatedBy = User.UserRequest().Email;
                 coupon.UpdatedDt = DateTime.Now;
 
                 var orderList = coupon.CouponOrders.ToList();
@@ -403,7 +403,7 @@ namespace Colsp.Api.Controllers
                                 if (current != null)
                                 {
                                     current.CriteriaPrice = o.Value;
-                                    current.UpdatedBy = this.User.UserRequest().Email;
+                                    current.UpdatedBy = User.UserRequest().Email;
                                     current.UpdatedDt = DateTime.Now;
                                     orderList.Remove(current);
                                 }
@@ -418,9 +418,9 @@ namespace Colsp.Api.Controllers
                                 co.CouponId = coupon.CouponId;
                                 co.Criteria = o.Type;
                                 co.CriteriaPrice = o.Value;
-                                co.CreatedBy = this.User.UserRequest().Email;
+                                co.CreatedBy = User.UserRequest().Email;
                                 co.CreatedDt = DateTime.Now;
-                                co.UpdatedBy = this.User.UserRequest().Email;
+                                co.UpdatedBy = User.UserRequest().Email;
                                 co.UpdatedDt = DateTime.Now;
                                 db.CouponOrders.Add(co);
                             }
@@ -446,7 +446,7 @@ namespace Colsp.Api.Controllers
                                         CouponBrandMap current = brandList.Where(w => w.BrandId == b.BrandId).SingleOrDefault();
                                         if (current != null)
                                         {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
+                                            current.UpdatedBy = User.UserRequest().Email;
                                             current.UpdatedDt = DateTime.Now;
                                             brandList.Remove(current);
                                         }
@@ -460,9 +460,9 @@ namespace Colsp.Api.Controllers
                                         CouponBrandMap map = new CouponBrandMap();
                                         map.CouponId = coupon.CouponId;
                                         map.BrandId = b.BrandId;
-                                        map.CreatedBy = this.User.UserRequest().Email;
+                                        map.CreatedBy = User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
+                                        map.UpdatedBy = User.UserRequest().Email;
                                         map.UpdatedDt = DateTime.Now;
                                         db.CouponBrandMaps.Add(map);
                                     }
@@ -486,7 +486,7 @@ namespace Colsp.Api.Controllers
                                         CouponCustomerMap current = customerList.Where(w => w.Email == e).SingleOrDefault();
                                         if (current != null)
                                         {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
+                                            current.UpdatedBy = User.UserRequest().Email;
                                             current.UpdatedDt = DateTime.Now;
                                             customerList.Remove(current);
                                         }
@@ -500,9 +500,9 @@ namespace Colsp.Api.Controllers
                                         CouponCustomerMap map = new CouponCustomerMap();
                                         map.CouponId = coupon.CouponId;
                                         map.Email = e;
-                                        map.CreatedBy = this.User.UserRequest().Email;
+                                        map.CreatedBy = User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
+                                        map.UpdatedBy = User.UserRequest().Email;
                                         map.UpdatedDt = DateTime.Now;
                                         db.CouponCustomerMaps.Add(map);
                                     }
@@ -527,7 +527,7 @@ namespace Colsp.Api.Controllers
                                         CouponGlobalCatMap current = globalCatList.Where(w => w.CategoryId == c.CategoryId).SingleOrDefault();
                                         if (current != null)
                                         {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
+                                            current.UpdatedBy = User.UserRequest().Email;
                                             current.UpdatedDt = DateTime.Now;
                                             globalCatList.Remove(current);
                                         }
@@ -542,9 +542,9 @@ namespace Colsp.Api.Controllers
                                         map.Filter = Constant.COUPON_FILTER_INCLUDE;
                                         map.CouponId = coupon.CouponId;
                                         map.CategoryId = c.CategoryId;
-                                        map.CreatedBy = this.User.UserRequest().Email;
+                                        map.CreatedBy = User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
+                                        map.UpdatedBy = User.UserRequest().Email;
                                         map.UpdatedDt = DateTime.Now;
                                         db.CouponGlobalCatMaps.Add(map);
                                     }
@@ -569,7 +569,7 @@ namespace Colsp.Api.Controllers
                                         CouponLocalCatMap current = localCatList.Where(w => w.CategoryId == c.CategoryId).SingleOrDefault();
                                         if (current != null)
                                         {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
+                                            current.UpdatedBy = User.UserRequest().Email;
                                             current.UpdatedDt = DateTime.Now;
                                             localCatList.Remove(current);
                                         }
@@ -584,9 +584,9 @@ namespace Colsp.Api.Controllers
                                         map.Filter = Constant.COUPON_FILTER_INCLUDE;
                                         map.CouponId = coupon.CouponId;
                                         map.CategoryId = c.CategoryId;
-                                        map.CreatedBy = this.User.UserRequest().Email;
+                                        map.CreatedBy = User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
+                                        map.UpdatedBy = User.UserRequest().Email;
                                         map.UpdatedDt = DateTime.Now;
                                         db.CouponLocalCatMaps.Add(map);
                                     }
@@ -611,7 +611,7 @@ namespace Colsp.Api.Controllers
                                         CouponShopMap current = shopList.Where(w => w.ShopId == s.ShopId).SingleOrDefault();
                                         if (current != null)
                                         {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
+                                            current.UpdatedBy = User.UserRequest().Email;
                                             current.UpdatedDt = DateTime.Now;
                                             shopList.Remove(current);
                                         }
@@ -625,9 +625,9 @@ namespace Colsp.Api.Controllers
                                         CouponShopMap map = new CouponShopMap();
                                         map.CouponId = coupon.CouponId;
                                         map.ShopId = s.ShopId;
-                                        map.CreatedBy = this.User.UserRequest().Email;
+                                        map.CreatedBy = User.UserRequest().Email;
                                         map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
+                                        map.UpdatedBy = User.UserRequest().Email;
                                         map.UpdatedDt = DateTime.Now;
                                         db.CouponShopMaps.Add(map);
                                     }
@@ -649,7 +649,7 @@ namespace Colsp.Api.Controllers
                                     CouponPidMap current = includeList.Where(w => w.Pid == pid).SingleOrDefault();
                                     if (current != null)
                                     {
-                                        current.UpdatedBy = this.User.UserRequest().Email;
+                                        current.UpdatedBy = User.UserRequest().Email;
                                         current.UpdatedDt = DateTime.Now;
                                         includeList.Remove(current);
                                     }
@@ -664,9 +664,9 @@ namespace Colsp.Api.Controllers
                                     map.CouponId = coupon.CouponId;
                                     map.Pid = pid;
                                     map.Filter = Constant.COUPON_FILTER_INCLUDE;
-                                    map.CreatedBy = this.User.UserRequest().Email;
+                                    map.CreatedBy = User.UserRequest().Email;
                                     map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
+                                    map.UpdatedBy = User.UserRequest().Email;
                                     map.UpdatedDt = DateTime.Now;
                                     db.CouponPidMaps.Add(map);
                                 }
@@ -687,7 +687,7 @@ namespace Colsp.Api.Controllers
                                     CouponPidMap current = excludeList.Where(w => w.Pid == pid).SingleOrDefault();
                                     if (current != null)
                                     {
-                                        current.UpdatedBy = this.User.UserRequest().Email;
+                                        current.UpdatedBy = User.UserRequest().Email;
                                         current.UpdatedDt = DateTime.Now;
                                         excludeList.Remove(current);
                                     }
@@ -702,9 +702,9 @@ namespace Colsp.Api.Controllers
                                     map.CouponId = coupon.CouponId;
                                     map.Pid = pid;
                                     map.Filter = Constant.COUPON_FILTER_EXCLUDE;
-                                    map.CreatedBy = this.User.UserRequest().Email;
+                                    map.CreatedBy = User.UserRequest().Email;
                                     map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
+                                    map.UpdatedBy = User.UserRequest().Email;
                                     map.UpdatedDt = DateTime.Now;
                                     db.CouponPidMaps.Add(map);
                                 }

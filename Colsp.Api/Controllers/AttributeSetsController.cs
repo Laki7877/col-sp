@@ -149,9 +149,9 @@ namespace Colsp.Api.Controllers
                 attributeSet = new AttributeSet();
                 SetupAttributeSet(attributeSet, request);
                 attributeSet.Status = Constant.STATUS_ACTIVE;
-                attributeSet.CreatedBy = this.User.UserRequest().Email;
+                attributeSet.CreatedBy = User.UserRequest().Email;
                 attributeSet.CreatedDt = DateTime.Now;
-                attributeSet.UpdatedBy = this.User.UserRequest().Email;
+                attributeSet.UpdatedBy = User.UserRequest().Email;
                 attributeSet.UpdatedDt = DateTime.Now;
 
                 var attributeIds = request.Attributes.Select(s => s.AttributeId).ToList();
@@ -168,9 +168,9 @@ namespace Colsp.Api.Controllers
                         attributeSet.AttributeSetMaps.Add( new AttributeSetMap()
                         {
                             AttributeId = attr.AttributeId,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -182,9 +182,9 @@ namespace Colsp.Api.Controllers
                         attributeSet.AttributeSetTags.Add(new AttributeSetTag()
                         {
                             Tag = tagRq.TagName,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -219,7 +219,7 @@ namespace Colsp.Api.Controllers
                 }
                 SetupAttributeSet(attrSet, request);
                 attrSet.Status = Constant.STATUS_ACTIVE;
-                attrSet.UpdatedBy = this.User.UserRequest().Email;
+                attrSet.UpdatedBy = User.UserRequest().Email;
                 attrSet.UpdatedDt = DateTime.Now;
                 var attributeIds = request.Attributes.Select(s => s.AttributeId).ToList();
                 //var attribute = db.Attributes.Where(w => attributeIds.All(a => a == w.AttributeId && w.DefaultAttribute == true)).Count();
@@ -242,7 +242,7 @@ namespace Colsp.Api.Controllers
                             AttributeSetMap current = mapList.Where(w => w.AttributeId == attrRq.AttributeId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 mapList.Remove(current);
                             }
@@ -256,9 +256,9 @@ namespace Colsp.Api.Controllers
                             AttributeSetMap map = new AttributeSetMap();
                             map.AttributeId = attrRq.AttributeId;
                             map.AttributeSetId = attrSet.AttributeSetId;
-                            map.CreatedBy = this.User.UserRequest().Email;
+                            map.CreatedBy = User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.UserRequest().Email;
+                            map.UpdatedBy = User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.AttributeSetMaps.Add(map);
                         }
@@ -291,9 +291,9 @@ namespace Colsp.Api.Controllers
                         attrSet.AttributeSetTags.Add(new AttributeSetTag()
                         {
                             Tag = tagRq.TagName,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                     }

@@ -24,7 +24,7 @@ namespace Colsp.Api.Services
 				return false;
 			}
 			var memoryCache = MemoryCache.Default;
-			return memoryCache.Add(key, value, DateTimeOffset.UtcNow.AddMinutes(Config.Settings.Cache.Expire));
+            return memoryCache.Add(key, value, DateTimeOffset.UtcNow.AddMinutes(Config.Settings.Cache.Expire));
 		}
 
         public static void Clear()

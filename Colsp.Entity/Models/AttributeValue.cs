@@ -17,7 +17,7 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AttributeValue()
         {
-            this.AttributeValueMaps = new HashSet<AttributeValueMap>();
+            AttributeValueMaps = new HashSet<AttributeValueMap>();
         }
     
         public int AttributeValueId { get; set; }

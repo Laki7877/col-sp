@@ -90,9 +90,9 @@ namespace Colsp.Api.Controllers
                 shopType = new ShopType();
                 shopType.ShopTypeNameEn = request.ShopTypeNameEn;
                 shopType.Status = Constant.STATUS_ACTIVE;
-                shopType.CreatedBy = this.User.UserRequest().Email;
+                shopType.CreatedBy = User.UserRequest().Email;
                 shopType.CreatedDt = DateTime.Now;
-                shopType.UpdatedBy = this.User.UserRequest().Email;
+                shopType.UpdatedBy = User.UserRequest().Email;
                 shopType.UpdatedDt = DateTime.Now;
                 
                 if (request.Permission != null)
@@ -106,9 +106,9 @@ namespace Colsp.Api.Controllers
                         shopType.ShopTypePermissionMaps.Add(new ShopTypePermissionMap()
                         {
                             PermissionId = perm.PermissionId.Value,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -155,7 +155,7 @@ namespace Colsp.Api.Controllers
                             var current = mapList.Where(w => w.PermissionId == permission.PermissionId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 mapList.Remove(current);
                             }
@@ -169,9 +169,9 @@ namespace Colsp.Api.Controllers
                             ShopTypePermissionMap map = new ShopTypePermissionMap();
                             map.ShopTypeId = shopType.ShopTypeId;
                             map.PermissionId = permission.PermissionId.Value;
-                            map.CreatedBy = this.User.UserRequest().Email;
+                            map.CreatedBy = User.UserRequest().Email;
                             map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = this.User.UserRequest().Email;
+                            map.UpdatedBy = User.UserRequest().Email;
                             map.UpdatedDt = DateTime.Now;
                             db.ShopTypePermissionMaps.Add(map);
                         }

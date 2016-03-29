@@ -39,7 +39,7 @@ namespace Colsp.Api.Helpers
                 bool.TryParse(streamProvider.FormData["IsLogo"], out isLogo);
                 if (isLogo)
                 {
-                    Validation.ValidateImage(fileName, 100, 100, 100, 100, Int32.MaxValue, true);
+                    Validation.ValidateImage(fileName, 100, 100, 100, 100, int.MaxValue, true);
                 }
                 else
                 {

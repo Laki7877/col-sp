@@ -17,16 +17,16 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GlobalCategory()
         {
-            this.CouponGlobalCatMaps = new HashSet<CouponGlobalCatMap>();
-            this.GlobalCatAttributeSetMaps = new HashSet<GlobalCatAttributeSetMap>();
-            this.GlobalCatFeatureProducts = new HashSet<GlobalCatFeatureProduct>();
-            this.GlobalCatImages = new HashSet<GlobalCatImage>();
-            this.Products = new HashSet<Product>();
-            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
-            this.ProductStageGroups = new HashSet<ProductStageGroup>();
-            this.ShopCommissions = new HashSet<ShopCommission>();
-            this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
-            this.ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
+            CouponGlobalCatMaps = new HashSet<CouponGlobalCatMap>();
+            GlobalCatAttributeSetMaps = new HashSet<GlobalCatAttributeSetMap>();
+            GlobalCatFeatureProducts = new HashSet<GlobalCatFeatureProduct>();
+            GlobalCatImages = new HashSet<GlobalCatImage>();
+            Products = new HashSet<Product>();
+            ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
+            ProductStageGroups = new HashSet<ProductStageGroup>();
+            ShopCommissions = new HashSet<ShopCommission>();
+            ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
+            ProductStageGlobalCatMaps = new HashSet<ProductStageGlobalCatMap>();
         }
     
         public int CategoryId { get; set; }

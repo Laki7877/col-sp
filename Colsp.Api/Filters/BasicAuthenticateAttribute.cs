@@ -34,7 +34,12 @@ namespace Colsp.Api.Filters
             }
 
             object cachedPrincipal = Cache.Get(authHeader.Parameter);
-            if(cachedPrincipal is UsersPrincipal)
+            if (cachedPrincipal == null)
+            {
+                var failResult = new AuthenticationFailureResult("Missing credentials", context.Request);
+                return failResult.ExecuteAsync(cancellationToken);
+            }
+            if (cachedPrincipal is UsersPrincipal)
             {
                 var principal = (UsersPrincipal)cachedPrincipal;
                 if((DateTime.Now - principal.LoginDt).TotalHours > Constant.CACHE_TIMEOUT)
@@ -45,12 +50,9 @@ namespace Colsp.Api.Filters
                 else
                 {
                     principal.LoginDt = DateTime.Now;
+                    Cache.Delete(authHeader.Parameter);
+                    Cache.Add(authHeader.Parameter,principal);
                 }
-            }
-            if(cachedPrincipal == null)
-            {
-                var failResult = new AuthenticationFailureResult("Missing credentials", context.Request);
-                return failResult.ExecuteAsync(cancellationToken);
             }
             context.Principal = (IPrincipal)cachedPrincipal;
             return Task.FromResult(0);

@@ -27,10 +27,10 @@ namespace Colsp.Api.Controllers
             {
                 var productTemp = db.ProductTmps.Where(w => true);
                 //check if its seller permission
-                if (this.User.HasPermission("Group JDA"))
+                if (User.HasPermission("Group JDA"))
                 {
                     //add shopid criteria for seller request
-                    int shopId = this.User.ShopRequest().ShopId;
+                    int shopId = User.ShopRequest().ShopId;
                     productTemp = productTemp.Where(w => w.Shop.ShopId == shopId);
                 }
                 if(request == null)

@@ -109,7 +109,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find Newsletter");
                 }
-                string email = this.User.UserRequest().Email;
+                string email = User.UserRequest().Email;
                 SetupnewsLetter(newsLetter,request,email);
                 Util.DeadlockRetry(db.SaveChanges, "Newsletter");
                 return GetNewsletter(newsLetter.NewsletterId);
@@ -127,7 +127,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 Newsletter newsLetter = new Newsletter();
-                string email = this.User.UserRequest().Email;
+                string email = User.UserRequest().Email;
                 SetupnewsLetter(newsLetter, request,email);
                 newsLetter.CreatedBy = email;
                 newsLetter.CreatedDt = DateTime.Now;

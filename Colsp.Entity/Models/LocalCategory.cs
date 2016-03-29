@@ -17,14 +17,14 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LocalCategory()
         {
-            this.CouponLocalCatMaps = new HashSet<CouponLocalCatMap>();
-            this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
-            this.LocalCatImages = new HashSet<LocalCatImage>();
-            this.Products = new HashSet<Product>();
-            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
-            this.ProductStageGroups = new HashSet<ProductStageGroup>();
-            this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
-            this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
+            CouponLocalCatMaps = new HashSet<CouponLocalCatMap>();
+            LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
+            LocalCatImages = new HashSet<LocalCatImage>();
+            Products = new HashSet<Product>();
+            ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
+            ProductStageGroups = new HashSet<ProductStageGroup>();
+            ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
+            ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
         }
     
         public int CategoryId { get; set; }

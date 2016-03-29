@@ -153,9 +153,9 @@ namespace Colsp.Api.Controllers
             {
                 attribute = new Entity.Models.Attribute();
                 SetupAttribute(attribute, request);
-                attribute.CreatedBy = this.User.UserRequest().Email;
+                attribute.CreatedBy = User.UserRequest().Email;
                 attribute.CreatedDt = DateTime.Now;
-                attribute.UpdatedBy = this.User.UserRequest().Email;
+                attribute.UpdatedBy = User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
                 #region AttributeValue
@@ -173,17 +173,17 @@ namespace Colsp.Api.Controllers
                         }
                         attributeValue.MapValue = string.Concat("((", attributeValue.AttributeValueId, "))");
                         attributeValue.Status = Constant.STATUS_ACTIVE;
-                        attributeValue.CreatedBy = this.User.UserRequest().Email;
+                        attributeValue.CreatedBy = User.UserRequest().Email;
                         attributeValue.CreatedDt = DateTime.Now;
-                        attributeValue.UpdatedBy = this.User.UserRequest().Email;
+                        attributeValue.UpdatedBy = User.UserRequest().Email;
                         attributeValue.UpdatedDt = DateTime.Now;
                         attribute.AttributeValueMaps.Add(new AttributeValueMap()
                         {
                             Attribute = attribute,
                             AttributeValue = attributeValue,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -221,7 +221,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find attribute " + attributeId);
                 }
                 SetupAttribute(attribute, request);
-                attribute.UpdatedBy = this.User.UserRequest().Email;
+                attribute.UpdatedBy = User.UserRequest().Email;
                 attribute.UpdatedDt = DateTime.Now;
                 attribute.Status = Constant.STATUS_ACTIVE;
 
@@ -253,7 +253,7 @@ namespace Colsp.Api.Controllers
                                 {
                                     current.ImageUrl = null;
                                 }
-                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 attributeVal.Remove(current);
                             }
@@ -273,17 +273,17 @@ namespace Colsp.Api.Controllers
                             }
                             value.MapValue = string.Concat("((", value.AttributeValueId, "))");
                             value.Status = Constant.STATUS_ACTIVE;
-                            value.CreatedBy = this.User.UserRequest().Email;
+                            value.CreatedBy = User.UserRequest().Email;
                             value.CreatedDt = DateTime.Now;
-                            value.UpdatedBy = this.User.UserRequest().Email;
+                            value.UpdatedBy = User.UserRequest().Email;
                             value.UpdatedDt = DateTime.Now;
                             attribute.AttributeValueMaps.Add(new AttributeValueMap()
                             {
                                 Attribute = attribute,
                                 AttributeValue = value,
-                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedBy = User.UserRequest().Email,
                                 CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedBy = User.UserRequest().Email,
                                 UpdatedDt = DateTime.Now,
                             });
                         }

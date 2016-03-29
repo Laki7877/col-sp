@@ -756,7 +756,7 @@
           <Property Name="ImportHeaderId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="HeaderName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="AcceptedValue" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="AcceptedValue" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="Example" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="Note" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="GroupName" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -1032,6 +1032,37 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="PostCodeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DistrictId" Type="int" Nullable="false" />
           <Property Name="PostCode" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="Remark" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PostCodeMap">
+          <Key>
+            <PropertyRef Name="ProvinceId" />
+            <PropertyRef Name="CityId" />
+            <PropertyRef Name="DistrictId" />
+            <PropertyRef Name="PostCodeId" />
+            <PropertyRef Name="PostCode" />
+            <PropertyRef Name="ProvinceName" />
+            <PropertyRef Name="ProvinceNameEn" />
+            <PropertyRef Name="CityName" />
+            <PropertyRef Name="CityNameEn" />
+            <PropertyRef Name="DistrictName" />
+            <PropertyRef Name="DistrictNameEn" />
+            <PropertyRef Name="Remark" />
+          </Key>
+          <Property Name="ProvinceId" Type="int" Nullable="false" />
+          <Property Name="CityId" Type="int" Nullable="false" />
+          <Property Name="DistrictId" Type="int" Nullable="false" />
+          <Property Name="PostCodeId" Type="int" Nullable="false" />
+          <Property Name="PostCode" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="ProvinceName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="ProvinceNameEn" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="CityName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="CityNameEn" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="DistrictName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="DistrictNameEn" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Remark" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -1422,12 +1453,12 @@ warning 6002: The table/view 'DBMKPOnline.dbo.ODMRoleUser' does not have a prima
           <Property Name="PrepareFri" Type="int" Nullable="false" />
           <Property Name="PrepareSat" Type="int" Nullable="false" />
           <Property Name="PrepareSun" Type="int" Nullable="false" />
-          <Property Name="KillerPoint1En" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="KillerPoint2En" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="KillerPoint3En" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="KillerPoint1Th" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="KillerPoint2Th" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="KillerPoint3Th" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="KillerPoint1En" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="KillerPoint2En" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="KillerPoint3En" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="KillerPoint1Th" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="KillerPoint2Th" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="KillerPoint3Th" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="Installment" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="TheOneCardEarn" Type="int" Nullable="false" />
           <Property Name="GiftWrap" Type="char" MaxLength="1" Nullable="false" />
@@ -3740,6 +3771,22 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
     [ODMRoleUser].[Createby] AS [Createby]
     FROM [dbo].[ODMRoleUser] AS [ODMRoleUser]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="PostCodeMap" EntityType="Self.PostCodeMap" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PostCodeMap].[ProvinceId] AS [ProvinceId], 
+    [PostCodeMap].[CityId] AS [CityId], 
+    [PostCodeMap].[DistrictId] AS [DistrictId], 
+    [PostCodeMap].[PostCodeId] AS [PostCodeId], 
+    [PostCodeMap].[PostCode] AS [PostCode], 
+    [PostCodeMap].[ProvinceName] AS [ProvinceName], 
+    [PostCodeMap].[ProvinceNameEn] AS [ProvinceNameEn], 
+    [PostCodeMap].[CityName] AS [CityName], 
+    [PostCodeMap].[CityNameEn] AS [CityNameEn], 
+    [PostCodeMap].[DistrictName] AS [DistrictName], 
+    [PostCodeMap].[DistrictNameEn] AS [DistrictNameEn], 
+    [PostCodeMap].[Remark] AS [Remark]
+    FROM [dbo].[PostCodeMap] AS [PostCodeMap]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="StoreReturnReason" EntityType="Self.StoreReturnReason" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [StoreReturnReason].[ReasonId] AS [ReasonId], 
@@ -4401,6 +4448,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
           <EntitySet Name="UserShopMaps" EntityType="ColspModel.UserShopMap" />
           <EntitySet Name="ODMRoleUsers" EntityType="ColspModel.ODMRoleUser" />
+          <EntitySet Name="PostCodeMaps" EntityType="ColspModel.PostCodeMap" />
           <EntitySet Name="StoreReturnReasons" EntityType="ColspModel.StoreReturnReason" />
           <EntitySet Name="TBAdminMenuItemTmps" EntityType="ColspModel.TBAdminMenuItemTmp" />
           <EntitySet Name="TBCMCities" EntityType="ColspModel.TBCMCity" />
@@ -5635,7 +5683,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="ImportHeaderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="HeaderName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="AcceptedValue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AcceptedValue" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Example" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Note" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="GroupName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -5919,6 +5967,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="PostCodeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DistrictId" Type="Int32" Nullable="false" />
           <Property Name="PostCode1" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Remark" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -6347,12 +6396,12 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="PrepareFri" Type="Int32" Nullable="false" />
           <Property Name="PrepareSat" Type="Int32" Nullable="false" />
           <Property Name="PrepareSun" Type="Int32" Nullable="false" />
-          <Property Name="KillerPoint1En" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="KillerPoint2En" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="KillerPoint3En" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="KillerPoint1Th" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="KillerPoint2Th" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="KillerPoint3Th" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="KillerPoint1En" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="KillerPoint2En" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="KillerPoint3En" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="KillerPoint1Th" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="KillerPoint2Th" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="KillerPoint3Th" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Installment" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="TheOneCardEarn" Type="Int32" Nullable="false" />
           <Property Name="GiftWrap" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
@@ -7081,6 +7130,34 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UserID" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
           <Property Name="Createon" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Createby" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="PostCodeMap">
+          <Key>
+            <PropertyRef Name="ProvinceId" />
+            <PropertyRef Name="CityId" />
+            <PropertyRef Name="DistrictId" />
+            <PropertyRef Name="PostCodeId" />
+            <PropertyRef Name="PostCode" />
+            <PropertyRef Name="ProvinceName" />
+            <PropertyRef Name="ProvinceNameEn" />
+            <PropertyRef Name="CityName" />
+            <PropertyRef Name="CityNameEn" />
+            <PropertyRef Name="DistrictName" />
+            <PropertyRef Name="DistrictNameEn" />
+            <PropertyRef Name="Remark" />
+          </Key>
+          <Property Name="ProvinceId" Type="Int32" Nullable="false" />
+          <Property Name="CityId" Type="Int32" Nullable="false" />
+          <Property Name="DistrictId" Type="Int32" Nullable="false" />
+          <Property Name="PostCodeId" Type="Int32" Nullable="false" />
+          <Property Name="PostCode" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="ProvinceName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="ProvinceNameEn" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CityName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CityNameEn" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DistrictName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DistrictNameEn" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Remark" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="StoreReturnReason">
           <Key>
@@ -9671,6 +9748,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="PostCodes">
             <EntityTypeMapping TypeName="ColspModel.PostCode">
               <MappingFragment StoreEntitySet="PostCode">
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="PostCode1" ColumnName="PostCode" />
                 <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
                 <ScalarProperty Name="PostCodeId" ColumnName="PostCodeId" />
@@ -10727,6 +10805,24 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Createon" ColumnName="Createon" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostCodeMaps">
+            <EntityTypeMapping TypeName="ColspModel.PostCodeMap">
+              <MappingFragment StoreEntitySet="PostCodeMap">
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="DistrictNameEn" ColumnName="DistrictNameEn" />
+                <ScalarProperty Name="DistrictName" ColumnName="DistrictName" />
+                <ScalarProperty Name="CityNameEn" ColumnName="CityNameEn" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="ProvinceNameEn" ColumnName="ProvinceNameEn" />
+                <ScalarProperty Name="ProvinceName" ColumnName="ProvinceName" />
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="PostCodeId" ColumnName="PostCodeId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="CityId" ColumnName="CityId" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

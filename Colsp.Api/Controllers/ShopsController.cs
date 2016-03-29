@@ -171,7 +171,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
+                int shopId = User.ShopRequest().ShopId;
                 var shop = db.Shops
                     .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Select(s => new
@@ -294,9 +294,9 @@ namespace Colsp.Api.Controllers
                 shop = new Shop();
                 SetupShopAdmin(shop, request);
                 shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.STATUS_ACTIVE, Constant.STATUS_NOT_ACTIVE });
-                shop.CreatedBy = this.User.UserRequest().Email;
+                shop.CreatedBy = User.UserRequest().Email;
                 shop.CreatedDt = DateTime.Now;
-                shop.UpdatedBy = this.User.UserRequest().Email;
+                shop.UpdatedBy = User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 db.Shops.Add(shop);
                 #region Owner
@@ -308,24 +308,24 @@ namespace Colsp.Api.Controllers
                 #endregion
                 owner.Status = Constant.STATUS_ACTIVE;
                 owner.Type = Constant.USER_TYPE_SELLER;
-                owner.CreatedBy = this.User.UserRequest().Email;
+                owner.CreatedBy = User.UserRequest().Email;
                 owner.CreatedDt = DateTime.Now;
-                owner.UpdatedBy = this.User.UserRequest().Email;
+                owner.UpdatedBy = User.UserRequest().Email;
                 owner.UpdatedDt = DateTime.Now;
                 owner.UserGroupMaps.Add(new UserGroupMap()
                 {
                     GroupId = Constant.SHOP_OWNER_GROUP_ID,
-                    CreatedBy = this.User.UserRequest().Email,
+                    CreatedBy = User.UserRequest().Email,
                     CreatedDt = DateTime.Now,
-                    UpdatedBy = this.User.UserRequest().Email,
+                    UpdatedBy = User.UserRequest().Email,
                     UpdatedDt = DateTime.Now,
                 });
                 shop.UserShopMaps.Add(new UserShopMap()
                 {
                     User = owner,
-                    CreatedBy = this.User.UserRequest().Email,
+                    CreatedBy = User.UserRequest().Email,
                     CreatedDt = DateTime.Now,
-                    UpdatedBy = this.User.UserRequest().Email,
+                    UpdatedBy = User.UserRequest().Email,
                     UpdatedDt = DateTime.Now,
                 });
                 shop.User = shop.UserShopMaps.ElementAt(0).User;
@@ -350,9 +350,9 @@ namespace Colsp.Api.Controllers
                         {
                             CategoryId = catMap.CategoryId,
                             Commission = catMap.Commission,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                     }
@@ -431,22 +431,22 @@ namespace Colsp.Api.Controllers
                                 EmployeeId = request.ShopOwner.EmployeeId,
                                 Status = Constant.STATUS_ACTIVE,
                                 Type = Constant.USER_TYPE_SELLER,
-                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedBy = User.UserRequest().Email,
                                 CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedBy = User.UserRequest().Email,
                                 UpdatedDt = DateTime.Now,
                                 UserGroupMaps = new List<UserGroupMap>() { new UserGroupMap()
                         {
                             GroupId = Constant.SHOP_OWNER_GROUP_ID,
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         }}
                             },
-                            CreatedBy = this.User.UserRequest().Email,
+                            CreatedBy = User.UserRequest().Email,
                             CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now,
                         });
                         shop.User = shop.UserShopMaps.ElementAt(0).User;
@@ -483,9 +483,9 @@ namespace Colsp.Api.Controllers
                             if(current != null)
                             {
                                 current.Commission = catMap.Commission;
-                                current.CreatedBy = this.User.UserRequest().Email;
+                                current.CreatedBy = User.UserRequest().Email;
                                 current.CreatedDt = DateTime.Now;
-                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 commissions.Remove(current);
                             }
@@ -500,9 +500,9 @@ namespace Colsp.Api.Controllers
                             {
                                 CategoryId = catMap.CategoryId,
                                 Commission = catMap.Commission,
-                                CreatedBy = this.User.UserRequest().Email,
+                                CreatedBy = User.UserRequest().Email,
                                 CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedBy = User.UserRequest().Email,
                                 UpdatedDt = DateTime.Now,
                             });
                         }
@@ -514,7 +514,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.STATUS_ACTIVE, Constant.STATUS_NOT_ACTIVE });
-                shop.UpdatedBy = this.User.UserRequest().Email;
+                shop.UpdatedBy = User.UserRequest().Email;
                 shop.UpdatedDt = DateTime.Now;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShop(shop.ShopId);
@@ -558,7 +558,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var shop = db.Shops.Where(w => w.ShopId == shopId).SingleOrDefault();
                 if(shop == null)
                 {
@@ -617,7 +617,7 @@ namespace Colsp.Api.Controllers
             shop.Twitter = Validation.ValidateString(request.Twitter, "Twitter", false, 500, false, string.Empty);
             shop.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.TaxInvoice = Validation.ValidateString(request.TaxInvoice, "Tax Invoice", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
-            shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, Int32.MaxValue, 0).Value;
+            shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, int.MaxValue, 0).Value;
         }
 
         private void SetupUser(User user, UserRequest request)

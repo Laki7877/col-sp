@@ -31,7 +31,7 @@ namespace Colsp.Api.Controllers
                 int shopId = 0;
                 if (request == null)
                 {
-                    shopId = this.User.ShopRequest().ShopId;
+                    shopId = User.ShopRequest().ShopId;
                 }
                 else
                 {
@@ -124,7 +124,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
+                int shopId = User.ShopRequest().ShopId;
                 var cat = (from category in db.LocalCategories
                                  where category.CategoryId == categoryId && category.ShopId == shopId
                                  select new
@@ -202,7 +202,7 @@ namespace Colsp.Api.Controllers
                             ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now
                         });
                     }
@@ -220,7 +220,7 @@ namespace Colsp.Api.Controllers
                             ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
-                            UpdatedBy = this.User.UserRequest().Email,
+                            UpdatedBy = User.UserRequest().Email,
                             UpdatedDt = DateTime.Now
                         });
                     }
@@ -229,9 +229,9 @@ namespace Colsp.Api.Controllers
 
                 category.Visibility = request.Visibility;
                 category.Status = Constant.STATUS_ACTIVE;
-                category.CreatedBy = this.User.UserRequest().Email;
+                category.CreatedBy = User.UserRequest().Email;
                 category.CreatedDt = DateTime.Now;
-                category.UpdatedBy = this.User.UserRequest().Email;
+                category.UpdatedBy = User.UserRequest().Email;
                 category.UpdatedDt = DateTime.Now;
                 
                 int max = db.LocalCategories.Where(w=>w.ShopId==shopId).Select(s=>s.Rgt).DefaultIfEmpty(0).Max();
@@ -276,7 +276,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
+                int shopId = User.ShopRequest().ShopId;
                 var category = db.LocalCategories
                     .Where(w => w.CategoryId == categoryId && w.ShopId== shopId)
                     .Include(i=>i.LocalCatImages)
@@ -314,7 +314,7 @@ namespace Colsp.Api.Controllers
                             {
                                 current.ImageUrl = img.url;
                                 current.Position = position++;
-                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 imageOldEn.Remove(current);
                             }
@@ -330,7 +330,7 @@ namespace Colsp.Api.Controllers
                                 ImageUrl = img.url,
                                 Position = position++,
                                 EnTh = Constant.LANG_EN,
-                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedBy = User.UserRequest().Email,
                                 UpdatedDt = DateTime.Now
                             });
                         }
@@ -360,7 +360,7 @@ namespace Colsp.Api.Controllers
                             {
                                 current.ImageUrl = img.url;
                                 current.Position = position++;
-                                current.UpdatedBy = this.User.UserRequest().Email;
+                                current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
                                 imageOldTh.Remove(current);
                             }
@@ -376,7 +376,7 @@ namespace Colsp.Api.Controllers
                                 ImageUrl = img.url,
                                 Position = position++,
                                 EnTh = Constant.LANG_TH,
-                                UpdatedBy = this.User.UserRequest().Email,
+                                UpdatedBy = User.UserRequest().Email,
                                 UpdatedDt = DateTime.Now
                             });
                         }
@@ -421,9 +421,9 @@ namespace Colsp.Api.Controllers
                                 category.LocalCatFeatureProducts.Add(new LocalCatFeatureProduct()
                                 {
                                     ProductId = pro.ProductId,
-                                    CreatedBy = this.User.UserRequest().Email,
+                                    CreatedBy = User.UserRequest().Email,
                                     CreatedDt = DateTime.Now,
-                                    UpdatedBy = this.User.UserRequest().Email,
+                                    UpdatedBy = User.UserRequest().Email,
                                     UpdatedDt = DateTime.Now
                                 });
                             }
@@ -443,7 +443,7 @@ namespace Colsp.Api.Controllers
 
                 category.Visibility = request.Visibility;
                 category.Status = request.Status;
-                category.UpdatedBy = this.User.UserRequest().Email;
+                category.UpdatedBy = User.UserRequest().Email;
                 category.UpdatedDt = DateTime.Now;
                 Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return GetLocalCategory(category.CategoryId); ;
@@ -473,7 +473,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
+                int shopId = User.ShopRequest().ShopId;
                 if (shopId == 0)
                 {
                     throw new Exception("Shop is invalid. Cannot find shop in session");
@@ -512,7 +512,7 @@ namespace Colsp.Api.Controllers
                     }
                     catEn.Lft = catRq.Lft;
                     catEn.Rgt = catRq.Rgt;
-                    catEn.UpdatedBy = this.User.UserRequest().Email;
+                    catEn.UpdatedBy = User.UserRequest().Email;
                     catEn.UpdatedDt = DateTime.Now;
                     catEnList.Remove(catEn);
                 }
@@ -545,7 +545,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                int shopId = this.User.ShopRequest().ShopId;
+                int shopId = User.ShopRequest().ShopId;
                 var catList = db.LocalCategories.Where(w=>w.ShopId==shopId).ToList();
                 if (catList == null || catList.Count == 0)
                 {
@@ -560,7 +560,7 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find category " + catRq.CategoryId);
                     }
                     var child = catList.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt);
-                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility ; f.UpdatedBy = this.User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
+                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility ; f.UpdatedBy = User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
                 }
                 Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -577,7 +577,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = this.User.ShopRequest().ShopId;
+                int shopId = User.ShopRequest().ShopId;
                 foreach (CategoryRequest rq in request)
                 {
                     var cat = db.LocalCategories.Where(w=>w.CategoryId==rq.CategoryId && w.ShopId==shopId).SingleOrDefault();
@@ -623,8 +623,8 @@ namespace Colsp.Api.Controllers
             category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
             category.UrlKeyEn = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, true,string.Empty);
             category.UrlKeyTh = Validation.ValidateString(request.UrlKeyTh, "Url Key (Thai)", true, 100, true, string.Empty);
-            category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, Int32.MaxValue, false, string.Empty);
-            category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, Int32.MaxValue, false, string.Empty);
+            category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, int.MaxValue, false, string.Empty);
+            category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, int.MaxValue, false, string.Empty);
             category.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Category Short Description (English)", false, 500, false, string.Empty);
             category.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Category Short Description (Thai)", false, 500, false, string.Empty);
             category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
