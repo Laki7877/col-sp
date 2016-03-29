@@ -117,6 +117,8 @@ namespace Colsp.Api.Constants
 
         public static readonly double CACHE_TIMEOUT = 60;
 
+        public static string STATUS_PROMOTION_INACTIVE = "IA";
+        public static string STATUS_PROMOTION_ACTIVE = "AT";
         #region CMS
         public static readonly int CMS_SHOP_GOBAL = 0;
 
@@ -128,9 +130,6 @@ namespace Colsp.Api.Constants
 
         public static readonly int CMS_TYPE_STATIC_PAGE = 1;
         public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;
-
-        public static string STATUS_PROMOTION_INACTIVE = "IA";
-        public static string STATUS_PROMOTION_ACTIVE = "AT";
         #endregion
     }
 }

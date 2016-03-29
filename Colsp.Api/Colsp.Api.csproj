@@ -223,18 +223,18 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="CMSFunction\CMSProcess.cs" />
+    <Compile Include="Controllers\BuyOneGetOneController.cs" />
+    <Compile Include="Controllers\CMSController.cs" />
+    <Compile Include="Controllers\CMSManagementController.cs" />
+    <Compile Include="PromotionFunction\BuyOneGetOneProcess.cs" />
     <Compile Include="CMSFunction\GetCMSSearch.cs" />
     <Compile Include="CMSFunction\JsonContent.cs" />
-    <Compile Include="Controllers\CMSController.cs" />
-    <Compile Include="Controllers\PromotionController.cs" />
     <Compile Include="Constants\AppSettingKey.cs" />
     <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
     <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
-    <Compile Include="Controllers\CMSManagementController.cs" />
     <Compile Include="Controllers\CouponConditionsController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
@@ -277,6 +277,10 @@
       <Project>{4900b20b-c0bc-4f3f-97c0-3df428740322}</Project>
       <Name>Colsp.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Colsp.Logic\Colsp.Logic.csproj">
+      <Project>{7ab75edd-88fb-4c4a-b092-df49df9a6b87}</Project>
+      <Name>Colsp.Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Colsp.Model\Colsp.Model.csproj">
       <Project>{226b2ad2-649f-4d2d-b17e-e2afb474a274}</Project>
       <Name>Colsp.Model</Name>
@@ -286,7 +290,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
     <Folder Include="NewFolder1\" />
-    <Folder Include="PromotionFunction\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

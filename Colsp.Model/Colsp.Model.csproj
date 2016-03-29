@@ -54,6 +54,7 @@
     <Compile Include="Requests\ClaimRequest.cs" />
     <Compile Include="Requests\CMSBrandInShopRequest.cs" />
     <Compile Include="Requests\CMSCategoryProductGetListRequest.cs" />
+    <Compile Include="Requests\CMSCategoryRequest.cs" />
     <Compile Include="Requests\CMSCollectionCategoryRequest.cs" />
     <Compile Include="Requests\CMSCollectionItemRequest.cs" />
     <Compile Include="Requests\CMSGroupRequest.cs" />
