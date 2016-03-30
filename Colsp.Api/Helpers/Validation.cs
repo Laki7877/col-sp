@@ -257,7 +257,7 @@ namespace Colsp.Api.Helpers
                         }
                         return tmp;
                     }
-                    catch
+                    catch(Exception)
                     {
                         errormessage.Add("Invalid " + key + " at row " + row);
                     }
@@ -270,16 +270,23 @@ namespace Colsp.Api.Helpers
             return defaultValue;
         }
 
-        public static DateTime? ValidateCSVDatetimeColumn(Dictionary<string, int> dic, List<string> list, string key)
+        public static DateTime? ValidateCSVDatetimeColumn(Dictionary<string, int> dic, List<string> list, string key, HashSet<string> errormessage, int row)
         {
-            if (dic.ContainsKey(key))
+            try
             {
-                string val = list[dic[key]];
-                if (!string.IsNullOrWhiteSpace(val))
+                if (dic.ContainsKey(key))
                 {
-                    val = val.Trim();
-                    return DateTime.Parse(val);
+                    string val = list[dic[key]];
+                    if (!string.IsNullOrWhiteSpace(val))
+                    {
+                        val = val.Trim();
+                        return Convert.ToDateTime(val);
+                    }
                 }
+            }
+            catch(Exception)
+            {
+                errormessage.Add("Invalid " + key + " at row " + row);
             }
             return null;
         }

@@ -17,24 +17,24 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Shop()
         {
-            Coupons = new HashSet<Coupon>();
-            CouponShopMaps = new HashSet<CouponShopMap>();
-            LocalCategories = new HashSet<LocalCategory>();
-            LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
-            LocalCatImages = new HashSet<LocalCatImage>();
-            NewsletterShopMaps = new HashSet<NewsletterShopMap>();
-            Products = new HashSet<Product>();
-            ProductReviews = new HashSet<ProductReview>();
-            ProductStages = new HashSet<ProductStage>();
-            ProductStageGroups = new HashSet<ProductStageGroup>();
-            ProductStageImages = new HashSet<ProductStageImage>();
-            ProductStageRelateds = new HashSet<ProductStageRelated>();
-            ProductStageVideos = new HashSet<ProductStageVideo>();
-            ProductTmps = new HashSet<ProductTmp>();
-            ShopCommissions = new HashSet<ShopCommission>();
-            ShopImages = new HashSet<ShopImage>();
-            ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
-            UserShopMaps = new HashSet<UserShopMap>();
+            this.Coupons = new HashSet<Coupon>();
+            this.CouponShopMaps = new HashSet<CouponShopMap>();
+            this.LocalCategories = new HashSet<LocalCategory>();
+            this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
+            this.LocalCatImages = new HashSet<LocalCatImage>();
+            this.NewsletterShopMaps = new HashSet<NewsletterShopMap>();
+            this.Products = new HashSet<Product>();
+            this.ProductReviews = new HashSet<ProductReview>();
+            this.ProductStages = new HashSet<ProductStage>();
+            this.ProductStageGroups = new HashSet<ProductStageGroup>();
+            this.ProductStageImages = new HashSet<ProductStageImage>();
+            this.ProductStageRelateds = new HashSet<ProductStageRelated>();
+            this.ProductStageVideos = new HashSet<ProductStageVideo>();
+            this.ProductTmps = new HashSet<ProductTmp>();
+            this.ShopCommissions = new HashSet<ShopCommission>();
+            this.ShopImages = new HashSet<ShopImage>();
+            this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
+            this.UserShopMaps = new HashSet<UserShopMap>();
         }
     
         public int ShopId { get; set; }

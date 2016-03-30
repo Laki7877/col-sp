@@ -44,6 +44,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<CMSCategory> CMSCategories { get; set; }
         public virtual DbSet<CMSCategoryCreteriaMap> CMSCategoryCreteriaMaps { get; set; }
+        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
         public virtual DbSet<CMSCategorySchedulerMap> CMSCategorySchedulerMaps { get; set; }
         public virtual DbSet<CMSCreteria> CMSCreterias { get; set; }
         public virtual DbSet<CMSCriteriaProductMap> CMSCriteriaProductMaps { get; set; }

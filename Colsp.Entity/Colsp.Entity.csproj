@@ -186,6 +186,9 @@
     <Compile Include="Models\CMSCategoryCreteriaMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CMSCategoryProductMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CMSCategorySchedulerMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

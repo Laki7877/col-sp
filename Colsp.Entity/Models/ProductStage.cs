@@ -17,13 +17,13 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ProductStage()
         {
-            CouponPidMaps = new HashSet<CouponPidMap>();
-            ProductStageAttributes = new HashSet<ProductStageAttribute>();
-            ProductStageComments = new HashSet<ProductStageComment>();
-            ProductStageImages = new HashSet<ProductStageImage>();
-            ProductStageMasters = new HashSet<ProductStageMaster>();
-            ProductStageMasters1 = new HashSet<ProductStageMaster>();
-            ProductStageVideos = new HashSet<ProductStageVideo>();
+            this.CouponPidMaps = new HashSet<CouponPidMap>();
+            this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
+            this.ProductStageComments = new HashSet<ProductStageComment>();
+            this.ProductStageImages = new HashSet<ProductStageImage>();
+            this.ProductStageMasters = new HashSet<ProductStageMaster>();
+            this.ProductStageMasters1 = new HashSet<ProductStageMaster>();
+            this.ProductStageVideos = new HashSet<ProductStageVideo>();
         }
     
         public string Pid { get; set; }
