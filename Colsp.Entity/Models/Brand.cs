@@ -23,6 +23,7 @@ namespace Colsp.Entity.Models
             this.Products = new HashSet<Product>();
             this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
+            this.UserBrandMaps = new HashSet<UserBrandMap>();
         }
     
         public int BrandId { get; set; }
@@ -62,5 +63,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserBrandMap> UserBrandMaps { get; set; }
     }
 }

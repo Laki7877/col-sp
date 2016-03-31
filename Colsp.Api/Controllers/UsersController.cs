@@ -157,13 +157,27 @@ namespace Colsp.Api.Controllers
                         s.Position,
                         s.Division,
                         s.EmployeeId,
-                        UserGroup = s.UserGroupMaps.Select(ug => new { ug.UserGroup.GroupId, ug.UserGroup.GroupNameEn, Permission = ug.UserGroup.UserGroupPermissionMaps.Select(p => new { p.Permission.PermissionId, p.Permission.PermissionName }) })
+                        UserGroup = s.UserGroupMaps.Select(ug => new
+                        {
+                            ug.UserGroup.GroupId,
+                            ug.UserGroup.GroupNameEn,
+                            Permission = ug.UserGroup.UserGroupPermissionMaps.Select(p => new
+                            {
+                                p.Permission.PermissionId,
+                                p.Permission.PermissionName
+                            })
+                        }),
+                        Brands = s.UserBrandMaps.Select(sb => new
+                        {
+                            sb.BrandId,
+                            sb.Brand.BrandNameEn,
+                            sb.Brand.UpdatedDt
+                        })
                     }).ToList();
                 if (usr == null || usr.Count == 0)
                 {
                     throw new Exception("User not found");
                 }
-
                 return Request.CreateResponse(HttpStatusCode.OK, usr[0]);
             }
             catch (Exception e)
@@ -180,7 +194,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 user = new User();
-                SetupUser(user, request);
+                SetupUser(user, request, db);
                 #region Password
                 user.Password = salt.HashPassword(Validation.ValidateString(request.Password, "Password", true, 100, false));
                 user.PasswordLastChg = string.Empty;
@@ -250,7 +264,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("User not found");
                 }
                 #endregion
-                SetupUser(user, request);
+                SetupUser(user, request,db);
                 #region Password
                 //if (!salt.CheckPassword(request.OldPassword,user.Password))
                 //{
@@ -398,7 +412,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 user = new User();
-                SetupUser(user, request);
+                SetupUser(user, request,db);
                 #region Password
                 user.Password = salt.HashPassword(Validation.ValidateString(request.Password, "Password", true, 100, false));
                 user.PasswordLastChg = string.Empty;
@@ -463,7 +477,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("This user is not admin");
                 }
                 #endregion
-                SetupUser(user, request);
+                SetupUser(user, request, db);
                 #region Password
                 if (!string.IsNullOrEmpty(request.Password))
                 {
@@ -593,6 +607,7 @@ namespace Colsp.Api.Controllers
                 var user = db.Users.Where(u => u.Email.Equals(email))
                     .Include(i => i.UserGroupMaps.Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission)))
                     .Include(i => i.UserShopMaps.Select(s => s.Shop))
+                    .Include(i =>  i.UserBrandMaps)
                     .FirstOrDefault();
                 string password = request.Password;
                 if (user == null)
@@ -914,9 +929,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
-
-        private void SetupUser(User user, UserRequest request)
+        private void SetupUser(User user, UserRequest request, ColspEntities db)
         {
             user.Email = Validation.ValidateString(request.Email, "Email", true, 100, false);
             user.NameEn = Validation.ValidateString(request.NameEn, "Name", true, 100, false);
@@ -927,6 +940,47 @@ namespace Colsp.Api.Controllers
             user.EmployeeId = Validation.ValidateString(request.EmployeeId, "Employee Id", false, 100, false, string.Empty);
             user.Mobile = Validation.ValidateString(request.Mobile, "Mobile", false, 20, false, string.Empty);
             user.Fax = Validation.ValidateString(request.Fax, "Fax", false, 20, false, string.Empty);
+            #region Brand Map
+            var brandMap = user.UserBrandMaps.ToList();
+            if(request.Brands != null && request.Brands.Count > 0)
+            {
+                foreach(var brand in request.Brands)
+                {
+                    bool isNew = false;
+                    if(brandMap == null || brandMap.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = brandMap.Where(w => w.BrandId == brand.BrandId).SingleOrDefault();
+                        if(current != null)
+                        {
+                            brandMap.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        user.UserBrandMaps.Add(new UserBrandMap()
+                        {
+                            BrandId = brand.BrandId,
+                            CreatedBy = User.UserRequest().Email,
+                            CreatedDt = DateTime.Now,
+                            UpdatedBy = User.UserRequest().Email,
+                            UpdatedDt = DateTime.Now,
+                        });
+                    }
+                }
+            }
+            if(brandMap != null && brandMap.Count > 0)
+            {
+                db.UserBrandMaps.RemoveRange(brandMap);
+            }
+            #endregion
         }
 
         protected override void Dispose(bool disposing)

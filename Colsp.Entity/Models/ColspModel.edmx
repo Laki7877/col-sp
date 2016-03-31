@@ -203,6 +203,7 @@
           </Key>
           <Property Name="CartId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="GuestId" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="UpdateOn" Type="smalldatetime" />
@@ -767,6 +768,39 @@
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Guest">
+          <Key>
+            <PropertyRef Name="GuestId" />
+            <PropertyRef Name="Email" />
+            <PropertyRef Name="FirstName" />
+            <PropertyRef Name="LastName" />
+            <PropertyRef Name="Mobile" />
+            <PropertyRef Name="TelephoneNo" />
+            <PropertyRef Name="Gender" />
+            <PropertyRef Name="ReceiveSms" />
+            <PropertyRef Name="T1CardNo" />
+            <PropertyRef Name="CustTaxID" />
+            <PropertyRef Name="CreateOn" />
+            <PropertyRef Name="CreateBy" />
+          </Key>
+          <Property Name="GuestId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Mobile" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="TelephoneNo" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="BirthDate" Type="smalldatetime" />
+          <Property Name="Gender" Type="tinyint" Nullable="false" />
+          <Property Name="ReceiveSms" Type="bit" Nullable="false" />
+          <Property Name="T1CardNo" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="CustTaxID" Type="varchar" MaxLength="13" Nullable="false" />
+          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdateOn" Type="smalldatetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="ImportHeader">
           <Key>
@@ -2255,6 +2289,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
+        <EntityType Name="UserBrandMap">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="BrandId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="BrandId" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDt" Type="datetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
         <EntityType Name="UserGroup">
           <Key>
             <PropertyRef Name="GroupId" />
@@ -3352,6 +3398,34 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserBrandMap_Brand">
+          <End Role="Brand" Type="Self.Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserBrandMap" Type="Self.UserBrandMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="BrandId" />
+            </Principal>
+            <Dependent Role="UserBrandMap">
+              <PropertyRef Name="BrandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserBrandMap_User">
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserBrandMap" Type="Self.UserBrandMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserBrandMap">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKAttributeSetMapAttribute">
           <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
           <End Role="AttributeSetMap" Type="Self.AttributeSetMap" Multiplicity="*" />
@@ -3779,10 +3853,30 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Theme" EntityType="Self.Theme" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserBrandMap" EntityType="Self.UserBrandMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroupMap" EntityType="Self.UserGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroupPermissionMap" EntityType="Self.UserGroupPermissionMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserShopMap" EntityType="Self.UserShopMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Guest" EntityType="Self.Guest" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Guest].[GuestId] AS [GuestId], 
+    [Guest].[Email] AS [Email], 
+    [Guest].[FirstName] AS [FirstName], 
+    [Guest].[LastName] AS [LastName], 
+    [Guest].[Mobile] AS [Mobile], 
+    [Guest].[TelephoneNo] AS [TelephoneNo], 
+    [Guest].[BirthDate] AS [BirthDate], 
+    [Guest].[Gender] AS [Gender], 
+    [Guest].[ReceiveSms] AS [ReceiveSms], 
+    [Guest].[T1CardNo] AS [T1CardNo], 
+    [Guest].[CustTaxID] AS [CustTaxID], 
+    [Guest].[CreateOn] AS [CreateOn], 
+    [Guest].[CreateBy] AS [CreateBy], 
+    [Guest].[UpdateOn] AS [UpdateOn], 
+    [Guest].[UpdateBy] AS [UpdateBy]
+    FROM [dbo].[Guest] AS [Guest]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="ODMRoleUser" EntityType="Self.ODMRoleUser" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ODMRoleUser].[RoleID] AS [RoleID], 
@@ -4244,6 +4338,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroup" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMap" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserBrandMap_Brand" Association="Self.FK_UserBrandMap_Brand">
+            <End Role="Brand" EntitySet="Brand" />
+            <End Role="UserBrandMap" EntitySet="UserBrandMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserBrandMap_User" Association="Self.FK_UserBrandMap_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserBrandMap" EntitySet="UserBrandMap" />
+          </AssociationSet>
           <AssociationSet Name="FKAttributeSetMapAttribute" Association="Self.FKAttributeSetMapAttribute">
             <End Role="Attribute" EntitySet="Attribute" />
             <End Role="AttributeSetMap" EntitySet="AttributeSetMap" />
@@ -4464,10 +4566,12 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
           <EntitySet Name="Themes" EntityType="ColspModel.Theme" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
+          <EntitySet Name="UserBrandMaps" EntityType="ColspModel.UserBrandMap" />
           <EntitySet Name="UserGroups" EntityType="ColspModel.UserGroup" />
           <EntitySet Name="UserGroupMaps" EntityType="ColspModel.UserGroupMap" />
           <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
           <EntitySet Name="UserShopMaps" EntityType="ColspModel.UserShopMap" />
+          <EntitySet Name="Guests" EntityType="ColspModel.Guest" />
           <EntitySet Name="ODMRoleUsers" EntityType="ColspModel.ODMRoleUser" />
           <EntitySet Name="PostCodeMaps" EntityType="ColspModel.PostCodeMap" />
           <EntitySet Name="StoreReturnReasons" EntityType="ColspModel.StoreReturnReason" />
@@ -4547,6 +4651,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FK_ProductStageGroup_Brand" Association="ColspModel.FK_ProductStageGroup_Brand">
             <End Role="Brand" EntitySet="Brands" />
             <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserBrandMap_Brand" Association="ColspModel.FK_UserBrandMap_Brand">
+            <End Role="Brand" EntitySet="Brands" />
+            <End Role="UserBrandMap" EntitySet="UserBrandMaps" />
           </AssociationSet>
           <AssociationSet Name="FK_BrandFeatureProduct_ProductStageGroup" Association="ColspModel.FK_BrandFeatureProduct_ProductStageGroup">
             <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
@@ -4876,6 +4984,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMaps" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserBrandMap_User" Association="ColspModel.FK_UserBrandMap_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserBrandMap" EntitySet="UserBrandMaps" />
+          </AssociationSet>
           <AssociationSet Name="FKUserGroupMapUser" Association="ColspModel.FKUserGroupMapUser">
             <End Role="User" EntitySet="Users" />
             <End Role="UserGroupMap" EntitySet="UserGroupMaps" />
@@ -5050,6 +5162,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_Brand" FromRole="Brand" ToRole="Product" />
           <NavigationProperty Name="ProductHistoryGroups" Relationship="ColspModel.FK_ProductHistoryGroup_Brand" FromRole="Brand" ToRole="ProductHistoryGroup" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Brand" FromRole="Brand" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="UserBrandMaps" Relationship="ColspModel.FK_UserBrandMap_Brand" FromRole="Brand" ToRole="UserBrandMap" />
         </EntityType>
         <EntityType Name="BrandFeatureProduct">
           <Key>
@@ -5116,6 +5229,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </Key>
           <Property Name="CartId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="GuestId" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdateOn" Type="DateTime" Precision="0" />
@@ -7100,8 +7214,23 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FKShopUser" FromRole="User" ToRole="Shop" />
+          <NavigationProperty Name="UserBrandMaps" Relationship="ColspModel.FK_UserBrandMap_User" FromRole="User" ToRole="UserBrandMap" />
           <NavigationProperty Name="UserGroupMaps" Relationship="ColspModel.FKUserGroupMapUser" FromRole="User" ToRole="UserGroupMap" />
           <NavigationProperty Name="UserShopMaps" Relationship="ColspModel.FKUserShopUser" FromRole="User" ToRole="UserShopMap" />
+        </EntityType>
+        <EntityType Name="UserBrandMap">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="BrandId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="BrandId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Brand" Relationship="ColspModel.FK_UserBrandMap_Brand" FromRole="UserBrandMap" ToRole="Brand" />
+          <NavigationProperty Name="User" Relationship="ColspModel.FK_UserBrandMap_User" FromRole="UserBrandMap" ToRole="User" />
         </EntityType>
         <EntityType Name="UserGroup">
           <Key>
@@ -7160,6 +7289,37 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKUserShopShop" FromRole="UserShopMap" ToRole="Shop" />
           <NavigationProperty Name="User" Relationship="ColspModel.FKUserShopUser" FromRole="UserShopMap" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Guest">
+          <Key>
+            <PropertyRef Name="GuestId" />
+            <PropertyRef Name="Email" />
+            <PropertyRef Name="FirstName" />
+            <PropertyRef Name="LastName" />
+            <PropertyRef Name="Mobile" />
+            <PropertyRef Name="TelephoneNo" />
+            <PropertyRef Name="Gender" />
+            <PropertyRef Name="ReceiveSms" />
+            <PropertyRef Name="T1CardNo" />
+            <PropertyRef Name="CustTaxID" />
+            <PropertyRef Name="CreateOn" />
+            <PropertyRef Name="CreateBy" />
+          </Key>
+          <Property Name="GuestId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="TelephoneNo" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="Byte" Nullable="false" />
+          <Property Name="ReceiveSms" Type="Boolean" Nullable="false" />
+          <Property Name="T1CardNo" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CustTaxID" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="0" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ODMRoleUser">
           <Key>
@@ -7590,6 +7750,20 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <PropertyRef Name="BrandId" />
             </Principal>
             <Dependent Role="ProductStageGroup">
+              <PropertyRef Name="BrandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserBrandMap_Brand">
+          <End Type="ColspModel.Brand" Role="Brand" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.UserBrandMap" Role="UserBrandMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="BrandId" />
+            </Principal>
+            <Dependent Role="UserBrandMap">
               <PropertyRef Name="BrandId" />
             </Dependent>
           </ReferentialConstraint>
@@ -8674,6 +8848,20 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserBrandMap_User">
+          <End Type="ColspModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.UserBrandMap" Role="UserBrandMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserBrandMap">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKUserGroupMapUser">
           <End Type="ColspModel.User" Role="User" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -8946,6 +9134,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="GuestId" ColumnName="GuestId" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="CartId" ColumnName="CartId" />
               </MappingFragment>
@@ -10808,6 +10997,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="UserBrandMaps">
+            <EntityTypeMapping TypeName="ColspModel.UserBrandMap">
+              <MappingFragment StoreEntitySet="UserBrandMap">
+                <ScalarProperty Name="UpdatedDt" ColumnName="UpdatedDt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="UserGroups">
             <EntityTypeMapping TypeName="ColspModel.UserGroup">
               <MappingFragment StoreEntitySet="UserGroup">
@@ -10855,6 +11056,27 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Guests">
+            <EntityTypeMapping TypeName="ColspModel.Guest">
+              <MappingFragment StoreEntitySet="Guest">
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CustTaxID" ColumnName="CustTaxID" />
+                <ScalarProperty Name="T1CardNo" ColumnName="T1CardNo" />
+                <ScalarProperty Name="ReceiveSms" ColumnName="ReceiveSms" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="TelephoneNo" ColumnName="TelephoneNo" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="GuestId" ColumnName="GuestId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

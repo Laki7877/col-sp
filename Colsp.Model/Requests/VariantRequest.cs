@@ -18,6 +18,8 @@ namespace Colsp.Model.Requests
         public string DescriptionFullEn { get; set; }
         public decimal OriginalPrice { get; set; }
         public decimal SalePrice { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal PurchasePrice { get; set; }
         public int Quantity { get; set; }
         public int SafetyStock { get; set; }
         public int PrepareDay { get; set; }

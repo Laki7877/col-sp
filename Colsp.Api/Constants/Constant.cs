@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+
+        public static readonly CultureInfo DATETIME_FORMAT =  new CultureInfo("es-ES");
 
         public static readonly string AUTHEN_SCHEMA = "Bearer";
 

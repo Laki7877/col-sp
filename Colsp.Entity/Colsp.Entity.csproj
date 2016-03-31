@@ -294,6 +294,9 @@
     <Compile Include="Models\GlobalCatImage.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Guest.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ImportHeader.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -523,6 +526,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserBrandMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserGroup.cs">

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Colsp.Api.Constants;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -280,7 +282,7 @@ namespace Colsp.Api.Helpers
                     if (!string.IsNullOrWhiteSpace(val))
                     {
                         val = val.Trim();
-                        return Convert.ToDateTime(val);
+                        return Convert.ToDateTime(val, Constant.DATETIME_FORMAT);
                     }
                 }
             }

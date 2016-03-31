@@ -140,10 +140,12 @@ namespace Colsp.Entity.Models
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserBrandMap> UserBrandMaps { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
+        public virtual DbSet<Guest> Guests { get; set; }
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
         public virtual DbSet<PostCodeMap> PostCodeMaps { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }

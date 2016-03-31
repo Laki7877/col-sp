@@ -1384,7 +1384,8 @@ namespace Colsp.Api.Controllers
                 var producGrouptList = db.ProductStageGroups.Where(w => w.ShopId == shopId && ids.Contains(w.ProductId))
                     .Include(i=>i.ProductStages.Select(s=>s.Inventory))
                     .Include(i=>i.ProductStages.Select(s=>s.ProductStageMasters))
-                    .Include(i=>i.ProductStageRelateds)
+                    .Include(i=>i.ProductStageRelateds1)
+                    .Include(i => i.ProductStageRelateds)
                     ;
                 //var productApprovedList = db.Products.Where(w => w.ShopId == shopId);
                 //var relatedProductList = db.ProductStageRelateds.Where(w => w.ShopId == shopId && (ids.Contains(w.Parent)||ids.Contains(w.Child)));
@@ -1419,7 +1420,8 @@ namespace Colsp.Api.Controllers
                         });
                     }
                     db.ProductStageRelateds.RemoveRange(productGroup.ProductStageRelateds);
-                    foreach(var stage in productGroup.ProductStages)
+                    db.ProductStageRelateds.RemoveRange(productGroup.ProductStageRelateds1);
+                    foreach (var stage in productGroup.ProductStages)
                     {
                         db.ProductStageMasters.RemoveRange(stage.ProductStageMasters);
                     }
@@ -2021,7 +2023,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception(string.Concat("Attribute ", attribute.AttributeNameEn, " should have variant"));
                     }
-                    if (attribute.AttributeValueMaps.All(a => request.AttributeValues
+                    if (attribute.AttributeValueMaps.Any(a => request.AttributeValues
                        .Select(s => s.AttributeValueId)
                        .Contains(a.AttributeValueId)))
                     {
@@ -2157,6 +2159,8 @@ namespace Colsp.Api.Controllers
             variant.Upc = Validation.ValidateString(request.Upc, "UPC", false, 300, true, string.Empty);
             variant.OriginalPrice = Validation.ValidateDecimal(request.OriginalPrice, "Original Price", false, 10, 3, true, 0).Value;
             variant.SalePrice = Validation.ValidateDecimal(request.SalePrice, "Sale Price", true, 10, 3, true).Value;
+            variant.UnitPrice = Validation.ValidateDecimal(request.UnitPrice, "Unit Price", false, 10, 3, true, 0).Value;
+            variant.PurchasePrice = Validation.ValidateDecimal(request.PurchasePrice, "Purchase Price", true, 10, 3, true).Value;
             variant.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Description (Thai)", false, int.MaxValue, false, string.Empty);
             variant.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Short Description (Thai)", false, 500, true, string.Empty);
             variant.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Description (English)", false, int.MaxValue, false, string.Empty);
@@ -2606,6 +2610,8 @@ namespace Colsp.Api.Controllers
             response.Upc = variant.Upc;
             response.OriginalPrice = variant.OriginalPrice;
             response.SalePrice = variant.SalePrice;
+            response.UnitPrice = variant.UnitPrice;
+            response.PurchasePrice = variant.PurchasePrice;
             response.DescriptionFullTh = variant.DescriptionFullTh;
             response.DescriptionShortTh = variant.DescriptionShortTh;
             response.DescriptionFullEn = variant.DescriptionFullEn;
@@ -3880,14 +3886,14 @@ namespace Colsp.Api.Controllers
                     {
                         if (p.ProductStageGroup.EffectiveDate != null)
                         {
-                            bodyList[headDicTmp["EFD"].Item2] = p.ProductStageGroup.EffectiveDate.ToString();
+                            bodyList[headDicTmp["EFD"].Item2] = p.ProductStageGroup.EffectiveDate.Value.ToString(Constant.DATETIME_FORMAT);
                         }
                     }
                     if (headDicTmp.ContainsKey("EXD"))
                     {
                         if (p.ProductStageGroup.ExpireDate != null)
                         {
-                            bodyList[headDicTmp["EXD"].Item2] = p.ProductStageGroup.ExpireDate.ToString();
+                            bodyList[headDicTmp["EXD"].Item2] = p.ProductStageGroup.ExpireDate.Value.ToString(Constant.DATETIME_FORMAT);
                         }
                     }
                     if (headDicTmp.ContainsKey("GIF"))
@@ -5262,6 +5268,7 @@ namespace Colsp.Api.Controllers
                         errorMessage.Add("Cannot find group id " + g.ProductId + " in seller portal");
                         continue;
                     }
+                    
                     #region Brand
                     if (header.Contains("Brand Name"))
                     {
@@ -5322,7 +5329,8 @@ namespace Colsp.Api.Controllers
                         }
                     }
                     #endregion
-                    if(header.Contains("Effective Date"))
+                    #region Setup Group
+                    if (header.Contains("Effective Date"))
                     {
                         groupEn.EffectiveDate = g.EffectiveDate;
                     }
@@ -5350,255 +5358,349 @@ namespace Colsp.Api.Controllers
                     {
                         groupEn.AttributeSetId = g.AttributeSetId;
                     }
-                    foreach (var staging in g.ProductStages)
+                    #endregion
+
+                    g.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().VariantCount
+                        = g.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+
+                    var stageList = groupEn.ProductStages.ToList();
+                    if (g.ProductStages != null && g.ProductStages.Count > 0)
                     {
-                        var currentStage = groupEn.ProductStages.Where(w => w.Pid.Equals(staging.Pid)).SingleOrDefault();
-                        if(currentStage == null)
+                        foreach (var staging in g.ProductStages)
                         {
-                            if (string.IsNullOrEmpty(staging.Pid))
+                            if (!staging.IsVariant && staging.VariantCount == 0)
                             {
-                                errorMessage.Add("New variant cannot have Pid " + staging.Pid);
-                                continue;
                             }
-                            groupEn.ProductStages.Add(staging);
-                        }
-                        if(header.Contains("Default Variant"))
-                        {
-                            currentStage.DefaultVaraint = staging.DefaultVaraint;
-                        }
-                        if (header.Contains("Product Name (English)"))
-                        {
-                            currentStage.ProductNameEn = staging.ProductNameEn;
-                        }
-                        if (header.Contains("Product Name (Thai)"))
-                        {
-                            currentStage.ProductNameTh = staging.ProductNameTh;
-                        }
-                        if (header.Contains("SKU"))
-                        {
-                            currentStage.Sku = staging.Sku;
-                        }
-                        if (header.Contains("UPC"))
-                        {
-                            currentStage.Upc = staging.Upc;
-                        }
-                        if (header.Contains("Original Price"))
-                        {
-                            currentStage.OriginalPrice = staging.OriginalPrice;
-                        }
-                        if (header.Contains("Sale Price"))
-                        {
-                            currentStage.SalePrice = staging.SalePrice;
-                        }
-                        if (header.Contains("Installment"))
-                        {
-                            currentStage.Installment = staging.Installment;
-                        }
-                        if (header.Contains("Description (English)"))
-                        {
-                            currentStage.DescriptionFullEn = staging.DescriptionFullEn;
-                        }
-                        if (header.Contains("Description (Thai)"))
-                        {
-                            currentStage.DescriptionFullTh = staging.DescriptionFullTh;
-                        }
-                        if (header.Contains("Short Description (English)"))
-                        {
-                            currentStage.DescriptionShortEn = staging.DescriptionShortEn;
-                        }
-                        if (header.Contains("Short Description (Thai)"))
-                        {
-                            currentStage.DescriptionShortTh = staging.DescriptionShortTh;
-                        }
-                        if (header.Contains("Killer Point 1 (English)"))
-                        {
-                            currentStage.KillerPoint1En = staging.KillerPoint1En;
-                        }
-                        if (header.Contains("Killer Point 1 (Thai)"))
-                        {
-                            currentStage.KillerPoint1Th = staging.KillerPoint1Th;
-                        }
-                        if (header.Contains("Killer Point 2 (English)"))
-                        {
-                            currentStage.KillerPoint2En = staging.KillerPoint2En;
-                        }
-                        if (header.Contains("Killer Point 2 (Thai)"))
-                        {
-                            currentStage.KillerPoint2Th = staging.KillerPoint2Th;
-                        }
-                        if (header.Contains("Killer Point 3 (English)"))
-                        {
-                            currentStage.KillerPoint3En = staging.KillerPoint3En;
-                        }
-                        if (header.Contains("Killer Point 3 (Thai)"))
-                        {
-                            currentStage.KillerPoint3Th = staging.KillerPoint3Th;
-                        }
-                        if (header.Contains("Inventory Amount"))
-                        {
-                            if(currentStage.Inventory != null)
+
+
+                            bool isNewStage = false;
+                            if (stageList == null || stageList.Count == 0)
                             {
-                                currentStage.Inventory.Quantity = staging.Inventory.Quantity;
+                                isNewStage = true;
                             }
-                            else
+                            if (!isNewStage)
                             {
-                                currentStage.Inventory = staging.Inventory;
-                            }
-                        }
-                        if (header.Contains("Safety Stock Amount"))
-                        {
-                            if (currentStage.Inventory != null)
-                            {
-                                currentStage.Inventory.SafetyStockSeller = staging.Inventory.SafetyStockSeller;
-                            }
-                            else
-                            {
-                                currentStage.Inventory = staging.Inventory;
-                            }
-                        }
-                        if (header.Contains("Stock Type"))
-                        {
-                            if (currentStage.Inventory != null)
-                            {
-                                currentStage.Inventory.StockAvailable = staging.Inventory.StockAvailable;
-                            }
-                            else
-                            {
-                                currentStage.Inventory = staging.Inventory;
-                            }
-                        }
-                        if (header.Contains("Shipping Method"))
-                        {
-                            currentStage.ShippingId = staging.ShippingId;
-                        }
-                        if (header.Contains("Preparation Time"))
-                        {
-                            currentStage.PrepareDay = staging.PrepareDay;
-                        }
-                        if (header.Contains("Preparation Time - Monday"))
-                        {
-                            currentStage.PrepareMon = staging.PrepareMon;
-                        }
-                        if (header.Contains("Preparation Time - Tuesday"))
-                        {
-                            currentStage.PrepareTue = staging.PrepareTue;
-                        }
-                        if (header.Contains("Preparation Time - Wednesday"))
-                        {
-                            currentStage.PrepareWed = staging.PrepareWed;
-                        }
-                        if (header.Contains("Preparation Time - Thursday"))
-                        {
-                            currentStage.PrepareThu = staging.PrepareThu;
-                        }
-                        if (header.Contains("Preparation Time - Friday"))
-                        {
-                            currentStage.PrepareFri = staging.PrepareFri;
-                        }
-                        if (header.Contains("Preparation Time - Saturday"))
-                        {
-                            currentStage.PrepareSat = staging.PrepareSat;
-                        }
-                        if (header.Contains("Preparation Time - Sunday"))
-                        {
-                            currentStage.PrepareSun = staging.PrepareSun;
-                        }
-                        if (header.Contains("Package Dimension - Lenght (mm)"))
-                        {
-                            currentStage.Length = staging.Length;
-                        }
-                        if (header.Contains("Package Dimension - Height (mm)"))
-                        {
-                            currentStage.Height = staging.Height;
-                        }
-                        if (header.Contains("Package Dimension - Width (mm)"))
-                        {
-                            currentStage.Width = staging.Width;
-                        }
-                        if (header.Contains("Package - Weight (g)"))
-                        {
-                            currentStage.Weight = staging.Weight;
-                        }
-                        if (header.Contains("Meta Title (English)"))
-                        {
-                            currentStage.MetaTitleEn = staging.MetaTitleEn;
-                        }
-                        if (header.Contains("Meta Title (Thai)"))
-                        {
-                            currentStage.MetaTitleTh = staging.MetaTitleTh;
-                        }
-                        if (header.Contains("Meta Description (English)"))
-                        {
-                            currentStage.MetaDescriptionEn = staging.MetaDescriptionEn;
-                        }
-                        if (header.Contains("Meta Description (Thai)"))
-                        {
-                            currentStage.MetaDescriptionTh = staging.MetaDescriptionTh;
-                        }
-                        if (header.Contains("Meta Keywords (English)"))
-                        {
-                            currentStage.MetaKeyEn = staging.MetaKeyEn;
-                        }
-                        if (header.Contains("Meta Keywords (Thai)"))
-                        {
-                            currentStage.MetaKeyTh = staging.MetaKeyTh;
-                        }
-                        if (header.Contains("Product Boosting Weight"))
-                        {
-                            currentStage.BoostWeight = staging.BoostWeight;
-                        }
-                        if (header.Contains("Global Product Boosting Weight"))
-                        {
-                            currentStage.GlobalBoostWeight = staging.GlobalBoostWeight;
-                        }
-                        if (header.Contains("Gift Wrap"))
-                        {
-                            currentStage.GiftWrap = staging.GiftWrap;
-                        }
-                        var attributeTmp = currentStage.ProductStageAttributes.ToList();
-                        if(staging.ProductStageAttributes != null && staging.ProductStageAttributes.Count > 0)
-                        {
-                            foreach (var tmpAttri in staging.ProductStageAttributes)
-                            {
-                                bool isNew = false;
-                                if(attributeTmp == null || attributeTmp.Count == 0)
+                                var currentStage = stageList.Where(w => w.Pid.Equals(staging.Pid)).SingleOrDefault();
+                                if (currentStage == null)
                                 {
-                                    isNew = true;
-                                }
-                                if (!isNew)
-                                {
-                                    var current = attributeTmp.Where(w => w.AttributeId == tmpAttri.AttributeId && w.ValueEn.Equals(tmpAttri.ValueEn)).SingleOrDefault();
-                                    if(current != null)
+                                    if (string.IsNullOrEmpty(staging.Pid))
                                     {
-                                        attributeTmp.Remove(current);
+                                        errorMessage.Add("New variant cannot have Pid " + staging.Pid);
+                                        continue;
+                                    }
+                                    groupEn.ProductStages.Add(staging);
+                                }
+                                else
+                                {
+                                    stageList.Remove(currentStage);
+                                }
+                                #region Setup Variant
+                                if (header.Contains("Default Variant"))
+                                {
+                                    currentStage.DefaultVaraint = staging.DefaultVaraint;
+                                }
+                                if (header.Contains("Product Name (English)"))
+                                {
+                                    currentStage.ProductNameEn = staging.ProductNameEn;
+                                }
+                                if (header.Contains("Product Name (Thai)"))
+                                {
+                                    currentStage.ProductNameTh = staging.ProductNameTh;
+                                }
+                                if (header.Contains("SKU"))
+                                {
+                                    currentStage.Sku = staging.Sku;
+                                }
+                                if (header.Contains("UPC"))
+                                {
+                                    currentStage.Upc = staging.Upc;
+                                }
+                                if (header.Contains("Original Price"))
+                                {
+                                    currentStage.OriginalPrice = staging.OriginalPrice;
+                                }
+                                if (header.Contains("Sale Price"))
+                                {
+                                    currentStage.SalePrice = staging.SalePrice;
+                                }
+                                if (header.Contains("Installment"))
+                                {
+                                    currentStage.Installment = staging.Installment;
+                                }
+                                if (header.Contains("Description (English)"))
+                                {
+                                    currentStage.DescriptionFullEn = staging.DescriptionFullEn;
+                                }
+                                if (header.Contains("Description (Thai)"))
+                                {
+                                    currentStage.DescriptionFullTh = staging.DescriptionFullTh;
+                                }
+                                if (header.Contains("Short Description (English)"))
+                                {
+                                    currentStage.DescriptionShortEn = staging.DescriptionShortEn;
+                                }
+                                if (header.Contains("Short Description (Thai)"))
+                                {
+                                    currentStage.DescriptionShortTh = staging.DescriptionShortTh;
+                                }
+                                if (header.Contains("Killer Point 1 (English)"))
+                                {
+                                    currentStage.KillerPoint1En = staging.KillerPoint1En;
+                                }
+                                if (header.Contains("Killer Point 1 (Thai)"))
+                                {
+                                    currentStage.KillerPoint1Th = staging.KillerPoint1Th;
+                                }
+                                if (header.Contains("Killer Point 2 (English)"))
+                                {
+                                    currentStage.KillerPoint2En = staging.KillerPoint2En;
+                                }
+                                if (header.Contains("Killer Point 2 (Thai)"))
+                                {
+                                    currentStage.KillerPoint2Th = staging.KillerPoint2Th;
+                                }
+                                if (header.Contains("Killer Point 3 (English)"))
+                                {
+                                    currentStage.KillerPoint3En = staging.KillerPoint3En;
+                                }
+                                if (header.Contains("Killer Point 3 (Thai)"))
+                                {
+                                    currentStage.KillerPoint3Th = staging.KillerPoint3Th;
+                                }
+                                if (header.Contains("Inventory Amount"))
+                                {
+                                    if (currentStage.Inventory != null)
+                                    {
+                                        currentStage.Inventory.Quantity = staging.Inventory.Quantity;
                                     }
                                     else
                                     {
-                                        isNew = true;
+                                        currentStage.Inventory = staging.Inventory;
                                     }
                                 }
-                                if (isNew)
+                                if (header.Contains("Safety Stock Amount"))
                                 {
-                                    currentStage.ProductStageAttributes.Add(new ProductStageAttribute()
+                                    if (currentStage.Inventory != null)
                                     {
-                                        AttributeId = tmpAttri.AttributeId,
-                                        ValueEn = tmpAttri.ValueEn,
-                                        CheckboxValue = tmpAttri.CheckboxValue,
-                                        CreatedBy = tmpAttri.CreatedBy,
-                                        CreatedDt = tmpAttri.CreatedDt,
-                                        IsAttributeValue = tmpAttri.IsAttributeValue,
-                                        Position = tmpAttri.Position,
-                                        UpdatedBy = tmpAttri.UpdatedBy,
-                                        UpdatedDt = tmpAttri.UpdatedDt
-                                    });
+                                        currentStage.Inventory.SafetyStockSeller = staging.Inventory.SafetyStockSeller;
+                                    }
+                                    else
+                                    {
+                                        currentStage.Inventory = staging.Inventory;
+                                    }
                                 }
+                                if (header.Contains("Stock Type"))
+                                {
+                                    if (currentStage.Inventory != null)
+                                    {
+                                        currentStage.Inventory.StockAvailable = staging.Inventory.StockAvailable;
+                                    }
+                                    else
+                                    {
+                                        currentStage.Inventory = staging.Inventory;
+                                    }
+                                }
+                                if (header.Contains("Shipping Method"))
+                                {
+                                    currentStage.ShippingId = staging.ShippingId;
+                                }
+                                if (header.Contains("Preparation Time"))
+                                {
+                                    currentStage.PrepareDay = staging.PrepareDay;
+                                }
+                                if (header.Contains("Preparation Time - Monday"))
+                                {
+                                    currentStage.PrepareMon = staging.PrepareMon;
+                                }
+                                if (header.Contains("Preparation Time - Tuesday"))
+                                {
+                                    currentStage.PrepareTue = staging.PrepareTue;
+                                }
+                                if (header.Contains("Preparation Time - Wednesday"))
+                                {
+                                    currentStage.PrepareWed = staging.PrepareWed;
+                                }
+                                if (header.Contains("Preparation Time - Thursday"))
+                                {
+                                    currentStage.PrepareThu = staging.PrepareThu;
+                                }
+                                if (header.Contains("Preparation Time - Friday"))
+                                {
+                                    currentStage.PrepareFri = staging.PrepareFri;
+                                }
+                                if (header.Contains("Preparation Time - Saturday"))
+                                {
+                                    currentStage.PrepareSat = staging.PrepareSat;
+                                }
+                                if (header.Contains("Preparation Time - Sunday"))
+                                {
+                                    currentStage.PrepareSun = staging.PrepareSun;
+                                }
+                                if (header.Contains("Package Dimension - Lenght (mm)"))
+                                {
+                                    currentStage.Length = staging.Length;
+                                }
+                                if (header.Contains("Package Dimension - Height (mm)"))
+                                {
+                                    currentStage.Height = staging.Height;
+                                }
+                                if (header.Contains("Package Dimension - Width (mm)"))
+                                {
+                                    currentStage.Width = staging.Width;
+                                }
+                                if (header.Contains("Package - Weight (g)"))
+                                {
+                                    currentStage.Weight = staging.Weight;
+                                }
+                                if (header.Contains("Meta Title (English)"))
+                                {
+                                    currentStage.MetaTitleEn = staging.MetaTitleEn;
+                                }
+                                if (header.Contains("Meta Title (Thai)"))
+                                {
+                                    currentStage.MetaTitleTh = staging.MetaTitleTh;
+                                }
+                                if (header.Contains("Meta Description (English)"))
+                                {
+                                    currentStage.MetaDescriptionEn = staging.MetaDescriptionEn;
+                                }
+                                if (header.Contains("Meta Description (Thai)"))
+                                {
+                                    currentStage.MetaDescriptionTh = staging.MetaDescriptionTh;
+                                }
+                                if (header.Contains("Meta Keywords (English)"))
+                                {
+                                    currentStage.MetaKeyEn = staging.MetaKeyEn;
+                                }
+                                if (header.Contains("Meta Keywords (Thai)"))
+                                {
+                                    currentStage.MetaKeyTh = staging.MetaKeyTh;
+                                }
+                                if (header.Contains("Product Boosting Weight"))
+                                {
+                                    currentStage.BoostWeight = staging.BoostWeight;
+                                }
+                                if (header.Contains("Global Product Boosting Weight"))
+                                {
+                                    currentStage.GlobalBoostWeight = staging.GlobalBoostWeight;
+                                }
+                                if (header.Contains("Gift Wrap"))
+                                {
+                                    currentStage.GiftWrap = staging.GiftWrap;
+                                }
+                                #endregion
+                                #region Setup Attribute
+                                var attributeTmp = currentStage.ProductStageAttributes.ToList();
+                                if (staging.ProductStageAttributes != null && staging.ProductStageAttributes.Count > 0)
+                                {
+                                    foreach (var tmpAttri in staging.ProductStageAttributes)
+                                    {
+                                        bool isNew = false;
+                                        if (attributeTmp == null || attributeTmp.Count == 0)
+                                        {
+                                            isNew = true;
+                                        }
+                                        if (!isNew)
+                                        {
+                                            var current = attributeTmp.Where(w => w.AttributeId == tmpAttri.AttributeId && w.ValueEn.Equals(tmpAttri.ValueEn)).SingleOrDefault();
+                                            if (current != null)
+                                            {
+                                                attributeTmp.Remove(current);
+                                            }
+                                            else
+                                            {
+                                                isNew = true;
+                                            }
+                                        }
+                                        if (isNew)
+                                        {
+                                            currentStage.ProductStageAttributes.Add(new ProductStageAttribute()
+                                            {
+                                                AttributeId = tmpAttri.AttributeId,
+                                                ValueEn = tmpAttri.ValueEn,
+                                                CheckboxValue = tmpAttri.CheckboxValue,
+                                                CreatedBy = tmpAttri.CreatedBy,
+                                                CreatedDt = tmpAttri.CreatedDt,
+                                                IsAttributeValue = tmpAttri.IsAttributeValue,
+                                                Position = tmpAttri.Position,
+                                                UpdatedBy = tmpAttri.UpdatedBy,
+                                                UpdatedDt = tmpAttri.UpdatedDt
+                                            });
+                                        }
+                                    }
+                                }
+                                if (attributeTmp != null && attributeTmp.Count > 0)
+                                {
+                                    db.ProductStageAttributes.RemoveRange(attributeTmp);
+                                }
+                                #endregion
+                            }
+                            if (isNewStage)
+                            {
+                                if (string.IsNullOrEmpty(staging.Pid))
+                                {
+                                    errorMessage.Add("New variant cannot have Pid " + staging.Pid);
+                                    continue;
+                                }
+                                groupEn.ProductStages.Add(staging);
                             }
                         }
-                        if(attributeTmp != null && attributeTmp.Count > 0)
+                    }
+                    //if(stageList != null && stageList.Count > 0)
+                    //{
+                    //    db.ProductStages.RemoveRange(stageList);
+                    //}
+
+
+                    groupEn.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().VariantCount
+                        = g.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+                    #region Default Attribute
+                    var mastUpdateVar = g.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+                    var mastEnVar = groupEn.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+                    var mastEnAtribute = groupEn.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().ProductStageAttributes.ToList();
+                    if(mastUpdateVar.ProductStageAttributes != null && mastUpdateVar.ProductStageAttributes.Count > 0)
+                    {
+                        foreach (var tmpAttri in mastUpdateVar.ProductStageAttributes)
                         {
-                            db.ProductStageAttributes.RemoveRange(attributeTmp);
+                            bool isNew = false;
+                            if (mastEnAtribute == null || mastEnAtribute.Count == 0)
+                            {
+                                isNew = true;
+                            }
+                            if (!isNew)
+                            {
+                                var current = mastEnAtribute.Where(w => w.AttributeId == tmpAttri.AttributeId && w.ValueEn.Equals(tmpAttri.ValueEn)).SingleOrDefault();
+                                if (current != null)
+                                {
+                                    mastEnAtribute.Remove(current);
+                                }
+                                else
+                                {
+                                    isNew = true;
+                                }
+                            }
+                            if (isNew)
+                            {
+                                mastEnVar.ProductStageAttributes.Add(new ProductStageAttribute()
+                                {
+                                    AttributeId = tmpAttri.AttributeId,
+                                    ValueEn = tmpAttri.ValueEn,
+                                    CheckboxValue = tmpAttri.CheckboxValue,
+                                    CreatedBy = tmpAttri.CreatedBy,
+                                    CreatedDt = tmpAttri.CreatedDt,
+                                    IsAttributeValue = tmpAttri.IsAttributeValue,
+                                    Position = tmpAttri.Position,
+                                    UpdatedBy = tmpAttri.UpdatedBy,
+                                    UpdatedDt = tmpAttri.UpdatedDt
+                                });
+                            }
                         }
                     }
+                    if (mastEnAtribute != null && mastEnAtribute.Count > 0)
+                    {
+                        db.ProductStageAttributes.RemoveRange(mastEnAtribute);
+                    }
+                    #endregion
                 }
                 #region Validate Error Message
                 if (errorMessage.Count > 0)
@@ -5629,6 +5731,9 @@ namespace Colsp.Api.Controllers
                 }
             }
         }
+
+
+
 
         /*
        
