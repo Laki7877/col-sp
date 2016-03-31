@@ -91,7 +91,10 @@ namespace Colsp.Api.Controllers
                                                                             select p).FirstOrDefault().FeatureImgUrl,
                                                            OriginalPrice = (from p in db.Products
                                                                             where p.Pid.Equals(pMap.Pid)
-                                                                            select p).FirstOrDefault().OriginalPrice
+                                                                            select p).FirstOrDefault().OriginalPrice,
+                                                           ExpireDate = (from p in db.Products
+                                                                         where p.Pid.Equals(pMap.Pid)
+                                                                         select p).FirstOrDefault().ExpireDate
 
                                                        }).ToList(),
                                 

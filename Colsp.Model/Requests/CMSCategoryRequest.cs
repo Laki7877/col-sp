@@ -54,5 +54,6 @@ namespace Colsp.Model
         public string UpdateIP { get; set; }
         public string FeatureImgUrl { get; set; }
         public decimal OriginalPrice { get; set; }
+        public DateTime? ExpireDate { get; set; }
     }
 }
