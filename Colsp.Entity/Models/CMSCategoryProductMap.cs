@@ -16,7 +16,7 @@ namespace Colsp.Entity.Models
     {
         public int CMSCategoryProductMapId { get; set; }
         public Nullable<int> CMSCategoryId { get; set; }
-        public string ProductPID { get; set; }
+        public string Pid { get; set; }
         public string ProductBoxBadge { get; set; }
         public Nullable<int> ShopId { get; set; }
         public Nullable<int> Sequence { get; set; }

@@ -107,7 +107,7 @@ namespace Colsp.Logic
                             cmsCategoryProduct.CMSCategoryProductMapId  = product.CMSCategoryProductMapId;
                             cmsCategoryProduct.IsActive                 = product.IsActive;
                             cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
-                            cmsCategoryProduct.ProductPID               = product.ProductPID;
+                            cmsCategoryProduct.Pid                      = product.Pid;
                             cmsCategoryProduct.Sequence                 = product.Sequence;
                             cmsCategoryProduct.CreateBy                 = product.CreateBy;
                             cmsCategoryProduct.CreateDate               = dateNow;
@@ -174,7 +174,7 @@ namespace Colsp.Logic
                             cmsCategoryProduct.CMSCategoryProductMapId = product.CMSCategoryProductMapId;
                             cmsCategoryProduct.IsActive = product.IsActive;
                             cmsCategoryProduct.ProductBoxBadge = product.ProductBoxBadge;
-                            cmsCategoryProduct.ProductPID = product.ProductPID;
+                            cmsCategoryProduct.Pid = product.Pid;
                             cmsCategoryProduct.Sequence = product.Sequence;
                             cmsCategoryProduct.CreateBy = product.CreateBy;
                             cmsCategoryProduct.CreateDate = dateNow;

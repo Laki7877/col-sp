@@ -41,7 +41,7 @@ namespace Colsp.Model
     {
         public int CMSCategoryProductMapId { get; set; }
         public int? CMSCategoryId { get; set; }
-        public string ProductPID { get; set; }
+        public string Pid { get; set; }
         public string ProductBoxBadge { get; set; }
         public int? Sequence { get; set; }
         public int? ShopId { get; set; }
@@ -52,5 +52,7 @@ namespace Colsp.Model
         public DateTime? UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
+        public string FeatureImgUrl { get; set; }
+        public decimal OriginalPrice { get; set; }
     }
 }

@@ -77,18 +77,24 @@ namespace Colsp.Api.Controllers
                             where cate.CMSCategoryId == cmsCategoryId
                             select new CMSCategoryRequest
                             {
-                                CategoryProductList = (from p in db.CMSCategoryProductMaps
-                                                       where p.CMSCategoryId == cate.CMSCategoryId
+                                CategoryProductList = (from pMap in db.CMSCategoryProductMaps
+                                                       where pMap.CMSCategoryId == cate.CMSCategoryId
                                                        select new CMSCategoryProductMapRequest
                                                        {
-                                                           CMSCategoryProductMapId = p.CMSCategoryProductMapId,
-                                                           CMSCategoryId = p.CMSCategoryId,
-                                                           ProductPID = p.ProductPID,
-                                                           ProductBoxBadge = p.ProductBoxBadge,
-                                                           Sequence = p.Sequence
+                                                           CMSCategoryProductMapId = pMap.CMSCategoryProductMapId,
+                                                           CMSCategoryId = pMap.CMSCategoryId,
+                                                           Pid = pMap.Pid,
+                                                           ProductBoxBadge = pMap.ProductBoxBadge,
+                                                           Sequence = pMap.Sequence,
+                                                           FeatureImgUrl = (from p in db.Products
+                                                                            where p.Pid.Equals(pMap.Pid)
+                                                                            select p).FirstOrDefault().FeatureImgUrl,
+                                                           OriginalPrice = (from p in db.Products
+                                                                            where p.Pid.Equals(pMap.Pid)
+                                                                            select p).FirstOrDefault().OriginalPrice
 
                                                        }).ToList(),
-
+                                
                                 CMSCategoryId = cate.CMSCategoryId,
                                 CMSCategoryNameEN = cate.CMSCategoryNameEN,
                                 CMSCategoryNameTH = cate.CMSCategoryNameTH,
@@ -99,7 +105,7 @@ namespace Colsp.Api.Controllers
                 if (!query.Any())
                     Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Category");
 
-                var item = query.First();
+                var item = query.FirstOrDefault();
                 return Request.CreateResponse(HttpStatusCode.OK, item);
 
             }
@@ -119,44 +125,44 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = 0; //this.User.ShopRequest().ShopId;
 
-                //var query = shopId == 0 
-                //                ? (from product in db.Products
-                //                   join brand in db.Brands on product.BrandId equals brand.BrandId
-                //                   join category in db.GlobalCategories on product.GlobalCatId equals category.CategoryId
-                //                   where category.CategoryId == categoryId 
-                //                   select new BrandRequest
-                //                   {
-                //                       BrandId = brand.BrandId,
-                //                       BrandNameEn = brand.BrandNameEn,
-                //                       BrandNameTh = brand.BrandNameTh
-                //                    })
+                var query = shopId == 0
+                                ? (from product in db.Products
+                                   join brand in db.Brands on product.BrandId equals brand.BrandId
+                                   join category in db.GlobalCategories on product.GlobalCatId equals category.CategoryId
+                                   where category.CategoryId == categoryId
+                                   select new BrandRequest
+                                   {
+                                       BrandId = brand.BrandId,
+                                       BrandNameEn = brand.BrandNameEn,
+                                       BrandNameTh = brand.BrandNameTh
+                                   })
 
-                //                : (from product in db.Products
-                //                   join brand in db.Brands on product.BrandId equals brand.BrandId
-                //                   join category in db.LocalCategories on product.LocalCatId equals category.CategoryId
-                //                   where category.CategoryId == categoryId
-                //                   select new BrandRequest
-                //                   {
-                //                       BrandId = brand.BrandId,
-                //                       BrandNameEn = brand.BrandNameEn,
-                //                       BrandNameTh = brand.BrandNameTh
-                //                   });
+                                : (from product in db.Products
+                                   join brand in db.Brands on product.BrandId equals brand.BrandId
+                                   join category in db.LocalCategories on product.LocalCatId equals category.CategoryId
+                                   where category.CategoryId == categoryId
+                                   select new BrandRequest
+                                   {
+                                       BrandId = brand.BrandId,
+                                       BrandNameEn = brand.BrandNameEn,
+                                       BrandNameTh = brand.BrandNameTh
+                                   });
 
 
-                //if (!query.Any())
-                //    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
 
                 // mockup
-                List<BrandRequest> brands = new List<BrandRequest>();
-                brands.Add(new BrandRequest
-                {
-                    BrandId = 1,
-                    BrandNameEn = "Test Brand EN",
-                    BrandNameTh = "Test Brand TH"
-                });
+                //List<BrandRequest> brands = new List<BrandRequest>();
+                //brands.Add(new BrandRequest
+                //{
+                //    BrandId = 1,
+                //    BrandNameEn = "Test Brand EN",
+                //    BrandNameTh = "Test Brand TH"
+                //});
 
-                //var items = query.ToList();
-                return Request.CreateResponse(HttpStatusCode.OK, brands);
+                var items = query.ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, items);
 
             }
             catch (Exception ex)
@@ -175,25 +181,24 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = 0; //this.User.ShopRequest().ShopId;
 
+                var query = db.ProductTags
+                            .GroupBy(g => g.Tag)
+                            .Select(s => s.FirstOrDefault());
 
-                //if (!query.Any())
-                //    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Tag");
 
-                // mockup
-                List<ProductStageTag> tags = new List<ProductStageTag>();
-                tags.Add(new ProductStageTag
+                List<ProductTag> tags = new List<ProductTag>();
+
+                foreach (var item in query)
                 {
-                    ProductId = 1,
-                    Tag = "Tag1"
-                });
-
-                tags.Add(new ProductStageTag
-                {
-                    ProductId = 2,
-                    Tag = "Tag2"
-                });
-
-                //var items = query.ToList();
+                    tags.Add(new ProductTag
+                    {
+                        Pid = item.Pid,
+                        Tag = item.Tag
+                    });
+                }
+                
                 return Request.CreateResponse(HttpStatusCode.OK, tags);
 
             }
@@ -251,29 +256,55 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                //int shopId = 0; //this.User.ShopRequest().ShopId;
+                int shopId = 0; //this.User.ShopRequest().ShopId;
 
+                var query = from product in db.Products select product;
+                
                 if (condition.SearchBy == SearchOption.PID)
-                {
+                    query = query.Where(x => x.Pid.Equals(condition.SearchText));
 
+                if (condition.SearchBy == SearchOption.SKU)
+                    query = query.Where(x => x.Sku.Equals(condition.SearchText));
+
+                if (condition.SearchBy == SearchOption.ProductName)
+                    query = query.Where(x => x.ProductNameEn.Contains(condition.SearchText) || x.ProductNameTh.Contains(condition.SearchText));
+
+                if (condition.CategoryId != null)
+                    if (shopId == 0)
+                        query = query.Where(x => x.GlobalCatId == condition.CategoryId);
+                    
+                    else
+                        query = query.Where(x => x.LocalCatId == condition.CategoryId);
+                
+                if (condition.BrandId != null)
+                    query = query.Where(x => x.BrandId == condition.BrandId);
+
+                if (condition.Tag != null)
+                    query = query.Include(t => t.ProductTags)
+                            .Where(x => condition.Tags.Contains(x.ProductTags.Select(s => s.Tag).FirstOrDefault()));
+
+                query = query.Take(100);
+
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Product.");
+                
+                List<Product> products = new List<Product>();
+
+                foreach (var p in query)
+                {
+                    Product item = new Product();
+                    item.Pid = p.Pid;
+                    item.ProductNameEn = p.ProductNameEn;
+                    item.ProductNameTh = p.ProductNameTh;
+                    item.FeatureImgUrl = p.FeatureImgUrl;
+                    item.EffectiveDate = p.EffectiveDate;
+                    item.ExpireDate    = p.ExpireDate;
+                    item.OriginalPrice = p.OriginalPrice;
+                    item.Sku           = p.Sku;
+                    products.Add(item);
                 }
 
-                else if (condition.SearchBy == SearchOption.ProductName)
-                {
-
-                }
-
-                var items = new List<Product>()
-                {
-                    new Product()
-                    {
-                        Pid = "11111",
-                        ProductNameEn = "Test Product",
-                        ProductNameTh = "Test Product"
-                    }
-                };
-
-                return Request.CreateResponse(HttpStatusCode.OK, items);
+                return Request.CreateResponse(HttpStatusCode.OK, products);
 
             }
             catch (Exception ex)

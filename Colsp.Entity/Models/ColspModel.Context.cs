@@ -20,7 +20,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -28,24 +27,6 @@ namespace Colsp.Entity.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Deal> Deals { get; set; }
-        public virtual DbSet<NewsletterShopMap> NewsletterShopMaps { get; set; }
-        public virtual DbSet<Payment> Payments { get; set; }
-        public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
-        public virtual DbSet<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
-        public virtual DbSet<ProductHistory> ProductHistories { get; set; }
-        public virtual DbSet<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
-        public virtual DbSet<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
-        public virtual DbSet<ProductHistoryGroup> ProductHistoryGroups { get; set; }
-        public virtual DbSet<ProductHistoryImage> ProductHistoryImages { get; set; }
-        public virtual DbSet<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
-        public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
-        public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
-        public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
-        public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
-        public virtual DbSet<ProductTag> ProductTags { get; set; }
-        public virtual DbSet<ProductTmp> ProductTmps { get; set; }
-        public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<AppAuth> AppAuths { get; set; }
         public virtual DbSet<Attribute> Attributes { get; set; }
         public virtual DbSet<AttributeSet> AttributeSets { get; set; }
@@ -87,6 +68,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
+        public virtual DbSet<Deal> Deals { get; set; }
         public virtual DbSet<District> Districts { get; set; }
         public virtual DbSet<GlobalCatAttributeSetMap> GlobalCatAttributeSetMaps { get; set; }
         public virtual DbSet<GlobalCategory> GlobalCategories { get; set; }
@@ -99,6 +81,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
         public virtual DbSet<LocalCatImage> LocalCatImages { get; set; }
         public virtual DbSet<Newsletter> Newsletters { get; set; }
+        public virtual DbSet<NewsletterShopMap> NewsletterShopMaps { get; set; }
         public virtual DbSet<ODMPermission> ODMPermissions { get; set; }
         public virtual DbSet<ODMProcessLog> ODMProcessLogs { get; set; }
         public virtual DbSet<ODMRole> ODMRoles { get; set; }
@@ -106,10 +89,23 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ODMUser> ODMUsers { get; set; }
         public virtual DbSet<ODMUserMenuItem> ODMUserMenuItems { get; set; }
         public virtual DbSet<ODMUserToken> ODMUserTokens { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Pid> Pids { get; set; }
         public virtual DbSet<PostCode> PostCodes { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
+        public virtual DbSet<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductHistory> ProductHistories { get; set; }
+        public virtual DbSet<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
+        public virtual DbSet<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryGroup> ProductHistoryGroups { get; set; }
+        public virtual DbSet<ProductHistoryImage> ProductHistoryImages { get; set; }
+        public virtual DbSet<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
+        public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
+        public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
         public virtual DbSet<ProductStageAttribute> ProductStageAttributes { get; set; }
@@ -122,6 +118,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductStageRelated> ProductStageRelateds { get; set; }
         public virtual DbSet<ProductStageTag> ProductStageTags { get; set; }
         public virtual DbSet<ProductStageVideo> ProductStageVideos { get; set; }
+        public virtual DbSet<ProductTag> ProductTags { get; set; }
+        public virtual DbSet<ProductTmp> ProductTmps { get; set; }
+        public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
         public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }

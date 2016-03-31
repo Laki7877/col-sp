@@ -23,14 +23,14 @@ namespace Colsp.ApiTests.BusinessLogic
             CMSCategoryProductMapRequest product1 = new CMSCategoryProductMapRequest();
             product1.IsActive = true;
             product1.ProductBoxBadge = "Lipaholic #Lax 03";
-            product1.ProductPID = "3";
+            product1.Pid = "3";
             product1.Sequence = 1;
             product1.ShopId = 0;
 
             CMSCategoryProductMapRequest product2 = new CMSCategoryProductMapRequest();
             product2.IsActive = true;
             product2.ProductBoxBadge = "Professional Eye Palette";
-            product2.ProductPID = "4";
+            product2.Pid = "4";
             product2.Sequence = 2;
             product2.ShopId = 0;
 
@@ -57,14 +57,14 @@ namespace Colsp.ApiTests.BusinessLogic
             CMSCategoryProductMapRequest product1 = new CMSCategoryProductMapRequest();
             product1.IsActive = true;
             product1.ProductBoxBadge = "Lipaholic #Lax 03";
-            product1.ProductPID = "3";
+            product1.Pid = "3";
             product1.Sequence = 1;
             product1.ShopId = 0;
 
             CMSCategoryProductMapRequest product2 = new CMSCategoryProductMapRequest();
             product2.IsActive = true;
             product2.ProductBoxBadge = "Professional Eye Palette";
-            product2.ProductPID = "4";
+            product2.Pid = "4";
             product2.Sequence = 2;
             product2.ShopId = 0;
 

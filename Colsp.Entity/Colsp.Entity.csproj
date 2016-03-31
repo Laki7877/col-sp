@@ -125,6 +125,7 @@
     <Content Include="Models\ColspModel.edmx.diagram">
       <DependentUpon>ColspModel.edmx</DependentUpon>
     </Content>
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
