@@ -211,6 +211,6 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
-#Config local
-Colsp.Api/Web.config
-Colsp.Entity/Web.config
+# Config local
+Colsp.Api\Web.config
+Colsp.Entity\Web.config
