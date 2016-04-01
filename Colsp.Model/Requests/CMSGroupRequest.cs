@@ -17,4 +17,8 @@ namespace Colsp.Model.Requests
         public Nullable<int> CreateBy { get; set; }
         public string CreateIP { get; set; }
     }
+    public class CMSGroupListRequest : PaginatedRequest
+    {
+        public string SearchText { get; set; }
+    }
 }
