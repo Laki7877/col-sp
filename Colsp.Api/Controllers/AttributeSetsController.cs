@@ -86,8 +86,14 @@ namespace Colsp.Api.Controllers
                                   AttributeSetTagMaps = atrS.AttributeSetTags.Select(s => new { s.AttributeSetId, Tag = new { TagName = s.Tag } }),
                                   AttributeCount = atrS.AttributeSetMaps.Count(),
                                   CategoryCount = atrS.GlobalCatAttributeSetMaps.Count(),
-                                  ProductCount = atrS.ProductStageGroups.Count()
+                                  ProductCount = atrS.ProductStageGroups.Count(),
+                                  Shops = atrS.ProductStageGroups.Select(s=>s.ShopId),
                               };
+                if(User.ShopRequest() != null)
+                {
+                    var shopId = User.ShopRequest().ShopId;
+                    attrSet = attrSet.Where(w => w.Shops.Contains(shopId));
+                }
                 if (request == null)
                 {
                     attrSet = attrSet.Where(w => w.Visibility == true);
@@ -415,11 +421,58 @@ namespace Colsp.Api.Controllers
 
         private AttributeSetRequest GetAttributeSetResponse(ColspEntities db, int attributeSetId)
         {
-            var attrSet = db.AttributeSets.Where(w => w.AttributeSetId.Equals(attributeSetId))
-                     .Include(i => i.AttributeSetMaps.Select(s => s.Attribute.ProductStageAttributes))
-                     .Include(i => i.AttributeSetTags)
-                     .Include(i => i.GlobalCatAttributeSetMaps.Select(s=>s.GlobalCategory))
-                     .SingleOrDefault();
+            var attrSet = db.AttributeSets.Where(w => w.AttributeSetId == attributeSetId).Select(s => new
+            {
+                s.AttributeSetId,
+                s.AttributeSetNameEn,
+                s.AttributeSetDescriptionEn,
+                s.Visibility,
+                s.Status,
+                GlobalCatAttributeSetMaps = s.GlobalCatAttributeSetMaps.Select(sc => new
+                {
+                    GlobalCategory = sc.GlobalCategory == null ? null : new
+                    {
+                        sc.GlobalCategory.CategoryId,
+                        sc.GlobalCategory.NameEn,
+                    }
+                }),
+                AttributeSetTags = s.AttributeSetTags.Select(st => new
+                {
+                    st.Tag
+                }),
+                AttributeSetMaps = s.AttributeSetMaps.Select(sm=> new
+                {
+                    sm.AttributeId,
+                    Attribute = sm.Attribute == null ? null : new
+                    {
+                        sm.Attribute.AttributeNameEn,
+                        sm.Attribute.DataType,
+                        sm.Attribute.DataValidation,
+                        sm.Attribute.DefaultValue,
+                        sm.Attribute.DisplayNameEn,
+                        sm.Attribute.DisplayNameTh,
+                        sm.Attribute.ShowAdminFlag,
+                        sm.Attribute.ShowGlobalFilterFlag,
+                        sm.Attribute.ShowGlobalSearchFlag,
+                        sm.Attribute.ShowLocalFilterFlag,
+                        sm.Attribute.ShowLocalSearchFlag,
+                        sm.Attribute.VariantDataType,
+                        sm.Attribute.VariantStatus,
+                        sm.Attribute.AllowHtmlFlag,
+                        sm.Attribute.Status,
+                        ProductCount = sm.Attribute.ProductStageAttributes.Count,
+                        AttributeValueMaps = sm.Attribute.AttributeValueMaps.Select(sv => new
+                        {
+                            sv.AttributeValueId,
+                            sv.AttributeValue.AttributeValueEn,
+                            sv.AttributeValue.AttributeValueTh,
+                        })
+                    }
+                }),
+
+
+            }).SingleOrDefault();
+
             if (attrSet != null)
             {
                 AttributeSetRequest response = new AttributeSetRequest();
@@ -428,11 +481,15 @@ namespace Colsp.Api.Controllers
                 response.AttributeSetDescriptionEn = attrSet.AttributeSetDescriptionEn;
                 response.Visibility = attrSet.Visibility;
                 response.Status = attrSet.Status;
-                if (attrSet.AttributeSetMaps != null && attrSet.AttributeSetMaps.Count > 0)
+                if (attrSet.AttributeSetMaps != null)
                 {
                     response.Attributes = new List<AttributeRequest>();
-                    foreach (AttributeSetMap map in attrSet.AttributeSetMaps)
+                    foreach (var map in attrSet.AttributeSetMaps)
                     {
+                        if(map.Attribute == null)
+                        {
+                            continue;
+                        }
                         AttributeRequest attr = new AttributeRequest();
                         attr.AttributeId = map.AttributeId;
                         attr.AttributeNameEn = map.Attribute.AttributeNameEn;
@@ -449,15 +506,27 @@ namespace Colsp.Api.Controllers
                         attr.VariantDataType = map.Attribute.VariantDataType;
                         attr.VariantStatus = map.Attribute.VariantStatus;
                         attr.AllowHtmlFlag = map.Attribute.AllowHtmlFlag;
-                        attr.ProductCount = (map.Attribute.ProductStageAttributes != null ? map.Attribute.ProductStageAttributes.Count : 0);
+                        attr.ProductCount = map.Attribute.ProductCount;
                         attr.Status = map.Attribute.Status;
+                        if(map.Attribute.AttributeValueMaps != null)
+                        {
+                            foreach(var val in map.Attribute.AttributeValueMaps)
+                            {
+                                attr.AttributeValues.Add(new AttributeValueRequest()
+                                {
+                                    AttributeValueEn = val.AttributeValueEn,
+                                    AttributeValueId = val.AttributeValueId,
+                                    AttributeValueTh = val.AttributeValueTh,
+                                });
+                            }
+                        }
                         response.Attributes.Add(attr);
                     }
                 }
-                if (attrSet.GlobalCatAttributeSetMaps != null && attrSet.GlobalCatAttributeSetMaps.Count > 0)
+                if (attrSet.GlobalCatAttributeSetMaps != null)
                 {
                     response.Category = new List<CategoryRequest>();
-                    foreach (GlobalCatAttributeSetMap map in attrSet.GlobalCatAttributeSetMaps)
+                    foreach (var map in attrSet.GlobalCatAttributeSetMaps)
                     {
                         CategoryRequest cat = new CategoryRequest();
                         cat.CategoryId = map.GlobalCategory.CategoryId;
@@ -465,10 +534,10 @@ namespace Colsp.Api.Controllers
                         response.Category.Add(cat);
                     }
                 }
-                if (attrSet.AttributeSetTags != null && attrSet.AttributeSetTags.Count > 0)
+                if (attrSet.AttributeSetTags != null)
                 {
                     response.Tags = new List<TagRequest>();
-                    foreach (AttributeSetTag map in attrSet.AttributeSetTags)
+                    foreach (var map in attrSet.AttributeSetTags)
                     {
                         TagRequest tag = new TagRequest();
                         tag.TagName = map.Tag;

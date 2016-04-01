@@ -31,7 +31,7 @@ namespace Colsp.Api.Controllers
                                  c.CouponId,
                                  c.CouponCode,
                                  c.CouponName,
-                                 Remaining = c.MaximumUser == 0 ? "No Limit": "" + (c.CouponQuantity - c.CouponUsed) ,
+                                 Remaining = c.MaximumUser == 0 ? "No Limit": "" + (c.CouponQuantity - c.CouponUsed),
                                  c.StartDate,
                                  c.ExpireDate,
                                  c.Status,

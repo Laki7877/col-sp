@@ -101,6 +101,7 @@ namespace Colsp.Api.Controllers
                                      cat.DescriptionShortEn,
                                      cat.DescriptionShortTh,
                                      cat.FeatureTitle,
+                                     cat.TitleShowcase,
                                      //cat.CategoryAbbreviation,
                                      cat.Lft,
                                      cat.Rgt,

@@ -33,7 +33,7 @@ namespace Colsp.Model.Requests
         public string ShopGroup { get; set; }
         public string TaxInvoice { get; set; }
         public string GiftWrap { get; set; }
-        public bool IsShopReady { get; set; }
+        //public bool IsShopReady { get; set; }
         public List<ShopCommission> Commissions { get; set; }
 
 
@@ -63,7 +63,6 @@ namespace Colsp.Model.Requests
             ShopGroup = string.Empty;
             TaxInvoice = string.Empty;
             GiftWrap = string.Empty;
-            IsShopReady = false;
 
             ShopOwner = new UserRequest();
             Commissions = new List<ShopCommission>();

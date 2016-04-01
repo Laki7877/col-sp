@@ -152,6 +152,7 @@ namespace Colsp.Api.Controllers
                                      category.DescriptionShortEn,
                                      category.DescriptionShortTh,
                                      category.FeatureTitle,
+                                     category.TitleShowcase,
                                      category.UrlKeyEn,
                                      category.UrlKeyTh,
                                      category.Visibility,
@@ -184,7 +185,7 @@ namespace Colsp.Api.Controllers
                 var maxLocalCategory = db.Shops.Where(w => w.ShopId == shopId).Select(s => s.MaxLocalCategory).SingleOrDefault();
                 if (shopCount >= maxLocalCategory)
                 {
-                    throw new Exception("This shop can have max local category of " + User.ShopRequest().MaxLocalCategory);
+                    throw new Exception("This shop has reached the maximum local category");
                 }
                 category = new LocalCategory();
                 category.ShopId = shopId;

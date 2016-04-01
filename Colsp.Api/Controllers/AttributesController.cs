@@ -41,7 +41,8 @@ namespace Colsp.Api.Controllers
                         sv.AttributeId,
                         sv.AttributeValueId,
                         AttributeValue = new { sv.AttributeValue.AttributeValueId, sv.AttributeValue.AttributeValueEn, sv.AttributeValue.AttributeValueTh }
-                    })
+                    }),
+                    s.VisibleTo
                 });
                 return Request.CreateResponse(HttpStatusCode.OK, attribute);
             }

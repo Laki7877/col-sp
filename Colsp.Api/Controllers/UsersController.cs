@@ -257,7 +257,10 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var user = db.Users.Where(w => w.UserId == userId && Constant.USER_TYPE_SELLER.Equals(w.Type)).SingleOrDefault();
+                var user = db.Users
+                    .Where(w => w.UserId == userId && Constant.USER_TYPE_SELLER.Equals(w.Type))
+                    .Include(i => i.UserBrandMaps)
+                    .SingleOrDefault();
                 #region Validation
                 if (user == null || user.Status.Equals(Constant.STATUS_REMOVE))
                 {
@@ -575,9 +578,9 @@ namespace Colsp.Api.Controllers
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
-        [Route("api/Users/Login")]
+        [Route("api/Users/Profile")]
         [HttpGet]
-        public HttpResponseMessage LoginUser()
+        public HttpResponseMessage RefreshProfile()
         {
             try
             {
@@ -603,6 +606,10 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                if(request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
                 string email = request.Email;
                 var user = db.Users.Where(u => u.Email.Equals(email))
                     .Include(i => i.UserGroupMaps.Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission)))
@@ -649,8 +656,12 @@ namespace Colsp.Api.Controllers
                         s.Shop.ShopNameEn,
                         Status = s.Shop.Status,
                         ShopGroup = s.Shop.ShopGroup,
-                        IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true,
+                        //IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true,
                         //MaxLocalCategory = s.Shop.MaxLocalCategory
+                    }).ToList(),
+                    user.UserBrandMaps == null ? null : user.UserBrandMaps.Select(s=> new BrandRequest
+                    {
+                        BrandId = s.BrandId,
                     }).ToList(),
                     new UserRequest {
                         UserId = user.UserId,
@@ -702,6 +713,7 @@ namespace Colsp.Api.Controllers
                                 u.NameTh,
                                 u.Email,
                                 Shops = u.UserShopMaps.Select(s=>s.Shop),
+                                Brands = u.UserBrandMaps,
                                 u.Type,
                                 Permission = u.UserGroupMaps.Select(um => um.UserGroup.UserGroupPermissionMaps.Select(pm => pm.Permission))
                             })
@@ -732,7 +744,15 @@ namespace Colsp.Api.Controllers
                 }
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var principal = new UsersPrincipal(identity,
-                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
+                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest
+                    {
+                        ShopId = s.ShopId,
+                        ShopNameEn = s.ShopNameEn
+                    }).ToList(),
+                    user.Brands == null ? null : user.Brands.Select(s => new BrandRequest
+                    {
+                        BrandId = s.BrandId,
+                    }).ToList(),
                     User.UserRequest(),DateTime.Now);
 
                 ClaimRequest claimRq = new ClaimRequest();
@@ -768,6 +788,7 @@ namespace Colsp.Api.Controllers
                                 u.Email,
                                 Shops = u.UserShopMaps.Select(s => s.Shop),
                                 u.Type,
+                                Brands = u.UserBrandMaps,
                                 Permission = u.UserGroupMaps.Select(um => um.UserGroup.UserGroupPermissionMaps.Select(pm => pm.Permission))
                             })
                             .FirstOrDefault();
@@ -797,7 +818,15 @@ namespace Colsp.Api.Controllers
                 }
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var principal = new UsersPrincipal(identity,
-                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest { ShopId = s.ShopId, ShopNameEn = s.ShopNameEn }).ToList(),
+                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest
+                    {
+                        ShopId = s.ShopId,
+                        ShopNameEn = s.ShopNameEn
+                    }).ToList(),
+                    user.Brands == null ? null : user.Brands.Select(s=> new BrandRequest
+                    {
+                        BrandId = s.BrandId,
+                    }).ToList(),
                     User.UserRequest(),DateTime.Now);
 
                 ClaimRequest claimRq = new ClaimRequest();
@@ -889,17 +918,18 @@ namespace Colsp.Api.Controllers
                 var shopId = User.ShopRequest().ShopId;
                 var productTotalCount = db.ProductStages.Where(w => w.ShopId == shopId).Count();
                 var shopBanner = db.ShopImages.Where(w => w.ShopId == shopId).Count();
+                var shopDescription = db.Shops.Where(w => w.ShopId == shopId).Select(s => s.ShopDescriptionEn).SingleOrDefault();
                 var productApprove = db.ProductStages.Where(w => w.ShopId == shopId && Constant.PRODUCT_STATUS_APPROVE.Equals(w.Status)).Count();
                 bool IsProduct = productTotalCount > 0 ? true : false;
                 bool isBanner = shopBanner > 0 ? true : false;
-                bool IsProductApprove = productApprove > 0 ? true : false; 
+                bool IsProductApprove = productApprove > 0 ? true : false;
                 return Request.CreateResponse(new OnBoardRequest()
                 {
                     AddProduct = IsProduct,
                     ChangePassword = IsPasswordChange,
                     ProductApprove = IsProductApprove,
-                    DecorateStore = isBanner,
-                    SetUpShop = User.ShopRequest().IsShopReady
+                    //DecorateStore = isBanner,
+                    SetUpShop = !string.IsNullOrWhiteSpace(shopDescription)
                 });
             }
             catch (Exception e)
@@ -907,7 +937,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
-
 
         [Route("api/Tokens/Validation")]
         [HttpGet]

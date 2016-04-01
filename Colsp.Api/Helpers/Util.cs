@@ -13,7 +13,7 @@ namespace Colsp.Api.Helpers
     public static class Util
     {
         public static async Task<FileUploadRespond> SetupImage(HttpRequestMessage Request, string rootPath, string folderName
-            , int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare)
+            , int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare, int logoWidth = 100, int logoLength = 100)
         {
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -39,7 +39,7 @@ namespace Colsp.Api.Helpers
                 bool.TryParse(streamProvider.FormData["IsLogo"], out isLogo);
                 if (isLogo)
                 {
-                    Validation.ValidateImage(fileName, 100, 100, 100, 100, int.MaxValue, true);
+                    Validation.ValidateImage(fileName, logoWidth, logoLength, logoWidth, logoLength, int.MaxValue, true);
                 }
                 else
                 {

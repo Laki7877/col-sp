@@ -233,7 +233,7 @@ namespace Colsp.Api.Controllers
 
                 var invenentory = (from inv in db.Inventories
                                 join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
-                                where stage.IsVariant == true || (stage.IsVariant == false && stage.ImageCount == 0)
+                                where stage.IsVariant == true || (stage.IsVariant == false && stage.VariantCount == 0)
                                 select new
                                 {
                                     ImageUrl = stage.FeatureImgUrl,

@@ -18,8 +18,36 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var query = db.ProductStages.Where(w=>w.ShopId==19).Select(s => new
+                var query = db.ProductStages.Where(w=>w.ShopId==3).Select(s => new
                 {
+                    ProductStageGroup = new
+                    {
+                        s.ProductStageGroup.Brand.BrandNameEn,
+                        Tags = s.ProductStageGroup.ProductStageTags.Select(st => st.Tag),
+                        s.ProductStageGroup.GlobalCatId,
+                        s.ProductStageGroup.LocalCatId,
+                        ProductStageGlobalCatMaps = s.ProductStageGroup.ProductStageGlobalCatMaps.Select(sc => sc.CategoryId),
+                        ProductStageLocalCatMaps = s.ProductStageGroup.ProductStageLocalCatMaps.Select(sc => sc.CategoryId),
+                        ProductStageRelateds1 = s.ProductStageGroup.ProductStageRelateds1.Select(sp => sp.ProductStageGroup1.ProductStages.Where(w => w.IsVariant == false).Select(sv => sv.Pid)),
+                        s.ProductStageGroup.EffectiveDate,
+                        s.ProductStageGroup.ExpireDate,
+                        s.ProductStageGroup.ControlFlag1,
+                        s.ProductStageGroup.ControlFlag2,
+                        s.ProductStageGroup.ControlFlag3,
+                        s.ProductStageGroup.Remark,
+                        AttributeSet = s.ProductStageGroup.AttributeSet == null ? null : new
+                        {
+                            s.ProductStageGroup.AttributeSet.AttributeSetId,
+                            s.ProductStageGroup.AttributeSet.AttributeSetNameEn,
+                            AttributeSetMaps = s.ProductStageGroup.AttributeSet.AttributeSetMaps.Select(sm => new
+                            {
+                                Attribute = sm.Attribute == null ? null : new
+                                {
+                                    sm.Attribute.AttributeNameEn
+                                },
+                            }),
+                        },
+                    },
                     s.Status,
                     s.ProductId,
                     s.DefaultVaraint,
@@ -28,7 +56,6 @@ namespace Colsp.Api.Controllers
                     s.ProductNameTh,
                     s.Sku,
                     s.Upc,
-                    s.ProductStageGroup.Brand.BrandNameEn,
                     s.OriginalPrice,
                     s.SalePrice,
                     s.Installment,
@@ -42,8 +69,7 @@ namespace Colsp.Api.Controllers
                     s.KillerPoint2Th,
                     s.KillerPoint3En,
                     s.KillerPoint3Th,
-                    s.ProductStageGroup.ProductStageTags,
-                    Inventory = new
+                    Inventory = s.Inventory == null ? null : new
                     {
                         s.Inventory.Quantity,
                         s.Inventory.SafetyStockSeller,
@@ -62,11 +88,6 @@ namespace Colsp.Api.Controllers
                     s.Width,
                     s.Height,
                     s.Weight,
-                    s.ProductStageGroup.GlobalCatId,
-                    s.ProductStageGroup.LocalCatId,
-                    s.ProductStageGroup.ProductStageGlobalCatMaps,
-                    s.ProductStageGroup.ProductStageLocalCatMaps,
-                    ProductStageRelated = s.ProductStageGroup.ProductStageRelateds1.Select(sp => sp.ProductStageGroup1.ProductStages.Where(w => w.IsVariant == false).Select(sv => sv.Pid)),
                     s.MetaDescriptionEn,
                     s.MetaDescriptionTh,
                     s.MetaKeyEn,
@@ -76,44 +97,30 @@ namespace Colsp.Api.Controllers
                     s.UrlEn,
                     s.BoostWeight,
                     s.GlobalBoostWeight,
-                    s.ProductStageGroup.EffectiveDate,
-                    s.ProductStageGroup.ExpireDate,
                     s.GiftWrap,
-                    s.ProductStageGroup.ControlFlag1,
-                    s.ProductStageGroup.ControlFlag2,
-                    s.ProductStageGroup.ControlFlag3,
-                    s.ProductStageGroup.Remark,
                     ProductStageAttributes = s.ProductStageAttributes.Select(ss => new
                     {
                         ss.IsAttributeValue,
                         ss.CheckboxValue,
                         ss.ValueEn,
-                        Attribute = new AttributeRequest()
+                        Attribute = ss.Attribute == null ? null : new
                         {
-                            AttributeNameEn = ss.Attribute.AttributeNameEn,
+                            ss.Attribute.AttributeId,
+                            ss.Attribute.AttributeNameEn,
                             DataType = ss.Attribute.DataType,
                             DefaultAttribute = ss.Attribute.DefaultAttribute,
-                            AttributeValues =
-                            ss.Attribute.AttributeValueMaps.Select(sv => new AttributeValueRequest()
+                            AttributeValueMaps =
+                            ss.Attribute.AttributeValueMaps.Select(sv => new
                             {
-                                AttributeValueEn = sv.AttributeValue.AttributeValueEn,
-                                AttributeValueId = sv.AttributeValue.AttributeValueId,
-
-                            }).ToList()
+                                AttributeValue = sv.AttributeValue == null ? null : new
+                                {
+                                    sv.AttributeValue.AttributeValueEn,
+                                    sv.AttributeValue.AttributeValueId,
+                                    sv.AttributeValue.MapValue,
+                                }
+                            })
                         }
                     }),
-                    AttributeSet = new
-                    {
-                        s.ProductStageGroup.AttributeSet.AttributeSetNameEn,
-                        Attribute = new 
-                        {
-                            AttributeNameEn = s.ProductStageGroup.AttributeSet.AttributeSetMaps.Select(sa => sa.Attribute.AttributeNameEn),
-                            AttributeValue = s.ProductStageGroup.AttributeSet.AttributeSetMaps.Select(sa => sa.Attribute.AttributeValueMaps.Select(sv => new
-                            {
-                                sv.AttributeValue.AttributeValueEn,
-                            }))
-                        }
-                    },
                     s.ShopId,
                     s.IsVariant,
                     s.VariantCount,

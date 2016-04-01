@@ -26,7 +26,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload =  await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.BRAND_FOLDER,1500,1500,2000,2000,5,true);
+                FileUploadRespond fileUpload =  await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.BRAND_FOLDER,1500,1500,2000,2000,5,true,500,500);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
@@ -461,6 +461,10 @@ namespace Colsp.Api.Controllers
             if (request.BrandImage != null)
             {
                 brand.PicUrl = request.BrandImage.url;
+            }
+            else
+            {
+                brand.PicUrl = string.Empty;
             }
         }
 

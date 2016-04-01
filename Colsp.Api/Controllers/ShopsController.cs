@@ -566,7 +566,8 @@ namespace Colsp.Api.Controllers
                 }
                 shop.Status = status;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
-                Cache.Delete(Request.Headers.Authorization.Parameter);
+                User.ShopRequest().Status = status;
+                //Cache.Delete(Request.Headers.Authorization.Parameter);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -618,6 +619,7 @@ namespace Colsp.Api.Controllers
             shop.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.TaxInvoice = Validation.ValidateString(request.TaxInvoice, "Tax Invoice", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, int.MaxValue, 0).Value;
+            shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.STATUS_NOT_ACTIVE, new List<string>() { Constant.STATUS_NOT_ACTIVE, Constant.STATUS_ACTIVE});
         }
 
         private void SetupUser(User user, UserRequest request)

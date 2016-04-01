@@ -42,7 +42,8 @@ namespace Colsp.Api.Filters
             if (cachedPrincipal is UsersPrincipal)
             {
                 var principal = (UsersPrincipal)cachedPrincipal;
-                if((DateTime.Now - principal.LoginDt).TotalHours > Constant.CACHE_TIMEOUT)
+                
+                if((DateTime.Now - principal.LoginDt).TotalMinutes > Constant.CACHE_TIMEOUT)
                 {
                     Cache.Delete(authHeader.Parameter);
                     return Task.FromResult(context.Request.CreateResponse(HttpStatusCode.Unauthorized));
