@@ -58,6 +58,9 @@
     <Compile Include="Requests\CMSCollectionCategoryRequest.cs" />
     <Compile Include="Requests\CMSCollectionItemRequest.cs" />
     <Compile Include="Requests\CMSGroupRequest.cs" />
+    <Compile Include="Requests\CMSMasterMappingItemCategoryRequest.cs" />
+    <Compile Include="Requests\CMSMasterRequest.cs" />
+    <Compile Include="Requests\CMSSchedulerRequest.cs" />
     <Compile Include="Requests\CMSSearchForAddRequest.cs" />
     <Compile Include="Requests\CMSMasterAllRequest.cs" />
     <Compile Include="Requests\CollectionListRequest.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="Requests\VideoLinkRequest.cs" />
     <Compile Include="Responses\Buy1Get1ItemRequest.cs" />
     <Compile Include="Responses\Buy1Get1ItemResponse.cs" />
+    <Compile Include="Responses\CMSMasterCategoryListResponse.cs" />
     <Compile Include="Responses\CMSMasterResponse.cs" />
     <Compile Include="Responses\CMSGroupResponse.cs" />
     <Compile Include="Responses\CollectionItemResponse.cs" />

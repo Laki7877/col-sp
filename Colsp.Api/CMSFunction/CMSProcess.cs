@@ -22,7 +22,7 @@ namespace Colsp.Api.CMSFunction
 
         #region Create CMS 
 
-        public int CreateCMSStaticPage(CMSCollectionItemRequest Model)
+        public int CreateCMSMaster(CMSMasterRequest Model)
         {
             int result = 0;
             using (ColspEntities db = new ColspEntities())
@@ -32,9 +32,9 @@ namespace Colsp.Api.CMSFunction
                     try
                     {
                         CMSMaster cms = new CMSMaster();
-                        cms.CMSMasterNameEN = Model.CMSNameEN;
-                        cms.CMSMasterNameTH = Model.CMSNameTH;
-                        cms.CMSTypeId = Model.CMSTypeId;
+                        cms.CMSMasterNameEN = Model.CMSMasterNameEN;
+                        cms.CMSMasterNameTH = Model.CMSMasterNameTH;
+                        cms.CMSTypeId = Model.CMSMasterTypeId;
                         cms.CMSMasterEffectiveDate = Model.EffectiveDate;
                         cms.CMSMasterEffectiveTime = Model.EffectiveTime;
                         cms.CMSMasterExpiryDate = Model.ExpiryDate;
@@ -44,13 +44,14 @@ namespace Colsp.Api.CMSFunction
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                         cms.Status = Model.Status;
-                        cms.CMSMasterStatusId = Model.CMSStatusFlowId;
+                        cms.CMSMasterStatusId = Model.CMSMasterStatusId;
                         cms.Sequence = Model.Sequence;
-                        cms.CMSMasterURLKey = Model.URLKey;
+                        cms.CMSMasterURLKey = Model.CMSMasterURLKey;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.CreateBy;
                         cms.Createdate = DateTime.Now;
                         cms.CreateIP = Model.CreateIP;
+                        cms.IsCampaign = Model.ISCampaign;
                         db.CMSMasters.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
@@ -70,55 +71,6 @@ namespace Colsp.Api.CMSFunction
             }
         }
 
-        /// <summary>
-        /// param as CMSId,list of CMSCollection
-        /// </summary>
-        public int CreateCMSCollectionItem(CMSCollectionItemRequest Model)
-        {
-            int result = 0;
-            using (ColspEntities db = new ColspEntities())
-            {
-                using (var dbcxtransaction = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        CMSMaster cms = new CMSMaster();
-                        cms.CMSMasterNameEN = Model.CMSNameEN;
-                        cms.CMSMasterNameTH = Model.CMSNameTH;
-                        cms.CMSTypeId = Model.CMSTypeId;
-                        cms.CMSMasterEffectiveDate = Model.EffectiveDate;
-                        cms.CMSMasterEffectiveTime = Model.EffectiveTime;
-                        cms.CMSMasterExpiryDate = Model.ExpiryDate;
-                        cms.CMSMasterExpiryTime = Model.ExpiryTime;
-                        cms.LongDescriptionEN = Model.LongDescriptionEN;
-                        cms.LongDescriptionTH = Model.LongDescriptionTH;
-                        cms.ShortDescriptionEN = Model.ShortDescriptionEN;
-                        cms.ShortDescriptionTH = Model.ShortDescriptionTH;
-                        cms.Status = Model.Status;
-                        cms.CMSMasterStatusId = Model.CMSStatusFlowId;
-                        cms.Sequence = Model.Sequence;
-                        cms.CMSMasterURLKey = Model.URLKey;
-                        cms.Visibility = Model.Visibility;
-                        cms.CreateBy = Model.CreateBy;
-                        cms.Createdate = DateTime.Now;
-                        cms.CreateIP = Model.CreateIP;
-                        db.CMSMasters.Add(cms);
-                        if (db.SaveChanges() > 0) //Saved return row save successfully.
-                        {
-                            result = cms.CMSMasterId;
-                            dbcxtransaction.Commit();
-                        }
-                        return result;
-                    }
-                    catch (Exception ex)
-                    {
-                        dbcxtransaction.Rollback();
-                        return result;
-                    }
-                }
-            }
-
-        }
 
         public CMSMasterAllRequest CMSUpdateStatus(CMSMasterItemListRequest model,int UserId,int? ShopId)
         {
@@ -199,7 +151,44 @@ namespace Colsp.Api.CMSFunction
                 }
             }
         }
-        
+
+
+        /// <summary>
+        /// When not campaign 
+        /// </summary>
+        /// <param name="Master"></param>
+        /// <param name="UserId"></param>
+        /// <param name="ShopId"></param>
+        /// <returns></returns>
+        public int CreateCMSScheduler(CMSMaster Master,int UserId, int? ShopId) {
+            int result = 0;
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    CMSScheduler sc = new CMSScheduler();
+                    sc.CreateBy = UserId;
+                    sc.Createdate = DateTime.Now;
+                    sc.EffectiveDate = Master.CMSMasterEffectiveDate;
+                    sc.EffectiveTime = Master.CMSMasterEffectiveTime;
+                    sc.ExpiryDate = Master.CMSMasterExpiryDate;
+                    sc.ExpiryTime = Master.CMSMasterExpiryTime;
+                    sc.Visibility = Master.Visibility;
+                    sc.CreateIP = Master.CreateIP;
+                    sc.Status = Master.Status;
+                    db.CMSSchedulers.Add(sc);
+                    if (db.SaveChanges() > 0)
+                        result = sc.CMSSchedulerId;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
         #endregion
 
         #region Edit CMS
@@ -314,7 +303,7 @@ namespace Colsp.Api.CMSFunction
 
 
         //Thanakrit : 20160215 , update only sending field
-        public int UpdateCMSStaticPage(CMSCollectionItemRequest Model)
+        public int UpdateCMSMaster(CMSMasterRequest Model)
         {
             var modelItem = Model;
             int result = 0;
@@ -325,14 +314,14 @@ namespace Colsp.Api.CMSFunction
                     //foreach (var modelItem in Model) {
                     try
                     {
-                        var cms = db.CMSMasters.Where(c => c.CMSMasterId == modelItem.CMSId).FirstOrDefault();
+                        var cms = db.CMSMasters.Where(c => c.CMSMasterId == modelItem.CMSMasterId).FirstOrDefault();
                         if (cms != null)
                         {
 
-                            cms.CMSMasterNameEN = modelItem.CMSNameEN != default(string) ? modelItem.CMSNameEN : cms.CMSMasterNameEN;
-                            cms.CMSMasterNameTH = modelItem.CMSNameTH != default(string) ? modelItem.CMSNameTH : cms.CMSMasterNameTH;
+                            cms.CMSMasterNameEN = modelItem.CMSMasterNameEN != default(string) ? modelItem.CMSMasterNameEN : cms.CMSMasterNameEN;
+                            cms.CMSMasterNameTH = modelItem.CMSMasterNameTH != default(string) ? modelItem.CMSMasterNameTH : cms.CMSMasterNameTH;
 
-                            cms.CMSTypeId = modelItem.CMSTypeId ?? cms.CMSTypeId;
+                            cms.CMSTypeId = modelItem.CMSMasterTypeId ?? cms.CMSTypeId;
                             cms.CMSMasterEffectiveDate = modelItem.EffectiveDate ?? cms.CMSMasterEffectiveDate;
                             cms.CMSMasterEffectiveTime = modelItem.EffectiveTime ?? cms.CMSMasterEffectiveTime;
                             cms.CMSMasterExpiryDate = modelItem.ExpiryDate ?? cms.CMSMasterExpiryDate;
@@ -343,9 +332,9 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionTH = modelItem.ShortDescriptionTH != default(string) ? modelItem.ShortDescriptionTH : cms.ShortDescriptionTH;
                             //cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
                             cms.Status = modelItem.Status ?? cms.Status;
-                            cms.CMSMasterStatusId = modelItem.CMSStatusFlowId ?? cms.CMSMasterStatusId;
+                            cms.CMSMasterStatusId = modelItem.CMSMasterStatusId ?? cms.CMSMasterStatusId;
                             cms.Sequence = modelItem.Sequence ?? cms.Sequence;
-                            cms.CMSMasterURLKey = modelItem.URLKey != default(string) ? modelItem.URLKey : cms.CMSMasterURLKey;
+                            cms.CMSMasterURLKey = modelItem.CMSMasterURLKey != default(string) ? modelItem.CMSMasterURLKey : cms.CMSMasterURLKey;
                             cms.Visibility = modelItem.Visibility ?? cms.Visibility;
                             cms.UpdateBy = modelItem.CreateBy ?? cms.UpdateBy;
                             cms.UpdateDate = DateTime.Now;
