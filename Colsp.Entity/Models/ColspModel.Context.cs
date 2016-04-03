@@ -138,6 +138,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<TableA> TableAs { get; set; }
+        public virtual DbSet<TableAB> TableABs { get; set; }
+        public virtual DbSet<TableB> TableBs { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserBrandMap> UserBrandMaps { get; set; }
@@ -146,6 +149,19 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
+        public virtual DbSet<Migrate_TBProduct> Migrate_TBProduct { get; set; }
+        public virtual DbSet<Migrate_TBProductApproved> Migrate_TBProductApproved { get; set; }
+        public virtual DbSet<Migrate_TBProductBundle> Migrate_TBProductBundle { get; set; }
+        public virtual DbSet<Migrate_TBProductGroup> Migrate_TBProductGroup { get; set; }
+        public virtual DbSet<Migrate_TBProductMaster> Migrate_TBProductMaster { get; set; }
+        public virtual DbSet<Migrate_TBProductPicture> Migrate_TBProductPicture { get; set; }
+        public virtual DbSet<Migrate_TBProductRelateLink> Migrate_TBProductRelateLink { get; set; }
+        public virtual DbSet<Migrate_TBProductVideoLink> Migrate_TBProductVideoLink { get; set; }
+        public virtual DbSet<Migrate_TBProperty> Migrate_TBProperty { get; set; }
+        public virtual DbSet<Migrate_TBPropertyCategory> Migrate_TBPropertyCategory { get; set; }
+        public virtual DbSet<Migrate_TBPropertyFilter> Migrate_TBPropertyFilter { get; set; }
+        public virtual DbSet<Migrate_TBPropertyGroup> Migrate_TBPropertyGroup { get; set; }
+        public virtual DbSet<Migrate_TBPropertyProduct> Migrate_TBPropertyProduct { get; set; }
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
         public virtual DbSet<PostCodeMap> PostCodeMaps { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }

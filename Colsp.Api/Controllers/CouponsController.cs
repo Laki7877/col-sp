@@ -31,11 +31,12 @@ namespace Colsp.Api.Controllers
                                  c.CouponId,
                                  c.CouponCode,
                                  c.CouponName,
-                                 Remaining = c.MaximumUser == 0 ? "No Limit": "" + (c.CouponQuantity - c.CouponUsed),
+                                 Remaining = c.CouponQuantity - c.CouponUsed,
                                  c.StartDate,
                                  c.ExpireDate,
                                  c.Status,
                                  c.ShopId,
+                                 c.MaximumUser,
                                  Shop = new { c.Shop.ShopNameEn },
                                  c.CouponType
                              };

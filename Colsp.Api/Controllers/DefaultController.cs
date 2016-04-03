@@ -1,6 +1,7 @@
 ﻿using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -133,6 +134,56 @@ namespace Colsp.Api.Controllers
             
 
             return Request.CreateErrorResponse(HttpStatusCode.NotFound, "false");
+        }
+
+
+        [Route("api/Test")]
+        [HttpGet]
+        [OverrideAuthentication, OverrideAuthorization]
+        public HttpResponseMessage Test()
+        {
+            //var tmp = db.TableABs.fi
+
+
+            TableAB test = new TableAB()
+            {
+                IdA = 1
+            };
+
+
+            test = db.TableABs.Attach(test);
+            test.Num = 55;
+
+
+            //db.TableBs.Add(new TableB()
+            //{
+            //    IdB = 2,
+            //    NameB = "II"
+            //});
+
+            //TableA ta = new TableA()
+            //{
+            //    IdA = 1
+            //};
+            //db.TableABs.at
+            //db.TableAs.Attach(ta);
+            //ta.TableABs.Clear();
+            //ta.
+            //ta.TableABs.Add(new TableAB()
+            //{
+            //    IdB = 2,
+            //    Num = 20,
+            //});
+
+            //ta.TableABs.Add(new TableAB()
+            //{
+            //    IdB = 1,
+            //    Num = 10,
+            //});
+
+            db.SaveChanges();
+
+            return Request.CreateResponse(HttpStatusCode.OK, test);
         }
 
         protected override void Dispose(bool disposing)

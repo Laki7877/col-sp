@@ -3717,10 +3717,6 @@ namespace Colsp.Api.Controllers
                         {
                             bodyList[headDicTmp["BRN"].Item2] = p.ProductStageGroup.BrandNameEn;
                         }
-                        //if (p.ProductStageGroup.Brand != null)
-                        //{
-                        //    bodyList[headDicTmp["BRN"].Item2] = p.ProductStageGroup.Brand.BrandNameEn;
-                        //}
                     }
                     #endregion
                     #region Price
@@ -3956,7 +3952,7 @@ namespace Colsp.Api.Controllers
                     {
                         bodyList[headDicTmp["PBW"].Item2] = string.Concat(p.BoostWeight);
                     }
-                    if (headDicTmp.ContainsKey("GPB"))
+                    if (headDicTmp.ContainsKey("GPB") && User.ShopRequest() == null)
                     {
                         bodyList[headDicTmp["GPB"].Item2] = string.Concat(p.GlobalBoostWeight);
                     }
@@ -5378,7 +5374,6 @@ namespace Colsp.Api.Controllers
         [HttpPut]
         public async Task<HttpResponseMessage> ImportSaveProduct()
         {
-
             string fileName = string.Empty;
             HashSet<string> errorMessage = new HashSet<string>();
             int row = 2;
@@ -5415,13 +5410,14 @@ namespace Colsp.Api.Controllers
                     .Include(i=>i.ProductStageTags)
                     .Include(i=>i.ProductStageGlobalCatMaps)
                     .Include(i=>i.ProductStageLocalCatMaps)
-                    .Include(i=>i.ProductStages.Select(s=>s.Inventory)).ToList();
+                    .Include(i=>i.ProductStages.Select(s=>s.Inventory))
+                    .Include(i=>i.ProductStageRelateds).ToList();
                 foreach (var g in groupList.Values)
                 {
                     var groupEn = gropEnList.Where(w => w.ProductId == g.ProductId).SingleOrDefault();
                     if(groupEn == null)
                     {
-                        errorMessage.Add("Cannot find group id " + g.ProductId + " in seller portal");
+                        errorMessage.Add("Cannot find group id 'empty' in seller portal. If you are trying to add new products, please use Import - Add New Products feature.");
                         continue;
                     }
                     #region Brand
@@ -5439,7 +5435,131 @@ namespace Colsp.Api.Controllers
                     {
                         groupEn.LocalCatId = g.LocalCatId;
                     }
+                    if (header.Contains("1st Alternative Global Category") 
+                        || header.Contains("2nd Alternative Global Category"))
+                    {
+                        var globalCat = groupEn.ProductStageGlobalCatMaps.ToList();
+                        if(g.ProductStageGlobalCatMaps != null)
+                        {
+                            foreach(var cat in g.ProductStageGlobalCatMaps)
+                            {
+                                bool isNewCat = false;
+                                if(globalCat == null || globalCat.Count == 0)
+                                {
+                                    isNewCat = true;
+                                }
+                                if (!isNewCat)
+                                {
+                                    var currentCat = globalCat.Where(w => w.CategoryId == cat.CategoryId).SingleOrDefault();
+                                    if(currentCat != null)
+                                    {
+                                        globalCat.Remove(currentCat);
+                                    }
+                                    else
+                                    {
+                                        isNewCat = true;
+                                    }
+                                }
+                                if (isNewCat)
+                                {
+                                    groupEn.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
+                                    {
+                                        CategoryId = cat.CategoryId,
+                                        CreatedBy = User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now,
+                                    });
+                                }
+                            }
+                        }
+                        if(globalCat != null && globalCat.Count > 0)
+                        {
+                            db.ProductStageGlobalCatMaps.RemoveRange(globalCat);
+                        }
+                    }
+                    if (header.Contains("1st Alternative Local Category")
+                        || header.Contains("2nd Alternative Local Category"))
+                    {
+                        var localCat = groupEn.ProductStageLocalCatMaps.ToList();
+                        if (g.ProductStageLocalCatMaps != null)
+                        {
+                            foreach (var cat in g.ProductStageLocalCatMaps)
+                            {
+                                bool isNewCat = false;
+                                if (localCat == null || localCat.Count == 0)
+                                {
+                                    isNewCat = true;
+                                }
+                                if (!isNewCat)
+                                {
+                                    var currentCat = localCat.Where(w => w.CategoryId == cat.CategoryId).SingleOrDefault();
+                                    if (currentCat != null)
+                                    {
+                                        localCat.Remove(currentCat);
+                                    }
+                                    else
+                                    {
+                                        isNewCat = true;
+                                    }
+                                }
+                                if (isNewCat)
+                                {
+                                    groupEn.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
+                                    {
+                                        CategoryId = cat.CategoryId,
+                                        CreatedBy = User.UserRequest().Email,
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = User.UserRequest().Email,
+                                        UpdatedDt = DateTime.Now,
+                                    });
+                                }
+                            }
+                        }
+                        if (localCat != null && localCat.Count > 0)
+                        {
+                            db.ProductStageLocalCatMaps.RemoveRange(localCat);
+                        }
+                    }
                     #endregion
+                    //if(header.Contains("Related Products"))
+                    //{
+                    //    var relatedPro = groupEn.ProductStageRelateds.ToList();
+                    //    if (g.ProductStageRelateds1 != null)
+                    //    {
+                    //        foreach (var pro in g.ProductStageRelateds1)
+                    //        {
+                    //            bool isNewCat = false;
+                    //            if (relatedPro == null || relatedPro.Count == 0)
+                    //            {
+                    //                isNewCat = true;
+                    //            }
+                    //            if (!isNewCat)
+                    //            {
+                    //                var currentCat = relatedPro.Where(w => w.Child == pro.Child).SingleOrDefault();
+                    //                if (currentCat != null)
+                    //                {
+                    //                    relatedPro.Remove(currentCat);
+                    //                }
+                    //                else
+                    //                {
+                    //                    isNewCat = true;
+                    //                }
+                    //            }
+                    //            if (isNewCat)
+                    //            {
+                    //                groupEn.ProductStageRelateds1.Add(new ProductStageRelated()
+                    //                {
+                    //                    Child = pro.Child,
+                    //                    CreatedBy = User.UserRequest().Email,
+                    //                    CreatedDt = DateTime.Now,
+                    //                    UpdatedBy = User.UserRequest().Email,
+                    //                    UpdatedDt = DateTime.Now,
+                    //                });
+                    //            }
+                    //        }
+                    //    }
+                    //}
                     #region Tag
                     if (header.Contains("Search Tags"))
                     {
@@ -5517,7 +5637,7 @@ namespace Colsp.Api.Controllers
                     #region Master Variant
                     var masterVariantEn = groupEn.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
                     var importVariantEn = g.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
-                    if (g.ProductStages.Where(w=>w.IsVariant==true).ToList().Count == 0)
+                    if (importVariantEn != null && masterVariantEn != null)
                     {
                         #region Setup Variant
                         if (header.Contains("Default Variant"))
@@ -5661,7 +5781,7 @@ namespace Colsp.Api.Controllers
                         {
                             masterVariantEn.PrepareSun = importVariantEn.PrepareSun;
                         }
-                        if (header.Contains("Package Dimension - Length (mm)"))
+                        if (header.Contains("Package Dimension - Lenght (mm)"))
                         {
                             masterVariantEn.Length = importVariantEn.Length;
                         }
@@ -5765,7 +5885,7 @@ namespace Colsp.Api.Controllers
                     var stageList = groupEn.ProductStages.Where(w=>w.IsVariant==true).ToList();
                     if (g.ProductStages != null)
                     {
-                        foreach (var staging in g.ProductStages)
+                        foreach (var staging in g.ProductStages.Where(w => w.IsVariant == true))
                         {
                             bool isNewStage = false;
                             if (stageList == null || stageList.Count == 0)
@@ -5920,7 +6040,7 @@ namespace Colsp.Api.Controllers
                                     {
                                         currentStage.PrepareSun = staging.PrepareSun;
                                     }
-                                    if (header.Contains("Package Dimension - Length (mm)"))
+                                    if (header.Contains("Package Dimension - Lenght (mm)"))
                                     {
                                         currentStage.Length = staging.Length;
                                     }
@@ -6043,6 +6163,8 @@ namespace Colsp.Api.Controllers
 
                     groupEn.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().VariantCount
                         = g.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+                    groupEn.UpdatedDt = DateTime.Now;
+                    groupEn.UpdatedBy = User.UserRequest().Email;
                 }
                 #region Validate Error Message
                 if (errorMessage.Count > 0)

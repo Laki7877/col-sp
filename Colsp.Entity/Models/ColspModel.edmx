@@ -783,6 +783,13 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
             <PropertyRef Name="ReceiveSms" />
             <PropertyRef Name="T1CardNo" />
             <PropertyRef Name="CustTaxID" />
+            <PropertyRef Name="AddressLine1" />
+            <PropertyRef Name="AddressLine2" />
+            <PropertyRef Name="ProvinceId" />
+            <PropertyRef Name="CityId" />
+            <PropertyRef Name="DistrictId" />
+            <PropertyRef Name="PostCode" />
+            <PropertyRef Name="Remark" />
             <PropertyRef Name="CreateOn" />
             <PropertyRef Name="CreateBy" />
           </Key>
@@ -792,11 +799,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
           <Property Name="LastName" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Mobile" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="TelephoneNo" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="BirthDate" Type="smalldatetime" />
           <Property Name="Gender" Type="tinyint" Nullable="false" />
           <Property Name="ReceiveSms" Type="bit" Nullable="false" />
           <Property Name="T1CardNo" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="CustTaxID" Type="varchar" MaxLength="13" Nullable="false" />
+          <Property Name="AddressLine1" Type="nvarchar" MaxLength="55" Nullable="false" />
+          <Property Name="AddressLine2" Type="nvarchar" MaxLength="55" Nullable="false" />
+          <Property Name="ProvinceId" Type="int" Nullable="false" />
+          <Property Name="CityId" Type="int" Nullable="false" />
+          <Property Name="DistrictId" Type="int" Nullable="false" />
+          <Property Name="PostCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="BranchID" Type="varchar" MaxLength="5" />
+          <Property Name="Remark" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="UpdateOn" Type="smalldatetime" />
@@ -912,6 +926,414 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
           <Property Name="CreatedDt" Type="datetime" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdatedDt" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProduct' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProduct">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="ProductGroupId" />
+            <PropertyRef Name="DisplayName" />
+            <PropertyRef Name="DisplayNameEN" />
+            <PropertyRef Name="DocName" />
+            <PropertyRef Name="DocNameEN" />
+            <PropertyRef Name="UrlName" />
+            <PropertyRef Name="UrlNameEN" />
+            <PropertyRef Name="UnitPrice" />
+            <PropertyRef Name="UnitPriceIncVat" />
+            <PropertyRef Name="PromotionPrice" />
+            <PropertyRef Name="StockOnHand" />
+            <PropertyRef Name="OnlineReserve" />
+            <PropertyRef Name="StockAvar" />
+            <PropertyRef Name="OnHold" />
+            <PropertyRef Name="OnPO" />
+            <PropertyRef Name="Description" />
+            <PropertyRef Name="MetaKeyword" />
+            <PropertyRef Name="MetaDescription" />
+            <PropertyRef Name="Review" />
+            <PropertyRef Name="ReviewEN" />
+            <PropertyRef Name="NotReturnable" />
+            <PropertyRef Name="VirtualPath" />
+            <PropertyRef Name="IsPromotion" />
+            <PropertyRef Name="IsSale" />
+            <PropertyRef Name="SaleUnit" />
+            <PropertyRef Name="SaleUnitEN" />
+            <PropertyRef Name="DeliverFeeItem" />
+            <PropertyRef Name="IsVat" />
+            <PropertyRef Name="IsDeal" />
+            <PropertyRef Name="OnlyCentral" />
+            <PropertyRef Name="NewArrival" />
+            <PropertyRef Name="OnlineEx" />
+            <PropertyRef Name="DType" />
+            <PropertyRef Name="IsBestDeal" />
+            <PropertyRef Name="IsFree" />
+            <PropertyRef Name="BU_SKU" />
+            <PropertyRef Name="WorkingRemark" />
+            <PropertyRef Name="Color" />
+            <PropertyRef Name="Size" />
+            <PropertyRef Name="Color_CDS" />
+            <PropertyRef Name="Size_CDS" />
+            <PropertyRef Name="WorkingStatus" />
+            <PropertyRef Name="NumOfImage" />
+            <PropertyRef Name="SortGroup" />
+            <PropertyRef Name="SortValue" />
+            <PropertyRef Name="LastSaleDate" />
+            <PropertyRef Name="LocationId" />
+            <PropertyRef Name="StockHold" />
+            <PropertyRef Name="TranferBy" />
+            <PropertyRef Name="TranferDate" />
+            <PropertyRef Name="FirstStockAvar" />
+            <PropertyRef Name="TextIconPromotion" />
+            <PropertyRef Name="TextIconPromotionEN" />
+            <PropertyRef Name="OnlineStockAvar" />
+            <PropertyRef Name="SOReserve" />
+            <PropertyRef Name="ISBN" />
+            <PropertyRef Name="Keyword" />
+            <PropertyRef Name="KeywordEN" />
+            <PropertyRef Name="AboutProduct" />
+            <PropertyRef Name="AboutProductEN" />
+            <PropertyRef Name="Author" />
+            <PropertyRef Name="AuthorEN" />
+            <PropertyRef Name="TagLines" />
+            <PropertyRef Name="TagLinesEN" />
+          </Key>
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="PID" Type="nvarchar" MaxLength="7" />
+          <Property Name="ProductGroupId" Type="int" Nullable="false" />
+          <Property Name="BrandId" Type="int" />
+          <Property Name="BusinessUnitId" Type="int" />
+          <Property Name="DisplayName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DisplayNameEN" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DocName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="DocNameEN" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="UrlName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="UrlNameEN" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="FullPrice" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="UnitPrice" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="UnitPriceIncVat" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="PromotionPrice" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="StockOnHand" Type="int" Nullable="false" />
+          <Property Name="OnlineReserve" Type="int" Nullable="false" />
+          <Property Name="StockAvar" Type="int" Nullable="false" />
+          <Property Name="OnHold" Type="int" Nullable="false" />
+          <Property Name="OnPO" Type="int" Nullable="false" />
+          <Property Name="Status" Type="tinyint" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DescriptionEN" Type="nvarchar(max)" />
+          <Property Name="MetaKeyword" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="MetaDescription" Type="nvarchar" MaxLength="160" Nullable="false" />
+          <Property Name="Review" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ReviewEN" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="AvailableDate" Type="smalldatetime" />
+          <Property Name="NotReturnable" Type="bit" Nullable="false" />
+          <Property Name="IsDeliveryByBU" Type="tinyint" />
+          <Property Name="VirtualPath" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IsPromotion" Type="bit" Nullable="false" />
+          <Property Name="IsSale" Type="bit" Nullable="false" />
+          <Property Name="SaleUnit" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="SaleUnitEN" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="DeliverFeeItem" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="IsVat" Type="bit" Nullable="false" />
+          <Property Name="IsDeal" Type="bit" Nullable="false" />
+          <Property Name="EffectiveDate" Type="smalldatetime" />
+          <Property Name="ExpiredDate" Type="smalldatetime" />
+          <Property Name="OnlyCentral" Type="bit" Nullable="false" />
+          <Property Name="NewArrival" Type="bit" Nullable="false" />
+          <Property Name="OnlineEx" Type="bit" Nullable="false" />
+          <Property Name="DType" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="IsBestDeal" Type="bit" Nullable="false" />
+          <Property Name="IsFree" Type="bit" Nullable="false" />
+          <Property Name="BU_SKU" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="PidOD" Type="varchar" MaxLength="10" />
+          <Property Name="WorkingRemark" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Color" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Size" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="createby" Type="varchar" MaxLength="10" />
+          <Property Name="createon" Type="datetime" />
+          <Property Name="updateby" Type="varchar" MaxLength="10" />
+          <Property Name="updateon" Type="datetime" />
+          <Property Name="IDept" Type="varchar" MaxLength="3" />
+          <Property Name="DeptName" Type="varchar" MaxLength="200" />
+          <Property Name="ISDept" Type="varchar" MaxLength="3" />
+          <Property Name="SubDeptName" Type="varchar" MaxLength="200" />
+          <Property Name="IClass" Type="varchar" MaxLength="3" />
+          <Property Name="ClassName" Type="varchar" MaxLength="200" />
+          <Property Name="ISClass" Type="varchar" MaxLength="3" />
+          <Property Name="SubClassName" Type="varchar" MaxLength="200" />
+          <Property Name="Color_CDS" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Size_CDS" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="WorkingStatus" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="NumOfImage" Type="int" Nullable="false" />
+          <Property Name="PromotionDescriptionTh" Type="varchar(max)" />
+          <Property Name="PromotionDescriptionEn" Type="varchar(max)" />
+          <Property Name="PromotionExpiredDate" Type="datetime" />
+          <Property Name="SortGroup" Type="int" Nullable="false" />
+          <Property Name="SortValue" Type="int" Nullable="false" />
+          <Property Name="LastSaleDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="LocationId" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="StockHold" Type="int" Nullable="false" />
+          <Property Name="TranferBy" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="TranferDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="FirstDateHasStock" Type="smalldatetime" />
+          <Property Name="FirstStockAvar" Type="int" Nullable="false" />
+          <Property Name="TextIconPromotion" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="TextIconPromotionEN" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="FirstDateOnWeb" Type="smalldatetime" />
+          <Property Name="OnlineStockAvar" Type="int" Nullable="false" />
+          <Property Name="SOReserve" Type="int" Nullable="false" />
+          <Property Name="ISBN" Type="varchar" MaxLength="13" Nullable="false" />
+          <Property Name="Keyword" Type="varchar(max)" Nullable="false" />
+          <Property Name="KeywordEN" Type="varchar(max)" Nullable="false" />
+          <Property Name="AboutProduct" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="AboutProductEN" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Author" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AuthorEN" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TagLines" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TagLinesEN" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProductApproved' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProductApproved">
+          <Key>
+            <PropertyRef Name="PID" />
+            <PropertyRef Name="IsSetGroup" />
+            <PropertyRef Name="IsSetBrand" />
+            <PropertyRef Name="IsSetDescription" />
+            <PropertyRef Name="IsSetUrl" />
+            <PropertyRef Name="IsSetImage" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="Remark" />
+            <PropertyRef Name="CreateOn" />
+            <PropertyRef Name="CreateBy" />
+            <PropertyRef Name="IsSetDescriptionEN" />
+            <PropertyRef Name="IsSetPhysical" />
+            <PropertyRef Name="ResponsibleBy" />
+          </Key>
+          <Property Name="PID" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="IsSetGroup" Type="bit" Nullable="false" />
+          <Property Name="IsSetBrand" Type="bit" Nullable="false" />
+          <Property Name="IsSetDescription" Type="bit" Nullable="false" />
+          <Property Name="IsSetUrl" Type="bit" Nullable="false" />
+          <Property Name="IsSetImage" Type="bit" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="Remark" Type="varchar(max)" Nullable="false" />
+          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdateOn" Type="smalldatetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+          <Property Name="IsSetDescriptionEN" Type="bit" Nullable="false" />
+          <Property Name="IsSetPhysical" Type="bit" Nullable="false" />
+          <Property Name="ResponsibleBy" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="JobAssignedDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProductBundle' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProductBundle">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="BundleProductId" />
+          </Key>
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="BundleProductId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProductGroup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProductGroup">
+          <Key>
+            <PropertyRef Name="ProductGroupId" />
+            <PropertyRef Name="DisplayName" />
+            <PropertyRef Name="DisplayNameEN" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="UrlName" />
+            <PropertyRef Name="ProductGroupId_CDS" />
+            <PropertyRef Name="Catlv3ID" />
+            <PropertyRef Name="Catlv2ID" />
+            <PropertyRef Name="CustomDepartmentId" />
+          </Key>
+          <Property Name="ProductGroupId" Type="int" Nullable="false" />
+          <Property Name="DisplayName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DisplayNameEN" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DepartmentId" Type="int" Nullable="false" />
+          <Property Name="UrlName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="ProductGroupId_CDS" Type="int" Nullable="false" />
+          <Property Name="Catlv3ID" Type="int" Nullable="false" />
+          <Property Name="Catlv2ID" Type="int" Nullable="false" />
+          <Property Name="ProductGroupID_REF" Type="int" />
+          <Property Name="CustomDepartmentId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProductMaster' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProductMaster">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="ProductGroupId" />
+            <PropertyRef Name="DeptId" />
+            <PropertyRef Name="CatId" />
+            <PropertyRef Name="SubCatId" />
+            <PropertyRef Name="Class" />
+            <PropertyRef Name="SubClass" />
+            <PropertyRef Name="SaleUnit" />
+            <PropertyRef Name="SaleUnitEN" />
+            <PropertyRef Name="DeliveryFee" />
+            <PropertyRef Name="IsVat" />
+            <PropertyRef Name="VatRate" />
+          </Key>
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="ProductGroupId" Type="int" Nullable="false" />
+          <Property Name="DeptId" Type="int" Nullable="false" />
+          <Property Name="PID" Type="int" />
+          <Property Name="Color" Type="varchar" MaxLength="50" />
+          <Property Name="Size" Type="varchar" MaxLength="50" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="Barcode" Type="varchar" MaxLength="50" />
+          <Property Name="NameEN" Type="varchar" MaxLength="50" />
+          <Property Name="OnlyCentral" Type="varchar" MaxLength="1" />
+          <Property Name="NewArrival" Type="varchar" MaxLength="1" />
+          <Property Name="OnlineEx" Type="varchar" MaxLength="4" />
+          <Property Name="FullName" Type="varchar" MaxLength="255" />
+          <Property Name="FullNameEn" Type="varchar" MaxLength="255" />
+          <Property Name="BrandName" Type="varchar" MaxLength="255" />
+          <Property Name="BrandNameEng" Type="varchar" MaxLength="255" />
+          <Property Name="DeptName" Type="varchar" MaxLength="255" />
+          <Property Name="DeptNameEng" Type="varchar" MaxLength="50" />
+          <Property Name="CatId" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="SubCatId" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="Class" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="SubClass" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="StdPrice" Type="real" />
+          <Property Name="SalePrice" Type="real" />
+          <Property Name="PromotionPrice" Type="int" />
+          <Property Name="ShortDescription" Type="text" />
+          <Property Name="ShortDescriptionEN" Type="text" />
+          <Property Name="LongDescription" Type="text" />
+          <Property Name="LongDescriptionEN" Type="text" />
+          <Property Name="Status" Type="varchar" MaxLength="1" />
+          <Property Name="SaleUnit" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="SaleUnitEN" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="StockOnHand" Type="int" />
+          <Property Name="StockAvar" Type="int" />
+          <Property Name="DeliveryFee" Type="int" Nullable="false" />
+          <Property Name="IsVat" Type="int" Nullable="false" />
+          <Property Name="VatRate" Type="int" Nullable="false" />
+          <Property Name="EffectiveDate" Type="datetime" />
+          <Property Name="ExpiredDate" Type="datetime" />
+          <Property Name="ProImg_CDS" Type="varchar" MaxLength="500" />
+          <Property Name="ParImgA_CDS" Type="varchar" MaxLength="255" />
+          <Property Name="ParImgB_CDS" Type="varchar" MaxLength="255" />
+          <Property Name="ParImgC_CDS" Type="varchar" MaxLength="255" />
+          <Property Name="ParImgD_CDS" Type="varchar" MaxLength="255" />
+          <Property Name="BrandId_CDS" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProductPicture' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProductPicture">
+          <Key>
+            <PropertyRef Name="PictureId" />
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="Description" />
+          </Key>
+          <Property Name="PictureId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="PictureSmallName" Type="varchar" MaxLength="256" />
+          <Property Name="PictureMediumName" Type="varchar" MaxLength="256" />
+          <Property Name="PictureLargeName" Type="varchar" MaxLength="256" />
+          <Property Name="Description" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="DescriptionEN" Type="nvarchar" MaxLength="256" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProductRelateLink' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProductRelateLink">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="Link" />
+            <PropertyRef Name="TextTitle" />
+            <PropertyRef Name="TextTitleEN" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="Link" Type="nvarchar" MaxLength="512" Nullable="false" />
+          <Property Name="TextTitle" Type="nvarchar" MaxLength="512" Nullable="false" />
+          <Property Name="TextTitleEN" Type="nvarchar" MaxLength="512" Nullable="false" />
+          <Property Name="ImageName" Type="varchar" MaxLength="256" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProductVideoLink' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProductVideoLink">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="VideoLink" />
+          </Key>
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="VideoLink" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProperty' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBProperty">
+          <Key>
+            <PropertyRef Name="PropertyId" />
+            <PropertyRef Name="PropertyGroupId" />
+            <PropertyRef Name="PropertyName" />
+            <PropertyRef Name="PropertyNameEN" />
+            <PropertyRef Name="PropertyImageName" />
+            <PropertyRef Name="SeqNo" />
+            <PropertyRef Name="PropCatId" />
+          </Key>
+          <Property Name="PropertyId" Type="int" Nullable="false" />
+          <Property Name="PropertyGroupId" Type="int" Nullable="false" />
+          <Property Name="PropertyName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PropertyNameEN" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PropertyImageName" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
+          <Property Name="PropCatId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBPropertyCategory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBPropertyCategory">
+          <Key>
+            <PropertyRef Name="PropCatId" />
+            <PropertyRef Name="PropertyGroupId" />
+            <PropertyRef Name="PropCatName" />
+            <PropertyRef Name="SeqNo" />
+          </Key>
+          <Property Name="PropCatId" Type="int" Nullable="false" />
+          <Property Name="PropertyGroupId" Type="int" Nullable="false" />
+          <Property Name="PropCatName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBPropertyFilter' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBPropertyFilter">
+          <Key>
+            <PropertyRef Name="FilterId" />
+            <PropertyRef Name="PropertyId" />
+          </Key>
+          <Property Name="FilterId" Type="int" Nullable="false" />
+          <Property Name="PropertyId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBPropertyGroup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBPropertyGroup">
+          <Key>
+            <PropertyRef Name="PropertyGroupId" />
+            <PropertyRef Name="PropertyGroupName" />
+            <PropertyRef Name="PropertyGroupNameEN" />
+            <PropertyRef Name="SeqNo" />
+          </Key>
+          <Property Name="PropertyGroupId" Type="int" Nullable="false" />
+          <Property Name="PropertyGroupName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PropertyGroupNameEN" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBPropertyProduct' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBPropertyProduct">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="PropertyId" />
+          </Key>
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="PropertyId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Newsletter">
           <Key>
@@ -2070,6 +2492,29 @@ warning 6002: The table/view 'DBMKPOnline.dbo.StoreReturnReason' does not have a
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
+        <EntityType Name="TableA">
+          <Key>
+            <PropertyRef Name="IdA" />
+          </Key>
+          <Property Name="IdA" Type="int" Nullable="false" />
+          <Property Name="NameA" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="TableAB">
+          <Key>
+            <PropertyRef Name="IdA" />
+            <PropertyRef Name="IdB" />
+          </Key>
+          <Property Name="IdA" Type="int" Nullable="false" />
+          <Property Name="IdB" Type="int" Nullable="false" />
+          <Property Name="Num" Type="int" />
+        </EntityType>
+        <EntityType Name="TableB">
+          <Key>
+            <PropertyRef Name="IdB" />
+          </Key>
+          <Property Name="IdB" Type="int" Nullable="false" />
+          <Property Name="NameB" Type="varchar" MaxLength="100" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'DBMKPOnline.dbo.TBAdminMenuItemTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TBAdminMenuItemTmp">
@@ -2655,7 +3100,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LocalCatFeatureProduct_ProductStageGroup">
-          <End Role="ProductStageGroup" Type="Self.ProductStageGroup" Multiplicity="1" />
+          <End Role="ProductStageGroup" Type="Self.ProductStageGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="LocalCatFeatureProduct" Type="Self.LocalCatFeatureProduct" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStageGroup">
@@ -3398,6 +3845,30 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TableAB_TableA">
+          <End Role="TableA" Type="Self.TableA" Multiplicity="1" />
+          <End Role="TableAB" Type="Self.TableAB" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableA">
+              <PropertyRef Name="IdA" />
+            </Principal>
+            <Dependent Role="TableAB">
+              <PropertyRef Name="IdA" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableAB_TableB">
+          <End Role="TableB" Type="Self.TableB" Multiplicity="1" />
+          <End Role="TableAB" Type="Self.TableAB" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableB">
+              <PropertyRef Name="IdB" />
+            </Principal>
+            <Dependent Role="TableAB">
+              <PropertyRef Name="IdB" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserBrandMap_Brand">
           <End Role="Brand" Type="Self.Brand" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -3851,6 +4322,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="StoreReceiveCode" EntityType="Self.StoreReceiveCode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreReturn" EntityType="Self.StoreReturn" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableA" EntityType="Self.TableA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableAB" EntityType="Self.TableAB" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableB" EntityType="Self.TableB" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Theme" EntityType="Self.Theme" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserBrandMap" EntityType="Self.UserBrandMap" Schema="dbo" store:Type="Tables" />
@@ -3866,16 +4340,275 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
     [Guest].[LastName] AS [LastName], 
     [Guest].[Mobile] AS [Mobile], 
     [Guest].[TelephoneNo] AS [TelephoneNo], 
-    [Guest].[BirthDate] AS [BirthDate], 
     [Guest].[Gender] AS [Gender], 
     [Guest].[ReceiveSms] AS [ReceiveSms], 
     [Guest].[T1CardNo] AS [T1CardNo], 
     [Guest].[CustTaxID] AS [CustTaxID], 
+    [Guest].[AddressLine1] AS [AddressLine1], 
+    [Guest].[AddressLine2] AS [AddressLine2], 
+    [Guest].[ProvinceId] AS [ProvinceId], 
+    [Guest].[CityId] AS [CityId], 
+    [Guest].[DistrictId] AS [DistrictId], 
+    [Guest].[PostCode] AS [PostCode], 
+    [Guest].[BranchID] AS [BranchID], 
+    [Guest].[Remark] AS [Remark], 
     [Guest].[CreateOn] AS [CreateOn], 
     [Guest].[CreateBy] AS [CreateBy], 
     [Guest].[UpdateOn] AS [UpdateOn], 
     [Guest].[UpdateBy] AS [UpdateBy]
     FROM [dbo].[Guest] AS [Guest]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProduct" EntityType="Self.Migrate_TBProduct" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProduct].[ProductId] AS [ProductId], 
+    [Migrate_TBProduct].[PID] AS [PID], 
+    [Migrate_TBProduct].[ProductGroupId] AS [ProductGroupId], 
+    [Migrate_TBProduct].[BrandId] AS [BrandId], 
+    [Migrate_TBProduct].[BusinessUnitId] AS [BusinessUnitId], 
+    [Migrate_TBProduct].[DisplayName] AS [DisplayName], 
+    [Migrate_TBProduct].[DisplayNameEN] AS [DisplayNameEN], 
+    [Migrate_TBProduct].[DocName] AS [DocName], 
+    [Migrate_TBProduct].[DocNameEN] AS [DocNameEN], 
+    [Migrate_TBProduct].[UrlName] AS [UrlName], 
+    [Migrate_TBProduct].[UrlNameEN] AS [UrlNameEN], 
+    [Migrate_TBProduct].[FullPrice] AS [FullPrice], 
+    [Migrate_TBProduct].[UnitPrice] AS [UnitPrice], 
+    [Migrate_TBProduct].[UnitPriceIncVat] AS [UnitPriceIncVat], 
+    [Migrate_TBProduct].[PromotionPrice] AS [PromotionPrice], 
+    [Migrate_TBProduct].[StockOnHand] AS [StockOnHand], 
+    [Migrate_TBProduct].[OnlineReserve] AS [OnlineReserve], 
+    [Migrate_TBProduct].[StockAvar] AS [StockAvar], 
+    [Migrate_TBProduct].[OnHold] AS [OnHold], 
+    [Migrate_TBProduct].[OnPO] AS [OnPO], 
+    [Migrate_TBProduct].[Status] AS [Status], 
+    [Migrate_TBProduct].[Description] AS [Description], 
+    [Migrate_TBProduct].[DescriptionEN] AS [DescriptionEN], 
+    [Migrate_TBProduct].[MetaKeyword] AS [MetaKeyword], 
+    [Migrate_TBProduct].[MetaDescription] AS [MetaDescription], 
+    [Migrate_TBProduct].[Review] AS [Review], 
+    [Migrate_TBProduct].[ReviewEN] AS [ReviewEN], 
+    [Migrate_TBProduct].[AvailableDate] AS [AvailableDate], 
+    [Migrate_TBProduct].[NotReturnable] AS [NotReturnable], 
+    [Migrate_TBProduct].[IsDeliveryByBU] AS [IsDeliveryByBU], 
+    [Migrate_TBProduct].[VirtualPath] AS [VirtualPath], 
+    [Migrate_TBProduct].[IsPromotion] AS [IsPromotion], 
+    [Migrate_TBProduct].[IsSale] AS [IsSale], 
+    [Migrate_TBProduct].[SaleUnit] AS [SaleUnit], 
+    [Migrate_TBProduct].[SaleUnitEN] AS [SaleUnitEN], 
+    [Migrate_TBProduct].[DeliverFeeItem] AS [DeliverFeeItem], 
+    [Migrate_TBProduct].[IsVat] AS [IsVat], 
+    [Migrate_TBProduct].[IsDeal] AS [IsDeal], 
+    [Migrate_TBProduct].[EffectiveDate] AS [EffectiveDate], 
+    [Migrate_TBProduct].[ExpiredDate] AS [ExpiredDate], 
+    [Migrate_TBProduct].[OnlyCentral] AS [OnlyCentral], 
+    [Migrate_TBProduct].[NewArrival] AS [NewArrival], 
+    [Migrate_TBProduct].[OnlineEx] AS [OnlineEx], 
+    [Migrate_TBProduct].[DType] AS [DType], 
+    [Migrate_TBProduct].[IsBestDeal] AS [IsBestDeal], 
+    [Migrate_TBProduct].[IsFree] AS [IsFree], 
+    [Migrate_TBProduct].[BU_SKU] AS [BU_SKU], 
+    [Migrate_TBProduct].[PidOD] AS [PidOD], 
+    [Migrate_TBProduct].[WorkingRemark] AS [WorkingRemark], 
+    [Migrate_TBProduct].[Color] AS [Color], 
+    [Migrate_TBProduct].[Size] AS [Size], 
+    [Migrate_TBProduct].[createby] AS [createby], 
+    [Migrate_TBProduct].[createon] AS [createon], 
+    [Migrate_TBProduct].[updateby] AS [updateby], 
+    [Migrate_TBProduct].[updateon] AS [updateon], 
+    [Migrate_TBProduct].[IDept] AS [IDept], 
+    [Migrate_TBProduct].[DeptName] AS [DeptName], 
+    [Migrate_TBProduct].[ISDept] AS [ISDept], 
+    [Migrate_TBProduct].[SubDeptName] AS [SubDeptName], 
+    [Migrate_TBProduct].[IClass] AS [IClass], 
+    [Migrate_TBProduct].[ClassName] AS [ClassName], 
+    [Migrate_TBProduct].[ISClass] AS [ISClass], 
+    [Migrate_TBProduct].[SubClassName] AS [SubClassName], 
+    [Migrate_TBProduct].[Color_CDS] AS [Color_CDS], 
+    [Migrate_TBProduct].[Size_CDS] AS [Size_CDS], 
+    [Migrate_TBProduct].[WorkingStatus] AS [WorkingStatus], 
+    [Migrate_TBProduct].[NumOfImage] AS [NumOfImage], 
+    [Migrate_TBProduct].[PromotionDescriptionTh] AS [PromotionDescriptionTh], 
+    [Migrate_TBProduct].[PromotionDescriptionEn] AS [PromotionDescriptionEn], 
+    [Migrate_TBProduct].[PromotionExpiredDate] AS [PromotionExpiredDate], 
+    [Migrate_TBProduct].[SortGroup] AS [SortGroup], 
+    [Migrate_TBProduct].[SortValue] AS [SortValue], 
+    [Migrate_TBProduct].[LastSaleDate] AS [LastSaleDate], 
+    [Migrate_TBProduct].[LocationId] AS [LocationId], 
+    [Migrate_TBProduct].[StockHold] AS [StockHold], 
+    [Migrate_TBProduct].[TranferBy] AS [TranferBy], 
+    [Migrate_TBProduct].[TranferDate] AS [TranferDate], 
+    [Migrate_TBProduct].[FirstDateHasStock] AS [FirstDateHasStock], 
+    [Migrate_TBProduct].[FirstStockAvar] AS [FirstStockAvar], 
+    [Migrate_TBProduct].[TextIconPromotion] AS [TextIconPromotion], 
+    [Migrate_TBProduct].[TextIconPromotionEN] AS [TextIconPromotionEN], 
+    [Migrate_TBProduct].[FirstDateOnWeb] AS [FirstDateOnWeb], 
+    [Migrate_TBProduct].[OnlineStockAvar] AS [OnlineStockAvar], 
+    [Migrate_TBProduct].[SOReserve] AS [SOReserve], 
+    [Migrate_TBProduct].[ISBN] AS [ISBN], 
+    [Migrate_TBProduct].[Keyword] AS [Keyword], 
+    [Migrate_TBProduct].[KeywordEN] AS [KeywordEN], 
+    [Migrate_TBProduct].[AboutProduct] AS [AboutProduct], 
+    [Migrate_TBProduct].[AboutProductEN] AS [AboutProductEN], 
+    [Migrate_TBProduct].[Author] AS [Author], 
+    [Migrate_TBProduct].[AuthorEN] AS [AuthorEN], 
+    [Migrate_TBProduct].[TagLines] AS [TagLines], 
+    [Migrate_TBProduct].[TagLinesEN] AS [TagLinesEN]
+    FROM [dbo].[Migrate_TBProduct] AS [Migrate_TBProduct]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProductApproved" EntityType="Self.Migrate_TBProductApproved" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProductApproved].[PID] AS [PID], 
+    [Migrate_TBProductApproved].[IsSetGroup] AS [IsSetGroup], 
+    [Migrate_TBProductApproved].[IsSetBrand] AS [IsSetBrand], 
+    [Migrate_TBProductApproved].[IsSetDescription] AS [IsSetDescription], 
+    [Migrate_TBProductApproved].[IsSetUrl] AS [IsSetUrl], 
+    [Migrate_TBProductApproved].[IsSetImage] AS [IsSetImage], 
+    [Migrate_TBProductApproved].[Status] AS [Status], 
+    [Migrate_TBProductApproved].[Remark] AS [Remark], 
+    [Migrate_TBProductApproved].[CreateOn] AS [CreateOn], 
+    [Migrate_TBProductApproved].[CreateBy] AS [CreateBy], 
+    [Migrate_TBProductApproved].[UpdateOn] AS [UpdateOn], 
+    [Migrate_TBProductApproved].[UpdateBy] AS [UpdateBy], 
+    [Migrate_TBProductApproved].[IsSetDescriptionEN] AS [IsSetDescriptionEN], 
+    [Migrate_TBProductApproved].[IsSetPhysical] AS [IsSetPhysical], 
+    [Migrate_TBProductApproved].[ResponsibleBy] AS [ResponsibleBy], 
+    [Migrate_TBProductApproved].[JobAssignedDate] AS [JobAssignedDate]
+    FROM [dbo].[Migrate_TBProductApproved] AS [Migrate_TBProductApproved]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProductBundle" EntityType="Self.Migrate_TBProductBundle" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProductBundle].[ProductId] AS [ProductId], 
+    [Migrate_TBProductBundle].[BundleProductId] AS [BundleProductId]
+    FROM [dbo].[Migrate_TBProductBundle] AS [Migrate_TBProductBundle]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProductGroup" EntityType="Self.Migrate_TBProductGroup" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProductGroup].[ProductGroupId] AS [ProductGroupId], 
+    [Migrate_TBProductGroup].[DisplayName] AS [DisplayName], 
+    [Migrate_TBProductGroup].[DisplayNameEN] AS [DisplayNameEN], 
+    [Migrate_TBProductGroup].[DepartmentId] AS [DepartmentId], 
+    [Migrate_TBProductGroup].[UrlName] AS [UrlName], 
+    [Migrate_TBProductGroup].[ProductGroupId_CDS] AS [ProductGroupId_CDS], 
+    [Migrate_TBProductGroup].[Catlv3ID] AS [Catlv3ID], 
+    [Migrate_TBProductGroup].[Catlv2ID] AS [Catlv2ID], 
+    [Migrate_TBProductGroup].[ProductGroupID_REF] AS [ProductGroupID_REF], 
+    [Migrate_TBProductGroup].[CustomDepartmentId] AS [CustomDepartmentId]
+    FROM [dbo].[Migrate_TBProductGroup] AS [Migrate_TBProductGroup]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProductMaster" EntityType="Self.Migrate_TBProductMaster" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProductMaster].[ProductId] AS [ProductId], 
+    [Migrate_TBProductMaster].[ProductGroupId] AS [ProductGroupId], 
+    [Migrate_TBProductMaster].[DeptId] AS [DeptId], 
+    [Migrate_TBProductMaster].[PID] AS [PID], 
+    [Migrate_TBProductMaster].[Color] AS [Color], 
+    [Migrate_TBProductMaster].[Size] AS [Size], 
+    [Migrate_TBProductMaster].[Name] AS [Name], 
+    [Migrate_TBProductMaster].[Barcode] AS [Barcode], 
+    [Migrate_TBProductMaster].[NameEN] AS [NameEN], 
+    [Migrate_TBProductMaster].[OnlyCentral] AS [OnlyCentral], 
+    [Migrate_TBProductMaster].[NewArrival] AS [NewArrival], 
+    [Migrate_TBProductMaster].[OnlineEx] AS [OnlineEx], 
+    [Migrate_TBProductMaster].[FullName] AS [FullName], 
+    [Migrate_TBProductMaster].[FullNameEn] AS [FullNameEn], 
+    [Migrate_TBProductMaster].[BrandName] AS [BrandName], 
+    [Migrate_TBProductMaster].[BrandNameEng] AS [BrandNameEng], 
+    [Migrate_TBProductMaster].[DeptName] AS [DeptName], 
+    [Migrate_TBProductMaster].[DeptNameEng] AS [DeptNameEng], 
+    [Migrate_TBProductMaster].[CatId] AS [CatId], 
+    [Migrate_TBProductMaster].[SubCatId] AS [SubCatId], 
+    [Migrate_TBProductMaster].[Class] AS [Class], 
+    [Migrate_TBProductMaster].[SubClass] AS [SubClass], 
+    [Migrate_TBProductMaster].[StdPrice] AS [StdPrice], 
+    [Migrate_TBProductMaster].[SalePrice] AS [SalePrice], 
+    [Migrate_TBProductMaster].[PromotionPrice] AS [PromotionPrice], 
+    [Migrate_TBProductMaster].[ShortDescription] AS [ShortDescription], 
+    [Migrate_TBProductMaster].[ShortDescriptionEN] AS [ShortDescriptionEN], 
+    [Migrate_TBProductMaster].[LongDescription] AS [LongDescription], 
+    [Migrate_TBProductMaster].[LongDescriptionEN] AS [LongDescriptionEN], 
+    [Migrate_TBProductMaster].[Status] AS [Status], 
+    [Migrate_TBProductMaster].[SaleUnit] AS [SaleUnit], 
+    [Migrate_TBProductMaster].[SaleUnitEN] AS [SaleUnitEN], 
+    [Migrate_TBProductMaster].[StockOnHand] AS [StockOnHand], 
+    [Migrate_TBProductMaster].[StockAvar] AS [StockAvar], 
+    [Migrate_TBProductMaster].[DeliveryFee] AS [DeliveryFee], 
+    [Migrate_TBProductMaster].[IsVat] AS [IsVat], 
+    [Migrate_TBProductMaster].[VatRate] AS [VatRate], 
+    [Migrate_TBProductMaster].[EffectiveDate] AS [EffectiveDate], 
+    [Migrate_TBProductMaster].[ExpiredDate] AS [ExpiredDate], 
+    [Migrate_TBProductMaster].[ProImg_CDS] AS [ProImg_CDS], 
+    [Migrate_TBProductMaster].[ParImgA_CDS] AS [ParImgA_CDS], 
+    [Migrate_TBProductMaster].[ParImgB_CDS] AS [ParImgB_CDS], 
+    [Migrate_TBProductMaster].[ParImgC_CDS] AS [ParImgC_CDS], 
+    [Migrate_TBProductMaster].[ParImgD_CDS] AS [ParImgD_CDS], 
+    [Migrate_TBProductMaster].[BrandId_CDS] AS [BrandId_CDS]
+    FROM [dbo].[Migrate_TBProductMaster] AS [Migrate_TBProductMaster]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProductPicture" EntityType="Self.Migrate_TBProductPicture" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProductPicture].[PictureId] AS [PictureId], 
+    [Migrate_TBProductPicture].[ProductId] AS [ProductId], 
+    [Migrate_TBProductPicture].[PictureSmallName] AS [PictureSmallName], 
+    [Migrate_TBProductPicture].[PictureMediumName] AS [PictureMediumName], 
+    [Migrate_TBProductPicture].[PictureLargeName] AS [PictureLargeName], 
+    [Migrate_TBProductPicture].[Description] AS [Description], 
+    [Migrate_TBProductPicture].[DescriptionEN] AS [DescriptionEN]
+    FROM [dbo].[Migrate_TBProductPicture] AS [Migrate_TBProductPicture]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProductRelateLink" EntityType="Self.Migrate_TBProductRelateLink" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProductRelateLink].[Id] AS [Id], 
+    [Migrate_TBProductRelateLink].[ProductId] AS [ProductId], 
+    [Migrate_TBProductRelateLink].[Link] AS [Link], 
+    [Migrate_TBProductRelateLink].[TextTitle] AS [TextTitle], 
+    [Migrate_TBProductRelateLink].[TextTitleEN] AS [TextTitleEN], 
+    [Migrate_TBProductRelateLink].[ImageName] AS [ImageName]
+    FROM [dbo].[Migrate_TBProductRelateLink] AS [Migrate_TBProductRelateLink]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProductVideoLink" EntityType="Self.Migrate_TBProductVideoLink" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProductVideoLink].[ProductId] AS [ProductId], 
+    [Migrate_TBProductVideoLink].[VideoLink] AS [VideoLink]
+    FROM [dbo].[Migrate_TBProductVideoLink] AS [Migrate_TBProductVideoLink]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBProperty" EntityType="Self.Migrate_TBProperty" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBProperty].[PropertyId] AS [PropertyId], 
+    [Migrate_TBProperty].[PropertyGroupId] AS [PropertyGroupId], 
+    [Migrate_TBProperty].[PropertyName] AS [PropertyName], 
+    [Migrate_TBProperty].[PropertyNameEN] AS [PropertyNameEN], 
+    [Migrate_TBProperty].[PropertyImageName] AS [PropertyImageName], 
+    [Migrate_TBProperty].[SeqNo] AS [SeqNo], 
+    [Migrate_TBProperty].[PropCatId] AS [PropCatId]
+    FROM [dbo].[Migrate_TBProperty] AS [Migrate_TBProperty]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBPropertyCategory" EntityType="Self.Migrate_TBPropertyCategory" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBPropertyCategory].[PropCatId] AS [PropCatId], 
+    [Migrate_TBPropertyCategory].[PropertyGroupId] AS [PropertyGroupId], 
+    [Migrate_TBPropertyCategory].[PropCatName] AS [PropCatName], 
+    [Migrate_TBPropertyCategory].[SeqNo] AS [SeqNo]
+    FROM [dbo].[Migrate_TBPropertyCategory] AS [Migrate_TBPropertyCategory]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBPropertyFilter" EntityType="Self.Migrate_TBPropertyFilter" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBPropertyFilter].[FilterId] AS [FilterId], 
+    [Migrate_TBPropertyFilter].[PropertyId] AS [PropertyId]
+    FROM [dbo].[Migrate_TBPropertyFilter] AS [Migrate_TBPropertyFilter]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBPropertyGroup" EntityType="Self.Migrate_TBPropertyGroup" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBPropertyGroup].[PropertyGroupId] AS [PropertyGroupId], 
+    [Migrate_TBPropertyGroup].[PropertyGroupName] AS [PropertyGroupName], 
+    [Migrate_TBPropertyGroup].[PropertyGroupNameEN] AS [PropertyGroupNameEN], 
+    [Migrate_TBPropertyGroup].[SeqNo] AS [SeqNo]
+    FROM [dbo].[Migrate_TBPropertyGroup] AS [Migrate_TBPropertyGroup]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBPropertyProduct" EntityType="Self.Migrate_TBPropertyProduct" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBPropertyProduct].[ProductId] AS [ProductId], 
+    [Migrate_TBPropertyProduct].[PropertyId] AS [PropertyId]
+    FROM [dbo].[Migrate_TBPropertyProduct] AS [Migrate_TBPropertyProduct]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ODMRoleUser" EntityType="Self.ODMRoleUser" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -4338,6 +5071,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroup" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMap" />
           </AssociationSet>
+          <AssociationSet Name="FK_TableAB_TableA" Association="Self.FK_TableAB_TableA">
+            <End Role="TableA" EntitySet="TableA" />
+            <End Role="TableAB" EntitySet="TableAB" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableAB_TableB" Association="Self.FK_TableAB_TableB">
+            <End Role="TableB" EntitySet="TableB" />
+            <End Role="TableAB" EntitySet="TableAB" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserBrandMap_Brand" Association="Self.FK_UserBrandMap_Brand">
             <End Role="Brand" EntitySet="Brand" />
             <End Role="UserBrandMap" EntitySet="UserBrandMap" />
@@ -4564,6 +5305,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="StoreReceiveCodes" EntityType="ColspModel.StoreReceiveCode" />
           <EntitySet Name="StoreReturns" EntityType="ColspModel.StoreReturn" />
           <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
+          <EntitySet Name="TableAs" EntityType="ColspModel.TableA" />
+          <EntitySet Name="TableABs" EntityType="ColspModel.TableAB" />
+          <EntitySet Name="TableBs" EntityType="ColspModel.TableB" />
           <EntitySet Name="Themes" EntityType="ColspModel.Theme" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserBrandMaps" EntityType="ColspModel.UserBrandMap" />
@@ -4572,6 +5316,19 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
           <EntitySet Name="UserShopMaps" EntityType="ColspModel.UserShopMap" />
           <EntitySet Name="Guests" EntityType="ColspModel.Guest" />
+          <EntitySet Name="Migrate_TBProduct" EntityType="ColspModel.Migrate_TBProduct" />
+          <EntitySet Name="Migrate_TBProductApproved" EntityType="ColspModel.Migrate_TBProductApproved" />
+          <EntitySet Name="Migrate_TBProductBundle" EntityType="ColspModel.Migrate_TBProductBundle" />
+          <EntitySet Name="Migrate_TBProductGroup" EntityType="ColspModel.Migrate_TBProductGroup" />
+          <EntitySet Name="Migrate_TBProductMaster" EntityType="ColspModel.Migrate_TBProductMaster" />
+          <EntitySet Name="Migrate_TBProductPicture" EntityType="ColspModel.Migrate_TBProductPicture" />
+          <EntitySet Name="Migrate_TBProductRelateLink" EntityType="ColspModel.Migrate_TBProductRelateLink" />
+          <EntitySet Name="Migrate_TBProductVideoLink" EntityType="ColspModel.Migrate_TBProductVideoLink" />
+          <EntitySet Name="Migrate_TBProperty" EntityType="ColspModel.Migrate_TBProperty" />
+          <EntitySet Name="Migrate_TBPropertyCategory" EntityType="ColspModel.Migrate_TBPropertyCategory" />
+          <EntitySet Name="Migrate_TBPropertyFilter" EntityType="ColspModel.Migrate_TBPropertyFilter" />
+          <EntitySet Name="Migrate_TBPropertyGroup" EntityType="ColspModel.Migrate_TBPropertyGroup" />
+          <EntitySet Name="Migrate_TBPropertyProduct" EntityType="ColspModel.Migrate_TBPropertyProduct" />
           <EntitySet Name="ODMRoleUsers" EntityType="ColspModel.ODMRoleUser" />
           <EntitySet Name="PostCodeMaps" EntityType="ColspModel.PostCodeMap" />
           <EntitySet Name="StoreReturnReasons" EntityType="ColspModel.StoreReturnReason" />
@@ -4983,6 +5740,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FK_ShopUerGroupMap_UserGroup" Association="ColspModel.FK_ShopUerGroupMap_UserGroup">
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableAB_TableA" Association="ColspModel.FK_TableAB_TableA">
+            <End Role="TableA" EntitySet="TableAs" />
+            <End Role="TableAB" EntitySet="TableABs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableAB_TableB" Association="ColspModel.FK_TableAB_TableB">
+            <End Role="TableB" EntitySet="TableBs" />
+            <End Role="TableAB" EntitySet="TableABs" />
           </AssociationSet>
           <AssociationSet Name="FK_UserBrandMap_User" Association="ColspModel.FK_UserBrandMap_User">
             <End Role="User" EntitySet="Users" />
@@ -7174,6 +7939,33 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
+        <EntityType Name="TableA">
+          <Key>
+            <PropertyRef Name="IdA" />
+          </Key>
+          <Property Name="IdA" Type="Int32" Nullable="false" />
+          <Property Name="NameA" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TableABs" Relationship="ColspModel.FK_TableAB_TableA" FromRole="TableA" ToRole="TableAB" />
+        </EntityType>
+        <EntityType Name="TableAB">
+          <Key>
+            <PropertyRef Name="IdA" />
+            <PropertyRef Name="IdB" />
+          </Key>
+          <Property Name="IdA" Type="Int32" Nullable="false" />
+          <Property Name="IdB" Type="Int32" Nullable="false" />
+          <Property Name="Num" Type="Int32" />
+          <NavigationProperty Name="TableA" Relationship="ColspModel.FK_TableAB_TableA" FromRole="TableAB" ToRole="TableA" />
+          <NavigationProperty Name="TableB" Relationship="ColspModel.FK_TableAB_TableB" FromRole="TableAB" ToRole="TableB" />
+        </EntityType>
+        <EntityType Name="TableB">
+          <Key>
+            <PropertyRef Name="IdB" />
+          </Key>
+          <Property Name="IdB" Type="Int32" Nullable="false" />
+          <Property Name="NameB" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TableABs" Relationship="ColspModel.FK_TableAB_TableB" FromRole="TableB" ToRole="TableAB" />
+        </EntityType>
         <EntityType Name="Theme">
           <Key>
             <PropertyRef Name="ThemeId" />
@@ -7302,6 +8094,13 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="ReceiveSms" />
             <PropertyRef Name="T1CardNo" />
             <PropertyRef Name="CustTaxID" />
+            <PropertyRef Name="AddressLine1" />
+            <PropertyRef Name="AddressLine2" />
+            <PropertyRef Name="ProvinceId" />
+            <PropertyRef Name="CityId" />
+            <PropertyRef Name="DistrictId" />
+            <PropertyRef Name="PostCode" />
+            <PropertyRef Name="Remark" />
             <PropertyRef Name="CreateOn" />
             <PropertyRef Name="CreateBy" />
           </Key>
@@ -7311,15 +8110,404 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Mobile" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="TelephoneNo" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="BirthDate" Type="DateTime" Precision="0" />
           <Property Name="Gender" Type="Byte" Nullable="false" />
           <Property Name="ReceiveSms" Type="Boolean" Nullable="false" />
           <Property Name="T1CardNo" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="CustTaxID" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="AddressLine1" Type="String" Nullable="false" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Name="AddressLine2" Type="String" Nullable="false" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Name="ProvinceId" Type="Int32" Nullable="false" />
+          <Property Name="CityId" Type="Int32" Nullable="false" />
+          <Property Name="DistrictId" Type="Int32" Nullable="false" />
+          <Property Name="PostCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BranchID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Remark" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdateOn" Type="DateTime" Precision="0" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProduct">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="ProductGroupId" />
+            <PropertyRef Name="DisplayName" />
+            <PropertyRef Name="DisplayNameEN" />
+            <PropertyRef Name="DocName" />
+            <PropertyRef Name="DocNameEN" />
+            <PropertyRef Name="UrlName" />
+            <PropertyRef Name="UrlNameEN" />
+            <PropertyRef Name="UnitPrice" />
+            <PropertyRef Name="UnitPriceIncVat" />
+            <PropertyRef Name="PromotionPrice" />
+            <PropertyRef Name="StockOnHand" />
+            <PropertyRef Name="OnlineReserve" />
+            <PropertyRef Name="StockAvar" />
+            <PropertyRef Name="OnHold" />
+            <PropertyRef Name="OnPO" />
+            <PropertyRef Name="Description" />
+            <PropertyRef Name="MetaKeyword" />
+            <PropertyRef Name="MetaDescription" />
+            <PropertyRef Name="Review" />
+            <PropertyRef Name="ReviewEN" />
+            <PropertyRef Name="NotReturnable" />
+            <PropertyRef Name="VirtualPath" />
+            <PropertyRef Name="IsPromotion" />
+            <PropertyRef Name="IsSale" />
+            <PropertyRef Name="SaleUnit" />
+            <PropertyRef Name="SaleUnitEN" />
+            <PropertyRef Name="DeliverFeeItem" />
+            <PropertyRef Name="IsVat" />
+            <PropertyRef Name="IsDeal" />
+            <PropertyRef Name="OnlyCentral" />
+            <PropertyRef Name="NewArrival" />
+            <PropertyRef Name="OnlineEx" />
+            <PropertyRef Name="DType" />
+            <PropertyRef Name="IsBestDeal" />
+            <PropertyRef Name="IsFree" />
+            <PropertyRef Name="BU_SKU" />
+            <PropertyRef Name="WorkingRemark" />
+            <PropertyRef Name="Color" />
+            <PropertyRef Name="Size" />
+            <PropertyRef Name="Color_CDS" />
+            <PropertyRef Name="Size_CDS" />
+            <PropertyRef Name="WorkingStatus" />
+            <PropertyRef Name="NumOfImage" />
+            <PropertyRef Name="SortGroup" />
+            <PropertyRef Name="SortValue" />
+            <PropertyRef Name="LastSaleDate" />
+            <PropertyRef Name="LocationId" />
+            <PropertyRef Name="StockHold" />
+            <PropertyRef Name="TranferBy" />
+            <PropertyRef Name="TranferDate" />
+            <PropertyRef Name="FirstStockAvar" />
+            <PropertyRef Name="TextIconPromotion" />
+            <PropertyRef Name="TextIconPromotionEN" />
+            <PropertyRef Name="OnlineStockAvar" />
+            <PropertyRef Name="SOReserve" />
+            <PropertyRef Name="ISBN" />
+            <PropertyRef Name="Keyword" />
+            <PropertyRef Name="KeywordEN" />
+            <PropertyRef Name="AboutProduct" />
+            <PropertyRef Name="AboutProductEN" />
+            <PropertyRef Name="Author" />
+            <PropertyRef Name="AuthorEN" />
+            <PropertyRef Name="TagLines" />
+            <PropertyRef Name="TagLinesEN" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="PID" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="ProductGroupId" Type="Int32" Nullable="false" />
+          <Property Name="BrandId" Type="Int32" />
+          <Property Name="BusinessUnitId" Type="Int32" />
+          <Property Name="DisplayName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DocName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DocNameEN" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="UrlName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="UrlNameEN" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="FullPrice" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="UnitPrice" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="UnitPriceIncVat" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="PromotionPrice" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="StockOnHand" Type="Int32" Nullable="false" />
+          <Property Name="OnlineReserve" Type="Int32" Nullable="false" />
+          <Property Name="StockAvar" Type="Int32" Nullable="false" />
+          <Property Name="OnHold" Type="Int32" Nullable="false" />
+          <Property Name="OnPO" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Byte" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyword" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescription" Type="String" Nullable="false" MaxLength="160" FixedLength="false" Unicode="true" />
+          <Property Name="Review" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReviewEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AvailableDate" Type="DateTime" Precision="0" />
+          <Property Name="NotReturnable" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeliveryByBU" Type="Byte" />
+          <Property Name="VirtualPath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsPromotion" Type="Boolean" Nullable="false" />
+          <Property Name="IsSale" Type="Boolean" Nullable="false" />
+          <Property Name="SaleUnit" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="SaleUnitEN" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DeliverFeeItem" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="IsVat" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeal" Type="Boolean" Nullable="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiredDate" Type="DateTime" Precision="0" />
+          <Property Name="OnlyCentral" Type="Boolean" Nullable="false" />
+          <Property Name="NewArrival" Type="Boolean" Nullable="false" />
+          <Property Name="OnlineEx" Type="Boolean" Nullable="false" />
+          <Property Name="DType" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="IsBestDeal" Type="Boolean" Nullable="false" />
+          <Property Name="IsFree" Type="Boolean" Nullable="false" />
+          <Property Name="BU_SKU" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="PidOD" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WorkingRemark" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Color" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Size" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="createby" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="createon" Type="DateTime" Precision="3" />
+          <Property Name="updateby" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="updateon" Type="DateTime" Precision="3" />
+          <Property Name="IDept" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="DeptName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ISDept" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="SubDeptName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="IClass" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="ClassName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ISClass" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="SubClassName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Color_CDS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Size_CDS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WorkingStatus" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="NumOfImage" Type="Int32" Nullable="false" />
+          <Property Name="PromotionDescriptionTh" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PromotionDescriptionEn" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PromotionExpiredDate" Type="DateTime" Precision="3" />
+          <Property Name="SortGroup" Type="Int32" Nullable="false" />
+          <Property Name="SortValue" Type="Int32" Nullable="false" />
+          <Property Name="LastSaleDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="LocationId" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="StockHold" Type="Int32" Nullable="false" />
+          <Property Name="TranferBy" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="TranferDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="FirstDateHasStock" Type="DateTime" Precision="0" />
+          <Property Name="FirstStockAvar" Type="Int32" Nullable="false" />
+          <Property Name="TextIconPromotion" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="TextIconPromotionEN" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="FirstDateOnWeb" Type="DateTime" Precision="0" />
+          <Property Name="OnlineStockAvar" Type="Int32" Nullable="false" />
+          <Property Name="SOReserve" Type="Int32" Nullable="false" />
+          <Property Name="ISBN" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="Keyword" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="KeywordEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="AboutProduct" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AboutProductEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Author" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AuthorEN" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TagLines" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TagLinesEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProductApproved">
+          <Key>
+            <PropertyRef Name="PID" />
+            <PropertyRef Name="IsSetGroup" />
+            <PropertyRef Name="IsSetBrand" />
+            <PropertyRef Name="IsSetDescription" />
+            <PropertyRef Name="IsSetUrl" />
+            <PropertyRef Name="IsSetImage" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="Remark" />
+            <PropertyRef Name="CreateOn" />
+            <PropertyRef Name="CreateBy" />
+            <PropertyRef Name="IsSetDescriptionEN" />
+            <PropertyRef Name="IsSetPhysical" />
+            <PropertyRef Name="ResponsibleBy" />
+          </Key>
+          <Property Name="PID" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="IsSetGroup" Type="Boolean" Nullable="false" />
+          <Property Name="IsSetBrand" Type="Boolean" Nullable="false" />
+          <Property Name="IsSetDescription" Type="Boolean" Nullable="false" />
+          <Property Name="IsSetUrl" Type="Boolean" Nullable="false" />
+          <Property Name="IsSetImage" Type="Boolean" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Remark" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="0" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsSetDescriptionEN" Type="Boolean" Nullable="false" />
+          <Property Name="IsSetPhysical" Type="Boolean" Nullable="false" />
+          <Property Name="ResponsibleBy" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="JobAssignedDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProductBundle">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="BundleProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="BundleProductId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProductGroup">
+          <Key>
+            <PropertyRef Name="ProductGroupId" />
+            <PropertyRef Name="DisplayName" />
+            <PropertyRef Name="DisplayNameEN" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="UrlName" />
+            <PropertyRef Name="ProductGroupId_CDS" />
+            <PropertyRef Name="Catlv3ID" />
+            <PropertyRef Name="Catlv2ID" />
+            <PropertyRef Name="CustomDepartmentId" />
+          </Key>
+          <Property Name="ProductGroupId" Type="Int32" Nullable="false" />
+          <Property Name="DisplayName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DepartmentId" Type="Int32" Nullable="false" />
+          <Property Name="UrlName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="ProductGroupId_CDS" Type="Int32" Nullable="false" />
+          <Property Name="Catlv3ID" Type="Int32" Nullable="false" />
+          <Property Name="Catlv2ID" Type="Int32" Nullable="false" />
+          <Property Name="ProductGroupID_REF" Type="Int32" />
+          <Property Name="CustomDepartmentId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProductMaster">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="ProductGroupId" />
+            <PropertyRef Name="DeptId" />
+            <PropertyRef Name="CatId" />
+            <PropertyRef Name="SubCatId" />
+            <PropertyRef Name="Class" />
+            <PropertyRef Name="SubClass" />
+            <PropertyRef Name="SaleUnit" />
+            <PropertyRef Name="SaleUnitEN" />
+            <PropertyRef Name="DeliveryFee" />
+            <PropertyRef Name="IsVat" />
+            <PropertyRef Name="VatRate" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ProductGroupId" Type="Int32" Nullable="false" />
+          <Property Name="DeptId" Type="Int32" Nullable="false" />
+          <Property Name="PID" Type="Int32" />
+          <Property Name="Color" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Size" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NameEN" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OnlyCentral" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="NewArrival" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OnlineEx" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="FullNameEn" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="BrandName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="BrandNameEng" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="DeptName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="DeptNameEng" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CatId" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="SubCatId" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Class" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="SubClass" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="StdPrice" Type="Single" />
+          <Property Name="SalePrice" Type="Single" />
+          <Property Name="PromotionPrice" Type="Int32" />
+          <Property Name="ShortDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="LongDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="SaleUnit" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="SaleUnitEN" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="StockOnHand" Type="Int32" />
+          <Property Name="StockAvar" Type="Int32" />
+          <Property Name="DeliveryFee" Type="Int32" Nullable="false" />
+          <Property Name="IsVat" Type="Int32" Nullable="false" />
+          <Property Name="VatRate" Type="Int32" Nullable="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
+          <Property Name="ExpiredDate" Type="DateTime" Precision="3" />
+          <Property Name="ProImg_CDS" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ParImgA_CDS" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ParImgB_CDS" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ParImgC_CDS" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ParImgD_CDS" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="BrandId_CDS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProductPicture">
+          <Key>
+            <PropertyRef Name="PictureId" />
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="Description" />
+          </Key>
+          <Property Name="PictureId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="PictureSmallName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="PictureMediumName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="PictureLargeName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionEN" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProductRelateLink">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="Link" />
+            <PropertyRef Name="TextTitle" />
+            <PropertyRef Name="TextTitleEN" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Link" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="true" />
+          <Property Name="TextTitle" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="true" />
+          <Property Name="TextTitleEN" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="true" />
+          <Property Name="ImageName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProductVideoLink">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="VideoLink" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="VideoLink" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Migrate_TBProperty">
+          <Key>
+            <PropertyRef Name="PropertyId" />
+            <PropertyRef Name="PropertyGroupId" />
+            <PropertyRef Name="PropertyName" />
+            <PropertyRef Name="PropertyNameEN" />
+            <PropertyRef Name="PropertyImageName" />
+            <PropertyRef Name="SeqNo" />
+            <PropertyRef Name="PropCatId" />
+          </Key>
+          <Property Name="PropertyId" Type="Int32" Nullable="false" />
+          <Property Name="PropertyGroupId" Type="Int32" Nullable="false" />
+          <Property Name="PropertyName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PropertyNameEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PropertyImageName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
+          <Property Name="PropCatId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBPropertyCategory">
+          <Key>
+            <PropertyRef Name="PropCatId" />
+            <PropertyRef Name="PropertyGroupId" />
+            <PropertyRef Name="PropCatName" />
+            <PropertyRef Name="SeqNo" />
+          </Key>
+          <Property Name="PropCatId" Type="Int32" Nullable="false" />
+          <Property Name="PropertyGroupId" Type="Int32" Nullable="false" />
+          <Property Name="PropCatName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBPropertyFilter">
+          <Key>
+            <PropertyRef Name="FilterId" />
+            <PropertyRef Name="PropertyId" />
+          </Key>
+          <Property Name="FilterId" Type="Int32" Nullable="false" />
+          <Property Name="PropertyId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBPropertyGroup">
+          <Key>
+            <PropertyRef Name="PropertyGroupId" />
+            <PropertyRef Name="PropertyGroupName" />
+            <PropertyRef Name="PropertyGroupNameEN" />
+            <PropertyRef Name="SeqNo" />
+          </Key>
+          <Property Name="PropertyGroupId" Type="Int32" Nullable="false" />
+          <Property Name="PropertyGroupName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PropertyGroupNameEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBPropertyProduct">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="PropertyId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="PropertyId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="ODMRoleUser">
           <Key>
@@ -8191,7 +9379,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LocalCatFeatureProduct_ProductStageGroup">
-          <End Type="ColspModel.ProductStageGroup" Role="ProductStageGroup" Multiplicity="1" />
+          <End Type="ColspModel.ProductStageGroup" Role="ProductStageGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.LocalCatFeatureProduct" Role="LocalCatFeatureProduct" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProductStageGroup">
@@ -8845,6 +10035,30 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="ShopUserGroupMap">
               <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableAB_TableA">
+          <End Type="ColspModel.TableA" Role="TableA" Multiplicity="1" />
+          <End Type="ColspModel.TableAB" Role="TableAB" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableA">
+              <PropertyRef Name="IdA" />
+            </Principal>
+            <Dependent Role="TableAB">
+              <PropertyRef Name="IdA" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableAB_TableB">
+          <End Type="ColspModel.TableB" Role="TableB" Multiplicity="1" />
+          <End Type="ColspModel.TableAB" Role="TableAB" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableB">
+              <PropertyRef Name="IdB" />
+            </Principal>
+            <Dependent Role="TableAB">
+              <PropertyRef Name="IdB" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -10955,6 +12169,31 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="TableAs">
+            <EntityTypeMapping TypeName="ColspModel.TableA">
+              <MappingFragment StoreEntitySet="TableA">
+                <ScalarProperty Name="NameA" ColumnName="NameA" />
+                <ScalarProperty Name="IdA" ColumnName="IdA" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableABs">
+            <EntityTypeMapping TypeName="ColspModel.TableAB">
+              <MappingFragment StoreEntitySet="TableAB">
+                <ScalarProperty Name="Num" ColumnName="Num" />
+                <ScalarProperty Name="IdB" ColumnName="IdB" />
+                <ScalarProperty Name="IdA" ColumnName="IdA" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableBs">
+            <EntityTypeMapping TypeName="ColspModel.TableB">
+              <MappingFragment StoreEntitySet="TableB">
+                <ScalarProperty Name="NameB" ColumnName="NameB" />
+                <ScalarProperty Name="IdB" ColumnName="IdB" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Themes">
             <EntityTypeMapping TypeName="ColspModel.Theme">
               <MappingFragment StoreEntitySet="Theme">
@@ -11066,17 +12305,302 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="CityId" ColumnName="CityId" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="AddressLine2" ColumnName="AddressLine2" />
+                <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
                 <ScalarProperty Name="CustTaxID" ColumnName="CustTaxID" />
                 <ScalarProperty Name="T1CardNo" ColumnName="T1CardNo" />
                 <ScalarProperty Name="ReceiveSms" ColumnName="ReceiveSms" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
                 <ScalarProperty Name="TelephoneNo" ColumnName="TelephoneNo" />
                 <ScalarProperty Name="Mobile" ColumnName="Mobile" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="GuestId" ColumnName="GuestId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProduct">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProduct">
+              <MappingFragment StoreEntitySet="Migrate_TBProduct">
+                <ScalarProperty Name="TagLinesEN" ColumnName="TagLinesEN" />
+                <ScalarProperty Name="TagLines" ColumnName="TagLines" />
+                <ScalarProperty Name="AuthorEN" ColumnName="AuthorEN" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="AboutProductEN" ColumnName="AboutProductEN" />
+                <ScalarProperty Name="AboutProduct" ColumnName="AboutProduct" />
+                <ScalarProperty Name="KeywordEN" ColumnName="KeywordEN" />
+                <ScalarProperty Name="Keyword" ColumnName="Keyword" />
+                <ScalarProperty Name="ISBN" ColumnName="ISBN" />
+                <ScalarProperty Name="SOReserve" ColumnName="SOReserve" />
+                <ScalarProperty Name="OnlineStockAvar" ColumnName="OnlineStockAvar" />
+                <ScalarProperty Name="FirstDateOnWeb" ColumnName="FirstDateOnWeb" />
+                <ScalarProperty Name="TextIconPromotionEN" ColumnName="TextIconPromotionEN" />
+                <ScalarProperty Name="TextIconPromotion" ColumnName="TextIconPromotion" />
+                <ScalarProperty Name="FirstStockAvar" ColumnName="FirstStockAvar" />
+                <ScalarProperty Name="FirstDateHasStock" ColumnName="FirstDateHasStock" />
+                <ScalarProperty Name="TranferDate" ColumnName="TranferDate" />
+                <ScalarProperty Name="TranferBy" ColumnName="TranferBy" />
+                <ScalarProperty Name="StockHold" ColumnName="StockHold" />
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+                <ScalarProperty Name="LastSaleDate" ColumnName="LastSaleDate" />
+                <ScalarProperty Name="SortValue" ColumnName="SortValue" />
+                <ScalarProperty Name="SortGroup" ColumnName="SortGroup" />
+                <ScalarProperty Name="PromotionExpiredDate" ColumnName="PromotionExpiredDate" />
+                <ScalarProperty Name="PromotionDescriptionEn" ColumnName="PromotionDescriptionEn" />
+                <ScalarProperty Name="PromotionDescriptionTh" ColumnName="PromotionDescriptionTh" />
+                <ScalarProperty Name="NumOfImage" ColumnName="NumOfImage" />
+                <ScalarProperty Name="WorkingStatus" ColumnName="WorkingStatus" />
+                <ScalarProperty Name="Size_CDS" ColumnName="Size_CDS" />
+                <ScalarProperty Name="Color_CDS" ColumnName="Color_CDS" />
+                <ScalarProperty Name="SubClassName" ColumnName="SubClassName" />
+                <ScalarProperty Name="ISClass" ColumnName="ISClass" />
+                <ScalarProperty Name="ClassName" ColumnName="ClassName" />
+                <ScalarProperty Name="IClass" ColumnName="IClass" />
+                <ScalarProperty Name="SubDeptName" ColumnName="SubDeptName" />
+                <ScalarProperty Name="ISDept" ColumnName="ISDept" />
+                <ScalarProperty Name="DeptName" ColumnName="DeptName" />
+                <ScalarProperty Name="IDept" ColumnName="IDept" />
+                <ScalarProperty Name="updateon" ColumnName="updateon" />
+                <ScalarProperty Name="updateby" ColumnName="updateby" />
+                <ScalarProperty Name="createon" ColumnName="createon" />
+                <ScalarProperty Name="createby" ColumnName="createby" />
+                <ScalarProperty Name="Size" ColumnName="Size" />
+                <ScalarProperty Name="Color" ColumnName="Color" />
+                <ScalarProperty Name="WorkingRemark" ColumnName="WorkingRemark" />
+                <ScalarProperty Name="PidOD" ColumnName="PidOD" />
+                <ScalarProperty Name="BU_SKU" ColumnName="BU_SKU" />
+                <ScalarProperty Name="IsFree" ColumnName="IsFree" />
+                <ScalarProperty Name="IsBestDeal" ColumnName="IsBestDeal" />
+                <ScalarProperty Name="DType" ColumnName="DType" />
+                <ScalarProperty Name="OnlineEx" ColumnName="OnlineEx" />
+                <ScalarProperty Name="NewArrival" ColumnName="NewArrival" />
+                <ScalarProperty Name="OnlyCentral" ColumnName="OnlyCentral" />
+                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="IsDeal" ColumnName="IsDeal" />
+                <ScalarProperty Name="IsVat" ColumnName="IsVat" />
+                <ScalarProperty Name="DeliverFeeItem" ColumnName="DeliverFeeItem" />
+                <ScalarProperty Name="SaleUnitEN" ColumnName="SaleUnitEN" />
+                <ScalarProperty Name="SaleUnit" ColumnName="SaleUnit" />
+                <ScalarProperty Name="IsSale" ColumnName="IsSale" />
+                <ScalarProperty Name="IsPromotion" ColumnName="IsPromotion" />
+                <ScalarProperty Name="VirtualPath" ColumnName="VirtualPath" />
+                <ScalarProperty Name="IsDeliveryByBU" ColumnName="IsDeliveryByBU" />
+                <ScalarProperty Name="NotReturnable" ColumnName="NotReturnable" />
+                <ScalarProperty Name="AvailableDate" ColumnName="AvailableDate" />
+                <ScalarProperty Name="ReviewEN" ColumnName="ReviewEN" />
+                <ScalarProperty Name="Review" ColumnName="Review" />
+                <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
+                <ScalarProperty Name="MetaKeyword" ColumnName="MetaKeyword" />
+                <ScalarProperty Name="DescriptionEN" ColumnName="DescriptionEN" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="OnPO" ColumnName="OnPO" />
+                <ScalarProperty Name="OnHold" ColumnName="OnHold" />
+                <ScalarProperty Name="StockAvar" ColumnName="StockAvar" />
+                <ScalarProperty Name="OnlineReserve" ColumnName="OnlineReserve" />
+                <ScalarProperty Name="StockOnHand" ColumnName="StockOnHand" />
+                <ScalarProperty Name="PromotionPrice" ColumnName="PromotionPrice" />
+                <ScalarProperty Name="UnitPriceIncVat" ColumnName="UnitPriceIncVat" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="FullPrice" ColumnName="FullPrice" />
+                <ScalarProperty Name="UrlNameEN" ColumnName="UrlNameEN" />
+                <ScalarProperty Name="UrlName" ColumnName="UrlName" />
+                <ScalarProperty Name="DocNameEN" ColumnName="DocNameEN" />
+                <ScalarProperty Name="DocName" ColumnName="DocName" />
+                <ScalarProperty Name="DisplayNameEN" ColumnName="DisplayNameEN" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="BusinessUnitId" ColumnName="BusinessUnitId" />
+                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
+                <ScalarProperty Name="ProductGroupId" ColumnName="ProductGroupId" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProductApproved">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProductApproved">
+              <MappingFragment StoreEntitySet="Migrate_TBProductApproved">
+                <ScalarProperty Name="JobAssignedDate" ColumnName="JobAssignedDate" />
+                <ScalarProperty Name="ResponsibleBy" ColumnName="ResponsibleBy" />
+                <ScalarProperty Name="IsSetPhysical" ColumnName="IsSetPhysical" />
+                <ScalarProperty Name="IsSetDescriptionEN" ColumnName="IsSetDescriptionEN" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsSetImage" ColumnName="IsSetImage" />
+                <ScalarProperty Name="IsSetUrl" ColumnName="IsSetUrl" />
+                <ScalarProperty Name="IsSetDescription" ColumnName="IsSetDescription" />
+                <ScalarProperty Name="IsSetBrand" ColumnName="IsSetBrand" />
+                <ScalarProperty Name="IsSetGroup" ColumnName="IsSetGroup" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProductBundle">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProductBundle">
+              <MappingFragment StoreEntitySet="Migrate_TBProductBundle">
+                <ScalarProperty Name="BundleProductId" ColumnName="BundleProductId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProductGroup">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProductGroup">
+              <MappingFragment StoreEntitySet="Migrate_TBProductGroup">
+                <ScalarProperty Name="CustomDepartmentId" ColumnName="CustomDepartmentId" />
+                <ScalarProperty Name="ProductGroupID_REF" ColumnName="ProductGroupID_REF" />
+                <ScalarProperty Name="Catlv2ID" ColumnName="Catlv2ID" />
+                <ScalarProperty Name="Catlv3ID" ColumnName="Catlv3ID" />
+                <ScalarProperty Name="ProductGroupId_CDS" ColumnName="ProductGroupId_CDS" />
+                <ScalarProperty Name="UrlName" ColumnName="UrlName" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="DisplayNameEN" ColumnName="DisplayNameEN" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="ProductGroupId" ColumnName="ProductGroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProductMaster">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProductMaster">
+              <MappingFragment StoreEntitySet="Migrate_TBProductMaster">
+                <ScalarProperty Name="BrandId_CDS" ColumnName="BrandId_CDS" />
+                <ScalarProperty Name="ParImgD_CDS" ColumnName="ParImgD_CDS" />
+                <ScalarProperty Name="ParImgC_CDS" ColumnName="ParImgC_CDS" />
+                <ScalarProperty Name="ParImgB_CDS" ColumnName="ParImgB_CDS" />
+                <ScalarProperty Name="ParImgA_CDS" ColumnName="ParImgA_CDS" />
+                <ScalarProperty Name="ProImg_CDS" ColumnName="ProImg_CDS" />
+                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="VatRate" ColumnName="VatRate" />
+                <ScalarProperty Name="IsVat" ColumnName="IsVat" />
+                <ScalarProperty Name="DeliveryFee" ColumnName="DeliveryFee" />
+                <ScalarProperty Name="StockAvar" ColumnName="StockAvar" />
+                <ScalarProperty Name="StockOnHand" ColumnName="StockOnHand" />
+                <ScalarProperty Name="SaleUnitEN" ColumnName="SaleUnitEN" />
+                <ScalarProperty Name="SaleUnit" ColumnName="SaleUnit" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
+                <ScalarProperty Name="LongDescription" ColumnName="LongDescription" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />
+                <ScalarProperty Name="PromotionPrice" ColumnName="PromotionPrice" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="StdPrice" ColumnName="StdPrice" />
+                <ScalarProperty Name="SubClass" ColumnName="SubClass" />
+                <ScalarProperty Name="Class" ColumnName="Class" />
+                <ScalarProperty Name="SubCatId" ColumnName="SubCatId" />
+                <ScalarProperty Name="CatId" ColumnName="CatId" />
+                <ScalarProperty Name="DeptNameEng" ColumnName="DeptNameEng" />
+                <ScalarProperty Name="DeptName" ColumnName="DeptName" />
+                <ScalarProperty Name="BrandNameEng" ColumnName="BrandNameEng" />
+                <ScalarProperty Name="BrandName" ColumnName="BrandName" />
+                <ScalarProperty Name="FullNameEn" ColumnName="FullNameEn" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="OnlineEx" ColumnName="OnlineEx" />
+                <ScalarProperty Name="NewArrival" ColumnName="NewArrival" />
+                <ScalarProperty Name="OnlyCentral" ColumnName="OnlyCentral" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Size" ColumnName="Size" />
+                <ScalarProperty Name="Color" ColumnName="Color" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="DeptId" ColumnName="DeptId" />
+                <ScalarProperty Name="ProductGroupId" ColumnName="ProductGroupId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProductPicture">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProductPicture">
+              <MappingFragment StoreEntitySet="Migrate_TBProductPicture">
+                <ScalarProperty Name="DescriptionEN" ColumnName="DescriptionEN" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="PictureLargeName" ColumnName="PictureLargeName" />
+                <ScalarProperty Name="PictureMediumName" ColumnName="PictureMediumName" />
+                <ScalarProperty Name="PictureSmallName" ColumnName="PictureSmallName" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="PictureId" ColumnName="PictureId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProductRelateLink">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProductRelateLink">
+              <MappingFragment StoreEntitySet="Migrate_TBProductRelateLink">
+                <ScalarProperty Name="ImageName" ColumnName="ImageName" />
+                <ScalarProperty Name="TextTitleEN" ColumnName="TextTitleEN" />
+                <ScalarProperty Name="TextTitle" ColumnName="TextTitle" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProductVideoLink">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProductVideoLink">
+              <MappingFragment StoreEntitySet="Migrate_TBProductVideoLink">
+                <ScalarProperty Name="VideoLink" ColumnName="VideoLink" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBProperty">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBProperty">
+              <MappingFragment StoreEntitySet="Migrate_TBProperty">
+                <ScalarProperty Name="PropCatId" ColumnName="PropCatId" />
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
+                <ScalarProperty Name="PropertyImageName" ColumnName="PropertyImageName" />
+                <ScalarProperty Name="PropertyNameEN" ColumnName="PropertyNameEN" />
+                <ScalarProperty Name="PropertyName" ColumnName="PropertyName" />
+                <ScalarProperty Name="PropertyGroupId" ColumnName="PropertyGroupId" />
+                <ScalarProperty Name="PropertyId" ColumnName="PropertyId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBPropertyCategory">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBPropertyCategory">
+              <MappingFragment StoreEntitySet="Migrate_TBPropertyCategory">
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
+                <ScalarProperty Name="PropCatName" ColumnName="PropCatName" />
+                <ScalarProperty Name="PropertyGroupId" ColumnName="PropertyGroupId" />
+                <ScalarProperty Name="PropCatId" ColumnName="PropCatId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBPropertyFilter">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBPropertyFilter">
+              <MappingFragment StoreEntitySet="Migrate_TBPropertyFilter">
+                <ScalarProperty Name="PropertyId" ColumnName="PropertyId" />
+                <ScalarProperty Name="FilterId" ColumnName="FilterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBPropertyGroup">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBPropertyGroup">
+              <MappingFragment StoreEntitySet="Migrate_TBPropertyGroup">
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
+                <ScalarProperty Name="PropertyGroupNameEN" ColumnName="PropertyGroupNameEN" />
+                <ScalarProperty Name="PropertyGroupName" ColumnName="PropertyGroupName" />
+                <ScalarProperty Name="PropertyGroupId" ColumnName="PropertyGroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBPropertyProduct">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBPropertyProduct">
+              <MappingFragment StoreEntitySet="Migrate_TBPropertyProduct">
+                <ScalarProperty Name="PropertyId" ColumnName="PropertyId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

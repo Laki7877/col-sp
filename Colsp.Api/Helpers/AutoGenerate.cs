@@ -8,8 +8,8 @@ namespace Colsp.Api.Helper
 {
     public static class AutoGenerate
     {
-        private static System.Func<char, int> v = c => (int)((c <= '9') ? (c - '0') : (c - 'A' + 10));
-        private static System.Func<int, char> ch = d => (char)(d + ((d < 10) ? '0' : ('A' - 10)));
+        private static Func<char, int> v = c => (c <= '9') ? (c - '0') : (c - 'A' + 10);
+        private static Func<int, char> ch = d => (char)(d + ((d < 10) ? '0' : ('A' - 10)));
 
         public static void GeneratePid(ColspEntities db,ICollection<ProductStage> products)
         {
