@@ -132,7 +132,7 @@ namespace Colsp.Api.CMSFunction
                         cms.Sequence = Model.Sequence;
                         cms.Visibility = Model.Visibility;
                         cms.CreateBy = Model.CreateBy;
-                        cms.Createdate = DateTime.Now;
+                        cms.CreateDate = DateTime.Now;
                         cms.CreateIP = Model.CreateIP;
                         db.CMSGroups.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.

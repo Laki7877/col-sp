@@ -57,7 +57,7 @@ namespace Colsp.Api.Controllers
                 {
                     CMS = (from m in db.CMSMasters
                            from gm in db.CMSMasterGroupMaps.Where(y => y.CMSMasterId == m.CMSMasterId).DefaultIfEmpty()
-                           from g in db.CMSGroups.Where(z => z.CMSGroupId == gm.CMSMasterGroupId).DefaultIfEmpty()
+                           from g in db.CMSGroups.Where(z => z.CMSGroupId == gm.CMSGroupId).DefaultIfEmpty()
                            from t in db.CMSMasterTypes.Where(x => x.CMSMasterTypeId == m.CMSTypeId).DefaultIfEmpty()
                            select new CMSListResponse
                            {
@@ -110,7 +110,7 @@ namespace Colsp.Api.Controllers
 
                     CMS = (from m in db.CMSMasters
                            from gm in db.CMSMasterGroupMaps.Where(y => y.CMSMasterId == m.CMSMasterId).DefaultIfEmpty()
-                           from g in db.CMSGroups.Where(z => z.CMSGroupId == gm.CMSMasterGroupId).DefaultIfEmpty()
+                           from g in db.CMSGroups.Where(z => z.CMSGroupId == gm.CMSGroupId).DefaultIfEmpty()
                            from t in db.CMSMasterTypes.Where(x => x.CMSMasterTypeId == m.CMSTypeId).DefaultIfEmpty()
                            select new CMSListResponse
                            {
@@ -201,7 +201,7 @@ namespace Colsp.Api.Controllers
                         return Ok(request);
 
                     CMS = (from c in db.CMSMasterGroupMaps.Where(x => x.ShopId == shopId)
-                           from m in db.CMSGroups.Where(m => m.CMSGroupId == c.CMSMasterGroupId).DefaultIfEmpty()
+                           from m in db.CMSGroups.Where(m => m.CMSGroupId == c.CMSGroupId).DefaultIfEmpty()
                            select m
                           ).Take(100);
 
@@ -353,7 +353,7 @@ namespace Colsp.Api.Controllers
                             response.CMSGroupNameTH = GetCMS.CMSGroupNameTH;
                             response.Sequence = (int)GetCMS.Sequence;
                             List<CMSMasterResponse> MasterList = new List<CMSMasterResponse>();
-                            var GetCMSMasterIdList = db.CMSMasterGroupMaps.Where(c => c.CMSMasterGroupId == GetCMS.CMSGroupId).Select(c => c.CMSMasterId).ToList();
+                            var GetCMSMasterIdList = db.CMSMasterGroupMaps.Where(c => c.CMSGroupId == GetCMS.CMSGroupId).Select(c => c.CMSMasterId).ToList();
                             foreach (int CMSMasteritem in GetCMSMasterIdList)
                             {
                                 CMSMasterResponse CMSMaster = new CMSMasterResponse();
