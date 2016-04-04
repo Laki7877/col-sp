@@ -48,7 +48,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.NEWSLETTER_FOLDER, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, false);
+                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.NEWSLETTER_FOLDER, 1, 1, int.MaxValue, int.MaxValue, int.MaxValue, false);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)

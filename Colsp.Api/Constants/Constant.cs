@@ -61,6 +61,7 @@ namespace Colsp.Api.Constants
         public static readonly string DATA_TYPE_STRING = "ST";
         public static readonly string DATA_TYPE_LIST = "LT";
         public static readonly string DATA_TYPE_CHECKBOX = "CB";
+        public static readonly string DATA_TYPE_HTML = "HB";
 
         public static readonly string PRODUCT_STATUS_DRAFT = "DF";
         public static readonly string PRODUCT_STATUS_WAIT_FOR_APPROVAL = "WA";

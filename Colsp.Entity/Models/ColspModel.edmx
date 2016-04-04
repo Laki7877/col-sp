@@ -623,7 +623,62 @@
           <Property Name="UpdateOn" Type="smalldatetime" />
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="Customer_Staging">
+          <Key>
+            <PropertyRef Name="Email" />
+          </Key>
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="PasswordHash" Type="varchar" MaxLength="60" />
+          <Property Name="FirstName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Mobile" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="TelephoneNo" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="IsFacebookConnect" Type="bit" Nullable="false" />
+          <Property Name="IsT1CConnect" Type="bit" Nullable="false" />
+          <Property Name="BirthDate" Type="smalldatetime" />
+          <Property Name="Gender" Type="tinyint" Nullable="false" />
+          <Property Name="ForgotPasswordOn" Type="smalldatetime" />
+          <Property Name="VerifyKey" Type="varchar" MaxLength="100" />
+          <Property Name="ReceiveSms" Type="bit" Nullable="false" />
+          <Property Name="T1CardNo" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="IsActivate" Type="bit" Nullable="false" />
+          <Property Name="Role" Type="int" Nullable="false" />
+          <Property Name="LastLoginDate" Type="smalldatetime" />
+          <Property Name="CustTaxID" Type="varchar" MaxLength="13" Nullable="false" />
+          <Property Name="FacebookId" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustT1CID" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdateOn" Type="smalldatetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="CustomerAddress">
+          <Key>
+            <PropertyRef Name="AddressId" />
+            <PropertyRef Name="CustomerId" />
+          </Key>
+          <Property Name="AddressId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="100" />
+          <Property Name="LastName" Type="varchar" MaxLength="100" />
+          <Property Name="AddressLine1" Type="nvarchar" MaxLength="55" />
+          <Property Name="AddressLine2" Type="nvarchar" MaxLength="55" />
+          <Property Name="ProvinceId" Type="int" Nullable="false" />
+          <Property Name="CityId" Type="int" Nullable="false" />
+          <Property Name="DistrictId" Type="int" Nullable="false" />
+          <Property Name="PostCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="BranchID" Type="varchar" MaxLength="5" />
+          <Property Name="TaxId" Type="varchar" MaxLength="13" />
+          <Property Name="MobileNo" Type="varchar" MaxLength="50" />
+          <Property Name="PhoneNo" Type="varchar" MaxLength="50" />
+          <Property Name="Remark" Type="varchar" MaxLength="100" />
+          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdateOn" Type="smalldatetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="CustomerAddress_Staging">
           <Key>
             <PropertyRef Name="AddressId" />
             <PropertyRef Name="CustomerId" />
@@ -2036,7 +2091,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="VariantTabStatus" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="MoreOptionTabStatus" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="RejectReason" Type="nvarchar" MaxLength="1000" Nullable="false" />
-          <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="ApprovedBy" Type="varchar" MaxLength="100" />
           <Property Name="ApprovedDt" Type="datetime" />
@@ -4250,7 +4304,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CouponPidMap" EntityType="Self.CouponPidMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CouponShopMap" EntityType="Self.CouponShopMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer_Staging" EntityType="Self.Customer_Staging" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerAddress" EntityType="Self.CustomerAddress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerAddress_Staging" EntityType="Self.CustomerAddress_Staging" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerToken" EntityType="Self.CustomerToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerWishList" EntityType="Self.CustomerWishList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Deal" EntityType="Self.Deal" Schema="dbo" store:Type="Tables" />
@@ -5233,7 +5289,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CouponPidMaps" EntityType="ColspModel.CouponPidMap" />
           <EntitySet Name="CouponShopMaps" EntityType="ColspModel.CouponShopMap" />
           <EntitySet Name="Customers" EntityType="ColspModel.Customer" />
+          <EntitySet Name="Customer_Staging" EntityType="ColspModel.Customer_Staging" />
           <EntitySet Name="CustomerAddresses" EntityType="ColspModel.CustomerAddress" />
+          <EntitySet Name="CustomerAddress_Staging" EntityType="ColspModel.CustomerAddress_Staging" />
           <EntitySet Name="CustomerTokens" EntityType="ColspModel.CustomerToken" />
           <EntitySet Name="CustomerWishLists" EntityType="ColspModel.CustomerWishList" />
           <EntitySet Name="Deals" EntityType="ColspModel.Deal" />
@@ -6434,7 +6492,62 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="0" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Customer_Staging">
+          <Key>
+            <PropertyRef Name="Email" />
+          </Key>
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="TelephoneNo" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="IsFacebookConnect" Type="Boolean" Nullable="false" />
+          <Property Name="IsT1CConnect" Type="Boolean" Nullable="false" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="Byte" Nullable="false" />
+          <Property Name="ForgotPasswordOn" Type="DateTime" Precision="0" />
+          <Property Name="VerifyKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ReceiveSms" Type="Boolean" Nullable="false" />
+          <Property Name="T1CardNo" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IsActivate" Type="Boolean" Nullable="false" />
+          <Property Name="Role" Type="Int32" Nullable="false" />
+          <Property Name="LastLoginDate" Type="DateTime" Precision="0" />
+          <Property Name="CustTaxID" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="FacebookId" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CustT1CID" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="0" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="CustomerAddress">
+          <Key>
+            <PropertyRef Name="AddressId" />
+            <PropertyRef Name="CustomerId" />
+          </Key>
+          <Property Name="AddressId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AddressLine1" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Name="AddressLine2" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Name="ProvinceId" Type="Int32" Nullable="false" />
+          <Property Name="CityId" Type="Int32" Nullable="false" />
+          <Property Name="DistrictId" Type="Int32" Nullable="false" />
+          <Property Name="PostCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BranchID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="TaxId" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="MobileNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Remark" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="0" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CustomerAddress_Staging">
           <Key>
             <PropertyRef Name="AddressId" />
             <PropertyRef Name="CustomerId" />
@@ -7439,7 +7552,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="VariantTabStatus" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="MoreOptionTabStatus" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="RejectReason" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="ApprovedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ApprovedDt" Type="DateTime" Precision="3" />
@@ -10786,9 +10898,65 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Customer_Staging">
+            <EntityTypeMapping TypeName="ColspModel.Customer_Staging">
+              <MappingFragment StoreEntitySet="Customer_Staging">
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CustT1CID" ColumnName="CustT1CID" />
+                <ScalarProperty Name="FacebookId" ColumnName="FacebookId" />
+                <ScalarProperty Name="CustTaxID" ColumnName="CustTaxID" />
+                <ScalarProperty Name="LastLoginDate" ColumnName="LastLoginDate" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="IsActivate" ColumnName="IsActivate" />
+                <ScalarProperty Name="T1CardNo" ColumnName="T1CardNo" />
+                <ScalarProperty Name="ReceiveSms" ColumnName="ReceiveSms" />
+                <ScalarProperty Name="VerifyKey" ColumnName="VerifyKey" />
+                <ScalarProperty Name="ForgotPasswordOn" ColumnName="ForgotPasswordOn" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="IsT1CConnect" ColumnName="IsT1CConnect" />
+                <ScalarProperty Name="IsFacebookConnect" ColumnName="IsFacebookConnect" />
+                <ScalarProperty Name="TelephoneNo" ColumnName="TelephoneNo" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CustomerAddresses">
             <EntityTypeMapping TypeName="ColspModel.CustomerAddress">
               <MappingFragment StoreEntitySet="CustomerAddress">
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="TaxId" ColumnName="TaxId" />
+                <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="CityId" ColumnName="CityId" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="AddressLine2" ColumnName="AddressLine2" />
+                <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerAddress_Staging">
+            <EntityTypeMapping TypeName="ColspModel.CustomerAddress_Staging">
+              <MappingFragment StoreEntitySet="CustomerAddress_Staging">
                 <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
                 <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
@@ -11700,7 +11868,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="ApprovedDt" ColumnName="ApprovedDt" />
                 <ScalarProperty Name="ApprovedBy" ColumnName="ApprovedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="RejectReason" ColumnName="RejectReason" />
                 <ScalarProperty Name="MoreOptionTabStatus" ColumnName="MoreOptionTabStatus" />
                 <ScalarProperty Name="VariantTabStatus" ColumnName="VariantTabStatus" />

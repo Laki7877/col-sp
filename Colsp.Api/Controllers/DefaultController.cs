@@ -1,4 +1,5 @@
-﻿using Colsp.Entity.Models;
+﻿using Cenergy.Dazzle.Admin.Security.Cryptography;
+using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using System;
 using System.Collections.Generic;
@@ -142,48 +143,9 @@ namespace Colsp.Api.Controllers
         [OverrideAuthentication, OverrideAuthorization]
         public HttpResponseMessage Test()
         {
-            //var tmp = db.TableABs.fi
+            SaltedSha256PasswordHasher salt = new SaltedSha256PasswordHasher();
 
-
-            TableAB test = new TableAB()
-            {
-                IdA = 1
-            };
-
-
-            test = db.TableABs.Attach(test);
-            test.Num = 55;
-
-
-            //db.TableBs.Add(new TableB()
-            //{
-            //    IdB = 2,
-            //    NameB = "II"
-            //});
-
-            //TableA ta = new TableA()
-            //{
-            //    IdA = 1
-            //};
-            //db.TableABs.at
-            //db.TableAs.Attach(ta);
-            //ta.TableABs.Clear();
-            //ta.
-            //ta.TableABs.Add(new TableAB()
-            //{
-            //    IdB = 2,
-            //    Num = 20,
-            //});
-
-            //ta.TableABs.Add(new TableAB()
-            //{
-            //    IdB = 1,
-            //    Num = 10,
-            //});
-
-            db.SaveChanges();
-
-            return Request.CreateResponse(HttpStatusCode.OK, test);
+            return Request.CreateResponse(HttpStatusCode.OK, salt.HashPassword("vader"));
         }
 
         protected override void Dispose(bool disposing)

@@ -173,7 +173,6 @@ namespace Colsp.Api.Controllers
                     OnlineFlag = false,
                     RejectReason = string.Empty,
                     Remark = string.Empty,
-                    Visibility = true,
                     Status = Constant.PRODUCT_STATUS_DRAFT,
                     ShopId = shopId,
                     CreatedBy = email,
@@ -566,7 +565,27 @@ namespace Colsp.Api.Controllers
                 {
                     header.Add(g.HeaderName);
                 }
-                var defaultAttribute = db.Attributes.Where(w => w.DefaultAttribute).Select(s => s.AttributeNameEn).ToList();
+                if (Constant.SHOP_GROUP_INDY.Equals(User.ShopRequest().ShopGroup))
+                {
+                    header.Add("Unit Price");
+                    header.Add("Purchase Price");
+                }
+                List<string> defaultAttribute = null;
+                if(User.ShopRequest() != null)
+                {
+                    defaultAttribute = db.Attributes
+                        .Where(w => w.DefaultAttribute && Constant.ATTRIBUTE_VISIBLE_ALL_USER.Equals(w.VisibleTo))
+                        .Select(s => s.AttributeNameEn)
+                        .ToList();
+                }
+                else
+                {
+                    defaultAttribute = db.Attributes
+                        .Where(w => w.DefaultAttribute)
+                        .Select(s => s.AttributeNameEn)
+                        .ToList();
+                }
+               
                 if (defaultAttribute != null && defaultAttribute.Count > 0)
                 {
                     header.AddRange(defaultAttribute);
@@ -876,7 +895,7 @@ namespace Colsp.Api.Controllers
                                     p.Status,
                                     p.ImageFlag,
                                     p.InfoFlag,
-                                    p.Visibility,
+                                    p.ProductStages.FirstOrDefault().Visibility,
                                     p.ProductStages.FirstOrDefault().VariantCount,
                                     ImageUrl = p.ProductStages.FirstOrDefault().FeatureImgUrl,
                                     GlobalCategory = p.GlobalCategory != null ? new { p.GlobalCategory.CategoryId, p.GlobalCategory.NameEn, p.GlobalCategory.Lft, p.GlobalCategory.Rgt } : null,
@@ -1255,8 +1274,7 @@ namespace Colsp.Api.Controllers
                 var masterVariant = group.ProductStages.Where(w=>w.IsVariant==false).FirstOrDefault();
                 request.MasterVariant.Status = group.Status;
                 SetupVariant(masterVariant, request.MasterVariant, false, email, adminPermission, sellerPermission, db, shippingList);
-                //var tmpAtribute = new List<AttributeRequest>(request.MasterAttribute);
-                //tmpAtribute.AddRange(request.DefaultAttributes);
+                masterVariant.Visibility = request.Visibility;
                 SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
                 #endregion
                 #region Variants
@@ -1374,7 +1392,6 @@ namespace Colsp.Api.Controllers
                 #endregion
                 var shopId = User.ShopRequest().ShopId;
                 ProductStageGroup group = SetupProduct(db, request,shopId);
-                group.Visibility = true;
                 AutoGenerate.GeneratePid(db, group.ProductStages);
                 group.ProductId = db.GetNextProductStageGroupId().Single().Value;
                 db.ProductStageGroups.Add(group);
@@ -1429,8 +1446,6 @@ namespace Colsp.Api.Controllers
                 {
                     response.Variants.Where(w => w.SEO != null).ToList().ForEach(f => { f.SEO.ProductUrlKeyEn = null; f.Pid = null; });
                 }
-                
-
                 return AddProduct(response);
             }
             catch (Exception e)
@@ -1765,6 +1780,7 @@ namespace Colsp.Api.Controllers
             SetupAttributeResponse(masterVariant, response.MasterAttribute);
             response.GiftWrap = masterVariant.GiftWrap;
             response.TheOneCardEarn = masterVariant.TheOneCardEarn;
+            response.Visibility = masterVariant.Visibility;
             var variants = group.ProductStages.Where(w => w.IsVariant == true).ToList();
             foreach (var variant in variants)
             {
@@ -2029,7 +2045,6 @@ namespace Colsp.Api.Controllers
             group.MoreOptionTabStatus = Validation.ValidateString(request.AdminApprove.MoreOption, "More Option Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.VariantTabStatus = Validation.ValidateString(request.AdminApprove.Variation, "Variant Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.RejectReason = Validation.ValidateString(request.AdminApprove.RejectReason, "Reject Reason", true, 500, true, string.Empty);
-            group.Visibility = request.Visibility;
             #endregion
             #region Create/Update
             if (addNew)
@@ -2836,7 +2851,6 @@ namespace Colsp.Api.Controllers
             response.InfoFlag = group.InfoFlag;
             response.ImageFlag = group.ImageFlag;
             response.OnlineFlag = group.OnlineFlag;
-            response.Visibility = group.Visibility;
             response.Status = group.Status;
         }
 
@@ -2875,7 +2889,6 @@ namespace Colsp.Api.Controllers
                 UpdatedBy = group.UpdatedBy,
                 UpdatedDt = group.UpdatedDt,
                 VariantTabStatus = group.VariantTabStatus,
-                Visibility = group.Visibility,
                 ApprovedBy = group.ApprovedBy,
                 ApprovedDt = group.ApprovedDt,
                 HistoryDt = DateTime.Now,
@@ -3410,6 +3423,11 @@ namespace Colsp.Api.Controllers
                         headDicTmp.Add(current.MapName, new Tuple<string, int>(current.HeaderName, i++));
                     }
                 }
+                if (Constant.SHOP_GROUP_INDY.Equals(User.ShopRequest().ShopGroup))
+                {
+                    headDicTmp.Add("UNP", new Tuple<string, int>("Unit Price", i++));
+                    headDicTmp.Add("PHP", new Tuple<string, int>("Purchase Price", i++));
+                }
                 if (request.Options.Contains("DAT"))
                 {
                     List<string> defAttri = null;
@@ -3431,7 +3449,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 #region Query
-                var query = db.ProductStages.Select(s => new
+                var query = db.ProductStages.Where(w=>w.Visibility==true).Select(s => new
                 {
                     ProductStageGroup = s.ProductStageGroup == null ? null : new
                     {
@@ -3471,6 +3489,8 @@ namespace Colsp.Api.Controllers
                     s.Upc,
                     s.OriginalPrice,
                     s.SalePrice,
+                    s.UnitPrice,
+                    s.PurchasePrice,
                     s.Installment,
                     s.DescriptionFullEn,
                     s.DescriptionFullTh,
@@ -3538,18 +3558,6 @@ namespace Colsp.Api.Controllers
                     s.IsVariant,
                     s.VariantCount,
                 });
-                //var query = db.ProductStages
-                //   .Include(inc => inc.ProductStageGroup.ProductStageTags)
-                //   .Include(inc => inc.ProductStageGroup.ProductStageRelateds1.Select(s => s.ProductStageGroup.ProductStages))
-                //   .Include(inc => inc.ProductStageGroup.Brand)
-                //   .Include(inc => inc.ProductStageAttributes.Select(sa => sa.Attribute.AttributeValueMaps.Select(sv => sv.AttributeValue)))
-                //   .Include(inc => inc.Inventory)
-                //   .Include(inc => inc.ProductStageImages)
-                //   .Include(inc => inc.ProductStageVideos)
-                //   .Include(inc => inc.ProductStageGroup.ProductStageGlobalCatMaps.Select(s => s.GlobalCategory))
-                //   .Include(inc => inc.ProductStageGroup.ProductStageLocalCatMaps.Select(s => s.LocalCategory))
-                //   .Include(inc => inc.Shipping)
-                //   .Include(inc => inc.ProductStageGroup.AttributeSet.AttributeSetMaps.Select(s => s.Attribute.AttributeValueMaps.Select(sv => sv.AttributeValue)));
                 var productIds = request.ProductList.Select(s => s.ProductId).ToList();
                 if (productIds != null && productIds.Count > 0)
                 {
@@ -3731,6 +3739,14 @@ namespace Colsp.Api.Controllers
                     if (headDicTmp.ContainsKey("INS"))
                     {
                         bodyList[headDicTmp["INS"].Item2] = Constant.STATUS_YES.Equals(p.Installment) ? "Yes" : "No";
+                    }
+                    if (headDicTmp.ContainsKey("UNP"))
+                    {
+                        bodyList[headDicTmp["UNP"].Item2] = string.Concat(p.UnitPrice);
+                    }
+                    if (headDicTmp.ContainsKey("PHP"))
+                    {
+                        bodyList[headDicTmp["PHP"].Item2] = string.Concat(p.PurchasePrice);
                     }
                     #endregion
                     #region Description
@@ -4461,7 +4477,6 @@ namespace Colsp.Api.Controllers
                                 ImageFlag = false,
                                 InfoFlag = false,
                                 OnlineFlag = false,
-                                Visibility = true,
                                 RejectReason = string.Empty,
                                 CreatedBy = User.UserRequest().Email,
                                 CreatedDt = DateTime.Now,
@@ -4500,7 +4515,7 @@ namespace Colsp.Api.Controllers
                             PurchasePrice = 0,
                             SalePrice = 0,
                             OriginalPrice = 0,
-                            LimitIndividualDay = false,
+                            
                             DefaultVaraint = false,
 
                             ProductNameEn = Validation.ValidateCSVStringColumn(headDic, body, "Product Name (English)", true, 300, errorMessage, row),
@@ -4534,6 +4549,7 @@ namespace Colsp.Api.Controllers
                             PrepareFri = Validation.ValidateCSVIntegerColumn(headDic, body, "Preparation Time - Friday", false, int.MaxValue, errorMessage, row, 0),
                             PrepareSat = Validation.ValidateCSVIntegerColumn(headDic, body, "Preparation Time - Saturday", false, int.MaxValue, errorMessage, row, 0),
                             PrepareSun = Validation.ValidateCSVIntegerColumn(headDic, body, "Preparation Time - Sunday", false, int.MaxValue, errorMessage, row, 0),
+                            LimitIndividualDay = headDic.ContainsKey("Set preparation time for individual day") && string.Equals(body[headDic["Set preparation time for individual day"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false,
                             Length = Validation.ValidateCSVIntegerColumn(headDic, body, "Package Dimension - Length (mm)", false, int.MaxValue, errorMessage, row, 0),
                             Width = Validation.ValidateCSVIntegerColumn(headDic, body, "Package Dimension - Width (mm)", false, int.MaxValue, errorMessage, row, 0),
                             Height = Validation.ValidateCSVIntegerColumn(headDic, body, "Package Dimension - Height (mm)", false, int.MaxValue, errorMessage, row, 0),
@@ -4544,6 +4560,41 @@ namespace Colsp.Api.Controllers
                         {
                             string defaultVar = body[headDic["Default Variant"]];
                             variant.DefaultVaraint = "Yes".Equals(defaultVar);
+                        }
+                        if (Constant.SHOP_GROUP_INDY.Equals(User.ShopRequest().ShopGroup))
+                        {
+                            if (headDic.ContainsKey("Unit Price"))
+                            {
+                                try
+                                {
+                                    var unitPriceSt = body[headDic["Unit Price"]];
+                                    if (!string.IsNullOrWhiteSpace(unitPriceSt))
+                                    {
+                                        decimal unitPrice = decimal.Parse(unitPriceSt);
+                                        variant.UnitPrice = unitPrice;
+                                    }
+                                }
+                                catch
+                                {
+                                    errorMessage.Add("Invalid Unit Price at row " + row);
+                                }
+                            }
+                            if (headDic.ContainsKey("Purchase Price"))
+                            {
+                                try
+                                {
+                                    var purchasePriceSt = body[headDic["Purchase Price"]];
+                                    if (!string.IsNullOrWhiteSpace(purchasePriceSt))
+                                    {
+                                        decimal purchasePrice = decimal.Parse(purchasePriceSt);
+                                        variant.PurchasePrice = purchasePrice;
+                                    }
+                                }
+                                catch
+                                {
+                                    errorMessage.Add("Invalid Purchase Price at row " + row);
+                                }
+                            }
                         }
                         if (isUpdate)
                         {
@@ -4678,26 +4729,6 @@ namespace Colsp.Api.Controllers
                                 errorMessage.Add("Invalid Safety Stock Amount at row " + row);
                             }
                         }
-                        if (variant.Inventory == null)
-                        {
-                            variant.Inventory = new Inventory()
-                            {
-                                CreatedBy = variant.CreatedBy,
-                                CreatedDt = variant.CreatedDt,
-                                Defect = 0,
-                                MaxQuantity = 0,
-                                MinQuantity = 0,
-                                Quantity = 0,
-                                Reserve = 0,
-                                OnHold = 0,
-                                SafetyStockAdmin = 0,
-                                SafetyStockSeller = 0,
-                                StockAvailable = 1,
-                                UseDecimal = false,
-                                UpdatedBy = variant.UpdatedBy,
-                                UpdatedDt = variant.UpdatedDt,
-                            };
-                        }
                         #endregion
                         if (variant.DefaultVaraint || isNew)
                         {
@@ -4769,9 +4800,12 @@ namespace Colsp.Api.Controllers
                                         {
                                             throw new Exception();
                                         }
+                                    }else if (!isUpdate)
+                                    {
+                                        errorMessage.Add("Global Category ID is required at row " + row);
                                     }
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
                                     errorMessage.Add("Invalid Global Category ID at row " + row);
                                 }
@@ -5417,7 +5451,12 @@ namespace Colsp.Api.Controllers
                     var groupEn = gropEnList.Where(w => w.ProductId == g.ProductId).SingleOrDefault();
                     if(groupEn == null)
                     {
-                        errorMessage.Add("Cannot find group id 'empty' in seller portal. If you are trying to add new products, please use Import - Add New Products feature.");
+                        errorMessage.Add("Cannot find 'empty' group id in seller portal. If you are trying to add new products, please use 'Import - Add New Products' feature.");
+                        continue;
+                    }
+                    if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(groupEn.Status))
+                    {
+                        errorMessage.Add("Cannot edit product " + groupEn.ProductId + " with status Wait for Approval" );
                         continue;
                     }
                     #region Brand
@@ -5781,7 +5820,7 @@ namespace Colsp.Api.Controllers
                         {
                             masterVariantEn.PrepareSun = importVariantEn.PrepareSun;
                         }
-                        if (header.Contains("Package Dimension - Lenght (mm)"))
+                        if (header.Contains("Package Dimension - Length (mm)"))
                         {
                             masterVariantEn.Length = importVariantEn.Length;
                         }
@@ -5832,6 +5871,18 @@ namespace Colsp.Api.Controllers
                         if (header.Contains("Gift Wrap"))
                         {
                             masterVariantEn.GiftWrap = importVariantEn.GiftWrap;
+                        }
+                        if (header.Contains("Unit Price"))
+                        {
+                            masterVariantEn.UnitPrice = importVariantEn.UnitPrice;
+                        }
+                        if (header.Contains("Purchase Price"))
+                        {
+                            masterVariantEn.PurchasePrice = importVariantEn.PurchasePrice;
+                        }
+                        if(header.Contains("Set preparation time for individual day"))
+                        {
+                            masterVariantEn.LimitIndividualDay = importVariantEn.LimitIndividualDay;
                         }
                         #endregion
                     }
@@ -6040,7 +6091,7 @@ namespace Colsp.Api.Controllers
                                     {
                                         currentStage.PrepareSun = staging.PrepareSun;
                                     }
-                                    if (header.Contains("Package Dimension - Lenght (mm)"))
+                                    if (header.Contains("Package Dimension - Length (mm)"))
                                     {
                                         currentStage.Length = staging.Length;
                                     }
@@ -6091,6 +6142,25 @@ namespace Colsp.Api.Controllers
                                     if (header.Contains("Gift Wrap"))
                                     {
                                         currentStage.GiftWrap = staging.GiftWrap;
+                                    }
+                                    if(header.Contains("Product URL Key"))
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(staging.UrlEn))
+                                        {
+                                            currentStage.UrlEn = staging.UrlEn;
+                                        }
+                                    }
+                                    if(header.Contains("Unit Price"))
+                                    {
+                                        currentStage.UnitPrice = staging.UnitPrice;
+                                    }
+                                    if (header.Contains("Purchase Price"))
+                                    {
+                                        currentStage.PurchasePrice = staging.PurchasePrice;
+                                    }
+                                    if (header.Contains("Set preparation time for individual day"))
+                                    {
+                                        masterVariantEn.LimitIndividualDay = importVariantEn.LimitIndividualDay;
                                     }
                                     #endregion
                                     #region Setup Attribute

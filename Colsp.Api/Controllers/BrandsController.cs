@@ -31,7 +31,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateResponse(HttpStatusCode.NotAcceptable,e.Message);
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -41,16 +41,13 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
-                var brands = from brand in db.Brands
-                               select new
-                               {
-                                   brand.BrandId,
-                                   brand.BrandNameEn,
-                                   brand.BrandNameTh,
-                                   brand.UpdatedDt
-                               };
-
+                var brands = db.Brands.Select(s => new
+                {
+                    s.BrandId,
+                    s.BrandNameEn,
+                    s.BrandNameTh,
+                    s.UpdatedDt
+                });
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, brands);
@@ -71,7 +68,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -83,78 +80,77 @@ namespace Colsp.Api.Controllers
             {
                 var brand = db.Brands
                     .Where(w => w.BrandId == brandId).Include(i => i.BrandImages)
-                    .Include(i=>i.BrandFeatureProducts.Select(s=>s.ProductStageGroup.ProductStages)).SingleOrDefault();
-                if(brand != null)
+                    .Include(i=>i.BrandFeatureProducts
+                        .Select(s=>s.ProductStageGroup.ProductStages))
+                    .SingleOrDefault();
+                if(brand == null)
                 {
-                    BrandRequest response = new BrandRequest();
-                    response.BrandId = brand.BrandId;
-                    response.BrandNameEn = brand.BrandNameEn;
-                    response.BrandNameTh = brand.BrandNameTh;
-                    response.DisplayNameEn = brand.DisplayNameEn;
-                    response.DisplayNameTh = brand.DisplayNameTh;
-                    response.DescriptionFullEn = brand.DescriptionFullEn;
-                    response.DescriptionFullTh = brand.DescriptionFullTh;
-                    response.DescriptionShortEn = brand.DescriptionShortEn;
-                    response.DescriptionShortTh = brand.DescriptionShortTh;
-                    response.SEO = new SEORequest();
-                    response.SEO.MetaDescriptionEn = brand.MetaDescriptionEn;
-                    response.SEO.MetaDescriptionTh = brand.MetaDescriptionTh;
-                    response.SEO.MetaKeywordEn = brand.MetaKeyEn;
-                    response.SEO.MetaKeywordTh = brand.MetaKeyTh;
-                    response.SEO.MetaTitleEn = brand.MetaTitleEn;
-                    response.SEO.MetaTitleTh = brand.MetaTitleTh;
-                    response.SEO.ProductUrlKeyEn = brand.UrlEn;
-                    response.FeatureTitle = brand.FeatureTitle;
-                    response.TitleShowcase = brand.TitleShowcase;
-                    if (brand.BrandImages != null && brand.BrandImages.Count > 0)
-                    {
-                        var productImgEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o=>o.Position).ToList();
-                        foreach(var img in productImgEn)
-                        {
-                            response.BrandBannerEn.Add(new ImageRequest()
-                            {
-                                ImageId = img.BrandImageId,
-                                url = img.ImageUrl,
-                                position = img.Position,
-                            });
-                        }
-                        var productImgTh = brand.BrandImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).OrderBy(o => o.Position).ToList();
-                        foreach (var img in productImgTh)
-                        {
-                            response.BrandBannerTh.Add(new ImageRequest()
-                            {
-                                url = img.ImageUrl,
-                                position = img.Position,
-                            });
-                        }
-                    }
-                    if(brand.BrandFeatureProducts != null && brand.BrandFeatureProducts.Count > 0)
-                    {
-                        foreach(var pro in brand.BrandFeatureProducts)
-                        {
-                            response.FeatureProducts.Add(new ProductRequest()
-                            {
-                                ProductId = pro.ProductStageGroup.ProductId,
-                                Pid = pro.ProductStageGroup.ProductStages.Where(w=>w.IsVariant==false).SingleOrDefault().Pid,
-                                ProductNameEn = pro.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().ProductNameEn
-                            });
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(brand.PicUrl))
-                    {
-                        response.BrandImage = new ImageRequest();
-                        response.BrandImage.url = brand.PicUrl;
-                    }
-                    return Request.CreateResponse(HttpStatusCode.OK, response);
+                    throw new Exception(string.Concat("Cannot find brand id ",brandId));
                 }
-                else
+                BrandRequest response = new BrandRequest();
+                response.BrandId = brand.BrandId;
+                response.BrandNameEn = brand.BrandNameEn;
+                response.BrandNameTh = brand.BrandNameTh;
+                response.DisplayNameEn = brand.DisplayNameEn;
+                response.DisplayNameTh = brand.DisplayNameTh;
+                response.DescriptionFullEn = brand.DescriptionFullEn;
+                response.DescriptionFullTh = brand.DescriptionFullTh;
+                response.DescriptionShortEn = brand.DescriptionShortEn;
+                response.DescriptionShortTh = brand.DescriptionShortTh;
+                response.SEO = new SEORequest();
+                response.SEO.MetaDescriptionEn = brand.MetaDescriptionEn;
+                response.SEO.MetaDescriptionTh = brand.MetaDescriptionTh;
+                response.SEO.MetaKeywordEn = brand.MetaKeyEn;
+                response.SEO.MetaKeywordTh = brand.MetaKeyTh;
+                response.SEO.MetaTitleEn = brand.MetaTitleEn;
+                response.SEO.MetaTitleTh = brand.MetaTitleTh;
+                response.SEO.ProductUrlKeyEn = brand.UrlEn;
+                response.FeatureTitle = brand.FeatureTitle;
+                response.TitleShowcase = brand.TitleShowcase;
+                if (brand.BrandImages != null && brand.BrandImages.Count > 0)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, HttpErrorMessage.NotFound);
+                    var productImgEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o => o.Position).ToList();
+                    foreach (var img in productImgEn)
+                    {
+                        response.BrandBannerEn.Add(new ImageRequest()
+                        {
+                            ImageId = img.BrandImageId,
+                            url = img.ImageUrl,
+                            position = img.Position,
+                        });
+                    }
+                    var productImgTh = brand.BrandImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).OrderBy(o => o.Position).ToList();
+                    foreach (var img in productImgTh)
+                    {
+                        response.BrandBannerTh.Add(new ImageRequest()
+                        {
+                            url = img.ImageUrl,
+                            position = img.Position,
+                        });
+                    }
                 }
+                if (brand.BrandFeatureProducts != null && brand.BrandFeatureProducts.Count > 0)
+                {
+                    foreach (var pro in brand.BrandFeatureProducts)
+                    {
+                        response.FeatureProducts.Add(new ProductRequest()
+                        {
+                            ProductId = pro.ProductStageGroup.ProductId,
+                            Pid = pro.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().Pid,
+                            ProductNameEn = pro.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().ProductNameEn
+                        });
+                    }
+                }
+                if (!string.IsNullOrEmpty(brand.PicUrl))
+                {
+                    response.BrandImage = new ImageRequest();
+                    response.BrandImage.url = brand.PicUrl;
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -164,30 +160,36 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (request == null || request.Count == 0)
+                if (request == null)
                 {
                     throw new Exception("Invalid request");
                 }
-                var brandList = db.Brands.Include(i => i.ProductStageGroups).ToList();
+                var ids = request.Select(s => s.BrandId).ToList();
+                var brandList = db.Brands
+                    .Where(w=> ids.Contains(w.BrandId))
+                    .Include(i => i.ProductStageGroups)
+                    .ToList();
                 foreach (BrandRequest brandRq in request)
                 {
-                    var current = brandList.Where(w => w.BrandId.Equals(brandRq.BrandId)).SingleOrDefault();
+                    var current = brandList
+                        .Where(w => w.BrandId == brandRq.BrandId)
+                        .SingleOrDefault();
                     if (current == null)
                     {
-                        throw new Exception(HttpErrorMessage.NotFound);
+                        throw new Exception(string.Concat("Cannot find brand id ", brandRq.BrandId));
                     }
                     if (current.ProductStageGroups != null && current.ProductStageGroups.Count > 0)
                     {
                         throw new Exception("Brand has product or variant associate");
                     }
-                    current.Status = Constant.STATUS_REMOVE;
+                    db.Brands.Remove(current);
                 }
                 Util.DeadlockRetry(db.SaveChanges, "Brand");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch(Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -198,53 +200,18 @@ namespace Colsp.Api.Controllers
             try
             {
                 Brand brand = new Brand();
-                SetupBrand(brand, request);
-                #region BranImage En
-                if (request.BrandBannerEn != null && request.BrandBannerEn.Count > 0)
-                {
-                    int position = 0;
-                    foreach(ImageRequest img in request.BrandBannerEn)
-                    {
-                        brand.BrandImages.Add(new BrandImage()
-                        {
-                            ImageUrl = img.url,
-                            Position = position++,
-                            EnTh = Constant.LANG_EN,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now
-                        });
-                    }
-                }
-                #endregion
-                #region BranImage Th
-                if (request.BrandBannerTh != null && request.BrandBannerTh.Count > 0)
-                {
-                    int position = 0;
-                    foreach (ImageRequest img in request.BrandBannerTh)
-                    {
-                        brand.BrandImages.Add(new BrandImage()
-                        {
-                            ImageUrl = img.url,
-                            Position = position++,
-                            EnTh = Constant.LANG_TH,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now
-                        });
-                    }
-                }
-                #endregion
-                brand.Status = Constant.STATUS_ACTIVE;
-                brand.CreatedBy = User.UserRequest().Email;
-                brand.CreatedDt = DateTime.Now;
-                brand.UpdatedBy = User.UserRequest().Email;
-                brand.UpdatedDt = DateTime.Now;
+                string email = User.UserRequest().Email;
+                DateTime cuurentDt = DateTime.Now;
+                SetupBrand(brand, request,email, cuurentDt, db);
+                brand.CreatedBy = email;
+                brand.CreatedDt = cuurentDt;
                 db.Brands.Add(brand);
                 Util.DeadlockRetry(db.SaveChanges, "Brand");
                 return GetBrand(brand.BrandId);
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -260,175 +227,26 @@ namespace Colsp.Api.Controllers
                 }
                 var brand = db.Brands.Where(w => w.BrandId == brandId)
                     .Include(i=>i.BrandImages)
-                    .Include(i=>i.BrandFeatureProducts).SingleOrDefault();
-                if(brand != null)
-                {
-                    SetupBrand(brand, request);
+                    .Include(i=>i.BrandFeatureProducts)
+                    .SingleOrDefault();
 
-                    #region BranImage En
-                    var imageOldEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).ToList();
-                    if (request.BrandBannerEn != null && request.BrandBannerEn.Count > 0)
-                    {
-                        int position = 0;
-                        foreach (ImageRequest img in request.BrandBannerEn)
-                        {
-                            bool isNew = false;
-                            if(imageOldEn == null || imageOldEn.Count == 0)
-                            {
-                                isNew = true;
-                            }
-                            if (!isNew)
-                            {
-                                var current = imageOldEn.Where(w => w.BrandImageId == img.ImageId).SingleOrDefault();
-                                if(current != null)
-                                {
-                                    current.ImageUrl = img.url;
-                                    current.Position = position++;
-                                    current.UpdatedBy = User.UserRequest().Email;
-                                    current.UpdatedDt = DateTime.Now;
-                                    imageOldEn.Remove(current);
-                                }
-                                else
-                                {
-                                    isNew = true;
-                                }
-                            }
-                            if (isNew)
-                            {
-                                brand.BrandImages.Add(new BrandImage()
-                                {
-                                    ImageUrl = img.url,
-                                    Position = position++,
-                                    EnTh = Constant.LANG_EN,
-                                    UpdatedBy = User.UserRequest().Email,
-                                    UpdatedDt = DateTime.Now
-                                });
-                            }
-                        }
-                    }
-                    if(imageOldEn != null && imageOldEn.Count > 0)
-                    {
-                        db.BrandImages.RemoveRange(imageOldEn);
-                    }
-                    #endregion
-                    #region BranImage Th
-                    var imageOldTh = brand.BrandImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).ToList();
-                    if (request.BrandBannerTh != null && request.BrandBannerTh.Count > 0)
-                    {
-                        int position = 0;
-                        foreach (ImageRequest img in request.BrandBannerTh)
-                        {
-                            bool isNew = false;
-                            if (imageOldTh == null || imageOldTh.Count == 0)
-                            {
-                                isNew = true;
-                            }
-                            if (!isNew)
-                            {
-                                var current = imageOldTh.Where(w => w.BrandImageId == img.ImageId).SingleOrDefault();
-                                if (current != null)
-                                {
-                                    current.ImageUrl = img.url;
-                                    current.Position = position++;
-                                    current.UpdatedBy = User.UserRequest().Email;
-                                    current.UpdatedDt = DateTime.Now;
-                                    imageOldTh.Remove(current);
-                                }
-                                else
-                                {
-                                    isNew = true;
-                                }
-                            }
-                            if (isNew)
-                            {
-                                brand.BrandImages.Add(new BrandImage()
-                                {
-                                    ImageUrl = img.url,
-                                    Position = position++,
-                                    EnTh = Constant.LANG_TH,
-                                    UpdatedBy = User.UserRequest().Email,
-                                    UpdatedDt = DateTime.Now
-                                });
-                            }
-                        }
-                    }
-                    if (imageOldTh != null && imageOldTh.Count > 0)
-                    {
-                        db.BrandImages.RemoveRange(imageOldTh);
-                    }
-                    #endregion
-                    #region Brand Feature Product
-                    var brandProList = brand.BrandFeatureProducts.ToList();
-                    if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
-                    {
-                        int brandIdTmp = brand.BrandId;
-                        var proStageList = db.ProductStageGroups
-                            .Where(w => w.BrandId==brandIdTmp)
-                            .Select(s=>s.ProductId).ToList();
-                        foreach (var pro in request.FeatureProducts)
-                        {
-                            bool isNew = false;
-                            if(brandProList == null || brandProList.Count == 0)
-                            {
-                                isNew = true;
-                            }
-                            if (!isNew)
-                            {
-                                var current = brandProList.Where(w => w.ProductId==pro.ProductId).SingleOrDefault();
-                                if(current != null)
-                                {
-                                    brandProList.Remove(current);
-                                }
-                                else
-                                {
-                                    isNew = true;
-                                }
-                            }
-                            if (isNew)
-                            {
-                                var isPid = proStageList.Where(w => w == pro.ProductId).ToList();
-                                if(isPid != null && isPid.Count > 0)
-                                {
-                                    brand.BrandFeatureProducts.Add(new BrandFeatureProduct()
-                                    {
-                                        BrandId = brand.BrandId,
-                                        ProductId = pro.ProductId,
-                                        CreatedBy = User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now
-                                    });
-                                }
-                                else
-                                {
-                                    throw new Exception("Pid " + pro.Pid + " is not in this brand." );
-                                }
-                            }
-                        }
-                    }
-                    if(brandProList != null && brandProList.Count > 0)
-                    {
-                        db.BrandFeatureProducts.RemoveRange(brandProList);
-                    }
-                    #endregion
-                    brand.Status = Constant.STATUS_ACTIVE;
-                    brand.UpdatedBy = User.UserRequest().Email;
-                    brand.UpdatedDt = DateTime.Now;
-                    Util.DeadlockRetry(db.SaveChanges, "Brand");
-                    return GetBrand(brand.BrandId);
-                }
-                else
+                if (brand == null)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound,HttpErrorMessage.NotFound);
+                    throw new Exception(string.Concat("Cannot find brand id ", brandId));
                 }
+                string email = User.UserRequest().Email;
+                DateTime cuurentDt = DateTime.Now;
+                SetupBrand(brand, request,email, cuurentDt, db);
+                Util.DeadlockRetry(db.SaveChanges, "Brand");
+                return GetBrand(brand.BrandId);
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
-        private void SetupBrand(Brand brand, BrandRequest request)
+        private void SetupBrand(Brand brand, BrandRequest request,string email, DateTime currentDt, ColspEntities db)
         {
             brand.BrandNameEn = Validation.ValidateString(request.BrandNameEn, "Brand Name (English)", true,100,true);
             brand.BrandNameTh = Validation.ValidateString(request.BrandNameTh, "Brand Name (Thai)", true, 100, false, string.Empty);
@@ -448,8 +266,8 @@ namespace Colsp.Api.Controllers
                 brand.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keywords (Thai)", false, 500, false, string.Empty);
                 brand.MetaTitleEn = Validation.ValidateString(request.SEO.MetaTitleEn, "Meta Title (English)", false, 100, false, string.Empty);
                 brand.MetaTitleTh = Validation.ValidateString(request.SEO.MetaTitleTh, "Meta Title (Thai)", false, 100, false, string.Empty);
-               // brand.UrlTh = request.SEO.ProductUrlKeyTh;
             }
+            brand.PicUrl = Validation.ValidateString(request.BrandImage.url, "Logo", false, 500, false, string.Empty);
             if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
             {
                 brand.UrlEn = brand.BrandNameEn.Replace(" ", "-");
@@ -458,14 +276,155 @@ namespace Colsp.Api.Controllers
             {
                 brand.UrlEn = request.SEO.ProductUrlKeyEn.Trim().Replace(" ", "-");
             }
-            if (request.BrandImage != null)
+            #region BranImage En
+            var imageOldEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).ToList();
+            if (request.BrandBannerEn != null && request.BrandBannerEn.Count > 0)
             {
-                brand.PicUrl = request.BrandImage.url;
+                int position = 0;
+                foreach (ImageRequest img in request.BrandBannerEn)
+                {
+                    bool isNew = false;
+                    if (imageOldEn == null || imageOldEn.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = imageOldEn.Where(w => w.BrandImageId == img.ImageId).SingleOrDefault();
+                        if (current != null)
+                        {
+                            current.ImageUrl = img.url;
+                            current.Position = position++;
+                            current.UpdatedBy = email;
+                            current.UpdatedDt = currentDt;
+                            imageOldEn.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        brand.BrandImages.Add(new BrandImage()
+                        {
+                            ImageUrl = img.url,
+                            Position = position++,
+                            EnTh = Constant.LANG_EN,
+                            UpdatedBy = email,
+                            UpdatedDt = currentDt
+                        });
+                    }
+                }
             }
-            else
+            if (imageOldEn != null && imageOldEn.Count > 0)
             {
-                brand.PicUrl = string.Empty;
+                db.BrandImages.RemoveRange(imageOldEn);
             }
+            #endregion
+            #region BranImage Th
+            var imageOldTh = brand.BrandImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).ToList();
+            if (request.BrandBannerTh != null && request.BrandBannerTh.Count > 0)
+            {
+                int position = 0;
+                foreach (ImageRequest img in request.BrandBannerTh)
+                {
+                    bool isNew = false;
+                    if (imageOldTh == null || imageOldTh.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = imageOldTh.Where(w => w.BrandImageId == img.ImageId).SingleOrDefault();
+                        if (current != null)
+                        {
+                            current.ImageUrl = img.url;
+                            current.Position = position++;
+                            current.UpdatedBy = email;
+                            current.UpdatedDt = currentDt;
+                            imageOldTh.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        brand.BrandImages.Add(new BrandImage()
+                        {
+                            ImageUrl = img.url,
+                            Position = position++,
+                            EnTh = Constant.LANG_TH,
+                            UpdatedBy = email,
+                            UpdatedDt = currentDt
+                        });
+                    }
+                }
+            }
+            if (imageOldTh != null && imageOldTh.Count > 0)
+            {
+                db.BrandImages.RemoveRange(imageOldTh);
+            }
+            #endregion
+            #region Brand Feature Product
+            var brandProList = brand.BrandFeatureProducts.ToList();
+            if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
+            {
+                int brandIdTmp = brand.BrandId;
+                var proStageList = db.ProductStageGroups
+                    .Where(w => w.BrandId == brandIdTmp)
+                    .Select(s => s.ProductId).ToList();
+                foreach (var pro in request.FeatureProducts)
+                {
+                    bool isNew = false;
+                    if (brandProList == null || brandProList.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = brandProList.Where(w => w.ProductId == pro.ProductId).SingleOrDefault();
+                        if (current != null)
+                        {
+                            brandProList.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        var isPid = proStageList.Where(w => w == pro.ProductId).ToList();
+                        if (isPid != null && isPid.Count > 0)
+                        {
+                            brand.BrandFeatureProducts.Add(new BrandFeatureProduct()
+                            {
+                                BrandId = brand.BrandId,
+                                ProductId = pro.ProductId,
+                                CreatedBy = email,
+                                CreatedDt = currentDt,
+                                UpdatedBy = email,
+                                UpdatedDt = currentDt
+                            });
+                        }
+                        else
+                        {
+                            throw new Exception(string.Concat("Pid " , pro.Pid , " is not in this brand."));
+                        }
+                    }
+                }
+            }
+            if (brandProList != null && brandProList.Count > 0)
+            {
+                db.BrandFeatureProducts.RemoveRange(brandProList);
+            }
+            #endregion
+            brand.Status = Constant.STATUS_ACTIVE;
+            brand.UpdatedBy = email;
+            brand.UpdatedDt = currentDt;
         }
 
         protected override void Dispose(bool disposing)

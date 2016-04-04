@@ -37,15 +37,26 @@ namespace Colsp.Api.Helpers
                 fileName = fileData.LocalFileName;
                 bool isLogo = false;
                 bool.TryParse(streamProvider.FormData["IsLogo"], out isLogo);
-                if (isLogo)
+                try
                 {
-                    Validation.ValidateImage(fileName, logoWidth, logoLength, logoWidth, logoLength, int.MaxValue, true);
+                    if (isLogo)
+                    {
+                        Validation.ValidateImage(fileName, logoWidth, logoLength, logoWidth, logoLength, int.MaxValue, true);
+                    }
+                    else
+                    {
+                        Validation.ValidateImage(fileName, minWidth, minHeight, maxWidth, maxHeight, maxSize, isSquare);
+                    }
                 }
-                else
+                catch(Exception e)
                 {
-                    Validation.ValidateImage(fileName, minWidth, minHeight, maxWidth, maxHeight, maxSize, isSquare);
+                    if (File.Exists(fileName))
+                    {
+                        File.Delete(fileName);
+                    }
+                    throw e;
                 }
-                
+
                 string tmp = fileData.Headers.ContentDisposition.FileName;
                 if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
                 {
@@ -129,8 +140,6 @@ namespace Colsp.Api.Helpers
             }
             throw new Exception("Wait sometime and try again");
         }
-
-
 
         public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
         {
