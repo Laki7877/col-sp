@@ -223,9 +223,11 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="CMSFunction\CMSProcess.cs" />
     <Compile Include="Controllers\BuyOneGetOneController.cs" />
     <Compile Include="Controllers\CMSController.cs" />
     <Compile Include="Controllers\CMSManagementController.cs" />
+    <Compile Include="Controllers\PromotionController.cs" />
     <Compile Include="PromotionFunction\BuyOneGetOneProcess.cs" />
     <Compile Include="CMSFunction\GetCMSSearch.cs" />
     <Compile Include="CMSFunction\JsonContent.cs" />

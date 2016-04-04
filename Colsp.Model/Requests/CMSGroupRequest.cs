@@ -56,4 +56,8 @@ namespace Colsp.Model.Requests
         public string CMSMasterNameEN { get; set; }
         public string CMSMasterNameTH { get; set; }
     }
+    public class CMSGroupListRequest : PaginatedRequest
+    {
+        public string SearchText { get; set; }
+    }
 }
