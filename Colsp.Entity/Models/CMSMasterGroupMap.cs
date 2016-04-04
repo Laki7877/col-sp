@@ -16,7 +16,7 @@ namespace Colsp.Entity.Models
     {
         public int CMSMasterGroupMapId { get; set; }
         public int CMSMasterId { get; set; }
-        public int CMSMasterGroupId { get; set; }
+        public int CMSGroupId { get; set; }
         public int ShopId { get; set; }
         public Nullable<bool> IsActive { get; set; }
         public Nullable<int> CreateBy { get; set; }
@@ -25,5 +25,6 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
+        public int Sequence { get; set; }
     }
 }

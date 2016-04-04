@@ -31,6 +31,8 @@ namespace Colsp.Api.Controllers
             this.cmsLogic = new CMSLogic();
         }
 
+        #region CMS Category
+
         #region Get Method
 
         // Get CMS Category List
@@ -360,7 +362,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message + " /api/CMS/AddCMSCategory");
+                throw new Exception(ex.Message + " /api/CMS/EditCMSCategory");
             }
 
         }
@@ -388,6 +390,194 @@ namespace Colsp.Api.Controllers
             }
 
         }
+        #endregion
+
+        #endregion
+
+
+        #region CMS Group
+
+        #region Get Method
+        // Get CMS Group List
+        [HttpGet]
+        [Route("api/CMS/CMSGroup")]
+        public HttpResponseMessage GetAllCMSGroup([FromUri] CMSGroupRequest request)
+        {
+            try
+            {
+                int shopId = 0;
+
+                var query = from g in db.CMSGroups select g;
+
+                var cmsGroupIdList = (from map in db.CMSMasterGroupMaps where map.ShopId == shopId select map).Select(s => s.CMSGroupId).ToList();
+
+                if (cmsGroupIdList.Count > 0)
+                    query = query.Where(x => cmsGroupIdList.Contains(x.CMSGroupId));
+
+                if (!string.IsNullOrEmpty(request.SearchText))
+                    query = query.Where(x => x.CMSGroupNameEN.Contains(request.SearchText) || x.CMSGroupNameTH.Contains(request.SearchText));
+
+                var total = query.Count();
+                var response = PaginatedResponse.CreateResponse(query.Paginate(request), request, total);
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/GetAllCMSGroup");
+            }
+
+        }
+
+        // Get CMS Group Item
+        [HttpGet]
+        [Route("api/CMS/CMSGroup/{cmsGroupId}")]
+        public HttpResponseMessage GetCMSGroup([FromUri] int cmsGroupId)
+        {
+            try
+            {
+                var query = from g in db.CMSGroups
+                            where g.CMSGroupId == cmsGroupId
+                            select new CMSGroupRequest
+                            {
+                                GroupMasterList = (from masterGroup in db.CMSMasterGroupMaps
+                                                       where masterGroup.CMSGroupId == g.CMSGroupId
+                                                       select new CMSMasterGroupMapRequest
+                                                       {
+                                                            CMSMasterGroupMapId  = masterGroup.CMSMasterGroupMapId,
+                                                            CMSGroupId           = masterGroup.CMSGroupId,
+                                                            CMSMasterId          = masterGroup.CMSMasterId,
+                                                            Sequence             = masterGroup.Sequence,
+                                                            IsActive             = masterGroup.IsActive,
+                                                            CMSMasterExpiryDate  = (from p in db.CMSMasters
+                                                                                        where p.CMSMasterId.Equals(masterGroup.CMSMasterId)
+                                                                                        select p).FirstOrDefault().CMSMasterExpiryDate,
+
+                                                            CMSMasterNameEN      = (from p in db.CMSMasters
+                                                                                        where p.CMSMasterId.Equals(masterGroup.CMSMasterId)
+                                                                                        select p).FirstOrDefault().CMSMasterNameEN,
+
+                                                            CMSMasterNameTH     = (from p in db.CMSMasters
+                                                                                    where p.CMSMasterId.Equals(masterGroup.CMSMasterId)
+                                                                                    select p).FirstOrDefault().CMSMasterNameTH,
+                                                       }).ToList(),
+
+                                CMSGroupId      = g.CMSGroupId,
+                                CMSGroupNameEN  = g.CMSGroupNameEN,
+                                CMSGroupNameTH  = g.CMSGroupNameTH,
+                                Status          = g.Status,
+                                Visibility      = g.Visibility.Value,
+                                UpdateDate      = g.UpdateDate
+                            };
+
+                if (!query.Any())
+                    Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Group");
+
+                var item = query.FirstOrDefault();
+                return Request.CreateResponse(HttpStatusCode.OK, item);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/GetAllCMSGroup");
+            }
+
+        }
+
+        // Search CMS Master
+        [HttpGet]
+        [Route("api/CMS/SearchCMSMaster")]
+        public HttpResponseMessage SearchCMSMaster([FromUri] CMSMasterCondition condition)
+        {
+            try
+            {
+                int shopId = 0; //this.User.ShopRequest().ShopId;
+
+                var query = from master in db.CMSMasters select master;
+
+                if (condition.SearchText != null)
+                    query = query.Where(x => 
+                            x.CMSMasterNameEN.Contains(condition.SearchText) || 
+                            x.CMSMasterNameTH.Contains(condition.SearchText));
+                
+                query = query.Take(100);
+
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found CMS Master.");
+
+                List<CMSMaster> masters = new List<CMSMaster>();
+
+                foreach (var m in query)
+                {
+                    CMSMaster item              = new CMSMaster();
+                    item.CMSMasterId            = m.CMSMasterId;
+                    item.CMSMasterNameEN        = m.CMSMasterNameEN;
+                    item.CMSMasterNameTH        = m.CMSMasterNameTH;
+                    item.CMSMasterStatusId      = m.CMSMasterStatusId;
+                    item.CMSMasterEffectiveDate = m.CMSMasterEffectiveDate;
+                    item.CMSMasterExpiryDate    = m.CMSMasterExpiryDate;
+                    masters.Add(item);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, masters);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/SearchCMSMaster");
+            }
+
+        }
+        #endregion
+
+        #region Post Method
+
+        // Save CMS Group
+        [HttpPost]
+        [Route("api/CMS/CMSGroup")]
+        public HttpResponseMessage SaveCMSGroup(CMSGroupRequest request)
+        {
+            try
+            {
+                var success = cmsLogic.AddCMSGroup(request);
+                if (!success)
+                    Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
+
+                return Request.CreateResponse(HttpStatusCode.OK, success);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/AddCMSGroup");
+            }
+
+        }
+        #endregion
+
+        #region Put Group
+        // Edit CMS Group
+        [HttpPut]
+        [Route("api/CMS/CMSGroup/{cmsGroupId}")]
+        public HttpResponseMessage EditCMSGroup([FromUri] int cmsGroupId, CMSGroupRequest request)
+        {
+            try
+            {
+                var success = cmsLogic.EditCMSGroup(request);
+                if (!success)
+                    Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
+
+                return Request.CreateResponse(HttpStatusCode.OK, success);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/EditCMSGroup");
+            }
+
+        }
+        #endregion
+
         #endregion
 
         protected override void Dispose(bool disposing)

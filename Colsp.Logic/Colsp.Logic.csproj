@@ -62,6 +62,7 @@
     <Compile Include="Attribute\StringCategoryAttribute.cs" />
     <Compile Include="Attribute\StringValueAttribute.cs" />
     <Compile Include="CMSLogic.cs" />
+    <Compile Include="ConditionRequest\CMSMasterCondition.cs" />
     <Compile Include="ConditionRequest\ProductCondition.cs" />
     <Compile Include="ConditionRequest\BrandCondition.cs" />
     <Compile Include="Helpers\CMSHelper.cs" />

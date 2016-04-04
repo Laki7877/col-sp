@@ -21,7 +21,7 @@ namespace Colsp.Entity.Models
         public Nullable<bool> Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> Createdate { get; set; }
+        public Nullable<System.DateTime> CreateDate { get; set; }
         public Nullable<int> UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string CreateIP { get; set; }

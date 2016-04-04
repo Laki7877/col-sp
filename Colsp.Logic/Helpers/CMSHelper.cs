@@ -21,5 +21,18 @@ namespace Colsp.Logic
 
             return category.CMSCategoryId;
         }
+
+        public static int? GetCMSGroupId(ColspEntities db, CMSGroup cmsGroup)
+        {
+            var group = db.CMSGroups.Where(x =>
+                                                  x.CMSGroupNameEN.Equals(cmsGroup.CMSGroupNameEN) &&
+                                                  x.CMSGroupNameTH.Equals(cmsGroup.CMSGroupNameTH))
+                                                  .FirstOrDefault();
+
+            if (group == null)
+                return null;
+
+            return group.CMSGroupId;
+        }
     }
 }

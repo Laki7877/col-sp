@@ -329,7 +329,7 @@
           <Property Name="Status" Type="bit" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
-          <Property Name="Createdate" Type="datetime" />
+          <Property Name="CreateDate" Type="datetime" />
           <Property Name="UpdateBy" Type="int" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
@@ -376,7 +376,7 @@
           </Key>
           <Property Name="CMSMasterGroupMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CMSMasterId" Type="int" Nullable="false" />
-          <Property Name="CMSMasterGroupId" Type="int" Nullable="false" />
+          <Property Name="CMSGroupId" Type="int" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="CreateBy" Type="int" />
@@ -385,6 +385,7 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="CMSMasterSchedulerMap">
           <Key>
@@ -5144,7 +5145,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="Status" Type="Boolean" />
           <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="Int32" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -5191,7 +5192,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           </Key>
           <Property Name="CMSMasterGroupMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CMSMasterId" Type="Int32" Nullable="false" />
-          <Property Name="CMSMasterGroupId" Type="Int32" Nullable="false" />
+          <Property Name="CMSGroupId" Type="Int32" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
@@ -5200,6 +5201,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="CMSMasterSchedulerMap">
           <Key>
@@ -8916,7 +8918,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
@@ -8966,6 +8968,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySetMapping Name="CMSMasterGroupMaps">
             <EntityTypeMapping TypeName="ColspModel.CMSMasterGroupMap">
               <MappingFragment StoreEntitySet="CMSMasterGroupMap">
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
                 <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
@@ -8974,7 +8977,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
-                <ScalarProperty Name="CMSMasterGroupId" ColumnName="CMSMasterGroupId" />
+                <ScalarProperty Name="CMSGroupId" ColumnName="CMSGroupId" />
                 <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
                 <ScalarProperty Name="CMSMasterGroupMapId" ColumnName="CMSMasterGroupMapId" />
               </MappingFragment>

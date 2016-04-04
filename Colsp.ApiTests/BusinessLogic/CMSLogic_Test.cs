@@ -78,13 +78,29 @@ namespace Colsp.ApiTests.BusinessLogic
         }
 
         [TestMethod]
-        public void GetAllCMSCategory_Test()
+        public void AddCMSGroup_Test()
         {
-            //PaginatedRequest request = new PaginatedRequest();
-            //CMSLogic cms = new CMSLogic();
-            //var items = cms.GetAllCMSCategory(request);
+            // Group
+            CMSGroupRequest group   = new CMSGroupRequest();
+            group.CMSGroupNameEN    = "Test Group1";
+            group.CMSGroupNameTH    = "Test Group1";
+            group.Status            = true;
+            group.Visibility        = true;
 
-            //Assert.IsNotNull(items);
+            // Group Master
+            CMSMasterGroupMapRequest master1 = new CMSMasterGroupMapRequest();
+            master1.IsActive            = true;
+            master1.CMSGroupId          = 1;
+            master1.CMSMasterGroupMapId = 1;
+            master1.Sequence            = 1;
+            master1.CMSMasterId         = 1;
+            
+            // Add Master to Group
+            group.GroupMasterList.Add(master1);
+
+            CMSLogic cms = new CMSLogic();
+            Assert.IsTrue(cms.AddCMSGroup(group));
+
         }
 
         [TestMethod]

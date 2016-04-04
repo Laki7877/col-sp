@@ -27,7 +27,7 @@ namespace Colsp.Logic
         //        using (ColspEntities db = new ColspEntities())
         //        {
         //            var query = from cate in db.CMSCategories select cate;
-                    
+
         //            var total = query.Count();
         //            var response = PaginatedResponse.CreateResponse(query.Paginate(request), request, total);
 
@@ -38,7 +38,7 @@ namespace Colsp.Logic
         //    {
         //        throw new Exception(ex.Message + " /Logic/GetAllCMSCategory");
         //    }
-            
+
         //}
 
         // Add CMS Category
@@ -55,13 +55,13 @@ namespace Colsp.Logic
 
                     if (condition.BrandId != null)
                         query = query.Where(x => x.BrandId == condition.BrandId);
-                    
+
                     if (condition.BrandNameEn != null)
                         query = query.Where(x => x.BrandNameEn.Equals(condition.BrandNameEn));
 
                     if (condition.BrandNameTh != null)
                         query = query.Where(x => x.BrandNameTh.Equals(condition.BrandNameTh));
-                    
+
                     if (!query.Any())
                         return null;
 
@@ -83,43 +83,44 @@ namespace Colsp.Logic
             {
                 using (ColspEntities db = new ColspEntities())
                 {
-                    int row             = -1;
-                    DateTime dateNow    = DateTime.Now;
+                    int row = -1;
+                    DateTime dateNow = DateTime.Now;
 
-                    CMSCategory cmsCategory         = new CMSCategory();
-                    cmsCategory.CMSCategoryNameEN   = request.CMSCategoryNameEN;
-                    cmsCategory.CMSCategoryNameTH   = request.CMSCategoryNameTH;
-                    cmsCategory.IsActive            = request.IsActive;
-                    cmsCategory.CreateBy            = request.CreateBy;
-                    cmsCategory.CreateDate          = dateNow;
-                    cmsCategory.CreateIP            = request.CreateIP;
+                    CMSCategory cmsCategory = new CMSCategory();
+                    cmsCategory.CMSCategoryNameEN = request.CMSCategoryNameEN;
+                    cmsCategory.CMSCategoryNameTH = request.CMSCategoryNameTH;
+                    cmsCategory.IsActive = request.IsActive;
+                    cmsCategory.CreateBy = request.CreateBy;
+                    cmsCategory.CreateDate = dateNow;
+                    cmsCategory.CreateIP = request.CreateIP;
                     db.CMSCategories.Add(cmsCategory);
                     db.SaveChanges();
 
                     int? cmsCategoryId = CMSHelper.GetCMSCategoryId(db, cmsCategory);
 
-                    if (cmsCategory != null) {
-                     
+                    if (cmsCategoryId != null)
+                    {
+
                         foreach (var product in request.CategoryProductList)
                         {
-                            CMSCategoryProductMap cmsCategoryProduct    = new CMSCategoryProductMap();
-                            cmsCategoryProduct.CMSCategoryId            = cmsCategoryId.Value;
-                            cmsCategoryProduct.CMSCategoryProductMapId  = product.CMSCategoryProductMapId;
-                            cmsCategoryProduct.IsActive                 = product.IsActive;
-                            cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
-                            cmsCategoryProduct.Pid                      = product.Pid;
-                            cmsCategoryProduct.Sequence                 = product.Sequence;
-                            cmsCategoryProduct.CreateBy                 = product.CreateBy;
-                            cmsCategoryProduct.CreateDate               = dateNow;
-                            cmsCategoryProduct.CreateIP                 = product.CreateIP;
+                            CMSCategoryProductMap cmsCategoryProduct = new CMSCategoryProductMap();
+                            cmsCategoryProduct.CMSCategoryId = cmsCategoryId.Value;
+                            cmsCategoryProduct.CMSCategoryProductMapId = product.CMSCategoryProductMapId;
+                            cmsCategoryProduct.IsActive = product.IsActive;
+                            cmsCategoryProduct.ProductBoxBadge = product.ProductBoxBadge;
+                            cmsCategoryProduct.Pid = product.Pid;
+                            cmsCategoryProduct.Sequence = product.Sequence;
+                            cmsCategoryProduct.CreateBy = product.CreateBy;
+                            cmsCategoryProduct.CreateDate = dateNow;
+                            cmsCategoryProduct.CreateIP = product.CreateIP;
 
                             db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
                         }
                     }
-                    
-                    row     = db.SaveChanges();
+
+                    row = db.SaveChanges();
                     success = row > -1;
-            }
+                }
             }
             catch (Exception ex)
             {
@@ -162,8 +163,8 @@ namespace Colsp.Logic
                         {
                             db.CMSCategoryProductMaps.Remove(cmsCategoryProduct);
                         }
-            }
-                    
+                    }
+
                     if (cmsCategory != null)
                     {
 
@@ -232,9 +233,125 @@ namespace Colsp.Logic
 
         #region Start CMS Group Method
 
-        #endregion
+        // Add CMS Group
+        public bool AddCMSGroup(CMSGroupRequest request)
+        {
+            bool success = false;
 
-        #region Get All CMS Master
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    int row = -1;
+                    DateTime dateNow = DateTime.Now;
+
+                    CMSGroup cmsGroup = new CMSGroup();
+                    cmsGroup.CMSGroupNameEN = request.CMSGroupNameEN;
+                    cmsGroup.CMSGroupNameTH = request.CMSGroupNameTH;
+                    cmsGroup.Status = request.Status;
+                    cmsGroup.Visibility = request.Visibility;
+                    cmsGroup.CreateBy = request.CreateBy;
+                    cmsGroup.CreateDate = dateNow;
+                    cmsGroup.CreateIP = request.CreateIP;
+                    db.CMSGroups.Add(cmsGroup);
+                    db.SaveChanges();
+
+                    int? cmsGroupId = CMSHelper.GetCMSGroupId(db, cmsGroup);
+
+                    if (cmsGroupId != null)
+                    {
+
+                        foreach (var master in request.GroupMasterList)
+                        {
+                            CMSMasterGroupMap cmsMasterGroup = new CMSMasterGroupMap();
+                            cmsMasterGroup.CMSMasterId      = cmsGroupId.Value;
+                            cmsMasterGroup.CMSGroupId       = master.CMSGroupId.Value;
+                            cmsMasterGroup.Sequence         = master.Sequence.Value;
+                            cmsMasterGroup.CreateBy         = master.CreateBy;
+                            cmsMasterGroup.CreateDate       = dateNow;
+                            cmsMasterGroup.CreateIP         = master.CreateIP;
+                            cmsMasterGroup.IsActive         = master.IsActive;
+                            db.CMSMasterGroupMaps.Add(cmsMasterGroup);
+                        }
+                    }
+
+                    row = db.SaveChanges();
+                    success = row > -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /Logic/AddCMSGroup");
+            }
+
+            return success;
+        }
+
+        // Edit CMS Group
+        public bool EditCMSGroup(CMSGroupRequest request)
+        {
+            bool success = false;
+
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    int row = -1;
+                    DateTime dateNow = DateTime.Now;
+
+                    var queryCMSGroup = db.CMSGroups.Where(x => x.CMSGroupId == request.CMSGroupId);
+
+                    if (!queryCMSGroup.Any())
+                        return false;
+
+                    var cmsGroup            = queryCMSGroup.First();
+                    cmsGroup.CMSGroupNameEN = request.CMSGroupNameEN;
+                    cmsGroup.CMSGroupNameTH = request.CMSGroupNameTH;
+                    cmsGroup.Status         = request.Status;
+                    cmsGroup.Visibility     = request.Visibility;
+                    cmsGroup.UpdateBy       = request.UpdateBy;
+                    cmsGroup.UpdateDate     = dateNow;
+                    cmsGroup.UpdateIP       = request.UpdateIP;
+
+                    // Remove Master Group
+                    var queryCMSMasterGroups = db.CMSMasterGroupMaps.Where(x => x.CMSGroupId == cmsGroup.CMSGroupId);
+                    if (queryCMSMasterGroups.Any())
+                    {
+                        foreach (var queryCMSMasterGroup in queryCMSMasterGroups)
+                        {
+                            db.CMSMasterGroupMaps.Remove(queryCMSMasterGroup);
+                        }
+                    }
+
+                    if (cmsGroup != null)
+                    {
+                        foreach (var master in request.GroupMasterList)
+                        {
+                            CMSMasterGroupMap cmsMasterGroup    = new CMSMasterGroupMap();
+                            cmsMasterGroup.CMSGroupId           = cmsGroup.CMSGroupId;
+                            cmsMasterGroup.CMSMasterGroupMapId  = master.CMSMasterGroupMapId;
+                            cmsMasterGroup.CMSMasterId          = master.CMSMasterId.Value;
+                            cmsMasterGroup.IsActive             = master.IsActive;
+                            cmsMasterGroup.Sequence             = master.Sequence.Value;
+                            cmsMasterGroup.CreateBy             = master.CreateBy;
+                            cmsMasterGroup.CreateDate           = dateNow;
+                            cmsMasterGroup.CreateIP             = master.CreateIP;
+
+                            db.CMSMasterGroupMaps.Add(cmsMasterGroup);
+                        }
+                    }
+
+                    row = db.SaveChanges();
+                    success = row > -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /Logic/EditCMSGroup");
+            }
+
+            return success;
+        }
 
         #endregion
     }
