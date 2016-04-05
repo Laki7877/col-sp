@@ -140,9 +140,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
-        public virtual DbSet<TableA> TableAs { get; set; }
-        public virtual DbSet<TableAB> TableABs { get; set; }
-        public virtual DbSet<TableB> TableBs { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserBrandMap> UserBrandMaps { get; set; }
@@ -151,6 +148,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
+        public virtual DbSet<Migrate_TBDepartment> Migrate_TBDepartment { get; set; }
         public virtual DbSet<Migrate_TBProduct> Migrate_TBProduct { get; set; }
         public virtual DbSet<Migrate_TBProductApproved> Migrate_TBProductApproved { get; set; }
         public virtual DbSet<Migrate_TBProductBundle> Migrate_TBProductBundle { get; set; }

@@ -189,6 +189,7 @@
           <Property Name="CartId" Type="int" Nullable="false" />
           <Property Name="PId" Type="varchar" MaxLength="7" Nullable="false" />
           <Property Name="PromotionNo" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="PromotionType" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="DiscountType" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="DiscountRate" Type="decimal" Precision="11" Scale="3" Nullable="false" />
           <Property Name="DiscountAmt" Type="decimal" Precision="11" Scale="3" Nullable="false" />
@@ -845,8 +846,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
             <PropertyRef Name="DistrictId" />
             <PropertyRef Name="PostCode" />
             <PropertyRef Name="Remark" />
-            <PropertyRef Name="CreateOn" />
-            <PropertyRef Name="CreateBy" />
+            <PropertyRef Name="CreatedOn" />
+            <PropertyRef Name="CreatedBy" />
           </Key>
           <Property Name="GuestId" Type="varchar" MaxLength="36" Nullable="false" />
           <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
@@ -866,10 +867,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
           <Property Name="PostCode" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="BranchID" Type="varchar" MaxLength="5" />
           <Property Name="Remark" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
-          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="UpdateOn" Type="smalldatetime" />
-          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedOn" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdatedOn" Type="smalldatetime" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="ImportHeader">
           <Key>
@@ -983,6 +984,40 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
           <Property Name="UpdatedDt" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBDepartment' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Migrate_TBDepartment">
+          <Key>
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="DisplayName" />
+            <PropertyRef Name="DisplayNameEN" />
+            <PropertyRef Name="MetaKeyword" />
+            <PropertyRef Name="MetaDescription" />
+            <PropertyRef Name="UrlName" />
+            <PropertyRef Name="UrlNameEN" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="VirtualPath" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="SeqNo" />
+          </Key>
+          <Property Name="DepartmentId" Type="int" Nullable="false" />
+          <Property Name="ParentId" Type="int" />
+          <Property Name="DisplayName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DisplayNameEN" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="MetaKeyword" Type="nvarchar" MaxLength="160" Nullable="false" />
+          <Property Name="MetaDescription" Type="nvarchar" MaxLength="160" Nullable="false" />
+          <Property Name="UrlName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="UrlNameEN" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="VirtualPath" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Status" Type="tinyint" Nullable="false" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
+          <Property Name="Catlv1Id" Type="int" />
+          <Property Name="Catlv2Id" Type="int" />
+          <Property Name="Catlv3Id" Type="int" />
+          <Property Name="DepartmentId_ref" Type="int" />
+          <Property Name="RootDeptId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProduct' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Migrate_TBProduct">
           <Key>
@@ -1054,6 +1089,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBProduct' does not have a
           </Key>
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="PID" Type="nvarchar" MaxLength="7" />
+          <Property Name="NewPID" Type="nvarchar" MaxLength="50" />
           <Property Name="ProductGroupId" Type="int" Nullable="false" />
           <Property Name="BrandId" Type="int" />
           <Property Name="BusinessUnitId" Type="int" />
@@ -1944,7 +1980,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           </Key>
           <Property Name="ProductReviewId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
-          <Property Name="Rating" Type="decimal" Precision="3" Scale="1" Nullable="false" />
+          <Property Name="DeleverySpeed" Type="decimal" Precision="3" Scale="1" Nullable="false" />
+          <Property Name="ProductContent" Type="decimal" Precision="3" Scale="1" Nullable="false" />
+          <Property Name="ProductValidity" Type="decimal" Precision="3" Scale="1" Nullable="false" />
+          <Property Name="Packaging" Type="decimal" Precision="3" Scale="1" Nullable="false" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="Comment" Type="nvarchar" MaxLength="500" Nullable="false" />
@@ -2545,29 +2584,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.StoreReturnReason' does not have a
           <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
-        <EntityType Name="TableA">
-          <Key>
-            <PropertyRef Name="IdA" />
-          </Key>
-          <Property Name="IdA" Type="int" Nullable="false" />
-          <Property Name="NameA" Type="varchar" MaxLength="100" />
-        </EntityType>
-        <EntityType Name="TableAB">
-          <Key>
-            <PropertyRef Name="IdA" />
-            <PropertyRef Name="IdB" />
-          </Key>
-          <Property Name="IdA" Type="int" Nullable="false" />
-          <Property Name="IdB" Type="int" Nullable="false" />
-          <Property Name="Num" Type="int" />
-        </EntityType>
-        <EntityType Name="TableB">
-          <Key>
-            <PropertyRef Name="IdB" />
-          </Key>
-          <Property Name="IdB" Type="int" Nullable="false" />
-          <Property Name="NameB" Type="varchar" MaxLength="100" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'DBMKPOnline.dbo.TBAdminMenuItemTmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -3233,54 +3249,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Product_Brand">
-          <End Role="Brand" Type="Self.Brand" Multiplicity="0..1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Brand">
-              <PropertyRef Name="BrandId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="BrandId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Product_GlobalCategory">
-          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="GlobalCategory">
-              <PropertyRef Name="CategoryId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="GlobalCatId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Product_LocalCategory">
-          <End Role="LocalCategory" Type="Self.LocalCategory" Multiplicity="0..1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LocalCategory">
-              <PropertyRef Name="CategoryId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="LocalCatId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Product_Shop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shop">
-              <PropertyRef Name="ShopId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="ShopId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ProductAttribute_ProductStage">
           <End Role="Product" Type="Self.Product" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -3306,18 +3274,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="ProductHistory">
               <PropertyRef Name="HistoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductHistory_Shipping">
-          <End Role="Shipping" Type="Self.Shipping" Multiplicity="1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shipping">
-              <PropertyRef Name="ShippingId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="ShippingId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3834,7 +3790,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopImage_Shop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ShopImage" Type="Self.ShopImage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -3896,30 +3854,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="ShopUserGroupMap">
               <PropertyRef Name="GroupId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableAB_TableA">
-          <End Role="TableA" Type="Self.TableA" Multiplicity="1" />
-          <End Role="TableAB" Type="Self.TableAB" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableA">
-              <PropertyRef Name="IdA" />
-            </Principal>
-            <Dependent Role="TableAB">
-              <PropertyRef Name="IdA" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableAB_TableB">
-          <End Role="TableB" Type="Self.TableB" Multiplicity="1" />
-          <End Role="TableAB" Type="Self.TableAB" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableB">
-              <PropertyRef Name="IdB" />
-            </Principal>
-            <Dependent Role="TableAB">
-              <PropertyRef Name="IdB" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4004,7 +3938,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FKCategoryAttributeSetMapAttributeSet">
-          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1" />
+          <End Role="AttributeSet" Type="Self.AttributeSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="GlobalCatAttributeSetMap" Type="Self.GlobalCatAttributeSetMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AttributeSet">
@@ -4016,7 +3952,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FKCategoryAttributeSetMapCategory">
-          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="GlobalCatAttributeSetMap" Type="Self.GlobalCatAttributeSetMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -4042,7 +3980,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductGlobalCatMapGlobalCategory">
-          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1" />
+          <End Role="GlobalCategory" Type="Self.GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ProductGlobalCatMap" Type="Self.ProductGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -4054,7 +3994,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductGlobalCatMapProduct">
-          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ProductGlobalCatMap" Type="Self.ProductGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
@@ -4150,18 +4092,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="ProductStage">
               <PropertyRef Name="ShopId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKProductSttributeAttribute">
-          <End Role="Attribute" Type="Self.Attribute" Multiplicity="1" />
-          <End Role="ProductAttribute" Type="Self.ProductAttribute" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Attribute">
-              <PropertyRef Name="AttributeId" />
-            </Principal>
-            <Dependent Role="ProductAttribute">
-              <PropertyRef Name="AttributeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4378,9 +4308,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="StoreReceiveCode" EntityType="Self.StoreReceiveCode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreReturn" EntityType="Self.StoreReturn" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableA" EntityType="Self.TableA" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableAB" EntityType="Self.TableAB" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableB" EntityType="Self.TableB" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Theme" EntityType="Self.Theme" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserBrandMap" EntityType="Self.UserBrandMap" Schema="dbo" store:Type="Tables" />
@@ -4408,16 +4335,38 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
     [Guest].[PostCode] AS [PostCode], 
     [Guest].[BranchID] AS [BranchID], 
     [Guest].[Remark] AS [Remark], 
-    [Guest].[CreateOn] AS [CreateOn], 
-    [Guest].[CreateBy] AS [CreateBy], 
-    [Guest].[UpdateOn] AS [UpdateOn], 
-    [Guest].[UpdateBy] AS [UpdateBy]
+    [Guest].[CreatedOn] AS [CreatedOn], 
+    [Guest].[CreatedBy] AS [CreatedBy], 
+    [Guest].[UpdatedOn] AS [UpdatedOn], 
+    [Guest].[UpdatedBy] AS [UpdatedBy]
     FROM [dbo].[Guest] AS [Guest]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Migrate_TBDepartment" EntityType="Self.Migrate_TBDepartment" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Migrate_TBDepartment].[DepartmentId] AS [DepartmentId], 
+    [Migrate_TBDepartment].[ParentId] AS [ParentId], 
+    [Migrate_TBDepartment].[DisplayName] AS [DisplayName], 
+    [Migrate_TBDepartment].[DisplayNameEN] AS [DisplayNameEN], 
+    [Migrate_TBDepartment].[MetaKeyword] AS [MetaKeyword], 
+    [Migrate_TBDepartment].[MetaDescription] AS [MetaDescription], 
+    [Migrate_TBDepartment].[UrlName] AS [UrlName], 
+    [Migrate_TBDepartment].[UrlNameEN] AS [UrlNameEN], 
+    [Migrate_TBDepartment].[Title] AS [Title], 
+    [Migrate_TBDepartment].[VirtualPath] AS [VirtualPath], 
+    [Migrate_TBDepartment].[Status] AS [Status], 
+    [Migrate_TBDepartment].[SeqNo] AS [SeqNo], 
+    [Migrate_TBDepartment].[Catlv1Id] AS [Catlv1Id], 
+    [Migrate_TBDepartment].[Catlv2Id] AS [Catlv2Id], 
+    [Migrate_TBDepartment].[Catlv3Id] AS [Catlv3Id], 
+    [Migrate_TBDepartment].[DepartmentId_ref] AS [DepartmentId_ref], 
+    [Migrate_TBDepartment].[RootDeptId] AS [RootDeptId]
+    FROM [dbo].[Migrate_TBDepartment] AS [Migrate_TBDepartment]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Migrate_TBProduct" EntityType="Self.Migrate_TBProduct" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Migrate_TBProduct].[ProductId] AS [ProductId], 
     [Migrate_TBProduct].[PID] AS [PID], 
+    [Migrate_TBProduct].[NewPID] AS [NewPID], 
     [Migrate_TBProduct].[ProductGroupId] AS [ProductGroupId], 
     [Migrate_TBProduct].[BrandId] AS [BrandId], 
     [Migrate_TBProduct].[BusinessUnitId] AS [BusinessUnitId], 
@@ -4923,22 +4872,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shop" EntitySet="Shop" />
             <End Role="NewsletterShopMap" EntitySet="NewsletterShopMap" />
           </AssociationSet>
-          <AssociationSet Name="FK_Product_Brand" Association="Self.FK_Product_Brand">
-            <End Role="Brand" EntitySet="Brand" />
-            <End Role="Product" EntitySet="Product" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_GlobalCategory" Association="Self.FK_Product_GlobalCategory">
-            <End Role="GlobalCategory" EntitySet="GlobalCategory" />
-            <End Role="Product" EntitySet="Product" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_LocalCategory" Association="Self.FK_Product_LocalCategory">
-            <End Role="LocalCategory" EntitySet="LocalCategory" />
-            <End Role="Product" EntitySet="Product" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_Shop" Association="Self.FK_Product_Shop">
-            <End Role="Shop" EntitySet="Shop" />
-            <End Role="Product" EntitySet="Product" />
-          </AssociationSet>
           <AssociationSet Name="FK_ProductAttribute_ProductStage" Association="Self.FK_ProductAttribute_ProductStage">
             <End Role="Product" EntitySet="Product" />
             <End Role="ProductAttribute" EntitySet="ProductAttribute" />
@@ -4946,10 +4879,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FK_ProductHistory_ProductHistoryGroup" Association="Self.FK_ProductHistory_ProductHistoryGroup">
             <End Role="ProductHistoryGroup" EntitySet="ProductHistoryGroup" />
             <End Role="ProductHistory" EntitySet="ProductHistory" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductHistory_Shipping" Association="Self.FK_ProductHistory_Shipping">
-            <End Role="Shipping" EntitySet="Shipping" />
-            <End Role="Product" EntitySet="Product" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductHistoryAttribute_Attribute" Association="Self.FK_ProductHistoryAttribute_Attribute">
             <End Role="Attribute" EntitySet="Attribute" />
@@ -5127,14 +5056,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroup" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMap" />
           </AssociationSet>
-          <AssociationSet Name="FK_TableAB_TableA" Association="Self.FK_TableAB_TableA">
-            <End Role="TableA" EntitySet="TableA" />
-            <End Role="TableAB" EntitySet="TableAB" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TableAB_TableB" Association="Self.FK_TableAB_TableB">
-            <End Role="TableB" EntitySet="TableB" />
-            <End Role="TableAB" EntitySet="TableAB" />
-          </AssociationSet>
           <AssociationSet Name="FK_UserBrandMap_Brand" Association="Self.FK_UserBrandMap_Brand">
             <End Role="Brand" EntitySet="Brand" />
             <End Role="UserBrandMap" EntitySet="UserBrandMap" />
@@ -5206,10 +5127,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FKProductStageShop" Association="Self.FKProductStageShop">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductStage" EntitySet="ProductStage" />
-          </AssociationSet>
-          <AssociationSet Name="FKProductSttributeAttribute" Association="Self.FKProductSttributeAttribute">
-            <End Role="Attribute" EntitySet="Attribute" />
-            <End Role="ProductAttribute" EntitySet="ProductAttribute" />
           </AssociationSet>
           <AssociationSet Name="FKShopUser" Association="Self.FKShopUser">
             <End Role="User" EntitySet="User" />
@@ -5363,9 +5280,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="StoreReceiveCodes" EntityType="ColspModel.StoreReceiveCode" />
           <EntitySet Name="StoreReturns" EntityType="ColspModel.StoreReturn" />
           <EntitySet Name="sysdiagrams" EntityType="ColspModel.sysdiagram" />
-          <EntitySet Name="TableAs" EntityType="ColspModel.TableA" />
-          <EntitySet Name="TableABs" EntityType="ColspModel.TableAB" />
-          <EntitySet Name="TableBs" EntityType="ColspModel.TableB" />
           <EntitySet Name="Themes" EntityType="ColspModel.Theme" />
           <EntitySet Name="Users" EntityType="ColspModel.User" />
           <EntitySet Name="UserBrandMaps" EntityType="ColspModel.UserBrandMap" />
@@ -5374,6 +5288,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="UserGroupPermissionMaps" EntityType="ColspModel.UserGroupPermissionMap" />
           <EntitySet Name="UserShopMaps" EntityType="ColspModel.UserShopMap" />
           <EntitySet Name="Guests" EntityType="ColspModel.Guest" />
+          <EntitySet Name="Migrate_TBDepartment" EntityType="ColspModel.Migrate_TBDepartment" />
           <EntitySet Name="Migrate_TBProduct" EntityType="ColspModel.Migrate_TBProduct" />
           <EntitySet Name="Migrate_TBProductApproved" EntityType="ColspModel.Migrate_TBProductApproved" />
           <EntitySet Name="Migrate_TBProductBundle" EntityType="ColspModel.Migrate_TBProductBundle" />
@@ -5415,10 +5330,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Attribute" EntitySet="Attributes" />
             <End Role="AttributeValueMap" EntitySet="AttributeValueMaps" />
           </AssociationSet>
-          <AssociationSet Name="FKProductSttributeAttribute" Association="ColspModel.FKProductSttributeAttribute">
-            <End Role="Attribute" EntitySet="Attributes" />
-            <End Role="ProductAttribute" EntitySet="ProductAttributes" />
-          </AssociationSet>
           <AssociationSet Name="FK_AttributeSetTagMap_AttributeSet" Association="ColspModel.FK_AttributeSetTagMap_AttributeSet">
             <End Role="AttributeSet" EntitySet="AttributeSets" />
             <End Role="AttributeSetTag" EntitySet="AttributeSetTags" />
@@ -5454,10 +5365,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FK_CouponBrandMap_Brand" Association="ColspModel.FK_CouponBrandMap_Brand">
             <End Role="Brand" EntitySet="Brands" />
             <End Role="CouponBrandMap" EntitySet="CouponBrandMaps" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_Brand" Association="ColspModel.FK_Product_Brand">
-            <End Role="Brand" EntitySet="Brands" />
-            <End Role="Product" EntitySet="Products" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductHistoryGroup_Brand" Association="ColspModel.FK_ProductHistoryGroup_Brand">
             <End Role="Brand" EntitySet="Brands" />
@@ -5535,10 +5442,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="GlobalCatImage" EntitySet="GlobalCatImages" />
           </AssociationSet>
-          <AssociationSet Name="FK_Product_GlobalCategory" Association="ColspModel.FK_Product_GlobalCategory">
-            <End Role="GlobalCategory" EntitySet="GlobalCategories" />
-            <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
           <AssociationSet Name="FK_ProductHistoryGroup_GlobalCategory" Association="ColspModel.FK_ProductHistoryGroup_GlobalCategory">
             <End Role="GlobalCategory" EntitySet="GlobalCategories" />
             <End Role="ProductHistoryGroup" EntitySet="ProductHistoryGroups" />
@@ -5574,10 +5477,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FK_LocalCatImage_GlobalCategory" Association="ColspModel.FK_LocalCatImage_GlobalCategory">
             <End Role="LocalCategory" EntitySet="LocalCategories" />
             <End Role="LocalCatImage" EntitySet="LocalCatImages" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product_LocalCategory" Association="ColspModel.FK_Product_LocalCategory">
-            <End Role="LocalCategory" EntitySet="LocalCategories" />
-            <End Role="Product" EntitySet="Products" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductHistoryGroup_LocalCategory" Association="ColspModel.FK_ProductHistoryGroup_LocalCategory">
             <End Role="LocalCategory" EntitySet="LocalCategories" />
@@ -5627,17 +5526,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Permission" EntitySet="Permissions" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
-          <AssociationSet Name="FK_Product_Shop" Association="ColspModel.FK_Product_Shop">
-            <End Role="Shop" EntitySet="Shops" />
-            <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
           <AssociationSet Name="FK_ProductAttribute_ProductStage" Association="ColspModel.FK_ProductAttribute_ProductStage">
             <End Role="Product" EntitySet="Products" />
             <End Role="ProductAttribute" EntitySet="ProductAttributes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductHistory_Shipping" Association="ColspModel.FK_ProductHistory_Shipping">
-            <End Role="Shipping" EntitySet="Shippings" />
-            <End Role="Product" EntitySet="Products" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductReview_Product" Association="ColspModel.FK_ProductReview_Product">
             <End Role="Product" EntitySet="Products" />
@@ -5799,14 +5690,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="ShopUserGroupMap" EntitySet="ShopUserGroupMaps" />
           </AssociationSet>
-          <AssociationSet Name="FK_TableAB_TableA" Association="ColspModel.FK_TableAB_TableA">
-            <End Role="TableA" EntitySet="TableAs" />
-            <End Role="TableAB" EntitySet="TableABs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TableAB_TableB" Association="ColspModel.FK_TableAB_TableB">
-            <End Role="TableB" EntitySet="TableBs" />
-            <End Role="TableAB" EntitySet="TableABs" />
-          </AssociationSet>
           <AssociationSet Name="FK_UserBrandMap_User" Association="ColspModel.FK_UserBrandMap_User">
             <End Role="User" EntitySet="Users" />
             <End Role="UserBrandMap" EntitySet="UserBrandMaps" />
@@ -5873,7 +5756,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="ProductStageAttributes" Relationship="ColspModel.FK_ProductStageAttribute_Attribute" FromRole="Attribute" ToRole="ProductStageAttribute" />
           <NavigationProperty Name="AttributeSetMaps" Relationship="ColspModel.FKAttributeSetMapAttribute" FromRole="Attribute" ToRole="AttributeSetMap" />
           <NavigationProperty Name="AttributeValueMaps" Relationship="ColspModel.FKAttributeValueMapAttribute" FromRole="Attribute" ToRole="AttributeValueMap" />
-          <NavigationProperty Name="ProductAttributes" Relationship="ColspModel.FKProductSttributeAttribute" FromRole="Attribute" ToRole="ProductAttribute" />
         </EntityType>
         <EntityType Name="AttributeSet">
           <Key>
@@ -5982,7 +5864,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="BrandFeatureProducts" Relationship="ColspModel.FK_BrandFeatureProduct_Brand" FromRole="Brand" ToRole="BrandFeatureProduct" />
           <NavigationProperty Name="BrandImages" Relationship="ColspModel.FK_BrandImage_Brand" FromRole="Brand" ToRole="BrandImage" />
           <NavigationProperty Name="CouponBrandMaps" Relationship="ColspModel.FK_CouponBrandMap_Brand" FromRole="Brand" ToRole="CouponBrandMap" />
-          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_Brand" FromRole="Brand" ToRole="Product" />
           <NavigationProperty Name="ProductHistoryGroups" Relationship="ColspModel.FK_ProductHistoryGroup_Brand" FromRole="Brand" ToRole="ProductHistoryGroup" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Brand" FromRole="Brand" ToRole="ProductStageGroup" />
           <NavigationProperty Name="UserBrandMaps" Relationship="ColspModel.FK_UserBrandMap_Brand" FromRole="Brand" ToRole="UserBrandMap" />
@@ -6038,6 +5919,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CartId" Type="Int32" Nullable="false" />
           <Property Name="PId" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
           <Property Name="PromotionNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PromotionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DiscountType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DiscountRate" Type="Decimal" Nullable="false" Precision="11" Scale="3" />
           <Property Name="DiscountAmt" Type="Decimal" Nullable="false" Precision="11" Scale="3" />
@@ -6671,7 +6553,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="GlobalCatAttributeSetMaps" Relationship="ColspModel.FKCategoryAttributeSetMapCategory" FromRole="GlobalCategory" ToRole="GlobalCatAttributeSetMap" />
           <NavigationProperty Name="GlobalCatFeatureProducts" Relationship="ColspModel.FK_GlobalCatFeatureProduct_GlobalCategory" FromRole="GlobalCategory" ToRole="GlobalCatFeatureProduct" />
           <NavigationProperty Name="GlobalCatImages" Relationship="ColspModel.FK_GlobalCatImage_GlobalCategory" FromRole="GlobalCategory" ToRole="GlobalCatImage" />
-          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_GlobalCategory" FromRole="GlobalCategory" ToRole="Product" />
           <NavigationProperty Name="ProductHistoryGroups" Relationship="ColspModel.FK_ProductHistoryGroup_GlobalCategory" FromRole="GlobalCategory" ToRole="ProductHistoryGroup" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_GlobalCategory" FromRole="GlobalCategory" ToRole="ProductStageGroup" />
           <NavigationProperty Name="ShopCommissions" Relationship="ColspModel.FK_ShopCommission_GlobalCategory" FromRole="GlobalCategory" ToRole="ShopCommission" />
@@ -6791,7 +6672,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="CouponLocalCatMaps" Relationship="ColspModel.FK_CouponLocalCatMap_Brand" FromRole="LocalCategory" ToRole="CouponLocalCatMap" />
           <NavigationProperty Name="LocalCatFeatureProducts" Relationship="ColspModel.FK_LocalCatFeatureProduct_LocalCategory" FromRole="LocalCategory" ToRole="LocalCatFeatureProduct" />
           <NavigationProperty Name="LocalCatImages" Relationship="ColspModel.FK_LocalCatImage_GlobalCategory" FromRole="LocalCategory" ToRole="LocalCatImage" />
-          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_LocalCategory" FromRole="LocalCategory" ToRole="Product" />
           <NavigationProperty Name="ProductHistoryGroups" Relationship="ColspModel.FK_ProductHistoryGroup_LocalCategory" FromRole="LocalCategory" ToRole="ProductHistoryGroup" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_LocalCategory" FromRole="LocalCategory" ToRole="ProductStageGroup" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FKLocalCategoryShop" FromRole="LocalCategory" ToRole="Shop" />
@@ -7082,12 +6962,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Brand" Relationship="ColspModel.FK_Product_Brand" FromRole="Product" ToRole="Brand" />
-          <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_Product_GlobalCategory" FromRole="Product" ToRole="GlobalCategory" />
-          <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FK_Product_LocalCategory" FromRole="Product" ToRole="LocalCategory" />
-          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_Product_Shop" FromRole="Product" ToRole="Shop" />
           <NavigationProperty Name="ProductAttributes" Relationship="ColspModel.FK_ProductAttribute_ProductStage" FromRole="Product" ToRole="ProductAttribute" />
-          <NavigationProperty Name="Shipping" Relationship="ColspModel.FK_ProductHistory_Shipping" FromRole="Product" ToRole="Shipping" />
           <NavigationProperty Name="ProductReviews" Relationship="ColspModel.FK_ProductReview_Product" FromRole="Product" ToRole="ProductReview" />
           <NavigationProperty Name="ProductTags" Relationship="ColspModel.FK_ProductTag_Product" FromRole="Product" ToRole="ProductTag" />
           <NavigationProperty Name="ProductVideos" Relationship="ColspModel.FK_ProductVideo_Product" FromRole="Product" ToRole="ProductVideo" />
@@ -7110,7 +6985,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Attribute" Relationship="ColspModel.FKProductSttributeAttribute" FromRole="ProductAttribute" ToRole="Attribute" />
           <NavigationProperty Name="Product" Relationship="ColspModel.FK_ProductAttribute_ProductStage" FromRole="ProductAttribute" ToRole="Product" />
         </EntityType>
         <EntityType Name="ProductGlobalCatMap">
@@ -7387,7 +7261,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </Key>
           <Property Name="ProductReviewId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
-          <Property Name="Rating" Type="Decimal" Nullable="false" Precision="3" Scale="1" />
+          <Property Name="DeleverySpeed" Type="Decimal" Nullable="false" Precision="3" Scale="1" />
+          <Property Name="ProductContent" Type="Decimal" Nullable="false" Precision="3" Scale="1" />
+          <Property Name="ProductValidity" Type="Decimal" Nullable="false" Precision="3" Scale="1" />
+          <Property Name="Packaging" Type="Decimal" Nullable="false" Precision="3" Scale="1" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="Comment" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -7823,7 +7700,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreatedDt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedDt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Products" Relationship="ColspModel.FK_ProductHistory_Shipping" FromRole="Shipping" ToRole="Product" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FK_ProductStage_Shipping" FromRole="Shipping" ToRole="ProductStage" />
         </EntityType>
         <EntityType Name="Shop">
@@ -7867,7 +7743,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="LocalCatFeatureProducts" Relationship="ColspModel.FK_LocalCatFeatureProduct_Shop" FromRole="Shop" ToRole="LocalCatFeatureProduct" />
           <NavigationProperty Name="LocalCatImages" Relationship="ColspModel.FK_LocalCatImage_Shop" FromRole="Shop" ToRole="LocalCatImage" />
           <NavigationProperty Name="NewsletterShopMaps" Relationship="ColspModel.FK_NewsletterShopMap_Shop" FromRole="Shop" ToRole="NewsletterShopMap" />
-          <NavigationProperty Name="Products" Relationship="ColspModel.FK_Product_Shop" FromRole="Shop" ToRole="Product" />
           <NavigationProperty Name="ProductReviews" Relationship="ColspModel.FK_ProductReview_Shop" FromRole="Shop" ToRole="ProductReview" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FKProductStageShop" FromRole="Shop" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Shop" FromRole="Shop" ToRole="ProductStageGroup" />
@@ -8051,33 +7926,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
-        <EntityType Name="TableA">
-          <Key>
-            <PropertyRef Name="IdA" />
-          </Key>
-          <Property Name="IdA" Type="Int32" Nullable="false" />
-          <Property Name="NameA" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="TableABs" Relationship="ColspModel.FK_TableAB_TableA" FromRole="TableA" ToRole="TableAB" />
-        </EntityType>
-        <EntityType Name="TableAB">
-          <Key>
-            <PropertyRef Name="IdA" />
-            <PropertyRef Name="IdB" />
-          </Key>
-          <Property Name="IdA" Type="Int32" Nullable="false" />
-          <Property Name="IdB" Type="Int32" Nullable="false" />
-          <Property Name="Num" Type="Int32" />
-          <NavigationProperty Name="TableA" Relationship="ColspModel.FK_TableAB_TableA" FromRole="TableAB" ToRole="TableA" />
-          <NavigationProperty Name="TableB" Relationship="ColspModel.FK_TableAB_TableB" FromRole="TableAB" ToRole="TableB" />
-        </EntityType>
-        <EntityType Name="TableB">
-          <Key>
-            <PropertyRef Name="IdB" />
-          </Key>
-          <Property Name="IdB" Type="Int32" Nullable="false" />
-          <Property Name="NameB" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="TableABs" Relationship="ColspModel.FK_TableAB_TableB" FromRole="TableB" ToRole="TableAB" />
-        </EntityType>
         <EntityType Name="Theme">
           <Key>
             <PropertyRef Name="ThemeId" />
@@ -8213,8 +8061,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="DistrictId" />
             <PropertyRef Name="PostCode" />
             <PropertyRef Name="Remark" />
-            <PropertyRef Name="CreateOn" />
-            <PropertyRef Name="CreateBy" />
+            <PropertyRef Name="CreatedOn" />
+            <PropertyRef Name="CreatedBy" />
           </Key>
           <Property Name="GuestId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
           <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -8234,10 +8082,42 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="PostCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BranchID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="Remark" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="UpdateOn" Type="DateTime" Precision="0" />
-          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedOn" Type="DateTime" Precision="0" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Migrate_TBDepartment">
+          <Key>
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="DisplayName" />
+            <PropertyRef Name="DisplayNameEN" />
+            <PropertyRef Name="MetaKeyword" />
+            <PropertyRef Name="MetaDescription" />
+            <PropertyRef Name="UrlName" />
+            <PropertyRef Name="UrlNameEN" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="VirtualPath" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="SeqNo" />
+          </Key>
+          <Property Name="DepartmentId" Type="Int32" Nullable="false" />
+          <Property Name="ParentId" Type="Int32" />
+          <Property Name="DisplayName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameEN" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyword" Type="String" Nullable="false" MaxLength="160" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescription" Type="String" Nullable="false" MaxLength="160" FixedLength="false" Unicode="true" />
+          <Property Name="UrlName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="UrlNameEN" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="VirtualPath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Byte" Nullable="false" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
+          <Property Name="Catlv1Id" Type="Int32" />
+          <Property Name="Catlv2Id" Type="Int32" />
+          <Property Name="Catlv3Id" Type="Int32" />
+          <Property Name="DepartmentId_ref" Type="Int32" />
+          <Property Name="RootDeptId" Type="Int32" />
         </EntityType>
         <EntityType Name="Migrate_TBProduct">
           <Key>
@@ -8309,6 +8189,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </Key>
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="PID" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="NewPID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProductGroupId" Type="Int32" Nullable="false" />
           <Property Name="BrandId" Type="Int32" />
           <Property Name="BusinessUnitId" Type="Int32" />
@@ -8888,18 +8769,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKProductSttributeAttribute">
-          <End Type="ColspModel.Attribute" Role="Attribute" Multiplicity="1" />
-          <End Type="ColspModel.ProductAttribute" Role="ProductAttribute" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Attribute">
-              <PropertyRef Name="AttributeId" />
-            </Principal>
-            <Dependent Role="ProductAttribute">
-              <PropertyRef Name="AttributeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_AttributeSetTagMap_AttributeSet">
           <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -8951,7 +8820,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FKCategoryAttributeSetMapAttributeSet">
-          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="1" />
+          <End Type="ColspModel.AttributeSet" Role="AttributeSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.GlobalCatAttributeSetMap" Role="GlobalCatAttributeSetMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AttributeSet">
@@ -9014,18 +8885,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <PropertyRef Name="BrandId" />
             </Principal>
             <Dependent Role="CouponBrandMap">
-              <PropertyRef Name="BrandId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Product_Brand">
-          <End Type="ColspModel.Brand" Role="Brand" Multiplicity="0..1" />
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Brand">
-              <PropertyRef Name="BrandId" />
-            </Principal>
-            <Dependent Role="Product">
               <PropertyRef Name="BrandId" />
             </Dependent>
           </ReferentialConstraint>
@@ -9247,7 +9106,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FKCategoryAttributeSetMapCategory">
-          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1" />
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.GlobalCatAttributeSetMap" Role="GlobalCatAttributeSetMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -9283,18 +9144,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="GlobalCatImage">
               <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Product_GlobalCategory">
-          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1" />
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="GlobalCategory">
-              <PropertyRef Name="CategoryId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="GlobalCatId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9337,7 +9186,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductGlobalCatMapGlobalCategory">
-          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1" />
+          <End Type="ColspModel.GlobalCategory" Role="GlobalCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductGlobalCatMap" Role="ProductGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GlobalCategory">
@@ -9413,18 +9264,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="LocalCatImage">
               <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Product_LocalCategory">
-          <End Type="ColspModel.LocalCategory" Role="LocalCategory" Multiplicity="0..1" />
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LocalCategory">
-              <PropertyRef Name="CategoryId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="LocalCatId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9580,18 +9419,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Product_Shop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shop">
-              <PropertyRef Name="ShopId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="ShopId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ProductAttribute_ProductStage">
           <End Type="ColspModel.Product" Role="Product" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -9603,18 +9430,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="ProductAttribute">
               <PropertyRef Name="Pid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductHistory_Shipping">
-          <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="1" />
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shipping">
-              <PropertyRef Name="ShippingId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="ShippingId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9661,7 +9476,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FKProductGlobalCatMapProduct">
-          <End Type="ColspModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="ColspModel.Product" Role="Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ProductGlobalCatMap" Role="ProductGlobalCatMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
@@ -10071,7 +9888,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopImage_Shop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ShopImage" Role="ShopImage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -10147,30 +9966,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="ShopUserGroupMap">
               <PropertyRef Name="GroupId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableAB_TableA">
-          <End Type="ColspModel.TableA" Role="TableA" Multiplicity="1" />
-          <End Type="ColspModel.TableAB" Role="TableAB" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableA">
-              <PropertyRef Name="IdA" />
-            </Principal>
-            <Dependent Role="TableAB">
-              <PropertyRef Name="IdA" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableAB_TableB">
-          <End Type="ColspModel.TableB" Role="TableB" Multiplicity="1" />
-          <End Type="ColspModel.TableAB" Role="TableAB" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableB">
-              <PropertyRef Name="IdB" />
-            </Principal>
-            <Dependent Role="TableAB">
-              <PropertyRef Name="IdB" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -10447,6 +10242,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="DiscountAmt" ColumnName="DiscountAmt" />
                 <ScalarProperty Name="DiscountRate" ColumnName="DiscountRate" />
                 <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
+                <ScalarProperty Name="PromotionType" ColumnName="PromotionType" />
                 <ScalarProperty Name="PromotionNo" ColumnName="PromotionNo" />
                 <ScalarProperty Name="PId" ColumnName="PId" />
                 <ScalarProperty Name="CartId" ColumnName="CartId" />
@@ -11737,7 +11533,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
-                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="Packaging" ColumnName="Packaging" />
+                <ScalarProperty Name="ProductValidity" ColumnName="ProductValidity" />
+                <ScalarProperty Name="ProductContent" ColumnName="ProductContent" />
+                <ScalarProperty Name="DeleverySpeed" ColumnName="DeleverySpeed" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="ProductReviewId" ColumnName="ProductReviewId" />
               </MappingFragment>
@@ -12336,31 +12135,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TableAs">
-            <EntityTypeMapping TypeName="ColspModel.TableA">
-              <MappingFragment StoreEntitySet="TableA">
-                <ScalarProperty Name="NameA" ColumnName="NameA" />
-                <ScalarProperty Name="IdA" ColumnName="IdA" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TableABs">
-            <EntityTypeMapping TypeName="ColspModel.TableAB">
-              <MappingFragment StoreEntitySet="TableAB">
-                <ScalarProperty Name="Num" ColumnName="Num" />
-                <ScalarProperty Name="IdB" ColumnName="IdB" />
-                <ScalarProperty Name="IdA" ColumnName="IdA" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TableBs">
-            <EntityTypeMapping TypeName="ColspModel.TableB">
-              <MappingFragment StoreEntitySet="TableB">
-                <ScalarProperty Name="NameB" ColumnName="NameB" />
-                <ScalarProperty Name="IdB" ColumnName="IdB" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Themes">
             <EntityTypeMapping TypeName="ColspModel.Theme">
               <MappingFragment StoreEntitySet="Theme">
@@ -12468,10 +12242,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="Guests">
             <EntityTypeMapping TypeName="ColspModel.Guest">
               <MappingFragment StoreEntitySet="Guest">
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="BranchID" ColumnName="BranchID" />
                 <ScalarProperty Name="PostCode" ColumnName="PostCode" />
@@ -12490,6 +12264,29 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="GuestId" ColumnName="GuestId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Migrate_TBDepartment">
+            <EntityTypeMapping TypeName="ColspModel.Migrate_TBDepartment">
+              <MappingFragment StoreEntitySet="Migrate_TBDepartment">
+                <ScalarProperty Name="RootDeptId" ColumnName="RootDeptId" />
+                <ScalarProperty Name="DepartmentId_ref" ColumnName="DepartmentId_ref" />
+                <ScalarProperty Name="Catlv3Id" ColumnName="Catlv3Id" />
+                <ScalarProperty Name="Catlv2Id" ColumnName="Catlv2Id" />
+                <ScalarProperty Name="Catlv1Id" ColumnName="Catlv1Id" />
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="VirtualPath" ColumnName="VirtualPath" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="UrlNameEN" ColumnName="UrlNameEN" />
+                <ScalarProperty Name="UrlName" ColumnName="UrlName" />
+                <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
+                <ScalarProperty Name="MetaKeyword" ColumnName="MetaKeyword" />
+                <ScalarProperty Name="DisplayNameEN" ColumnName="DisplayNameEN" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -12587,6 +12384,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="BusinessUnitId" ColumnName="BusinessUnitId" />
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
                 <ScalarProperty Name="ProductGroupId" ColumnName="ProductGroupId" />
+                <ScalarProperty Name="NewPID" ColumnName="NewPID" />
                 <ScalarProperty Name="PID" ColumnName="PID" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
               </MappingFragment>

@@ -1365,7 +1365,14 @@ namespace Colsp.Api.Controllers
                     group.OnlineFlag = true;
                     Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 }
-                return GetProductStage(group.ProductId);
+                var historyList = db.ProductHistoryGroups
+                    .Where(w => w.ProductId == group.ProductId)
+                    .OrderByDescending(o => o.HistoryDt)
+                    .Take(Constant.HISTORY_REVISION).ToList();
+                ProductStageRequest response = new ProductStageRequest();
+                SetupResponse(group, response, historyList);
+                return Request.CreateResponse(HttpStatusCode.OK,response);
+                //return GetProductStage(group.ProductId);
             }
             catch (Exception e)
             {
@@ -1441,10 +1448,15 @@ namespace Colsp.Api.Controllers
                 {
                     response.MasterVariant.SEO.ProductUrlKeyEn = null;
                     response.MasterVariant.Pid = null;
+                    response.MasterVariant.ProductNameEn = string.Concat("Copy of ", response.MasterVariant.ProductNameEn);
+                    if (response.MasterVariant.Images != null)
+                    {
+                        response.MasterVariant.Images.Clear();
+                    }
                 }
                 if (response.Variants != null)
                 {
-                    response.Variants.Where(w => w.SEO != null).ToList().ForEach(f => { f.SEO.ProductUrlKeyEn = null; f.Pid = null; });
+                    response.Variants.Where(w => w.SEO != null).ToList().ForEach(f => { f.SEO.ProductUrlKeyEn = null; f.Pid = null; f.Images.Clear(); });
                 }
                 return AddProduct(response);
             }
@@ -1798,16 +1810,20 @@ namespace Colsp.Api.Controllers
                 }
                 response.Variants.Add(tmpVariant);
             }
-            foreach(var history in historyList)
+            if(historyList != null)
             {
-                response.Revisions.Add(new ProductHistoryRequest()
+                foreach (var history in historyList)
                 {
-                    ApprovedDt = history.ApprovedDt,
-                    HistoryId = history.HistoryId,
-                    SubmittedBy = history.SubmittedBy,
-                    SubmittedDt = history.SubmittedDt
-                });
+                    response.Revisions.Add(new ProductHistoryRequest()
+                    {
+                        ApprovedDt = history.ApprovedDt,
+                        HistoryId = history.HistoryId,
+                        SubmittedBy = history.SubmittedBy,
+                        SubmittedDt = history.SubmittedDt
+                    });
+                }
             }
+            
         }
 
         private void SetupGroup(ProductStageGroup group, ProductStageRequest request,bool addNew,string email,bool adminPermission,bool sellerPermission, ColspEntities db)
@@ -4258,8 +4274,21 @@ namespace Colsp.Api.Controllers
                 #region Setup Product for database
                 foreach (var product in groupList)
                 {
-                    product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().VariantCount
-                        = product.Value.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+                    var masterVariant = product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+                    if (!string.IsNullOrWhiteSpace(masterVariant.ProductNameEn)
+                       && !string.IsNullOrWhiteSpace(masterVariant.ProductNameTh)
+                       && product.Value.BrandId != null
+                       && !string.IsNullOrWhiteSpace(masterVariant.DescriptionFullEn)
+                       && !string.IsNullOrWhiteSpace(masterVariant.DescriptionFullTh))
+                    {
+                        product.Value.InfoFlag = true;
+                    }
+                    else
+                    {
+                        product.Value.InfoFlag = false;
+                    }
+
+                    masterVariant.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
                     AutoGenerate.GeneratePid(db, product.Value.ProductStages);
                     product.Value.ProductId = db.GetNextProductStageGroupId().SingleOrDefault().Value;
                     db.ProductStageGroups.Add(product.Value);
@@ -5074,6 +5103,10 @@ namespace Colsp.Api.Controllers
                                 var tmpTag = body[headDic["Search Tags"]].Split(',');
                                 foreach (var tag in tmpTag)
                                 {
+                                    if (string.IsNullOrWhiteSpace(tag))
+                                    {
+                                        continue;
+                                    }
                                     if (!group.ProductStageTags.Any(a => a.Tag.Equals(tag)))
                                     {
                                         group.ProductStageTags.Add(new ProductStageTag()
@@ -5561,44 +5594,6 @@ namespace Colsp.Api.Controllers
                         }
                     }
                     #endregion
-                    //if(header.Contains("Related Products"))
-                    //{
-                    //    var relatedPro = groupEn.ProductStageRelateds.ToList();
-                    //    if (g.ProductStageRelateds1 != null)
-                    //    {
-                    //        foreach (var pro in g.ProductStageRelateds1)
-                    //        {
-                    //            bool isNewCat = false;
-                    //            if (relatedPro == null || relatedPro.Count == 0)
-                    //            {
-                    //                isNewCat = true;
-                    //            }
-                    //            if (!isNewCat)
-                    //            {
-                    //                var currentCat = relatedPro.Where(w => w.Child == pro.Child).SingleOrDefault();
-                    //                if (currentCat != null)
-                    //                {
-                    //                    relatedPro.Remove(currentCat);
-                    //                }
-                    //                else
-                    //                {
-                    //                    isNewCat = true;
-                    //                }
-                    //            }
-                    //            if (isNewCat)
-                    //            {
-                    //                groupEn.ProductStageRelateds1.Add(new ProductStageRelated()
-                    //                {
-                    //                    Child = pro.Child,
-                    //                    CreatedBy = User.UserRequest().Email,
-                    //                    CreatedDt = DateTime.Now,
-                    //                    UpdatedBy = User.UserRequest().Email,
-                    //                    UpdatedDt = DateTime.Now,
-                    //                });
-                    //            }
-                    //        }
-                    //    }
-                    //}
                     #region Tag
                     if (header.Contains("Search Tags"))
                     {
@@ -6231,8 +6226,21 @@ namespace Colsp.Api.Controllers
                     }
                     #endregion
 
-                    groupEn.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().VariantCount
-                        = g.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+
+                    var masterVariant = groupEn.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+                    if (!string.IsNullOrWhiteSpace(masterVariant.ProductNameEn)
+                       && !string.IsNullOrWhiteSpace(masterVariant.ProductNameTh)
+                       && groupEn.BrandId != null
+                       && !string.IsNullOrWhiteSpace(masterVariant.DescriptionFullEn)
+                       && !string.IsNullOrWhiteSpace(masterVariant.DescriptionFullTh))
+                    {
+                        groupEn.InfoFlag = true;
+                    }
+                    else
+                    {
+                        groupEn.InfoFlag = false;
+                    }
+                    masterVariant.VariantCount = groupEn.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
                     groupEn.UpdatedDt = DateTime.Now;
                     groupEn.UpdatedBy = User.UserRequest().Email;
                 }
