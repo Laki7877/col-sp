@@ -47,6 +47,7 @@
     <Compile Include="Requests\AttributeRequest.cs" />
     <Compile Include="Requests\AttributeSetRequest.cs" />
     <Compile Include="Requests\AttributeValueRequest.cs" />
+    <Compile Include="Requests\BannerComponent.cs" />
     <Compile Include="Requests\BrandRequest.cs" />
     <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\CategoryShiftRequest.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Requests\ImageRequest.cs" />
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
+    <Compile Include="Requests\Layout.cs" />
     <Compile Include="Requests\MasterProductRequest.cs" />
     <Compile Include="Requests\NewsletterRequest.cs" />
     <Compile Include="Requests\OnBoardRequest.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\ReturnRequest.cs" />
     <Compile Include="Requests\SEORequest.cs" />
+    <Compile Include="Requests\ShopAppearanceRequest.cs" />
     <Compile Include="Requests\ShopCommission.cs" />
     <Compile Include="Requests\ShopRequest.cs" />
     <Compile Include="Requests\ShopTypeRequest.cs" />

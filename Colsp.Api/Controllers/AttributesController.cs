@@ -395,7 +395,7 @@ namespace Colsp.Api.Controllers
                     val.AttributeValueTh = map.AttributeValue.AttributeValueTh;
                     val.Image = new ImageRequest()
                     {
-                        url = map.AttributeValue.ImageUrl
+                        Url = map.AttributeValue.ImageUrl
                     };
                     attribute.AttributeValues.Add(val);
                 }
@@ -473,7 +473,7 @@ namespace Colsp.Api.Controllers
                             current.AttributeValueTh = valRq.AttributeValueTh;
                             if (valRq.Image != null)
                             {
-                                current.ImageUrl = valRq.Image.url;
+                                current.ImageUrl = valRq.Image.Url;
                             }
                             else
                             {
@@ -495,7 +495,7 @@ namespace Colsp.Api.Controllers
                         value.AttributeValueTh = valRq.AttributeValueTh;
                         if (valRq.Image != null)
                         {
-                            value.ImageUrl = valRq.Image.url;
+                            value.ImageUrl = valRq.Image.Url;
                         }
                         value.MapValue = string.Concat("((", value.AttributeValueId, "))");
                         value.Status = Constant.STATUS_ACTIVE;
@@ -556,7 +556,7 @@ namespace Colsp.Api.Controllers
                     val.AttributeValueTh = map.AttributeValue.AttributeValueTh;
                     val.Image = new ImageRequest()
                     {
-                        url = map.AttributeValue.ImageUrl
+                        Url = map.AttributeValue.ImageUrl
                     };
                     response.AttributeValues.Add(val);
                 }

@@ -15,7 +15,6 @@ using Colsp.Api.Services;
 using System.Security.Claims;
 using Colsp.Api.Security;
 using System.Data.Entity.SqlServer;
-using System.Text;
 using Cenergy.Dazzle.Admin.Security.Cryptography;
 
 namespace Colsp.Api.Controllers

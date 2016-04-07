@@ -144,6 +144,12 @@
     <Compile Include="Models\Attribute.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AttributeFilterMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AttributePropertyMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AttributeSet.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -513,6 +519,9 @@
     <Compile Include="Models\ShopCommission.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ShopComponentMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ShopImage.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -571,6 +580,15 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Theme.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ThemeComponent.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ThemeComponentCriteriaMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ThemeComponentMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">

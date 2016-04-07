@@ -18,11 +18,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Text;
-using Colsp.Api.Filters;
 using System.Text.RegularExpressions;
 using CsvHelper;
-using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace Colsp.Api.Controllers
 {
@@ -1758,18 +1755,14 @@ namespace Colsp.Api.Controllers
                     .Include(i => i.ProductStageGlobalCatMaps.Select(s => s.GlobalCategory))
                     .Include(i => i.ProductStageLocalCatMaps.Select(s => s.LocalCategory));
             ProductStageGroup product = null;
-            if (User.HasPermission("Edit Product") || User.HasPermission("Duplicate Product"))
-            {
-                product = tmpProduct.SingleOrDefault();
-            }
-            else if (User.ShopRequest() != null)
+            if (User.ShopRequest() != null)
             {
                 var shopId = User.ShopRequest().ShopId;
                 product = tmpProduct.Where(w => w.ShopId == shopId).SingleOrDefault();
             }
             else
             {
-                throw new Exception("Invalid permission");
+                product = tmpProduct.SingleOrDefault();
             }
             if (product == null)
             {
@@ -2408,7 +2401,7 @@ namespace Colsp.Api.Controllers
                 bool featureImg = true;
                 foreach (var image in request.Images)
                 {
-                    if (image == null && string.IsNullOrWhiteSpace(image.url)) continue;
+                    if (image == null && string.IsNullOrWhiteSpace(image.Url)) continue;
                     bool isNew = false;
                     if (tmpImage == null || tmpImage.Count == 0)
                     {
@@ -2439,7 +2432,7 @@ namespace Colsp.Api.Controllers
                         variant.ProductStageImages.Add(new ProductStageImage()
                         {
                             ShopId = variant.ShopId,
-                            ImageUrlEn = image.url,
+                            ImageUrlEn = image.Url,
                             Position = position++,
                             FeatureFlag = featureImg,
                             ImageName = string.Empty,
@@ -2453,7 +2446,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (featureImg)
                     {
-                        variant.FeatureImgUrl = image.url;
+                        variant.FeatureImgUrl = image.Url;
                     }
                     featureImg = false;
                 }
@@ -2544,7 +2537,7 @@ namespace Colsp.Api.Controllers
                 bool featureImg = true;
                 foreach (var image in imageRq)
                 {
-                    if (image == null && string.IsNullOrWhiteSpace(image.url)) continue;
+                    if (image == null && string.IsNullOrWhiteSpace(image.Url)) continue;
                     bool isNew = false;
                     if (tmpImage == null || tmpImage.Count == 0)
                     {
@@ -2588,7 +2581,7 @@ namespace Colsp.Api.Controllers
                         variant.ProductStageImages.Add(new ProductStageImage()
                         {
                             ShopId = variant.ShopId,
-                            ImageUrlEn = image.url,
+                            ImageUrlEn = image.Url,
                             Position = position++,
                             FeatureFlag = featureImg,
                             ImageName = string.Empty,
@@ -2602,7 +2595,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (featureImg)
                     {
-                        variant.FeatureImgUrl = image.url;
+                        variant.FeatureImgUrl = image.Url;
                     }
                     featureImg = false;
                 }
@@ -2777,8 +2770,8 @@ namespace Colsp.Api.Controllers
                     response.Images.Add(new ImageRequest()
                     {
                         ImageId = image.ImageId,
-                        url = image.ImageUrlEn,
-                        position = image.Position
+                        Url = image.ImageUrlEn,
+                        Position = image.Position
                     });
                 }
             }

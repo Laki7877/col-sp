@@ -43,6 +43,8 @@ namespace Colsp.Entity.Models
         public string MetaDescriptionTh { get; set; }
         public string MetaKeyEn { get; set; }
         public string MetaKeyTh { get; set; }
+        public string SeoEn { get; set; }
+        public string SeoTh { get; set; }
         public string UrlEn { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }

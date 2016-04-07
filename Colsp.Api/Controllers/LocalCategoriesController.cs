@@ -199,7 +199,7 @@ namespace Colsp.Api.Controllers
                     {
                         category.LocalCatImages.Add(new LocalCatImage()
                         {
-                            ImageUrl = img.url,
+                            ImageUrl = img.Url,
                             ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
@@ -217,7 +217,7 @@ namespace Colsp.Api.Controllers
                     {
                         category.LocalCatImages.Add(new LocalCatImage()
                         {
-                            ImageUrl = img.url,
+                            ImageUrl = img.Url,
                             ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
@@ -313,7 +313,7 @@ namespace Colsp.Api.Controllers
                             var current = imageOldEn.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.ImageUrl = img.url;
+                                current.ImageUrl = img.Url;
                                 current.Position = position++;
                                 current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
@@ -328,7 +328,7 @@ namespace Colsp.Api.Controllers
                         {
                             category.LocalCatImages.Add(new LocalCatImage()
                             {
-                                ImageUrl = img.url,
+                                ImageUrl = img.Url,
                                 Position = position++,
                                 EnTh = Constant.LANG_EN,
                                 UpdatedBy = User.UserRequest().Email,
@@ -359,7 +359,7 @@ namespace Colsp.Api.Controllers
                             var current = imageOldTh.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.ImageUrl = img.url;
+                                current.ImageUrl = img.Url;
                                 current.Position = position++;
                                 current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
@@ -374,7 +374,7 @@ namespace Colsp.Api.Controllers
                         {
                             category.LocalCatImages.Add(new LocalCatImage()
                             {
-                                ImageUrl = img.url,
+                                ImageUrl = img.Url,
                                 Position = position++,
                                 EnTh = Constant.LANG_TH,
                                 UpdatedBy = User.UserRequest().Email,

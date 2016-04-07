@@ -69,7 +69,7 @@ namespace Colsp.Api.Controllers
                    s.Subject,
                    s.VisibleShopGroup,
                    s.PublishedDt,
-                   Image = new ImageRequest() { url = s.ImageUrl},
+                   Image = new ImageRequest() { Url = s.ImageUrl},
                    IncludeShop = s.NewsletterShopMaps.Where(w=>w.Filter.Equals(Constant.NEWSLETTER_FILTER_INCLUDE)).Select(si=>new 
                    {
                        ShopId = si.ShopId,
@@ -171,7 +171,7 @@ namespace Colsp.Api.Controllers
             newsLetter.PublishedDt = request.PublishedDt;
             if (request.Image != null)
             {
-                newsLetter.ImageUrl = request.Image.url;
+                newsLetter.ImageUrl = request.Image.Url;
             }
             else
             {

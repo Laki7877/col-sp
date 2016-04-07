@@ -17,6 +17,8 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AttributeValue()
         {
+            this.AttributeFilterMaps = new HashSet<AttributeFilterMap>();
+            this.AttributePropertyMaps = new HashSet<AttributePropertyMap>();
             this.AttributeValueMaps = new HashSet<AttributeValueMap>();
         }
     
@@ -31,6 +33,10 @@ namespace Colsp.Entity.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AttributeFilterMap> AttributeFilterMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AttributePropertyMap> AttributePropertyMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AttributeValueMap> AttributeValueMaps { get; set; }
     }

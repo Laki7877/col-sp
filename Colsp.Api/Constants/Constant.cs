@@ -120,5 +120,7 @@ namespace Colsp.Api.Constants
         public static readonly string NOT_AVAILABLE = "N/A";
 
         public static readonly double CACHE_TIMEOUT = 60;
+
+        public static readonly int DEFAULT_THEME_ID = 1;
     }
 }

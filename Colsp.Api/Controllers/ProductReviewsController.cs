@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
@@ -45,7 +44,7 @@ namespace Colsp.Api.Controllers
                                   rev.Comment,
                                   rev.ProductContent,
                                   rev.ProductValidity,
-                                  rev.DeleverySpeed,
+                                  rev.DeliverySpeed,
                                   rev.Packaging,
                                   rev.Status,
                                   Customer = cus == null ? null : new
@@ -99,48 +98,48 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductReviews/Approve")]
-        [HttpPut]
-        public HttpResponseMessage ProductReviewApprove(List<ProductReviewRequest> request)
-        {
-            try
-            {
-                if (request == null || request.Count == 0)
-                {
-                    throw new Exception("Invalid request");
-                }
-                var shopId = User.ShopRequest().ShopId;
-                var review = (from rev in db.ProductReviews
-                              join cus in db.Customers on rev.CustomerId equals cus.CustomerId into cusJoin
-                              from cus in cusJoin.DefaultIfEmpty()
-                              join stage in db.ProductStages on new { rev.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId } into mastJoin
-                              from mast in mastJoin.DefaultIfEmpty()
-                              select rev
-                              ).ToList();
-                if (review == null || review.Count == 0)
-                {
-                    throw new Exception("No review found");
-                }
-                foreach (ProductReviewRequest revRq in request)
-                {
+        //[Route("api/ProductReviews/Approve")]
+        //[HttpPut]
+        //public HttpResponseMessage ProductReviewApprove(List<ProductReviewRequest> request)
+        //{
+        //    try
+        //    {
+        //        if (request == null || request.Count == 0)
+        //        {
+        //            throw new Exception("Invalid request");
+        //        }
+        //        var shopId = User.ShopRequest().ShopId;
+        //        var review = (from rev in db.ProductReviews
+        //                      join cus in db.Customers on rev.CustomerId equals cus.CustomerId into cusJoin
+        //                      from cus in cusJoin.DefaultIfEmpty()
+        //                      join stage in db.ProductStages on new { rev.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId } into mastJoin
+        //                      from mast in mastJoin.DefaultIfEmpty()
+        //                      select rev
+        //                      ).ToList();
+        //        if (review == null || review.Count == 0)
+        //        {
+        //            throw new Exception("No review found");
+        //        }
+        //        foreach (ProductReviewRequest revRq in request)
+        //        {
 
-                    var current = review.Where(w => w.ProductReviewId.Equals(revRq.ProductReviewId)).SingleOrDefault();
-                    if (current == null)
-                    {
-                        throw new Exception("Cannot find review " + revRq.ProductReviewId + " in shop " + shopId);
-                    }
-                    current.Status = revRq.Status;
-                    current.UpdatedBy = User.UserRequest().Email;
-                    current.UpdatedOn = DateTime.Now;
-                }
-                Util.DeadlockRetry(db.SaveChanges, "ProductReview");
-                return Request.CreateResponse(HttpStatusCode.OK);
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
-            }
-        }
+        //            var current = review.Where(w => w.ProductReviewId.Equals(revRq.ProductReviewId)).SingleOrDefault();
+        //            if (current == null)
+        //            {
+        //                throw new Exception("Cannot find review " + revRq.ProductReviewId + " in shop " + shopId);
+        //            }
+        //            current.Status = revRq.Status;
+        //            current.UpdatedBy = User.UserRequest().Email;
+        //            current.UpdatedOn = DateTime.Now;
+        //        }
+        //        Util.DeadlockRetry(db.SaveChanges, "ProductReview");
+        //        return Request.CreateResponse(HttpStatusCode.OK);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
+        //    }
+        //}
 
 
         [Route("api/ProductReviews/{ProductReviewId}")]
@@ -156,7 +155,7 @@ namespace Colsp.Api.Controllers
                 db.ProductReviews.Attach(review);
                 review.ProductContent = request.ProductContent;
                 review.ProductValidity = request.ProductValidity;
-                review.DeleverySpeed = request.DeleverySpeed;
+                review.DeliverySpeed = request.DeliverySpeed;
                 review.Packaging = request.Packaging;
                 Util.DeadlockRetry(db.SaveChanges, "ProductReview");
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -178,7 +177,7 @@ namespace Colsp.Api.Controllers
                 {
                     s.ProductContent,
                     s.ProductValidity,
-                    s.DeleverySpeed,
+                    s.DeliverySpeed,
                     s.Packaging,
                 }).ToList();
                 if(rating == null || rating.Count == 0)
@@ -190,7 +189,7 @@ namespace Colsp.Api.Controllers
                 {
                     ProductContent = rating.Select(s=>s.ProductContent).Average(),
                     ProductValidity = rating.Select(s => s.ProductValidity).Average(),
-                    DeleverySpeed = rating.Select(s => s.DeleverySpeed).Average(),
+                    DeleverySpeed = rating.Select(s => s.DeliverySpeed).Average(),
                     Packaging = rating.Select(s => s.Packaging).Average(),
                 };
 

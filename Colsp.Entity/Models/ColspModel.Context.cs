@@ -13,8 +13,7 @@ namespace Colsp.Entity.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Core.Objects;
-    using System.Linq;
-    
+
     public partial class ColspEntities : DbContext
     {
         public ColspEntities()
@@ -30,6 +29,8 @@ namespace Colsp.Entity.Models
     
         public virtual DbSet<AppAuth> AppAuths { get; set; }
         public virtual DbSet<Attribute> Attributes { get; set; }
+        public virtual DbSet<AttributeFilterMap> AttributeFilterMaps { get; set; }
+        public virtual DbSet<AttributePropertyMap> AttributePropertyMaps { get; set; }
         public virtual DbSet<AttributeSet> AttributeSets { get; set; }
         public virtual DbSet<AttributeSetMap> AttributeSetMaps { get; set; }
         public virtual DbSet<AttributeSetTag> AttributeSetTags { get; set; }
@@ -141,6 +142,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
+        public virtual DbSet<ThemeComponent> ThemeComponents { get; set; }
+        public virtual DbSet<ThemeComponentCriteriaMap> ThemeComponentCriteriaMaps { get; set; }
+        public virtual DbSet<ThemeComponentMap> ThemeComponentMaps { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserBrandMap> UserBrandMaps { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
@@ -164,6 +168,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Migrate_TBPropertyProduct> Migrate_TBPropertyProduct { get; set; }
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
         public virtual DbSet<PostCodeMap> PostCodeMaps { get; set; }
+        public virtual DbSet<ShopComponentMap> ShopComponentMaps { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
         public virtual DbSet<TBCMCity> TBCMCities { get; set; }

@@ -9,7 +9,6 @@ using Colsp.Entity.Models;
 using Colsp.Api.Constants;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
-using Colsp.Api.Helper;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
@@ -168,7 +167,7 @@ namespace Colsp.Api.Controllers
                     {
                         category.GlobalCatImages.Add(new GlobalCatImage()
                         {
-                            ImageUrl = img.url,
+                            ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
                             UpdatedBy = User.UserRequest().Email,
@@ -185,7 +184,7 @@ namespace Colsp.Api.Controllers
                     {
                         category.GlobalCatImages.Add(new GlobalCatImage()
                         {
-                            ImageUrl = img.url,
+                            ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
                             UpdatedBy = User.UserRequest().Email,
@@ -275,7 +274,7 @@ namespace Colsp.Api.Controllers
                             var current = imageOldEn.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.ImageUrl = img.url;
+                                current.ImageUrl = img.Url;
                                 current.Position = position++;
                                 current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
@@ -290,7 +289,7 @@ namespace Colsp.Api.Controllers
                         {
                             category.GlobalCatImages.Add(new GlobalCatImage()
                             {
-                                ImageUrl = img.url,
+                                ImageUrl = img.Url,
                                 Position = position++,
                                 EnTh = Constant.LANG_EN,
                                 UpdatedBy = User.UserRequest().Email,
@@ -321,7 +320,7 @@ namespace Colsp.Api.Controllers
                             var current = imageOldTh.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.ImageUrl = img.url;
+                                current.ImageUrl = img.Url;
                                 current.Position = position++;
                                 current.UpdatedBy = User.UserRequest().Email;
                                 current.UpdatedDt = DateTime.Now;
@@ -336,7 +335,7 @@ namespace Colsp.Api.Controllers
                         {
                             category.GlobalCatImages.Add(new GlobalCatImage()
                             {
-                                ImageUrl = img.url,
+                                ImageUrl = img.Url,
                                 Position = position++,
                                 EnTh = Constant.LANG_TH,
                                 UpdatedBy = User.UserRequest().Email,

@@ -78,11 +78,57 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var brand = db.Brands
-                    .Where(w => w.BrandId == brandId).Include(i => i.BrandImages)
-                    .Include(i=>i.BrandFeatureProducts
-                        .Select(s=>s.ProductStageGroup.ProductStages))
-                    .SingleOrDefault();
+
+                var brand = db.Brands.Where(w => w.BrandId == brandId).Select(s => new
+                {
+                    s.BrandId,
+                    s.BrandNameEn,
+                    s.BrandNameTh,
+                    s.DisplayNameEn,
+                    s.DisplayNameTh,
+                    s.DescriptionFullEn,
+                    s.DescriptionFullTh,
+                    s.DescriptionShortEn,
+                    s.DescriptionShortTh,
+                    s.MetaDescriptionEn,
+                    s.MetaDescriptionTh,
+                    s.MetaKeyEn,
+                    s.MetaKeyTh,
+                    s.MetaTitleEn,
+                    s.MetaTitleTh,
+                    s.UrlEn,
+                    s.FeatureTitle,
+                    s.TitleShowcase,
+                    s.PicUrl,
+                    s.SeoEn,
+                    s.SeoTh,
+                    BrandImages = s.BrandImages.Select(si => new
+                    {
+                        si.EnTh,
+                        si.Position,
+                        si.BrandImageId,
+                        si.ImageUrl,
+                    }),
+                    BrandFeatureProducts = s.BrandFeatureProducts.Select(sp => new
+                    {
+                        ProductStageGroup = sp.ProductStageGroup == null ? null : new
+                        {
+                            sp.ProductStageGroup.ProductId,
+                            ProductStages = sp.ProductStageGroup.ProductStages.Select(st=>new
+                            {
+                                st.IsVariant,
+                                st.Pid,
+                                st.ProductNameEn
+                            })
+                        },
+                    }),
+                }).SingleOrDefault();
+
+                //var brand = db.Brands
+                //    .Where(w => w.BrandId == brandId).Include(i => i.BrandImages)
+                //    .Include(i=>i.BrandFeatureProducts
+                //        .Select(s=>s.ProductStageGroup.ProductStages))
+                //    .SingleOrDefault();
                 if(brand == null)
                 {
                     throw new Exception(string.Concat("Cannot find brand id ",brandId));
@@ -105,9 +151,12 @@ namespace Colsp.Api.Controllers
                 response.SEO.MetaTitleEn = brand.MetaTitleEn;
                 response.SEO.MetaTitleTh = brand.MetaTitleTh;
                 response.SEO.ProductUrlKeyEn = brand.UrlEn;
+                response.SEO.SeoEn = brand.SeoEn;
+                response.SEO.SeoTh = brand.SeoTh;
                 response.FeatureTitle = brand.FeatureTitle;
                 response.TitleShowcase = brand.TitleShowcase;
-                if (brand.BrandImages != null && brand.BrandImages.Count > 0)
+                
+                if (brand.BrandImages != null)
                 {
                     var productImgEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o => o.Position).ToList();
                     foreach (var img in productImgEn)
@@ -115,8 +164,8 @@ namespace Colsp.Api.Controllers
                         response.BrandBannerEn.Add(new ImageRequest()
                         {
                             ImageId = img.BrandImageId,
-                            url = img.ImageUrl,
-                            position = img.Position,
+                            Url = img.ImageUrl,
+                            Position = img.Position,
                         });
                     }
                     var productImgTh = brand.BrandImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).OrderBy(o => o.Position).ToList();
@@ -124,12 +173,12 @@ namespace Colsp.Api.Controllers
                     {
                         response.BrandBannerTh.Add(new ImageRequest()
                         {
-                            url = img.ImageUrl,
-                            position = img.Position,
+                            Url = img.ImageUrl,
+                            Position = img.Position,
                         });
                     }
                 }
-                if (brand.BrandFeatureProducts != null && brand.BrandFeatureProducts.Count > 0)
+                if (brand.BrandFeatureProducts != null)
                 {
                     foreach (var pro in brand.BrandFeatureProducts)
                     {
@@ -144,7 +193,7 @@ namespace Colsp.Api.Controllers
                 if (!string.IsNullOrEmpty(brand.PicUrl))
                 {
                     response.BrandImage = new ImageRequest();
-                    response.BrandImage.url = brand.PicUrl;
+                    response.BrandImage.Url = brand.PicUrl;
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
@@ -266,8 +315,10 @@ namespace Colsp.Api.Controllers
                 brand.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keywords (Thai)", false, 500, false, string.Empty);
                 brand.MetaTitleEn = Validation.ValidateString(request.SEO.MetaTitleEn, "Meta Title (English)", false, 100, false, string.Empty);
                 brand.MetaTitleTh = Validation.ValidateString(request.SEO.MetaTitleTh, "Meta Title (Thai)", false, 100, false, string.Empty);
+                brand.SeoEn = Validation.ValidateString(request.SEO.SeoEn, "SEO (English)", false, 100, false, string.Empty);
+                brand.SeoTh = Validation.ValidateString(request.SEO.SeoTh, "SEO (Thai)", false, 100, false, string.Empty);
             }
-            brand.PicUrl = Validation.ValidateString(request.BrandImage.url, "Logo", false, 500, false, string.Empty);
+            brand.PicUrl = Validation.ValidateString(request.BrandImage.Url, "Logo", false, 500, false, string.Empty);
             if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
             {
                 brand.UrlEn = brand.BrandNameEn.Replace(" ", "-");
@@ -293,7 +344,7 @@ namespace Colsp.Api.Controllers
                         var current = imageOldEn.Where(w => w.BrandImageId == img.ImageId).SingleOrDefault();
                         if (current != null)
                         {
-                            current.ImageUrl = img.url;
+                            current.ImageUrl = img.Url;
                             current.Position = position++;
                             current.UpdatedBy = email;
                             current.UpdatedDt = currentDt;
@@ -308,7 +359,7 @@ namespace Colsp.Api.Controllers
                     {
                         brand.BrandImages.Add(new BrandImage()
                         {
-                            ImageUrl = img.url,
+                            ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
                             UpdatedBy = email,
@@ -339,7 +390,7 @@ namespace Colsp.Api.Controllers
                         var current = imageOldTh.Where(w => w.BrandImageId == img.ImageId).SingleOrDefault();
                         if (current != null)
                         {
-                            current.ImageUrl = img.url;
+                            current.ImageUrl = img.Url;
                             current.Position = position++;
                             current.UpdatedBy = email;
                             current.UpdatedDt = currentDt;
@@ -354,7 +405,7 @@ namespace Colsp.Api.Controllers
                     {
                         brand.BrandImages.Add(new BrandImage()
                         {
-                            ImageUrl = img.url,
+                            ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
                             UpdatedBy = email,

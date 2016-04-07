@@ -10,8 +10,7 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
-    
+
     public partial class ProductStageImage
     {
         public int ImageId { get; set; }

@@ -220,6 +220,7 @@
     <Compile Include="Controllers\ReturnController.cs" />
     <Compile Include="Controllers\ShopsController.cs" />
     <Compile Include="Controllers\ShopTypesController.cs" />
+    <Compile Include="Controllers\ThemesController.cs" />
     <Compile Include="Controllers\UserGroupsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\IPrincipalExtension.cs" />
