@@ -53,12 +53,39 @@ namespace Colsp.Api.CMSFunction
                         cms.CreateIP = Model.CreateIP;
                         cms.IsCampaign = Model.ISCampaign;
                         db.CMSMasters.Add(cms);
+
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
                         {
                             dbcxtransaction.Commit();
-
                             result = cms.CMSMasterId;
                         }
+
+
+                        // Add Schedule
+                        var masterId = cms.CMSMasterId;
+                        foreach (var schedule in Model.ScheduleList)
+                        {
+                            CMSScheduler cmsScheduler = new CMSScheduler();
+                            cmsScheduler.EffectiveDate = schedule.EffectiveDate;
+                            cmsScheduler.ExpiryDate = schedule.ExpiryDate;
+                            db.CMSSchedulers.Add(cmsScheduler);
+
+                            if (db.SaveChanges() > 0)
+                            {
+                                var scheduleId = cmsScheduler.CMSSchedulerId;
+                                foreach (var category in schedule.CategoryList)
+                                {
+                                    CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
+                                    cmsCategorySchedulerMap.CMSSchedulerId = scheduleId;
+                                    cmsCategorySchedulerMap.CMSCategoryId = category.CMSCategoryId;
+                                    cmsCategorySchedulerMap.IsActive = true;
+                                    db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
+                                }
+
+                                db.SaveChanges();
+                            }
+                        }
+
                         return result;
                     }
                     catch (Exception ex)
@@ -71,8 +98,7 @@ namespace Colsp.Api.CMSFunction
             }
         }
 
-
-        public CMSMasterAllRequest CMSUpdateStatus(CMSMasterItemListRequest model,int UserId,int? ShopId)
+        public CMSMasterAllRequest CMSUpdateStatus(CMSMasterItemListRequest model, int UserId, int? ShopId)
         {
             CMSMasterAllRequest result = new CMSMasterAllRequest();
             using (ColspEntities db = new ColspEntities())
@@ -160,7 +186,8 @@ namespace Colsp.Api.CMSFunction
         /// <param name="UserId"></param>
         /// <param name="ShopId"></param>
         /// <returns></returns>
-        public int CreateCMSScheduler(CMSMaster Master,int UserId, int? ShopId) {
+        public int CreateCMSScheduler(CMSMaster Master, int UserId, int? ShopId)
+        {
             int result = 0;
             try
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Colsp.Logic
 {
-    public class BrandCondition
+    public class BrandCondition : BaseCondition
     {
         public int? BrandId { get; set; }
         public string BrandNameTh { get; set; }

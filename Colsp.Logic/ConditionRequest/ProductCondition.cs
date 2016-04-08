@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace Colsp.Logic
 {
-    public class ProductCondition
+    public class ProductCondition : BaseCondition
     {
         public SearchOption SearchBy { get; set; }
-        public string SearchText { get; set; }
         public string Tag { get; set; }
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }

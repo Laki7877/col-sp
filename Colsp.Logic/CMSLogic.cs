@@ -228,6 +228,189 @@ namespace Colsp.Logic
 
 
         #region Start CMS Master Method
+        // Add CMS Master
+        public bool AddCMSMaster(CMSMasterRequest request)
+        {
+            bool success = false;
+
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    using (var dbcxtransaction = db.Database.BeginTransaction())
+                    {
+                        int row = -1;
+                        DateTime dateNow = DateTime.Now;
+
+                        CMSMaster cms               = new CMSMaster();
+                        cms.CMSMasterNameEN         = request.CMSMasterNameEN;
+                        cms.CMSMasterNameTH         = request.CMSMasterNameTH;
+                        cms.CMSTypeId               = request.CMSMasterTypeId;
+                        cms.CMSMasterEffectiveDate  = request.EffectiveDate;
+                        cms.CMSMasterEffectiveTime  = request.EffectiveTime;
+                        cms.CMSMasterExpiryDate     = request.ExpiryDate;
+                        cms.CMSMasterExpiryTime     = request.ExpiryTime;
+                        cms.LongDescriptionEN       = request.LongDescriptionEN;
+                        cms.LongDescriptionTH       = request.LongDescriptionTH;
+                        cms.ShortDescriptionEN      = request.ShortDescriptionEN;
+                        cms.ShortDescriptionTH      = request.ShortDescriptionTH;
+                        cms.Status                  = request.Status;
+                        cms.CMSMasterStatusId       = request.CMSMasterStatusId;
+                        cms.Sequence                = request.Sequence;
+                        cms.CMSMasterURLKey         = request.CMSMasterURLKey;
+                        cms.Visibility              = request.Visibility;
+                        cms.CreateBy                = request.CreateBy;
+                        cms.Createdate              = dateNow;
+                        cms.CreateIP                = request.CreateIP;
+                        cms.IsCampaign              = request.ISCampaign;
+                        db.CMSMasters.Add(cms);
+
+                        if (db.SaveChanges() > 0)
+                        {
+                            dbcxtransaction.Commit();
+                        }
+                        
+                        // Create Schedule
+                        var masterId = cms.CMSMasterId;
+                        foreach (var schedule in request.ScheduleList)
+                        {
+                            CMSScheduler cmsScheduler   = new CMSScheduler();
+                            cmsScheduler.EffectiveDate  = schedule.EffectiveDate;
+                            cmsScheduler.ExpiryDate     = schedule.ExpiryDate;
+                            db.CMSSchedulers.Add(cmsScheduler);
+                            
+                            if (db.SaveChanges() > 0)
+                            {
+                                var scheduleId = cmsScheduler.CMSSchedulerId;
+
+                                // Map Master Schedule
+                                CMSMasterSchedulerMap cmsMasterScheduleMap  = new CMSMasterSchedulerMap();
+                                cmsMasterScheduleMap.CMSMasterId            = masterId;
+                                cmsMasterScheduleMap.CMSSchedulerId         = scheduleId;
+                                cmsMasterScheduleMap.IsActive               = true;
+                                db.CMSMasterSchedulerMaps.Add(cmsMasterScheduleMap);
+                                
+                                foreach (var category in schedule.CategoryList)
+                                {
+                                    // Map Category Schedule
+                                    CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
+                                    cmsCategorySchedulerMap.CMSSchedulerId = scheduleId;
+                                    cmsCategorySchedulerMap.CMSCategoryId = category.CMSCategoryId;
+                                    cmsCategorySchedulerMap.IsActive = true;
+                                    db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
+                                }
+                            }
+                        }
+                        
+                        row = db.SaveChanges();
+                        success = row > -1;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /Logic/AddCMSCategory");
+            }
+
+            return success;
+        }
+
+        // Edit CMS Master
+        public bool EditCMSMaster(CMSMasterRequest request)
+        {
+            bool success = false;
+
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    int row = -1;
+                    DateTime dateNow = DateTime.Now;
+
+                    var queryCMSMaster = db.CMSMasters.Where(x => x.CMSMasterId == request.CMSMasterId);
+
+                    if (!queryCMSMaster.Any())
+                        return false;
+
+                    // Update Information
+                    var cms                     = queryCMSMaster.First();
+                    cms.CMSMasterNameEN         = request.CMSMasterNameEN;
+                    cms.CMSMasterNameTH         = request.CMSMasterNameTH;
+                    cms.CMSTypeId               = request.CMSMasterTypeId;
+                    cms.CMSMasterEffectiveDate  = request.EffectiveDate;
+                    cms.CMSMasterEffectiveTime  = request.EffectiveTime;
+                    cms.CMSMasterExpiryDate     = request.ExpiryDate;
+                    cms.CMSMasterExpiryTime     = request.ExpiryTime;
+                    cms.LongDescriptionEN       = request.LongDescriptionEN;
+                    cms.LongDescriptionTH       = request.LongDescriptionTH;
+                    cms.ShortDescriptionEN      = request.ShortDescriptionEN;
+                    cms.ShortDescriptionTH      = request.ShortDescriptionTH;
+                    cms.Status                  = request.Status;
+                    cms.CMSMasterStatusId       = request.CMSMasterStatusId;
+                    cms.Sequence                = request.Sequence;
+                    cms.CMSMasterURLKey         = request.CMSMasterURLKey;
+                    cms.Visibility              = request.Visibility;
+                    cms.UpdateBy                = request.UpdateBy;
+                    cms.UpdateDate              = dateNow;
+                    cms.UpdateIP                = request.UpdateIP;
+                    cms.IsCampaign              = request.ISCampaign;
+                    
+
+                    foreach (var schedule in request.ScheduleList)
+                    {
+                        var querySchedule = db.CMSSchedulers.Where(x => x.CMSSchedulerId == schedule.CMSSchedulerId).FirstOrDefault();
+                        if (querySchedule !=  null)
+                        {
+                            // Update Schedule
+                            querySchedule.EffectiveDate = schedule.EffectiveDate;
+                            querySchedule.ExpiryDate    = schedule.ExpiryDate;
+                            querySchedule.Status        = schedule.Status;
+                            querySchedule.Visibility    = schedule.Visibility;
+                            querySchedule.UpdateBy      = schedule.UpdateBy;
+                            querySchedule.UpdateDate    = schedule.UpdateDate;
+                            querySchedule.UpdateIP      = schedule.UpdateIP;
+                            
+                            // Remove Category Item in CMSCategorySchedulerMaps
+                            var queryCategoryScheduleList = db.CMSCategorySchedulerMaps.Where(x => x.CMSSchedulerId == querySchedule.CMSSchedulerId).ToList();
+                            if (queryCategoryScheduleList != null && queryCategoryScheduleList.Count > 0)
+                            {
+                                foreach (var cateSchedule in queryCategoryScheduleList)
+                                {
+                                    db.CMSCategorySchedulerMaps.Remove(cateSchedule);
+                                }
+                            }
+
+                            // Add New Category Item To CMSCategorySchedulerMaps
+                            foreach (var cate in schedule.CategoryList)
+                            {
+                                CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
+                                cmsCategorySchedulerMap.CMSSchedulerId          = schedule.CMSSchedulerId;
+                                cmsCategorySchedulerMap.CMSCategoryId           = cate.CMSCategoryId;
+                                cmsCategorySchedulerMap.IsActive                = true;
+                                db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
+                            }
+
+                            // Update Master Schedule Map
+                            //var queryMasterScheduleMap = db.CMSMasterSchedulerMaps.Where(x => x.CMSSchedulerId == schedule.CMSSchedulerId).FirstOrDefault();
+                            //if (queryMasterScheduleMap != null)
+                            //{
+                            //    queryMasterScheduleMap.IsActive = schedule.Status;
+                            //}
+                        }
+                        
+                    }
+
+                    row = db.SaveChanges();
+                    success = row > -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /Logic/EditCMSCategory");
+            }
+
+            return success;
+        }
 
         #endregion
 
@@ -353,6 +536,33 @@ namespace Colsp.Logic
             return success;
         }
 
+        // Delete CMS Group
+        public bool DeleteCMSGroup(List<CMSGroupRequest> request)
+        {
+            bool success = false;
+
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    foreach (var cmsGroup in request)
+                    {
+                        var query = db.CMSGroups.Where(x => x.CMSGroupId == cmsGroup.CMSGroupId);
+                        if (query.Any())
+                            query.First().Visibility = false;
+                    }
+
+                    db.SaveChanges();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /Logic/DeleteCMSCategory");
+            }
+
+            return success;
+        }
         #endregion
     }
 }

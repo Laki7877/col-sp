@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Requests
 {
-    public class CMSMasterRequest
+    public class CMSMasterRequest : PaginatedRequest
     {
+        public CMSMasterRequest()
+        {
+            this.ScheduleList = new List<CMSSchedulerRequest>();
+        }
+
         public int CMSMasterId { get; set; }
         public string CMSMasterNameEN { get; set; }
         public string CMSMasterNameTH { get; set; }
@@ -28,5 +33,17 @@ namespace Colsp.Model.Requests
         public int? CMSMasterStatusId { get; set; }
         public int? Sequence { get; set; }
         public bool ISCampaign { get; set; }
+        public List<CMSSchedulerRequest> ScheduleList { get; set; }
+
+        public string SearchText { get; set; }
+        public int? UpdateBy { get; set; }
+        public string UpdateIP { get; set; }
+
+        public override void DefaultOnNull()
+        {
+            SearchText = GetValueOrDefault(SearchText, string.Empty);
+            _order = GetValueOrDefault(_order, "ShopId");
+            base.DefaultOnNull();
+        }
     }
 }

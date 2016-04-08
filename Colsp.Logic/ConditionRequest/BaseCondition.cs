@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Colsp.Logic
 {
-    public class CMSMasterCondition : BaseCondition
+    public class BaseCondition
     {
-        
+        public string SearchText { get; set; }
     }
 }

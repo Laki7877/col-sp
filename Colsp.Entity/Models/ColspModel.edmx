@@ -457,7 +457,7 @@
           <Key>
             <PropertyRef Name="CMSSchedulerId" />
           </Key>
-          <Property Name="CMSSchedulerId" Type="int" Nullable="false" />
+          <Property Name="CMSSchedulerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EffectiveDate" Type="date" />
           <Property Name="EffectiveTime" Type="time" Precision="7" />
           <Property Name="ExpiryDate" Type="date" />
@@ -4285,7 +4285,6 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <EntitySet Name="CMSMasterSchedulerShopMaps" EntityType="ColspModel.CMSMasterSchedulerShopMap" />
           <EntitySet Name="CMSMasterStatus" EntityType="ColspModel.CMSMasterStatu" />
           <EntitySet Name="CMSMasterTypes" EntityType="ColspModel.CMSMasterType" />
-          <EntitySet Name="CMSSchedulers" EntityType="ColspModel.CMSScheduler" />
           <EntitySet Name="Coupons" EntityType="ColspModel.Coupon" />
           <EntitySet Name="CouponBrandMaps" EntityType="ColspModel.CouponBrandMap" />
           <EntitySet Name="CouponConditions" EntityType="ColspModel.CouponCondition" />
@@ -4795,6 +4794,7 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
+          <EntitySet Name="CMSSchedulers" EntityType="ColspModel.CMSScheduler" />
           </EntityContainer>
         <EntityType Name="AppAuth">
           <Key>
@@ -5262,24 +5262,6 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
           <Property Name="CMSMasterTypeNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="CMSMasterTypeNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSScheduler">
-          <Key>
-            <PropertyRef Name="CMSSchedulerId" />
-          </Key>
-          <Property Name="CMSSchedulerId" Type="Int32" Nullable="false" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="EffectiveTime" Type="Time" Precision="7" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="ExpiryTime" Type="Time" Precision="7" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="Createdate" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="Int32" />
@@ -8573,6 +8555,24 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CMSScheduler">
+          <Key>
+            <PropertyRef Name="CMSSchedulerId" />
+          </Key>
+          <Property Name="CMSSchedulerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9050,25 +9050,6 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="CMSMasterTypeNameTH" ColumnName="CMSMasterTypeNameTH" />
                 <ScalarProperty Name="CMSMasterTypeCode" ColumnName="CMSMasterTypeCode" />
                 <ScalarProperty Name="CMSMasterTypeId" ColumnName="CMSMasterTypeId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSSchedulers">
-            <EntityTypeMapping TypeName="ColspModel.CMSScheduler">
-              <MappingFragment StoreEntitySet="CMSScheduler">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
-                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="CMSSchedulerId" ColumnName="CMSSchedulerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -10823,6 +10804,25 @@ warning 6002: The table/view 'colsp.dbo.TBUserAdminWebTokenTmp' does not have a 
                 <ScalarProperty Name="Browser" ColumnName="Browser" />
                 <ScalarProperty Name="Token" ColumnName="Token" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSSchedulers">
+            <EntityTypeMapping TypeName="ColspModel.CMSScheduler">
+              <MappingFragment StoreEntitySet="CMSScheduler">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="CMSSchedulerId" ColumnName="CMSSchedulerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

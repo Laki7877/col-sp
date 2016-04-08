@@ -32,7 +32,6 @@
         <EntityTypeShape EntityType="ColspModel.CMSMasterSchedulerShopMap" Width="1.5" PointX="6.75" PointY="10.75" />
         <EntityTypeShape EntityType="ColspModel.CMSMasterStatu" Width="1.5" PointX="8.75" PointY="10.75" />
         <EntityTypeShape EntityType="ColspModel.CMSMasterType" Width="1.5" PointX="10.75" PointY="9.75" />
-        <EntityTypeShape EntityType="ColspModel.CMSScheduler" Width="1.5" PointX="12.75" PointY="0.75" />
         <EntityTypeShape EntityType="ColspModel.Coupon" Width="1.5" PointX="8.25" PointY="70.875" />
         <EntityTypeShape EntityType="ColspModel.CouponBrandMap" Width="1.5" PointX="13.5" PointY="72.75" />
         <EntityTypeShape EntityType="ColspModel.CouponCondition" Width="1.5" PointX="12.75" PointY="5.75" />
@@ -233,6 +232,7 @@
         <AssociationConnector Association="ColspModel.FKUserShopUser" />
         <AssociationConnector Association="ColspModel.FKUserGroupMapUserGroup" />
         <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />
+        <EntityTypeShape EntityType="ColspModel.CMSScheduler" Width="1.5" PointX="13.375" PointY="23.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -20,6 +20,7 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -54,7 +55,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSMasterSchedulerShopMap> CMSMasterSchedulerShopMaps { get; set; }
         public virtual DbSet<CMSMasterStatu> CMSMasterStatus { get; set; }
         public virtual DbSet<CMSMasterType> CMSMasterTypes { get; set; }
-        public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
@@ -152,6 +152,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
+        public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
     
         public virtual ObjectResult<Nullable<int>> AttributeValueId()
         {
