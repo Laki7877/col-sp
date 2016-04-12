@@ -52,6 +52,8 @@ namespace Colsp.Api.Controllers
                         {
                             sc.ThemeComponent.ComponentName,
                             sc.Count,
+                            sc.Width,
+                            sc.Height,
                         })
                     }).SingleOrDefault();
                 return Request.CreateResponse(HttpStatusCode.OK, themes);

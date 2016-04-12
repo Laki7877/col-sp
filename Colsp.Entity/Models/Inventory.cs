@@ -10,7 +10,8 @@
 namespace Colsp.Entity.Models
 {
     using System;
-
+    using System.Collections.Generic;
+    
     public partial class Inventory
     {
         public string Pid { get; set; }

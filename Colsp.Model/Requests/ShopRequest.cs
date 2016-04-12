@@ -37,9 +37,56 @@ namespace Colsp.Model.Requests
         public List<ShopCommission> Commissions { get; set; }
 
 
+
+
+        public string VendorId { get; set; }
+        public int ThemeId { get; set; }
+        public string TaxPayerId { get; set; }
+        public string TermPayment { get; set; }
+        public string Payment { get; set; }
+        public string VendorTaxRate { get; set; }
+        public string WithholdingTax { get; set; }
+        public string VendorAddressLine1 { get; set; }
+        public string VendorAddressLine2 { get; set; }
+        public string VendorAddressLine3 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
+        public string CountryCode { get; set; }
+        public string Country { get; set; }
+        public string PhoneNumber { get; set; }
+        public string FaxNumber { get; set; }
+        public string Telex { get; set; }
+        public string OverseasVendorIndicator { get; set; }
+        public string RemittanceFaxNumber { get; set; }
+
         public ShopRequest()
         {
             ShopId = 0;
+            ThemeId = 0;
+
+            VendorId = string.Empty;
+            TaxPayerId = string.Empty;
+            TermPayment = string.Empty;
+            Payment = string.Empty;
+            VendorTaxRate = string.Empty;
+            WithholdingTax = string.Empty;
+            VendorAddressLine1 = string.Empty;
+            VendorAddressLine2 = string.Empty;
+            VendorAddressLine3 = string.Empty;
+            City = string.Empty;
+            State = string.Empty;
+            ZipCode = string.Empty;
+            CountryCode = string.Empty;
+            Country = string.Empty;
+            PhoneNumber = string.Empty;
+            FaxNumber = string.Empty;
+            Telex = string.Empty;
+            OverseasVendorIndicator = string.Empty;
+            RemittanceFaxNumber = string.Empty;
+
+
+
             ShopNameEn = string.Empty;
             ShopNameTh = string.Empty;
             Status = string.Empty;

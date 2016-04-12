@@ -208,7 +208,7 @@ namespace Colsp.Api.Controllers
                         });
                     }
                 }
-                category.CategoryId = db.GlobalCategoryId().SingleOrDefault().Value;
+                category.CategoryId = db.GetNextGlobalCategoryId().SingleOrDefault().Value;
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
                     category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
@@ -651,6 +651,8 @@ namespace Colsp.Api.Controllers
                                           s.Attribute.VariantDataType,
                                           s.Attribute.VariantStatus,
                                           s.Attribute.DataValidation,
+                                          s.Attribute.DisplayNameEn,
+                                          s.Attribute.DisplayNameTh,
                                           AttributeValueMaps = s.Attribute.AttributeValueMaps.Select(sv =>
                                           new {
                                               sv.AttributeId,
@@ -749,7 +751,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.GLOBAL_CAT_FOLDER, 1500, 1500, 2000, 2000, 5, true);
+                var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.GLOBAL_CAT_FOLDER, 1500, 1500, 2000, 2000, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)

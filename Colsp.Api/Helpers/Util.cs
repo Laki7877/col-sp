@@ -1,4 +1,5 @@
 ﻿using Colsp.Api.Constants;
+using Colsp.Model.Requests;
 using Colsp.Model.Responses;
 using System;
 using System.Data.Entity.Infrastructure;
@@ -12,7 +13,7 @@ namespace Colsp.Api.Helpers
 {
     public static class Util
     {
-        public static async Task<FileUploadRespond> SetupImage(HttpRequestMessage Request, string rootPath, string folderName
+        public static async Task<ImageRequest> SetupImage(HttpRequestMessage Request, string rootPath, string folderName
             , int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare, int logoWidth = 100, int logoLength = 100)
         {
             if (!Request.Content.IsMimeMultipartContent())
@@ -67,11 +68,11 @@ namespace Colsp.Api.Helpers
             }
             string newName = string.Concat(fileName, ext);
             File.Move(fileName, newName);
-            FileUploadRespond fileUpload = new FileUploadRespond();
+            ImageRequest fileUpload = new ImageRequest();
             var name = Path.GetFileName(newName);
             var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
             var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-            fileUpload.url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", folderName, "/", name);
+            fileUpload.Url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", folderName, "/", name);
             return fileUpload;
         }
 

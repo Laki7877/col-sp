@@ -138,7 +138,6 @@ namespace Colsp.Api.Controllers
                     throw new Exception("This role name has already been used. Please enter a different role name.");
                 }
                 usrGrp.GroupNameEn = request.GroupNameEn;
-                //usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.Status = Constant.STATUS_ACTIVE;
                 usrGrp.Type = Constant.USER_TYPE_SELLER;
                 usrGrp.CreatedBy = User.UserRequest().Email;
@@ -174,19 +173,13 @@ namespace Colsp.Api.Controllers
                 shopMap.UpdatedBy = User.UserRequest().Email;
                 shopMap.UpdatedDt = DateTime.Now;
                 usrGrp.ShopUserGroupMaps.Add(shopMap);
-                //db.ShopUserGroupMaps.Add(shopMap);
+                usrGrp.GroupId = db.GetNextUserGroupId().SingleOrDefault().Value;
                 Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 return GetUserGroupSeller(usrGrp.GroupId);
             }
             catch (Exception e)
             {
-                if (usrGrp != null && usrGrp.GroupId != 0)
-                {
-                    db.UserGroups.Remove(usrGrp);
-                    Util.DeadlockRetry(db.SaveChanges, "UserGroup");
-                }
-                
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -353,17 +346,13 @@ namespace Colsp.Api.Controllers
                         usrGrp.UserGroupPermissionMaps.Add(map);
                     }
                 }
+                usrGrp.GroupId = db.GetNextUserGroupId().SingleOrDefault().Value;
                 db.UserGroups.Add(usrGrp);
                 Util.DeadlockRetry(db.SaveChanges, "UserGroup");
                 return GetUserGroupAdmin(usrGrp.GroupId);
             }
             catch (Exception e)
             {
-                if (usrGrp != null && usrGrp.GroupId != 0)
-                {
-                    db.UserGroups.Remove(usrGrp);
-                    Util.DeadlockRetry(db.SaveChanges, "UserGroup");
-                }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }

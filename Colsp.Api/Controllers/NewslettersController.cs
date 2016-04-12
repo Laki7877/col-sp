@@ -48,7 +48,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.NEWSLETTER_FOLDER, 1, 1, int.MaxValue, int.MaxValue, int.MaxValue, false);
+                var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.NEWSLETTER_FOLDER, 1, 1, int.MaxValue, int.MaxValue, int.MaxValue, false);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
@@ -131,6 +131,7 @@ namespace Colsp.Api.Controllers
                 SetupnewsLetter(newsLetter, request,email);
                 newsLetter.CreatedBy = email;
                 newsLetter.CreatedDt = DateTime.Now;
+                newsLetter.NewsletterId = db.GetNextNewsletterId().SingleOrDefault().Value;
                 db.Newsletters.Add(newsLetter);
                 Util.DeadlockRetry(db.SaveChanges, "Newsletter");
                 return GetNewsletter(newsLetter.NewsletterId); 

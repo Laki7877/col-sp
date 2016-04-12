@@ -13,7 +13,8 @@ namespace Colsp.Entity.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Core.Objects;
-
+    using System.Linq;
+    
     public partial class ColspEntities : DbContext
     {
         public ColspEntities()
@@ -36,6 +37,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<AttributeSetTag> AttributeSetTags { get; set; }
         public virtual DbSet<AttributeValue> AttributeValues { get; set; }
         public virtual DbSet<AttributeValueMap> AttributeValueMaps { get; set; }
+        public virtual DbSet<BankDetail> BankDetails { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual DbSet<BrandImage> BrandImages { get; set; }
@@ -57,6 +59,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSMasterStatu> CMSMasterStatus { get; set; }
         public virtual DbSet<CMSMasterType> CMSMasterTypes { get; set; }
         public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
@@ -132,6 +135,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopCommission> ShopCommissions { get; set; }
+        public virtual DbSet<ShopComponentMap> ShopComponentMaps { get; set; }
         public virtual DbSet<ShopImage> ShopImages { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
@@ -141,9 +145,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<TermPayment> TermPayments { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
         public virtual DbSet<ThemeComponent> ThemeComponents { get; set; }
-        public virtual DbSet<ThemeComponentCriteriaMap> ThemeComponentCriteriaMaps { get; set; }
         public virtual DbSet<ThemeComponentMap> ThemeComponentMaps { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserBrandMap> UserBrandMaps { get; set; }
@@ -151,6 +155,8 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
+        public virtual DbSet<VendorTaxRate> VendorTaxRates { get; set; }
+        public virtual DbSet<WithholdingTax> WithholdingTaxes { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
         public virtual DbSet<Migrate_TBDepartment> Migrate_TBDepartment { get; set; }
         public virtual DbSet<Migrate_TBProduct> Migrate_TBProduct { get; set; }
@@ -168,7 +174,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Migrate_TBPropertyProduct> Migrate_TBPropertyProduct { get; set; }
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
         public virtual DbSet<PostCodeMap> PostCodeMaps { get; set; }
-        public virtual DbSet<ShopComponentMap> ShopComponentMaps { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
         public virtual DbSet<TBCMCity> TBCMCities { get; set; }
@@ -180,9 +185,24 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
     
-        public virtual ObjectResult<Nullable<int>> AttributeValueId()
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeValueId()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("AttributeValueId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeValueId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextGlobalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextGlobalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextLocalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextLocalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductHistoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductHistoryId");
         }
     
         public virtual ObjectResult<Nullable<long>> GetNextProductStageGroupId()
@@ -190,24 +210,49 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
         }
     
-        public virtual ObjectResult<Nullable<int>> GlobalCategoryId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GlobalCategoryId");
-        }
-    
-        public virtual ObjectResult<Nullable<int>> LocalCategoryId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("LocalCategoryId");
-        }
-    
         public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
         }
     
-        public virtual ObjectResult<Nullable<long>> GetNextProductHistoryId()
+        public virtual ObjectResult<Nullable<int>> GetNextShopId()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductHistoryId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextShopId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeSetId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeSetId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextBrandId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextBrandId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextCouponId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextCouponId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextNewsletterId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextNewsletterId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextUserGroupId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserGroupId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextUserId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
         }
     }
 }

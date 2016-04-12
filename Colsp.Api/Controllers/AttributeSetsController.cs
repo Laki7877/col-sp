@@ -75,6 +75,8 @@ namespace Colsp.Api.Controllers
                                           s.Attribute.VariantDataType,
                                           s.Attribute.VariantStatus,
                                           s.Attribute.DataValidation,
+                                          s.Attribute.DisplayNameEn,
+                                          s.Attribute.DisplayNameTh,
                                           AttributeValueMaps = s.Attribute.AttributeValueMaps.Select(sv=> 
                                           new {
                                               sv.AttributeId,
@@ -162,6 +164,7 @@ namespace Colsp.Api.Controllers
                 SetupAttributeSet(attributeSet, request, email, currentDt, db);
                 attributeSet.CreatedBy = email;
                 attributeSet.CreatedDt = currentDt;
+                attributeSet.AttributeSetId = db.GetNextAttributeSetId().SingleOrDefault().Value;
                 db.AttributeSets.Add(attributeSet);
                 Util.DeadlockRetry(db.SaveChanges, "AttributeSet");
                 return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attributeSet));

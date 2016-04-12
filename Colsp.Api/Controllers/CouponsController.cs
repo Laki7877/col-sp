@@ -166,6 +166,7 @@ namespace Colsp.Api.Controllers
                 SetupCoupon(coupon, request, email, currentDt, db);
                 coupon.CreatedBy = email;
                 coupon.CreatedDt = currentDt;
+                coupon.CouponId = db.GetNextCouponId().SingleOrDefault().Value;
                 db.Coupons.Add(coupon);
                 Util.DeadlockRetry(db.SaveChanges, "Coupon");
                 return GetCoupon(coupon.CouponId);

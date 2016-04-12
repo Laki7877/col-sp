@@ -26,7 +26,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload =  await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.BRAND_FOLDER,1500,1500,2000,2000,5,true,500,500);
+                var fileUpload =  await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.BRAND_FOLDER,1500,1500,2000,2000,5,true,500,500);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
@@ -254,6 +254,7 @@ namespace Colsp.Api.Controllers
                 SetupBrand(brand, request,email, cuurentDt, db);
                 brand.CreatedBy = email;
                 brand.CreatedDt = cuurentDt;
+                brand.BrandId = db.GetNextBrandId().SingleOrDefault().Value;
                 db.Brands.Add(brand);
                 Util.DeadlockRetry(db.SaveChanges, "Brand");
                 return GetBrand(brand.BrandId);

@@ -280,7 +280,6 @@ namespace Colsp.Api.Controllers
                                 attribute.Filterable = false;
                             }
 
-
                             for(int j = 9; j < headerCount; j=j+4)
                             {
                                 if(j+4 > headerCount)
@@ -498,6 +497,94 @@ namespace Colsp.Api.Controllers
                 }
             }
         }
+
+
+        [Route("api/Migrate/GlobalCateAttributeSet")]
+        [HttpPost]
+        [OverrideAuthentication, OverrideAuthorization]
+        public async Task<HttpResponseMessage> MigrateGlobalCateAttributeSet()
+        {
+            string fileName = string.Empty;
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("Content Multimedia");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(root);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                if (streamProvider.FileData == null || streamProvider.FileData.Count == 0)
+                {
+                    throw new Exception("No file uploaded");
+                }
+                fileName = streamProvider.FileData[0].LocalFileName;
+
+                using (var fileReader = File.OpenText(fileName))
+                {
+
+                    using (var csvResult = new CsvReader(fileReader, new CsvHelper.Configuration.CsvConfiguration() { HasHeaderRecord = false }))
+                    {
+                        if (!csvResult.Read())
+                        {
+                            throw new Exception("File is not in a proper format");
+                        }
+                        var headerCount = csvResult.CurrentRecord.Count();
+
+                        string tmpColumn = string.Empty;
+                        var attributeSetList = db.AttributeSets.Select(s => new { s.AttributeSetId, s.AttributeSetNameEn }).ToList();
+                        while (csvResult.Read())
+                        {
+                            tmpColumn = csvResult.GetField<string>(0).Trim();
+                            int categoryId = 0;
+                            if(int.TryParse(tmpColumn,out categoryId))
+                            {
+                                tmpColumn = csvResult.GetField<string>(1).Trim();
+                                var split = tmpColumn.Split(',');
+                                foreach (var val in split)
+                                {
+                                    var set = attributeSetList.Where(w => w.AttributeSetNameEn.Equals(val.Trim())).SingleOrDefault();
+                                    if (set == null)
+                                    {
+                                        set = attributeSetList.Where(w => w.AttributeSetNameEn.Equals(val.Trim().Replace(' ', '_'))).SingleOrDefault();
+                                        if (set == null)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    db.GlobalCatAttributeSetMaps.Add(new GlobalCatAttributeSetMap()
+                                    {
+                                        CategoryId = categoryId,
+                                        AttributeSetId = set.AttributeSetId,
+                                        CreatedBy = "Ahancer",
+                                        CreatedDt = DateTime.Now,
+                                        UpdatedBy = "Ahancer",
+                                        UpdatedDt = DateTime.Now
+                                    });
+                                }
+                                
+                            }
+                        }
+                        db.SaveChanges();
+                    }
+                }
+
+
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
+            }
+            finally
+            {
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
+            }
+        }
+
 
         protected override void Dispose(bool disposing)
         {

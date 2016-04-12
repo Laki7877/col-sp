@@ -233,6 +233,7 @@ namespace Colsp.Api.Controllers
                     UpdatedDt = DateTime.Now,
                 });
                 #endregion
+                user.UserId = db.GetNextUserId().SingleOrDefault().Value;
                 db.Users.Add(user);
                 Util.DeadlockRetry(db.SaveChanges, "User");
                 return GetUserSeller(user.UserId);
@@ -445,6 +446,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 #endregion
+                user.UserId = db.GetNextUserId().SingleOrDefault().Value;
                 db.Users.Add(user);
                 Util.DeadlockRetry(db.SaveChanges, "User");
                 return GetUserAdmin(user.UserId);

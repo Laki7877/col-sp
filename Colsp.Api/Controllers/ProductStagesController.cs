@@ -1598,7 +1598,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload = await Util.SetupImage(Request
+                var fileUpload = await Util.SetupImage(Request
                     , AppSettingKey.IMAGE_ROOT_PATH
                     , AppSettingKey.PRODUCT_FOLDER
                     , 1500, 1500, 2000, 2000, 5, true);

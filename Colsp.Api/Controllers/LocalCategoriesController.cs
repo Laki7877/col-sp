@@ -246,7 +246,7 @@ namespace Colsp.Api.Controllers
                     category.Lft = max + 1;
                     category.Rgt = max + 2;
                 }
-                category.CategoryId = db.LocalCategoryId().SingleOrDefault().Value;
+                category.CategoryId = db.GetNextLocalCategoryId().SingleOrDefault().Value;
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
                     category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
@@ -609,7 +609,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.LOCAL_CAT_FOLDER, 1500, 1500, 2000, 2000, 5, true);
+                var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.LOCAL_CAT_FOLDER, 1500, 1500, 2000, 2000, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)

@@ -166,6 +166,7 @@ namespace Colsp.Api.Controllers
                 SetupAttribute(attribute, request, email, cuurentDt);
                 attribute.CreatedBy = email;
                 attribute.CreatedDt = cuurentDt;
+                attribute.AttributeId = db.GetNextAttributeId().SingleOrDefault().Value;
                 attribute = db.Attributes.Add(attribute);
                 Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attribute));
@@ -313,7 +314,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.ATTRIBUTE_VALUE_FOLDER, 100, 100, 100, 100, 5, true);
+                var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.ATTRIBUTE_VALUE_FOLDER, 100, 100, 100, 100, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
@@ -469,18 +470,17 @@ namespace Colsp.Api.Controllers
                         current = attributeVal.Where(w => w.AttributeValueId == valRq.AttributeValueId).SingleOrDefault();
                         if (current != null)
                         {
-                            current.AttributeValueEn = valRq.AttributeValueEn;
-                            current.AttributeValueTh = valRq.AttributeValueTh;
-                            if (valRq.Image != null)
+                            if(!current.AttributeValueEn.Equals(valRq.AttributeValueEn)
+                                || !current.AttributeValueTh.Equals(valRq.AttributeValueTh)
+                                || !current.ImageUrl.Equals(valRq.Image.Url))
                             {
-                                current.ImageUrl = valRq.Image.Url;
+                                
+                                current.AttributeValueEn = Validation.ValidateString(valRq.AttributeValueEn, "Attribute Value (English)", true, 100, true);
+                                current.AttributeValueTh = Validation.ValidateString(valRq.AttributeValueTh, "Attribute Value (Thai)", true, 100, true);
+                                current.ImageUrl = Validation.ValidateString(valRq.Image.Url, "Attribute Value Url", true, 2000, true,string.Empty);
+                                current.UpdatedBy = email;
+                                current.UpdatedDt = currentDt;
                             }
-                            else
-                            {
-                                current.ImageUrl = null;
-                            }
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = currentDt;
                             attributeVal.Remove(current);
                         }
                         else
@@ -490,19 +490,22 @@ namespace Colsp.Api.Controllers
                     }
                     if (addNew)
                     {
-                        value = new AttributeValue();
-                        value.AttributeValueEn = valRq.AttributeValueEn;
-                        value.AttributeValueTh = valRq.AttributeValueTh;
-                        if (valRq.Image != null)
+                        value = new AttributeValue()
                         {
-                            value.ImageUrl = valRq.Image.Url;
-                        }
-                        value.MapValue = string.Concat("((", value.AttributeValueId, "))");
-                        value.Status = Constant.STATUS_ACTIVE;
-                        value.CreatedBy = email;
-                        value.CreatedDt = currentDt;
-                        value.UpdatedBy = email;
-                        value.UpdatedDt = currentDt;
+                            AttributeValueEn = Validation.ValidateString(valRq.AttributeValueEn, "Attribute Value (English)", true, 100, true),
+                            AttributeValueTh = Validation.ValidateString(valRq.AttributeValueTh, "Attribute Value (Thai)", true, 100, true),
+                            ImageUrl = Validation.ValidateString(valRq.Image.Url, "Attribute Value Url", true, 2000, true, string.Empty),
+                            Status = Constant.STATUS_ACTIVE,
+                            CreatedBy = email,
+                            CreatedDt = currentDt,
+                            UpdatedBy = email,
+                            UpdatedDt = currentDt,
+                        };
+                        value.AttributeValueId = db.GetNextAttributeValueId().SingleOrDefault().Value;
+                        value.MapValue = string.Concat(
+                            Constant.ATTRIBUTE_VALUE_MAP_PREFIX, 
+                            value.AttributeValueId, 
+                            Constant.ATTRIBUTE_VALUE_MAP_SURFIX);
                         attribute.AttributeValueMaps.Add(new AttributeValueMap()
                         {
                             Attribute = attribute,
