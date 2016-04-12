@@ -91,11 +91,11 @@ namespace Colsp.Api.Controllers
                                   ProductCount = atrS.ProductStageGroups.Count(),
                                   Shops = atrS.ProductStageGroups.Select(s=>s.ShopId),
                               };
-                if(User.ShopRequest() != null)
-                {
-                    var shopId = User.ShopRequest().ShopId;
-                    attrSet = attrSet.Where(w => w.Shops.Contains(shopId));
-                }
+                //if(User.ShopRequest() != null)
+                //{
+                //    var shopId = User.ShopRequest().ShopId;
+                //    attrSet = attrSet.Where(w => w.Shops.Contains(shopId));
+                //}
                 if (request == null)
                 {
                     attrSet = attrSet.Where(w => w.Visibility == true);
