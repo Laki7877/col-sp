@@ -239,11 +239,11 @@ namespace Colsp.Api.Controllers
                                        NameTh = cate.NameTh
                                    });
 
-
+           
                 if (!query.Any())
                     return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
 
-                var items = query.ToList();
+                var items = query.Take(10).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, items);
 
             }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Colsp.Model.Request
+namespace Colsp.Model.Requests
 {
     public class Buy1Get1ItemRequest
     {
@@ -33,5 +33,12 @@ namespace Colsp.Model.Request
         public string UpdateIP { get; set; }
         public Nullable<int> CMSStatusFlowId { get; set; }
         public Nullable<bool> Visibility { get; set; }
+        public string CampaignID { get; set; }
+        public string CampaignName { get; set; }
+        public string PromotionCode { get; set; }
+        public string PromotionCodeRef { get; set; }
+        public int? MarketingAbsorb { get; set; }
+        public int? MerchandiseAbsorb { get; set; }
+        public int? VendorAbsorb { get; set; }
     }
 }

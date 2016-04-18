@@ -42,7 +42,7 @@ namespace Colsp.Api.Controllers
                                   BrandNameEn = stage.ProductStageGroup.Brand != null ? stage.ProductStageGroup.Brand.BrandNameEn: null,
                                   rev.ProductReviewId,
                                   rev.Comment,
-                                  rev.Rating,
+                                 // rev.Rating,
                                   rev.Status,
                                   cus.CustomerId,
                                   Customer = cus != null ? cus.FirstName + " " + cus.LastName : null,
@@ -152,28 +152,28 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductReviews/Rating")]
-        [HttpGet]
-        public HttpResponseMessage GetAverageRating()
-        {
-            try
-            {
-                var shopId = User.ShopRequest().ShopId;
-                var rating = db.ProductReviews.Where(w=>w.ShopId==shopId).Select(s=>s.Rating).ToList();
-                if(rating == null || rating.Count == 0)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, Constant.NOT_AVAILABLE);
-                }
+        //[Route("api/ProductReviews/Rating")]
+        //[HttpGet]
+        //public HttpResponseMessage GetAverageRating()
+        //{
+        //    try
+        //    {
+        //        var shopId = User.ShopRequest().ShopId;
+        //        var rating = db.ProductReviews.Where(w=>w.ShopId==shopId).Select(s=>s.Rating).ToList();
+        //        if(rating == null || rating.Count == 0)
+        //        {
+        //            return Request.CreateResponse(HttpStatusCode.OK, Constant.NOT_AVAILABLE);
+        //        }
 
-                var average = rating.Average();
+        //        var average = rating.Average();
 
-                return Request.CreateResponse(HttpStatusCode.OK, average);
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-            }
-        }
+        //        return Request.CreateResponse(HttpStatusCode.OK, average);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+        //    }
+        //}
 
         protected override void Dispose(bool disposing)
         {

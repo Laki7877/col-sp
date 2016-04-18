@@ -239,8 +239,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
-
         [Route("api/Promotion/Ontopcredit/{OnTopCreditCardId}")]
         [HttpGet]
         public HttpResponseMessage GetOnTopCreditCard(int OnTopCreditCardId)
@@ -257,6 +255,232 @@ namespace Colsp.Api.Controllers
             catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/Promotion/Buy1Get1")]
+        public HttpResponseMessage GetAllBuy1Get1([FromUri] CMSMasterRequest request)
+        {
+            try
+            {
+
+                var query = from pro in db.PromotionBuy1Get1Item select pro;
+
+                if (!string.IsNullOrEmpty(request.SearchText))
+                    query = query.Where(x => x.NameEN.Contains(request.SearchText) || x.NameTH.Contains(request.SearchText));
+
+                var total = query.Count();
+                var response = PaginatedResponse.CreateResponse(query.Paginate(request), request, total);
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/Promotion/Buy1Get1");
+            }
+
+        }
+
+        [Route("api/Promotion/Buy1Get1/Create")]
+        [HttpPost]
+        public HttpResponseMessage CreateBuy1Get1Item(Buy1Get1ItemRequest Model)
+        {
+            PromotionBuy1Get1Item newObj = null;
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        newObj = new PromotionBuy1Get1Item();
+
+                        newObj.NameEN = Model.NameEN;
+                        newObj.NameTH = Model.NameTH;
+                        newObj.URLKey = Model.URLKey;
+                        newObj.PIDBuy = Model.PIDBuy;
+                        newObj.PIDGet = Model.PIDGet;
+                        newObj.ShortDescriptionTH = Model.ShortDescriptionTH;
+                        newObj.LongDescriptionTH = Model.LongDescriptionTH;
+                        newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
+                        newObj.LongDescriptionEN = Model.LongDescriptionEN;
+                        newObj.EffectiveDate = Model.EffectiveDate;
+                        newObj.EffectiveTime = Model.EffectiveTime;
+                        newObj.ExpiryDate = Model.ExpiryDate;
+                        newObj.ExpiryTime = Model.ExpiryTime;
+                        newObj.ProductBoxBadge = Model.ProductBoxBadge;
+                        newObj.Sequence = Model.Sequence;
+                        newObj.Status = Model.Status;
+                        newObj.CreateBy = Model.CreateBy;
+                        newObj.Createdate = (DateTime)DateTime.Now;
+                        newObj.UpdateBy = Model.UpdateBy;
+                        newObj.UpdateDate = (DateTime)DateTime.Now;
+                        newObj.CreateIP = Model.CreateIP;
+                        newObj.UpdateIP = Model.UpdateIP;
+                        newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                        newObj.CampaignID = Model.CampaignID;
+                        newObj.CampaignName = Model.CampaignName;
+                        newObj.PromotionCode = Model.PromotionCode;
+                        newObj.PromotionCodeRef = Model.PromotionCodeRef;
+                        newObj.MarketingAbsorb = Model.MarketingAbsorb;
+                        newObj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
+                        newObj.VendorAbsorb = Model.VendorAbsorb;
+                        db.PromotionBuy1Get1Item.Add(newObj);
+
+                        if (db.SaveChanges() > 0) //Saved return row save successfully.
+                        {
+                            dbcxtransaction.Commit();
+                            result = newObj.PromotionBuy1Get1ItemId;
+                        }
+                        else
+                        {
+                            dbcxtransaction.Rollback();
+                        }
+                        return GetBuy1Get1(newObj.PromotionBuy1Get1ItemId);
+                    }
+                    catch (DbUpdateException e)
+                    {
+                        dbcxtransaction.Rollback();
+                        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                    }
+                }
+            }
+        }
+
+        [Route("api/Promotion/Buy1Get1/Update/{PromotionBuy1Get1ItemId}")]
+        [HttpPost]
+        public HttpResponseMessage EditBuy1Get1Item(Buy1Get1ItemRequest Model)
+        {
+            PromotionBuy1Get1Item Obj = null;
+            int result = 0;
+            using (ColspEntities db = new ColspEntities())
+            {
+                using (var dbcxtransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        Obj = db.PromotionBuy1Get1Item.Where(c=>c.PromotionBuy1Get1ItemId==Model.PromotionBuy1Get1ItemId).FirstOrDefault();
+                        if (Obj != null)
+                        {
+                            Obj.NameEN = Model.NameEN;
+                            Obj.NameTH = Model.NameTH;
+                            Obj.URLKey = Model.URLKey;
+                            Obj.PIDBuy = Model.PIDBuy;
+                            Obj.PIDGet = Model.PIDGet;
+                            Obj.ShortDescriptionTH = Model.ShortDescriptionTH;
+                            Obj.LongDescriptionTH = Model.LongDescriptionTH;
+                            Obj.ShortDescriptionEN = Model.ShortDescriptionEN;
+                            Obj.LongDescriptionEN = Model.LongDescriptionEN;
+                            Obj.EffectiveDate = Model.EffectiveDate;
+                            Obj.EffectiveTime = Model.EffectiveTime;
+                            Obj.ExpiryDate = Model.ExpiryDate;
+                            Obj.ExpiryTime = Model.ExpiryTime;
+                            Obj.ProductBoxBadge = Model.ProductBoxBadge;
+                            Obj.Sequence = Model.Sequence;
+                            Obj.Status = Model.Status;
+                            Obj.CreateBy = Model.CreateBy;
+                            Obj.Createdate = (DateTime)DateTime.Now;
+                            Obj.UpdateBy = Model.UpdateBy;
+                            Obj.UpdateDate = (DateTime)DateTime.Now;
+                            Obj.CreateIP = Model.CreateIP;
+                            Obj.UpdateIP = Model.UpdateIP;
+                            Obj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                            Obj.CampaignID = Model.CampaignID;
+                            Obj.CampaignName = Model.CampaignName;
+                            Obj.PromotionCode = Model.PromotionCode;
+                            Obj.PromotionCodeRef = Model.PromotionCodeRef;
+                            Obj.MarketingAbsorb = Model.MarketingAbsorb;
+                            Obj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
+                            Obj.VendorAbsorb = Model.VendorAbsorb;
+                            db.Entry(Obj).State=EntityState.Modified;
+
+                            if (db.SaveChanges() > 0) //Saved return row save successfully.
+                            {
+                                dbcxtransaction.Commit();
+                                result = Obj.PromotionBuy1Get1ItemId;
+                            }
+                            else
+                            {
+                                dbcxtransaction.Rollback();
+                            }
+                        }
+                        return GetBuy1Get1(Obj.PromotionBuy1Get1ItemId);
+                    }
+                    catch (DbUpdateException e)
+                    {
+                        dbcxtransaction.Rollback();
+                        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, HttpErrorMessage.InternalServerError);
+                    }
+                }
+            }
+        }
+
+        [Route("api/Promotion/Buy1Get1/{PromotionBuy1Get1ItemId}")]
+        [HttpGet]
+        private HttpResponseMessage GetBuy1Get1(int promotionBuy1Get1ItemId)
+        {
+            try
+            {
+                Buy1Get1ItemResponse buy1get1 = GetBuy1Get1Response(promotionBuy1Get1ItemId);
+                if (buy1get1 == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, HttpStatusCode.NotFound);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, buy1get1);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        private Buy1Get1ItemResponse GetBuy1Get1Response(int promotionBuy1Get1ItemId)
+        {
+            using (ColspEntities db = new ColspEntities())
+            {
+                var buy1get1 = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == promotionBuy1Get1ItemId).FirstOrDefault();
+                if (buy1get1 != null)
+                {
+                    Buy1Get1ItemResponse result = new Buy1Get1ItemResponse();
+                    result.NameEN = buy1get1.NameEN;
+                    result.NameTH = buy1get1.NameTH;
+                    result.URLKey = buy1get1.URLKey;
+                    result.PIDBuy = buy1get1.PIDBuy;
+                    result.PIDGet = buy1get1.PIDGet;
+                    result.ShortDescriptionTH = buy1get1.ShortDescriptionTH;
+                    result.LongDescriptionTH = buy1get1.LongDescriptionTH;
+                    result.ShortDescriptionEN = buy1get1.ShortDescriptionEN;
+                    result.LongDescriptionEN = buy1get1.LongDescriptionEN;
+                    result.EffectiveDate = buy1get1.EffectiveDate;
+                    result.EffectiveTime = buy1get1.EffectiveTime;
+                    result.ExpiryDate = buy1get1.ExpiryDate;
+                    result.ExpiryTime = buy1get1.ExpiryTime;
+                    result.ProductBoxBadge = buy1get1.ProductBoxBadge;
+                    result.Sequence = buy1get1.Sequence;
+                    result.Status = buy1get1.Status;
+                    result.CreateBy = buy1get1.CreateBy;
+                    result.Createdate = (DateTime)DateTime.Now;
+                    result.UpdateBy = buy1get1.UpdateBy;
+                    result.UpdateDate = (DateTime)DateTime.Now;
+                    result.CreateIP = buy1get1.CreateIP;
+                    result.UpdateIP = buy1get1.UpdateIP;
+                    result.CMSStatusFlowId = buy1get1.CMSStatusFlowId;
+                    result.CampaignID = buy1get1.CampaignID;
+                    result.CampaignName = buy1get1.CampaignName;
+                    result.PromotionCode = buy1get1.PromotionCode;
+                    result.PromotionCodeRef = buy1get1.PromotionCodeRef;
+                    result.MarketingAbsorb = buy1get1.MarketingAbsorb;
+                    result.MerchandiseAbsorb = buy1get1.MerchandiseAbsorb;
+                    result.VendorAbsorb = buy1get1.VendorAbsorb;
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 

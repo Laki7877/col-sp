@@ -71,7 +71,7 @@ namespace Colsp.Api.Controllers
                     OnlineFlag = false,
                     RejectReason = string.Empty,
                     Remark = string.Empty,
-                    Visibility = true,
+                    //Visibility = true,
                     Status = Constant.PRODUCT_STATUS_DRAFT,
                     ShopId = shopId,
                     CreatedBy = email,
@@ -143,14 +143,14 @@ namespace Colsp.Api.Controllers
                     UpdatedBy = email,
                     UpdatedDt = DateTime.Now
                 };
-                masterVariant.Inventory = new Inventory()
-                {
-                    Quantity = defaultVariant.Quantity,
-                    CreatedBy = email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = email,
-                    UpdatedDt = DateTime.Now
-                };
+                //masterVariant.Inventory = new Inventory()
+                //{
+                //    Quantity = defaultVariant.Quantity,
+                //    CreatedBy = email,
+                //    CreatedDt = DateTime.Now,
+                //    UpdatedBy = email,
+                //    UpdatedDt = DateTime.Now
+                //};
                 group.ProductStages.Add(masterVariant);
                 var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
                 foreach (var variantRq in request.Variants)
@@ -230,14 +230,14 @@ namespace Colsp.Api.Controllers
                     {
                         variantEntity.UrlEn = variantEntity.Pid;
                     }
-                    variantEntity.Inventory = new Inventory()
-                    {
-                        Quantity = variant.Quantity,
-                        CreatedBy = email,
-                        CreatedDt = DateTime.Now,
-                        UpdatedBy = email,
-                        UpdatedDt = DateTime.Now
-                    };
+                    //variantEntity.Inventory = new Inventory()
+                    //{
+                    //    Quantity = variant.Quantity,
+                    //    CreatedBy = email,
+                    //    CreatedDt = DateTime.Now,
+                    //    UpdatedBy = email,
+                    //    UpdatedDt = DateTime.Now
+                    //};
                     SetupAttribute(variantEntity, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
                     group.ProductStages.Add(variantEntity);
                 }
@@ -757,7 +757,7 @@ namespace Colsp.Api.Controllers
                                     p.Status,
                                     p.ImageFlag,
                                     p.InfoFlag,
-                                    p.Visibility,
+                                   // p.Visibility,
                                     p.ProductStages.FirstOrDefault().VariantCount,
                                     ImageUrl = p.ProductStages.FirstOrDefault().FeatureImgUrl,
                                     GlobalCategory = p.GlobalCategory != null ? new { p.GlobalCategory.CategoryId, p.GlobalCategory.NameEn, p.GlobalCategory.Lft, p.GlobalCategory.Rgt } : null,
@@ -957,7 +957,7 @@ namespace Colsp.Api.Controllers
                                     p.Status,
                                     p.ImageFlag,
                                     p.InfoFlag,
-                                    p.Visibility,
+                                  //  p.Visibility,
                                     p.ProductStages.FirstOrDefault().VariantCount,
                                     ImageUrl = p.ProductStages.FirstOrDefault().FeatureImgUrl,
                                     p.GlobalCatId,
@@ -1076,7 +1076,7 @@ namespace Colsp.Api.Controllers
                 #region Query
                 var tmpProduct = db.ProductStageGroups.Where(w => w.ProductId == productId)
                     .Include(i => i.ProductStages.Select(s => s.ProductStageAttributes.Select(sa => sa.Attribute.AttributeValueMaps.Select(sv => sv.AttributeValue))))
-                    .Include(i => i.ProductStages.Select(s => s.Inventory))
+                   // .Include(i => i.ProductStages.Select(s => s.Inventory))
                     .Include(i => i.ProductStages.Select(s => s.ProductStageImages))
                     .Include(i => i.ProductStages.Select(s => s.ProductStageVideos))
                     .Include(i => i.ProductStageGlobalCatMaps.Select(s => s.GlobalCategory))
@@ -1286,7 +1286,7 @@ namespace Colsp.Api.Controllers
                 int shopId = this.User.ShopRequest().ShopId;
                 var ids = request.Select(s => s.ProductId).ToList();
                 var producGrouptList = db.ProductStageGroups.Where(w => w.ShopId == shopId && ids.Contains(w.ProductId))
-                    .Include(i=>i.ProductStages.Select(s=>s.Inventory))
+                   // .Include(i=>i.ProductStages.Select(s=>s.Inventory))
                     .Include(i=>i.ProductStages.Select(s=>s.ProductStageMasters))
                     .Include(i=>i.ProductStageRelateds)
                     ;
@@ -1300,28 +1300,28 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find deleted product");
                     }
                     var pids = productGroup.ProductStages.Select(s => s.Pid).ToList();
-                    var inventories = productGroup.ProductStages.Select(s => s.Inventory).ToList();
-                    foreach(var inventory in inventories)
-                    {
-                        db.InventoryHistories.Add(new InventoryHistory()
-                        {
-                            Pid = inventory.Pid,
-                            StockAvailable = inventory.StockAvailable,
-                            Defect = inventory.Defect,
-                            MaxQuantity = inventory.MaxQuantity,
-                            MinQuantity = inventory.MinQuantity,
-                            OnHold = inventory.OnHold,
-                            Quantity = inventory.Quantity,
-                            Reserve = inventory.Reserve,
-                            SafetyStockAdmin = inventory.SafetyStockAdmin,
-                            SafetyStockSeller = inventory.SafetyStockSeller,
-                            Status = Constant.INVENTORY_STATUS_DELETE,
-                            CreatedBy = this.User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
-                        });
-                    }
+                    //var inventories = productGroup.ProductStages.Select(s => s.Inventory).ToList();
+                    //foreach(var inventory in inventories)
+                    //{
+                    //    db.InventoryHistories.Add(new InventoryHistory()
+                    //    {
+                    //        Pid = inventory.Pid,
+                    //        StockAvailable = inventory.StockAvailable,
+                    //        Defect = inventory.Defect,
+                    //        MaxQuantity = inventory.MaxQuantity,
+                    //        MinQuantity = inventory.MinQuantity,
+                    //        OnHold = inventory.OnHold,
+                    //        Quantity = inventory.Quantity,
+                    //        Reserve = inventory.Reserve,
+                    //        SafetyStockAdmin = inventory.SafetyStockAdmin,
+                    //        SafetyStockSeller = inventory.SafetyStockSeller,
+                    //        Status = Constant.INVENTORY_STATUS_DELETE,
+                    //        CreatedBy = this.User.UserRequest().Email,
+                    //        CreatedDt = DateTime.Now,
+                    //        UpdatedBy = this.User.UserRequest().Email,
+                    //        UpdatedDt = DateTime.Now,
+                    //    });
+                    //}
                     db.ProductStageRelateds.RemoveRange(productGroup.ProductStageRelateds);
                     foreach(var stage in productGroup.ProductStages)
                     {
@@ -1530,7 +1530,7 @@ namespace Colsp.Api.Controllers
                     .Include(i=>i.ProductStageRelateds1.Select(s=>s.ProductStageGroup.ProductStages))
                     .Include(i=>i.Brand)
                     .Include(i => i.ProductStages.Select(s => s.ProductStageAttributes.Select(sa => sa.Attribute.AttributeValueMaps.Select(sv => sv.AttributeValue))))
-                    .Include(i => i.ProductStages.Select(s => s.Inventory))
+                  //  .Include(i => i.ProductStages.Select(s => s.Inventory))
                     .Include(i => i.ProductStages.Select(s => s.ProductStageImages))
                     .Include(i => i.ProductStages.Select(s => s.ProductStageVideos))
                     .Include(i => i.ProductStageGlobalCatMaps.Select(s => s.GlobalCategory))
@@ -1834,7 +1834,7 @@ namespace Colsp.Api.Controllers
             group.MoreOptionTabStatus = Validation.ValidateString(request.AdminApprove.MoreOption, "More Option Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.VariantTabStatus = Validation.ValidateString(request.AdminApprove.Variation, "Variant Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.RejectReason = Validation.ValidateString(request.AdminApprove.RejectReason, "Reject Reason", true, 500, true, string.Empty);
-            group.Visibility = request.Visibility;
+        //    group.Visibility = request.Visibility;
             #endregion
             #region Create/Update
             if (addNew)
@@ -2116,58 +2116,58 @@ namespace Colsp.Api.Controllers
             {
                 stockType = Constant.STOCK_TYPE[request.StockType];
             }
-            if (variant.Inventory != null)
-            {
-                if (variant.Inventory.Quantity != request.Quantity 
-                    || variant.Inventory.SafetyStockSeller != request.SafetyStock
-                    || variant.Inventory.StockAvailable != stockType)
-                {
-                    variant.Inventory.Quantity = request.Quantity;
-                    variant.Inventory.SafetyStockSeller = request.SafetyStock;
-                    variant.Inventory.StockAvailable = stockType;
-                    variant.Inventory.UpdatedBy = this.User.UserRequest().Email;
-                    variant.Inventory.UpdatedDt = DateTime.Now;
+            //if (variant.Inventory != null)
+            //{
+            //    if (variant.Inventory.Quantity != request.Quantity 
+            //        || variant.Inventory.SafetyStockSeller != request.SafetyStock
+            //        || variant.Inventory.StockAvailable != stockType)
+            //    {
+            //        variant.Inventory.Quantity = request.Quantity;
+            //        variant.Inventory.SafetyStockSeller = request.SafetyStock;
+            //        variant.Inventory.StockAvailable = stockType;
+            //        variant.Inventory.UpdatedBy = this.User.UserRequest().Email;
+            //        variant.Inventory.UpdatedDt = DateTime.Now;
 
-                    InventoryHistory history = new InventoryHistory()
-                    {
-                        Pid = variant.Pid,
-                        StockAvailable = variant.Inventory.StockAvailable,
-                        Defect = variant.Inventory.Defect,
-                        MaxQuantity = variant.Inventory.MaxQuantity,
-                        MinQuantity = variant.Inventory.MinQuantity,
-                        OnHold = variant.Inventory.OnHold,
-                        Quantity = variant.Inventory.Quantity,
-                        Reserve = variant.Inventory.Reserve,
-                        SafetyStockAdmin = variant.Inventory.SafetyStockAdmin,
-                        SafetyStockSeller = variant.Inventory.SafetyStockSeller,
-                        Status = Constant.INVENTORY_STATUS_UPDATE,
-                        CreatedBy = this.User.UserRequest().Email,
-                        CreatedDt = DateTime.Now,
-                        UpdatedBy = this.User.UserRequest().Email,
-                        UpdatedDt = DateTime.Now,
-                    };
-                    db.InventoryHistories.Add(history);
-                }
-            }
-            else
-            {
-                variant.Inventory = new Inventory()
-                {
-                    StockAvailable = stockType,
-                    Defect = 0,
-                    MaxQuantity = 0,
-                    MinQuantity = 0,
-                    OnHold = 0,
-                    Quantity = request.Quantity,
-                    Reserve = 0,
-                    SafetyStockAdmin = request.SafetyStock,
-                    SafetyStockSeller = request.SafetyStock,
-                    CreatedBy = this.User.UserRequest().Email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = this.User.UserRequest().Email,
-                    UpdatedDt = DateTime.Now,
-                };
-            }
+            //        InventoryHistory history = new InventoryHistory()
+            //        {
+            //            Pid = variant.Pid,
+            //            StockAvailable = variant.Inventory.StockAvailable,
+            //            Defect = variant.Inventory.Defect,
+            //            MaxQuantity = variant.Inventory.MaxQuantity,
+            //            MinQuantity = variant.Inventory.MinQuantity,
+            //            OnHold = variant.Inventory.OnHold,
+            //            Quantity = variant.Inventory.Quantity,
+            //            Reserve = variant.Inventory.Reserve,
+            //            SafetyStockAdmin = variant.Inventory.SafetyStockAdmin,
+            //            SafetyStockSeller = variant.Inventory.SafetyStockSeller,
+            //            Status = Constant.INVENTORY_STATUS_UPDATE,
+            //            CreatedBy = this.User.UserRequest().Email,
+            //            CreatedDt = DateTime.Now,
+            //            UpdatedBy = this.User.UserRequest().Email,
+            //            UpdatedDt = DateTime.Now,
+            //        };
+            //        db.InventoryHistories.Add(history);
+            //    }
+            //}
+            //else
+            //{
+            //    variant.Inventory = new Inventory()
+            //    {
+            //        StockAvailable = stockType,
+            //        Defect = 0,
+            //        MaxQuantity = 0,
+            //        MinQuantity = 0,
+            //        OnHold = 0,
+            //        Quantity = request.Quantity,
+            //        Reserve = 0,
+            //        SafetyStockAdmin = request.SafetyStock,
+            //        SafetyStockSeller = request.SafetyStock,
+            //        CreatedBy = this.User.UserRequest().Email,
+            //        CreatedDt = DateTime.Now,
+            //        UpdatedBy = this.User.UserRequest().Email,
+            //        UpdatedDt = DateTime.Now,
+            //    };
+            //}
 
             #endregion
             #region Image
@@ -2430,28 +2430,28 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             #region Inventory History
-            if (isNew)
-            {
-                InventoryHistory history = new InventoryHistory()
-                {
-                    Pid = stage.Pid,
-                    StockAvailable = stage.Inventory.StockAvailable,
-                    Defect = stage.Inventory.Defect,
-                    MaxQuantity = stage.Inventory.MaxQuantity,
-                    MinQuantity = stage.Inventory.MinQuantity,
-                    OnHold = stage.Inventory.OnHold,
-                    Quantity = stage.Inventory.Quantity,
-                    Reserve = stage.Inventory.Reserve,
-                    SafetyStockAdmin = stage.Inventory.SafetyStockAdmin,
-                    SafetyStockSeller = stage.Inventory.SafetyStockSeller,
-                    Status = Constant.INVENTORY_STATUS_ADD,
-                    CreatedBy = this.User.UserRequest().Email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = this.User.UserRequest().Email,
-                    UpdatedDt = DateTime.Now,
-                };
-                db.InventoryHistories.Add(history);
-            }
+            //if (isNew)
+            //{
+            //    InventoryHistory history = new InventoryHistory()
+            //    {
+            //        Pid = stage.Pid,
+            //        StockAvailable = stage.Inventory.StockAvailable,
+            //        Defect = stage.Inventory.Defect,
+            //        MaxQuantity = stage.Inventory.MaxQuantity,
+            //        MinQuantity = stage.Inventory.MinQuantity,
+            //        OnHold = stage.Inventory.OnHold,
+            //        Quantity = stage.Inventory.Quantity,
+            //        Reserve = stage.Inventory.Reserve,
+            //        SafetyStockAdmin = stage.Inventory.SafetyStockAdmin,
+            //        SafetyStockSeller = stage.Inventory.SafetyStockSeller,
+            //        Status = Constant.INVENTORY_STATUS_ADD,
+            //        CreatedBy = this.User.UserRequest().Email,
+            //        CreatedDt = DateTime.Now,
+            //        UpdatedBy = this.User.UserRequest().Email,
+            //        UpdatedDt = DateTime.Now,
+            //    };
+            //    db.InventoryHistories.Add(history);
+            //}
 
             #endregion
         }
@@ -2471,8 +2471,8 @@ namespace Colsp.Api.Controllers
             response.DescriptionShortTh = variant.DescriptionShortTh;
             response.DescriptionFullEn = variant.DescriptionFullEn;
             response.DescriptionShortEn = variant.DescriptionShortEn;
-            response.Quantity = variant.Inventory.Quantity;
-            response.SafetyStock = variant.Inventory.SafetyStockSeller;
+          //  response.Quantity = variant.Inventory.Quantity;
+          //  response.SafetyStock = variant.Inventory.SafetyStockSeller;
             response.PrepareDay = variant.PrepareDay;
             response.LimitIndividualDay = variant.LimitIndividualDay;
             response.PrepareMon = variant.PrepareMon;
@@ -2509,9 +2509,9 @@ namespace Colsp.Api.Controllers
             response.SEO.SeoTh = variant.SeoTh;
             response.Visibility = variant.Visibility;
             response.DefaultVariant = variant.DefaultVaraint;
-            response.Quantity = variant.Inventory.Quantity;
-            response.SafetyStock = variant.Inventory.SafetyStockSeller;
-            response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
+         //   response.Quantity = variant.Inventory.Quantity;
+         //   response.SafetyStock = variant.Inventory.SafetyStockSeller;
+         //  response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
             response.Display = variant.Display;
             if (variant.ProductStageImages != null && variant.ProductStageImages.Count > 0)
             {
@@ -2611,7 +2611,7 @@ namespace Colsp.Api.Controllers
             response.InfoFlag = false;
             response.ImageFlag = false;
             response.OnlineFlag = false;
-            response.Visibility = group.Visibility;
+          //  response.Visibility = group.Visibility;
             response.Status = group.Status;
         }
 
@@ -2650,7 +2650,7 @@ namespace Colsp.Api.Controllers
                 UpdatedBy = group.UpdatedBy,
                 UpdatedDt = group.UpdatedDt,
                 VariantTabStatus = group.VariantTabStatus,
-                Visibility = group.Visibility,
+            //    Visibility = group.Visibility,
                 ApprovedBy = group.ApprovedBy,
                 ApprovedDt = group.ApprovedDt,
                 HistoryDt = DateTime.Now,

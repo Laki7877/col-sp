@@ -48,7 +48,7 @@
     <Compile Include="Requests\AttributeSetRequest.cs" />
     <Compile Include="Requests\AttributeValueRequest.cs" />
     <Compile Include="Requests\BrandRequest.cs" />
-    <Compile Include="Requests\By1Get1ItemRequest.cs" />
+    <Compile Include="Requests\Buy1Get1ItemRequest.cs" />
     <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\CategoryShiftRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
@@ -102,7 +102,6 @@
     <Compile Include="Requests\UserRequest.cs" />
     <Compile Include="Requests\VariantRequest.cs" />
     <Compile Include="Requests\VideoLinkRequest.cs" />
-    <Compile Include="Responses\Buy1Get1ItemRequest.cs" />
     <Compile Include="Responses\Buy1Get1ItemResponse.cs" />
     <Compile Include="Responses\CMSMasterCategoryListResponse.cs" />
     <Compile Include="Responses\CMSMasterResponse.cs" />

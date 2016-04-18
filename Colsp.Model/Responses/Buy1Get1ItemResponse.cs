@@ -33,7 +33,12 @@ namespace Colsp.Model.Responses
         public string UpdateIP { get; set; }
         public Nullable<int> CMSStatusFlowId { get; set; }
         public Nullable<bool> Visibility { get; set; }
-        public string PNameBuy { get; set; }
-        public string PNameGet { get; set; }
+        public string CampaignID { get; set; }
+        public string CampaignName { get; set; }
+        public string PromotionCode { get; set; }
+        public string PromotionCodeRef { get; set; }
+        public int? MarketingAbsorb { get; set; }
+        public int? MerchandiseAbsorb { get; set; }
+        public int? VendorAbsorb { get; set; }
     }
 }

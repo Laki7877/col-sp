@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Colsp.Model.Request;
 using Colsp.Entity.Models;
 using System.Data.Entity;
+using Colsp.Model.Requests;
 
 namespace Colsp.Api.ByOneGetOneFunction
 {
@@ -46,7 +46,13 @@ namespace Colsp.Api.ByOneGetOneFunction
                         newObj.CreateIP = Model.CreateIP;
                         newObj.UpdateIP = Model.UpdateIP;
                         newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
-                        //newObj.Visibility = Model.Visibility;
+                        newObj.CampaignID = Model.CampaignID;
+                        newObj.CampaignName = Model.CampaignName;
+                        newObj.PromotionCode = Model.PromotionCode;
+                        newObj.PromotionCodeRef = Model.PromotionCodeRef;
+                        newObj.MarketingAbsorb = Model.MarketingAbsorb;
+                        newObj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
+                        newObj.VendorAbsorb = Model.VendorAbsorb;
                         db.PromotionBuy1Get1Item.Add(newObj);
 
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
