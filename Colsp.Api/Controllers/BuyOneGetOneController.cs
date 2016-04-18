@@ -13,7 +13,6 @@ using Colsp.Api.Constants;
 using Colsp.Api.Helper;
 using System.Data.Entity;
 using Colsp.Api.ByOneGetOneFunction;
-using Colsp.Model.Request;
 using Colsp.Api.Helpers;
 using System.IO;
 using System.Net.Http.Headers;
