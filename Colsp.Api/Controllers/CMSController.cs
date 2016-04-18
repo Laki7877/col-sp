@@ -217,7 +217,7 @@ namespace Colsp.Api.Controllers
         // Get Category List
         [HttpGet]
         [Route("api/CMS/GetAllCategory")]
-        public HttpResponseMessage GetAllCategory()
+        public HttpResponseMessage GetAllCategory([FromUri] BaseCondition condition)
         {
             try
             {
@@ -239,11 +239,13 @@ namespace Colsp.Api.Controllers
                                        NameTh = cate.NameTh
                                    });
 
+                if (condition != null && condition.SearchText != null)
+                    query = query.Where(x => x.NameEn.Contains(condition.SearchText) || x.NameTh.Contains(condition.SearchText));
 
                 if (!query.Any())
                     return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
 
-                var items = query.ToList();
+                var items = query.Take(10).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, items);
 
             }
@@ -407,6 +409,7 @@ namespace Colsp.Api.Controllers
             }
 
         }
+        
         #endregion
 
         #region Delete Method
@@ -490,7 +493,7 @@ namespace Colsp.Api.Controllers
                                 ShortDescriptionEN  = master.ShortDescriptionEN,
                                 ShortDescriptionTH  = master.ShortDescriptionTH,
                                 Status              = master.Status,
-                                Visibility          = master.Visibility,
+                                Visibility          = master.Visibility.Value,
                                 ISCampaign          = master.IsCampaign.Value,
                                 ScheduleList        = (from schedule in db.CMSSchedulers 
                                                         where schedule.CMSSchedulerId == masterScheduleMap.CMSSchedulerId
@@ -568,6 +571,43 @@ namespace Colsp.Api.Controllers
                 throw new Exception(ex.Message + " /api/CMS/EditCMSMaster");
             }
 
+        }
+
+        // Visibility CMS Master
+        [Route("api/CMS/CMSMaster/Visibility")]
+        [HttpPut]
+        public HttpResponseMessage VisibilityCMSMaster(List<CMSMasterRequest> request)
+        {
+            try
+            {
+                if (request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var masterList = db.CMSMasters.ToList();
+                if (masterList == null || masterList.Count == 0)
+                {
+                    throw new Exception("Not found cms master");
+                }
+                foreach (CMSMasterRequest masterRq in request)
+                {
+
+                    var current = masterList.Where(w => w.CMSMasterId == masterRq.CMSMasterId).SingleOrDefault();
+                    if (current == null)
+                    {
+                        throw new Exception("Cannot find cms master " + masterRq.CMSMasterId);
+                    }
+
+                    current.Visibility = masterRq.Visibility;
+
+                }
+                Util.DeadlockRetry(db.SaveChanges, "CMSMaster");
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
         }
         #endregion
 

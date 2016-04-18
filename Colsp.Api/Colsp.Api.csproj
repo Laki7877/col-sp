@@ -291,7 +291,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
-    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

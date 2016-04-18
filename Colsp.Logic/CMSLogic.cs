@@ -83,16 +83,16 @@ namespace Colsp.Logic
             {
                 using (ColspEntities db = new ColspEntities())
                 {
-                    int row = -1;
-                    DateTime dateNow = DateTime.Now;
+                    int row                         = -1;
+                    DateTime dateNow                = DateTime.Now;
 
-                    CMSCategory cmsCategory = new CMSCategory();
-                    cmsCategory.CMSCategoryNameEN = request.CMSCategoryNameEN;
-                    cmsCategory.CMSCategoryNameTH = request.CMSCategoryNameTH;
-                    cmsCategory.IsActive = request.IsActive;
-                    cmsCategory.CreateBy = request.CreateBy;
-                    cmsCategory.CreateDate = dateNow;
-                    cmsCategory.CreateIP = request.CreateIP;
+                    CMSCategory cmsCategory         = new CMSCategory();
+                    cmsCategory.CMSCategoryNameEN   = request.CMSCategoryNameEN;
+                    cmsCategory.CMSCategoryNameTH   = request.CMSCategoryNameTH;
+                    cmsCategory.IsActive            = request.IsActive;
+                    cmsCategory.CreateBy            = request.CreateBy;
+                    cmsCategory.CreateDate          = dateNow;
+                    cmsCategory.CreateIP            = request.CreateIP;
                     db.CMSCategories.Add(cmsCategory);
                     db.SaveChanges();
 
@@ -103,22 +103,22 @@ namespace Colsp.Logic
 
                         foreach (var product in request.CategoryProductList)
                         {
-                            CMSCategoryProductMap cmsCategoryProduct = new CMSCategoryProductMap();
-                            cmsCategoryProduct.CMSCategoryId = cmsCategoryId.Value;
-                            cmsCategoryProduct.CMSCategoryProductMapId = product.CMSCategoryProductMapId;
-                            cmsCategoryProduct.IsActive = product.IsActive;
-                            cmsCategoryProduct.ProductBoxBadge = product.ProductBoxBadge;
-                            cmsCategoryProduct.Pid = product.Pid;
-                            cmsCategoryProduct.Sequence = product.Sequence;
-                            cmsCategoryProduct.CreateBy = product.CreateBy;
-                            cmsCategoryProduct.CreateDate = dateNow;
-                            cmsCategoryProduct.CreateIP = product.CreateIP;
+                            CMSCategoryProductMap cmsCategoryProduct    = new CMSCategoryProductMap();
+                            cmsCategoryProduct.CMSCategoryId            = cmsCategoryId.Value;
+                            cmsCategoryProduct.CMSCategoryProductMapId  = product.CMSCategoryProductMapId;
+                            cmsCategoryProduct.IsActive                 = product.IsActive;
+                            cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
+                            cmsCategoryProduct.Pid                      = product.Pid;
+                            cmsCategoryProduct.Sequence                 = product.Sequence;
+                            cmsCategoryProduct.CreateBy                 = product.CreateBy;
+                            cmsCategoryProduct.CreateDate               = dateNow;
+                            cmsCategoryProduct.CreateIP                 = product.CreateIP;
 
                             db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
                         }
                     }
 
-                    row = db.SaveChanges();
+                    row     = db.SaveChanges();
                     success = row > -1;
                 }
             }
@@ -428,34 +428,30 @@ namespace Colsp.Logic
                     int row = -1;
                     DateTime dateNow = DateTime.Now;
 
-                    CMSGroup cmsGroup = new CMSGroup();
+                    CMSGroup cmsGroup       = new CMSGroup();
                     cmsGroup.CMSGroupNameEN = request.CMSGroupNameEN;
                     cmsGroup.CMSGroupNameTH = request.CMSGroupNameTH;
-                    cmsGroup.Status = request.Status;
-                    cmsGroup.Visibility = request.Visibility;
-                    cmsGroup.CreateBy = request.CreateBy;
-                    cmsGroup.CreateDate = dateNow;
-                    cmsGroup.CreateIP = request.CreateIP;
+                    cmsGroup.Status         = request.Status;
+                    cmsGroup.Visibility     = request.Visibility;
+                    cmsGroup.CreateBy       = request.CreateBy;
+                    cmsGroup.CreateDate     = dateNow;
+                    cmsGroup.CreateIP       = request.CreateIP;
                     db.CMSGroups.Add(cmsGroup);
                     db.SaveChanges();
 
-                    int? cmsGroupId = CMSHelper.GetCMSGroupId(db, cmsGroup);
+                    var cmsGroupId = cmsGroup.CMSGroupId;
 
-                    if (cmsGroupId != null)
+                    foreach (var master in request.GroupMasterList)
                     {
-
-                        foreach (var master in request.GroupMasterList)
-                        {
-                            CMSMasterGroupMap cmsMasterGroup = new CMSMasterGroupMap();
-                            cmsMasterGroup.CMSMasterId      = cmsGroupId.Value;
-                            cmsMasterGroup.CMSGroupId       = master.CMSGroupId.Value;
-                            cmsMasterGroup.Sequence         = master.Sequence.Value;
-                            cmsMasterGroup.CreateBy         = master.CreateBy;
-                            cmsMasterGroup.CreateDate       = dateNow;
-                            cmsMasterGroup.CreateIP         = master.CreateIP;
-                            cmsMasterGroup.IsActive         = master.IsActive;
-                            db.CMSMasterGroupMaps.Add(cmsMasterGroup);
-                        }
+                        CMSMasterGroupMap cmsMasterGroup = new CMSMasterGroupMap();
+                        cmsMasterGroup.CMSMasterId  = master.CMSMasterId.Value;
+                        cmsMasterGroup.CMSGroupId   = cmsGroupId;
+                        cmsMasterGroup.Sequence     = master.Sequence.Value;
+                        cmsMasterGroup.CreateBy     = master.CreateBy;
+                        cmsMasterGroup.CreateDate   = dateNow;
+                        cmsMasterGroup.CreateIP     = master.CreateIP;
+                        cmsMasterGroup.IsActive     = master.IsActive;
+                        db.CMSMasterGroupMaps.Add(cmsMasterGroup);
                     }
 
                     row = db.SaveChanges();

@@ -362,7 +362,7 @@ namespace Colsp.Api.CMSFunction
                             cms.CMSMasterStatusId = modelItem.CMSMasterStatusId ?? cms.CMSMasterStatusId;
                             cms.Sequence = modelItem.Sequence ?? cms.Sequence;
                             cms.CMSMasterURLKey = modelItem.CMSMasterURLKey != default(string) ? modelItem.CMSMasterURLKey : cms.CMSMasterURLKey;
-                            cms.Visibility = modelItem.Visibility ?? cms.Visibility;
+                            //cms.Visibility = modelItem.Visibility ?? cms.Visibility;
                             cms.UpdateBy = modelItem.CreateBy ?? cms.UpdateBy;
                             cms.UpdateDate = DateTime.Now;
                             cms.UpdateIP = modelItem.CreateIP != default(string) ? modelItem.CreateIP : cms.UpdateIP;
