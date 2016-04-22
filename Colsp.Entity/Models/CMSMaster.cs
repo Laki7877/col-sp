@@ -18,14 +18,18 @@ namespace Colsp.Entity.Models
         public string CMSMasterNameEN { get; set; }
         public string CMSMasterNameTH { get; set; }
         public string CMSMasterURLKey { get; set; }
-        public Nullable<int> CMSTypeId { get; set; }
+        public string CMSMasterType { get; set; }
         public Nullable<System.DateTime> CMSMasterEffectiveDate { get; set; }
         public Nullable<System.TimeSpan> CMSMasterEffectiveTime { get; set; }
         public Nullable<System.DateTime> CMSMasterExpiryDate { get; set; }
         public Nullable<System.TimeSpan> CMSMasterExpiryTime { get; set; }
         public Nullable<int> CMSMasterTotal { get; set; }
+        public string MobileShortDescriptionTH { get; set; }
+        public string MobileLongDescriptionTH { get; set; }
         public string ShortDescriptionTH { get; set; }
         public string LongDescriptionTH { get; set; }
+        public string MobileShortDescriptionEN { get; set; }
+        public string MobileLongDescriptionEN { get; set; }
         public string ShortDescriptionEN { get; set; }
         public string LongDescriptionEN { get; set; }
         public Nullable<int> Sequence { get; set; }
@@ -36,7 +40,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> Brand { get; set; }
         public Nullable<decimal> MinPrice { get; set; }
         public Nullable<decimal> MaxPrice { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public string Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> Createdate { get; set; }

@@ -89,7 +89,8 @@ namespace Colsp.Logic
                     CMSCategory cmsCategory         = new CMSCategory();
                     cmsCategory.CMSCategoryNameEN   = request.CMSCategoryNameEN;
                     cmsCategory.CMSCategoryNameTH   = request.CMSCategoryNameTH;
-                    cmsCategory.IsActive            = request.IsActive;
+                    cmsCategory.Visibility          = request.Visibility;
+                    cmsCategory.Status              = request.Status;
                     cmsCategory.CreateBy            = request.CreateBy;
                     cmsCategory.CreateDate          = dateNow;
                     cmsCategory.CreateIP            = request.CreateIP;
@@ -147,13 +148,14 @@ namespace Colsp.Logic
                     if (!queryCMSCategory.Any())
                         return false;
 
-                    var cmsCategory = queryCMSCategory.First();
-                    cmsCategory.CMSCategoryNameEN = request.CMSCategoryNameEN;
-                    cmsCategory.CMSCategoryNameTH = request.CMSCategoryNameTH;
-                    cmsCategory.IsActive = request.IsActive;
-                    cmsCategory.UpdateBy = request.UpdateBy;
-                    cmsCategory.UpdateDate = dateNow;
-                    cmsCategory.UpdateIP = request.UpdateIP;
+                    var cmsCategory                 = queryCMSCategory.First();
+                    cmsCategory.CMSCategoryNameEN   = request.CMSCategoryNameEN;
+                    cmsCategory.CMSCategoryNameTH   = request.CMSCategoryNameTH;
+                    cmsCategory.Visibility          = request.Visibility;
+                    cmsCategory.Status              = request.Status;
+                    cmsCategory.UpdateBy            = request.UpdateBy;
+                    cmsCategory.UpdateDate          = dateNow;
+                    cmsCategory.UpdateIP            = request.UpdateIP;
 
                     // Remove Category Product
                     var queryCMSCategoryProducts = db.CMSCategoryProductMaps.Where(x => x.CMSCategoryId == cmsCategory.CMSCategoryId);
@@ -170,16 +172,16 @@ namespace Colsp.Logic
 
                         foreach (var product in request.CategoryProductList)
                         {
-                            CMSCategoryProductMap cmsCategoryProduct = new CMSCategoryProductMap();
-                            cmsCategoryProduct.CMSCategoryId = cmsCategory.CMSCategoryId;
-                            cmsCategoryProduct.CMSCategoryProductMapId = product.CMSCategoryProductMapId;
-                            cmsCategoryProduct.IsActive = product.IsActive;
-                            cmsCategoryProduct.ProductBoxBadge = product.ProductBoxBadge;
-                            cmsCategoryProduct.Pid = product.Pid;
-                            cmsCategoryProduct.Sequence = product.Sequence;
-                            cmsCategoryProduct.CreateBy = product.CreateBy;
-                            cmsCategoryProduct.CreateDate = dateNow;
-                            cmsCategoryProduct.CreateIP = product.CreateIP;
+                            CMSCategoryProductMap cmsCategoryProduct    = new CMSCategoryProductMap();
+                            cmsCategoryProduct.CMSCategoryId            = cmsCategory.CMSCategoryId;
+                            cmsCategoryProduct.CMSCategoryProductMapId  = product.CMSCategoryProductMapId;
+                            cmsCategoryProduct.IsActive                 = product.IsActive;
+                            cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
+                            cmsCategoryProduct.Pid                      = product.Pid;
+                            cmsCategoryProduct.Sequence                 = product.Sequence;
+                            cmsCategoryProduct.CreateBy                 = product.CreateBy;
+                            cmsCategoryProduct.CreateDate               = dateNow;
+                            cmsCategoryProduct.CreateIP                 = product.CreateIP;
 
                             db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
                         }
@@ -210,7 +212,7 @@ namespace Colsp.Logic
                     {
                         var query = db.CMSCategories.Where(x => x.CMSCategoryId == cmsCategory.CMSCategoryId);
                         if (query.Any())
-                            query.First().IsActive = false;
+                            query.First().Status = "RM";
                     }
 
                     db.SaveChanges();
@@ -262,14 +264,18 @@ namespace Colsp.Logic
                         cms.CMSMasterNameEN         = request.CMSMasterNameEN;
                         cms.CMSMasterNameTH         = request.CMSMasterNameTH;
                         cms.CMSTypeId               = request.CMSMasterTypeId;
-                        cms.CMSMasterEffectiveDate  = EffectiveDate.Date;
-                        cms.CMSMasterEffectiveTime  = EffectiveDate.TimeOfDay;
-                        cms.CMSMasterExpiryDate     = ExpiryDate.Date;
-                        cms.CMSMasterExpiryTime     = ExpiryDate.TimeOfDay;
+                        cms.CMSMasterEffectiveDate  = request.EffectiveDate;
+                        cms.CMSMasterEffectiveTime  = request.EffectiveTime;
+                        cms.CMSMasterExpiryDate     = request.ExpiryDate;
+                        cms.CMSMasterExpiryTime     = request.ExpiryTime;
                         cms.LongDescriptionEN       = request.LongDescriptionEN;
                         cms.LongDescriptionTH       = request.LongDescriptionTH;
                         cms.ShortDescriptionEN      = request.ShortDescriptionEN;
                         cms.ShortDescriptionTH      = request.ShortDescriptionTH;
+                        cms.MobileLongDescriptionEN = request.MobileLongDescriptionEN;
+                        cms.MobileLongDescriptionTH = request.MobileLongDescriptionTH;
+                        cms.MobileShortDescriptionEN = request.MobileShortDescriptionEN;
+                        cms.MobileShortDescriptionTH = request.MobileShortDescriptionTH;
                         cms.Status                  = request.Status;
                         cms.CMSMasterStatusId       = request.CMSMasterStatusId;
                         cms.Sequence                = request.Sequence;
@@ -371,7 +377,7 @@ namespace Colsp.Logic
                     var cms                     = queryCMSMaster.First();
                     cms.CMSMasterNameEN         = request.CMSMasterNameEN;
                     cms.CMSMasterNameTH         = request.CMSMasterNameTH;
-                    cms.CMSTypeId               = request.CMSMasterTypeId;
+                    cms.CMSMasterType           = request.CMSMasterType;
                     cms.CMSMasterEffectiveDate  = request.EffectiveDate;
                     cms.CMSMasterEffectiveTime  = request.EffectiveTime;
                     cms.CMSMasterExpiryDate     = request.ExpiryDate;
@@ -380,6 +386,10 @@ namespace Colsp.Logic
                     cms.LongDescriptionTH       = request.LongDescriptionTH;
                     cms.ShortDescriptionEN      = request.ShortDescriptionEN;
                     cms.ShortDescriptionTH      = request.ShortDescriptionTH;
+                    cms.MobileLongDescriptionEN = request.MobileLongDescriptionEN;
+                    cms.MobileLongDescriptionTH = request.MobileLongDescriptionTH;
+                    cms.MobileShortDescriptionEN = request.MobileShortDescriptionEN;
+                    cms.MobileShortDescriptionTH = request.MobileShortDescriptionTH;
                     cms.Status                  = request.Status;
                     cms.CMSMasterStatusId       = request.CMSMasterStatusId;
                     cms.Sequence                = request.Sequence;
@@ -580,7 +590,7 @@ namespace Colsp.Logic
                     {
                         var query = db.CMSGroups.Where(x => x.CMSGroupId == cmsGroup.CMSGroupId);
                         if (query.Any())
-                            query.First().Visibility = false;
+                            query.First().Status = "RM";
                     }
 
                     db.SaveChanges();
@@ -589,7 +599,7 @@ namespace Colsp.Logic
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message + " /Logic/DeleteCMSCategory");
+                throw new Exception(ex.Message + " /Logic/DeleteCMSGroup");
             }
 
             return success;

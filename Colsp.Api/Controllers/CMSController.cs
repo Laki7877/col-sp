@@ -25,6 +25,15 @@ namespace Colsp.Api.Controllers
         private ColspEntities db;
         private CMSLogic cmsLogic;
 
+        int ShopId
+        {
+            get
+            {
+                int shopId = this.User.UserRequest().Type == "A" ? 0 : this.User.ShopRequest().ShopId;
+                return shopId;
+            }
+        }
+
         public CMSController()
         {
             this.db = new ColspEntities();
@@ -44,7 +53,7 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = 0;
 
-                var query = from category in db.CMSCategories select category;
+                var query = from category in db.CMSCategories where !category.Status.Equals("RM") select category;
 
                 if (shopId != 0)
                 {
@@ -100,11 +109,12 @@ namespace Colsp.Api.Controllers
 
                                                        }).ToList(),
                                 
-                                CMSCategoryId = cate.CMSCategoryId,
-                                CMSCategoryNameEN = cate.CMSCategoryNameEN,
-                                CMSCategoryNameTH = cate.CMSCategoryNameTH,
-                                IsActive = cate.IsActive,
-                                UpdateDate = cate.UpdateDate
+                                CMSCategoryId       = cate.CMSCategoryId,
+                                CMSCategoryNameEN   = cate.CMSCategoryNameEN,
+                                CMSCategoryNameTH   = cate.CMSCategoryNameTH,
+                                Visibility          = cate.Visibility.Value,
+                                Status              = cate.Status,
+                                UpdateDate          = cate.UpdateDate
                             };
 
                 if (!query.Any())
@@ -221,9 +231,9 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = 0; //this.User.ShopRequest().ShopId;
+                // int shopId = this.User.UserRequest().Type == "A" ? 0 : this.User.ShopRequest().ShopId;
 
-                var query = shopId == 0
+                var query = this.ShopId == 0
                                 ? (from cate in db.GlobalCategories
                                    select new CategoryRequest
                                    {
@@ -349,7 +359,7 @@ namespace Colsp.Api.Controllers
                     item.CMSCategoryId = c.CMSCategoryId;
                     item.CMSCategoryNameEN = c.CMSCategoryNameEN;
                     item.CMSCategoryNameTH = c.CMSCategoryNameTH;
-                    item.IsActive = c.IsActive;
+                    item.Visibility = c.Visibility;
                     item.IsCampaign = c.IsCampaign;
                     categories.Add(item);
                 }
@@ -360,6 +370,43 @@ namespace Colsp.Api.Controllers
             catch (Exception ex)
             {
                 throw new Exception(ex.Message + " /api/CMS/SearchCMSCategory");
+            }
+        }
+
+        // Visibility CMS Category
+        [Route("api/CMS/CMSCategory/Visibility")]
+        [HttpPut]
+        public HttpResponseMessage VisibilityCMSCategory(List<CMSCategoryRequest> request)
+        {
+            try
+            {
+                if (request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var cateList = db.CMSCategories.ToList();
+                if (cateList == null || cateList.Count == 0)
+                {
+                    throw new Exception("Not found cms category");
+                }
+                foreach (CMSCategoryRequest cateRq in request)
+                {
+
+                    var current = cateList.Where(w => w.CMSCategoryId == cateRq.CMSCategoryId).SingleOrDefault();
+                    if (current == null)
+                    {
+                        throw new Exception("Cannot find cms category " + cateRq.CMSCategoryId);
+                    }
+
+                    current.Visibility = cateRq.Visibility;
+
+                }
+                Util.DeadlockRetry(db.SaveChanges, "CMSCategory");
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
         #endregion
@@ -449,11 +496,42 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = 0;
 
-                var query = from master in db.CMSMasters select master;
-                
+                var query = from master in db.CMSMasters
+                select new CMSMasterRequest
+                {
+                    CMSMasterId         = master.CMSMasterId,
+                    CMSMasterNameEN     = master.CMSMasterNameEN,
+                    CMSMasterNameTH     = master.CMSMasterNameTH,
+                    CMSMasterURLKey     = master.CMSMasterURLKey,
+                    CMSMasterType       = master.CMSMasterType,
+                    CreateBy            = master.CreateBy,
+                    UpdateBy            = master.UpdateBy,
+                    UpdateDate          = master.UpdateDate,
+                    Status              = master.Status,
+                    Visibility          = master.Visibility.Value
+                };
+
                 if (!string.IsNullOrEmpty(request.SearchText))
                     query = query.Where(x => x.CMSMasterNameEN.Contains(request.SearchText) || x.CMSMasterNameTH.Contains(request.SearchText));
 
+                if (!string.IsNullOrEmpty(request._filter))
+                {
+                    if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        query = query.Where(x => x.Status.Equals(Constant.CMS_STATUS_APPROVE));
+                    }
+                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        query = query.Where(x => x.Status.Equals(Constant.CMS_STATUS_NOT_APPROVE));
+                    }
+                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        query = query.Where(x => x.Status.Equals(Constant.CMS_STATUS_WAIT_FOR_APPROVAL));
+                    }
+                }
+
+                request._order = "CMSMasterId";
+                
                 var total = query.Count();
                 var response = PaginatedResponse.CreateResponse(query.Paginate(request), request, total);
 
@@ -484,7 +562,7 @@ namespace Colsp.Api.Controllers
                                 CMSMasterNameEN     = master.CMSMasterNameEN,
                                 CMSMasterNameTH     = master.CMSMasterNameTH,
                                 CMSMasterStatusId   = master.CMSMasterStatusId,
-                                CMSMasterTypeId     = master.CMSMasterStatusId,
+                                CMSMasterType       = master.CMSMasterType,
                                 CMSMasterURLKey     = master.CMSMasterURLKey,
                                 EffectiveDate       = master.CMSMasterEffectiveDate,
                                 ExpiryDate          = master.CMSMasterExpiryDate,
@@ -492,6 +570,10 @@ namespace Colsp.Api.Controllers
                                 LongDescriptionTH   = master.LongDescriptionTH,
                                 ShortDescriptionEN  = master.ShortDescriptionEN,
                                 ShortDescriptionTH  = master.ShortDescriptionTH,
+                                MobileLongDescriptionEN = master.MobileLongDescriptionEN,
+                                MobileLongDescriptionTH = master.MobileLongDescriptionTH,
+                                MobileShortDescriptionEN = master.MobileShortDescriptionEN,
+                                MobileShortDescriptionTH = master.MobileShortDescriptionTH,
                                 Status              = master.Status,
                                 Visibility          = master.Visibility.Value,
                                 ISCampaign          = master.IsCampaign.Value,
@@ -509,10 +591,11 @@ namespace Colsp.Api.Controllers
                                                                             where cateScheduleMap.CMSSchedulerId == schedule.CMSSchedulerId
                                                                             select new CMSCategoryRequest
                                                                             {
-                                                                                CMSCategoryId = cate.CMSCategoryId,
-                                                                                CMSCategoryNameEN = cate.CMSCategoryNameEN,
-                                                                                CMSCategoryNameTH = cate.CMSCategoryNameTH,
-                                                                                IsActive = cate.IsActive,
+                                                                                CMSCategoryId       = cate.CMSCategoryId,
+                                                                                CMSCategoryNameEN   = cate.CMSCategoryNameEN,
+                                                                                CMSCategoryNameTH   = cate.CMSCategoryNameTH,
+                                                                                Visibility          = cate.Visibility.Value,
+                                                                                Status              = cate.Status
                                                                             }).ToList()
                                                         }).ToList()
                             };
@@ -538,6 +621,9 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                // set default
+                request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+
                 var success = cmsLogic.AddCMSMaster(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
@@ -609,6 +695,71 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
+
+        // Approve CMS Master
+        [Route("api/CMS/CMSMaster/Approve")]
+        [HttpPut]
+        public HttpResponseMessage ApproveCMSMaster(List<CMSMasterRequest> request)
+        {
+            try
+            {
+                if (request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var cmsMasterIds = request.Select(s => s.CMSMasterId).ToList();
+                var groupList = db.CMSMasters.Where(w => cmsMasterIds.Contains(w.CMSMasterId)).ToList();
+                foreach (CMSMasterRequest masterRq in request)
+                {
+                    var master = groupList.Where(w => w.CMSMasterId == masterRq.CMSMasterId).SingleOrDefault();
+                    if (master == null)
+                    {
+                        throw new Exception("Cannot find deleted product");
+                    }
+                    
+                    master.Status = Constant.CMS_STATUS_APPROVE;
+                }
+                Util.DeadlockRetry(db.SaveChanges, "CMSMaster");
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        // Reject CMS Master
+        [Route("api/CMS/CMSMaster/Reject")]
+        [HttpPut]
+        public HttpResponseMessage RejectCMSMaster(List<CMSMasterRequest> request)
+        {
+            try
+            {
+                if (request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var cmsMasterIds = request.Select(s => s.CMSMasterId).ToList();
+                var groupList = db.CMSMasters.Where(w => cmsMasterIds.Contains(w.CMSMasterId)).ToList();
+                foreach (CMSMasterRequest masterRq in request)
+                {
+                    var master = groupList.Where(w => w.CMSMasterId == masterRq.CMSMasterId).SingleOrDefault();
+                    if (master == null)
+                    {
+                        throw new Exception("Cannot find deleted product");
+                    }
+
+                    master.Status = Constant.CMS_STATUS_NOT_APPROVE;
+                }
+                Util.DeadlockRetry(db.SaveChanges, "CMSMaster");
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         #endregion
 
         #region CMS Group
@@ -623,7 +774,7 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = 0;
 
-                var query = from g in db.CMSGroups select g;
+                var query = from g in db.CMSGroups where !g.Status.Equals("RM") select g;
 
                 var cmsGroupIdList = (from map in db.CMSMasterGroupMaps where map.ShopId == shopId select map).Select(s => s.CMSGroupId).ToList();
 
@@ -791,6 +942,43 @@ namespace Colsp.Api.Controllers
                 throw new Exception(ex.Message + " /api/CMS/EditCMSGroup");
             }
 
+        }
+
+        // Visibility CMS Group
+        [Route("api/CMS/CMSGroup/Visibility")]
+        [HttpPut]
+        public HttpResponseMessage VisibilityCMSGroup(List<CMSGroupRequest> request)
+        {
+            try
+            {
+                if (request == null || request.Count == 0)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var groupList = db.CMSGroups.ToList();
+                if (groupList == null || groupList.Count == 0)
+                {
+                    throw new Exception("Not found cms group");
+                }
+                foreach (CMSGroupRequest groupRq in request)
+                {
+
+                    var current = groupList.Where(w => w.CMSGroupId == groupRq.CMSGroupId).SingleOrDefault();
+                    if (current == null)
+                    {
+                        throw new Exception("Cannot find cms group " + groupRq.CMSGroupId);
+                    }
+
+                    current.Visibility = groupRq.Visibility;
+
+                }
+                Util.DeadlockRetry(db.SaveChanges, "CMSGroup");
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
         }
         #endregion
 

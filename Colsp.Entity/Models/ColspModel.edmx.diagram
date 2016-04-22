@@ -262,6 +262,10 @@
         <AssociationConnector Association="ColspModel.FKUserShopUser" />
         <AssociationConnector Association="ColspModel.FKUserGroupMapUserGroup" />
         <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />
+        <EntityTypeShape EntityType="ColspModel.CMSScheduler" Width="1.5" PointX="13.375" PointY="23.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSMaster" Width="1.5" PointX="23.375" PointY="18.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSCategory" Width="1.5" PointX="25.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSGroup" Width="1.5" PointX="0.75" PointY="25.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

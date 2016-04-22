@@ -253,7 +253,8 @@
           <Property Name="CMSCategoryNameEN" Type="nvarchar" MaxLength="100" />
           <Property Name="CMSCategoryNameTH" Type="nvarchar" MaxLength="100" />
           <Property Name="IsCampaign" Type="bit" />
-          <Property Name="IsActive" Type="bit" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="UpdateBy" Type="int" />
@@ -354,7 +355,7 @@
           <Property Name="CMSGroupNameTH" Type="nvarchar" MaxLength="100" />
           <Property Name="CMSGroupNameEN" Type="nvarchar" MaxLength="100" />
           <Property Name="Sequence" Type="int" />
-          <Property Name="Status" Type="bit" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="CreateDate" Type="datetime" />
@@ -371,14 +372,18 @@
           <Property Name="CMSMasterNameEN" Type="nvarchar" MaxLength="300" />
           <Property Name="CMSMasterNameTH" Type="nvarchar" MaxLength="300" />
           <Property Name="CMSMasterURLKey" Type="nvarchar" MaxLength="300" />
-          <Property Name="CMSTypeId" Type="int" />
+          <Property Name="CMSMasterType" Type="nvarchar" MaxLength="50" />
           <Property Name="CMSMasterEffectiveDate" Type="date" />
           <Property Name="CMSMasterEffectiveTime" Type="time" Precision="7" />
           <Property Name="CMSMasterExpiryDate" Type="date" />
           <Property Name="CMSMasterExpiryTime" Type="time" Precision="7" />
           <Property Name="CMSMasterTotal" Type="int" />
+          <Property Name="MobileShortDescriptionTH" Type="nvarchar" MaxLength="500" />
+          <Property Name="MobileLongDescriptionTH" Type="ntext" />
           <Property Name="ShortDescriptionTH" Type="nvarchar" MaxLength="500" />
           <Property Name="LongDescriptionTH" Type="ntext" />
+          <Property Name="MobileShortDescriptionEN" Type="nvarchar" MaxLength="500" />
+          <Property Name="MobileLongDescriptionEN" Type="ntext" />
           <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="500" />
           <Property Name="LongDescriptionEN" Type="ntext" />
           <Property Name="Sequence" Type="int" />
@@ -389,7 +394,7 @@
           <Property Name="Brand" Type="int" />
           <Property Name="MinPrice" Type="decimal" Precision="18" Scale="2" />
           <Property Name="MaxPrice" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="Status" Type="bit" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="Visibility" Type="bit" />
           <Property Name="CreateBy" Type="int" />
           <Property Name="Createdate" Type="datetime" />
@@ -5356,14 +5361,11 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CartDiscounts" EntityType="ColspModel.CartDiscount" />
           <EntitySet Name="CartHeads" EntityType="ColspModel.CartHead" />
           <EntitySet Name="Cities" EntityType="ColspModel.City" />
-          <EntitySet Name="CMSCategories" EntityType="ColspModel.CMSCategory" />
           <EntitySet Name="CMSCategoryCreteriaMaps" EntityType="ColspModel.CMSCategoryCreteriaMap" />
           <EntitySet Name="CMSCategoryProductMaps" EntityType="ColspModel.CMSCategoryProductMap" />
           <EntitySet Name="CMSCategorySchedulerMaps" EntityType="ColspModel.CMSCategorySchedulerMap" />
           <EntitySet Name="CMSCreterias" EntityType="ColspModel.CMSCreteria" />
           <EntitySet Name="CMSCriteriaProductMaps" EntityType="ColspModel.CMSCriteriaProductMap" />
-          <EntitySet Name="CMSGroups" EntityType="ColspModel.CMSGroup" />
-          <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
           <EntitySet Name="CMSMasterGroupMaps" EntityType="ColspModel.CMSMasterGroupMap" />
           <EntitySet Name="CMSMasterSchedulerMaps" EntityType="ColspModel.CMSMasterSchedulerMap" />
           <EntitySet Name="CMSMasterSchedulerShopMaps" EntityType="ColspModel.CMSMasterSchedulerShopMap" />
@@ -5905,6 +5907,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
+          <EntitySet Name="CMSSchedulers" EntityType="ColspModel.CMSScheduler" />
+          <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
+          <EntitySet Name="CMSCategories" EntityType="ColspModel.CMSCategory" />
+          <EntitySet Name="CMSGroups" EntityType="ColspModel.CMSGroup" />
           </EntityContainer>
         <EntityType Name="AppAuth">
           <Key>
@@ -6174,22 +6180,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CityName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="CityNameEn" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="CMSCategory">
-          <Key>
-            <PropertyRef Name="CMSCategoryId" />
-          </Key>
-          <Property Name="CMSCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSCategoryNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CMSCategoryNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="IsCampaign" Type="Boolean" />
-          <Property Name="IsActive" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="CMSCategoryCreteriaMap">
           <Key>
             <PropertyRef Name="CMSCategoryCreteriaMapId" />
@@ -6270,58 +6260,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="CreateBy" Type="Int32" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSGroup">
-          <Key>
-            <PropertyRef Name="CMSGroupId" />
-          </Key>
-          <Property Name="CMSGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CMSGroupNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CMSMaster">
-          <Key>
-            <PropertyRef Name="CMSMasterId" />
-          </Key>
-          <Property Name="CMSMasterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CMSMasterNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="CMSMasterNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="CMSMasterURLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="CMSTypeId" Type="Int32" />
-          <Property Name="CMSMasterEffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="CMSMasterEffectiveTime" Type="Time" Precision="7" />
-          <Property Name="CMSMasterExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="CMSMasterExpiryTime" Type="Time" Precision="7" />
-          <Property Name="CMSMasterTotal" Type="Int32" />
-          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="CMSMasterStatusId" Type="Int32" />
-          <Property Name="LinkToOutside" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="IsCampaign" Type="Boolean" />
-          <Property Name="CategoryId" Type="Int32" />
-          <Property Name="Brand" Type="Int32" />
-          <Property Name="MinPrice" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="MaxPrice" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Visibility" Type="Boolean" />
-          <Property Name="CreateBy" Type="Int32" />
-          <Property Name="Createdate" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="Int32" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -10392,6 +10330,97 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CMSScheduler">
+          <Key>
+            <PropertyRef Name="CMSSchedulerId" />
+          </Key>
+          <Property Name="CMSSchedulerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="EffectiveTime" Type="Time" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryTime" Type="Time" Precision="7" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMaster">
+          <Key>
+            <PropertyRef Name="CMSMasterId" />
+          </Key>
+          <Property Name="CMSMasterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterNameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterNameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterURLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CMSMasterEffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="CMSMasterEffectiveTime" Type="Time" Precision="7" />
+          <Property Name="CMSMasterExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="CMSMasterExpiryTime" Type="Time" Precision="7" />
+          <Property Name="CMSMasterTotal" Type="Int32" />
+          <Property Name="MobileShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MobileLongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MobileShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MobileLongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="CMSMasterStatusId" Type="Int32" />
+          <Property Name="LinkToOutside" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsCampaign" Type="Boolean" />
+          <Property Name="CategoryId" Type="Int32" />
+          <Property Name="Brand" Type="Int32" />
+          <Property Name="MinPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MaxPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="Createdate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSCategory">
+          <Key>
+            <PropertyRef Name="CMSCategoryId" />
+          </Key>
+          <Property Name="CMSCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSCategoryNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSCategoryNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsCampaign" Type="Boolean" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSGroup">
+          <Key>
+            <PropertyRef Name="CMSGroupId" />
+          </Key>
+          <Property Name="CMSGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSGroupNameTH" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CMSGroupNameEN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10648,23 +10677,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CMSCategories">
-            <EntityTypeMapping TypeName="ColspModel.CMSCategory">
-              <MappingFragment StoreEntitySet="CMSCategory">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="IsCampaign" ColumnName="IsCampaign" />
-                <ScalarProperty Name="CMSCategoryNameTH" ColumnName="CMSCategoryNameTH" />
-                <ScalarProperty Name="CMSCategoryNameEN" ColumnName="CMSCategoryNameEN" />
-                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CMSCategoryCreteriaMaps">
             <EntityTypeMapping TypeName="ColspModel.CMSCategoryCreteriaMap">
               <MappingFragment StoreEntitySet="CMSCategoryCreteriaMap">
@@ -10752,60 +10764,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="ProductPID" ColumnName="ProductPID" />
                 <ScalarProperty Name="CMSCriteriaId" ColumnName="CMSCriteriaId" />
                 <ScalarProperty Name="CMSCriteriaProductMapId" ColumnName="CMSCriteriaProductMapId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSGroups">
-            <EntityTypeMapping TypeName="ColspModel.CMSGroup">
-              <MappingFragment StoreEntitySet="CMSGroup">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="CMSGroupNameEN" ColumnName="CMSGroupNameEN" />
-                <ScalarProperty Name="CMSGroupNameTH" ColumnName="CMSGroupNameTH" />
-                <ScalarProperty Name="CMSGroupId" ColumnName="CMSGroupId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSMasters">
-            <EntityTypeMapping TypeName="ColspModel.CMSMaster">
-              <MappingFragment StoreEntitySet="CMSMaster">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="MaxPrice" ColumnName="MaxPrice" />
-                <ScalarProperty Name="MinPrice" ColumnName="MinPrice" />
-                <ScalarProperty Name="Brand" ColumnName="Brand" />
-                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="IsCampaign" ColumnName="IsCampaign" />
-                <ScalarProperty Name="LinkToOutside" ColumnName="LinkToOutside" />
-                <ScalarProperty Name="CMSMasterStatusId" ColumnName="CMSMasterStatusId" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
-                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
-                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
-                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
-                <ScalarProperty Name="CMSMasterTotal" ColumnName="CMSMasterTotal" />
-                <ScalarProperty Name="CMSMasterExpiryTime" ColumnName="CMSMasterExpiryTime" />
-                <ScalarProperty Name="CMSMasterExpiryDate" ColumnName="CMSMasterExpiryDate" />
-                <ScalarProperty Name="CMSMasterEffectiveTime" ColumnName="CMSMasterEffectiveTime" />
-                <ScalarProperty Name="CMSMasterEffectiveDate" ColumnName="CMSMasterEffectiveDate" />
-                <ScalarProperty Name="CMSTypeId" ColumnName="CMSTypeId" />
-                <ScalarProperty Name="CMSMasterURLKey" ColumnName="CMSMasterURLKey" />
-                <ScalarProperty Name="CMSMasterNameTH" ColumnName="CMSMasterNameTH" />
-                <ScalarProperty Name="CMSMasterNameEN" ColumnName="CMSMasterNameEN" />
-                <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -13190,6 +13148,101 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Browser" ColumnName="Browser" />
                 <ScalarProperty Name="Token" ColumnName="Token" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSSchedulers">
+            <EntityTypeMapping TypeName="ColspModel.CMSScheduler">
+              <MappingFragment StoreEntitySet="CMSScheduler">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="CMSSchedulerId" ColumnName="CMSSchedulerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMasters">
+            <EntityTypeMapping TypeName="ColspModel.CMSMaster">
+              <MappingFragment StoreEntitySet="CMSMaster">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="MaxPrice" ColumnName="MaxPrice" />
+                <ScalarProperty Name="MinPrice" ColumnName="MinPrice" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="IsCampaign" ColumnName="IsCampaign" />
+                <ScalarProperty Name="LinkToOutside" ColumnName="LinkToOutside" />
+                <ScalarProperty Name="CMSMasterStatusId" ColumnName="CMSMasterStatusId" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="MobileLongDescriptionEN" ColumnName="MobileLongDescriptionEN" />
+                <ScalarProperty Name="MobileShortDescriptionEN" ColumnName="MobileShortDescriptionEN" />
+                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="MobileLongDescriptionTH" ColumnName="MobileLongDescriptionTH" />
+                <ScalarProperty Name="MobileShortDescriptionTH" ColumnName="MobileShortDescriptionTH" />
+                <ScalarProperty Name="CMSMasterTotal" ColumnName="CMSMasterTotal" />
+                <ScalarProperty Name="CMSMasterExpiryTime" ColumnName="CMSMasterExpiryTime" />
+                <ScalarProperty Name="CMSMasterExpiryDate" ColumnName="CMSMasterExpiryDate" />
+                <ScalarProperty Name="CMSMasterEffectiveTime" ColumnName="CMSMasterEffectiveTime" />
+                <ScalarProperty Name="CMSMasterEffectiveDate" ColumnName="CMSMasterEffectiveDate" />
+                <ScalarProperty Name="CMSMasterType" ColumnName="CMSMasterType" />
+                <ScalarProperty Name="CMSMasterURLKey" ColumnName="CMSMasterURLKey" />
+                <ScalarProperty Name="CMSMasterNameTH" ColumnName="CMSMasterNameTH" />
+                <ScalarProperty Name="CMSMasterNameEN" ColumnName="CMSMasterNameEN" />
+                <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSCategories">
+            <EntityTypeMapping TypeName="ColspModel.CMSCategory">
+              <MappingFragment StoreEntitySet="CMSCategory">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsCampaign" ColumnName="IsCampaign" />
+                <ScalarProperty Name="CMSCategoryNameTH" ColumnName="CMSCategoryNameTH" />
+                <ScalarProperty Name="CMSCategoryNameEN" ColumnName="CMSCategoryNameEN" />
+                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSGroups">
+            <EntityTypeMapping TypeName="ColspModel.CMSGroup">
+              <MappingFragment StoreEntitySet="CMSGroup">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="CMSGroupNameEN" ColumnName="CMSGroupNameEN" />
+                <ScalarProperty Name="CMSGroupNameTH" ColumnName="CMSGroupNameTH" />
+                <ScalarProperty Name="CMSGroupId" ColumnName="CMSGroupId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

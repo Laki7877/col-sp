@@ -17,7 +17,7 @@ namespace Colsp.ApiTests.BusinessLogic
             CMSCategoryRequest category = new CMSCategoryRequest();
             category.CMSCategoryNameEN = "cosmetics";
             category.CMSCategoryNameTH = "เครื่องสำอาง";
-            category.IsActive = true;
+            category.Visibility = true;
 
             // Products
             CMSCategoryProductMapRequest product1 = new CMSCategoryProductMapRequest();
@@ -51,7 +51,7 @@ namespace Colsp.ApiTests.BusinessLogic
             category.CMSCategoryId = 2;
             category.CMSCategoryNameEN = "cosmetics(edit)";
             category.CMSCategoryNameTH = "เครื่องสำอาง(edit)";
-            category.IsActive = true;
+            category.Visibility = true;
 
             // Products
             CMSCategoryProductMapRequest product1 = new CMSCategoryProductMapRequest();
@@ -84,7 +84,7 @@ namespace Colsp.ApiTests.BusinessLogic
             CMSGroupRequest group   = new CMSGroupRequest();
             group.CMSGroupNameEN    = "Test Group1";
             group.CMSGroupNameTH    = "Test Group1";
-            group.Status            = true;
+            //group.Status            = "";
             group.Visibility        = true;
 
             // Group Master

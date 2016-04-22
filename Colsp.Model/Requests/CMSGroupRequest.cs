@@ -17,7 +17,7 @@ namespace Colsp.Model.Requests
         public string CMSGroupNameEN { get; set; }
         public string CMSGroupNameTH { get; set; }
         public int Sequence { get; set; }
-        public bool? Status { get; set; }
+        public string Status { get; set; }
         public bool Visibility { get; set; }
         public int? CreateBy { get; set; }
         public DateTime? CreateDate { get; set; }

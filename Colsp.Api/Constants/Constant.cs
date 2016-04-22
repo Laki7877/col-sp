@@ -122,11 +122,15 @@ namespace Colsp.Api.Constants
         #region CMS
         public static readonly int CMS_SHOP_GOBAL = 0;
 
-        public static readonly int CMS_STATUS_DRAFT = 1;
-        public static readonly int CMS_STATUS_WAIT_FOR_APPROVAL = 4;
-        public static readonly int CMS_STATUS_JUNK = 5;
-        public static readonly int CMS_STATUS_APPROVE = 2;
-        public static readonly int CMS_STATUS_NOT_APPROVE = 3;
+        public static readonly string CMS_STATUS_DRAFT              = "DF";
+        public static readonly string CMS_STATUS_WAIT_FOR_APPROVAL  = "WA";
+        public static readonly string CMS_STATUS_JUNK               = "JU";
+        public static readonly string CMS_STATUS_APPROVE            = "AP";
+        public static readonly string CMS_STATUS_NOT_APPROVE        = "RJ";
+        public static readonly string CMS_STATUS_REMOVE             = "RJ";
+
+        public static readonly string CMS_MASTER_TYPE_STATIC        = "ST";
+        public static readonly string CMS_MASTER_TYPE_COLLECTION    = "CL";
 
         public static readonly int CMS_TYPE_STATIC_PAGE = 1;
         public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;

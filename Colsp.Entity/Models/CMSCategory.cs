@@ -18,7 +18,8 @@ namespace Colsp.Entity.Models
         public string CMSCategoryNameEN { get; set; }
         public string CMSCategoryNameTH { get; set; }
         public Nullable<bool> IsCampaign { get; set; }
-        public Nullable<bool> IsActive { get; set; }
+        public string Status { get; set; }
+        public Nullable<bool> Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
         public Nullable<int> UpdateBy { get; set; }

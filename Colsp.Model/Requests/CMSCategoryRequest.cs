@@ -17,7 +17,8 @@ namespace Colsp.Model
         public int CMSCategoryId { get; set; }
         public string CMSCategoryNameEN { get; set; }
         public string CMSCategoryNameTH { get; set; }
-        public bool? IsActive { get; set; }
+        public bool Visibility { get; set; }
+        public string Status { get; set; }
         public int? CreateBy { get; set; }
         public DateTime? CreateDate { get; set; }
         public int? UpdateBy { get; set; }

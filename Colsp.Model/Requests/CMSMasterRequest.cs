@@ -17,7 +17,7 @@ namespace Colsp.Model.Requests
         public string CMSMasterNameEN { get; set; }
         public string CMSMasterNameTH { get; set; }
         public string CMSMasterURLKey { get; set; }
-        public Nullable<int> CMSMasterTypeId { get; set; }
+        public string CMSMasterType { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<System.TimeSpan> EffectiveTime { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
@@ -26,7 +26,11 @@ namespace Colsp.Model.Requests
         public string LongDescriptionTH { get; set; }
         public string ShortDescriptionEN { get; set; }
         public string LongDescriptionEN { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public string MobileShortDescriptionTH { get; set; }
+        public string MobileLongDescriptionTH { get; set; }
+        public string MobileShortDescriptionEN { get; set; }
+        public string MobileLongDescriptionEN { get; set; }
+        public string Status { get; set; }
         public bool Visibility { get; set; }
         public Nullable<int> CreateBy { get; set; }
         public string CreateIP { get; set; }
@@ -37,12 +41,15 @@ namespace Colsp.Model.Requests
 
         public string SearchText { get; set; }
         public int? UpdateBy { get; set; }
+        public DateTime? UpdateDate { get; set; }
         public string UpdateIP { get; set; }
+        
+        public string CMSMasterTypeNameEN { get; set; }
 
         public override void DefaultOnNull()
         {
             SearchText = GetValueOrDefault(SearchText, string.Empty);
-            _order = GetValueOrDefault(_order, "ShopId");
+            _order = GetValueOrDefault(_order, "CMSMasterId");
             base.DefaultOnNull();
         }
     }

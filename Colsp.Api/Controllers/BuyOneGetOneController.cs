@@ -87,22 +87,22 @@ namespace Colsp.Api.Controllers
 
                 if (!string.IsNullOrEmpty(request._filter))
                 {                    
-                    if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        ProBuy1Get1 = ProBuy1Get1.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_DRAFT );
-                    }
-                    else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        ProBuy1Get1 = ProBuy1Get1.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_APPROVE);
-                    }
-                    else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        ProBuy1Get1 = ProBuy1Get1.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_NOT_APPROVE);
-                    }
-                    else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
-                    {
-                        ProBuy1Get1 = ProBuy1Get1.Where(p => p.CMSStatusFlowId ==  Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
-                    }
+                    //if (string.Equals("Draft", request._filter, StringComparison.OrdinalIgnoreCase))
+                    //{
+                    //    ProBuy1Get1 = ProBuy1Get1.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_DRAFT );
+                    //}
+                    //else if (string.Equals("Approved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    //{
+                    //    ProBuy1Get1 = ProBuy1Get1.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_APPROVE);
+                    //}
+                    //else if (string.Equals("NotApproved", request._filter, StringComparison.OrdinalIgnoreCase))
+                    //{
+                    //    ProBuy1Get1 = ProBuy1Get1.Where(p => p.CMSStatusFlowId == Constant.CMS_STATUS_NOT_APPROVE);
+                    //}
+                    //else if (string.Equals("WaitforApproval", request._filter, StringComparison.OrdinalIgnoreCase))
+                    //{
+                    //    ProBuy1Get1 = ProBuy1Get1.Where(p => p.CMSStatusFlowId ==  Constant.CMS_STATUS_WAIT_FOR_APPROVAL);
+                    //}
                 }
 
                 var total = ProBuy1Get1.Count();
