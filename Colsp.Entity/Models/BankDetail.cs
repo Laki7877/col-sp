@@ -12,11 +12,9 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PostCode
+    public partial class BankDetail
     {
-        public int PostCodeId { get; set; }
-        public int DistrictId { get; set; }
-        public string PostCode1 { get; set; }
-        public string Remark { get; set; }
+        public string BankNumber { get; set; }
+        public string BankName { get; set; }
     }
 }

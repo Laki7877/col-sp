@@ -12,11 +12,15 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PostCode
+    public partial class ThemeComponentMap
     {
-        public int PostCodeId { get; set; }
-        public int DistrictId { get; set; }
-        public string PostCode1 { get; set; }
-        public string Remark { get; set; }
+        public int ThemeId { get; set; }
+        public int ComponentId { get; set; }
+        public int Count { get; set; }
+        public Nullable<int> Width { get; set; }
+        public Nullable<int> Height { get; set; }
+    
+        public virtual Theme Theme { get; set; }
+        public virtual ThemeComponent ThemeComponent { get; set; }
     }
 }

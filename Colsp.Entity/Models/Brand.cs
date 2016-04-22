@@ -20,9 +20,9 @@ namespace Colsp.Entity.Models
             this.BrandFeatureProducts = new HashSet<BrandFeatureProduct>();
             this.BrandImages = new HashSet<BrandImage>();
             this.CouponBrandMaps = new HashSet<CouponBrandMap>();
-            this.Products = new HashSet<Product>();
             this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
+            this.UserBrandMaps = new HashSet<UserBrandMap>();
         }
     
         public int BrandId { get; set; }
@@ -43,6 +43,8 @@ namespace Colsp.Entity.Models
         public string MetaDescriptionTh { get; set; }
         public string MetaKeyEn { get; set; }
         public string MetaKeyTh { get; set; }
+        public string SeoEn { get; set; }
+        public string SeoTh { get; set; }
         public string UrlEn { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
@@ -57,10 +59,10 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponBrandMap> CouponBrandMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserBrandMap> UserBrandMaps { get; set; }
     }
 }

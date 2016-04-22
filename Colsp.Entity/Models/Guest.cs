@@ -12,12 +12,18 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CustomerAddress
+    public partial class Guest
     {
-        public int AddressId { get; set; }
-        public string CustomerId { get; set; }
+        public string GuestId { get; set; }
+        public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Mobile { get; set; }
+        public string TelephoneNo { get; set; }
+        public byte Gender { get; set; }
+        public bool ReceiveSms { get; set; }
+        public string T1CardNo { get; set; }
+        public string CustTaxID { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public int ProvinceId { get; set; }
@@ -25,15 +31,10 @@ namespace Colsp.Entity.Models
         public int DistrictId { get; set; }
         public string PostCode { get; set; }
         public string BranchID { get; set; }
-        public string TaxId { get; set; }
-        public string MobileNo { get; set; }
-        public string PhoneNo { get; set; }
         public string Remark { get; set; }
-        public System.DateTime CreateOn { get; set; }
-        public string CreateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
-        public string UpdateBy { get; set; }
-        public bool IsShipping { get; set; }
-        public bool IsBilling { get; set; }
+        public System.DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
     }
 }

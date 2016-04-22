@@ -12,11 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PostCode
+    public partial class TBCMCity
     {
-        public int PostCodeId { get; set; }
-        public int DistrictId { get; set; }
-        public string PostCode1 { get; set; }
+        public string ProvinceID { get; set; }
+        public string City { get; set; }
+        public string District { get; set; }
+        public System.DateTime CreateOn { get; set; }
+        public string CreateBy { get; set; }
+        public System.DateTime UpdateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public string Postcode { get; set; }
         public string Remark { get; set; }
     }
 }

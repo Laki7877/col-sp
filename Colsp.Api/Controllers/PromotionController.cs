@@ -15,7 +15,8 @@ using Colsp.Api.Helpers;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using Colsp.Api.Filters;
-
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 namespace Colsp.Api.Controllers
 {
     public class PromotionController : ApiController
@@ -25,7 +26,7 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Promotion/OntopCreate")]
         [HttpPost]
-        public HttpResponseMessage OntopCreate(OnTopCreditCardRequest request)
+        public async Task<HttpResponseMessage> OntopCreate(OnTopCreditCardRequest request)
         {
             PromotionOnTopCreditCard OnTop = null;
             using (var dbcxtransaction = db.Database.BeginTransaction())
@@ -109,6 +110,39 @@ namespace Colsp.Api.Controllers
                         /*Commit*/
                         dbcxtransaction.Commit();
 
+
+                        /*
+                        Test call api    
+                        */
+                        using (var client = new HttpClient())
+                        {
+                            client.BaseAddress = new Uri("https://devmkp-api.cenergy.co.th/");
+                            client.DefaultRequestHeaders.Accept.Clear();
+                            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                            // HTTP GET
+                            HttpResponseMessage response = await client.GetAsync("paymentpromotion");
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var result = await response.Content.ReadAsAsync<IBMPromotionsList>();
+
+                            }
+
+                            //// HTTP POST
+                            //var gizmo = new Product() { Name = "Gizmo", Price = 100, Category = "Widget" };
+                            //response = await client.PostAsJsonAsync("api/products", gizmo);
+                            //if (response.IsSuccessStatusCode)
+                            //{
+                            //    Uri gizmoUrl = response.Headers.Location;
+
+                            //    // HTTP PUT
+                            //    gizmo.Price = 80;   // Update price
+                            //    response = await client.PutAsJsonAsync(gizmoUrl, gizmo);
+
+                            //    // HTTP DELETE
+                            //    response = await client.DeleteAsync(gizmoUrl);
+                            //}
+                        }
                     }
                     else
                     {
@@ -301,7 +335,24 @@ namespace Colsp.Api.Controllers
                         newObj.NameEN = Model.NameEN;
                         newObj.NameTH = Model.NameTH;
                         newObj.URLKey = Model.URLKey;
-                        newObj.PIDBuy = Model.PIDBuy;
+                        //Check Pid
+                        if (Model.ProductBuyList.Count() > 0)
+                        {
+                            foreach (var item in Model.ProductBuyList)
+                            {
+                                if (IsCanSetProductBuy(item.Pid) == true)
+                                    newObj.PIDBuy = item.Pid;
+                            }
+                        }
+                        if (Model.ProductGetList.Count() > 0)
+                        {
+                            foreach (var item in Model.ProductBuyList)
+                            {
+                                if (IsCanSetProductBuy(item.Pid) == true)
+                                    newObj.PIDBuy = item.Pid;
+                            }
+                        }
+
                         newObj.PIDGet = Model.PIDGet;
                         newObj.ShortDescriptionTH = Model.ShortDescriptionTH;
                         newObj.LongDescriptionTH = Model.LongDescriptionTH;
@@ -362,7 +413,7 @@ namespace Colsp.Api.Controllers
                 {
                     try
                     {
-                        Obj = db.PromotionBuy1Get1Item.Where(c=>c.PromotionBuy1Get1ItemId==Model.PromotionBuy1Get1ItemId).FirstOrDefault();
+                        Obj = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == Model.PromotionBuy1Get1ItemId).FirstOrDefault();
                         if (Obj != null)
                         {
                             Obj.NameEN = Model.NameEN;
@@ -395,7 +446,7 @@ namespace Colsp.Api.Controllers
                             Obj.MarketingAbsorb = Model.MarketingAbsorb;
                             Obj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
                             Obj.VendorAbsorb = Model.VendorAbsorb;
-                            db.Entry(Obj).State=EntityState.Modified;
+                            db.Entry(Obj).State = EntityState.Modified;
 
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
@@ -595,6 +646,75 @@ namespace Colsp.Api.Controllers
             }
         }
         #endregion
+
+        #region find data function
+        public bool IsCanSetProductBuy(int Pid)
+        {
+            /*
+            1.Has Pid in table ?
+            2.It Has Promotion Expire?
+            */
+            bool result = false;
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    var findPidBuy = db.PromotionBuy1Get1Item.Where(c => c.PIDBuy == Pid).ToList();
+                    if (findPidBuy.Count() > 0)
+                    {
+                        foreach (var item in findPidBuy)
+                        {
+                            if (item.ExpiryDate < DateTime.Today)
+                                result = true;
+                            else
+                                result = false;
+                        }
+
+                    }
+                    else result = true;
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public bool IsCanSetProductGet(int Pid)
+        {
+            /*
+            1.Has Pid in table ?
+            2.It Has Promotion Expire?
+            */
+            bool result = false;
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    var findPidGet = db.PromotionBuy1Get1Item.Where(c => c.PIDGet == Pid).ToList();
+                    if (findPidGet.Count() > 0)
+                    {
+                        foreach (var item in findPidGet)
+                        {
+                            if (item.ExpiryDate < DateTime.Today)
+                                result = true;
+                            else
+                                result = false;
+                        }
+
+                    }
+                    else result = true;
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        #endregion
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -604,4 +724,30 @@ namespace Colsp.Api.Controllers
             base.Dispose(disposing);
         }
     }
+}
+
+public class IBMPromotionsList
+{
+    public List<Paymentpromotion> paymentpromotions { get; set; }
+    public string returncode { get; set; }
+    public Message message { get; set; }
+}
+
+public class Message
+{
+    public string samplestring1 { get; set; }
+    public string samplestring3 { get; set; }
+}
+
+public class Paymentpromotion
+{
+    public string id { get; set; }
+    public string promotioncode { get; set; }
+    public DateTime effectivedate { get; set; }
+    public DateTime expireddate { get; set; }
+    public string[] creditcardcodes { get; set; }
+    public float discountbaht { get; set; }
+    public float discountpercent { get; set; }
+    public float maximumdiscount { get; set; }
+    public float minimumorderamount { get; set; }
 }

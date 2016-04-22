@@ -241,15 +241,31 @@ namespace Colsp.Logic
                     {
                         int row = -1;
                         DateTime dateNow = DateTime.Now;
+                        DateTime EffectiveDate = new DateTime();
+                        DateTime ExpiryDate = new DateTime();
+                        if (request.EffectiveDate!=null)
+                        {
+                            if (!DateTime.TryParse(request.EffectiveDate.ToString(), out EffectiveDate))
+                            {
+                                dbcxtransaction.Rollback();
+                            }
 
+                        }
+                        if (request.ExpiryDate!=null)
+                        {
+                            if (!DateTime.TryParse(request.ExpiryDate.ToString(), out ExpiryDate))
+                            {
+                                dbcxtransaction.Rollback();
+                            }
+                        }
                         CMSMaster cms               = new CMSMaster();
                         cms.CMSMasterNameEN         = request.CMSMasterNameEN;
                         cms.CMSMasterNameTH         = request.CMSMasterNameTH;
                         cms.CMSTypeId               = request.CMSMasterTypeId;
-                        cms.CMSMasterEffectiveDate  = request.EffectiveDate;
-                        cms.CMSMasterEffectiveTime  = request.EffectiveTime;
-                        cms.CMSMasterExpiryDate     = request.ExpiryDate;
-                        cms.CMSMasterExpiryTime     = request.ExpiryTime;
+                        cms.CMSMasterEffectiveDate  = EffectiveDate.Date;
+                        cms.CMSMasterEffectiveTime  = EffectiveDate.TimeOfDay;
+                        cms.CMSMasterExpiryDate     = ExpiryDate.Date;
+                        cms.CMSMasterExpiryTime     = ExpiryDate.TimeOfDay;
                         cms.LongDescriptionEN       = request.LongDescriptionEN;
                         cms.LongDescriptionTH       = request.LongDescriptionTH;
                         cms.ShortDescriptionEN      = request.ShortDescriptionEN;
@@ -275,8 +291,27 @@ namespace Colsp.Logic
                         foreach (var schedule in request.ScheduleList)
                         {
                             CMSScheduler cmsScheduler   = new CMSScheduler();
-                            cmsScheduler.EffectiveDate  = schedule.EffectiveDate;
-                            cmsScheduler.ExpiryDate     = schedule.ExpiryDate;
+                            DateTime SchEffectiveDate   = new DateTime();
+                            DateTime SchExpiryDate      = new DateTime();
+                            if (schedule.EffectiveDate != null)
+                            {
+                                if (!DateTime.TryParse(schedule.EffectiveDate.ToString(), out SchEffectiveDate))
+                                {
+                                    dbcxtransaction.Rollback();
+                                }
+
+                            }
+                            if (schedule.ExpiryDate != null)
+                            {
+                                if (!DateTime.TryParse(schedule.ExpiryDate.ToString(), out SchExpiryDate))
+                                {
+                                    dbcxtransaction.Rollback();
+                                }
+                            }
+                            cmsScheduler.EffectiveDate  = SchEffectiveDate.Date;
+                            cmsScheduler.EffectiveTime  = SchEffectiveDate.TimeOfDay;
+                            cmsScheduler.ExpiryDate     = SchExpiryDate;
+                            cmsScheduler.ExpiryTime     = SchExpiryDate.TimeOfDay;
                             db.CMSSchedulers.Add(cmsScheduler);
                             
                             if (db.SaveChanges() > 0)

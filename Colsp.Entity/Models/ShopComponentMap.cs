@@ -12,19 +12,18 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductAttribute
+    public partial class ShopComponentMap
     {
-        public string Pid { get; set; }
-        public int AttributeId { get; set; }
-        public string ValueEn { get; set; }
-        public bool CheckboxValue { get; set; }
-        public int Position { get; set; }
-        public bool IsAttributeValue { get; set; }
+        public int ShopId { get; set; }
+        public int ComponentId { get; set; }
+        public bool IsUse { get; set; }
+        public string Value { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
-        public virtual Product Product { get; set; }
+        public virtual Shop Shop { get; set; }
+        public virtual ThemeComponent ThemeComponent { get; set; }
     }
 }

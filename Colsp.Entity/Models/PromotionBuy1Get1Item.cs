@@ -20,6 +20,13 @@ namespace Colsp.Entity.Models
         public string URLKey { get; set; }
         public Nullable<int> PIDBuy { get; set; }
         public Nullable<int> PIDGet { get; set; }
+        public string PromotionCode { get; set; }
+        public string PromotionCodeRef { get; set; }
+        public string CampaignID { get; set; }
+        public string CampaignName { get; set; }
+        public Nullable<int> MarketingAbsorb { get; set; }
+        public Nullable<int> MerchandiseAbsorb { get; set; }
+        public Nullable<int> VendorAbsorb { get; set; }
         public string ShortDescriptionTH { get; set; }
         public string LongDescriptionTH { get; set; }
         public string ShortDescriptionEN { get; set; }

@@ -40,5 +40,17 @@ namespace Colsp.Model.Requests
         public int? MarketingAbsorb { get; set; }
         public int? MerchandiseAbsorb { get; set; }
         public int? VendorAbsorb { get; set; }
+        public List<ProductBuy> ProductBuyList { get; set; }
+        public List<ProductGet> ProductGetList { get; set; }
+    }
+
+    public class ProductBuy {
+        public int Pid { get; set; }
+    }
+
+
+    public class ProductGet
+    {
+        public int Pid { get; set; }
     }
 }

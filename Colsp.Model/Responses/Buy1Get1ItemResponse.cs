@@ -40,5 +40,7 @@ namespace Colsp.Model.Responses
         public int? MarketingAbsorb { get; set; }
         public int? MerchandiseAbsorb { get; set; }
         public int? VendorAbsorb { get; set; }
+        public string PNameBuy { get; set; }
+        public string PNameGet { get; set; }
     }
 }

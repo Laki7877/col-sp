@@ -12,7 +12,7 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CustomerAddress
+    public partial class CustomerAddress_Staging
     {
         public int AddressId { get; set; }
         public string CustomerId { get; set; }
@@ -33,7 +33,5 @@ namespace Colsp.Entity.Models
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
-        public bool IsShipping { get; set; }
-        public bool IsBilling { get; set; }
     }
 }

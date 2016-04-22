@@ -12,21 +12,17 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AttributeValue
+    public partial class ThemeComponent
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public AttributeValue()
+        public ThemeComponent()
         {
-            this.AttributeFilterMaps = new HashSet<AttributeFilterMap>();
-            this.AttributePropertyMaps = new HashSet<AttributePropertyMap>();
-            this.AttributeValueMaps = new HashSet<AttributeValueMap>();
+            this.ShopComponentMaps = new HashSet<ShopComponentMap>();
+            this.ThemeComponentMaps = new HashSet<ThemeComponentMap>();
         }
     
-        public int AttributeValueId { get; set; }
-        public string AttributeValueEn { get; set; }
-        public string AttributeValueTh { get; set; }
-        public string ImageUrl { get; set; }
-        public string MapValue { get; set; }
+        public int ComponentId { get; set; }
+        public string ComponentName { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
@@ -34,10 +30,8 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AttributeFilterMap> AttributeFilterMaps { get; set; }
+        public virtual ICollection<ShopComponentMap> ShopComponentMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AttributePropertyMap> AttributePropertyMaps { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AttributeValueMap> AttributeValueMaps { get; set; }
+        public virtual ICollection<ThemeComponentMap> ThemeComponentMaps { get; set; }
     }
 }
