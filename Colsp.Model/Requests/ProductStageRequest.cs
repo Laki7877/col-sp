@@ -11,6 +11,10 @@ namespace Colsp.Model.Requests
         public string Status                            { get; set; }
         public int ShopId                               { get; set; }
         public bool Visibility                          { get; set; }
+        public string SaleUnitTh                        { get; set; }
+        public string SaleUnitEn                        { get; set; }
+        public string IsHasExpiryDate                   { get; set; }
+        public string IsVat                             { get; set; }
         public CategoryRequest MainGlobalCategory       { get; set; }
         public List<CategoryRequest> GlobalCategories   { get; set; }
         public CategoryRequest MainLocalCategory        { get; set; }
@@ -73,6 +77,12 @@ namespace Colsp.Model.Requests
             GroupId = string.Empty;
             AdminApprove = new AdminApproveRequest();
             Revisions = new List<ProductHistoryRequest>();
+            SaleUnitTh = string.Empty;
+            SaleUnitEn = string.Empty;
+            IsHasExpiryDate = string.Empty;
+            IsVat = string.Empty;
+            IsHasExpiryDate = string.Empty;
+            IsVat = string.Empty;
         }
     }
 

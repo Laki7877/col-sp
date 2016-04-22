@@ -68,6 +68,7 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, review);
                 }
+                request.DefaultOnNull();
                 if (!string.IsNullOrWhiteSpace(request.SearchText))
                 {
                     review = review.Where(w => w.Comment.Contains(request.SearchText)
@@ -86,7 +87,6 @@ namespace Colsp.Api.Controllers
                         review = review.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
-                var tt = review.ToList();
                 var total = review.Count();
                 var pagedAttribute = review.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedAttribute, request, total);
@@ -94,7 +94,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.InnerException);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -148,11 +148,11 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                ProductReview review = new ProductReview()
+                var review = db.ProductReviews.Where(w => w.ProductReviewId == ProductReviewId).SingleOrDefault();
+                if(review == null)
                 {
-                    ProductReviewId = ProductReviewId,
-                };
-                db.ProductReviews.Attach(review);
+                    throw new Exception("Cannot find review");
+                }
                 review.ProductContent = request.ProductContent;
                 review.ProductValidity = request.ProductValidity;
                 review.DeliverySpeed = request.DeliverySpeed;
@@ -189,7 +189,7 @@ namespace Colsp.Api.Controllers
                 {
                     ProductContent = rating.Select(s=>s.ProductContent).Average(),
                     ProductValidity = rating.Select(s => s.ProductValidity).Average(),
-                    DeleverySpeed = rating.Select(s => s.DeliverySpeed).Average(),
+                    DeliverySpeed = rating.Select(s => s.DeliverySpeed).Average(),
                     Packaging = rating.Select(s => s.Packaging).Average(),
                 };
 

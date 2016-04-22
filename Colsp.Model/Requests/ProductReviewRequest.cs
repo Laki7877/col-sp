@@ -10,6 +10,7 @@
         public decimal DeliverySpeed { get; set; }
         public decimal Packaging { get; set; }
         public string SearchText { get; set; }
+        public string Comment { get; set; }
 
         public ProductReviewRequest()
         {

@@ -32,6 +32,8 @@ namespace Colsp.Entity.Models
         public int ShippingId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
+        public string ProdTDNameTh { get; set; }
+        public string ProdTDNameEn { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
         public decimal OriginalPrice { get; set; }
@@ -74,6 +76,8 @@ namespace Colsp.Entity.Models
         public string MetaKeyTh { get; set; }
         public string SeoEn { get; set; }
         public string SeoTh { get; set; }
+        public string IsHasExpiryDate { get; set; }
+        public string IsVat { get; set; }
         public string UrlEn { get; set; }
         public int BoostWeight { get; set; }
         public int GlobalBoostWeight { get; set; }

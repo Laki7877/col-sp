@@ -42,7 +42,7 @@ namespace Colsp.Model.Requests
         public string VendorId { get; set; }
         public int ThemeId { get; set; }
         public string TaxPayerId { get; set; }
-        public string TermPayment { get; set; }
+        public TermPaymentRequest TermPayment { get; set; }
         public string Payment { get; set; }
         public string VendorTaxRate { get; set; }
         public string WithholdingTax { get; set; }
@@ -67,7 +67,7 @@ namespace Colsp.Model.Requests
 
             VendorId = string.Empty;
             TaxPayerId = string.Empty;
-            TermPayment = string.Empty;
+            TermPayment = new TermPaymentRequest();
             Payment = string.Empty;
             VendorTaxRate = string.Empty;
             WithholdingTax = string.Empty;
@@ -125,8 +125,21 @@ namespace Colsp.Model.Requests
             base.DefaultOnNull();
         }
 
-        
+
     }
 
-    
+    public class TermPaymentRequest
+    {
+        public string TermCode { get; set; }
+        public string Description { get; set; }
+
+        public TermPaymentRequest()
+        {
+            TermCode = string.Empty;
+            Description = string.Empty;
+        }
+    }
+
+
+
 }

@@ -1116,7 +1116,7 @@ namespace Colsp.Api.Controllers
                                     Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn },
                                     Brand = p.Brand != null ? new { p.Brand.BrandId, p.Brand.BrandNameEn } : null,
                                 });
-                if (User.HasPermission("View Product"))
+                if (User.ShopRequest() != null)
                 {
                     int shopId = User.ShopRequest().ShopId;
                     products = products.Where(w => w.ShopId == shopId);
@@ -2048,12 +2048,15 @@ namespace Colsp.Api.Controllers
             group.InfoFlag = false;
             group.ImageFlag = false;
             group.OnlineFlag = false;
+            
             group.InformationTabStatus = Validation.ValidateString(request.AdminApprove.Information, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() { Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.ImageTabStatus = Validation.ValidateString(request.AdminApprove.Image, "Image Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.CategoryTabStatus = Validation.ValidateString(request.AdminApprove.Category, "Category Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.MoreOptionTabStatus = Validation.ValidateString(request.AdminApprove.MoreOption, "More Option Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.VariantTabStatus = Validation.ValidateString(request.AdminApprove.Variation, "Variant Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.RejectReason = Validation.ValidateString(request.AdminApprove.RejectReason, "Reject Reason", true, 500, true, string.Empty);
+            group.SaleUnitEn = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (English)", true, 30, true, string.Empty);
+            group.SaleUnitTh = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (Thai)", true, 30, true, string.Empty);
             #endregion
             #region Create/Update
             if (addNew)
@@ -2259,10 +2262,14 @@ namespace Colsp.Api.Controllers
             #region Variant Field
             variant.ProductNameTh = Validation.ValidateString(request.ProductNameTh, "Product Name (Thai)", true, 300, true);
             variant.ProductNameEn = Validation.ValidateString(request.ProductNameEn, "Product Name (English)", true, 300, true);
+            variant.ProdTDNameEn = Validation.ValidateString(request.ProdTDNameEn, "Prod TD Name (English)", false, 55, true,string.Empty);
+            variant.ProdTDNameTh = Validation.ValidateString(request.ProdTDNameTh, "Prod TD Name (Thai)", false, 55, true, string.Empty);
             variant.Sku = Validation.ValidateString(request.Sku, "SKU", false, 300, true, string.Empty);
             variant.Upc = Validation.ValidateString(request.Upc, "UPC", false, 300, true, string.Empty);
             variant.OriginalPrice = Validation.ValidateDecimal(request.OriginalPrice, "Original Price", false, 10, 3, true, 0).Value;
             variant.SalePrice = Validation.ValidateDecimal(request.SalePrice, "Sale Price", true, 10, 3, true).Value;
+            variant.IsHasExpiryDate = Validation.ValidateString(request.IsHasExpiryDate, "Is  Has Expiry Date", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            variant.IsVat = Validation.ValidateString(request.IsVat, "Is Vat", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.UnitPrice = Validation.ValidateDecimal(request.UnitPrice, "Unit Price", false, 10, 3, true, 0).Value;
             variant.PurchasePrice = Validation.ValidateDecimal(request.PurchasePrice, "Purchase Price", true, 10, 3, true).Value;
             variant.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Description (Thai)", false, int.MaxValue, false, string.Empty);
@@ -2325,7 +2332,7 @@ namespace Colsp.Api.Controllers
             {
                 request.ShippingMethod = 1;
             }
-            var tmpShipping = shippingList.Where(w => w.ShippingId != request.ShippingMethod).SingleOrDefault();
+            var tmpShipping = shippingList.Where(w => w.ShippingId == request.ShippingMethod).SingleOrDefault();
             if (tmpShipping == null)
             {
                 throw new Exception("Invalid Shipping");
@@ -2710,6 +2717,8 @@ namespace Colsp.Api.Controllers
             response.ShippingMethod = variant.ShippingId;
             response.ProductNameTh = variant.ProductNameTh;
             response.ProductNameEn = variant.ProductNameEn;
+            response.ProdTDNameEn = variant.ProdTDNameEn;
+            response.ProdTDNameTh = variant.ProdTDNameTh;
             response.Sku = variant.Sku;
             response.Upc = variant.Upc;
             response.OriginalPrice = variant.OriginalPrice;
@@ -2762,6 +2771,8 @@ namespace Colsp.Api.Controllers
             response.SafetyStock = variant.Inventory.SafetyStockSeller;
             response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
             response.Display = variant.Display;
+            response.IsHasExpiryDate = variant.IsHasExpiryDate;
+            response.IsVat = variant.IsVat;
             if (variant.ProductStageImages != null && variant.ProductStageImages.Count > 0)
             {
                 variant.ProductStageImages = variant.ProductStageImages.OrderBy(o => o.Position).ToList();
@@ -2845,6 +2856,7 @@ namespace Colsp.Api.Controllers
             {
                 response.Tags = group.ProductStageTags.Select(s => s.Tag).ToList();
             }
+           
             response.EffectiveDate = group.EffectiveDate;
             response.ExpireDate = group.ExpireDate;
             response.ControlFlags.Flag1 = group.ControlFlag1;

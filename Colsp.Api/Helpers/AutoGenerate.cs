@@ -17,12 +17,32 @@ namespace Colsp.Api.Helper
             {
                 throw new Exception("No product selected");
             }
+
+
+            if (AppSettingKey.PID_NUMBER_ONLY)
+            {
+                foreach (var pro in products)
+                {
+                    if (!string.IsNullOrWhiteSpace(pro.Pid))
+                    {
+                        continue;
+                    }
+                    pro.Pid = string.Concat(db.GetNextProductStagePid().SingleOrDefault().Value).PadLeft(7,'0');
+                    if (string.IsNullOrWhiteSpace(pro.UrlEn))
+                    {
+                        pro.UrlEn = pro.Pid;
+                    }
+                }
+                return;
+            }
+
             var currentPid = db.Pids.FirstOrDefault();
             if(currentPid == null)
             {
                 currentPid = new Pid()
                 {
-                   CurrentPid = Constant.START_PID 
+                   //CurrentPid = Constant.START_PID
+                   CurrentPid = string.Concat(db.GetNextProductStagePid().SingleOrDefault().Value).PadLeft(7,'0')
                 };
                 db.Pids.Add(currentPid);
             }

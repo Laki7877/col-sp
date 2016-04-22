@@ -218,6 +218,7 @@
     <Compile Include="Controllers\ProductStagesController.cs" />
     <Compile Include="Controllers\ProductTempsController.cs" />
     <Compile Include="Controllers\ReturnController.cs" />
+    <Compile Include="Controllers\ShippingsController.cs" />
     <Compile Include="Controllers\ShopsController.cs" />
     <Compile Include="Controllers\ShopTypesController.cs" />
     <Compile Include="Controllers\ThemesController.cs" />

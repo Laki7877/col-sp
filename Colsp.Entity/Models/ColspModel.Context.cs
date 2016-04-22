@@ -112,6 +112,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
         public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
         public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        public virtual DbSet<ProductNotify> ProductNotifies { get; set; }
         public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
@@ -176,12 +177,14 @@ namespace Colsp.Entity.Models
         public virtual DbSet<PostCodeMap> PostCodeMaps { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
+        public virtual DbSet<TBCDSBranch> TBCDSBranches { get; set; }
         public virtual DbSet<TBCMCity> TBCMCities { get; set; }
         public virtual DbSet<TBDvMapZone> TBDvMapZones { get; set; }
         public virtual DbSet<TBPermissionTmp> TBPermissionTmps { get; set; }
         public virtual DbSet<TBRolePermissionTmp> TBRolePermissionTmps { get; set; }
         public virtual DbSet<TBRoleTmp> TBRoleTmps { get; set; }
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
+        public virtual DbSet<TBSetting> TBSettings { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
     
@@ -253,6 +256,11 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<Nullable<int>> GetNextUserId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductStagePid()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStagePid");
         }
     }
 }

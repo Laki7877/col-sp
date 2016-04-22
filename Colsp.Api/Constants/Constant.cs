@@ -20,7 +20,7 @@ namespace Colsp.Api.Constants
         public static int DEFAULT_BOOSTWEIGHT = 5000;
 
         public static List<char> IGNORE_PID = new List<char>() {
-                    '0',
+                   //'0',
                     'D',
                     'E',
                     'F',

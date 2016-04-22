@@ -136,8 +136,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shop = db.Shops.Include(i=>i.User.UserGroupMaps.Select(ug => ug.UserGroup)).Include(i=>i.ShopType)
-                    .Include(i=>i.UserShopMaps.Select(s=>s.User.UserGroupMaps.Select(ug=>ug.UserGroup)))
+                var shop = db.Shops.Include(i=>i.User.UserGroupMaps.Select(ug => ug.UserGroup))
                     .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Select(s=>new
                     {
@@ -947,7 +946,7 @@ namespace Colsp.Api.Controllers
             }
             #endregion
 
-            shop.TermPayment = Validation.ValidateString(request.TermPayment, "Term Payment", true, 4, false);
+            shop.TermPayment = Validation.ValidateString(request.TermPayment.TermCode, "Term Payment", true, 4, false);
             shop.Payment = Validation.ValidateString(request.Payment, "Payment", true, 1, false);
             shop.VendorTaxRate = Validation.ValidateString(request.VendorTaxRate, "Vendor Tax Rate", true, 5, false);
             shop.WithholdingTax = Validation.ValidateString(request.WithholdingTax, "Withholding Tax", true, 1, false);

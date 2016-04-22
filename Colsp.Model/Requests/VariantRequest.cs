@@ -11,6 +11,8 @@ namespace Colsp.Model.Requests
         public string ProductNameEn { get; set; }
         public string Pid { get; set; }
         public string ProductNameTh { get; set; }
+        public string ProdTDNameTh { get; set; }
+        public string ProdTDNameEn { get; set; }
         public string Sku { get; set; }
         public string DescriptionShortTh { get; set; }
         public string DescriptionShortEn { get; set; }
@@ -57,7 +59,8 @@ namespace Colsp.Model.Requests
         public bool DefaultVariant { get; set; }
         public long ProductId { get; set; }
         public int ShopId { get; set; }
-
+        public string IsHasExpiryDate { get; set; }
+        public string IsVat { get; set; }
         public List<ImageRequest> Images360 { get; set; }
 
         //public int SafetyStock { get; set; }
@@ -79,6 +82,8 @@ namespace Colsp.Model.Requests
             ProductNameEn = string.Empty;
             Pid = string.Empty;
             ProductNameTh = string.Empty;
+            ProdTDNameTh = string.Empty;
+            ProdTDNameEn = string.Empty;
             Sku = string.Empty;
             DescriptionShortTh = string.Empty;
             DescriptionShortEn = string.Empty;
@@ -124,6 +129,8 @@ namespace Colsp.Model.Requests
             DefaultVariant = false;
             VariantImg = new List<ImageRequest>();
             MasterImg = new List<ImageRequest>();
+            IsHasExpiryDate = string.Empty;
+            IsVat = string.Empty;
         }
     }
 }
