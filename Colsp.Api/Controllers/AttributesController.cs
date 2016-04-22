@@ -20,6 +20,9 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
+
+
+
         [Route("api/Attributes/DefaultAttribute")]
         [HttpGet]
         public HttpResponseMessage GetDefaultAttribute()
