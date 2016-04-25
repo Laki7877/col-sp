@@ -79,7 +79,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopList = db.Shops.Include(i => i.ShopType).Where(w => !w.Status.Equals(Constant.STATUS_REMOVE))
+                var shopList = db.Shops.Where(w => !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Select(s => new
                     {
                         s.ShopId,
@@ -88,7 +88,7 @@ namespace Colsp.Api.Controllers
                         ShopType = new { s.ShopTypeId, s.ShopType.ShopTypeNameEn },
                         s.Status,
                         s.ShopGroup,
-                        s.UpdatedDt,
+                        UpdatedDt = s.UpdateOn,
                         s.BankAccountName,
                         s.BankAccountNumber
                     });
@@ -146,9 +146,14 @@ namespace Colsp.Api.Controllers
                         s.Commission,
                         s.ShopGroup,
                         s.MaxLocalCategory,
-                        s.BankName,
+                        BankName = s.BankDetail,
                         s.BankAccountName,
                         s.BankAccountNumber,
+                        s.TaxPayerId,
+                        s.TermPayment,
+                        s.VendorTaxRate,
+                        s.WithholdingTax,
+                        s.Payment,
                         Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission }),
                         ShopOwner = new
                         {
@@ -174,6 +179,11 @@ namespace Colsp.Api.Controllers
                         s.GiftWrap,
                         s.TaxInvoice,
                         s.StockAlert,
+                        s.City,
+                        s.Province,
+                        s.District,
+                        s.Country,
+                        s.UrlKey,
                         Users = s.UserShopMaps.Select(u=> u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
                         new
                         {
@@ -184,12 +194,12 @@ namespace Colsp.Api.Controllers
                             u.User.Position,
                             UserGroup = u.User.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn)
                         }),
-                    }).ToList();
-                if(shop == null || shop.Count == 0)
+                    }).SingleOrDefault();
+                if(shop == null )
                 {
                     throw new Exception("Cannot find shop");
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, shop[0]);
+                return Request.CreateResponse(HttpStatusCode.OK, shop);
             }
             catch (Exception e)
             {
@@ -215,9 +225,14 @@ namespace Colsp.Api.Controllers
                         s.Commission,
                         s.ShopGroup,
                         s.MaxLocalCategory,
-                        s.BankName,
+                        BankName = s.BankDetail,
                         s.BankAccountName,
                         s.BankAccountNumber,
+                        s.TaxPayerId,
+                        s.TermPayment,
+                        s.VendorTaxRate,
+                        s.WithholdingTax,
+                        s.Payment,
                         Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission }),
                         ShopOwner = new
                         {
@@ -242,7 +257,22 @@ namespace Colsp.Api.Controllers
                         s.Pinterest,
                         s.GiftWrap,
                         s.TaxInvoice,
-                        s.StockAlert
+                        s.StockAlert,
+                        s.City,
+                        s.Province,
+                        s.District,
+                        s.Country,
+                        s.UrlKey,
+                        Users = s.UserShopMaps.Select(u => u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
+                        new
+                        {
+                            u.User.UserId,
+                            u.User.NameEn,
+                            u.User.Email,
+                            u.User.Status,
+                            u.User.Position,
+                            UserGroup = u.User.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn)
+                        }),
                     }).SingleOrDefault();
                 if (shop == null)
                 {
@@ -269,8 +299,8 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find shop");
                 }
                 SetupShopProfile(shop, request);
-                shop.UpdatedBy = User.UserRequest().Email;
-                shop.UpdatedDt = DateTime.Now;
+                shop.UpdateBy = User.UserRequest().Email;
+                shop.UpdateOn = DateTime.Now;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShopProfile();
             }
@@ -287,15 +317,12 @@ namespace Colsp.Api.Controllers
             Shop shop = null;
             try
             {
-                shop = new Shop()
-                {
-                    ThemeId = Constant.DEFAULT_THEME_ID,
-                };
                 string email = User.UserRequest().Email;
                 DateTime currentDt = DateTime.Now;
+                shop = new Shop();
                 SetupShopAdmin(shop, request,email, currentDt);
-                shop.CreatedBy = email;
-                shop.CreatedDt = currentDt;
+                shop.CreateBy = email;
+                shop.CreateOn = currentDt;
                 #region Owner
                 User owner = new User();
                 SetupUser(owner, request.ShopOwner);
@@ -305,32 +332,32 @@ namespace Colsp.Api.Controllers
                 #endregion
                 owner.Status = Constant.STATUS_ACTIVE;
                 owner.Type = Constant.USER_TYPE_SELLER;
-                owner.CreatedBy = email;
-                owner.CreatedDt = currentDt;
-                owner.UpdatedBy = email;
-                owner.UpdatedDt = currentDt;
+                owner.CreateBy = email;
+                owner.CreateOn = currentDt;
+                owner.UpdateBy = email;
+                owner.UpdateOn = currentDt;
                 owner.UserGroupMaps.Add(new UserGroupMap()
                 {
                     GroupId = Constant.SHOP_OWNER_GROUP_ID,
-                    CreatedBy = email,
-                    CreatedDt = currentDt,
-                    UpdatedBy = email,
-                    UpdatedDt = currentDt,
+                    CreateBy = email,
+                    CreateOn = currentDt,
+                    UpdateBy = email,
+                    UpdateOn = currentDt,
                 });
                 shop.UserShopMaps.Add(new UserShopMap()
                 {
                     User = owner,
-                    CreatedBy = email,
-                    CreatedDt = currentDt,
-                    UpdatedBy = email,
-                    UpdatedDt = currentDt,
+                    CreateBy = email,
+                    CreateOn = currentDt,
+                    UpdateBy = email,
+                    UpdateOn = currentDt,
                 });
                 shop.User = shop.UserShopMaps.ElementAt(0).User;
                 #endregion
                 shop.User.UserId = db.GetNextUserId().SingleOrDefault().Value;
                 shop.ShopId = db.GetNextShopId().SingleOrDefault().Value;
                 shop.VendorId = string.Concat(shop.ShopId);
-                shop.VendorId.PadLeft(5, '0');
+                shop.VendorId = shop.VendorId.PadLeft(5, '0');
                 string.Concat("M", shop.VendorId);
                 db.Shops.Add(shop);
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
@@ -401,23 +428,23 @@ namespace Colsp.Api.Controllers
                                 EmployeeId = request.ShopOwner.EmployeeId,
                                 Status = Constant.STATUS_ACTIVE,
                                 Type = Constant.USER_TYPE_SELLER,
-                                CreatedBy = User.UserRequest().Email,
-                                CreatedDt = DateTime.Now,
-                                UpdatedBy = User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now,
+                                CreateBy = User.UserRequest().Email,
+                                CreateOn = DateTime.Now,
+                                UpdateBy = User.UserRequest().Email,
+                                UpdateOn = DateTime.Now,
                                 UserGroupMaps = new List<UserGroupMap>() { new UserGroupMap()
                         {
                             GroupId = Constant.SHOP_OWNER_GROUP_ID,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         }}
                             },
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                         shop.User = shop.UserShopMaps.ElementAt(0).User;
                         
@@ -583,8 +610,8 @@ namespace Colsp.Api.Controllers
                     {
                         compBanner.IsUse = request.IsBanner;
                         compBanner.Value = val;
-                        compBanner.UpdatedBy = User.UserRequest().Email;
-                        compBanner.UpdatedDt = DateTime.Now;
+                        compBanner.UpdateBy = User.UserRequest().Email;
+                        compBanner.UpdateOn = DateTime.Now;
                     }
                     else
                     {
@@ -593,10 +620,10 @@ namespace Colsp.Api.Controllers
                             ComponentId = banner.ComponentId,
                             IsUse = request.IsBanner,
                             Value = val,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -614,8 +641,8 @@ namespace Colsp.Api.Controllers
                     {
                         compLayout.IsUse = request.IsLayout;
                         compLayout.Value = val;
-                        compLayout.UpdatedBy = User.UserRequest().Email;
-                        compLayout.UpdatedDt = DateTime.Now;
+                        compLayout.UpdateBy = User.UserRequest().Email;
+                        compLayout.UpdateOn = DateTime.Now;
                     }
                     else
                     {
@@ -624,10 +651,10 @@ namespace Colsp.Api.Controllers
                             ComponentId = layout.ComponentId,
                             IsUse = request.IsLayout,
                             Value = val,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -645,8 +672,8 @@ namespace Colsp.Api.Controllers
                     {
                         compVideo.IsUse = request.IsVideo;
                         compVideo.Value = val;
-                        compVideo.UpdatedBy = User.UserRequest().Email;
-                        compVideo.UpdatedDt = DateTime.Now;
+                        compVideo.UpdateBy = User.UserRequest().Email;
+                        compVideo.UpdateOn = DateTime.Now;
                     }
                     else
                     {
@@ -655,10 +682,10 @@ namespace Colsp.Api.Controllers
                             ComponentId = video.ComponentId,
                             IsUse = request.IsVideo,
                             Value = val,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -697,7 +724,11 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var response = db.VendorTaxRates;
+                var response = db.VendorTaxRates.Select(s=>new
+                {
+                    s.Description,
+                    s.VendorTaxRateCode
+                });
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
@@ -712,7 +743,11 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var response = db.WithholdingTaxes;
+                var response = db.WithholdingTaxes.Select(s=>new
+                {
+                    s.Description,
+                    s.WithholdingTaxCode
+                });
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
@@ -727,7 +762,11 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var response = db.BankDetails;
+                var response = db.BankDetails.Select(s=>new
+                {
+                    s.BankName,
+                    s.BankNumber
+                });
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
@@ -870,20 +909,25 @@ namespace Colsp.Api.Controllers
         {
             SetupShopProfile(shop, request);
             shop.ShopGroup = Validation.ValidateString(request.ShopGroup, "Shop Group", true, 2, false, Constant.SHOP_GROUP_MERCHANT, new List<string>() { Constant.SHOP_GROUP_BU, Constant.SHOP_GROUP_INDY,Constant.SHOP_GROUP_MERCHANT });
-            shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false, string.Empty);
-            
-            shop.Commission = request.Commission;
-            shop.UrlKey = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, false, shop.ShopNameEn.Replace(" ","-"));
+            #region Shoptype
             if (request.ShopType == null)
             {
-                throw new Exception("Shop type cannot be null");
+                throw new Exception("Shop Type is requeired");
             }
-            shop.ShopTypeId = request.ShopType.ShopTypeId;
+            var typeId = db.ShopTypes.Where(w => w.ShopTypeId == request.ShopType.ShopTypeId).Select(s => s.ShopTypeId).SingleOrDefault();
+            if (typeId == 0)
+            {
+                throw new Exception("Cannot find Shop Type");
+            }
+            shop.ShopTypeId = typeId;
+            #endregion
+            shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.STATUS_NOT_ACTIVE, new List<string>() { Constant.STATUS_ACTIVE, Constant.STATUS_NOT_ACTIVE });
             shop.MaxLocalCategory = request.MaxLocalCategory;
             if (shop.MaxLocalCategory == 0)
             {
                 shop.MaxLocalCategory = Constant.MAX_LOCAL_CATEGORY;
             }
+            shop.Commission = request.Commission;
             #region Shop Commission
             var commissions = shop.ShopCommissions.ToList();
             if (request.Commissions != null && request.Commissions.Count > 0)
@@ -913,8 +957,8 @@ namespace Colsp.Api.Controllers
                         if (current != null)
                         {
                             current.Commission = catMap.Commission;
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = currentDt;
+                            current.UpdateBy = email;
+                            current.UpdateOn = currentDt;
                             commissions.Remove(current);
                         }
                         else
@@ -928,10 +972,10 @@ namespace Colsp.Api.Controllers
                         {
                             CategoryId = catMap.CategoryId,
                             Commission = catMap.Commission,
-                            CreatedBy = email,
-                            CreatedDt = currentDt,
-                            UpdatedBy = email,
-                            UpdatedDt = currentDt,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         });
                     }
                 }
@@ -941,36 +985,67 @@ namespace Colsp.Api.Controllers
                 db.ShopCommissions.RemoveRange(commissions);
             }
             #endregion
-
-            //shop.TermPayment = Validation.ValidateString(request.TermPayment.TermCode, "Term Payment", true, 4, false);
+            shop.UrlKey = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, false, shop.ShopNameEn.Replace(" ","-"));
+            shop.TaxPayerId = Validation.ValidateString(request.TaxPayerId, "Tax Payer Id", true, 35, false, string.Empty);
+            if(request.TermPayment != null && !string.IsNullOrEmpty(request.TermPayment.TermPaymentCode))
+            {
+                var termCode = db.TermPayments
+                    .Where(w => w.TermPaymentCode.Equals(request.TermPayment.TermPaymentCode))
+                    .Select(s => s.TermPaymentCode)
+                    .SingleOrDefault();
+                if (string.IsNullOrEmpty(termCode))
+                {
+                    throw new Exception("Invalid Term Payment Code");
+                }
+                shop.TermPaymentCode = termCode;
+            }
             shop.Payment = Validation.ValidateString(request.Payment, "Payment", true, 1, false);
-            //shop.VendorTaxRate = Validation.ValidateString(request.VendorTaxRate, "Vendor Tax Rate", true, 5, false);
-            //shop.WithholdingTax = Validation.ValidateString(request.WithholdingTax, "Withholding Tax", true, 1, false);
-            shop.VendorAddressLine1 = Validation.ValidateString(request.VendorAddressLine1, "Vendor Address Line1", true, 35, false,string.Empty);
-            shop.VendorAddressLine2 = Validation.ValidateString(request.VendorAddressLine2, "Vendor Address Line2", true, 35, false, string.Empty);
-            shop.VendorAddressLine3 = Validation.ValidateString(request.VendorAddressLine3, "Vendor Address Line3", true, 35, false, string.Empty);
-            //shop.City = Validation.ValidateString(request.City, "City", true, 25, false, string.Empty);
-            //shop.State = Validation.ValidateString(request.State, "State", true, 4, false, string.Empty);
-            shop.ZipCode = Validation.ValidateString(request.ZipCode, "Zip Code", true, 10, false, string.Empty);
-            shop.CountryCode = Validation.ValidateString(request.CountryCode, "Country Code", true, 3, false, string.Empty);
-            shop.Country = Validation.ValidateString(request.Country, "Country", true, 25, false, string.Empty);
-            shop.PhoneNumber = Validation.ValidateString(request.PhoneNumber, "Phone Number", true, 15, false, string.Empty);
-            shop.FaxNumber = Validation.ValidateString(request.FaxNumber, "Fax Number", true, 15, false, string.Empty);
-            shop.Telex = Validation.ValidateString(request.Telex, "Telex", true, 15, false, string.Empty);
-            shop.OverseasVendorIndicator = Validation.ValidateString(request.Status, "Overseas Vendor Indicator", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
-            shop.BankName = Validation.ValidateString(request.BankName, "Bank Name", true, 25, false, string.Empty);
-            shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
+            if (request.VendorTaxRate != null && !string.IsNullOrEmpty(request.VendorTaxRate.VendorTaxRateCode))
+            {
+                var code = db.VendorTaxRates
+                    .Where(w => w.VendorTaxRateCode.Equals(request.VendorTaxRate.VendorTaxRateCode))
+                    .Select(s => s.VendorTaxRateCode)
+                    .SingleOrDefault();
+                if (string.IsNullOrEmpty(code))
+                {
+                    throw new Exception("Invalid Vendor Tax Rate Code");
+                }
+                shop.VendorTaxRateCode = code;
+            }
+            if (request.WithholdingTax != null && !string.IsNullOrEmpty(request.WithholdingTax.WithholdingTaxCode))
+            {
+                var code = db.WithholdingTaxes
+                    .Where(w => w.WithholdingTaxCode.Equals(request.WithholdingTax.WithholdingTaxCode))
+                    .Select(s => s.WithholdingTaxCode)
+                    .SingleOrDefault();
+                if (string.IsNullOrEmpty(code))
+                {
+                    throw new Exception("Invalid Withholding Tax Code");
+                }
+                shop.WithholdingTaxCode = code;
+            }
+            if (request.BankName != null && !string.IsNullOrEmpty(request.BankName.BankNumber))
+            {
+                var code = db.BankDetails
+                    .Where(w => w.BankNumber.Equals(request.BankName.BankNumber))
+                    .Select(s => s.BankNumber)
+                    .SingleOrDefault();
+                if (string.IsNullOrEmpty(code))
+                {
+                    throw new Exception("Invalid Bank Name");
+                }
+                shop.BankNumber = code;
+            }
             shop.BankAccountNumber = Validation.ValidateString(request.BankAccountNumber, "Bank Account Number", true, 100, false);
-            shop.RemittanceFaxNumber = Validation.ValidateString(request.Telex, "Remittance Fax Number", true, 18, false, string.Empty);
-
-            shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.STATUS_NOT_ACTIVE, new List<string>() { Constant.STATUS_ACTIVE, Constant.STATUS_NOT_ACTIVE });
-            shop.UpdatedBy = email;
-            shop.UpdatedDt = currentDt;
+            shop.BankAccountName = Validation.ValidateString(request.BankAccountName, "Bank Account Name", true, 100, false);
+            shop.UpdateBy = email;
+            shop.UpdateOn = currentDt;
         }
 
         private void SetupShopProfile(Shop shop, ShopRequest request)
         {
             shop.ShopNameEn = Validation.ValidateString(request.ShopNameEn, "Shop Name", true, 100, true);
+            shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false, string.Empty);
             shop.ShopImageUrl = string.Empty;
             if (request.ShopImage != null)
             {
@@ -990,6 +1065,59 @@ namespace Colsp.Api.Controllers
             shop.TaxInvoice = Validation.ValidateString(request.TaxInvoice, "Tax Invoice", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, int.MaxValue, 0).Value;
             shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.STATUS_NOT_ACTIVE, new List<string>() { Constant.STATUS_NOT_ACTIVE, Constant.STATUS_ACTIVE});
+
+            shop.VendorAddressLine1 = Validation.ValidateString(request.VendorAddressLine1, "Vendor Address Line1", true, 35, false, string.Empty);
+            shop.VendorAddressLine2 = Validation.ValidateString(request.VendorAddressLine2, "Vendor Address Line2", true, 35, false, string.Empty);
+            shop.VendorAddressLine3 = Validation.ValidateString(request.VendorAddressLine3, "Vendor Address Line3", true, 35, false, string.Empty);
+            shop.OverseasVendorIndicator = Validation.ValidateString(request.OverseasVendorIndicator, "Overseas Vendor Indicator", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
+
+
+            if (request.Country != null && !string.IsNullOrEmpty(request.Country.CountryCode))
+            {
+                var id = db.Countries.Where(w => w.CountryCode.Equals(request.Country.CountryCode)).Select(s => s.CountryCode).SingleOrDefault();
+                if (string.IsNullOrEmpty(id))
+                {
+                    throw new Exception("Cannot find city");
+                }
+                shop.CountryCode = id;
+            }
+
+
+            if (request.Province != null && request.Province.ProvinceId != 0)
+            {
+                var provinceId = db.Provinces.Where(w => w.ProvinceId == request.Province.ProvinceId).Select(s => s.ProvinceId).SingleOrDefault();
+                if (provinceId == 0)
+                {
+                    throw new Exception("Cannot find Province");
+                }
+                shop.ProvinceId = provinceId;
+
+                if (request.City != null && request.City.CityId != 0)
+                {
+                    var cityId = db.Cities.Where(w => w.ProvinceId == shop.ProvinceId && w.CityId == request.City.CityId).Select(s => s.CityId).SingleOrDefault();
+                    if (cityId == 0)
+                    {
+                        throw new Exception("Cannot find City");
+                    }
+                    shop.CityId = cityId;
+
+                    if (request.District != null && request.District.DistrictId != 0)
+                    {
+                        var districtId = db.Districts.Where(w => w.CityId == shop.CityId && w.DistrictId == request.District.DistrictId).Select(s => s.CityId).SingleOrDefault();
+                        if (districtId == 0)
+                        {
+                            throw new Exception("Cannot find District");
+                        }
+                        shop.DistrictId = districtId;
+                    }
+                }
+            }
+            shop.ZipCode = Validation.ValidateString(request.ZipCode, "Zip Code", true, 10, false, string.Empty);
+            shop.PhoneNumber = Validation.ValidateString(request.PhoneNumber, "Phone Number", true, 15, false, string.Empty);
+            shop.FaxNumber = Validation.ValidateString(request.FaxNumber, "Fax Number", true, 15, false, string.Empty);
+            shop.Telex = Validation.ValidateString(request.Telex, "Telex", true, 15, false, string.Empty);
+            shop.OverseasVendorIndicator = Validation.ValidateString(request.OverseasVendorIndicator, "Overseas Vendor Indicator", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
+            shop.RemittanceFaxNumber = Validation.ValidateString(request.Telex, "Remittance Fax Number", true, 18, false, string.Empty);
         }
 
         private void SetupUser(User user, UserRequest request)

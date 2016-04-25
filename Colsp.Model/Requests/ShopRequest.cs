@@ -19,7 +19,7 @@ namespace Colsp.Model.Requests
         public string FloatMessageTh { get; set; }
         public string ShopAddress { get; set; }
         public int MaxLocalCategory { get; set; }
-        public string BankName { get; set; }
+        public BankDetailRequest BankName { get; set; }
         public string BankAccountName { get; set; }
         public string BankAccountNumber { get; set; }
         public string Facebook { get; set; }
@@ -35,25 +35,22 @@ namespace Colsp.Model.Requests
         public string GiftWrap { get; set; }
         //public bool IsShopReady { get; set; }
         public List<ShopCommission> Commissions { get; set; }
-
-
-
-
         public string VendorId { get; set; }
         public int ThemeId { get; set; }
         public string TaxPayerId { get; set; }
         public TermPaymentRequest TermPayment { get; set; }
         public string Payment { get; set; }
-        public string VendorTaxRate { get; set; }
-        public string WithholdingTax { get; set; }
+        public VendorTaxRateRequest VendorTaxRate { get; set; }
+        public WithholdingTaxRequest WithholdingTax { get; set; }
         public string VendorAddressLine1 { get; set; }
         public string VendorAddressLine2 { get; set; }
         public string VendorAddressLine3 { get; set; }
-        public string City { get; set; }
+        public CityRequest City { get; set; }
+        public ProvinceRequest Province { get; set; }
+        public DistrictRequest District { get; set; }
+        public CountryRequest Country { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
-        public string CountryCode { get; set; }
-        public string Country { get; set; }
         public string PhoneNumber { get; set; }
         public string FaxNumber { get; set; }
         public string Telex { get; set; }
@@ -64,29 +61,26 @@ namespace Colsp.Model.Requests
         {
             ShopId = 0;
             ThemeId = 0;
-
             VendorId = string.Empty;
             TaxPayerId = string.Empty;
             TermPayment = new TermPaymentRequest();
             Payment = string.Empty;
-            VendorTaxRate = string.Empty;
-            WithholdingTax = string.Empty;
+            VendorTaxRate = new VendorTaxRateRequest();
+            WithholdingTax = new WithholdingTaxRequest();
             VendorAddressLine1 = string.Empty;
             VendorAddressLine2 = string.Empty;
             VendorAddressLine3 = string.Empty;
-            City = string.Empty;
+            Country = new CountryRequest();
+            Province = new ProvinceRequest();
+            City = new CityRequest();
+            District = new DistrictRequest();
             State = string.Empty;
             ZipCode = string.Empty;
-            CountryCode = string.Empty;
-            Country = string.Empty;
             PhoneNumber = string.Empty;
             FaxNumber = string.Empty;
             Telex = string.Empty;
             OverseasVendorIndicator = string.Empty;
             RemittanceFaxNumber = string.Empty;
-
-
-
             ShopNameEn = string.Empty;
             ShopNameTh = string.Empty;
             Status = string.Empty;
@@ -97,7 +91,7 @@ namespace Colsp.Model.Requests
             FloatMessageTh = string.Empty;
             ShopAddress = string.Empty;
             MaxLocalCategory = 0;
-            BankName = string.Empty;
+            BankName = new BankDetailRequest();
             BankAccountName = string.Empty;
             BankAccountNumber = string.Empty;
             Facebook = string.Empty;
@@ -110,7 +104,6 @@ namespace Colsp.Model.Requests
             ShopGroup = string.Empty;
             TaxInvoice = string.Empty;
             GiftWrap = string.Empty;
-
             ShopOwner = new UserRequest();
             Commissions = new List<ShopCommission>();
             Users = new List<UserRequest>();
@@ -130,16 +123,109 @@ namespace Colsp.Model.Requests
 
     public class TermPaymentRequest
     {
-        public string TermCode { get; set; }
+        public string TermPaymentCode { get; set; }
         public string Description { get; set; }
 
         public TermPaymentRequest()
         {
-            TermCode = string.Empty;
+            TermPaymentCode = string.Empty;
             Description = string.Empty;
         }
     }
 
+    public class WithholdingTaxRequest
+    {
+        public string Description { get; set; }
+        public string WithholdingTaxCode { get; set; }
+
+        public WithholdingTaxRequest()
+        {
+            Description = string.Empty;
+            WithholdingTaxCode = string.Empty;
+        }
+    }
+
+    public class VendorTaxRateRequest
+    {
+        public string Description { get; set; }
+        public string VendorTaxRateCode { get; set; }
+
+        public VendorTaxRateRequest()
+        {
+            Description = string.Empty;
+            VendorTaxRateCode = string.Empty;
+        }
+    }
 
 
+    public class BankDetailRequest
+    {
+        public string BankName { get; set; }
+        public string BankNumber { get; set; }
+        
+        public BankDetailRequest()
+        {
+            BankName = string.Empty;
+            BankNumber = string.Empty;
+        }
+    }
+
+
+    public class CityRequest
+    {
+        public int CityId { get; set; }
+        public string CityName { get; set; }
+        public string CityNameEn { get; set; }
+
+        public CityRequest()
+        {
+            CityId = 0;
+            CityName = string.Empty;
+            CityNameEn = string.Empty;
+        }
+    }
+
+    public class ProvinceRequest
+    {
+        public int ProvinceId { get; set; }
+        public string ProvinceName { get; set; }
+        public string ProvinceNameEn { get; set; }
+
+        public ProvinceRequest()
+        {
+            ProvinceId = 0;
+            ProvinceName = string.Empty;
+            ProvinceNameEn = string.Empty;
+        }
+    }
+
+
+    public class CountryRequest
+    {
+        public string CountryCode { get; set; }
+        public string CountryName { get; set; }
+
+        public CountryRequest()
+        {
+            CountryCode = string.Empty;
+            CountryName = string.Empty;
+        }
+    }
+
+    public class DistrictRequest
+    {
+        public int DistrictId { get; set; }
+        public string DistrictName { get; set; }
+        public string DistrictNameEn { get; set; }
+
+        public DistrictRequest()
+        {
+            DistrictId = 0;
+            DistrictName = string.Empty;
+            DistrictNameEn = string.Empty;
+        }
+    }
+
+
+    
 }

@@ -41,12 +41,12 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var brands = db.Brands.Select(s => new
+                var brands = db.Brands.Where(w=>w.Status.Equals(Constant.STATUS_ACTIVE)).Select(s => new
                 {
                     s.BrandId,
                     s.BrandNameEn,
                     s.BrandNameTh,
-                    s.UpdatedDt
+                    UpdatedDt = s.UpdateOn
                 });
                 if (request == null)
                 {
@@ -78,8 +78,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
-                var brand = db.Brands.Where(w => w.BrandId == brandId).Select(s => new
+                var brand = db.Brands.Where(w => w.BrandId == brandId && w.Status.Equals(Constant.STATUS_ACTIVE)).Select(s => new
                 {
                     s.BrandId,
                     s.BrandNameEn,
@@ -123,12 +122,6 @@ namespace Colsp.Api.Controllers
                         },
                     }),
                 }).SingleOrDefault();
-
-                //var brand = db.Brands
-                //    .Where(w => w.BrandId == brandId).Include(i => i.BrandImages)
-                //    .Include(i=>i.BrandFeatureProducts
-                //        .Select(s=>s.ProductStageGroup.ProductStages))
-                //    .SingleOrDefault();
                 if(brand == null)
                 {
                     throw new Exception(string.Concat("Cannot find brand id ",brandId));
@@ -155,7 +148,6 @@ namespace Colsp.Api.Controllers
                 response.SEO.SeoTh = brand.SeoTh;
                 response.FeatureTitle = brand.FeatureTitle;
                 response.TitleShowcase = brand.TitleShowcase;
-                
                 if (brand.BrandImages != null)
                 {
                     var productImgEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o => o.Position).ToList();
@@ -214,22 +206,19 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var ids = request.Select(s => s.BrandId).ToList();
-                var brandList = db.Brands
-                    .Where(w=> ids.Contains(w.BrandId))
-                    .Include(i => i.ProductStageGroups)
-                    .ToList();
+
+                var productBrand = db.ProductStageGroups.Where(w => ids.Contains(w.BrandId.HasValue ? w.BrandId.Value : 0)).Select(s=>s.Brand.BrandNameEn);
+                if(productBrand != null && productBrand.Count() > 0)
+                {
+                    throw new Exception(string.Concat("Cannot delete brand ", string.Join(",", productBrand)));
+                }
+                var brandList = db.Brands.Where(w=> ids.Contains(w.BrandId));
                 foreach (BrandRequest brandRq in request)
                 {
-                    var current = brandList
-                        .Where(w => w.BrandId == brandRq.BrandId)
-                        .SingleOrDefault();
+                    var current = brandList.Where(w => w.BrandId == brandRq.BrandId).SingleOrDefault();
                     if (current == null)
                     {
                         throw new Exception(string.Concat("Cannot find brand id ", brandRq.BrandId));
-                    }
-                    if (current.ProductStageGroups != null && current.ProductStageGroups.Count > 0)
-                    {
-                        throw new Exception("Brand has product or variant associate");
                     }
                     db.Brands.Remove(current);
                 }
@@ -252,8 +241,8 @@ namespace Colsp.Api.Controllers
                 string email = User.UserRequest().Email;
                 DateTime cuurentDt = DateTime.Now;
                 SetupBrand(brand, request,email, cuurentDt, db);
-                brand.CreatedBy = email;
-                brand.CreatedDt = cuurentDt;
+                brand.CreateBy = email;
+                brand.CreateOn = cuurentDt;
                 brand.BrandId = db.GetNextBrandId().SingleOrDefault().Value;
                 db.Brands.Add(brand);
                 Util.DeadlockRetry(db.SaveChanges, "Brand");
@@ -347,8 +336,8 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Position = position++;
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = currentDt;
+                            current.UpdateBy = email;
+                            current.UpdateOn = currentDt;
                             imageOldEn.Remove(current);
                         }
                         else
@@ -363,8 +352,8 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
-                            UpdatedBy = email,
-                            UpdatedDt = currentDt
+                            UpdateBy = email,
+                            UpdateOn = currentDt
                         });
                     }
                 }
@@ -393,8 +382,8 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Position = position++;
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = currentDt;
+                            current.UpdateBy = email;
+                            current.UpdateOn = currentDt;
                             imageOldTh.Remove(current);
                         }
                         else
@@ -409,8 +398,8 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
-                            UpdatedBy = email,
-                            UpdatedDt = currentDt
+                            UpdateBy = email,
+                            UpdateOn = currentDt
                         });
                     }
                 }
@@ -456,10 +445,10 @@ namespace Colsp.Api.Controllers
                             {
                                 BrandId = brand.BrandId,
                                 ProductId = pro.ProductId,
-                                CreatedBy = email,
-                                CreatedDt = currentDt,
-                                UpdatedBy = email,
-                                UpdatedDt = currentDt
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt
                             });
                         }
                         else
@@ -475,8 +464,8 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             brand.Status = Constant.STATUS_ACTIVE;
-            brand.UpdatedBy = email;
-            brand.UpdatedDt = currentDt;
+            brand.UpdateBy = email;
+            brand.UpdateOn = currentDt;
         }
 
         protected override void Dispose(bool disposing)

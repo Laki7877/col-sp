@@ -73,18 +73,10 @@ namespace Colsp.Api.Controllers
                     .Include(i => i.UserGroupMaps)
                     .Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
                     .Include(i=>i.UserShopMaps.Select(s=>s.Shop));
-                if (User.HasPermission("Delete Seller"))
-                {
-
-                }
-                else if (User.ShopRequest() != null)
+                if (User.ShopRequest() != null)
                 {
                     int shopId = User.ShopRequest().ShopId;
                     tmpUser = tmpUser.Where(w => w.UserShopMaps.Any(a => a.ShopId == shopId));
-                }
-                else
-                {
-                    throw new Exception("No permission to do");
                 }
 
                 var userList = tmpUser.Select(s => new
@@ -93,7 +85,7 @@ namespace Colsp.Api.Controllers
                     s.NameEn,
                     s.NameTh,
                     s.Email,
-                    s.UpdatedDt,
+                    UpdatedDt = s.UpdateOn,
                     UserGroup = s.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn),
                     Shops = s.UserShopMaps.Select(sh=>sh.Shop.ShopNameEn),
                 });
@@ -170,14 +162,14 @@ namespace Colsp.Api.Controllers
                         {
                             sb.BrandId,
                             sb.Brand.BrandNameEn,
-                            sb.Brand.UpdatedDt
+                            UpdateOn = sb.Brand.UpdateOn
                         })
-                    }).ToList();
-                if (usr == null || usr.Count == 0)
+                    }).SingleOrDefault();
+                if (usr == null )
                 {
                     throw new Exception("User not found");
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, usr[0]);
+                return Request.CreateResponse(HttpStatusCode.OK, usr);
             }
             catch (Exception e)
             {
@@ -200,10 +192,10 @@ namespace Colsp.Api.Controllers
                 #endregion
                 user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_SELLER;
-                user.CreatedBy = User.UserRequest().Email;
-                user.CreatedDt = DateTime.Now;
-                user.UpdatedBy = User.UserRequest().Email;
-                user.UpdatedDt = DateTime.Now;
+                user.CreateBy = User.UserRequest().Email;
+                user.CreateOn = DateTime.Now;
+                user.UpdateBy = User.UserRequest().Email;
+                user.UpdateOn = DateTime.Now;
                 #region User Group
                 if (request.UserGroup != null)
                 {
@@ -216,10 +208,10 @@ namespace Colsp.Api.Controllers
                         user.UserGroupMaps.Add(new UserGroupMap()
                         {
                             GroupId = usrGrp.GroupId,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -227,10 +219,10 @@ namespace Colsp.Api.Controllers
                 {
                     ShopId = User.ShopRequest().ShopId,
                     UserId = user.UserId,
-                    CreatedBy = User.UserRequest().Email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = User.UserRequest().Email,
-                    UpdatedDt = DateTime.Now,
+                    CreateBy = User.UserRequest().Email,
+                    CreateOn = DateTime.Now,
+                    UpdateBy = User.UserRequest().Email,
+                    UpdateOn = DateTime.Now,
                 });
                 #endregion
                 user.UserId = db.GetNextUserId().SingleOrDefault().Value;
@@ -281,8 +273,8 @@ namespace Colsp.Api.Controllers
                 #endregion
                 user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_SELLER;
-                user.UpdatedBy = User.UserRequest().Email;
-                user.UpdatedDt = DateTime.Now;
+                user.UpdateBy = User.UserRequest().Email;
+                user.UpdateOn = DateTime.Now;
                 #region User Group
                 var usrGrpList = db.UserGroupMaps.Where(w => w.UserId == user.UserId).ToList();
                 if (request.UserGroup != null && request.UserGroup.Count > 0)
@@ -299,8 +291,8 @@ namespace Colsp.Api.Controllers
                             UserGroupMap current = usrGrpList.Where(w => w.GroupId == grp.GroupId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
+                                current.UpdateBy = User.UserRequest().Email;
+                                current.UpdateOn = DateTime.Now;
                                 usrGrpList.Remove(current);
                             }
                             else
@@ -313,10 +305,10 @@ namespace Colsp.Api.Controllers
                             UserGroupMap map = new UserGroupMap();
                             map.UserId = user.UserId;
                             map.GroupId = grp.GroupId;
-                            map.CreatedBy = User.UserRequest().Email;
-                            map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = User.UserRequest().Email;
-                            map.UpdatedDt = DateTime.Now;
+                            map.CreateBy = User.UserRequest().Email;
+                            map.CreateOn = DateTime.Now;
+                            map.UpdateBy = User.UserRequest().Email;
+                            map.UpdateOn = DateTime.Now;
                             db.UserGroupMaps.Add(map);
                         }
                     }
@@ -349,7 +341,7 @@ namespace Colsp.Api.Controllers
                         s.NameEn,
                         s.NameTh,
                         s.Email,
-                        s.UpdatedDt,
+                        UpdatedDt = s.UpdateOn,
                         UserGroup = s.UserGroupMaps.Select(ug=>new { ug.UserGroup.GroupNameEn })
                     });
                 if (request == null)
@@ -422,10 +414,10 @@ namespace Colsp.Api.Controllers
                 #endregion
                 user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_ADMIN;
-                user.CreatedBy = User.UserRequest().Email;
-                user.CreatedDt = DateTime.Now;
-                user.UpdatedBy = User.UserRequest().Email;
-                user.UpdatedDt = DateTime.Now;
+                user.CreateBy = User.UserRequest().Email;
+                user.CreateOn = DateTime.Now;
+                user.UpdateBy = User.UserRequest().Email;
+                user.UpdateOn = DateTime.Now;
                 #region User Group
                 if (request.UserGroup != null)
                 {
@@ -438,10 +430,10 @@ namespace Colsp.Api.Controllers
                         user.UserGroupMaps.Add(new UserGroupMap()
                         {
                             GroupId = usrGrp.GroupId,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -491,8 +483,8 @@ namespace Colsp.Api.Controllers
                 #endregion
                 user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_ADMIN;
-                user.UpdatedBy = User.UserRequest().Email;
-                user.UpdatedDt = DateTime.Now;
+                user.UpdateBy = User.UserRequest().Email;
+                user.UpdateOn = DateTime.Now;
                 #region User Group
                 var usrGrpList = db.UserGroupMaps.Where(w => w.UserId == user.UserId).ToList();
                 if (request.UserGroup != null && request.UserGroup.Count > 0)
@@ -509,8 +501,8 @@ namespace Colsp.Api.Controllers
                             UserGroupMap current = usrGrpList.Where(w => w.GroupId == grp.GroupId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdatedBy = User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
+                                current.UpdateBy = User.UserRequest().Email;
+                                current.UpdateOn = DateTime.Now;
                                 usrGrpList.Remove(current);
                             }
                             else
@@ -523,10 +515,10 @@ namespace Colsp.Api.Controllers
                             UserGroupMap map = new UserGroupMap();
                             map.UserId = user.UserId;
                             map.GroupId = grp.GroupId;
-                            map.CreatedBy = User.UserRequest().Email;
-                            map.CreatedDt = DateTime.Now;
-                            map.UpdatedBy = User.UserRequest().Email;
-                            map.UpdatedDt = DateTime.Now;
+                            map.CreateBy = User.UserRequest().Email;
+                            map.CreateOn = DateTime.Now;
+                            map.UpdateBy = User.UserRequest().Email;
+                            map.UpdateOn = DateTime.Now;
                             db.UserGroupMaps.Add(map);
                         }
                     }
@@ -612,11 +604,50 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 string email = request.Email;
-                var user = db.Users.Where(u => u.Email.Equals(email))
-                    .Include(i => i.UserGroupMaps.Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission)))
-                    .Include(i => i.UserShopMaps.Select(s => s.Shop))
-                    .Include(i =>  i.UserBrandMaps)
-                    .FirstOrDefault();
+                #region Query
+                var user = db.Users.Where(u => u.Email.Equals(email)).Select(s => new
+                {
+                     s.Email,
+                     s.Password,
+                     s.LoginFailCount,
+                     s.Type,
+                     s.UserId,
+                     s.NameEn,
+                     s.NameTh,
+                     s.PasswordLastChg,
+                    UserShopMaps = s.UserShopMaps.Select(sm=>new
+                    {
+                        Shop = new
+                        {
+                            sm.Shop.ShopId,
+                            sm.Shop.ShopNameEn,
+                            sm.Shop.Status,
+                            sm.Shop.ShopGroup,
+                        }
+                    }),
+                    UserBrandMaps = s.UserBrandMaps.Select(sb=>new
+                    {
+                        sb.BrandId
+                    }),
+                    UserGroupMaps = s.UserGroupMaps.Select(sg=>new
+                    {
+                        UserGroup = new
+                        {
+                            UserGroupPermissionMaps = sg.UserGroup.UserGroupPermissionMaps.Select(sp => new
+                            {
+                                Permission = new
+                                {
+                                    sp.PermissionId,
+                                    sp.Permission.Parent,
+                                    sp.Permission.OverrideParent,
+                                }
+                            }),
+
+                        }
+                    }),
+                }).SingleOrDefault();
+                #endregion
+                #region Validateion
                 string password = request.Password;
                 if (user == null)
                 {
@@ -624,10 +655,15 @@ namespace Colsp.Api.Controllers
                 }
                 if (!salt.CheckPassword(password, user.Password))
                 {
-                    user.LoginFailCount = user.LoginFailCount + 1;
-                    Util.DeadlockRetry(db.SaveChanges, "User");
+                    db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LoginFailCount = ", (user.LoginFailCount + 1)," WHERE UserId = " , user.UserId));
                     throw new Exception("Email and password not match");
                 }
+                if (user.Type.Equals(Constant.USER_TYPE_SELLER)
+                    && (user.UserShopMaps == null || user.UserShopMaps.Count() == 0))
+                {
+                    throw new Exception("Please contact system administrator.");
+                }
+                #endregion
 
                 // Get all permissions
                 var userPermissions = user.UserGroupMaps.Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission));
@@ -650,15 +686,12 @@ namespace Colsp.Api.Controllers
                 token = Convert.ToBase64String(plainTextBytes);
 
                 var principal = new UsersPrincipal(identity,
-                    user.Shops == null ? null : user.UserShopMaps.Select(s => new ShopRequest
+                    user.UserShopMaps == null ? null : user.UserShopMaps.Select(s => new ShopRequest
                     {
-                        ShopId = s.ShopId,
-                        ShopNameEn = 
-                        s.Shop.ShopNameEn,
+                        ShopId = s.Shop.ShopId,
+                        ShopNameEn = s.Shop.ShopNameEn,
                         Status = s.Shop.Status,
                         ShopGroup = s.Shop.ShopGroup,
-                        //IsShopReady = string.IsNullOrWhiteSpace(s.Shop.ShopDescriptionEn) ? false : true,
-                        //MaxLocalCategory = s.Shop.MaxLocalCategory
                     }).ToList(),
                     user.UserBrandMaps == null ? null : user.UserBrandMaps.Select(s=> new BrandRequest
                     {
@@ -676,9 +709,7 @@ namespace Colsp.Api.Controllers
                     }
                     ,DateTime.Now);
 
-                user.LastLoginDt = DateTime.Now;
-                user.LoginFailCount = 0;
-                Util.DeadlockRetry(db.SaveChanges, "User");
+                db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LastLoginDt = '", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "', LoginFailCount = 0 ", " WHERE UserId = ", user.UserId));
                 User = principal;
                 var claimsIdentity = User.Identity as ClaimsIdentity;
                 ClaimRequest claimRs = new ClaimRequest()
@@ -999,10 +1030,10 @@ namespace Colsp.Api.Controllers
                         user.UserBrandMaps.Add(new UserBrandMap()
                         {
                             BrandId = brand.BrandId,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }

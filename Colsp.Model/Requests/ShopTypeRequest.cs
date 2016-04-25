@@ -20,7 +20,7 @@ namespace Colsp.Model.Requests
         public override void DefaultOnNull()
         {
             SearchText = GetValueOrDefault(SearchText, string.Empty);
-            _order = GetValueOrDefault(_order, "UpdatedDt");
+            _order = GetValueOrDefault(_order, "UpdateOn");
             base.DefaultOnNull();
         }
     }

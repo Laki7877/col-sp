@@ -110,15 +110,15 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find product " + proRq.ProductId + " in shop " + proRq.ShopId);
                     }
                     current.Visibility = proRq.Visibility;
-                    current.UpdatedBy = User.UserRequest().Email;
-                    current.UpdatedDt = DateTime.Now;
+                    current.UpdateBy = User.UserRequest().Email;
+                    current.UpdateOn = DateTime.Now;
 
                     var currentReal = realProduct.Where(w => w.Pid.Equals(current.Pid)).SingleOrDefault();
                     if(currentReal != null)
                     {
                         currentReal.Visibility = current.Visibility;
-                        currentReal.UpdatedBy = current.UpdatedBy;
-                        currentReal.UpdatedDt = current.UpdatedDt;
+                        currentReal.UpdateBy = current.UpdateBy;
+                        currentReal.UpdateOn = current.UpdateOn;
                     }
                 }
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
@@ -174,10 +174,10 @@ namespace Colsp.Api.Controllers
                     ShopId = shopId,
                     SaleUnitEn = string.Empty,
                     SaleUnitTh = string.Empty,
-                    CreatedBy = email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = email,
-                    UpdatedDt = DateTime.Now
+                    CreateBy = email,
+                    CreateOn = DateTime.Now,
+                    UpdateBy = email,
+                    UpdateOn = DateTime.Now
                 };
                 ProductStage masterVariant = new ProductStage()
                 {
@@ -244,18 +244,18 @@ namespace Colsp.Api.Controllers
                     SeoTh = string.Empty,
                     ProdTDNameEn = string.Empty,
                     ProdTDNameTh = string.Empty,
-                    CreatedBy = email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = email,
-                    UpdatedDt = DateTime.Now
+                    CreateBy = email,
+                    CreateOn = DateTime.Now,
+                    UpdateBy = email,
+                    UpdateOn = DateTime.Now
                 };
                 masterVariant.Inventory = new Inventory()
                 {
                     Quantity = defaultVariant.Quantity,
-                    CreatedBy = email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = email,
-                    UpdatedDt = DateTime.Now
+                    CreateBy = email,
+                    CreateOn = DateTime.Now,
+                    UpdateBy = email,
+                    UpdateOn = DateTime.Now
                 };
                 group.ProductStages.Add(masterVariant);
                 var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
@@ -333,10 +333,10 @@ namespace Colsp.Api.Controllers
                         ProdTDNameEn = string.Empty,
                         ProdTDNameTh = string.Empty,
                         Status = group.Status,
-                        CreatedBy = email,
-                        CreatedDt = DateTime.Now,
-                        UpdatedBy = email,
-                        UpdatedDt = DateTime.Now
+                        CreateBy = email,
+                        CreateOn = DateTime.Now,
+                        UpdateBy = email,
+                        UpdateOn = DateTime.Now
                     };
                     //if (string.IsNullOrWhiteSpace(variantEntity.UrlEn))
                     //{
@@ -345,10 +345,10 @@ namespace Colsp.Api.Controllers
                     variantEntity.Inventory = new Inventory()
                     {
                         Quantity = variant.Quantity,
-                        CreatedBy = email,
-                        CreatedDt = DateTime.Now,
-                        UpdatedBy = email,
-                        UpdatedDt = DateTime.Now
+                        CreateBy = email,
+                        CreateOn = DateTime.Now,
+                        UpdateBy = email,
+                        UpdateOn = DateTime.Now
                     };
                     SetupAttribute(variantEntity, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
                     group.ProductStages.Add(variantEntity);
@@ -407,10 +407,10 @@ namespace Colsp.Api.Controllers
                         {
                             MasterPid = masterProduct[0].MasterPid,
                             ChildPid = child.Pid,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now
                         });
                     }
                 }
@@ -453,10 +453,10 @@ namespace Colsp.Api.Controllers
                 group.ProductStages.ElementAt(0).ProductStageMasters1.Add(new ProductStageMaster()
                 {
                     ChildPid = request.MasterProduct.Pid,
-                    CreatedBy = User.UserRequest().Email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = User.UserRequest().Email,
-                    UpdatedDt = DateTime.Now
+                    CreateBy = User.UserRequest().Email,
+                    CreateOn = DateTime.Now,
+                    UpdateBy = User.UserRequest().Email,
+                    UpdateOn = DateTime.Now
                 });
                 foreach (var child in request.ChildProducts)
                 {
@@ -467,10 +467,10 @@ namespace Colsp.Api.Controllers
                     group.ProductStages.ElementAt(0).ProductStageMasters1.Add(new ProductStageMaster()
                     {
                         ChildPid = child.Pid,
-                        CreatedBy = User.UserRequest().Email,
-                        CreatedDt = DateTime.Now,
-                        UpdatedBy = User.UserRequest().Email,
-                        UpdatedDt = DateTime.Now
+                        CreateBy = User.UserRequest().Email,
+                        CreateOn = DateTime.Now,
+                        UpdateBy = User.UserRequest().Email,
+                        UpdateOn = DateTime.Now
                     });
                 }
 
@@ -913,8 +913,8 @@ namespace Colsp.Api.Controllers
                                     LocalCategory = p.LocalCategory != null ? new { p.LocalCategory.CategoryId, p.LocalCategory.NameEn, p.LocalCategory.Lft, p.LocalCategory.Rgt } : null,
                                     Brand = p.Brand != null ? new { p.Brand.BrandId, p.Brand.BrandNameEn } : null,
                                     Tags = p.ProductStageTags.Select(s=>s.Tag),
-                                    p.CreatedDt,
-                                    p.UpdatedDt,
+                                    CreatedDt = p.CreateOn,
+                                    UpdatedDt = p.UpdateOn,
                                     //PriceTo = p.SalePrice < p.ProductStageVariants.Max(m => m.SalePrice)
                                     //        ? p.ProductStageVariants.Max(m => m.SalePrice) : p.SalePrice,
                                     //PriceFrom = p.SalePrice < p.ProductStageVariants.Min(m => m.SalePrice)
@@ -1119,7 +1119,7 @@ namespace Colsp.Api.Controllers
                                     p.LocalCatId,
                                     p.AttributeSetId,
                                     p.ProductStages.FirstOrDefault().ProductStageAttributes,
-                                    p.UpdatedDt,
+                                    UpdatedDt = p.UpdateOn,
                                     p.ShopId,
                                     p.InformationTabStatus,
                                     p.ImageTabStatus,
@@ -1318,10 +1318,10 @@ namespace Colsp.Api.Controllers
                             variant = new ProductStage();
                             variant.ShopId = masterVariant.ShopId;
                             variant.IsVariant = true;
-                            variant.CreatedBy = email;
-                            variant.CreatedDt = DateTime.Now;
-                            variant.UpdatedBy = email;
-                            variant.UpdatedDt = DateTime.Now;
+                            variant.CreateBy = email;
+                            variant.CreateOn = DateTime.Now;
+                            variant.UpdateBy = email;
+                            variant.UpdateOn = DateTime.Now;
                             group.ProductStages.Add(variant);
                         }
                         variantRq.Status = group.Status;
@@ -1509,18 +1509,18 @@ namespace Colsp.Api.Controllers
                             Pid = inventory.Pid,
                             //StockAvailable = inventory.StockAvailable,
                             Defect = inventory.Defect,
-                            MaxQuantity = inventory.MaxQuantity,
-                            MinQuantity = inventory.MinQuantity,
+                            //MaxQuantity = inventory.MaxQuantity,
+                            //MinQuantity = inventory.MinQuantity,
                             OnHold = inventory.OnHold,
                             Quantity = inventory.Quantity,
                             Reserve = inventory.Reserve,
                             SafetyStockAdmin = inventory.SafetyStockAdmin,
                             SafetyStockSeller = inventory.SafetyStockSeller,
                             Status = Constant.INVENTORY_STATUS_DELETE,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                     db.ProductStageRelateds.RemoveRange(productGroup.ProductStageRelateds);
@@ -1589,10 +1589,10 @@ namespace Colsp.Api.Controllers
                         product.ProductStageTags.Add(new ProductStageTag()
                         {
                             Tag = tag,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                     product.Status = Constant.PRODUCT_STATUS_DRAFT;
@@ -1914,10 +1914,10 @@ namespace Colsp.Api.Controllers
                         group.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
                         {
                             CategoryId = category.CategoryId,
-                            CreatedBy = email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -1955,10 +1955,10 @@ namespace Colsp.Api.Controllers
                         group.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
                         {
                             CategoryId = category.CategoryId,
-                            CreatedBy = email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -1997,10 +1997,10 @@ namespace Colsp.Api.Controllers
                         group.ProductStageTags.Add(new ProductStageTag()
                         {
                             Tag = tag,
-                            CreatedBy = email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                     
@@ -2040,10 +2040,10 @@ namespace Colsp.Api.Controllers
                         {
                             Child = product.ProductId,
                             ShopId = group.ShopId,
-                            CreatedBy = email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = email,
-                            UpdatedDt = DateTime.Now
+                            CreateBy = email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = email,
+                            UpdateOn = DateTime.Now
                         });
                     }
                 }
@@ -2076,22 +2076,22 @@ namespace Colsp.Api.Controllers
             #region Create/Update
             if (addNew)
             {
-                group.CreatedBy = email;
-                group.CreatedDt = DateTime.Now;
+                group.CreateBy = email;
+                group.CreateOn = DateTime.Now;
             }
-            group.UpdatedBy = email;
-            group.UpdatedDt = DateTime.Now;
+            group.UpdateBy = email;
+            group.UpdateOn = DateTime.Now;
             #endregion
             #region Submitted and Approved
             if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(group.Status))
             {
-                group.SubmittedBy = email;
-                group.SubmittedDt = DateTime.Now;
+                group.SubmitBy = email;
+                group.SubmitOn = DateTime.Now;
             }
             else if (Constant.PRODUCT_STATUS_APPROVE.Equals(group.Status))
             {
-                group.ApprovedBy = email;
-                group.ApprovedDt = DateTime.Now;
+                group.ApproveBy = email;
+                group.ApproveOn = DateTime.Now;
             }
             #endregion
 
@@ -2171,8 +2171,8 @@ namespace Colsp.Api.Controllers
                                     if(current.CheckboxValue != checkboxValue)
                                     {
                                         current.CheckboxValue = checkboxValue;
-                                        current.UpdatedBy = email;
-                                        current.UpdatedDt = DateTime.Now;
+                                        current.UpdateBy = email;
+                                        current.UpdateOn = DateTime.Now;
                                     }
                                     
                                     tmpAttribute.Remove(current);
@@ -2191,10 +2191,10 @@ namespace Colsp.Api.Controllers
                                     ValueEn = value,
                                     Position = position++,
                                     IsAttributeValue = isAttributeValue,
-                                    CreatedBy = email,
-                                    CreatedDt = DateTime.Now,
-                                    UpdatedBy = email,
-                                    UpdatedDt = DateTime.Now,
+                                    CreateBy = email,
+                                    CreateOn = DateTime.Now,
+                                    UpdateBy = email,
+                                    UpdateOn = DateTime.Now,
                                 });
                             }
                             #endregion
@@ -2243,10 +2243,10 @@ namespace Colsp.Api.Controllers
                         ValueEn = value,
                         Position = position++,
                         IsAttributeValue = isAttributeValue,
-                        CreatedBy = email,
-                        CreatedDt = DateTime.Now,
-                        UpdatedBy = email,
-                        UpdatedDt = DateTime.Now,
+                        CreateBy = email,
+                        CreateOn = DateTime.Now,
+                        UpdateBy = email,
+                        UpdateOn = DateTime.Now,
                     });
                 }
             }
@@ -2369,26 +2369,26 @@ namespace Colsp.Api.Controllers
                     variant.Inventory.Quantity = request.Quantity;
                     variant.Inventory.SafetyStockSeller = request.SafetyStock;
                     //variant.Inventory.StockAvailable = stockType;
-                    variant.Inventory.UpdatedBy = User.UserRequest().Email;
-                    variant.Inventory.UpdatedDt = DateTime.Now;
+                    variant.Inventory.UpdateBy = User.UserRequest().Email;
+                    variant.Inventory.UpdateOn = DateTime.Now;
 
                     InventoryHistory history = new InventoryHistory()
                     {
                         Pid = variant.Pid,
                         //StockAvailable = variant.Inventory.StockAvailable,
                         Defect = variant.Inventory.Defect,
-                        MaxQuantity = variant.Inventory.MaxQuantity,
-                        MinQuantity = variant.Inventory.MinQuantity,
+                        //MaxQuantity = variant.Inventory.MaxQuantity,
+                        //MinQuantity = variant.Inventory.MinQuantity,
                         OnHold = variant.Inventory.OnHold,
                         Quantity = variant.Inventory.Quantity,
                         Reserve = variant.Inventory.Reserve,
                         SafetyStockAdmin = variant.Inventory.SafetyStockAdmin,
                         SafetyStockSeller = variant.Inventory.SafetyStockSeller,
                         Status = Constant.INVENTORY_STATUS_UPDATE,
-                        CreatedBy = User.UserRequest().Email,
-                        CreatedDt = DateTime.Now,
-                        UpdatedBy = User.UserRequest().Email,
-                        UpdatedDt = DateTime.Now,
+                        CreateBy = User.UserRequest().Email,
+                        CreateOn = DateTime.Now,
+                        UpdateBy = User.UserRequest().Email,
+                        UpdateOn = DateTime.Now,
                     };
                     db.InventoryHistories.Add(history);
                 }
@@ -2399,17 +2399,16 @@ namespace Colsp.Api.Controllers
                 {
                     //StockAvailable = stockType,
                     Defect = 0,
-                    MaxQuantity = 0,
-                    MinQuantity = 0,
+                    MaxQtyPreOrder = 0,
                     OnHold = 0,
                     Quantity = request.Quantity,
                     Reserve = 0,
                     SafetyStockAdmin = request.SafetyStock,
                     SafetyStockSeller = request.SafetyStock,
-                    CreatedBy = User.UserRequest().Email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = User.UserRequest().Email,
-                    UpdatedDt = DateTime.Now,
+                    CreateBy = User.UserRequest().Email,
+                    CreateOn = DateTime.Now,
+                    UpdateBy = User.UserRequest().Email,
+                    UpdateOn = DateTime.Now,
                 };
             }
 
@@ -2438,8 +2437,8 @@ namespace Colsp.Api.Controllers
                             {
                                 current.Position = position;
                                 current.FeatureFlag = featureImg;
-                                current.UpdatedBy = User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
+                                current.UpdateBy = User.UserRequest().Email;
+                                current.UpdateOn = DateTime.Now;
                             }
                             ++position;
                             tmpImage.Remove(current);
@@ -2460,10 +2459,10 @@ namespace Colsp.Api.Controllers
                             ImageName = string.Empty,
                             ImageOriginName = string.Empty,
                             Status = Constant.STATUS_ACTIVE,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                     if (featureImg)
@@ -2505,8 +2504,8 @@ namespace Colsp.Api.Controllers
                             if(current.Position != position)
                             {
                                 current.Position = position;
-                                current.UpdatedBy = User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
+                                current.UpdateBy = User.UserRequest().Email;
+                                current.UpdateOn = DateTime.Now;
                             }
                             ++position;
                             tmpVideo.Remove(current);
@@ -2524,10 +2523,10 @@ namespace Colsp.Api.Controllers
                             VideoUrlEn = video.Url,
                             Status = Constant.STATUS_ACTIVE,
                             Position = position++,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -2541,11 +2540,11 @@ namespace Colsp.Api.Controllers
             #region Create/Update
             if (addNew)
             {
-                variant.CreatedBy = email;
-                variant.CreatedDt = DateTime.Now;
+                variant.CreateBy = email;
+                variant.CreateOn = DateTime.Now;
             }
-            variant.UpdatedBy = email;
-            variant.UpdatedDt = DateTime.Now;
+            variant.UpdateBy = email;
+            variant.UpdateOn = DateTime.Now;
             #endregion
         }
 
@@ -2587,8 +2586,8 @@ namespace Colsp.Api.Controllers
                                 }
                                 current.Position = position;
                                 current.FeatureFlag = featureImg;
-                                current.UpdatedBy = User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
+                                current.UpdateBy = User.UserRequest().Email;
+                                current.UpdateOn = DateTime.Now;
                             }
                             ++position;
                             tmpImage.Remove(current);
@@ -2609,10 +2608,10 @@ namespace Colsp.Api.Controllers
                             ImageName = string.Empty,
                             ImageOriginName = string.Empty,
                             Status = Constant.STATUS_ACTIVE,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                     if (featureImg)
@@ -2706,18 +2705,18 @@ namespace Colsp.Api.Controllers
                     Pid = stage.Pid,
                     //StockAvailable = stage.Inventory.StockAvailable,
                     Defect = stage.Inventory.Defect,
-                    MaxQuantity = stage.Inventory.MaxQuantity,
-                    MinQuantity = stage.Inventory.MinQuantity,
+                    //MaxQuantity = stage.Inventory.MaxQuantity,
+                    //MinQuantity = stage.Inventory.MinQuantity,
                     OnHold = stage.Inventory.OnHold,
                     Quantity = stage.Inventory.Quantity,
                     Reserve = stage.Inventory.Reserve,
                     SafetyStockAdmin = stage.Inventory.SafetyStockAdmin,
                     SafetyStockSeller = stage.Inventory.SafetyStockSeller,
                     Status = Constant.INVENTORY_STATUS_ADD,
-                    CreatedBy = User.UserRequest().Email,
-                    CreatedDt = DateTime.Now,
-                    UpdatedBy = User.UserRequest().Email,
-                    UpdatedDt = DateTime.Now,
+                    CreateBy = User.UserRequest().Email,
+                    CreateOn = DateTime.Now,
+                    UpdateBy = User.UserRequest().Email,
+                    UpdateOn = DateTime.Now,
                 };
                 db.InventoryHistories.Add(history);
             }
@@ -2905,8 +2904,8 @@ namespace Colsp.Api.Controllers
                 //ControlFlag1 = group.ControlFlag1,
                 //ControlFlag2 = group.ControlFlag2,
                 //ControlFlag3 = group.ControlFlag3,
-                CreatedBy = group.CreatedBy,
-                CreatedDt = group.CreatedDt,
+                CreateBy = group.CreateBy,
+                CreateOn = group.CreateOn,
                 EffectiveDate = group.EffectiveDate,
                 ExpireDate = group.ExpireDate,
                 GlobalCatId = group.GlobalCatId,
@@ -2922,14 +2921,14 @@ namespace Colsp.Api.Controllers
                 Remark = group.Remark,
                 ShopId = group.ShopId,
                 Status = group.Status,
-                UpdatedBy = group.UpdatedBy,
-                UpdatedDt = group.UpdatedDt,
+                UpdateBy = group.UpdateBy,
+                UpdateOn = group.UpdateOn,
                 VariantTabStatus = group.VariantTabStatus,
-                ApprovedBy = group.ApprovedBy,
-                ApprovedDt = group.ApprovedDt,
+                ApprovedBy = group.ApproveBy,
+                ApprovedDt = group.ApproveOn,
                 HistoryDt = DateTime.Now,
-                SubmittedBy = group.SubmittedBy,
-                SubmittedDt = group.SubmittedDt
+                SubmittedBy = group.SubmitBy,
+                SubmittedDt = group.SubmitOn
             };
             #endregion
             #region History Global Category
@@ -2938,10 +2937,10 @@ namespace Colsp.Api.Controllers
                 historyGroup.ProductHistoryGlobalCatMaps.Add(new ProductHistoryGlobalCatMap()
                 {
                     CategoryId = category.CategoryId,
-                    CreatedBy = category.CreatedBy,
-                    CreatedDt = category.CreatedDt,
-                    UpdatedBy = category.UpdatedBy,
-                    UpdatedDt = category.UpdatedDt
+                    CreateBy = category.CreateBy,
+                    CreateOn = category.CreateOn,
+                    UpdateBy = category.UpdateBy,
+                    UpdateOn = category.UpdateOn
                 });
             }
             #endregion
@@ -2951,10 +2950,10 @@ namespace Colsp.Api.Controllers
                 historyGroup.ProductHistoryLocalCatMaps.Add(new ProductHistoryLocalCatMap()
                 {
                     CategoryId = category.CategoryId,
-                    CreatedBy = category.CreatedBy,
-                    CreatedDt = category.CreatedDt,
-                    UpdatedBy = category.UpdatedBy,
-                    UpdatedDt = category.UpdatedDt
+                    CreateBy = category.CreateBy,
+                    CreateOn = category.CreateOn,
+                    UpdateBy = category.UpdateBy,
+                    UpdateOn = category.UpdateOn
                 });
             }
             #endregion
@@ -2964,10 +2963,10 @@ namespace Colsp.Api.Controllers
                 historyGroup.ProductHistoryTags.Add(new ProductHistoryTag()
                 {
                     Tag = tag.Tag,
-                    CreatedBy = tag.CreatedBy,
-                    CreatedDt = tag.CreatedDt,
-                    UpdatedBy = tag.UpdatedBy,
-                    UpdatedDt = tag.UpdatedDt
+                    CreateBy = tag.CreateBy,
+                    CreateOn = tag.CreateOn,
+                    UpdateBy = tag.UpdateBy,
+                    UpdateOn = tag.UpdateOn
                 });
             }
             #endregion
@@ -3074,10 +3073,10 @@ namespace Colsp.Api.Controllers
                     VariantCount = stage.VariantCount,
                     Visibility = stage.Visibility,
                     Status = stage.Status,
-                    CreatedBy = stage.CreatedBy,
-                    CreatedDt = stage.CreatedDt,
-                    UpdatedBy = stage.UpdatedBy,
-                    UpdatedDt = stage.UpdatedDt,
+                    CreateBy = stage.CreateBy,
+                    CreateOn = stage.CreateOn,
+                    UpdateBy = stage.UpdateBy,
+                    UpdateOn = stage.UpdateOn,
                 };
                 #endregion
                 #region Setup Product
@@ -3154,10 +3153,10 @@ namespace Colsp.Api.Controllers
                 product.ExpireDate = group.ExpireDate;
                 product.Remark = group.Remark;
                 product.Status = stage.Status;
-                product.CreatedBy = stage.CreatedBy;
-                product.CreatedDt = stage.CreatedDt;
-                product.UpdatedBy = stage.UpdatedBy;
-                product.UpdatedDt = stage.UpdatedDt;
+                product.CreateBy = stage.CreateBy;
+                product.CreateOn = stage.CreateOn;
+                product.UpdateBy = stage.UpdateBy;
+                product.UpdateOn = stage.UpdateOn;
                 #endregion
                 #region Attribute
                 var attribteList = product.ProductAttributes.ToList();
@@ -3190,10 +3189,10 @@ namespace Colsp.Api.Controllers
                             IsAttributeValue = attribute.IsAttributeValue,
                             Position = attribute.Position,
                             ValueEn = attribute.ValueEn,
-                            CreatedBy = attribute.CreatedBy,
-                            CreatedDt = attribute.CreatedDt,
-                            UpdatedBy = attribute.UpdatedBy,
-                            UpdatedDt = attribute.UpdatedDt,
+                            CreateBy = attribute.CreateBy,
+                            CreateOn = attribute.CreateOn,
+                            UpdateBy = attribute.UpdateBy,
+                            UpdateOn = attribute.UpdateOn,
                         });
                     }
                     history.ProductHistoryAttributes.Add(new ProductHistoryAttribute()
@@ -3203,10 +3202,10 @@ namespace Colsp.Api.Controllers
                         IsAttributeValue = attribute.IsAttributeValue,
                         Position = attribute.Position,
                         ValueEn = attribute.ValueEn,
-                        CreatedBy = attribute.CreatedBy,
-                        CreatedDt = attribute.CreatedDt,
-                        UpdatedBy = attribute.UpdatedBy,
-                        UpdatedDt = attribute.UpdatedDt,
+                        CreateBy = attribute.CreateBy,
+                        CreateOn = attribute.CreateOn,
+                        UpdateBy = attribute.UpdateBy,
+                        UpdateOn = attribute.UpdateOn,
                     });
 
                 }
@@ -3241,10 +3240,10 @@ namespace Colsp.Api.Controllers
                         product.ProductGlobalCatMaps.Add(new ProductGlobalCatMap()
                         {
                             CategoryId = category.CategoryId,
-                            CreatedBy = category.CreatedBy,
-                            CreatedDt = category.CreatedDt,
-                            UpdatedBy = category.UpdatedBy,
-                            UpdatedDt = category.UpdatedDt
+                            CreateBy = category.CreateBy,
+                            CreateOn = category.CreateOn,
+                            UpdateBy = category.UpdateBy,
+                            UpdateOn = category.UpdateOn
                         });
                     }
                 }
@@ -3280,10 +3279,10 @@ namespace Colsp.Api.Controllers
                         product.ProductLocalCatMaps.Add(new ProductLocalCatMap()
                         {
                             CategoryId = category.CategoryId,
-                            CreatedBy = category.CreatedBy,
-                            CreatedDt = category.CreatedDt,
-                            UpdatedBy = category.UpdatedBy,
-                            UpdatedDt = category.UpdatedDt
+                            CreateBy = category.CreateBy,
+                            CreateOn = category.CreateOn,
+                            UpdateBy = category.UpdateBy,
+                            UpdateOn = category.UpdateOn
                         });
                     }
                 }
@@ -3321,10 +3320,10 @@ namespace Colsp.Api.Controllers
                             VideoUrlEn = video.VideoUrlEn,
                             Position = video.Position,
                             Status = video.Status,
-                            CreatedBy = video.CreatedBy,
-                            CreatedDt = video.CreatedDt,
-                            UpdatedBy = video.UpdatedBy,
-                            UpdatedDt = video.UpdatedDt
+                            CreateBy = video.CreateBy,
+                            CreateOn = video.CreateOn,
+                            UpdateBy = video.UpdateBy,
+                            UpdateOn = video.UpdateOn
                         });
                     }
                     history.ProductHistoryVideos.Add(new ProductHistoryVideo()
@@ -3332,10 +3331,10 @@ namespace Colsp.Api.Controllers
                         VideoUrlEn = video.VideoUrlEn,
                         Position = video.Position,
                         Status = video.Status,
-                        CreatedBy = video.CreatedBy,
-                        CreatedDt = video.CreatedDt,
-                        UpdatedBy = video.UpdatedBy,
-                        UpdatedDt = video.UpdatedDt
+                        CreateBy = video.CreateBy,
+                        CreateOn = video.CreateOn,
+                        UpdateBy = video.UpdateBy,
+                        UpdateOn = video.UpdateOn
                     });
                 }
                 if(videoList != null && videoList.Count  > 0)
@@ -3369,10 +3368,10 @@ namespace Colsp.Api.Controllers
                         product.ProductTags.Add(new ProductTag()
                         {
                             Tag = tag.Tag,
-                            CreatedBy = tag.CreatedBy,
-                            CreatedDt = tag.CreatedDt,
-                            UpdatedBy = tag.UpdatedBy,
-                            UpdatedDt = tag.UpdatedDt
+                            CreateBy = tag.CreateBy,
+                            CreateOn = tag.CreateOn,
+                            UpdateBy = tag.UpdateBy,
+                            UpdateOn = tag.UpdateOn
                         });
                     }
                 }
@@ -3388,10 +3387,10 @@ namespace Colsp.Api.Controllers
                 //    {
                 //        ParentPid = parent.Pid,
                 //        ChildPid =  stage.Pid,
-                //        CreatedBy = parent.CreatedBy,
-                //        CreatedDt = parent.CreatedDt,
-                //        UpdatedBy = parent.UpdatedBy,
-                //        UpdatedDt = parent.UpdatedDt
+                //        CreateBy = parent.CreateBy,
+                //        CreateOn = parent.CreateOn,
+                //        UpdateBy = parent.UpdateBy,
+                //        UpdateOn = parent.UpdateOn
                 //    });
                 //}
                 //#endregion
@@ -3409,10 +3408,10 @@ namespace Colsp.Api.Controllers
                         Position = image.Position,
                         ShopId = image.ShopId,
                         Status = image.Status,
-                        CreatedBy = image.CreatedBy,
-                        CreatedDt = image.CreatedDt,
-                        UpdatedBy = image.UpdatedBy,
-                        UpdatedDt = image.UpdatedDt,
+                        CreateBy = image.CreateBy,
+                        CreateOn = image.CreateOn,
+                        UpdateBy = image.UpdateBy,
+                        UpdateOn = image.UpdateOn,
                     });
                 }
                 #endregion
@@ -4361,13 +4360,13 @@ namespace Colsp.Api.Controllers
                         throw new Exception("ProudctId " + rq.ProductId + " is not drafted");
                     }
                     current.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
-                    current.UpdatedBy = User.UserRequest().Email;
-                    current.UpdatedDt = DateTime.Now;
+                    current.UpdateBy = User.UserRequest().Email;
+                    current.UpdateOn = DateTime.Now;
                     current.ProductStages.ToList().ForEach(e =>
                     {
                         e.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
-                        e.UpdatedBy = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
-                        e.UpdatedDt = DateTime.Now;
+                        e.UpdateBy = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
+                        e.UpdateOn = DateTime.Now;
                     });
                 }
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
@@ -4527,10 +4526,10 @@ namespace Colsp.Api.Controllers
                                 InfoFlag = false,
                                 OnlineFlag = false,
                                 RejectReason = string.Empty,
-                                CreatedBy = User.UserRequest().Email,
-                                CreatedDt = DateTime.Now,
-                                UpdatedBy = User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now
+                                CreateBy = User.UserRequest().Email,
+                                CreateOn = DateTime.Now,
+                                UpdateBy = User.UserRequest().Email,
+                                UpdateOn = DateTime.Now
                             };
                         }
                         #endregion
@@ -4541,10 +4540,10 @@ namespace Colsp.Api.Controllers
 
                             ShopId = shopId,
                             Status = Constant.PRODUCT_STATUS_DRAFT,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                             Visibility = true,
                             IsVariant = true,
                             IsMaster = false,
@@ -4720,10 +4719,10 @@ namespace Colsp.Api.Controllers
                                     {
                                         variant.Inventory = new Inventory()
                                         {
-                                            CreatedBy = User.UserRequest().Email,
-                                            CreatedDt = DateTime.Now,
-                                            UpdatedBy = User.UserRequest().Email,
-                                            UpdatedDt = DateTime.Now,
+                                            CreateBy = User.UserRequest().Email,
+                                            CreateOn = DateTime.Now,
+                                            UpdateBy = User.UserRequest().Email,
+                                            UpdateOn = DateTime.Now,
                                         };
                                         if (Constant.STOCK_TYPE.ContainsKey(body[headDic["Stock Type"]]))
                                         {
@@ -4756,10 +4755,10 @@ namespace Colsp.Api.Controllers
                                     {
                                         variant.Inventory = new Inventory()
                                         {
-                                            CreatedBy = User.UserRequest().Email,
-                                            CreatedDt = DateTime.Now,
-                                            UpdatedBy = User.UserRequest().Email,
-                                            UpdatedDt = DateTime.Now,
+                                            CreateBy = User.UserRequest().Email,
+                                            CreateOn = DateTime.Now,
+                                            UpdateBy = User.UserRequest().Email,
+                                            UpdateOn = DateTime.Now,
                                         };
                                         if (Constant.STOCK_TYPE.ContainsKey(body[headDic["Stock Type"]]))
                                         {
@@ -4800,10 +4799,10 @@ namespace Colsp.Api.Controllers
                                             group.ProductStageRelateds1.Add(new ProductStageRelated()
                                             {
                                                 Child = child,
-                                                CreatedBy = User.UserRequest().Email,
-                                                CreatedDt = DateTime.Now,
-                                                UpdatedBy = User.UserRequest().Email,
-                                                UpdatedDt = DateTime.Now,
+                                                CreateBy = User.UserRequest().Email,
+                                                CreateOn = DateTime.Now,
+                                                UpdateBy = User.UserRequest().Email,
+                                                UpdateOn = DateTime.Now,
                                             });
                                         }
                                     }
@@ -4879,10 +4878,10 @@ namespace Colsp.Api.Controllers
                                                 group.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
                                                 {
                                                     CategoryId = cat,
-                                                    CreatedBy = User.UserRequest().Email,
-                                                    CreatedDt = DateTime.Now,
-                                                    UpdatedBy = User.UserRequest().Email,
-                                                    UpdatedDt = DateTime.Now,
+                                                    CreateBy = User.UserRequest().Email,
+                                                    CreateOn = DateTime.Now,
+                                                    UpdateBy = User.UserRequest().Email,
+                                                    UpdateOn = DateTime.Now,
                                                 });
                                             }
                                         }
@@ -4913,10 +4912,10 @@ namespace Colsp.Api.Controllers
                                                 group.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
                                                 {
                                                     CategoryId = cat,
-                                                    CreatedBy = User.UserRequest().Email,
-                                                    CreatedDt = DateTime.Now,
-                                                    UpdatedBy = User.UserRequest().Email,
-                                                    UpdatedDt = DateTime.Now,
+                                                    CreateBy = User.UserRequest().Email,
+                                                    CreateOn = DateTime.Now,
+                                                    UpdateBy = User.UserRequest().Email,
+                                                    UpdateOn = DateTime.Now,
                                                 });
                                             }
                                         }
@@ -4974,10 +4973,10 @@ namespace Colsp.Api.Controllers
                                                 group.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
                                                 {
                                                     CategoryId = cat,
-                                                    CreatedBy = User.UserRequest().Email,
-                                                    CreatedDt = DateTime.Now,
-                                                    UpdatedBy = User.UserRequest().Email,
-                                                    UpdatedDt = DateTime.Now,
+                                                    CreateBy = User.UserRequest().Email,
+                                                    CreateOn = DateTime.Now,
+                                                    UpdateBy = User.UserRequest().Email,
+                                                    UpdateOn = DateTime.Now,
                                                 });
                                             }
                                         }
@@ -5008,10 +5007,10 @@ namespace Colsp.Api.Controllers
                                                 group.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
                                                 {
                                                     CategoryId = cat,
-                                                    CreatedBy = User.UserRequest().Email,
-                                                    CreatedDt = DateTime.Now,
-                                                    UpdatedBy = User.UserRequest().Email,
-                                                    UpdatedDt = DateTime.Now,
+                                                    CreateBy = User.UserRequest().Email,
+                                                    CreateOn = DateTime.Now,
+                                                    UpdateBy = User.UserRequest().Email,
+                                                    UpdateOn = DateTime.Now,
                                                 });
                                             }
                                         }
@@ -5041,10 +5040,10 @@ namespace Colsp.Api.Controllers
                             masterVariant.DefaultVaraint = false;
                             masterVariant.Status = variant.Status;
                             masterVariant.Visibility = variant.Visibility;
-                            masterVariant.CreatedBy = variant.CreatedBy;
-                            masterVariant.CreatedDt = variant.CreatedDt;
-                            masterVariant.UpdatedBy = variant.UpdatedBy;
-                            masterVariant.UpdatedDt = variant.UpdatedDt;
+                            masterVariant.CreateBy = variant.CreateBy;
+                            masterVariant.CreateOn = variant.CreateOn;
+                            masterVariant.UpdateBy = variant.UpdateBy;
+                            masterVariant.UpdateOn = variant.UpdateOn;
                             masterVariant.BoostWeight = variant.BoostWeight;
                             masterVariant.DescriptionFullEn = variant.DescriptionFullEn;
                             masterVariant.DescriptionFullTh = variant.DescriptionFullTh;
@@ -5060,11 +5059,9 @@ namespace Colsp.Api.Controllers
                             masterVariant.Installment = variant.Installment;
                             masterVariant.Inventory = new Inventory()
                             {
-                                CreatedBy = variant.Inventory.CreatedBy,
-                                CreatedDt = variant.Inventory.CreatedDt,
+                                CreateBy = variant.Inventory.CreateBy,
+                                CreateOn = variant.Inventory.CreateOn,
                                 Defect = variant.Inventory.Defect,
-                                MaxQuantity = variant.Inventory.MaxQuantity,
-                                MinQuantity = variant.Inventory.MinQuantity,
                                 Quantity = variant.Inventory.Quantity,
                                 Reserve = variant.Inventory.Reserve,
                                 OnHold = variant.Inventory.OnHold,
@@ -5072,8 +5069,8 @@ namespace Colsp.Api.Controllers
                                 SafetyStockSeller = variant.Inventory.SafetyStockSeller,
                                 //StockAvailable = variant.Inventory.StockAvailable,
                                 UseDecimal = variant.Inventory.UseDecimal,
-                                UpdatedBy = variant.Inventory.UpdatedBy,
-                                UpdatedDt = variant.Inventory.UpdatedDt,
+                                UpdateBy = variant.Inventory.UpdateBy,
+                                UpdateOn = variant.Inventory.UpdateOn,
                             };
                             masterVariant.IsMaster = false;
                             masterVariant.IsVariant = false;
@@ -5132,10 +5129,10 @@ namespace Colsp.Api.Controllers
                                         group.ProductStageTags.Add(new ProductStageTag()
                                         {
                                             Tag = tag,
-                                            CreatedBy = User.UserRequest().Email,
-                                            CreatedDt = DateTime.Now,
-                                            UpdatedBy = User.UserRequest().Email,
-                                            UpdatedDt = DateTime.Now,
+                                            CreateBy = User.UserRequest().Email,
+                                            CreateOn = DateTime.Now,
+                                            UpdateBy = User.UserRequest().Email,
+                                            UpdateOn = DateTime.Now,
                                         });
                                     }
                                 }
@@ -5203,10 +5200,10 @@ namespace Colsp.Api.Controllers
                                                     ValueEn = checkValue,
                                                     CheckboxValue = true,
                                                     IsAttributeValue = true,
-                                                    CreatedBy = User.UserRequest().Email,
-                                                    CreatedDt = DateTime.Now,
-                                                    UpdatedBy = User.UserRequest().Email,
-                                                    UpdatedDt = DateTime.Now,
+                                                    CreateBy = User.UserRequest().Email,
+                                                    CreateOn = DateTime.Now,
+                                                    UpdateBy = User.UserRequest().Email,
+                                                    UpdateOn = DateTime.Now,
                                                 });
                                             }
                                         }
@@ -5224,10 +5221,10 @@ namespace Colsp.Api.Controllers
                                             ValueEn = value,
                                             CheckboxValue = false,
                                             IsAttributeValue = isValue,
-                                            CreatedBy = User.UserRequest().Email,
-                                            CreatedDt = DateTime.Now,
-                                            UpdatedBy = User.UserRequest().Email,
-                                            UpdatedDt = DateTime.Now,
+                                            CreateBy = User.UserRequest().Email,
+                                            CreateOn = DateTime.Now,
+                                            UpdateBy = User.UserRequest().Email,
+                                            UpdateOn = DateTime.Now,
                                         });
                                     }
                                 }
@@ -5313,10 +5310,10 @@ namespace Colsp.Api.Controllers
                                                         //    ValueEn = string.Concat("((", valueId, "))"),
                                                         //    CheckboxValue = true,
                                                         //    IsAttributeValue = true,
-                                                        //    CreatedBy = User.UserRequest().Email,
-                                                        //    CreatedDt = DateTime.Now,
-                                                        //    UpdatedBy = User.UserRequest().Email,
-                                                        //    UpdatedDt = DateTime.Now,
+                                                        //    CreateBy = User.UserRequest().Email,
+                                                        //    CreateOn = DateTime.Now,
+                                                        //    UpdateBy = User.UserRequest().Email,
+                                                        //    UpdateOn = DateTime.Now,
                                                         //});
                                                     }
                                                     else
@@ -5336,10 +5333,10 @@ namespace Colsp.Api.Controllers
                                                                 ValueEn = checkValue,
                                                                 CheckboxValue = true,
                                                                 IsAttributeValue = true,
-                                                                CreatedBy = User.UserRequest().Email,
-                                                                CreatedDt = DateTime.Now,
-                                                                UpdatedBy = User.UserRequest().Email,
-                                                                UpdatedDt = DateTime.Now,
+                                                                CreateBy = User.UserRequest().Email,
+                                                                CreateOn = DateTime.Now,
+                                                                UpdateBy = User.UserRequest().Email,
+                                                                UpdateOn = DateTime.Now,
                                                             });
                                                         }
                                                     }
@@ -5361,10 +5358,10 @@ namespace Colsp.Api.Controllers
                                                         ValueEn = value,
                                                         CheckboxValue = false,
                                                         IsAttributeValue = isValue,
-                                                        CreatedBy = User.UserRequest().Email,
-                                                        CreatedDt = DateTime.Now,
-                                                        UpdatedBy = User.UserRequest().Email,
-                                                        UpdatedDt = DateTime.Now,
+                                                        CreateBy = User.UserRequest().Email,
+                                                        CreateOn = DateTime.Now,
+                                                        UpdateBy = User.UserRequest().Email,
+                                                        UpdateOn = DateTime.Now,
                                                     });
                                                 }
                                             }
@@ -5383,10 +5380,10 @@ namespace Colsp.Api.Controllers
                                                         ValueEn = value,
                                                         CheckboxValue = false,
                                                         IsAttributeValue = isValue,
-                                                        CreatedBy = User.UserRequest().Email,
-                                                        CreatedDt = DateTime.Now,
-                                                        UpdatedBy = User.UserRequest().Email,
-                                                        UpdatedDt = DateTime.Now,
+                                                        CreateBy = User.UserRequest().Email,
+                                                        CreateOn = DateTime.Now,
+                                                        UpdateBy = User.UserRequest().Email,
+                                                        UpdateOn = DateTime.Now,
                                                     });
                                                 }
                                             }
@@ -5404,10 +5401,10 @@ namespace Colsp.Api.Controllers
                                                         ValueEn = value,
                                                         CheckboxValue = false,
                                                         IsAttributeValue = isValue,
-                                                        CreatedBy = User.UserRequest().Email,
-                                                        CreatedDt = DateTime.Now,
-                                                        UpdatedBy = User.UserRequest().Email,
-                                                        UpdatedDt = DateTime.Now,
+                                                        CreateBy = User.UserRequest().Email,
+                                                        CreateOn = DateTime.Now,
+                                                        UpdateBy = User.UserRequest().Email,
+                                                        UpdateOn = DateTime.Now,
                                                     });
                                                 }
                                             }
@@ -5557,10 +5554,10 @@ namespace Colsp.Api.Controllers
                                     groupEn.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
                                     {
                                         CategoryId = cat.CategoryId,
-                                        CreatedBy = User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now,
+                                        CreateBy = User.UserRequest().Email,
+                                        CreateOn = DateTime.Now,
+                                        UpdateBy = User.UserRequest().Email,
+                                        UpdateOn = DateTime.Now,
                                     });
                                 }
                             }
@@ -5600,10 +5597,10 @@ namespace Colsp.Api.Controllers
                                     groupEn.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
                                     {
                                         CategoryId = cat.CategoryId,
-                                        CreatedBy = User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now,
+                                        CreateBy = User.UserRequest().Email,
+                                        CreateOn = DateTime.Now,
+                                        UpdateBy = User.UserRequest().Email,
+                                        UpdateOn = DateTime.Now,
                                     });
                                 }
                             }
@@ -5644,10 +5641,10 @@ namespace Colsp.Api.Controllers
                                     groupEn.ProductStageTags.Add(new ProductStageTag()
                                     {
                                         Tag = t.Tag,
-                                        CreatedBy = User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now,
+                                        CreateBy = User.UserRequest().Email,
+                                        CreateOn = DateTime.Now,
+                                        UpdateBy = User.UserRequest().Email,
+                                        UpdateOn = DateTime.Now,
                                     });
                                 }
                             }
@@ -5932,12 +5929,12 @@ namespace Colsp.Api.Controllers
                                     AttributeId = tmpAttri.AttributeId,
                                     ValueEn = tmpAttri.ValueEn,
                                     CheckboxValue = tmpAttri.CheckboxValue,
-                                    CreatedBy = tmpAttri.CreatedBy,
-                                    CreatedDt = tmpAttri.CreatedDt,
+                                    CreateBy = tmpAttri.CreateBy,
+                                    CreateOn = tmpAttri.CreateOn,
                                     IsAttributeValue = tmpAttri.IsAttributeValue,
                                     Position = tmpAttri.Position,
-                                    UpdatedBy = tmpAttri.UpdatedBy,
-                                    UpdatedDt = tmpAttri.UpdatedDt
+                                    UpdateBy = tmpAttri.UpdateBy,
+                                    UpdateOn = tmpAttri.UpdateOn
                                 });
                             }
                         }
@@ -6208,12 +6205,12 @@ namespace Colsp.Api.Controllers
                                                     AttributeId = tmpAttri.AttributeId,
                                                     ValueEn = tmpAttri.ValueEn,
                                                     CheckboxValue = tmpAttri.CheckboxValue,
-                                                    CreatedBy = tmpAttri.CreatedBy,
-                                                    CreatedDt = tmpAttri.CreatedDt,
+                                                    CreateBy = tmpAttri.CreateBy,
+                                                    CreateOn = tmpAttri.CreateOn,
                                                     IsAttributeValue = tmpAttri.IsAttributeValue,
                                                     Position = tmpAttri.Position,
-                                                    UpdatedBy = tmpAttri.UpdatedBy,
-                                                    UpdatedDt = tmpAttri.UpdatedDt
+                                                    UpdateBy = tmpAttri.UpdateBy,
+                                                    UpdateOn = tmpAttri.UpdateOn
                                                 });
                                             }
                                         }
@@ -6261,8 +6258,8 @@ namespace Colsp.Api.Controllers
                         groupEn.InfoFlag = false;
                     }
                     masterVariant.VariantCount = groupEn.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
-                    groupEn.UpdatedDt = DateTime.Now;
-                    groupEn.UpdatedBy = User.UserRequest().Email;
+                    groupEn.UpdateOn = DateTime.Now;
+                    groupEn.UpdateBy = User.UserRequest().Email;
                 }
                 #region Validate Error Message
                 if (errorMessage.Count > 0)
@@ -6328,8 +6325,8 @@ namespace Colsp.Api.Controllers
                              join variant in db.ProductStageVariants on mast.ProductId equals variant.ProductId into varJoin
                              from vari in varJoin.DefaultIfEmpty()
                              join varImg in db.ProductStageImages on vari.Pid equals varImg.Pid into varImgJoin
-                             let comm = db.ProductStageComments.Where(w => w.Pid.Equals(mast.Pid)).OrderByDescending(o => o.UpdatedDt).FirstOrDefault()
-                             let commVar = db.ProductStageComments.Where(w => w.Pid.Equals(vari.Pid)).OrderByDescending(o => o.UpdatedDt).FirstOrDefault()
+                             let comm = db.ProductStageComments.Where(w => w.Pid.Equals(mast.Pid)).OrderByDescending(o => o.UpdateOn).FirstOrDefault()
+                             let commVar = db.ProductStageComments.Where(w => w.Pid.Equals(vari.Pid)).OrderByDescending(o => o.UpdateOn).FirstOrDefault()
                              where mast.ShopId == shopId
                              select new
                              {
@@ -6361,8 +6358,8 @@ namespace Colsp.Api.Controllers
                                     //join attrVal in db.AttributeValues on varMap.Value equals attrVal.MapValue into attrValJ
                                     //from attraVal in attrValJ.DefaultIfEmpty()
                                 join varImg in db.ProductStageImages on varJ.Pid equals varImg.Pid into varImgJoin
-                                let comm = db.ProductStageComments.Where(w => w.Pid.Equals(stage.Pid)).OrderByDescending(o => o.UpdatedDt).FirstOrDefault()
-                                let commVar = db.ProductStageComments.Where(w => w.Pid.Equals(varJ.Pid)).OrderByDescending(o => o.UpdatedDt).FirstOrDefault()
+                                let comm = db.ProductStageComments.Where(w => w.Pid.Equals(stage.Pid)).OrderByDescending(o => o.UpdateOn).FirstOrDefault()
+                                let commVar = db.ProductStageComments.Where(w => w.Pid.Equals(varJ.Pid)).OrderByDescending(o => o.UpdateOn).FirstOrDefault()
                                 where stage.ShopId == shopId
                                 select new
                                 {
@@ -6665,10 +6662,10 @@ namespace Colsp.Api.Controllers
                                 ShopId = shopId,
                                 Status = Constant.PRODUCT_STATUS_DRAFT,
                                 Visibility = true,
-                                CreatedBy = this.User.UserRequest().Email,
-                                CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now
+                                CreateBy = this.User.UserRequest().Email,
+                                CreateOn = DateTime.Now,
+                                UpdateBy = this.User.UserRequest().Email,
+                                UpdateOn = DateTime.Now
                             };
                         }
                         #endregion
@@ -6680,10 +6677,10 @@ namespace Colsp.Api.Controllers
                             DefaultVaraint = false,
                             Status = Constant.PRODUCT_STATUS_DRAFT,
                             Visibility = true,
-                            CreatedBy = this.User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now
+                            CreateBy = this.User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = this.User.UserRequest().Email,
+                            UpdateOn = DateTime.Now
                         };
                         if (headDic.ContainsKey("Default Variant"))
                         {
@@ -6918,10 +6915,10 @@ namespace Colsp.Api.Controllers
                                     {
                                         inventory = new Inventory()
                                         {
-                                            CreatedBy = this.User.UserRequest().Email,
-                                            CreatedDt = DateTime.Now,
-                                            UpdatedBy = this.User.UserRequest().Email,
-                                            UpdatedDt = DateTime.Now,
+                                            CreateBy = this.User.UserRequest().Email,
+                                            CreateOn = DateTime.Now,
+                                            UpdateBy = this.User.UserRequest().Email,
+                                            UpdateOn = DateTime.Now,
                                         };
                                         if (Constant.STOCK_TYPE.ContainsKey(body[headDic["Stock Type"]]))
                                         {
@@ -6954,10 +6951,10 @@ namespace Colsp.Api.Controllers
                                     {
                                         inventory = new Inventory()
                                         {
-                                            CreatedBy = this.User.UserRequest().Email,
-                                            CreatedDt = DateTime.Now,
-                                            UpdatedBy = this.User.UserRequest().Email,
-                                            UpdatedDt = DateTime.Now,
+                                            CreateBy = this.User.UserRequest().Email,
+                                            CreateOn = DateTime.Now,
+                                            UpdateBy = this.User.UserRequest().Email,
+                                            UpdateOn = DateTime.Now,
                                         };
                                         if (Constant.STOCK_TYPE.ContainsKey(body[headDic["Stock Type"]]))
                                         {
@@ -7073,10 +7070,10 @@ namespace Colsp.Api.Controllers
                                             {
                                                 CategoryId = cat,
                                                 Status = Constant.STATUS_ACTIVE,
-                                                CreatedBy = this.User.UserRequest().Email,
-                                                CreatedDt = DateTime.Now,
-                                                UpdatedBy = this.User.UserRequest().Email,
-                                                UpdatedDt = DateTime.Now,
+                                                CreateBy = this.User.UserRequest().Email,
+                                                CreateOn = DateTime.Now,
+                                                UpdateBy = this.User.UserRequest().Email,
+                                                UpdateOn = DateTime.Now,
                                             });
                                         }
                                         else
@@ -7105,10 +7102,10 @@ namespace Colsp.Api.Controllers
                                             {
                                                 CategoryId = cat,
                                                 Status = Constant.STATUS_ACTIVE,
-                                                CreatedBy = this.User.UserRequest().Email,
-                                                CreatedDt = DateTime.Now,
-                                                UpdatedBy = this.User.UserRequest().Email,
-                                                UpdatedDt = DateTime.Now,
+                                                CreateBy = this.User.UserRequest().Email,
+                                                CreateOn = DateTime.Now,
+                                                UpdateBy = this.User.UserRequest().Email,
+                                                UpdateOn = DateTime.Now,
                                             });
                                         }
                                         else
@@ -7137,10 +7134,10 @@ namespace Colsp.Api.Controllers
                                             {
                                                 CategoryId = cat,
                                                 Status = Constant.STATUS_ACTIVE,
-                                                CreatedBy = this.User.UserRequest().Email,
-                                                CreatedDt = DateTime.Now,
-                                                UpdatedBy = this.User.UserRequest().Email,
-                                                UpdatedDt = DateTime.Now,
+                                                CreateBy = this.User.UserRequest().Email,
+                                                CreateOn = DateTime.Now,
+                                                UpdateBy = this.User.UserRequest().Email,
+                                                UpdateOn = DateTime.Now,
                                             });
                                         }
                                         else
@@ -7169,10 +7166,10 @@ namespace Colsp.Api.Controllers
                                             {
                                                 CategoryId = cat,
                                                 Status = Constant.STATUS_ACTIVE,
-                                                CreatedBy = this.User.UserRequest().Email,
-                                                CreatedDt = DateTime.Now,
-                                                UpdatedBy = this.User.UserRequest().Email,
-                                                UpdatedDt = DateTime.Now,
+                                                CreateBy = this.User.UserRequest().Email,
+                                                CreateOn = DateTime.Now,
+                                                UpdateBy = this.User.UserRequest().Email,
+                                                UpdateOn = DateTime.Now,
                                             });
                                         }
                                         else
@@ -7332,10 +7329,10 @@ namespace Colsp.Api.Controllers
                             Quantity = masterQuantity,
                             SafetyStockSeller = safetyStock,
                             StockAvailable = 1,
-                            CreatedBy = this.User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = this.User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = this.User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = this.User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                         if (string.IsNullOrEmpty(product.Value.UrlEn))
                         {
@@ -7402,7 +7399,7 @@ namespace Colsp.Api.Controllers
                                     p.LocalCatId,
                                     p.AttributeSetId,
                                     p.ProductStageAttributes,
-                                    p.UpdatedDt,
+                                    p.UpdateOn,
                                     p.ShopId,
                                     p.InformationTabStatus,
                                     p.ImageTabStatus,
@@ -7557,10 +7554,10 @@ namespace Colsp.Api.Controllers
 
                 stage.OnlineFlag = false;
                 stage.Visibility = true;
-                stage.CreatedBy = this.User.UserRequest().Email;
-                stage.CreatedDt = DateTime.Now;
-                stage.UpdatedBy = this.User.UserRequest().Email;
-                stage.UpdatedDt = DateTime.Now;
+                stage.CreateBy = this.User.UserRequest().Email;
+                stage.CreateOn = DateTime.Now;
+                stage.UpdateBy = this.User.UserRequest().Email;
+                stage.UpdateOn = DateTime.Now;
                
                 #endregion
                 stage.Status = request.Status;
@@ -7583,8 +7580,8 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 masterInventory.Pid = masterPid;
-                masterInventory.CreatedBy = this.User.UserRequest().Email;
-                masterInventory.CreatedDt = DateTime.Now;
+                masterInventory.CreateBy = this.User.UserRequest().Email;
+                masterInventory.CreateOn = DateTime.Now;
                 db.Inventories.Add(masterInventory);
 
                 InventoryHistory masterInventoryHist = new InventoryHistory();
@@ -7599,8 +7596,8 @@ namespace Colsp.Api.Controllers
                 }
                 masterInventoryHist.Pid = masterPid;
                 masterInventoryHist.Description = "Add new product";
-                masterInventoryHist.CreatedBy = this.User.UserRequest().Email;
-                masterInventoryHist.CreatedDt = DateTime.Now;
+                masterInventoryHist.CreateBy = this.User.UserRequest().Email;
+                masterInventoryHist.CreateOn = DateTime.Now;
                 db.InventoryHistories.Add(masterInventoryHist);
                 #endregion
                 stage.FeatureImgUrl = SetupImgEntity(db, request.MasterVariant.Images, masterPid, shopId, this.User.UserRequest().Email);
@@ -7617,8 +7614,8 @@ namespace Colsp.Api.Controllers
                         map.CategoryId = cat.CategoryId.Value;
                         map.ProductId = stage.ProductId;
                         map.Status = Constant.STATUS_ACTIVE;
-                        map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
+                        map.CreateBy = this.User.UserRequest().Email;
+                        map.CreateOn = DateTime.Now;
                         db.ProductStageGlobalCatMaps.Add(map);
                     }
                 }
@@ -7633,8 +7630,8 @@ namespace Colsp.Api.Controllers
                         map.CategoryId = cat.CategoryId.Value;
                         map.ProductId = stage.ProductId;
                         map.Status = Constant.STATUS_ACTIVE;
-                        map.CreatedBy = this.User.UserRequest().Email;
-                        map.CreatedDt = DateTime.Now;
+                        map.CreateBy = this.User.UserRequest().Email;
+                        map.CreateOn = DateTime.Now;
                         db.ProductStageLocalCatMaps.Add(map);
                     }
                 }
@@ -7649,10 +7646,10 @@ namespace Colsp.Api.Controllers
                         relate.Pid1 = masterPid;
                         relate.Pid2 = pro.Pid;
                         relate.ShopId = shopId;
-                        relate.CreatedBy = this.User.UserRequest().Email;
-                        relate.CreatedDt = DateTime.Now;
-                        relate.UpdatedBy = this.User.UserRequest().Email;
-                        relate.UpdatedDt = DateTime.Now;
+                        relate.CreateBy = this.User.UserRequest().Email;
+                        relate.CreateOn = DateTime.Now;
+                        relate.UpdateBy = this.User.UserRequest().Email;
+                        relate.UpdateOn = DateTime.Now;
                         db.ProductStageRelateds.Add(relate);
                     }
                 }
@@ -7683,10 +7680,10 @@ namespace Colsp.Api.Controllers
                                         AttributeId = variantRq.FirstAttribute.AttributeId.Value,
                                         Value = string.Concat("((",val.AttributeValueId,"))"),
                                         IsAttributeValue = true,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now
+                                        CreateBy = this.User.UserRequest().Email,
+                                        CreateOn = DateTime.Now,
+                                        UpdateBy = this.User.UserRequest().Email,
+                                        UpdateOn = DateTime.Now
                                     });
                                 }
                             }
@@ -7702,10 +7699,10 @@ namespace Colsp.Api.Controllers
                                     AttributeId = variantRq.FirstAttribute.AttributeId.Value,
                                     Value = variantRq.FirstAttribute.ValueEn,
                                     IsAttributeValue = false,
-                                    CreatedBy = this.User.UserRequest().Email,
-                                    CreatedDt = DateTime.Now,
-                                    UpdatedBy = this.User.UserRequest().Email,
-                                    UpdatedDt = DateTime.Now
+                                    CreateBy = this.User.UserRequest().Email,
+                                    CreateOn = DateTime.Now,
+                                    UpdateBy = this.User.UserRequest().Email,
+                                    UpdateOn = DateTime.Now
                                 });
                                 
                             }
@@ -7722,10 +7719,10 @@ namespace Colsp.Api.Controllers
                                         AttributeId = variantRq.SecondAttribute.AttributeId.Value,
                                         Value = string.Concat("((", val.AttributeValueId, "))"),
                                         IsAttributeValue = true,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now
+                                        CreateBy = this.User.UserRequest().Email,
+                                        CreateOn = DateTime.Now,
+                                        UpdateBy = this.User.UserRequest().Email,
+                                        UpdateOn = DateTime.Now
                                     });
                                 }
                             }
@@ -7741,10 +7738,10 @@ namespace Colsp.Api.Controllers
                                     AttributeId = variantRq.SecondAttribute.AttributeId.Value,
                                     Value = variantRq.SecondAttribute.ValueEn,
                                     IsAttributeValue = false,
-                                    CreatedBy = this.User.UserRequest().Email,
-                                    CreatedDt = DateTime.Now,
-                                    UpdatedBy = this.User.UserRequest().Email,
-                                    UpdatedDt = DateTime.Now
+                                    CreateBy = this.User.UserRequest().Email,
+                                    CreateOn = DateTime.Now,
+                                    UpdateBy = this.User.UserRequest().Email,
+                                    UpdateOn = DateTime.Now
                                 });
                             }
                             
@@ -7778,8 +7775,8 @@ namespace Colsp.Api.Controllers
                         }
                         variantInventoryHist.Pid = variantPid;
                         variantInventoryHist.Description = "Add new variant";
-                        variantInventoryHist.CreatedBy = this.User.UserRequest().Email;
-                        variantInventoryHist.CreatedDt = DateTime.Now;
+                        variantInventoryHist.CreateBy = this.User.UserRequest().Email;
+                        variantInventoryHist.CreateOn = DateTime.Now;
                         db.InventoryHistories.Add(masterInventoryHist);
                         #endregion
                         
@@ -7795,10 +7792,10 @@ namespace Colsp.Api.Controllers
                         SetupVdoEntity(db, variantRq.VideoLinks, variantPid, shopId, this.User.UserRequest().Email);
                         SetupProductStageVariant(variant, variantRq);
                         variant.ShopId = stage.ShopId;
-                        variant.CreatedBy = this.User.UserRequest().Email;
-                        variant.CreatedDt = DateTime.Now;
-                        variant.UpdatedBy = this.User.UserRequest().Email;
-                        variant.UpdatedDt = DateTime.Now;
+                        variant.CreateBy = this.User.UserRequest().Email;
+                        variant.CreateOn = DateTime.Now;
+                        variant.UpdateBy = this.User.UserRequest().Email;
+                        variant.UpdateOn = DateTime.Now;
                         stage.ProductStageVariants.Add(variant);
                     }
                 }
@@ -7857,8 +7854,8 @@ namespace Colsp.Api.Controllers
                 #region Setup Master
                 SetupProductStage(db, stage, request);
                 stage.Status = request.Status;
-                stage.UpdatedBy = this.User.UserRequest().Email;
-                stage.UpdatedDt = DateTime.Now;
+                stage.UpdateBy = this.User.UserRequest().Email;
+                stage.UpdateOn = DateTime.Now;
                 #region Setup Attribute
                 List<ProductStageAttribute> attrListEntity = stage.ProductStageAttributes.ToList();
                 if (request.MasterAttribute != null)
@@ -7890,8 +7887,8 @@ namespace Colsp.Api.Controllers
                                     current.ValueEn = attr.ValueEn;
                                     current.IsAttributeValue = false;
                                 }
-                                current.UpdatedBy = this.User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
+                                current.UpdateBy = this.User.UserRequest().Email;
+                                current.UpdateOn = DateTime.Now;
                                 attrListEntity.Remove(current);
                             }
                             else
@@ -7928,10 +7925,10 @@ namespace Colsp.Api.Controllers
                                 throw new Exception("Invalid attribute value");
                             }
                             attriEntity.Status = Constant.STATUS_ACTIVE;
-                            attriEntity.CreatedBy = this.User.UserRequest().Email;
-                            attriEntity.CreatedDt = DateTime.Now;
-                            attriEntity.UpdatedBy = this.User.UserRequest().Email;
-                            attriEntity.UpdatedDt = DateTime.Now;
+                            attriEntity.CreateBy = this.User.UserRequest().Email;
+                            attriEntity.CreateOn = DateTime.Now;
+                            attriEntity.UpdateBy = this.User.UserRequest().Email;
+                            attriEntity.UpdateOn = DateTime.Now;
                             db.ProductStageAttributes.Add(attriEntity);
                         }
 
@@ -7987,8 +7984,8 @@ namespace Colsp.Api.Controllers
                         current.Pid = variantPid;
                         current.ProductId = stage.ProductId;
                         current.ShopId = stage.ShopId;
-                        current.CreatedBy = this.User.UserRequest().Email;
-                        current.CreatedDt = DateTime.Now;
+                        current.CreateBy = this.User.UserRequest().Email;
+                        current.CreateOn = DateTime.Now;
                     }
                     List<ProductStageVariantArrtibuteMap> valList = null;
                     if (current.ProductStageVariantArrtibuteMaps != null && current.ProductStageVariantArrtibuteMaps.Count > 0)
@@ -8026,10 +8023,10 @@ namespace Colsp.Api.Controllers
                                         AttributeId = varRq.FirstAttribute.AttributeId.Value,
                                         Value = string.Concat("((", val.AttributeValueId, "))"),
                                         IsAttributeValue = true,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now
+                                        CreateBy = this.User.UserRequest().Email,
+                                        CreateOn = DateTime.Now,
+                                        UpdateBy = this.User.UserRequest().Email,
+                                        UpdateOn = DateTime.Now
                                     });
                                 }
 
@@ -8053,8 +8050,8 @@ namespace Colsp.Api.Controllers
                                     }
                                     currentVal.Value = varRq.FirstAttribute.ValueEn;
                                     currentVal.IsAttributeValue = false;
-                                    currentVal.UpdatedBy = this.User.UserRequest().Email;
-                                    currentVal.UpdatedDt = DateTime.Now;
+                                    currentVal.UpdateBy = this.User.UserRequest().Email;
+                                    currentVal.UpdateOn = DateTime.Now;
                                     valList.Remove(currentVal);
                                 }
                                 else
@@ -8074,10 +8071,10 @@ namespace Colsp.Api.Controllers
                                     AttributeId = varRq.FirstAttribute.AttributeId.Value,
                                     Value = varRq.FirstAttribute.ValueEn,
                                     IsAttributeValue = false,
-                                    CreatedBy = this.User.UserRequest().Email,
-                                    CreatedDt = DateTime.Now,
-                                    UpdatedBy = this.User.UserRequest().Email,
-                                    UpdatedDt = DateTime.Now
+                                    CreateBy = this.User.UserRequest().Email,
+                                    CreateOn = DateTime.Now,
+                                    UpdateBy = this.User.UserRequest().Email,
+                                    UpdateOn = DateTime.Now
                                 });
                             }
                         }
@@ -8113,10 +8110,10 @@ namespace Colsp.Api.Controllers
                                         AttributeId = varRq.SecondAttribute.AttributeId.Value,
                                         Value = string.Concat("((", val.AttributeValueId, "))"),
                                         IsAttributeValue = true,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now
+                                        CreateBy = this.User.UserRequest().Email,
+                                        CreateOn = DateTime.Now,
+                                        UpdateBy = this.User.UserRequest().Email,
+                                        UpdateOn = DateTime.Now
                                     });
                                 }
 
@@ -8140,8 +8137,8 @@ namespace Colsp.Api.Controllers
                                     }
                                     currentVal.Value = varRq.SecondAttribute.ValueEn;
                                     currentVal.IsAttributeValue = false;
-                                    currentVal.UpdatedBy = this.User.UserRequest().Email;
-                                    currentVal.UpdatedDt = DateTime.Now;
+                                    currentVal.UpdateBy = this.User.UserRequest().Email;
+                                    currentVal.UpdateOn = DateTime.Now;
                                     valList.Remove(currentVal);
                                 }
                                 else
@@ -8161,10 +8158,10 @@ namespace Colsp.Api.Controllers
                                     AttributeId = varRq.SecondAttribute.AttributeId.Value,
                                     Value = varRq.SecondAttribute.ValueEn,
                                     IsAttributeValue = false,
-                                    CreatedBy = this.User.UserRequest().Email,
-                                    CreatedDt = DateTime.Now,
-                                    UpdatedBy = this.User.UserRequest().Email,
-                                    UpdatedDt = DateTime.Now
+                                    CreateBy = this.User.UserRequest().Email,
+                                    CreateOn = DateTime.Now,
+                                    UpdateBy = this.User.UserRequest().Email,
+                                    UpdateOn = DateTime.Now
                                 });
                             }
                         }
@@ -8188,8 +8185,8 @@ namespace Colsp.Api.Controllers
                     SaveChangeVideoLinks(db, current.Pid, stage.ShopId, varRq.VideoLinks, this.User.UserRequest().Email);
                     current.Status = stage.Status;
                     SetupProductStageVariant(current, varRq);
-                    current.UpdatedBy = this.User.UserRequest().Email;
-                    current.UpdatedDt = DateTime.Now;
+                    current.UpdateBy = this.User.UserRequest().Email;
+                    current.UpdateOn = DateTime.Now;
                     if (addNew)
                     {
                         db.ProductStageVariants.Add(current);
@@ -8235,8 +8232,8 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find product " + proRq.ProductId + " in shop " + shopId);
                     }
                     current.Visibility = proRq.Visibility.Value;
-                    current.UpdatedBy = this.User.UserRequest().Email;
-                    current.UpdatedDt = DateTime.Now;
+                    current.UpdateBy = this.User.UserRequest().Email;
+                    current.UpdateOn = DateTime.Now;
                 }
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -8404,8 +8401,8 @@ namespace Colsp.Api.Controllers
                         throw new Exception("ProudctId " + rq.ProductId.Value + " is not drafted");
                     }
                     current.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
-                    current.UpdatedBy = this.User.UserRequest().Email;
-                    current.UpdatedDt = DateTime.Now;
+                    current.UpdateBy = this.User.UserRequest().Email;
+                    current.UpdateOn = DateTime.Now;
                 }
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 return Request.CreateResponse(HttpStatusCode.OK, "Published success");
@@ -10395,10 +10392,10 @@ namespace Colsp.Api.Controllers
             }
             masterInventoryHist.Pid = pid;
             masterInventoryHist.Description = "Edit product";
-            masterInventoryHist.CreatedBy = email;
-            masterInventoryHist.CreatedDt = DateTime.Now;
-            masterInventoryHist.UpdatedBy = email;
-            masterInventoryHist.UpdatedDt = DateTime.Now;
+            masterInventoryHist.CreateBy = email;
+            masterInventoryHist.CreateOn = DateTime.Now;
+            masterInventoryHist.UpdateBy = email;
+            masterInventoryHist.UpdateOn = DateTime.Now;
             db.InventoryHistories.Add(masterInventoryHist);
         }
 
@@ -10410,12 +10407,12 @@ namespace Colsp.Api.Controllers
             {
                 masterInventory = new Inventory();
                 masterInventory.Pid = pid;
-                masterInventory.CreatedBy = email;
-                masterInventory.CreatedDt = DateTime.Now;
+                masterInventory.CreateBy = email;
+                masterInventory.CreateOn = DateTime.Now;
                 isNew = true;
             }
-            masterInventory.UpdatedBy = email;
-            masterInventory.UpdatedDt = DateTime.Now;
+            masterInventory.UpdateBy = email;
+            masterInventory.UpdateOn = DateTime.Now;
             masterInventory.Quantity = Validation.ValidationInteger(variant.Quantity, "Quantity", true, Int32.MaxValue, 0).Value;
             masterInventory.SafetyStockSeller = variant.SafetyStock;
             if (variant.StockType != null)
@@ -10449,8 +10446,8 @@ namespace Colsp.Api.Controllers
                         ProductStageLocalCatMap current = catList.Where(w => w.CategoryId == cat.CategoryId).SingleOrDefault();
                         if (current != null)
                         {
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = DateTime.Now;
+                            current.UpdateBy = email;
+                            current.UpdateOn = DateTime.Now;
                             catList.Remove(current);
                         }
                         else
@@ -10465,10 +10462,10 @@ namespace Colsp.Api.Controllers
                         catEntity.CategoryId = cat.CategoryId.Value;
                         catEntity.ProductId = ProductId;
                         catEntity.Status = Constant.STATUS_ACTIVE;
-                        catEntity.CreatedBy = email;
-                        catEntity.CreatedDt = DateTime.Now;
-                        catEntity.UpdatedBy = email;
-                        catEntity.UpdatedDt = DateTime.Now;
+                        catEntity.CreateBy = email;
+                        catEntity.CreateOn = DateTime.Now;
+                        catEntity.UpdateBy = email;
+                        catEntity.UpdateOn = DateTime.Now;
                         db.ProductStageLocalCatMaps.Add(catEntity);
                     }
                 }
@@ -10498,8 +10495,8 @@ namespace Colsp.Api.Controllers
                         ProductStageGlobalCatMap current = catList.Where(w => w.CategoryId == cat.CategoryId).SingleOrDefault();
                         if (current != null)
                         {
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = DateTime.Now;
+                            current.UpdateBy = email;
+                            current.UpdateOn = DateTime.Now;
                             catList.Remove(current);
                         }
                         else
@@ -10514,10 +10511,10 @@ namespace Colsp.Api.Controllers
                         catEntity.CategoryId = cat.CategoryId.Value;
                         catEntity.ProductId = ProductId;
                         catEntity.Status = Constant.STATUS_ACTIVE;
-                        catEntity.CreatedBy = email;
-                        catEntity.CreatedDt = DateTime.Now;
-                        catEntity.UpdatedBy = email;
-                        catEntity.UpdatedDt = DateTime.Now;
+                        catEntity.CreateBy = email;
+                        catEntity.CreateOn = DateTime.Now;
+                        catEntity.UpdateBy = email;
+                        catEntity.UpdateOn = DateTime.Now;
                         db.ProductStageGlobalCatMaps.Add(catEntity);
                     }
                 }
@@ -10545,8 +10542,8 @@ namespace Colsp.Api.Controllers
                         ProductStageRelated current = relateList.Where(w => w.Pid2 == pro.Pid).SingleOrDefault();
                         if (current != null)
                         {
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = DateTime.Now;
+                            current.UpdateBy = email;
+                            current.UpdateOn = DateTime.Now;
                             relateList.Remove(current);
                         }
                         else
@@ -10561,10 +10558,10 @@ namespace Colsp.Api.Controllers
                         proEntity.Pid2 = pro.Pid;
                         proEntity.ShopId = shopId;
                         proEntity.Status = Constant.STATUS_ACTIVE;
-                        proEntity.CreatedBy = email;
-                        proEntity.CreatedDt = DateTime.Now;
-                        proEntity.UpdatedBy = email;
-                        proEntity.UpdatedDt = DateTime.Now;
+                        proEntity.CreateBy = email;
+                        proEntity.CreateOn = DateTime.Now;
+                        proEntity.UpdateBy = email;
+                        proEntity.UpdateOn = DateTime.Now;
                         db.ProductStageRelateds.Add(proEntity);
                     }
                 }
@@ -10596,8 +10593,8 @@ namespace Colsp.Api.Controllers
                         {
                             current.Position = index++;
                             current.VideoUrlEn = vdo.Url;
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = DateTime.Now;
+                            current.UpdateBy = email;
+                            current.UpdateOn = DateTime.Now;
                             vdoList.Remove(current);
                         }
                         else
@@ -10613,10 +10610,10 @@ namespace Colsp.Api.Controllers
                         vdoEntity.Position = index++;
                         vdoEntity.VideoUrlEn = vdo.Url;
                         vdoEntity.Status = Constant.STATUS_ACTIVE;
-                        vdoEntity.CreatedBy = email;
-                        vdoEntity.CreatedDt = DateTime.Now;
-                        vdoEntity.UpdatedBy = email;
-                        vdoEntity.UpdatedDt = DateTime.Now;
+                        vdoEntity.CreateBy = email;
+                        vdoEntity.CreateOn = DateTime.Now;
+                        vdoEntity.UpdateBy = email;
+                        vdoEntity.UpdateOn = DateTime.Now;
                         db.ProductStageVideos.Add(vdoEntity);
                     }
                 }
@@ -10647,8 +10644,8 @@ namespace Colsp.Api.Controllers
                         if (current != null)
                         {
                             current.Position = index++;
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = DateTime.Now;
+                            current.UpdateBy = email;
+                            current.UpdateOn = DateTime.Now;
                             img360List.Remove(current);
                         }
                         else
@@ -10665,10 +10662,10 @@ namespace Colsp.Api.Controllers
                         imgEntity.Path = img.tmpPath;
                         imgEntity.ImageUrlEn = img.url;
                         imgEntity.Status = Constant.STATUS_ACTIVE;
-                        imgEntity.CreatedBy = email;
-                        imgEntity.CreatedDt = DateTime.Now;
-                        imgEntity.UpdatedBy = email;
-                        imgEntity.UpdatedDt = DateTime.Now;
+                        imgEntity.CreateBy = email;
+                        imgEntity.CreateOn = DateTime.Now;
+                        imgEntity.UpdateBy = email;
+                        imgEntity.UpdateOn = DateTime.Now;
                         db.ProductStageImage360.Add(imgEntity);
                     }
                 }
@@ -10702,8 +10699,8 @@ namespace Colsp.Api.Controllers
                         {
                             current.FeatureFlag = featureImg;
                             current.Position = index++;
-                            current.UpdatedBy = email;
-                            current.UpdatedDt = DateTime.Now;
+                            current.UpdateBy = email;
+                            current.UpdateOn = DateTime.Now;
                             imgList.Remove(current);
                         }
                         else
@@ -10721,10 +10718,10 @@ namespace Colsp.Api.Controllers
                         imgEntity.Path = img.tmpPath;
                         imgEntity.ImageUrlEn = img.url;
                         imgEntity.Status = Constant.STATUS_ACTIVE;
-                        imgEntity.CreatedBy = email;
-                        imgEntity.CreatedDt = DateTime.Now;
-                        imgEntity.UpdatedBy = email;
-                        imgEntity.UpdatedDt = DateTime.Now;
+                        imgEntity.CreateBy = email;
+                        imgEntity.CreateOn = DateTime.Now;
+                        imgEntity.UpdateBy = email;
+                        imgEntity.UpdateOn = DateTime.Now;
                         db.ProductStageImages.Add(imgEntity);
                     }
                     featureImg = false;
@@ -10875,10 +10872,10 @@ namespace Colsp.Api.Controllers
 
                 attriEntity.AttributeId = attr.AttributeId.Value;
                 attriEntity.Status = Constant.STATUS_ACTIVE;
-                attriEntity.CreatedBy = email;
-                attriEntity.CreatedDt = DateTime.Now;
-                attriEntity.UpdatedBy = email;
-                attriEntity.UpdatedDt = DateTime.Now;
+                attriEntity.CreateBy = email;
+                attriEntity.CreateOn = DateTime.Now;
+                attriEntity.UpdateBy = email;
+                attriEntity.UpdateOn = DateTime.Now;
                 db.ProductStageAttributes.Add(attriEntity);
             }
 
@@ -10901,10 +10898,10 @@ namespace Colsp.Api.Controllers
                 img.Path = imgRq.tmpPath;
                 img.ImageUrlEn = imgRq.url;
                 img.Status = Constant.STATUS_ACTIVE;
-                img.CreatedBy = email;
-                img.CreatedDt = DateTime.Now;
-                img.UpdatedBy = email;
-                img.UpdatedDt = DateTime.Now;
+                img.CreateBy = email;
+                img.CreateOn = DateTime.Now;
+                img.UpdateBy = email;
+                img.UpdateOn = DateTime.Now;
                 db.ProductStageImages.Add(img);
             }
             return featureImgUrl;
@@ -10926,10 +10923,10 @@ namespace Colsp.Api.Controllers
                 img.Path = imgRq.tmpPath;
                 img.ImageUrlEn = imgRq.url;
                 img.Status = Constant.STATUS_ACTIVE;
-                img.CreatedBy = email;
-                img.CreatedDt = DateTime.Now;
-                img.UpdatedBy = email;
-                img.UpdatedDt = DateTime.Now;
+                img.CreateBy = email;
+                img.CreateOn = DateTime.Now;
+                img.UpdateBy = email;
+                img.UpdateOn = DateTime.Now;
                 db.ProductStageImage360.Add(img);
             }
         }
@@ -10946,10 +10943,10 @@ namespace Colsp.Api.Controllers
                 vdo.Position = index++;
                 vdo.VideoUrlEn = vdoRq.Url;
                 vdo.Status = Constant.STATUS_ACTIVE;
-                vdo.CreatedBy = email;
-                vdo.CreatedDt = DateTime.Now;
-                vdo.UpdatedBy = email;
-                vdo.UpdatedDt = DateTime.Now;
+                vdo.CreateBy = email;
+                vdo.CreateOn = DateTime.Now;
+                vdo.UpdateBy = email;
+                vdo.UpdateOn = DateTime.Now;
                 db.ProductStageVideos.Add(vdo);
             }
         }

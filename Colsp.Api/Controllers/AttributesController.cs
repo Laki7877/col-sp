@@ -20,16 +20,15 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-
-
-
         [Route("api/Attributes/DefaultAttribute")]
         [HttpGet]
         public HttpResponseMessage GetDefaultAttribute()
         {
             try
             {
-                var attribute = db.Attributes.Where(w => w.DefaultAttribute == true).Select(s => new
+                var attribute = db.Attributes
+                    .Where(w => w.DefaultAttribute == true && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Select(s => new
                 {
                     s.AttributeId,
                     s.AttributeNameEn,
@@ -73,7 +72,7 @@ namespace Colsp.Api.Controllers
                                    attr.DataType,
                                    attr.Status,
                                    attr.DefaultAttribute,
-                                   attr.UpdatedDt,
+                                   UpdatedDt = attr.UpdateOn,
                                    AttributeSetCount = attr.AttributeSetMaps.Count()
                                };
 
@@ -167,13 +166,12 @@ namespace Colsp.Api.Controllers
                 string email = User.UserRequest().Email;
                 DateTime cuurentDt = DateTime.Now;
                 SetupAttribute(attribute, request, email, cuurentDt);
-                attribute.CreatedBy = email;
-                attribute.CreatedDt = cuurentDt;
+                attribute.CreateBy = email;
+                attribute.CreateOn = cuurentDt;
                 attribute.AttributeId = db.GetNextAttributeId().SingleOrDefault().Value;
                 attribute = db.Attributes.Add(attribute);
                 Util.DeadlockRetry(db.SaveChanges, "Attribute");
                 return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attribute));
-                //return GetAttribute(attribute.AttributeId);
             }
             catch (Exception e)
             {
@@ -193,7 +191,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 attribute = db.Attributes
-                    .Where(w => w.AttributeId.Equals(attributeId))
+                    .Where(w => w.AttributeId.Equals(attributeId) && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Include(i => i.AttributeValueMaps
                     .Select(s => s.AttributeValue))
                     .SingleOrDefault();
@@ -224,9 +222,14 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var setList = db.Attributes
-                    .Include(i=>i.ProductStageAttributes)
-                    .Include(i=>i.AttributeValueMaps).ToList();
+                var ids = request.Select(s => s.AttributeId).ToList();
+                var productAttribute = db.ProductStageAttributes.Where(w => ids.Contains(w.AttributeId)).Select(s=>s.Attribute.AttributeNameEn);
+                if(productAttribute != null && productAttribute.Count() > 0)
+                {
+                    throw new Exception(string.Concat("Cannot delete attribute ",string.Join(",", productAttribute)));
+                }
+
+                var setList = db.Attributes.Where(w=> ids.Contains(w.AttributeId) && !w.Status.Equals(Constant.STATUS_REMOVE));
                 foreach (AttributeRequest setRq in request)
                 {
                     var current = setList.Where(w => w.AttributeId.Equals(setRq.AttributeId)).SingleOrDefault();
@@ -234,14 +237,7 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception(HttpErrorMessage.NotFound);
                     }
-                    if(current.ProductStageAttributes != null && current.ProductStageAttributes.Count > 0 )
-                    {
-                        throw new Exception("Attribute has product or variant associate");
-                    }
-                    if (current.AttributeValueMaps != null && current.AttributeValueMaps.Count > 0)
-                    {
-
-                    }
+                    current.Status = Constant.STATUS_REMOVE;
                     db.Attributes.Remove(current);
                 }
                 Util.DeadlockRetry(db.SaveChanges, "Attribute");
@@ -265,11 +261,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find attribute with id " + attributeId);
                 }
-                else
-                {
-                    response.AttributeId = 0;
-                    return AddAttribute(response);
-                }
+                return AddAttribute(response);
             }
             catch(Exception e)
             {
@@ -287,14 +279,12 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
                 }
-                var setList = db.Attributes.ToList();
+                var ids = request.Select(s => s.AttributeId).ToList();
+                var setList = db.Attributes
+                    .Where(w => ids.Contains(w.AttributeId) && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .ToList();
                 foreach (AttributeRequest setRq in request)
                 {
-                    if (!Constant.STATUS_VISIBLE.Equals(setRq.Status)
-                        && !Constant.STATUS_NOT_VISIBLE.Equals(setRq.Status))
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid status");
-                    }
                     var current = setList.Where(w => w.AttributeId.Equals(setRq.AttributeId)).SingleOrDefault();
                     if (current == null)
                     {
@@ -329,7 +319,7 @@ namespace Colsp.Api.Controllers
         private AttributeRequest GetAttibuteResponse(ColspEntities db,int attributeId)
         {
             var attr = db.Attributes
-                .Where(w => w.AttributeId.Equals(attributeId))
+                .Where(w => w.AttributeId == attributeId && !w.Status.Equals(Constant.STATUS_REMOVE))
                 .Select(s => new
                 {
                     s.AttributeId,
@@ -452,8 +442,8 @@ namespace Colsp.Api.Controllers
             attribute.Filterable = request.Filterable;
             attribute.Required = request.Required;
             attribute.Status = Constant.STATUS_ACTIVE;
-            attribute.UpdatedBy = email;
-            attribute.UpdatedDt = currentDt;
+            attribute.UpdateBy = email;
+            attribute.UpdateOn = currentDt;
 
             #region AttributeValue
             var attributeVal = attribute.AttributeValueMaps.Select(s => s.AttributeValue).ToList();
@@ -481,8 +471,8 @@ namespace Colsp.Api.Controllers
                                 current.AttributeValueEn = Validation.ValidateString(valRq.AttributeValueEn, "Attribute Value (English)", true, 100, true);
                                 current.AttributeValueTh = Validation.ValidateString(valRq.AttributeValueTh, "Attribute Value (Thai)", true, 100, true);
                                 current.ImageUrl = Validation.ValidateString(valRq.Image.Url, "Attribute Value Url", true, 2000, true,string.Empty);
-                                current.UpdatedBy = email;
-                                current.UpdatedDt = currentDt;
+                                current.UpdateBy = email;
+                                current.UpdateOn = currentDt;
                             }
                             attributeVal.Remove(current);
                         }
@@ -499,10 +489,10 @@ namespace Colsp.Api.Controllers
                             AttributeValueTh = Validation.ValidateString(valRq.AttributeValueTh, "Attribute Value (Thai)", true, 100, true),
                             ImageUrl = Validation.ValidateString(valRq.Image.Url, "Attribute Value Url", true, 2000, true, string.Empty),
                             Status = Constant.STATUS_ACTIVE,
-                            CreatedBy = email,
-                            CreatedDt = currentDt,
-                            UpdatedBy = email,
-                            UpdatedDt = currentDt,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         };
                         value.AttributeValueId = db.GetNextAttributeValueId().SingleOrDefault().Value;
                         value.MapValue = string.Concat(
@@ -513,10 +503,10 @@ namespace Colsp.Api.Controllers
                         {
                             Attribute = attribute,
                             AttributeValue = value,
-                            CreatedBy = email,
-                            CreatedDt = currentDt,
-                            UpdatedBy = email,
-                            UpdatedDt = currentDt,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         });
                     }
                 }

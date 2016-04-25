@@ -75,22 +75,23 @@ namespace Colsp.Entity.Models
         public Nullable<int> DistrictId { get; set; }
         public string ZipCode { get; set; }
         public string CountryCode { get; set; }
-        public string Country { get; set; }
         public string PhoneNumber { get; set; }
         public string FaxNumber { get; set; }
         public string Telex { get; set; }
         public string OverseasVendorIndicator { get; set; }
-        public string BankName { get; set; }
+        public string BankNumber { get; set; }
         public string BankAccountNumber { get; set; }
         public string BankAccountName { get; set; }
         public string RemittanceFaxNumber { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
+        public virtual BankDetail BankDetail { get; set; }
         public virtual City City { get; set; }
+        public virtual Country Country { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Coupon> Coupons { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

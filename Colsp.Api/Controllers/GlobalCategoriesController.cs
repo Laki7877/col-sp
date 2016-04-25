@@ -43,7 +43,7 @@ namespace Colsp.Api.Controllers
                                     cat.Visibility,
                                     //cat.Status,
                                     //cat.UpdatedDt,
-                                    //cat.CreatedDt,
+                                    //cat.CreateOn,
                                     //cat.Commission,
                                     ProductCount = cat.ProductStageGroups.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)), 
                                                     //+ cat.Products.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
@@ -108,7 +108,7 @@ namespace Colsp.Api.Controllers
                                      cat.Visibility,
                                      cat.Status,
                                      //cat.UpdatedDt,
-                                     //cat.CreatedDt,
+                                     //cat.CreateOn,
                                      cat.Commission,
 
                                      //ProductCount = cat.ProductStages.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
@@ -142,10 +142,10 @@ namespace Colsp.Api.Controllers
 
                 category.Visibility = request.Visibility;
                 category.Status = Constant.STATUS_ACTIVE;
-                category.CreatedBy = User.UserRequest().Email;
-                category.CreatedDt = DateTime.Now;
-                category.UpdatedBy = User.UserRequest().Email;
-                category.UpdatedDt = DateTime.Now;
+                category.CreateBy = User.UserRequest().Email;
+                category.CreateOn = DateTime.Now;
+                category.UpdateBy = User.UserRequest().Email;
+                category.UpdateOn = DateTime.Now;
                 
                 int max = db.GlobalCategories.Select(s=>s.Rgt).DefaultIfEmpty(0).Max();
                 if(max == 0)
@@ -169,8 +169,8 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now
                         });
                     }
                 }
@@ -186,8 +186,8 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now
                         });
                     }
                 }
@@ -200,10 +200,10 @@ namespace Colsp.Api.Controllers
                         category.GlobalCatAttributeSetMaps.Add(new GlobalCatAttributeSetMap()
                         {
                             AttributeSetId = mapRq.AttributeSetId,
-                            CreatedBy = User.UserRequest().Email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = User.UserRequest().Email,
-                            UpdatedDt = DateTime.Now,
+                            CreateBy = User.UserRequest().Email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = User.UserRequest().Email,
+                            UpdateOn = DateTime.Now,
                         });
                     }
                 }
@@ -254,8 +254,8 @@ namespace Colsp.Api.Controllers
                 }
                 category.Visibility = request.Visibility;
                 category.Status = Constant.STATUS_ACTIVE;
-                category.UpdatedBy = User.UserRequest().Email;
-                category.UpdatedDt = DateTime.Now;
+                category.UpdateBy = User.UserRequest().Email;
+                category.UpdateOn = DateTime.Now;
                 #region Banner Image En
                 var imageOldEn = category.GlobalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).ToList();
                 if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
@@ -275,8 +275,8 @@ namespace Colsp.Api.Controllers
                             {
                                 current.ImageUrl = img.Url;
                                 current.Position = position++;
-                                current.UpdatedBy = User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
+                                current.UpdateBy = User.UserRequest().Email;
+                                current.UpdateOn = DateTime.Now;
                                 imageOldEn.Remove(current);
                             }
                             else
@@ -291,8 +291,8 @@ namespace Colsp.Api.Controllers
                                 ImageUrl = img.Url,
                                 Position = position++,
                                 EnTh = Constant.LANG_EN,
-                                UpdatedBy = User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now
+                                UpdateBy = User.UserRequest().Email,
+                                UpdateOn = DateTime.Now
                             });
                         }
                     }
@@ -321,8 +321,8 @@ namespace Colsp.Api.Controllers
                             {
                                 current.ImageUrl = img.Url;
                                 current.Position = position++;
-                                current.UpdatedBy = User.UserRequest().Email;
-                                current.UpdatedDt = DateTime.Now;
+                                current.UpdateBy = User.UserRequest().Email;
+                                current.UpdateOn = DateTime.Now;
                                 imageOldTh.Remove(current);
                             }
                             else
@@ -337,8 +337,8 @@ namespace Colsp.Api.Controllers
                                 ImageUrl = img.Url,
                                 Position = position++,
                                 EnTh = Constant.LANG_TH,
-                                UpdatedBy = User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now
+                                UpdateBy = User.UserRequest().Email,
+                                UpdateOn = DateTime.Now
                             });
                         }
                     }
@@ -382,10 +382,10 @@ namespace Colsp.Api.Controllers
                                 category.GlobalCatFeatureProducts.Add(new GlobalCatFeatureProduct()
                                 {
                                     ProductId = pro.ProductId,
-                                    CreatedBy = User.UserRequest().Email,
-                                    CreatedDt = DateTime.Now,
-                                    UpdatedBy = User.UserRequest().Email,
-                                    UpdatedDt = DateTime.Now
+                                    CreateBy = User.UserRequest().Email,
+                                    CreateOn = DateTime.Now,
+                                    UpdateBy = User.UserRequest().Email,
+                                    UpdateOn = DateTime.Now
                                 });
                             }
                             else
@@ -429,10 +429,10 @@ namespace Colsp.Api.Controllers
                             {
                                 AttributeSetId = mapRq.AttributeSetId,
                                 CategoryId = category.CategoryId,
-                                CreatedBy = User.UserRequest().Email,
-                                CreatedDt = DateTime.Now,
-                                UpdatedBy = User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now,
+                                CreateBy = User.UserRequest().Email,
+                                CreateOn = DateTime.Now,
+                                UpdateBy = User.UserRequest().Email,
+                                UpdateOn = DateTime.Now,
                             });
                         }
                     }
@@ -535,7 +535,7 @@ namespace Colsp.Api.Controllers
                         throw new Exception("Cannot find category " + catRq.CategoryId);
                     }
                     var child = catList.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt);
-                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility; f.UpdatedBy = User.UserRequest().Email; f.UpdatedDt = DateTime.Now; });
+                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility; f.UpdateBy = User.UserRequest().Email; f.UpdateOn = DateTime.Now; });
                 }
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -633,8 +633,8 @@ namespace Colsp.Api.Controllers
                                   atrS.AttributeSetNameEn,
                                   atrS.Visibility,
                                   atrS.Status,
-                                  atrS.UpdatedDt,
-                                  atrS.CreatedDt,
+                                  UpdatedDt = atrS.UpdateOn,
+                                  CreatedDt = atrS.CreateOn,
                                   AttributeSetMaps = atrS.AttributeSetMaps.Select(s =>
                                   new
                                   {
@@ -708,8 +708,8 @@ namespace Colsp.Api.Controllers
                     }
                     catEn.Lft = catRq.Lft;
                     catEn.Rgt = catRq.Rgt;
-                    catEn.UpdatedBy = User.UserRequest().Email;
-                    catEn.UpdatedDt = DateTime.Now;
+                    catEn.UpdateBy = User.UserRequest().Email;
+                    catEn.UpdateOn = DateTime.Now;
                     catEnList.Remove(catEn);
                 }
                 foreach (var cat in catEnList)
@@ -763,7 +763,7 @@ namespace Colsp.Api.Controllers
         {
             category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true, string.Empty);
             category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true, string.Empty);
-            category.Commission = Validation.ValidateDecimal(request.Commission, "Commission (%)", true,20,2,true);
+            category.Commission = Validation.ValidateDecimal(request.Commission, "Commission (%)", true,20,2,true).Value;
             category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, int.MaxValue, false, string.Empty);
             category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, int.MaxValue, false, string.Empty);
             category.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Category Short Description (English)", false, 500, false, string.Empty);

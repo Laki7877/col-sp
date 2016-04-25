@@ -58,8 +58,8 @@ namespace Colsp.Api.Controllers
                                   atrS.AttributeSetNameEn,
                                   atrS.Visibility,
                                   atrS.Status,
-                                  atrS.UpdatedDt,
-                                  atrS.CreatedDt,
+                                  UpdatedDt = atrS.UpdateOn,
+                                  CreatedDt = atrS.CreateOn,
                                   AttributeSetMaps = atrS.AttributeSetMaps.Select(s=>
                                   new
                                   {
@@ -162,8 +162,8 @@ namespace Colsp.Api.Controllers
                 string email = User.UserRequest().Email;
                 DateTime currentDt = DateTime.Now;
                 SetupAttributeSet(attributeSet, request, email, currentDt, db);
-                attributeSet.CreatedBy = email;
-                attributeSet.CreatedDt = currentDt;
+                attributeSet.CreateBy = email;
+                attributeSet.CreateOn = currentDt;
                 attributeSet.AttributeSetId = db.GetNextAttributeSetId().SingleOrDefault().Value;
                 db.AttributeSets.Add(attributeSet);
                 Util.DeadlockRetry(db.SaveChanges, "AttributeSet");
@@ -312,8 +312,8 @@ namespace Colsp.Api.Controllers
             set.AttributeSetDescriptionEn = Validation.ValidateString(request.AttributeSetDescriptionEn, "Attribute Set Description (English)", false, 500, false,string.Empty);
             set.Visibility = request.Visibility;
             set.Status = Constant.STATUS_ACTIVE;
-            set.UpdatedBy = email;
-            set.UpdatedDt = currentDt;
+            set.UpdateBy = email;
+            set.UpdateOn = currentDt;
             #region Attribute Map
             var attributeIds = request.Attributes.Select(s => s.AttributeId).ToList();
             List<AttributeSetMap> mapList = set.AttributeSetMaps.ToList();
@@ -348,10 +348,10 @@ namespace Colsp.Api.Controllers
                         set.AttributeSetMaps.Add(new AttributeSetMap()
                         {
                             AttributeId = attrRq.AttributeId,
-                            CreatedBy = email,
-                            CreatedDt = currentDt,
-                            UpdatedBy = email,
-                            UpdatedDt = currentDt
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt
                         });
                     }
                 }
@@ -384,10 +384,10 @@ namespace Colsp.Api.Controllers
                     set.AttributeSetTags.Add(new AttributeSetTag()
                     {
                         Tag = tagRq.TagName,
-                        CreatedBy = email,
-                        CreatedDt = currentDt,
-                        UpdatedBy = email,
-                        UpdatedDt = currentDt,
+                        CreateBy = email,
+                        CreateOn = currentDt,
+                        UpdateBy = email,
+                        UpdateOn = currentDt,
                     });
                 }
             }

@@ -46,13 +46,13 @@ namespace Colsp.Api.Controllers
                                inv.OnHold,
                                inv.Reserve,
                                inv.SafetyStockSeller,
-                               inv.UpdatedDt,
+                               UpdatedDt = inv.UpdateOn,
                                Brand = stage.ProductStageGroup.Brand != null ? new { stage.ProductStageGroup.Brand.BrandId, stage.ProductStageGroup.Brand.BrandNameEn } : null,
                                GlobalCategory = stage.ProductStageGroup.GlobalCategory != null ? new { stage.ProductStageGroup.GlobalCategory.Lft, stage.ProductStageGroup.GlobalCategory.Rgt, stage.ProductStageGroup.GlobalCategory.NameEn } : null,
                                LocalCategory = stage.ProductStageGroup.LocalCategory != null ? new { stage.ProductStageGroup.LocalCategory.Lft, stage.ProductStageGroup.LocalCategory.Rgt, stage.ProductStageGroup.LocalCategory.NameEn } : null,
                                Tag = stage.ProductStageGroup.ProductStageTags != null ? string.Join(",",stage.ProductStageGroup.ProductStageTags) :null,
                                SalePrice = stage.SalePrice,
-                               CreatedDt = stage.CreatedDt,
+                               CreateOn = stage.CreateOn,
                                Status = stage.Status,
                            });
                 //var products = (from inv in db.Inventories
@@ -83,7 +83,7 @@ namespace Colsp.Api.Controllers
                 //                        : mast.LocalCategory != null ? new { mast.LocalCategory.Lft, mast.LocalCategory.Rgt, mast.LocalCategory.NameEn } : null ,
                 //                 Tag = vari != null ? vari.ProductStage.Tag : mast.Tag,
                 //                 SalePrice = vari != null ? vari.SalePrice : mast.SalePrice,
-                //                 CreatedDt = vari != null ? vari.CreatedDt : mast.CreatedDt,
+                //                 CreateOn = vari != null ? vari.CreatedDt : mast.CreateOn,
                 //                 Status = vari != null ? vari.Status : mast.Status,
                 //             });
                 request.DefaultOnNull();
@@ -157,12 +157,12 @@ namespace Colsp.Api.Controllers
                 if (!string.IsNullOrEmpty(request.CreatedDtFrom))
                 {
                     DateTime from = Convert.ToDateTime(request.CreatedDtFrom);
-                    products = products.Where(w => w.CreatedDt >= from);
+                    products = products.Where(w => w.CreateOn >= from);
                 }
                 if (!string.IsNullOrEmpty(request.CreatedDtTo))
                 {
                     DateTime to = Convert.ToDateTime(request.CreatedDtTo);
-                    products = products.Where(w => w.CreatedDt <= to);
+                    products = products.Where(w => w.CreateOn <= to);
                 }
 
                 if (!string.IsNullOrEmpty(request.ModifyDtFrom))
@@ -248,7 +248,7 @@ namespace Colsp.Api.Controllers
                                     inv.OnHold,
                                     inv.Reserve,
                                     inv.SafetyStockSeller,
-                                    inv.UpdatedDt,
+                                    UpdatedDt = inv.UpdateOn,
                                     stage.IsVariant,
                                     VariantAttribute = stage.ProductStageAttributes.Select(s => new
                                     {

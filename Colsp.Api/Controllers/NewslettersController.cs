@@ -129,8 +129,8 @@ namespace Colsp.Api.Controllers
                 Newsletter newsLetter = new Newsletter();
                 string email = User.UserRequest().Email;
                 SetupnewsLetter(newsLetter, request,email);
-                newsLetter.CreatedBy = email;
-                newsLetter.CreatedDt = DateTime.Now;
+                newsLetter.CreateBy = email;
+                newsLetter.CreateOn = DateTime.Now;
                 newsLetter.NewsletterId = db.GetNextNewsletterId().SingleOrDefault().Value;
                 db.Newsletters.Add(newsLetter);
                 Util.DeadlockRetry(db.SaveChanges, "Newsletter");
@@ -179,8 +179,8 @@ namespace Colsp.Api.Controllers
                 newsLetter.ImageUrl = string.Empty;
             }
             newsLetter.Status = Constant.STATUS_ACTIVE;
-            newsLetter.UpdatedBy = email;
-            newsLetter.UpdatedDt = DateTime.Now;
+            newsLetter.UpdateBy = email;
+            newsLetter.UpdateOn = DateTime.Now;
             var shopMap = newsLetter.NewsletterShopMaps.ToList();
             #region Include shop
             var includeShop = shopMap.Where(w => w.Filter.Equals(Constant.NEWSLETTER_FILTER_INCLUDE)).ToList();
@@ -212,10 +212,10 @@ namespace Colsp.Api.Controllers
                         {
                             ShopId = shop.ShopId,
                             Filter = Constant.NEWSLETTER_FILTER_INCLUDE,
-                            CreatedBy = email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy= email,
-                            UpdatedDt = DateTime.Now
+                            CreateBy = email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = email,
+                            UpdateOn = DateTime.Now
                         });
                     }
                 }
@@ -255,10 +255,10 @@ namespace Colsp.Api.Controllers
                         {
                             ShopId = shop.ShopId,
                             Filter = Constant.NEWSLETTER_FILTER_EXCLUDE,
-                            CreatedBy = email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = email,
-                            UpdatedDt = DateTime.Now
+                            CreateBy = email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = email,
+                            UpdateOn = DateTime.Now
                         });
                     }
                 }

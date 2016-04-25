@@ -57,7 +57,7 @@ namespace Colsp.Api.Controllers
                                       rev.ShopId,
                                       rev.Shop.ShopNameEn
                                   },
-                                  UpdatedDt = rev.CreatedOn
+                                  UpdateDt = rev.UpdateOn
                               });
                 if(User.ShopRequest() != null)
                 {
@@ -129,7 +129,7 @@ namespace Colsp.Api.Controllers
         //                throw new Exception("Cannot find review " + revRq.ProductReviewId + " in shop " + shopId);
         //            }
         //            current.Status = revRq.Status;
-        //            current.UpdatedBy = User.UserRequest().Email;
+        //            current.UpdateBy = User.UserRequest().Email;
         //            current.UpdatedOn = DateTime.Now;
         //        }
         //        Util.DeadlockRetry(db.SaveChanges, "ProductReview");

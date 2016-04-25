@@ -88,8 +88,8 @@ namespace Colsp.Api.Controllers
                             {
                                 AllowHtmlFlag = false,
                                 AttributeNameEn = string.Empty,
-                                CreatedBy = "Ahancer",
-                                CreatedDt = DateTime.Now,
+                                CreateBy = "Ahancer",
+                                CreateOn = DateTime.Now,
                                 DataType = string.Empty,
                                 DataValidation = string.Empty,
                                 DefaultAttribute = false,
@@ -104,8 +104,8 @@ namespace Colsp.Api.Controllers
                                 ShowLocalFilterFlag = false,
                                 ShowLocalSearchFlag = false,
                                 Status = Constant.STATUS_ACTIVE,
-                                UpdatedBy = "Ahancer",
-                                UpdatedDt = DateTime.Now,
+                                UpdateBy = "Ahancer",
+                                UpdateOn = DateTime.Now,
                                 VariantDataType = string.Empty,
                                 VariantStatus = false,
                                 VisibleTo = Constant.ATTRIBUTE_VISIBLE_ALL_USER,
@@ -186,10 +186,10 @@ namespace Colsp.Api.Controllers
                                     AttributeValueTh = valueTH,
                                     ImageUrl = string.Empty,
                                     Status = Constant.STATUS_ACTIVE,
-                                    CreatedBy = "Ahancer",
-                                    CreatedDt = DateTime.Now,
-                                    UpdatedBy = "Ahancer",
-                                    UpdatedDt = DateTime.Now,
+                                    CreateBy = "Ahancer",
+                                    CreateOn = DateTime.Now,
+                                    UpdateBy = "Ahancer",
+                                    UpdateOn = DateTime.Now,
                                     MapValue = string.Empty,
                                 };
 
@@ -315,10 +315,10 @@ namespace Colsp.Api.Controllers
                                     AttributeSetNameEn = string.Empty,
                                     Status = Constant.STATUS_ACTIVE,
                                     Visibility = true,
-                                    CreatedBy = "Ahancer",
-                                    CreatedDt = DateTime.Now,
-                                    UpdatedBy = "Ahancer",
-                                    UpdatedDt = DateTime.Now,
+                                    CreateBy = "Ahancer",
+                                    CreateOn = DateTime.Now,
+                                    UpdateBy = "Ahancer",
+                                    UpdateOn = DateTime.Now,
                                 };
                                 set.AttributeSetNameEn = tmpColumn;
                                 attributeSetList.Add(set);
@@ -340,10 +340,10 @@ namespace Colsp.Api.Controllers
                                                 set.AttributeSetMaps.Add(new AttributeSetMap()
                                                 {
                                                     AttributeId = current.AttributeId,
-                                                    CreatedBy = "Ahancer",
-                                                    CreatedDt = DateTime.Now,
-                                                    UpdatedBy = "Ahancer",
-                                                    UpdatedDt = DateTime.Now,
+                                                    CreateBy = "Ahancer",
+                                                    CreateOn = DateTime.Now,
+                                                    UpdateBy = "Ahancer",
+                                                    UpdateOn = DateTime.Now,
                                                 });
                                             }
                                         }
@@ -440,10 +440,10 @@ namespace Colsp.Api.Controllers
                                     {
                                         CategoryId = categoryId,
                                         AttributeSetId = set.AttributeSetId,
-                                        CreatedBy = "Ahancer",
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = "Ahancer",
-                                        UpdatedDt = DateTime.Now
+                                        CreateBy = "Ahancer",
+                                        CreateOn = DateTime.Now,
+                                        UpdateBy = "Ahancer",
+                                        UpdateOn = DateTime.Now
                                     });
                                 }
                                 

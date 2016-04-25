@@ -164,8 +164,8 @@ namespace Colsp.Api.Controllers
                 string email = User.UserRequest().Email;
                 DateTime currentDt = DateTime.Now;
                 SetupCoupon(coupon, request, email, currentDt, db);
-                coupon.CreatedBy = email;
-                coupon.CreatedDt = currentDt;
+                coupon.CreateBy = email;
+                coupon.CreateOn = currentDt;
                 coupon.CouponId = db.GetNextCouponId().SingleOrDefault().Value;
                 db.Coupons.Add(coupon);
                 Util.DeadlockRetry(db.SaveChanges, "Coupon");
@@ -240,8 +240,8 @@ namespace Colsp.Api.Controllers
             coupon.MaximumAmount = request.Action.MaximumAmount;
             coupon.UsagePerCustomer = request.UsagePerCustomer;
             coupon.MaximumUser = request.MaximumUser;
-            coupon.UpdatedBy = email;
-            coupon.UpdatedDt = currentDt;
+            coupon.UpdateBy = email;
+            coupon.UpdateOn = currentDt;
 
             var orderList = coupon.CouponOrders.ToList();
             var brandList = coupon.CouponBrandMaps.ToList();
@@ -271,8 +271,8 @@ namespace Colsp.Api.Controllers
                                 if(current.CriteriaPrice != o.Value)
                                 {
                                     current.CriteriaPrice = o.Value;
-                                    current.UpdatedBy = email;
-                                    current.UpdatedDt = currentDt;
+                                    current.UpdateBy = email;
+                                    current.UpdateOn = currentDt;
                                 }
                                 orderList.Remove(current);
                             }
@@ -287,10 +287,10 @@ namespace Colsp.Api.Controllers
                             {
                                 Criteria = o.Type,
                                 CriteriaPrice = o.Value,
-                                CreatedBy = email,
-                                CreatedDt = currentDt,
-                                UpdatedBy = email,
-                                UpdatedDt = currentDt
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt
                             });
                         }
                     }
@@ -327,10 +327,10 @@ namespace Colsp.Api.Controllers
                                     coupon.CouponBrandMaps.Add(new CouponBrandMap()
                                     {
                                         BrandId = b.BrandId,
-                                        CreatedBy = email,
-                                        CreatedDt = currentDt,
-                                        UpdatedBy = email,
-                                        UpdatedDt = currentDt,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
                                     });
                                 }
                             }
@@ -365,10 +365,10 @@ namespace Colsp.Api.Controllers
                                     coupon.CouponCustomerMaps.Add(new CouponCustomerMap()
                                     {
                                         Email = e,
-                                        CreatedBy = email,
-                                        CreatedDt = currentDt,
-                                        UpdatedBy = email,
-                                        UpdatedDt = currentDt,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
                                     });
                                 }
                             }
@@ -405,10 +405,10 @@ namespace Colsp.Api.Controllers
                                     {
                                         Filter = Constant.COUPON_FILTER_INCLUDE,
                                         CategoryId = c.CategoryId,
-                                        CreatedBy = email,
-                                        CreatedDt = currentDt,
-                                        UpdatedBy = email,
-                                        UpdatedDt = currentDt,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
                                     });
                                 }
                             }
@@ -444,10 +444,10 @@ namespace Colsp.Api.Controllers
                                     {
                                         Filter = Constant.COUPON_FILTER_INCLUDE,
                                         CouponId = coupon.CouponId,
-                                        CreatedBy = email,
-                                        CreatedDt = currentDt,
-                                        UpdatedBy = email,
-                                        UpdatedDt = currentDt,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
                                     });
                                 }
                             }
@@ -483,10 +483,10 @@ namespace Colsp.Api.Controllers
                                     coupon.CouponShopMaps.Add(new CouponShopMap()
                                     {
                                         ShopId = s.ShopId,
-                                        CreatedBy = email,
-                                        CreatedDt = currentDt,
-                                        UpdatedBy = email,
-                                        UpdatedDt = currentDt,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
                                     });
                                 }
                             }
@@ -520,10 +520,10 @@ namespace Colsp.Api.Controllers
                                 {
                                     Pid = pid,
                                     Filter = Constant.COUPON_FILTER_INCLUDE,
-                                    CreatedBy = email,
-                                    CreatedDt = currentDt,
-                                    UpdatedBy = email,
-                                    UpdatedDt = currentDt,
+                                    CreateBy = email,
+                                    CreateOn = currentDt,
+                                    UpdateBy = email,
+                                    UpdateOn = currentDt,
                                 });
                             }
                         }
@@ -557,10 +557,10 @@ namespace Colsp.Api.Controllers
                                 {
                                     Pid = pid,
                                     Filter = Constant.COUPON_FILTER_EXCLUDE,
-                                    CreatedBy = email,
-                                    CreatedDt = currentDt,
-                                    UpdatedBy = email,
-                                    UpdatedDt = currentDt,
+                                    CreateBy = email,
+                                    CreateOn = currentDt,
+                                    UpdateBy = email,
+                                    UpdateOn = currentDt,
                                 });
                             }
                         }
