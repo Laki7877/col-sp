@@ -104,7 +104,7 @@ namespace Colsp.Api.Controllers
                                      //cat.CategoryAbbreviation,
                                      cat.Lft,
                                      cat.Rgt,
-                                     //cat.UrlKeyEn,
+                                     cat.UrlKey,
                                      cat.Visibility,
                                      cat.Status,
                                      //cat.UpdatedDt,
@@ -208,13 +208,13 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 category.CategoryId = db.GetNextGlobalCategoryId().SingleOrDefault().Value;
-                if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
+                if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
-                    //category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    //category.UrlKeyEn = request.UrlKeyEn.Trim().Replace(" ", "-");
+                    category.UrlKey = request.UrlKey.Trim().Replace(" ", "-");
                 }
 
                 db.GlobalCategories.Add(category);
@@ -244,13 +244,13 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find selected category");
                 }
                 SetupCategory(category, request);
-                if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
+                if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
-                    //category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"),"-", category.CategoryId);
+                    category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"),"-", category.CategoryId);
                 }
                 else
                 {
-                    //category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
+                    category.UrlKey = request.UrlKey.Replace(" ", "-");
                 }
                 category.Visibility = request.Visibility;
                 category.Status = Constant.STATUS_ACTIVE;

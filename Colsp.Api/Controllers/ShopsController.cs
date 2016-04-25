@@ -37,7 +37,7 @@ namespace Colsp.Api.Controllers
                     s.NameTh,
                     s.Lft,
                     s.Rgt,
-                    //s.UrlKeyEn,
+                    s.UrlKey,
                     s.Visibility
                 });
                 return Request.CreateResponse(HttpStatusCode.OK, localCat);
@@ -338,13 +338,6 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                #region Rollback
-                if (shop != null && shop.ShopId != 0)
-                {
-                    db.Shops.Remove(shop);
-                    Util.DeadlockRetry(db.SaveChanges, "Shop");
-                }
-                #endregion
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }

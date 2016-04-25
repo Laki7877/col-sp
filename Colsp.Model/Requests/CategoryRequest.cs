@@ -7,8 +7,8 @@ namespace Colsp.Model.Requests
         public int CategoryId { get; set; }
         public string NameEn { get; set; }
         public string NameTh { get; set; }
-        public string UrlKeyEn { get; set; }
-        public string UrlKeyTh { get; set; }
+        public string UrlKey { get; set; }
+        //public string UrlKeyTh { get; set; }
         public string Status { get; set; }
         public int Lft { get; set; }
         public int Rgt { get; set; }
@@ -32,8 +32,7 @@ namespace Colsp.Model.Requests
             CategoryId = 0;
             NameEn = string.Empty;
             NameTh = string.Empty;
-            UrlKeyEn = string.Empty;
-            UrlKeyTh = string.Empty;
+            UrlKey = string.Empty;
             Status = string.Empty;
             Lft = 0;
             Rgt = 0;

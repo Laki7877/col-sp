@@ -246,13 +246,13 @@ namespace Colsp.Api.Controllers
                     category.Rgt = max + 2;
                 }
                 category.CategoryId = db.GetNextLocalCategoryId().SingleOrDefault().Value;
-                if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
+                if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
-                    //category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    //category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
+                    category.UrlKey = request.UrlKey.Replace(" ", "-");
                 }
 
                 db.LocalCategories.Add(category);
@@ -286,13 +286,13 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find selected category");
                 }
                 SetupCategory(category, request);
-                if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
+                if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
-                    //category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    //category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
+                    category.UrlKey = request.UrlKey.Replace(" ", "-");
                 }
 
                 #region Banner Image En
@@ -478,16 +478,6 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Shop is invalid. Cannot find shop in session");
                 }
-                //var catEnList = (from cat in db.LocalCategories
-                //                 join proStg in db.ProductStages on cat.CategoryId equals proStg.LocalCatId into j
-                //                 from j2 in j.DefaultIfEmpty()
-                //                 where cat.ShopId == shopIdRq
-                //                 group j2 by cat into g
-                //                 select new
-                //                 {
-                //                     Category = g,
-                //                     ProductCount = g.Key.ProductStages.Count
-                //                 }).ToList();
                 var catEnList = db.LocalCategories.Where(w => w.ShopId == shopId).Include(i => i.ProductStageGroups).ToList();
                 foreach (CategoryRequest catRq in request)
                 {
