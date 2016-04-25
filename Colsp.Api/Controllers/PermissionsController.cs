@@ -28,7 +28,9 @@ namespace Colsp.Api.Controllers
                         s.PermissionName,
                         s.PermissionGroup,
                         s.PermissionId,
-                    }).OrderBy(o => o.PermissionId);
+                        s.Position,
+                        s.Parent
+                    });
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, permissionList);
@@ -56,8 +58,10 @@ namespace Colsp.Api.Controllers
                     {
                         s.PermissionName,
                         s.PermissionGroup,
-                        s.PermissionId
-                    }).OrderBy(o => o.PermissionId);
+                        s.PermissionId,
+                        s.Position,
+                        s.Parent
+                    });
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, permissionList);
@@ -86,8 +90,10 @@ namespace Colsp.Api.Controllers
                     {
                         s.PermissionName,
                         s.PermissionGroup,
-                        s.PermissionId
-                    }).OrderBy(o => o.PermissionId);
+                        s.PermissionId,
+                        s.Position,
+                        s.Parent
+                    });
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, permissionList);

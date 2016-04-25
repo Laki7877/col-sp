@@ -35,6 +35,9 @@ namespace Colsp.Entity.Models
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
+        public bool FeatureProductStatus { get; set; }
+        public bool BannerStatus { get; set; }
+        public bool BannerSmallStatus { get; set; }
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public string MetaTitleEn { get; set; }
@@ -45,13 +48,15 @@ namespace Colsp.Entity.Models
         public string MetaKeyTh { get; set; }
         public string SeoEn { get; set; }
         public string SeoTh { get; set; }
-        public string UrlEn { get; set; }
+        public Nullable<int> SortById { get; set; }
+        public string UrlKey { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        public virtual SortBy SortBy { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

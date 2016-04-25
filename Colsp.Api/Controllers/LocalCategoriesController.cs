@@ -46,8 +46,8 @@ namespace Colsp.Api.Controllers
                                     cat.NameTh,
                                     cat.Lft,
                                     cat.Rgt,
-                                    cat.UrlKeyEn,
-                                    cat.UrlKeyTh,
+                                    //cat.UrlKeyEn,
+                                    //cat.UrlKeyTh,
                                     cat.Visibility,
                                     cat.Status,
                                     cat.UpdatedDt,
@@ -153,8 +153,7 @@ namespace Colsp.Api.Controllers
                                      category.DescriptionShortTh,
                                      category.FeatureTitle,
                                      category.TitleShowcase,
-                                     category.UrlKeyEn,
-                                     category.UrlKeyTh,
+                                     //category.UrlKeyEn,
                                      category.Visibility,
                                      category.Status,
                                      category.Lft,
@@ -249,11 +248,11 @@ namespace Colsp.Api.Controllers
                 category.CategoryId = db.GetNextLocalCategoryId().SingleOrDefault().Value;
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
-                    category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    //category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
+                    //category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
                 }
 
                 db.LocalCategories.Add(category);
@@ -289,11 +288,11 @@ namespace Colsp.Api.Controllers
                 SetupCategory(category, request);
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
-                    category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    //category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
+                    //category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
                 }
 
                 #region Banner Image En
@@ -622,8 +621,7 @@ namespace Colsp.Api.Controllers
         {
             category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true);
             category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
-            category.UrlKeyEn = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, true,string.Empty);
-            category.UrlKeyTh = Validation.ValidateString(request.UrlKeyTh, "Url Key (Thai)", true, 100, true, string.Empty);
+            //category.UrlKeyEn = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, true,string.Empty);
             category.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Category Description (English)", false, int.MaxValue, false, string.Empty);
             category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, int.MaxValue, false, string.Empty);
             category.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Category Short Description (English)", false, 500, false, string.Empty);

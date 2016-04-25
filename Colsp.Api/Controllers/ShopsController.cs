@@ -37,8 +37,7 @@ namespace Colsp.Api.Controllers
                     s.NameTh,
                     s.Lft,
                     s.Rgt,
-                    s.UrlKeyEn,
-                    s.UrlKeyTh,
+                    //s.UrlKeyEn,
                     s.Visibility
                 });
                 return Request.CreateResponse(HttpStatusCode.OK, localCat);
@@ -544,7 +543,11 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-                response.ThemeId = shop.ThemeId;
+                if(shop.ThemeId != null)
+                {
+                    response.ThemeId = shop.ThemeId.Value;
+                }
+                
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
@@ -877,7 +880,7 @@ namespace Colsp.Api.Controllers
             shop.ShopNameTh = Validation.ValidateString(request.ShopNameTh, "Shop Name (Thai)", false, 100, false, string.Empty);
             
             shop.Commission = request.Commission;
-            shop.UrlKeyEn = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, false, shop.ShopNameEn.Replace(" ","-"));
+            shop.UrlKey = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, false, shop.ShopNameEn.Replace(" ","-"));
             if (request.ShopType == null)
             {
                 throw new Exception("Shop type cannot be null");
@@ -946,15 +949,15 @@ namespace Colsp.Api.Controllers
             }
             #endregion
 
-            shop.TermPayment = Validation.ValidateString(request.TermPayment.TermCode, "Term Payment", true, 4, false);
+            //shop.TermPayment = Validation.ValidateString(request.TermPayment.TermCode, "Term Payment", true, 4, false);
             shop.Payment = Validation.ValidateString(request.Payment, "Payment", true, 1, false);
-            shop.VendorTaxRate = Validation.ValidateString(request.VendorTaxRate, "Vendor Tax Rate", true, 5, false);
-            shop.WithholdingTax = Validation.ValidateString(request.WithholdingTax, "Withholding Tax", true, 1, false);
+            //shop.VendorTaxRate = Validation.ValidateString(request.VendorTaxRate, "Vendor Tax Rate", true, 5, false);
+            //shop.WithholdingTax = Validation.ValidateString(request.WithholdingTax, "Withholding Tax", true, 1, false);
             shop.VendorAddressLine1 = Validation.ValidateString(request.VendorAddressLine1, "Vendor Address Line1", true, 35, false,string.Empty);
             shop.VendorAddressLine2 = Validation.ValidateString(request.VendorAddressLine2, "Vendor Address Line2", true, 35, false, string.Empty);
             shop.VendorAddressLine3 = Validation.ValidateString(request.VendorAddressLine3, "Vendor Address Line3", true, 35, false, string.Empty);
-            shop.City = Validation.ValidateString(request.City, "City", true, 25, false, string.Empty);
-            shop.State = Validation.ValidateString(request.State, "State", true, 4, false, string.Empty);
+            //shop.City = Validation.ValidateString(request.City, "City", true, 25, false, string.Empty);
+            //shop.State = Validation.ValidateString(request.State, "State", true, 4, false, string.Empty);
             shop.ZipCode = Validation.ValidateString(request.ZipCode, "Zip Code", true, 10, false, string.Empty);
             shop.CountryCode = Validation.ValidateString(request.CountryCode, "Country Code", true, 3, false, string.Empty);
             shop.Country = Validation.ValidateString(request.Country, "Country", true, 25, false, string.Empty);

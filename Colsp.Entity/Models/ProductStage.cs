@@ -34,6 +34,8 @@ namespace Colsp.Entity.Models
         public string ProductNameTh { get; set; }
         public string ProdTDNameTh { get; set; }
         public string ProdTDNameEn { get; set; }
+        public string JDADept { get; set; }
+        public string JDASubDept { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
         public decimal OriginalPrice { get; set; }
@@ -42,6 +44,8 @@ namespace Colsp.Entity.Models
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
+        public string MobileDescriptionEn { get; set; }
+        public string MobileDescriptionTh { get; set; }
         public int ImageCount { get; set; }
         public string FeatureImgUrl { get; set; }
         public int PrepareDay { get; set; }
@@ -78,15 +82,22 @@ namespace Colsp.Entity.Models
         public string SeoTh { get; set; }
         public string IsHasExpiryDate { get; set; }
         public string IsVat { get; set; }
-        public string UrlEn { get; set; }
+        public string UrlKey { get; set; }
         public int BoostWeight { get; set; }
         public int GlobalBoostWeight { get; set; }
+        public bool ExpressDelivery { get; set; }
+        public decimal DeliveryFee { get; set; }
+        public decimal PromotionPrice { get; set; }
+        public Nullable<System.DateTime> EffectiveDatePromotion { get; set; }
+        public Nullable<System.DateTime> ExpireDatePromotion { get; set; }
+        public Nullable<System.DateTime> NewArrivalDate { get; set; }
         public bool DefaultVaraint { get; set; }
         public string Display { get; set; }
         public int MiniQtyAllowed { get; set; }
         public int MaxiQtyAllowed { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal PurchasePrice { get; set; }
+        public bool IsSell { get; set; }
         public bool IsVariant { get; set; }
         public bool IsMaster { get; set; }
         public int VariantCount { get; set; }
@@ -102,6 +113,7 @@ namespace Colsp.Entity.Models
         public virtual Inventory Inventory { get; set; }
         public virtual ProductStageGroup ProductStageGroup { get; set; }
         public virtual Shipping Shipping { get; set; }
+        public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -114,6 +126,5 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStageMaster> ProductStageMasters1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
-        public virtual Shop Shop { get; set; }
     }
 }

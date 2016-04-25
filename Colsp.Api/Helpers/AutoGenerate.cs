@@ -19,22 +19,22 @@ namespace Colsp.Api.Helper
             }
 
 
-            if (AppSettingKey.PID_NUMBER_ONLY)
-            {
-                foreach (var pro in products)
-                {
-                    if (!string.IsNullOrWhiteSpace(pro.Pid))
-                    {
-                        continue;
-                    }
-                    pro.Pid = string.Concat(db.GetNextProductStagePid().SingleOrDefault().Value).PadLeft(7,'0');
-                    if (string.IsNullOrWhiteSpace(pro.UrlEn))
-                    {
-                        pro.UrlEn = pro.Pid;
-                    }
-                }
-                return;
-            }
+            //if (AppSettingKey.PID_NUMBER_ONLY)
+            //{
+            //    foreach (var pro in products)
+            //    {
+            //        if (!string.IsNullOrWhiteSpace(pro.Pid))
+            //        {
+            //            continue;
+            //        }
+            //        pro.Pid = string.Concat(db.GetNextProductStagePid().SingleOrDefault().Value).PadLeft(7,'0');
+            //        if (string.IsNullOrWhiteSpace(pro.UrlEn))
+            //        {
+            //            pro.UrlEn = pro.Pid;
+            //        }
+            //    }
+            //    return;
+            //}
 
             var currentPid = db.Pids.FirstOrDefault();
             if(currentPid == null)
@@ -58,10 +58,10 @@ namespace Colsp.Api.Helper
                     currentPid.CurrentPid = Generater(currentPid.CurrentPid);
                 }
                 pro.Pid = currentPid.CurrentPid;
-                if (string.IsNullOrWhiteSpace(pro.UrlEn))
-                {
-                    pro.UrlEn = pro.Pid;
-                }
+                //if (string.IsNullOrWhiteSpace(pro.UrlEn))
+                //{
+                //    pro.UrlEn = pro.Pid;
+                //}
             }
         }
 

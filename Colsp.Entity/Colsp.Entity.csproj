@@ -543,6 +543,9 @@
     <Compile Include="Models\ShopUserGroupMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SortBy.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\StoreBranch.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

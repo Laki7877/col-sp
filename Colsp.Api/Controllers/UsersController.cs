@@ -637,9 +637,9 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (var p in userGroup)
                     {
-                        if (!claims.Exists(m => m.Value.Equals(p.PermissionName)))
+                        if (!claims.Exists(m => m.Value.Equals(p.PermissionId.ToString())))
                         {
-                            Claim claim = new Claim("Permission", p.PermissionName, p.PermissionGroup, null);
+                            Claim claim = new Claim("Permission", p.PermissionId.ToString(), p.Parent.ToString(), p.OverrideParent.ToString());
                             claims.Add(claim);
                         }
                     }
@@ -687,8 +687,9 @@ namespace Colsp.Api.Controllers
                     User = User.UserRequest(),
                     Permission = claimsIdentity.Claims.Where(w => w.Type.Equals("Permission")).Select(s => new
                     {
-                        Permission = s.Value,
-                        PermissionGroup = s.ValueType
+                        PermissionId = int.Parse(s.Value),
+                        Parent = int.Parse(s.ValueType),
+                        OverrideParent = int.Parse(s.Issuer)
                     }).ToList()
                 };
                 Cache.Add(token, principal);

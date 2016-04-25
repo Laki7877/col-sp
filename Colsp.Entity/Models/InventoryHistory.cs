@@ -25,7 +25,9 @@ namespace Colsp.Entity.Models
         public bool UseDecimal { get; set; }
         public int SafetyStockSeller { get; set; }
         public int SafetyStockAdmin { get; set; }
-        public int StockAvailable { get; set; }
+        public int StockType { get; set; }
+        public int MinQtyAllowInCart { get; set; }
+        public int MaxQtyAllowInCart { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDt { get; set; }

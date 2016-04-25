@@ -104,8 +104,7 @@ namespace Colsp.Api.Controllers
                                      //cat.CategoryAbbreviation,
                                      cat.Lft,
                                      cat.Rgt,
-                                     cat.UrlKeyEn,
-                                     cat.UrlKeyTh,
+                                     //cat.UrlKeyEn,
                                      cat.Visibility,
                                      cat.Status,
                                      //cat.UpdatedDt,
@@ -211,11 +210,11 @@ namespace Colsp.Api.Controllers
                 category.CategoryId = db.GetNextGlobalCategoryId().SingleOrDefault().Value;
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
-                    category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    //category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    category.UrlKeyEn = request.UrlKeyEn.Trim().Replace(" ", "-");
+                    //category.UrlKeyEn = request.UrlKeyEn.Trim().Replace(" ", "-");
                 }
 
                 db.GlobalCategories.Add(category);
@@ -247,11 +246,11 @@ namespace Colsp.Api.Controllers
                 SetupCategory(category, request);
                 if (string.IsNullOrWhiteSpace(request.UrlKeyEn))
                 {
-                    category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"),"-", category.CategoryId);
+                    //category.UrlKeyEn = string.Concat(category.NameEn.Replace(" ", "-"),"-", category.CategoryId);
                 }
                 else
                 {
-                    category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
+                    //category.UrlKeyEn = request.UrlKeyEn.Replace(" ", "-");
                 }
                 category.Visibility = request.Visibility;
                 category.Status = Constant.STATUS_ACTIVE;

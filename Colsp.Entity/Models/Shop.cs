@@ -58,20 +58,21 @@ namespace Colsp.Entity.Models
         public int StockAlert { get; set; }
         public decimal Commission { get; set; }
         public Nullable<int> ShopTypeId { get; set; }
-        public string UrlKeyEn { get; set; }
+        public string UrlKey { get; set; }
         public string FloatMessageEn { get; set; }
         public string FloatMessageTh { get; set; }
-        public int ThemeId { get; set; }
+        public Nullable<int> ThemeId { get; set; }
         public string TaxPayerId { get; set; }
-        public string TermPayment { get; set; }
+        public string TermPaymentCode { get; set; }
         public string Payment { get; set; }
-        public string VendorTaxRate { get; set; }
-        public string WithholdingTax { get; set; }
+        public string VendorTaxRateCode { get; set; }
+        public string WithholdingTaxCode { get; set; }
         public string VendorAddressLine1 { get; set; }
         public string VendorAddressLine2 { get; set; }
         public string VendorAddressLine3 { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
+        public Nullable<int> CityId { get; set; }
+        public Nullable<int> ProvinceId { get; set; }
+        public Nullable<int> DistrictId { get; set; }
         public string ZipCode { get; set; }
         public string CountryCode { get; set; }
         public string Country { get; set; }
@@ -89,10 +90,12 @@ namespace Colsp.Entity.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDt { get; set; }
     
+        public virtual City City { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Coupon> Coupons { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponShopMap> CouponShopMaps { get; set; }
+        public virtual District District { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LocalCategory> LocalCategories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -115,8 +118,13 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductTmp> ProductTmps { get; set; }
+        public virtual Province Province { get; set; }
         public virtual ShopType ShopType { get; set; }
+        public virtual TermPayment TermPayment { get; set; }
         public virtual Theme Theme { get; set; }
+        public virtual User User { get; set; }
+        public virtual VendorTaxRate VendorTaxRate { get; set; }
+        public virtual WithholdingTax WithholdingTax { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopCommission> ShopCommissions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -125,7 +133,6 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ShopImage> ShopImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserShopMap> UserShopMaps { get; set; }
     }

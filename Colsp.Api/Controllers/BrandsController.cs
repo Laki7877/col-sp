@@ -96,7 +96,7 @@ namespace Colsp.Api.Controllers
                     s.MetaKeyTh,
                     s.MetaTitleEn,
                     s.MetaTitleTh,
-                    s.UrlEn,
+                    UrlEn = s.UrlKey,
                     s.FeatureTitle,
                     s.TitleShowcase,
                     s.PicUrl,
@@ -322,11 +322,11 @@ namespace Colsp.Api.Controllers
             brand.PicUrl = Validation.ValidateString(request.BrandImage.Url, "Logo", false, 500, false, string.Empty);
             if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
             {
-                brand.UrlEn = brand.BrandNameEn.Replace(" ", "-");
+                //brand.UrlEn = brand.BrandNameEn.Replace(" ", "-");
             }
             else
             {
-                brand.UrlEn = request.SEO.ProductUrlKeyEn.Trim().Replace(" ", "-");
+                //brand.UrlEn = request.SEO.ProductUrlKeyEn.Trim().Replace(" ", "-");
             }
             #region BranImage En
             var imageOldEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).ToList();

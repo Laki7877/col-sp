@@ -162,9 +162,9 @@ namespace Colsp.Api.Controllers
                     MoreOptionTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
                     InformationTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
                     VariantTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
-                    ControlFlag1 = false,
-                    ControlFlag2 = false,
-                    ControlFlag3 = false,
+                    //ControlFlag1 = false,
+                    //ControlFlag2 = false,
+                    //ControlFlag3 = false,
                     ImageFlag = false,
                     InfoFlag = false,
                     OnlineFlag = false,
@@ -172,6 +172,8 @@ namespace Colsp.Api.Controllers
                     Remark = string.Empty,
                     Status = Constant.PRODUCT_STATUS_DRAFT,
                     ShopId = shopId,
+                    SaleUnitEn = string.Empty,
+                    SaleUnitTh = string.Empty,
                     CreatedBy = email,
                     CreatedDt = DateTime.Now,
                     UpdatedBy = email,
@@ -236,6 +238,12 @@ namespace Colsp.Api.Controllers
                     Upc = string.Empty,
                     UnitPrice = 0,
                     Status = group.Status,
+                    IsVat = Constant.STATUS_NO,
+                    IsHasExpiryDate  = Constant.STATUS_NO,
+                    SeoEn = string.Empty,
+                    SeoTh = string.Empty,
+                    ProdTDNameEn = string.Empty,
+                    ProdTDNameTh = string.Empty,
                     CreatedBy = email,
                     CreatedDt = DateTime.Now,
                     UpdatedBy = email,
@@ -265,7 +273,7 @@ namespace Colsp.Api.Controllers
                         Sku = variant.Sku,
                         ProductNameEn = variant.ProductNameEn,
                         ProductNameTh = variant.ProductNameTh,
-                        UrlEn = defaultVariant.UrlEn,
+                        //UrlEn = variant.UrlEn,
                         OriginalPrice = variant.OriginalPrice,
                         SalePrice = variant.SalePrice,
                         IsMaster = false,
@@ -318,16 +326,22 @@ namespace Colsp.Api.Controllers
                         VariantCount = 0,
                         Upc = string.Empty,
                         UnitPrice = 0,
+                        IsVat = Constant.STATUS_NO,
+                        IsHasExpiryDate = Constant.STATUS_NO,
+                        SeoEn = string.Empty,
+                        SeoTh = string.Empty,
+                        ProdTDNameEn = string.Empty,
+                        ProdTDNameTh = string.Empty,
                         Status = group.Status,
                         CreatedBy = email,
                         CreatedDt = DateTime.Now,
                         UpdatedBy = email,
                         UpdatedDt = DateTime.Now
                     };
-                    if (string.IsNullOrWhiteSpace(variantEntity.UrlEn))
-                    {
-                        variantEntity.UrlEn = variantEntity.Pid;
-                    }
+                    //if (string.IsNullOrWhiteSpace(variantEntity.UrlEn))
+                    //{
+                    //    variantEntity.UrlEn = variantEntity.Pid;
+                    //}
                     variantEntity.Inventory = new Inventory()
                     {
                         Quantity = variant.Quantity,
@@ -460,7 +474,7 @@ namespace Colsp.Api.Controllers
                     });
                 }
 
-                group.ProductStages.ToList().ForEach(e => { e.Pid = null; e.UrlEn = null; e.IsMaster = true; e.IsVariant = false; });
+                //group.ProductStages.ToList().ForEach(e => { e.Pid = null; e.UrlEn = null; e.IsMaster = true; e.IsVariant = false; });
                 AutoGenerate.GeneratePid(db, group.ProductStages);
                 group.ProductId = db.GetNextProductStageGroupId().Single().Value;
                 db.ProductStageGroups.Add(group);
@@ -1493,7 +1507,7 @@ namespace Colsp.Api.Controllers
                         db.InventoryHistories.Add(new InventoryHistory()
                         {
                             Pid = inventory.Pid,
-                            StockAvailable = inventory.StockAvailable,
+                            //StockAvailable = inventory.StockAvailable,
                             Defect = inventory.Defect,
                             MaxQuantity = inventory.MaxQuantity,
                             MinQuantity = inventory.MinQuantity,
@@ -1840,7 +1854,8 @@ namespace Colsp.Api.Controllers
             }
             else
             {
-                throw new Exception("Has no permission");
+                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                //throw new Exception("Has no permission");
             }
             #endregion
             #region Category
@@ -2041,9 +2056,9 @@ namespace Colsp.Api.Controllers
             #region Other field
             group.EffectiveDate = request.EffectiveDate;
             group.ExpireDate = request.ExpireDate;
-            group.ControlFlag1 = request.ControlFlags.Flag1;
-            group.ControlFlag2 = request.ControlFlags.Flag2;
-            group.ControlFlag3 = request.ControlFlags.Flag3;
+            //group.ControlFlag1 = request.ControlFlags.Flag1;
+            //group.ControlFlag2 = request.ControlFlags.Flag2;
+            //group.ControlFlag3 = request.ControlFlags.Flag3;
             group.Remark = Validation.ValidateString(request.Remark, "Remark", true, 500, false, string.Empty);
             group.InfoFlag = false;
             group.ImageFlag = false;
@@ -2252,11 +2267,10 @@ namespace Colsp.Api.Controllers
             else if (sellerPermission)
             {
                 variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                variant.GlobalBoostWeight = 0;
             }
             else
             {
-                throw new Exception("Has no permission");
+                variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             }
             #endregion
             #region Variant Field
@@ -2321,7 +2335,7 @@ namespace Colsp.Api.Controllers
             variant.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keyword (Thai)", false, 150, false, string.Empty);
             variant.SeoEn = Validation.ValidateString(request.SEO.SeoEn, "SEO (English)", false, 300, false, string.Empty);
             variant.SeoTh = Validation.ValidateString(request.SEO.SeoTh, "SEO (Thai)", false, 300, false, string.Empty);
-            variant.UrlEn = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product Url Key", false, 300, false, string.Empty);
+            //variant.UrlEn = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product Url Key", false, 300, false, string.Empty);
             variant.BoostWeight = request.SEO.ProductBoostingWeight;
             variant.Visibility = request.Visibility;
             variant.DefaultVaraint = request.DefaultVariant;
@@ -2349,18 +2363,19 @@ namespace Colsp.Api.Controllers
             {
                 if (variant.Inventory.Quantity != request.Quantity 
                     || variant.Inventory.SafetyStockSeller != request.SafetyStock
-                    || variant.Inventory.StockAvailable != stockType)
+                    //|| variant.Inventory.StockAvailable != stockType
+                 )
                 {
                     variant.Inventory.Quantity = request.Quantity;
                     variant.Inventory.SafetyStockSeller = request.SafetyStock;
-                    variant.Inventory.StockAvailable = stockType;
+                    //variant.Inventory.StockAvailable = stockType;
                     variant.Inventory.UpdatedBy = User.UserRequest().Email;
                     variant.Inventory.UpdatedDt = DateTime.Now;
 
                     InventoryHistory history = new InventoryHistory()
                     {
                         Pid = variant.Pid,
-                        StockAvailable = variant.Inventory.StockAvailable,
+                        //StockAvailable = variant.Inventory.StockAvailable,
                         Defect = variant.Inventory.Defect,
                         MaxQuantity = variant.Inventory.MaxQuantity,
                         MinQuantity = variant.Inventory.MinQuantity,
@@ -2382,7 +2397,7 @@ namespace Colsp.Api.Controllers
             {
                 variant.Inventory = new Inventory()
                 {
-                    StockAvailable = stockType,
+                    //StockAvailable = stockType,
                     Defect = 0,
                     MaxQuantity = 0,
                     MinQuantity = 0,
@@ -2689,7 +2704,7 @@ namespace Colsp.Api.Controllers
                 InventoryHistory history = new InventoryHistory()
                 {
                     Pid = stage.Pid,
-                    StockAvailable = stage.Inventory.StockAvailable,
+                    //StockAvailable = stage.Inventory.StockAvailable,
                     Defect = stage.Inventory.Defect,
                     MaxQuantity = stage.Inventory.MaxQuantity,
                     MinQuantity = stage.Inventory.MinQuantity,
@@ -2761,7 +2776,7 @@ namespace Colsp.Api.Controllers
             response.SEO.MetaDescriptionTh = variant.MetaDescriptionTh;
             response.SEO.MetaKeywordEn = variant.MetaKeyEn;
             response.SEO.MetaKeywordTh = variant.MetaKeyTh;
-            response.SEO.ProductUrlKeyEn = variant.UrlEn;
+            //response.SEO.ProductUrlKeyEn = variant.UrlEn;
             response.SEO.ProductBoostingWeight = variant.BoostWeight;
             response.SEO.SeoEn = variant.SeoEn;
             response.SEO.SeoTh = variant.SeoTh;
@@ -2769,7 +2784,7 @@ namespace Colsp.Api.Controllers
             response.DefaultVariant = variant.DefaultVaraint;
             response.Quantity = variant.Inventory.Quantity;
             response.SafetyStock = variant.Inventory.SafetyStockSeller;
-            response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
+            //response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
             response.Display = variant.Display;
             response.IsHasExpiryDate = variant.IsHasExpiryDate;
             response.IsVat = variant.IsVat;
@@ -2859,9 +2874,9 @@ namespace Colsp.Api.Controllers
            
             response.EffectiveDate = group.EffectiveDate;
             response.ExpireDate = group.ExpireDate;
-            response.ControlFlags.Flag1 = group.ControlFlag1;
-            response.ControlFlags.Flag2 = group.ControlFlag2;
-            response.ControlFlags.Flag3 = group.ControlFlag3;
+            //response.ControlFlags.Flag1 = group.ControlFlag1;
+            //response.ControlFlags.Flag2 = group.ControlFlag2;
+            //response.ControlFlags.Flag3 = group.ControlFlag3;
             response.Remark = group.Remark;
             response.AdminApprove.Information = group.InformationTabStatus;
             response.AdminApprove.Image = group.ImageTabStatus;
@@ -2887,9 +2902,9 @@ namespace Colsp.Api.Controllers
                 AttributeSetId = group.AttributeSetId,
                 BrandId = group.BrandId,
                 CategoryTabStatus = group.CategoryTabStatus,
-                ControlFlag1 = group.ControlFlag1,
-                ControlFlag2 = group.ControlFlag2,
-                ControlFlag3 = group.ControlFlag3,
+                //ControlFlag1 = group.ControlFlag1,
+                //ControlFlag2 = group.ControlFlag2,
+                //ControlFlag3 = group.ControlFlag3,
                 CreatedBy = group.CreatedBy,
                 CreatedDt = group.CreatedDt,
                 EffectiveDate = group.EffectiveDate,
@@ -3054,7 +3069,7 @@ namespace Colsp.Api.Controllers
                     TheOneCardEarn = stage.TheOneCardEarn,
                     UnitPrice = stage.UnitPrice,
                     Upc = stage.Upc,
-                    UrlEn = stage.UrlEn,
+                    //UrlEn = stage.UrlEn,
                     ShippingId = stage.ShippingId,
                     VariantCount = stage.VariantCount,
                     Visibility = stage.Visibility,
@@ -3129,12 +3144,12 @@ namespace Colsp.Api.Controllers
                 product.TheOneCardEarn = stage.TheOneCardEarn;
                 product.UnitPrice = stage.UnitPrice;
                 product.Upc = stage.Upc;
-                product.UrlEn = stage.UrlEn;
+                //product.UrlEn = stage.UrlEn;
                 product.VariantCount = stage.VariantCount;
                 product.Visibility = stage.Visibility;
-                product.ControlFlag1 = group.ControlFlag1;
-                product.ControlFlag2 = group.ControlFlag2;
-                product.ControlFlag3 = group.ControlFlag3;
+                //product.ControlFlag1 = group.ControlFlag1;
+                //product.ControlFlag2 = group.ControlFlag2;
+                //product.ControlFlag3 = group.ControlFlag3;
                 product.EffectiveDate = group.EffectiveDate;
                 product.ExpireDate = group.ExpireDate;
                 product.Remark = group.Remark;
@@ -3483,9 +3498,9 @@ namespace Colsp.Api.Controllers
                         ProductStageRelateds1 = s.ProductStageGroup.ProductStageRelateds1.Select(sp => sp.ProductStageGroup1.ProductStages.Where(w => w.IsVariant == false).Select(sv => sv.Pid)),
                         s.ProductStageGroup.EffectiveDate,
                         s.ProductStageGroup.ExpireDate,
-                        s.ProductStageGroup.ControlFlag1,
-                        s.ProductStageGroup.ControlFlag2,
-                        s.ProductStageGroup.ControlFlag3,
+                        //s.ProductStageGroup.ControlFlag1,
+                        //s.ProductStageGroup.ControlFlag2,
+                        //s.ProductStageGroup.ControlFlag3,
                         s.ProductStageGroup.Remark,
                         AttributeSet = s.ProductStageGroup.AttributeSet == null ? null : new
                         {
@@ -3527,7 +3542,7 @@ namespace Colsp.Api.Controllers
                     {
                         s.Inventory.Quantity,
                         s.Inventory.SafetyStockSeller,
-                        s.Inventory.StockAvailable,
+                        //s.Inventory.StockAvailable,
                     },
                     s.Shipping.ShippingMethodEn,
                     s.PrepareDay,
@@ -3548,7 +3563,7 @@ namespace Colsp.Api.Controllers
                     s.MetaKeyTh,
                     s.MetaTitleEn,
                     s.MetaTitleTh,
-                    s.UrlEn,
+                    //s.UrlEn,
                     s.BoostWeight,
                     s.GlobalBoostWeight,
                     s.GiftWrap,
@@ -3844,7 +3859,7 @@ namespace Colsp.Api.Controllers
                     {
                         if (p.Inventory != null)
                         {
-                            bodyList[headDicTmp["STT"].Item2] = Constant.STOCK_TYPE.Where(w => w.Value.Equals(p.Inventory.StockAvailable)).SingleOrDefault().Key;
+                            //bodyList[headDicTmp["STT"].Item2] = Constant.STOCK_TYPE.Where(w => w.Value.Equals(p.Inventory.StockAvailable)).SingleOrDefault().Key;
                         }
                     }
                     #endregion
@@ -3983,7 +3998,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (headDicTmp.ContainsKey("URL"))
                     {
-                        bodyList[headDicTmp["URL"].Item2] = p.UrlEn;
+                        //bodyList[headDicTmp["URL"].Item2] = p.UrlEn;
                     }
                     if (headDicTmp.ContainsKey("PBW"))
                     {
@@ -4015,15 +4030,15 @@ namespace Colsp.Api.Controllers
                     }
                     if (headDicTmp.ContainsKey("FL1"))
                     {
-                        bodyList[headDicTmp["FL1"].Item2] = p.ProductStageGroup.ControlFlag1 == true ? "Yes" : "No";
+                        //bodyList[headDicTmp["FL1"].Item2] = p.ProductStageGroup.ControlFlag1 == true ? "Yes" : "No";
                     }
                     if (headDicTmp.ContainsKey("FL2"))
                     {
-                        bodyList[headDicTmp["FL2"].Item2] = p.ProductStageGroup.ControlFlag2 == true ? "Yes" : "No";
+                        //bodyList[headDicTmp["FL2"].Item2] = p.ProductStageGroup.ControlFlag2 == true ? "Yes" : "No";
                     }
                     if (headDicTmp.ContainsKey("FL3"))
                     {
-                        bodyList[headDicTmp["FL3"].Item2] = p.ProductStageGroup.ControlFlag3 == true ? "Yes" : "No";
+                        //bodyList[headDicTmp["FL3"].Item2] = p.ProductStageGroup.ControlFlag3 == true ? "Yes" : "No";
                     }
                     if (headDicTmp.ContainsKey("REM"))
                     {
@@ -4572,7 +4587,7 @@ namespace Colsp.Api.Controllers
                             MetaDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "Meta Description (Thai)", false, 500, errorMessage, row, string.Empty),
                             MetaKeyEn = Validation.ValidateCSVStringColumn(headDic, body, "Meta Keywords (English)", false, 300, errorMessage, row, string.Empty),
                             MetaKeyTh = Validation.ValidateCSVStringColumn(headDic, body, "Meta Keywords (Thai)", false, 300, errorMessage, row, string.Empty),
-                            UrlEn = Validation.ValidateCSVStringColumn(headDic, body, "Product URL Key (English)", false, 300, errorMessage, row),
+                            //UrlEn = Validation.ValidateCSVStringColumn(headDic, body, "Product URL Key (English)", false, 300, errorMessage, row),
                             GiftWrap = string.Equals(body[headDic["Gift Wrap"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
                             Installment = string.Equals(body[headDic["Installment"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
                             PrepareDay = Validation.ValidateCSVIntegerColumn(headDic, body, "Preparation Time", false, int.MaxValue, errorMessage, row, 0),
@@ -4712,11 +4727,11 @@ namespace Colsp.Api.Controllers
                                         };
                                         if (Constant.STOCK_TYPE.ContainsKey(body[headDic["Stock Type"]]))
                                         {
-                                            variant.Inventory.StockAvailable = Constant.STOCK_TYPE[body[headDic["Stock Type"]]];
+                                            //variant.Inventory.StockAvailable = Constant.STOCK_TYPE[body[headDic["Stock Type"]]];
                                         }
                                         else
                                         {
-                                            variant.Inventory.StockAvailable = 1;
+                                            //variant.Inventory.StockAvailable = 1;
                                         }
 
                                     }
@@ -4748,11 +4763,11 @@ namespace Colsp.Api.Controllers
                                         };
                                         if (Constant.STOCK_TYPE.ContainsKey(body[headDic["Stock Type"]]))
                                         {
-                                            variant.Inventory.StockAvailable = Constant.STOCK_TYPE[body[headDic["Stock Type"]]];
+                                            //variant.Inventory.StockAvailable = Constant.STOCK_TYPE[body[headDic["Stock Type"]]];
                                         }
                                         else
                                         {
-                                            variant.Inventory.StockAvailable = 1;
+                                            //variant.Inventory.StockAvailable = 1;
                                         }
                                     }
                                     variant.Inventory.SafetyStockSeller = int.Parse(val);
@@ -5055,7 +5070,7 @@ namespace Colsp.Api.Controllers
                                 OnHold = variant.Inventory.OnHold,
                                 SafetyStockAdmin = variant.Inventory.SafetyStockAdmin,
                                 SafetyStockSeller = variant.Inventory.SafetyStockSeller,
-                                StockAvailable = variant.Inventory.StockAvailable,
+                                //StockAvailable = variant.Inventory.StockAvailable,
                                 UseDecimal = variant.Inventory.UseDecimal,
                                 UpdatedBy = variant.Inventory.UpdatedBy,
                                 UpdatedDt = variant.Inventory.UpdatedDt,
@@ -5130,15 +5145,15 @@ namespace Colsp.Api.Controllers
                             group.Remark = Validation.ValidateCSVStringColumn(headDic, body, "Remark", false, 500, errorMessage, row, string.Empty);
                             if (headDic.ContainsKey("Flag 1"))
                             {
-                                group.ControlFlag1 = string.Equals(body[headDic["Flag 1"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false;
+                                //group.ControlFlag1 = string.Equals(body[headDic["Flag 1"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false;
                             }
                             if (headDic.ContainsKey("Flag 2"))
                             {
-                                group.ControlFlag2 = string.Equals(body[headDic["Flag 2"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false;
+                                //group.ControlFlag2 = string.Equals(body[headDic["Flag 2"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false;
                             }
                             if (headDic.ContainsKey("Flag 3"))
                             {
-                                group.ControlFlag3 = string.Equals(body[headDic["Flag 3"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false;
+                                //group.ControlFlag3 = string.Equals(body[headDic["Flag 3"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false;
                             }
                             #endregion
                             #region Default Attribute
@@ -5658,15 +5673,15 @@ namespace Colsp.Api.Controllers
                     }
                     if (header.Contains("Flag 1"))
                     {
-                        groupEn.ControlFlag1 = g.ControlFlag1;
+                        //groupEn.ControlFlag1 = g.ControlFlag1;
                     }
                     if (header.Contains("Flag 2"))
                     {
-                        groupEn.ControlFlag2 = g.ControlFlag2;
+                        //groupEn.ControlFlag2 = g.ControlFlag2;
                     }
                     if (header.Contains("Flag 3"))
                     {
-                        groupEn.ControlFlag3 = g.ControlFlag3;
+                        //groupEn.ControlFlag3 = g.ControlFlag3;
                     }
                     if (header.Contains("Attribute Set"))
                     {
@@ -5777,7 +5792,7 @@ namespace Colsp.Api.Controllers
                         {
                             if (masterVariantEn.Inventory != null)
                             {
-                                masterVariantEn.Inventory.StockAvailable = importVariantEn.Inventory.StockAvailable;
+                                //masterVariantEn.Inventory.StockAvailable = importVariantEn.Inventory.StockAvailable;
                             }
                             else
                             {
@@ -6048,7 +6063,7 @@ namespace Colsp.Api.Controllers
                                     {
                                         if (currentStage.Inventory != null)
                                         {
-                                            currentStage.Inventory.StockAvailable = staging.Inventory.StockAvailable;
+                                            //currentStage.Inventory.StockAvailable = staging.Inventory.StockAvailable;
                                         }
                                         else
                                         {
@@ -6145,10 +6160,10 @@ namespace Colsp.Api.Controllers
                                     }
                                     if(header.Contains("Product URL Key"))
                                     {
-                                        if (!string.IsNullOrWhiteSpace(staging.UrlEn))
-                                        {
-                                            currentStage.UrlEn = staging.UrlEn;
-                                        }
+                                        //if (!string.IsNullOrWhiteSpace(staging.UrlEn))
+                                        //{
+                                        //    currentStage.UrlEn = staging.UrlEn;
+                                        //}
                                     }
                                     if(header.Contains("Unit Price"))
                                     {
