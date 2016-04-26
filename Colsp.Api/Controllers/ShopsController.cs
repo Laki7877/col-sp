@@ -470,13 +470,12 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopIds = request.Where(w => w.ShopId != 0).Select(s => s.ShopId).ToList();
-                if(shopIds == null || shopIds.Count == 0)
+                var ids = request.Select(s => s.ShopId);
+                var shops = db.Shops.Where(w => ids.Contains(w.ShopId));
+                if(shops != null && shops.Count() > 0)
                 {
-                    throw new Exception("No shop selected");
+                    shops.ToList().ForEach(e => { e.Status = Constant.STATUS_REMOVE; });
                 }
-                var shops = db.Shops.Where(w => shopIds.Contains(w.ShopId));
-                db.Shops.RemoveRange(shops);
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
             }
@@ -493,7 +492,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId).SingleOrDefault();
+                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
                 if(shop == null)
                 {
                     throw new Exception("Shop not found");
@@ -517,7 +516,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId).Select(s => new
+                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).Select(s => new
                 {
                     s.ShopId,
                     s.ThemeId,
@@ -588,7 +587,7 @@ namespace Colsp.Api.Controllers
                 }
 
                 var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId)
+                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Include(i => i.ShopComponentMaps)
                     .SingleOrDefault();
 

@@ -37,24 +37,20 @@ namespace Colsp.Api.Controllers
                                     //cat.CategoryAbbreviation,
                                     cat.Lft,
                                     cat.Rgt,
-                                    //cat.UrlKeyEn,
+                                    cat.UrlKey,
                                     //cat.UrlKeyTh,
                                     cat.Visibility,
-                                    //cat.Status,
-                                    //cat.UpdatedDt,
-                                    //cat.CreateOn,
-                                    //cat.Commission,
+                                     //cat.Status,
+                                    UpdatedDt = cat.UpdateOn,
+                                    CreatedDt = cat.CreateOn,
+                                    cat.Commission,
                                     ProductCount = cat.ProductStageGroups.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)), 
                                                     //+ cat.Products.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
                                                     //+ cat.ProductHistories.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)),
                                      AttributeSetCount = cat.GlobalCatAttributeSetMaps.Count()
                                      //AttributeSets = cat.CategoryAttributeSetMaps.Select(s=> new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn, ProductCount = s.AttributeSet.ProductStages.Count + s.AttributeSet.Products.Count + s.AttributeSet.ProductHistories.Count })
                                  });
-                if (User.HasPermission("Manage Global Category"))
-                {
-
-                }
-                if (User.HasPermission("Add Product"))
+                if (User.ShopRequest() != null )
                 {
                     globalCat = globalCat.Where(w => w.Visibility == true);
                 }
@@ -106,8 +102,8 @@ namespace Colsp.Api.Controllers
                                      cat.UrlKey,
                                      cat.Visibility,
                                      cat.Status,
-                                     //cat.UpdatedDt,
-                                     //cat.CreateOn,
+                                     UpdatedDt = cat.UpdateOn,
+                                     CreatedDt = cat.CreateOn,
                                      cat.Commission,
 
                                      //ProductCount = cat.ProductStages.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
@@ -134,18 +130,17 @@ namespace Colsp.Api.Controllers
             GlobalCategory category = null;
             try
             {
+                var email = User.UserRequest().Email;
+                var currentDt = DateTime.Now;
                 category = new GlobalCategory();
-                //string abbr = AutoGenerate.NextCatAbbre(db);
-                //category.CategoryAbbreviation = abbr;
                 SetupCategory(category, request);
-
-                category.Visibility = request.Visibility;
-                category.Status = Constant.STATUS_ACTIVE;
-                category.CreateBy = User.UserRequest().Email;
-                category.CreateOn = DateTime.Now;
-                category.UpdateBy = User.UserRequest().Email;
-                category.UpdateOn = DateTime.Now;
-                
+                #region Create-Update
+                category.CreateBy = email;
+                category.CreateOn = currentDt;
+                category.UpdateBy = email;
+                category.UpdateOn = currentDt;
+                #endregion
+                #region lft-rgt
                 int max = db.GlobalCategories.Select(s=>s.Rgt).DefaultIfEmpty(0).Max();
                 if(max == 0)
                 {
@@ -157,6 +152,7 @@ namespace Colsp.Api.Controllers
                     category.Lft = max + 1;
                     category.Rgt = max + 2;
                 }
+                #endregion
                 #region Banner Image En
                 if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
                 {
@@ -168,8 +164,10 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt
                         });
                     }
                 }
@@ -185,12 +183,15 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.Url,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt
                         });
                     }
                 }
                 #endregion
+                #region Attribute Set
                 if (request.AttributeSets != null && request.AttributeSets.Count > 0)
                 {
                    
@@ -199,13 +200,15 @@ namespace Colsp.Api.Controllers
                         category.GlobalCatAttributeSetMaps.Add(new GlobalCatAttributeSetMap()
                         {
                             AttributeSetId = mapRq.AttributeSetId,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt
                         });
                     }
                 }
+                #endregion
+                #region url
                 category.CategoryId = db.GetNextGlobalCategoryId().SingleOrDefault().Value;
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
@@ -215,7 +218,7 @@ namespace Colsp.Api.Controllers
                 {
                     category.UrlKey = request.UrlKey.Trim().Replace(" ", "-");
                 }
-
+                #endregion
                 db.GlobalCategories.Add(category);
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK, category);
@@ -233,16 +236,23 @@ namespace Colsp.Api.Controllers
             try
             {
                 var category = db.GlobalCategories
-                    .Include(i => i.GlobalCatAttributeSetMaps
-                    .Select(s => s.AttributeSet))
-                    .Include(i=>i.GlobalCatImages)
-                    .Include(i=>i.GlobalCatFeatureProducts)
-                    .Where(w => w.CategoryId == categoryId).SingleOrDefault();
+                        .Include(i => i.GlobalCatAttributeSetMaps
+                        .Select(s => s.AttributeSet))
+                        .Include(i=>i.GlobalCatImages)
+                        .Include(i=>i.GlobalCatFeatureProducts)
+                    .Where(w => w.CategoryId == categoryId)
+                    .SingleOrDefault();
                 if (category == null)
                 {
                     throw new Exception("Cannot find selected category");
                 }
+                var email = User.UserRequest().Email;
+                var currentDt = DateTime.Now;
                 SetupCategory(category, request);
+                category.UpdateBy = email;
+                category.UpdateOn = currentDt;
+                category.Status = request.Status;
+                #region url
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
                     category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"),"-", category.CategoryId);
@@ -251,10 +261,7 @@ namespace Colsp.Api.Controllers
                 {
                     category.UrlKey = request.UrlKey.Replace(" ", "-");
                 }
-                category.Visibility = request.Visibility;
-                category.Status = Constant.STATUS_ACTIVE;
-                category.UpdateBy = User.UserRequest().Email;
-                category.UpdateOn = DateTime.Now;
+                #endregion
                 #region Banner Image En
                 var imageOldEn = category.GlobalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).ToList();
                 if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
@@ -290,8 +297,10 @@ namespace Colsp.Api.Controllers
                                 ImageUrl = img.Url,
                                 Position = position++,
                                 EnTh = Constant.LANG_EN,
-                                UpdateBy = User.UserRequest().Email,
-                                UpdateOn = DateTime.Now
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt
                             });
                         }
                     }
@@ -336,8 +345,10 @@ namespace Colsp.Api.Controllers
                                 ImageUrl = img.Url,
                                 Position = position++,
                                 EnTh = Constant.LANG_TH,
-                                UpdateBy = User.UserRequest().Email,
-                                UpdateOn = DateTime.Now
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt
                             });
                         }
                     }
@@ -381,10 +392,10 @@ namespace Colsp.Api.Controllers
                                 category.GlobalCatFeatureProducts.Add(new GlobalCatFeatureProduct()
                                 {
                                     ProductId = pro.ProductId,
-                                    CreateBy = User.UserRequest().Email,
-                                    CreateOn = DateTime.Now,
-                                    UpdateBy = User.UserRequest().Email,
-                                    UpdateOn = DateTime.Now
+                                    CreateBy = email,
+                                    CreateOn = currentDt,
+                                    UpdateBy = email,
+                                    UpdateOn = currentDt
                                 });
                             }
                             else
@@ -428,10 +439,10 @@ namespace Colsp.Api.Controllers
                             {
                                 AttributeSetId = mapRq.AttributeSetId,
                                 CategoryId = category.CategoryId,
-                                CreateBy = User.UserRequest().Email,
-                                CreateOn = DateTime.Now,
-                                UpdateBy = User.UserRequest().Email,
-                                UpdateOn = DateTime.Now,
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt
                             });
                         }
                     }
@@ -441,7 +452,6 @@ namespace Colsp.Api.Controllers
                     db.GlobalCatAttributeSetMaps.RemoveRange(setList);
                 }
                 #endregion
-
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return GetGlobalCategory(category.CategoryId);
             }
@@ -520,21 +530,19 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var catList = db.GlobalCategories.ToList();
-                if (catList == null || catList.Count == 0)
-                {
-                    throw new Exception("No category found in this shop");
-                }
+                var ids = request.Select(s => s.CategoryId);
+                var catList = db.GlobalCategories.Where(w=> ids.Contains(w.CategoryId));
+                var email = User.UserRequest().Email;
+                var currentDt = DateTime.Now;
                 foreach (CategoryRequest catRq in request)
                 {
-
                     var current = catList.Where(w => w.CategoryId==catRq.CategoryId).SingleOrDefault();
                     if (current == null)
                     {
                         throw new Exception("Cannot find category " + catRq.CategoryId);
                     }
                     var child = catList.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt);
-                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility; f.UpdateBy = User.UserRequest().Email; f.UpdateOn = DateTime.Now; });
+                    child.ToList().ForEach(f => { f.Visibility = catRq.Visibility; f.UpdateBy = email; f.UpdateOn = currentDt; });
                 }
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -551,18 +559,34 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                foreach(CategoryRequest rq in request)
+                var ids = request.Select(s => s.CategoryId);
+
+                var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.GlobalCatId)).Select(s => s.GlobalCategory.NameEn);
+                if (productMap != null && productMap.Count() > 0)
                 {
-                    var cat = db.GlobalCategories.Find(rq.CategoryId);
-                    if (cat == null)
+                    throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", productMap), " with product associated"));
+                }
+                var attributesetMap = db.GlobalCatAttributeSetMaps.Where(w => ids.Contains(w.CategoryId)).Select(s => s.GlobalCategory.NameEn);
+                if (attributesetMap != null && attributesetMap.Count() > 0)
+                {
+                    throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", attributesetMap), " with attribute set associated"));
+                }
+
+                var catList = db.GlobalCategories.Where(w => ids.Contains(w.CategoryId));
+
+                foreach (CategoryRequest catRq in request)
+                {
+                    var current = catList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
+                    if (current == null)
                     {
-                        throw new Exception("Cannot find category");
+                        throw new Exception("Cannot find category " + catRq.CategoryId);
                     }
-                    int childSize = cat.Rgt - cat.Lft + 1;
+
+                    int childSize = current.Rgt - current.Lft + 1;
                     //delete
-                    db.GlobalCategories.Where(w => w.Rgt > cat.Rgt).ToList()
-                        .ForEach(e => { e.Lft = e.Lft > cat.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
-                    db.GlobalCategories.RemoveRange(db.GlobalCategories.Where(w => w.Lft >= cat.Lft && w.Rgt <= cat.Rgt));
+                    db.GlobalCategories.Where(w => w.Rgt > current.Rgt).ToList()
+                        .ForEach(e => { e.Lft = e.Lft > current.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
+                    db.GlobalCategories.RemoveRange(db.GlobalCategories.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt));
                     break;
                 }
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
@@ -589,21 +613,7 @@ namespace Colsp.Api.Controllers
                           join attr in db.Attributes on attrSetMap.AttributeId equals attr.AttributeId
                           where cat.CategoryId == catId && attr.VariantStatus==true
                     select attr);
-
-
-                //var tmp = (from cat in db.GlobalCategories
-                //                 join catMap in db.GlobalCatAttributeSetMaps on cat.CategoryId equals catMap.CategoryId
-                //                 join attrSet in db.AttributeSets on catMap.AttributeSetId equals attrSet.AttributeSetId
-                //                 where cat.CategoryId.Equals(catId)
-                //                         && cat.Status.Equals(Constant.STATUS_ACTIVE)
-                //                         && attrSet.Status.Equals(Constant.STATUS_ACTIVE)
-                //                 select new
-                //                 {
-                //                     attr = from a in db.Attributes
-                //                            where a.Status.Equals(Constant.STATUS_ACTIVE) && a.VariantStatus.Equals(true)
-                //                            select a
-                //                 }).AsEnumerable().Select(t => t.attr).ToList();
-                List<IQueryable<Entity.Models.Attribute>> response = new List<IQueryable<Entity.Models.Attribute>>() { attribute };
+                var response = new List<IQueryable<Entity.Models.Attribute>>() { attribute };
 
 
                 if(response == null || response.Count() == 0)
@@ -663,12 +673,7 @@ namespace Colsp.Api.Controllers
                                   AttributeCount = atrS.AttributeSetMaps.Count(),
                                   CategoryCount = atrS.GlobalCatAttributeSetMaps.Count(),
                                   ProductCount = atrS.ProductStageGroups.Count()
-                              }).ToList();
-                //var attributeSet = db.AttributeSets
-                //    .Include(i => i.GlobalCatAttributeSetMaps.Select(s=>s.GlobalCategory))
-                //    .Include(i=>i.AttributeSetMaps.Select(s=>s.Attribute.AttributeValueMaps.Select(s1=>s1.AttributeValue)))
-                //    .Include(i=>i.AttributeSetTags)
-                //    .Where(w=>w.GlobalCatAttributeSetMaps.Select(s=>s.CategoryId).Contains(catId)).ToList();
+                              });
                 return Request.CreateResponse(HttpStatusCode.OK, attributeSet);
 
             }
@@ -684,7 +689,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var catEnList = db.GlobalCategories.Include(i=>i.ProductStageGroups).ToList();
+                var catEnList = db.GlobalCategories;
                 foreach (CategoryRequest catRq in request)
                 {
                     if (catRq.Lft >= catRq.Rgt)
@@ -711,15 +716,22 @@ namespace Colsp.Api.Controllers
                     catEn.UpdateOn = DateTime.Now;
                     catEnList.Remove(catEn);
                 }
-                foreach (var cat in catEnList)
+                var ids = catEnList.Select(s => s.CategoryId);
+                var productMap = db.ProductStageGroups.Where(w=> ids.Contains(w.GlobalCatId)).Select(s=>s.GlobalCategory.NameEn);
+                if (productMap != null && productMap.Count() > 0)
                 {
-                    if (cat.ProductStageGroups.Count != 0)
-                    {
-                        db.Dispose();
-                        throw new Exception("Cannot delete category <strong>" + cat.NameEn + "</strong> with product associated");
-                    }
-                    db.GlobalCategories.Remove(cat);
+                    throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", productMap), " with product associated"));
                 }
+                var attributesetMap = db.GlobalCatAttributeSetMaps.Where(w => ids.Contains(w.CategoryId)).Select(s => s.GlobalCategory.NameEn);
+                if (attributesetMap != null && attributesetMap.Count() > 0)
+                {
+                    throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", attributesetMap), " with attribute set associated"));
+                }
+                if(catEnList != null && catEnList.Count() > 0)
+                {
+                    db.GlobalCategories.RemoveRange(catEnList);
+                }
+                
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
 
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -769,6 +781,8 @@ namespace Colsp.Api.Controllers
             category.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Category Short Description (Thai)", false, 500, false, string.Empty);
             category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
+            category.Visibility = request.Visibility;
+            category.Status = Constant.STATUS_ACTIVE;
         }
 
         protected override void Dispose(bool disposing)

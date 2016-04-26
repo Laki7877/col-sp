@@ -645,7 +645,7 @@ namespace Colsp.Api.Controllers
                 }
                 string email = request.Email;
                 #region Query
-                var user = db.Users.Where(u => u.Email.Equals(email)).Select(s => new
+                var user = db.Users.Where(w => w.Email.Equals(email)).Select(s => new
                 {
                      s.Email,
                      s.Password,
@@ -682,7 +682,6 @@ namespace Colsp.Api.Controllers
                                     sp.Permission.OverrideParent,
                                 }
                             }),
-
                         }
                     }),
                 }).SingleOrDefault();
@@ -698,13 +697,16 @@ namespace Colsp.Api.Controllers
                     db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LoginFailCount = ", (user.LoginFailCount + 1)," WHERE UserId = " , user.UserId));
                     throw new Exception("Email and password not match");
                 }
-                if (user.Type.Equals(Constant.USER_TYPE_SELLER)
-                    && (user.UserShopMaps == null || user.UserShopMaps.Count() == 0))
+                if (user.Type.Equals(Constant.USER_TYPE_SELLER) && 
+                   (
+                        user.UserShopMaps == null 
+                        || user.UserShopMaps.Count() == 0 
+                        || user.UserShopMaps.Any(a => a.Shop.Status.Equals(Constant.STATUS_REMOVE))
+                   ))
                 {
                     throw new Exception("Please contact system administrator.");
                 }
                 #endregion
-
                 // Get all permissions
                 var userPermissions = user.UserGroupMaps
                     .Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission));

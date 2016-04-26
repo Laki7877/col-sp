@@ -26,7 +26,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var newsLetter = db.Newsletters.Where(w => true).Select(s=>s);
+                var newsLetter = db.Newsletters;
                 if(request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, newsLetter);

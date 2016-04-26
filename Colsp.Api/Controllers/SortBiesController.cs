@@ -38,7 +38,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
+        /*
         [Route("api/Brand/SortBy")]
         [HttpGet]
         public HttpResponseMessage GetSortByBrand()
@@ -101,7 +101,7 @@ namespace Colsp.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
-
+        */
 
 
 
