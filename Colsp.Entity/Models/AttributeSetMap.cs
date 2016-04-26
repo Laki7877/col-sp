@@ -10,8 +10,7 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
-    
+
     public partial class AttributeSetMap
     {
         public int AttributeSetId { get; set; }

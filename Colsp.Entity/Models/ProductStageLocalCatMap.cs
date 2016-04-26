@@ -10,8 +10,7 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
-    
+
     public partial class ProductStageLocalCatMap
     {
         public long ProductId { get; set; }

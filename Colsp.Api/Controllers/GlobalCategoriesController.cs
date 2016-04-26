@@ -13,7 +13,6 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
 
 namespace Colsp.Api.Controllers

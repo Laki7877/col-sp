@@ -399,7 +399,9 @@ namespace Colsp.Api.Controllers
                 usrGrp.GroupNameEn = request.GroupNameEn;
 
                 //Check duplication of role name ,Preen
-                var usrGroupEntity = db.UserGroups.Where(w => w.GroupNameEn.Equals(usrGrp.GroupNameEn) && w.Type.Equals(Constant.USER_TYPE_ADMIN)).FirstOrDefault();
+                var usrGroupEntity = db.UserGroups
+                    .Where(w => w.GroupNameEn.Equals(usrGrp.GroupNameEn) && w.Type.Equals(Constant.USER_TYPE_ADMIN) && w.GroupId != usergroupid)
+                    .FirstOrDefault();
                 if (usrGroupEntity != null)
                 {
                     throw new Exception("This role name has already been used. Please enter a different role name.");

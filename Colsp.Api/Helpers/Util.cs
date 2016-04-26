@@ -1,6 +1,5 @@
 ﻿using Colsp.Api.Constants;
 using Colsp.Model.Requests;
-using Colsp.Model.Responses;
 using System;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
@@ -13,6 +12,29 @@ namespace Colsp.Api.Helpers
 {
     public static class Util
     {
+
+        public static ImageRequest SetupImage(HttpRequestMessage Request, MultipartFileData fileData, string rootPath, string folderName
+            ,int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare)
+        {
+            string fileName = fileData.LocalFileName;
+            Validation.ValidateImage(fileName, minWidth, minHeight, maxWidth, maxHeight, maxSize, isSquare);
+            string tmp = fileData.Headers.ContentDisposition.FileName;
+            if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+            {
+                tmp = tmp.Trim('"');
+            }
+            string ext = Path.GetExtension(tmp);
+            string newName = string.Concat(fileName, ext);
+            File.Move(fileName, newName);
+            ImageRequest fileUpload = new ImageRequest();
+            var name = Path.GetFileName(newName);
+            var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+            var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+            fileUpload.Url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", folderName, "/", name);
+            return fileUpload;
+        }
+
+
         public static async Task<ImageRequest> SetupImage(HttpRequestMessage Request, string rootPath, string folderName
             , int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare, int logoWidth = 100, int logoLength = 100)
         {
