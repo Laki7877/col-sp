@@ -10,11 +10,13 @@
 namespace Colsp.Entity.Models
 {
     using System;
-
+    using System.Collections.Generic;
+    
     public partial class AttributeSetMap
     {
         public int AttributeSetId { get; set; }
         public int AttributeId { get; set; }
+        public int Position { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }

@@ -174,5 +174,7 @@ namespace Colsp.Api.Helpers
             return dt.AddDays(-1 * diff).Date;
         }
 
+
+
     }
 }

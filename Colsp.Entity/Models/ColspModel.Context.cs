@@ -13,7 +13,8 @@ namespace Colsp.Entity.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Core.Objects;
-
+    using System.Linq;
+    
     public partial class ColspEntities : DbContext
     {
         public ColspEntities()
@@ -189,41 +190,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
     
-        public virtual ObjectResult<Nullable<int>> GetNextAttributeValueId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeValueId");
-        }
-    
-        public virtual ObjectResult<Nullable<int>> GetNextGlobalCategoryId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextGlobalCategoryId");
-        }
-    
-        public virtual ObjectResult<Nullable<int>> GetNextLocalCategoryId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextLocalCategoryId");
-        }
-    
-        public virtual ObjectResult<Nullable<long>> GetNextProductHistoryId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductHistoryId");
-        }
-    
-        public virtual ObjectResult<Nullable<long>> GetNextProductStageGroupId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
-        }
-    
-        public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
-        }
-    
-        public virtual ObjectResult<Nullable<int>> GetNextShopId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextShopId");
-        }
-    
         public virtual ObjectResult<Nullable<int>> GetNextAttributeId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeId");
@@ -232,6 +198,11 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<Nullable<int>> GetNextAttributeSetId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeSetId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeValueId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeValueId");
         }
     
         public virtual ObjectResult<Nullable<int>> GetNextBrandId()
@@ -244,9 +215,44 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextCouponId");
         }
     
+        public virtual ObjectResult<Nullable<int>> GetNextGlobalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextGlobalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextLocalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextLocalCategoryId");
+        }
+    
         public virtual ObjectResult<Nullable<int>> GetNextNewsletterId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextNewsletterId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductHistoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductHistoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductStageGroupId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductStagePid()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStagePid");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextShopId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextShopId");
         }
     
         public virtual ObjectResult<Nullable<int>> GetNextUserGroupId()
@@ -257,11 +263,6 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<Nullable<int>> GetNextUserId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
-        }
-    
-        public virtual ObjectResult<Nullable<long>> GetNextProductStagePid()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStagePid");
         }
     }
 }

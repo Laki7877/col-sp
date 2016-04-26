@@ -13,6 +13,7 @@ using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Colsp.Api.Controllers
 {
@@ -27,7 +28,8 @@ namespace Colsp.Api.Controllers
             try
             {
                 var attribute = db.Attributes
-                    .Where(w => w.DefaultAttribute == true && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Where(w => w.DefaultAttribute == true 
+                        && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Select(s => new
                 {
                     s.AttributeId,
@@ -38,11 +40,17 @@ namespace Colsp.Api.Controllers
                     s.VariantDataType,
                     s.VariantStatus,
                     s.DataValidation,
-                    AttributeValueMaps = s.AttributeValueMaps.Select(sv =>
-                    new {
+                    AttributeValueMaps = s.AttributeValueMaps
+                    .Select(sv => new
+                    {
                         sv.AttributeId,
                         sv.AttributeValueId,
-                        AttributeValue = new { sv.AttributeValue.AttributeValueId, sv.AttributeValue.AttributeValueEn, sv.AttributeValue.AttributeValueTh }
+                        AttributeValue = sv.AttributeValue == null ? null : new
+                        {
+                            sv.AttributeValue.AttributeValueId,
+                            sv.AttributeValue.AttributeValueEn,
+                            sv.AttributeValue.AttributeValueTh
+                        }
                     }),
                     s.VisibleTo
                 });
@@ -281,8 +289,7 @@ namespace Colsp.Api.Controllers
                 }
                 var ids = request.Select(s => s.AttributeId).ToList();
                 var setList = db.Attributes
-                    .Where(w => ids.Contains(w.AttributeId) && !w.Status.Equals(Constant.STATUS_REMOVE))
-                    .ToList();
+                    .Where(w => ids.Contains(w.AttributeId) && !w.Status.Equals(Constant.STATUS_REMOVE));
                 foreach (AttributeRequest setRq in request)
                 {
                     var current = setList.Where(w => w.AttributeId.Equals(setRq.AttributeId)).SingleOrDefault();
@@ -307,7 +314,35 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.ATTRIBUTE_VALUE_FOLDER, 100, 100, 100, 100, 5, true);
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("In valid content multi-media");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.BRAND_FOLDER));
+                try
+                {
+                    await Request.Content.ReadAsMultipartAsync(streamProvider);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Image size exceeded " + 5 + " mb");
+                }
+                //var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.ATTRIBUTE_VALUE_FOLDER, 100, 100, 100, 100, 5, true);
+                #region Validate Image
+                ImageRequest fileUpload = null;
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    fileUpload = Util.SetupImage(Request,
+                        fileData,
+                        AppSettingKey.IMAGE_ROOT_FOLDER,
+                        AppSettingKey.BRAND_FOLDER, 100, 100, 100, 100, 5, true);
+                    break;
+                }
+                #endregion
+
+
+
+
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
@@ -342,7 +377,7 @@ namespace Colsp.Api.Controllers
                     s.Status,
                     s.DefaultAttribute,
                     s.VisibleTo,
-                    AttributeValueMaps = s.AttributeValueMaps.Select(sv=>new
+                    AttributeValueMaps = s.AttributeValueMaps.Select(sv => new
                     {
                         AttributeValue = sv.AttributeValue == null ? null : new
                         {

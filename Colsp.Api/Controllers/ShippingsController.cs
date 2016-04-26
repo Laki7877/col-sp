@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Colsp.Entity.Models;
+using Colsp.Api.Constants;
 
 namespace Colsp.Api.Controllers
 {
@@ -18,10 +19,11 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shippingList = db.Shippings.Select(s => new
+                var shippingList = db.Shippings.Where(w=>w.Status.Equals(Constant.STATUS_ACTIVE)).Select(s => new
                 {
                     s.ShippingId,
                     s.ShippingMethodEn,
+                    s.VisibleTo
                 });
                 return Request.CreateResponse(HttpStatusCode.OK, shippingList);
             }

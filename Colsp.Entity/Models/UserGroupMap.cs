@@ -10,7 +10,8 @@
 namespace Colsp.Entity.Models
 {
     using System;
-
+    using System.Collections.Generic;
+    
     public partial class UserGroupMap
     {
         public int UserId { get; set; }

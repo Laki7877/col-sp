@@ -23,6 +23,7 @@ namespace Colsp.Entity.Models
         public int ShippingId { get; set; }
         public string ShippingMethodEn { get; set; }
         public string ShippingMethodTh { get; set; }
+        public string VisibleTo { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> CreateOn { get; set; }

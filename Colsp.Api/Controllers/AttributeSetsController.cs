@@ -91,11 +91,6 @@ namespace Colsp.Api.Controllers
                                   ProductCount = atrS.ProductStageGroups.Count(),
                                   Shops = atrS.ProductStageGroups.Select(s=>s.ShopId),
                               };
-                //if(User.ShopRequest() != null)
-                //{
-                //    var shopId = User.ShopRequest().ShopId;
-                //    attrSet = attrSet.Where(w => w.Shops.Contains(shopId));
-                //}
                 if (request == null)
                 {
                     attrSet = attrSet.Where(w => w.Visibility == true);
@@ -151,14 +146,13 @@ namespace Colsp.Api.Controllers
         [HttpPost]
         public HttpResponseMessage AddAttributeSet(AttributeSetRequest request)
         {
-            AttributeSet attributeSet = null;
             try
             {
                 if (request == null)
                 {
                     throw new Exception("Invalid request");
                 }
-                attributeSet = new AttributeSet();
+                AttributeSet attributeSet =  attributeSet = new AttributeSet();
                 string email = User.UserRequest().Email;
                 DateTime currentDt = DateTime.Now;
                 SetupAttributeSet(attributeSet, request, email, currentDt, db);
@@ -270,30 +264,29 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, "Invalid request");
                 }
-                var setList = db.AttributeSets
-                    .Include(i=>i.ProductStageGroups)
-                    .Include(i=>i.AttributeSetMaps)
-                    .Include(i=>i.AttributeSetTags)
-                    .Include(i=>i.GlobalCatAttributeSetMaps)
-                    .ToList();
+                var ids = request.Select(s => s.AttributeSetId);
+                var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.AttributeSetId.HasValue ? w.AttributeSetId.Value : 0)).Select(s=>s.AttributeSet.AttributeSetNameEn);
+                if (productMap != null && productMap.Count() > 0)
+                {
+                    throw new Exception(string.Concat("Cannot delete arrtibute set ", string.Join(",", productMap), " with product associated"));
+                }
+                var globalCatMap = db.GlobalCatAttributeSetMaps.Where(w => ids.Contains(w.AttributeSetId)).Select(s => s.AttributeSet.AttributeSetNameEn);
+                if (globalCatMap != null && globalCatMap.Count() > 0)
+                {
+                    throw new Exception(string.Concat("Cannot delete arrtibute set ", string.Join(",", globalCatMap), " with global category associated"));
+                }
+                var attributeMap = db.AttributeSetMaps.Where(w => ids.Contains(w.AttributeSetId)).Select(s => s.AttributeSet.AttributeSetNameEn);
+                if (attributeMap != null && attributeMap.Count() > 0)
+                {
+                    throw new Exception(string.Concat("Cannot delete arrtibute set ", string.Join(",", attributeMap), " with attribute associated"));
+                }
+                var setList = db.AttributeSets.Where(w => ids.Contains(w.AttributeSetId));
                 foreach (AttributeSetRequest setRq in request)
                 {
                     var current = setList.Where(w => w.AttributeSetId.Equals(setRq.AttributeSetId)).SingleOrDefault();
                     if (current == null)
                     {
                         throw new Exception("Cannot find arrtibute set " + setRq.AttributeSetNameEn);
-                    }
-                    if(current.ProductStageGroups != null && current.ProductStageGroups.Count > 0)
-                    {
-                        throw new Exception("Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with product associated");
-                    }
-                    if(current.AttributeSetMaps != null && current.AttributeSetMaps.Count > 0)
-                    {
-                        throw new Exception("Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with attribute associated");
-                    }
-                    if (current.GlobalCatAttributeSetMaps !=  null && current.GlobalCatAttributeSetMaps.Count > 0)
-                    {
-                        throw new Exception("Cannot delete arrtibute set " + setRq.AttributeSetNameEn + "  with global category associated");
                     }
                     db.AttributeSets.Remove(current);
                 }
@@ -324,6 +317,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot map attribute that is default attribute to attribute set");
                 }
+                int position = 1;
                 foreach (AttributeRequest attrRq in request.Attributes)
                 {
                     bool addNew = false;
@@ -336,6 +330,7 @@ namespace Colsp.Api.Controllers
                         AttributeSetMap current = mapList.Where(w => w.AttributeId == attrRq.AttributeId).SingleOrDefault();
                         if (current != null)
                         {
+                            current.Position = position++;
                             mapList.Remove(current);
                         }
                         else
@@ -348,6 +343,7 @@ namespace Colsp.Api.Controllers
                         set.AttributeSetMaps.Add(new AttributeSetMap()
                         {
                             AttributeId = attrRq.AttributeId,
+                            Position = position++,
                             CreateBy = email,
                             CreateOn = currentDt,
                             UpdateBy = email,
@@ -418,6 +414,7 @@ namespace Colsp.Api.Controllers
                 AttributeSetMaps = s.AttributeSetMaps.Select(sm=> new
                 {
                     sm.AttributeId,
+                    sm.Position,
                     Attribute = sm.Attribute == null ? null : new
                     {
                         sm.Attribute.AttributeNameEn,
@@ -443,7 +440,7 @@ namespace Colsp.Api.Controllers
                             sv.AttributeValue.AttributeValueTh,
                         })
                     }
-                }),
+                }).OrderBy(o=>o.Position),
             }).SingleOrDefault();
 
             if(attrSet == null)

@@ -27,6 +27,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+
                 if (!Request.Content.IsMimeMultipartContent())
                 {
                     throw new Exception("In valid content multi-media");
@@ -269,10 +270,10 @@ namespace Colsp.Api.Controllers
                 }
                 var ids = request.Select(s => s.BrandId).ToList();
 
-                var productBrand = db.ProductStageGroups.Where(w => ids.Contains(w.BrandId.HasValue ? w.BrandId.Value : 0)).Select(s=>s.Brand.BrandNameEn);
-                if(productBrand != null && productBrand.Count() > 0)
+                var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.BrandId.HasValue ? w.BrandId.Value : 0)).Select(s=>s.Brand.BrandNameEn);
+                if(productMap != null && productMap.Count() > 0)
                 {
-                    throw new Exception(string.Concat("Cannot delete brand ", string.Join(",", productBrand)));
+                    throw new Exception(string.Concat("Cannot delete brand ", string.Join(",", productMap)));
                 }
                 var brandList = db.Brands.Where(w=> ids.Contains(w.BrandId));
                 foreach (BrandRequest brandRq in request)
