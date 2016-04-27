@@ -19,10 +19,10 @@ namespace Colsp.Model.Requests
         public int Sequence { get; set; }
         public string Status { get; set; }
         public bool Visibility { get; set; }
-        public int? CreateBy { get; set; }
-        public DateTime? CreateDate { get; set; }
-        public int? UpdateBy { get; set; }
-        public DateTime? UpdateDate { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public DateTime? UpdateOn { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
         public List<CMSMasterGroupMapRequest> GroupMasterList { get; set; }
@@ -44,11 +44,11 @@ namespace Colsp.Model.Requests
         public int? CMSMasterId { get; set; }
         public int? Sequence { get; set; }
         public int? ShopId { get; set; }
-        public bool? IsActive { get; set; }
-        public int? CreateBy { get; set; }
-        public DateTime? CreateDate { get; set; }
-        public int? UpdateBy { get; set; }
-        public DateTime? UpdateDate { get; set; }
+        public string Status { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public DateTime? UpdateOn { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
         public DateTime? CMSMasterExpiryDate { get; set; }

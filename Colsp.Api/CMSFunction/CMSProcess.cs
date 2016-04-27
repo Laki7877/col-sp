@@ -43,13 +43,13 @@ namespace Colsp.Api.CMSFunction
                         cms.LongDescriptionTH = Model.LongDescriptionTH;
                         cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                         cms.ShortDescriptionTH = Model.ShortDescriptionTH;
-                        cms.Status = Model.Status;
-                        cms.CMSMasterStatusId = Model.CMSMasterStatusId;
-                        cms.Sequence = Model.Sequence;
+                        //cms.Status = Model.Status;
+                        //cms.CMSMasterStatusId = Model.CMSMasterStatusId;
+                        //cms.Sequence = Model.Sequence;
                         cms.CMSMasterURLKey = Model.CMSMasterURLKey;
-                        cms.Visibility = Model.Visibility;
-                        cms.CreateBy = Model.CreateBy;
-                        cms.Createdate = DateTime.Now;
+                        //cms.Visibility = Model.Visibility;
+                        //cms.CreateBy = Model.CreateBy;
+                        //cms.Createdate = DateTime.Now;
                         cms.CreateIP = Model.CreateIP;
                         cms.IsCampaign = Model.ISCampaign;
                         db.CMSMasters.Add(cms);
@@ -76,9 +76,9 @@ namespace Colsp.Api.CMSFunction
                                 foreach (var category in schedule.CategoryList)
                                 {
                                     CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
-                                    cmsCategorySchedulerMap.CMSSchedulerId = scheduleId;
-                                    cmsCategorySchedulerMap.CMSCategoryId = category.CMSCategoryId;
-                                    cmsCategorySchedulerMap.IsActive = true;
+                                    cmsCategorySchedulerMap.CMSSchedulerId          = scheduleId;
+                                    cmsCategorySchedulerMap.CMSCategoryId           = category.CMSCategoryId;
+                                    cmsCategorySchedulerMap.Status                  = null;
                                     db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
                                 }
 
@@ -112,11 +112,11 @@ namespace Colsp.Api.CMSFunction
                             var cms = db.CMSMasters.Where(c => c.CMSMasterId == item.CMSMasterId).FirstOrDefault();
                             if (cms != null)
                             {
-                                cms.CMSMasterStatusId = item.CMSMasterStatusId;
-                                cms.CMSMasterStatusId = item.CMSMasterStatusId;
-                                cms.Visibility = item.CMSMasterVisibility;
-                                cms.UpdateBy = UserId;
-                                cms.UpdateDate = DateTime.Now;
+                                //cms.CMSMasterStatusId = item.CMSMasterStatusId;
+                                //cms.CMSMasterStatusId = item.CMSMasterStatusId;
+                                //cms.Visibility = item.CMSMasterVisibility;
+                                //cms.UpdateBy = UserId;
+                                //cms.UpdateDate = DateTime.Now;
                                 cms.UpdateIP = model.CreateIP;
                                 db.Entry(cms).State = EntityState.Modified;
                                 db.SaveChanges();
@@ -155,10 +155,10 @@ namespace Colsp.Api.CMSFunction
                         cms.CMSGroupNameEN = Model.CMSGroupNameEN;
                         cms.CMSGroupNameTH = Model.CMSGroupNameTH;
                         cms.Status = Model.Status;
-                        cms.Sequence = Model.Sequence;
+                        //cms.Sequence = Model.Sequence;
                         cms.Visibility = Model.Visibility;
-                        cms.CreateBy = Model.CreateBy;
-                        cms.CreateDate = DateTime.Now;
+                        //cms.CreateBy = Model.CreateBy;
+                        //cms.CreateDate = DateTime.Now;
                         cms.CreateIP = Model.CreateIP;
                         db.CMSGroups.Add(cms);
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -194,13 +194,13 @@ namespace Colsp.Api.CMSFunction
                 using (ColspEntities db = new ColspEntities())
                 {
                     CMSScheduler sc = new CMSScheduler();
-                    sc.CreateBy = UserId;
-                    sc.Createdate = DateTime.Now;
+                    //sc.CreateBy = UserId;
+                    //sc.Createdate = DateTime.Now;
                     sc.EffectiveDate = Master.CMSMasterEffectiveDate;
                     sc.EffectiveTime = Master.CMSMasterEffectiveTime;
                     sc.ExpiryDate = Master.CMSMasterExpiryDate;
                     sc.ExpiryTime = Master.CMSMasterExpiryTime;
-                    sc.Visibility = Master.Visibility;
+                    //sc.Visibility = Master.Visibility;
                     sc.CreateIP = Master.CreateIP;
                     //sc.Status = Master.Status;
                     db.CMSSchedulers.Add(sc);
@@ -249,12 +249,12 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                             cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                             //cms.Status = Model.Status;
-                            cms.CMSMasterStatusId = Model.CMSStatusFlowId;
-                            cms.Sequence = Model.Sequence;
+                            //cms.CMSMasterStatusId = Model.CMSStatusFlowId;
+                            //cms.Sequence = Model.Sequence;
                             cms.CMSMasterURLKey = Model.URLKey;
-                            cms.Visibility = Model.Visibility;
-                            cms.UpdateBy = Model.CreateBy;
-                            cms.UpdateDate = DateTime.Now;
+                            //cms.Visibility = Model.Visibility;
+                            //cms.UpdateBy = Model.CreateBy;
+                            //cms.UpdateDate = DateTime.Now;
                             cms.UpdateIP = Model.CreateIP;
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -298,12 +298,12 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
                             cms.ShortDescriptionTH = Model.ShortDescriptionTH;
                             //cms.Status = Model.Status;
-                            cms.CMSMasterStatusId = Model.CMSStatusFlowId;
-                            cms.Sequence = Model.Sequence;
-                            cms.CMSMasterURLKey = Model.URLKey;
-                            cms.Visibility = Model.Visibility;
-                            cms.UpdateBy = Model.CreateBy;
-                            cms.UpdateDate = DateTime.Now;
+                            //cms.CMSMasterStatusId = Model.CMSStatusFlowId;
+                            //cms.Sequence = Model.Sequence;
+                            //cms.CMSMasterURLKey = Model.URLKey;
+                            //cms.Visibility = Model.Visibility;
+                            //cms.UpdateBy = Model.CreateBy;
+                            //cms.UpdateDate = DateTime.Now;
                             cms.UpdateIP = Model.CreateIP;
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -358,13 +358,13 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionEN = modelItem.ShortDescriptionEN != default(string) ? modelItem.ShortDescriptionEN : cms.ShortDescriptionEN;
                             cms.ShortDescriptionTH = modelItem.ShortDescriptionTH != default(string) ? modelItem.ShortDescriptionTH : cms.ShortDescriptionTH;
                             //cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
-                            cms.Status = modelItem.Status ?? cms.Status;
-                            cms.CMSMasterStatusId = modelItem.CMSMasterStatusId ?? cms.CMSMasterStatusId;
-                            cms.Sequence = modelItem.Sequence ?? cms.Sequence;
+                            //cms.Status = modelItem.Status ?? cms.Status;
+                            //cms.CMSMasterStatusId = modelItem.CMSMasterStatusId ?? cms.CMSMasterStatusId;
+                            //cms.Sequence = modelItem.Sequence ?? cms.Sequence;
                             cms.CMSMasterURLKey = modelItem.CMSMasterURLKey != default(string) ? modelItem.CMSMasterURLKey : cms.CMSMasterURLKey;
                             //cms.Visibility = modelItem.Visibility ?? cms.Visibility;
-                            cms.UpdateBy = modelItem.CreateBy ?? cms.UpdateBy;
-                            cms.UpdateDate = DateTime.Now;
+                            //cms.UpdateBy = modelItem.CreateBy ?? cms.UpdateBy;
+                            //cms.UpdateDate = DateTime.Now;
                             cms.UpdateIP = modelItem.CreateIP != default(string) ? modelItem.CreateIP : cms.UpdateIP;
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -414,12 +414,12 @@ namespace Colsp.Api.CMSFunction
                             cms.ShortDescriptionTH = modelItem.ShortDescriptionTH != default(string) ? modelItem.ShortDescriptionTH : cms.ShortDescriptionTH;
                             //cms.CMSCollectionGroupId = modelItem.CMSCollectionGroupId ?? cms.CMSCollectionGroupId;
                             //cms.Status = modelItem.Status ?? cms.Status;
-                            cms.CMSMasterStatusId = modelItem.CMSStatusFlowId ?? cms.CMSMasterStatusId;
-                            cms.Sequence = modelItem.Sequence ?? cms.Sequence;
-                            cms.CMSMasterURLKey = modelItem.URLKey != default(string) ? modelItem.URLKey : cms.CMSMasterURLKey;
-                            cms.Visibility = modelItem.Visibility ?? cms.Visibility;
-                            cms.UpdateBy = modelItem.CreateBy ?? cms.UpdateBy;
-                            cms.UpdateDate = DateTime.Now;
+                            //cms.CMSMasterStatusId = modelItem.CMSStatusFlowId ?? cms.CMSMasterStatusId;
+                            //cms.Sequence = modelItem.Sequence ?? cms.Sequence;
+                            //cms.CMSMasterURLKey = modelItem.URLKey != default(string) ? modelItem.URLKey : cms.CMSMasterURLKey;
+                            //cms.Visibility = modelItem.Visibility ?? cms.Visibility;
+                            //cms.UpdateBy = modelItem.CreateBy ?? cms.UpdateBy;
+                            //cms.UpdateDate = DateTime.Now;
                             cms.UpdateIP = modelItem.CreateIP != default(string) ? modelItem.CreateIP : cms.UpdateIP;
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -464,14 +464,14 @@ namespace Colsp.Api.CMSFunction
                         var cms = db.CMSGroups.Where(c => c.CMSGroupId == Model.CMSGroupId).FirstOrDefault();
                         if (cms != null)
                         {
-                            cms.CMSGroupNameEN = Model.CMSGroupNameEN;
-                            cms.CMSGroupNameTH = Model.CMSGroupNameTH;
-                            cms.Status = Model.Status;
-                            cms.Sequence = Model.Sequence;
-                            cms.Visibility = Model.Visibility;
-                            cms.UpdateBy = Model.CreateBy;
-                            cms.UpdateDate = DateTime.Now;
-                            cms.UpdateIP = Model.CreateIP;
+                            cms.CMSGroupNameEN  = Model.CMSGroupNameEN;
+                            cms.CMSGroupNameTH  = Model.CMSGroupNameTH;
+                            cms.Status          = Model.Status;
+                            //cms.Sequence        = Model.Sequence;
+                            cms.Visibility      = Model.Visibility;
+                            cms.UpdateBy        = Model.CreateBy;
+                            cms.UpdateOn        = DateTime.Now;
+                            cms.UpdateIP        = Model.CreateIP;
                             db.Entry(cms).State = EntityState.Modified;
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {

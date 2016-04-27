@@ -22,7 +22,7 @@ namespace Colsp.Model.Requests
         public List<CMSCategoryRequest> CategoryList { get; set; }
         public bool? Status { get; set; }
         public bool? Visibility { get; set; }
-        public int? UpdateBy { get; set; }
+        public string UpdateBy { get; set; }
         public DateTime? UpdateDate { get; set; }
         public string UpdateIP { get; set; }
     }

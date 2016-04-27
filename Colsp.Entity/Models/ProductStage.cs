@@ -95,6 +95,7 @@ namespace Colsp.Entity.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }
+        public virtual Inventory Inventory { get; set; }
         public virtual ProductStageGroup ProductStageGroup { get; set; }
         public virtual Shipping Shipping { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

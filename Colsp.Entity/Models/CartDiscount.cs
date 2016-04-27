@@ -17,7 +17,6 @@ namespace Colsp.Entity.Models
         public int CartId { get; set; }
         public string PId { get; set; }
         public string PromotionNo { get; set; }
-        public string PromotionType { get; set; }
         public string DiscountType { get; set; }
         public decimal DiscountRate { get; set; }
         public decimal DiscountAmt { get; set; }

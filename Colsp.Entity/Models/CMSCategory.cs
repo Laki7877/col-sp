@@ -20,10 +20,10 @@ namespace Colsp.Entity.Models
         public Nullable<bool> IsCampaign { get; set; }
         public string Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
-        public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateDate { get; set; }
-        public Nullable<int> UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
     }

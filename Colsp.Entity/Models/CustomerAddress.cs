@@ -33,7 +33,5 @@ namespace Colsp.Entity.Models
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
-        public bool IsShipping { get; set; }
-        public bool IsBilling { get; set; }
     }
 }

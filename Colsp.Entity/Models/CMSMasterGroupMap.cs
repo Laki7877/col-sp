@@ -18,13 +18,13 @@ namespace Colsp.Entity.Models
         public int CMSMasterId { get; set; }
         public int CMSGroupId { get; set; }
         public int ShopId { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateDate { get; set; }
-        public Nullable<int> UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public int Sequence { get; set; }
+        public string Status { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
-        public int Sequence { get; set; }
     }
 }

@@ -17,11 +17,11 @@ namespace Colsp.Entity.Models
         public int CMSMasterSchedulerMapId { get; set; }
         public Nullable<int> CMSMasterId { get; set; }
         public Nullable<int> CMSSchedulerId { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> Createdate { get; set; }
-        public Nullable<int> UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public string Status { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
     }

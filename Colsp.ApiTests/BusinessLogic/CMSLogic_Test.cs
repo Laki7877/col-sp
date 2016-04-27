@@ -21,14 +21,14 @@ namespace Colsp.ApiTests.BusinessLogic
 
             // Products
             CMSCategoryProductMapRequest product1 = new CMSCategoryProductMapRequest();
-            product1.IsActive = true;
+            product1.Status = null;
             product1.ProductBoxBadge = "Lipaholic #Lax 03";
             product1.Pid = "3";
             product1.Sequence = 1;
             product1.ShopId = 0;
 
             CMSCategoryProductMapRequest product2 = new CMSCategoryProductMapRequest();
-            product2.IsActive = true;
+            product2.Status = null;
             product2.ProductBoxBadge = "Professional Eye Palette";
             product2.Pid = "4";
             product2.Sequence = 2;
@@ -55,14 +55,14 @@ namespace Colsp.ApiTests.BusinessLogic
 
             // Products
             CMSCategoryProductMapRequest product1 = new CMSCategoryProductMapRequest();
-            product1.IsActive = true;
+            product1.Status = null;
             product1.ProductBoxBadge = "Lipaholic #Lax 03";
             product1.Pid = "3";
             product1.Sequence = 1;
             product1.ShopId = 0;
 
             CMSCategoryProductMapRequest product2 = new CMSCategoryProductMapRequest();
-            product2.IsActive = true;
+            product2.Status = null;
             product2.ProductBoxBadge = "Professional Eye Palette";
             product2.Pid = "4";
             product2.Sequence = 2;
@@ -89,7 +89,7 @@ namespace Colsp.ApiTests.BusinessLogic
 
             // Group Master
             CMSMasterGroupMapRequest master1 = new CMSMasterGroupMapRequest();
-            master1.IsActive            = true;
+            master1.Status              = "AT";
             master1.CMSGroupId          = 1;
             master1.CMSMasterGroupMapId = 1;
             master1.Sequence            = 1;

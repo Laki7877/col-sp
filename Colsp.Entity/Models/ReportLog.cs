@@ -12,9 +12,13 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class BankDetail
+    public partial class ReportLog
     {
-        public string BankNumber { get; set; }
-        public string BankName { get; set; }
+        public int ReportLogId { get; set; }
+        public Nullable<int> ShopId { get; set; }
+        public string ReportName { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string CreateBy { get; set; }
+        public string CreatedIP { get; set; }
     }
 }

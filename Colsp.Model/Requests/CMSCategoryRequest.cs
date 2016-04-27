@@ -19,10 +19,10 @@ namespace Colsp.Model
         public string CMSCategoryNameTH { get; set; }
         public bool Visibility { get; set; }
         public string Status { get; set; }
-        public int? CreateBy { get; set; }
-        public DateTime? CreateDate { get; set; }
-        public int? UpdateBy { get; set; }
-        public DateTime? UpdateDate { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public DateTime? UpdateOn { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
         public List<CMSCategoryProductMapRequest> CategoryProductList { get; set; }
@@ -32,7 +32,7 @@ namespace Colsp.Model
         public override void DefaultOnNull()
         {
             SearchText = GetValueOrDefault(SearchText, string.Empty);
-            _order = GetValueOrDefault(_order, "ShopId");
+            _order = GetValueOrDefault(_order, "CMSCategoryId");
             base.DefaultOnNull();
         }
 
@@ -46,11 +46,11 @@ namespace Colsp.Model
         public string ProductBoxBadge { get; set; }
         public int? Sequence { get; set; }
         public int? ShopId { get; set; }
-        public bool? IsActive { get; set; }
-        public int? CreateBy { get; set; }
-        public DateTime? CreateDate { get; set; }
-        public int? UpdateBy { get; set; }
-        public DateTime? UpdateDate { get; set; }
+        public string Status { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public DateTime? UpdateOn { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
         public string FeatureImgUrl { get; set; }

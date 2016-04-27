@@ -30,22 +30,19 @@ namespace Colsp.Entity.Models
         public string LongDescriptionTH { get; set; }
         public string MobileShortDescriptionEN { get; set; }
         public string MobileLongDescriptionEN { get; set; }
+        public Nullable<int> SortById { get; set; }
         public string ShortDescriptionEN { get; set; }
         public string LongDescriptionEN { get; set; }
-        public Nullable<int> Sequence { get; set; }
-        public Nullable<int> CMSMasterStatusId { get; set; }
         public string LinkToOutside { get; set; }
         public Nullable<bool> IsCampaign { get; set; }
-        public Nullable<int> CategoryId { get; set; }
-        public Nullable<int> Brand { get; set; }
         public Nullable<decimal> MinPrice { get; set; }
         public Nullable<decimal> MaxPrice { get; set; }
         public string Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
-        public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> Createdate { get; set; }
-        public Nullable<int> UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
     }

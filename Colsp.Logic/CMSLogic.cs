@@ -92,7 +92,7 @@ namespace Colsp.Logic
                     cmsCategory.Visibility          = request.Visibility;
                     cmsCategory.Status              = request.Status;
                     cmsCategory.CreateBy            = request.CreateBy;
-                    cmsCategory.CreateDate          = dateNow;
+                    cmsCategory.CreateOn            = dateNow;
                     cmsCategory.CreateIP            = request.CreateIP;
                     db.CMSCategories.Add(cmsCategory);
                     db.SaveChanges();
@@ -107,12 +107,12 @@ namespace Colsp.Logic
                             CMSCategoryProductMap cmsCategoryProduct    = new CMSCategoryProductMap();
                             cmsCategoryProduct.CMSCategoryId            = cmsCategoryId.Value;
                             cmsCategoryProduct.CMSCategoryProductMapId  = product.CMSCategoryProductMapId;
-                            cmsCategoryProduct.IsActive                 = product.IsActive;
+                            cmsCategoryProduct.Status                   = product.Status;
                             cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
                             cmsCategoryProduct.Pid                      = product.Pid;
                             cmsCategoryProduct.Sequence                 = product.Sequence;
                             cmsCategoryProduct.CreateBy                 = product.CreateBy;
-                            cmsCategoryProduct.CreateDate               = dateNow;
+                            cmsCategoryProduct.CreateOn                 = dateNow;
                             cmsCategoryProduct.CreateIP                 = product.CreateIP;
 
                             db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
@@ -154,7 +154,7 @@ namespace Colsp.Logic
                     cmsCategory.Visibility          = request.Visibility;
                     cmsCategory.Status              = request.Status;
                     cmsCategory.UpdateBy            = request.UpdateBy;
-                    cmsCategory.UpdateDate          = dateNow;
+                    cmsCategory.UpdateOn            = dateNow;
                     cmsCategory.UpdateIP            = request.UpdateIP;
 
                     // Remove Category Product
@@ -175,12 +175,12 @@ namespace Colsp.Logic
                             CMSCategoryProductMap cmsCategoryProduct    = new CMSCategoryProductMap();
                             cmsCategoryProduct.CMSCategoryId            = cmsCategory.CMSCategoryId;
                             cmsCategoryProduct.CMSCategoryProductMapId  = product.CMSCategoryProductMapId;
-                            cmsCategoryProduct.IsActive                 = product.IsActive;
+                            cmsCategoryProduct.Status                   = product.Status;
                             cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
                             cmsCategoryProduct.Pid                      = product.Pid;
                             cmsCategoryProduct.Sequence                 = product.Sequence;
                             cmsCategoryProduct.CreateBy                 = product.CreateBy;
-                            cmsCategoryProduct.CreateDate               = dateNow;
+                            cmsCategoryProduct.CreateOn                 = dateNow;
                             cmsCategoryProduct.CreateIP                 = product.CreateIP;
 
                             db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
@@ -263,7 +263,7 @@ namespace Colsp.Logic
                         CMSMaster cms               = new CMSMaster();
                         cms.CMSMasterNameEN         = request.CMSMasterNameEN;
                         cms.CMSMasterNameTH         = request.CMSMasterNameTH;
-                        cms.CMSTypeId               = request.CMSMasterTypeId;
+                        cms.CMSMasterType           = request.CMSMasterType;
                         cms.CMSMasterEffectiveDate  = request.EffectiveDate;
                         cms.CMSMasterEffectiveTime  = request.EffectiveTime;
                         cms.CMSMasterExpiryDate     = request.ExpiryDate;
@@ -277,12 +277,10 @@ namespace Colsp.Logic
                         cms.MobileShortDescriptionEN = request.MobileShortDescriptionEN;
                         cms.MobileShortDescriptionTH = request.MobileShortDescriptionTH;
                         cms.Status                  = request.Status;
-                        cms.CMSMasterStatusId       = request.CMSMasterStatusId;
-                        cms.Sequence                = request.Sequence;
                         cms.CMSMasterURLKey         = request.CMSMasterURLKey;
                         cms.Visibility              = request.Visibility;
                         cms.CreateBy                = request.CreateBy;
-                        cms.Createdate              = dateNow;
+                        cms.CreateOn                = dateNow;
                         cms.CreateIP                = request.CreateIP;
                         cms.IsCampaign              = request.ISCampaign;
                         db.CMSMasters.Add(cms);
@@ -328,16 +326,16 @@ namespace Colsp.Logic
                                 CMSMasterSchedulerMap cmsMasterScheduleMap  = new CMSMasterSchedulerMap();
                                 cmsMasterScheduleMap.CMSMasterId            = masterId;
                                 cmsMasterScheduleMap.CMSSchedulerId         = scheduleId;
-                                cmsMasterScheduleMap.IsActive               = true;
+                                cmsMasterScheduleMap.Status                 = null;
                                 db.CMSMasterSchedulerMaps.Add(cmsMasterScheduleMap);
                                 
                                 foreach (var category in schedule.CategoryList)
                                 {
                                     // Map Category Schedule
                                     CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
-                                    cmsCategorySchedulerMap.CMSSchedulerId = scheduleId;
-                                    cmsCategorySchedulerMap.CMSCategoryId = category.CMSCategoryId;
-                                    cmsCategorySchedulerMap.IsActive = true;
+                                    cmsCategorySchedulerMap.CMSSchedulerId          = scheduleId;
+                                    cmsCategorySchedulerMap.CMSCategoryId           = category.CMSCategoryId;
+                                    cmsCategorySchedulerMap.Status                  = "AT";
                                     db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
                                 }
                             }
@@ -391,12 +389,10 @@ namespace Colsp.Logic
                     cms.MobileShortDescriptionEN = request.MobileShortDescriptionEN;
                     cms.MobileShortDescriptionTH = request.MobileShortDescriptionTH;
                     cms.Status                  = request.Status;
-                    cms.CMSMasterStatusId       = request.CMSMasterStatusId;
-                    cms.Sequence                = request.Sequence;
                     cms.CMSMasterURLKey         = request.CMSMasterURLKey;
                     cms.Visibility              = request.Visibility;
                     cms.UpdateBy                = request.UpdateBy;
-                    cms.UpdateDate              = dateNow;
+                    cms.UpdateOn                = dateNow;
                     cms.UpdateIP                = request.UpdateIP;
                     cms.IsCampaign              = request.ISCampaign;
                     
@@ -412,7 +408,7 @@ namespace Colsp.Logic
                             querySchedule.Status        = schedule.Status;
                             querySchedule.Visibility    = schedule.Visibility;
                             querySchedule.UpdateBy      = schedule.UpdateBy;
-                            querySchedule.UpdateDate    = schedule.UpdateDate;
+                            querySchedule.UpdateOn      = schedule.UpdateDate;
                             querySchedule.UpdateIP      = schedule.UpdateIP;
                             
                             // Remove Category Item in CMSCategorySchedulerMaps
@@ -431,16 +427,10 @@ namespace Colsp.Logic
                                 CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
                                 cmsCategorySchedulerMap.CMSSchedulerId          = schedule.CMSSchedulerId;
                                 cmsCategorySchedulerMap.CMSCategoryId           = cate.CMSCategoryId;
-                                cmsCategorySchedulerMap.IsActive                = true;
+                                cmsCategorySchedulerMap.Status                  = cate.Status;
                                 db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
                             }
-
-                            // Update Master Schedule Map
-                            //var queryMasterScheduleMap = db.CMSMasterSchedulerMaps.Where(x => x.CMSSchedulerId == schedule.CMSSchedulerId).FirstOrDefault();
-                            //if (queryMasterScheduleMap != null)
-                            //{
-                            //    queryMasterScheduleMap.IsActive = schedule.Status;
-                            //}
+                            
                         }
                         
                     }
@@ -479,7 +469,7 @@ namespace Colsp.Logic
                     cmsGroup.Status         = request.Status;
                     cmsGroup.Visibility     = request.Visibility;
                     cmsGroup.CreateBy       = request.CreateBy;
-                    cmsGroup.CreateDate     = dateNow;
+                    cmsGroup.CreateOn       = dateNow;
                     cmsGroup.CreateIP       = request.CreateIP;
                     db.CMSGroups.Add(cmsGroup);
                     db.SaveChanges();
@@ -493,9 +483,9 @@ namespace Colsp.Logic
                         cmsMasterGroup.CMSGroupId   = cmsGroupId;
                         cmsMasterGroup.Sequence     = master.Sequence.Value;
                         cmsMasterGroup.CreateBy     = master.CreateBy;
-                        cmsMasterGroup.CreateDate   = dateNow;
+                        cmsMasterGroup.CreateOn     = dateNow;
                         cmsMasterGroup.CreateIP     = master.CreateIP;
-                        cmsMasterGroup.IsActive     = master.IsActive;
+                        cmsMasterGroup.Status       = master.Status;
                         db.CMSMasterGroupMaps.Add(cmsMasterGroup);
                     }
 
@@ -534,7 +524,7 @@ namespace Colsp.Logic
                     cmsGroup.Status         = request.Status;
                     cmsGroup.Visibility     = request.Visibility;
                     cmsGroup.UpdateBy       = request.UpdateBy;
-                    cmsGroup.UpdateDate     = dateNow;
+                    cmsGroup.UpdateOn       = dateNow;
                     cmsGroup.UpdateIP       = request.UpdateIP;
 
                     // Remove Master Group
@@ -555,10 +545,10 @@ namespace Colsp.Logic
                             cmsMasterGroup.CMSGroupId           = cmsGroup.CMSGroupId;
                             cmsMasterGroup.CMSMasterGroupMapId  = master.CMSMasterGroupMapId;
                             cmsMasterGroup.CMSMasterId          = master.CMSMasterId.Value;
-                            cmsMasterGroup.IsActive             = master.IsActive;
+                            cmsMasterGroup.Status               = master.Status;
                             cmsMasterGroup.Sequence             = master.Sequence.Value;
                             cmsMasterGroup.CreateBy             = master.CreateBy;
-                            cmsMasterGroup.CreateDate           = dateNow;
+                            cmsMasterGroup.CreateOn             = dateNow;
                             cmsMasterGroup.CreateIP             = master.CreateIP;
 
                             db.CMSMasterGroupMaps.Add(cmsMasterGroup);
@@ -604,6 +594,34 @@ namespace Colsp.Logic
 
             return success;
         }
+
+        public bool DeleteCMSMaster(List<CMSMasterRequest> request)
+        {
+            bool success = false;
+
+            try
+            {
+                using (ColspEntities db = new ColspEntities())
+                {
+                    foreach (var cmsMaster in request)
+                    {
+                        var query = db.CMSMasters.Where(x => x.CMSMasterId == cmsMaster.CMSMasterId);
+                        if (query.Any())
+                            query.First().Status = "RM";
+                    }
+
+                    db.SaveChanges();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /Logic/DeleteCMSMaster");
+            }
+
+            return success;
+        }
+
         #endregion
     }
 }

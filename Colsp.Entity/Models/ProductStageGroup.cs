@@ -49,6 +49,7 @@ namespace Colsp.Entity.Models
         public string VariantTabStatus { get; set; }
         public string MoreOptionTabStatus { get; set; }
         public string RejectReason { get; set; }
+        public bool Visibility { get; set; }
         public string Status { get; set; }
         public string ApprovedBy { get; set; }
         public Nullable<System.DateTime> ApprovedDt { get; set; }
