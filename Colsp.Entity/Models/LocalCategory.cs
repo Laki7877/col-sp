@@ -37,6 +37,8 @@ namespace Colsp.Entity.Models
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
+        public string DescriptionMobileTh { get; set; }
+        public string DescriptionMobileEn { get; set; }
         public bool FeatureProductStatus { get; set; }
         public bool BannerStatus { get; set; }
         public bool BannerSmallStatus { get; set; }

@@ -125,45 +125,70 @@ namespace Colsp.Api.Controllers
             try
             {
                 int shopId = User.ShopRequest().ShopId;
-                var cat = (from category in db.LocalCategories
-                                 where category.CategoryId == categoryId && category.ShopId == shopId
+                var localCat = (from cat in db.LocalCategories
+                                 where cat.CategoryId == categoryId && cat.ShopId == shopId
                                  select new
                                  {
-                                     category.CategoryId,
-                                     category.NameEn,
-                                     category.NameTh,
-                                     CategoryBannerEn = category.LocalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).OrderBy(o => o.Position).Select(si => new {
-                                         url = si.ImageUrl,
-                                         position = si.Position
+                                     cat.CategoryId,
+                                     cat.NameEn,
+                                     cat.NameTh,
+                                     CategoryBannerEn = cat.LocalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).OrderBy(o => o.Position).Select(si => new {
+                                         ImageId = si.CategoryImageId,
+                                         Url = si.ImageUrl,
+                                         Position = si.Position,
+                                         Link = si.Link
                                      }),
-                                     CategoryBannerTh = category.LocalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).OrderBy(o => o.Position).Select(si => new {
-                                         url = si.ImageUrl,
-                                         position = si.Position
+                                     CategoryBannerTh = cat.LocalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).OrderBy(o => o.Position).Select(si => new {
+                                         ImageId = si.CategoryImageId,
+                                         Url = si.ImageUrl,
+                                         Position = si.Position,
+                                         Link = si.Link
                                      }),
-                                     FeatureProducts = category.LocalCatFeatureProducts
+                                     CategorySmallBannerEn = cat.LocalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.SMALL.Equals(w.Type)).OrderBy(o => o.Position).Select(si => new {
+                                         ImageId = si.CategoryImageId,
+                                         Url = si.ImageUrl,
+                                         Position = si.Position,
+                                         Link = si.Link
+                                     }),
+                                     CategorySmallBannerTh = cat.LocalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh) && Constant.SMALL.Equals(w.Type)).OrderBy(o => o.Position).Select(si => new {
+                                         ImageId = si.CategoryImageId,
+                                         Url = si.ImageUrl,
+                                         Position = si.Position,
+                                         Link = si.Link
+                                     }),
+                                     FeatureProducts = cat.LocalCatFeatureProducts
                                         .Select(s => new
                                         {
                                             s.ProductId,
                                             s.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault().Pid,
                                             s.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault().ProductNameEn
                                         }),
-                                     category.DescriptionFullEn,
-                                     category.DescriptionFullTh,
-                                     category.DescriptionShortEn,
-                                     category.DescriptionShortTh,
-                                     category.FeatureTitle,
-                                     category.TitleShowcase,
-                                     category.UrlKey,
-                                     category.Visibility,
-                                     category.Status,
-                                     category.Lft,
-                                     category.Rgt
+                                     cat.DescriptionFullEn,
+                                     cat.DescriptionFullTh,
+                                     cat.DescriptionShortEn,
+                                     cat.DescriptionShortTh,
+                                     cat.DescriptionMobileEn,
+                                     cat.DescriptionMobileTh,
+                                     cat.FeatureTitle,
+                                     cat.TitleShowcase,
+                                     cat.FeatureProductStatus,
+                                     cat.BannerSmallStatus,
+                                     cat.BannerStatus,
+                                     //cat.CategoryAbbreviation,
+                                     cat.Lft,
+                                     cat.Rgt,
+                                     cat.UrlKey,
+                                     cat.Visibility,
+                                     cat.Status,
+                                     UpdatedDt = cat.UpdateOn,
+                                     CreatedDt = cat.CreateOn,
+                                     
                                  }).SingleOrDefault();
-                if(cat == null)
+                if(localCat == null)
                 {
                     throw new Exception(HttpErrorMessage.NotFound);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, cat);
+                return Request.CreateResponse(HttpStatusCode.OK, localCat);
             }
             catch
             {
@@ -188,52 +213,9 @@ namespace Colsp.Api.Controllers
                 }
                 category = new LocalCategory();
                 category.ShopId = shopId;
-                SetupCategory(category, request);
-
-                #region Banner Image En
-                if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
-                {
-                    int position = 0;
-                    foreach (ImageRequest img in request.CategoryBannerEn)
-                    {
-                        category.LocalCatImages.Add(new LocalCatImage()
-                        {
-                            ImageUrl = img.Url,
-                            ShopId = shopId,
-                            Position = position++,
-                            EnTh = Constant.LANG_EN,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now
-                        });
-                    }
-                }
-                #endregion
-                #region Banner Image Th
-                if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
-                {
-                    int position = 0;
-                    foreach (ImageRequest img in request.CategoryBannerTh)
-                    {
-                        category.LocalCatImages.Add(new LocalCatImage()
-                        {
-                            ImageUrl = img.Url,
-                            ShopId = shopId,
-                            Position = position++,
-                            EnTh = Constant.LANG_TH,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now
-                        });
-                    }
-                }
-                #endregion
-
-                category.Visibility = request.Visibility;
-                category.Status = Constant.STATUS_ACTIVE;
-                category.CreateBy = User.UserRequest().Email;
-                category.CreateOn = DateTime.Now;
-                category.UpdateBy = User.UserRequest().Email;
-                category.UpdateOn = DateTime.Now;
-                
+                string email = User.UserRequest().Email;
+                DateTime currentDt = DateTime.Now;
+                SetupCategory(category, request, email, currentDt,true);
                 int max = db.LocalCategories.Where(w=>w.ShopId==shopId).Select(s=>s.Rgt).DefaultIfEmpty(0).Max();
                 if (max == 0)
                 {
@@ -261,11 +243,6 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                if (category != null && category.CategoryId != 0)
-                {
-                    db.LocalCategories.Remove(category);
-                    Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
-                }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
         }
@@ -287,7 +264,8 @@ namespace Colsp.Api.Controllers
                 }
                 var email = User.UserRequest().Email;
                 var currentDt = DateTime.Now;
-                SetupCategory(category, request);
+                SetupCategory(category, request, email, currentDt, false);
+                #region Url Key
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
                     category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
@@ -295,101 +273,6 @@ namespace Colsp.Api.Controllers
                 else
                 {
                     category.UrlKey = request.UrlKey.Replace(" ", "-");
-                }
-                #region Banner Image En
-                var imageOldEn = category.LocalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh)).ToList();
-                if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
-                {
-                    int position = 0;
-                    foreach (ImageRequest img in request.CategoryBannerEn)
-                    {
-                        bool isNew = false;
-                        if (imageOldEn == null || imageOldEn.Count == 0)
-                        {
-                            isNew = true;
-                        }
-                        if (!isNew)
-                        {
-                            var current = imageOldEn.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
-                            if (current != null)
-                            {
-                                current.ImageUrl = img.Url;
-                                current.Position = position++;
-                                current.UpdateBy = email;
-                                current.UpdateOn = currentDt;
-                                imageOldEn.Remove(current);
-                            }
-                            else
-                            {
-                                isNew = true;
-                            }
-                        }
-                        if (isNew)
-                        {
-                            category.LocalCatImages.Add(new LocalCatImage()
-                            {
-                                ImageUrl = img.Url,
-                                Position = position++,
-                                EnTh = Constant.LANG_EN,
-                                CreateBy = email,
-                                CreateOn = currentDt,
-                                UpdateBy = email,
-                                UpdateOn = currentDt
-                            });
-                        }
-                    }
-                }
-                if (imageOldEn != null && imageOldEn.Count > 0)
-                {
-                    db.LocalCatImages.RemoveRange(imageOldEn);
-                }
-                #endregion
-                #region Banner Image Th
-                var imageOldTh = category.LocalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh)).ToList();
-                if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
-                {
-                    int position = 0;
-                    foreach (ImageRequest img in request.CategoryBannerTh)
-                    {
-                        bool isNew = false;
-                        if (imageOldTh == null || imageOldTh.Count == 0)
-                        {
-                            isNew = true;
-                        }
-                        if (!isNew)
-                        {
-                            var current = imageOldTh.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
-                            if (current != null)
-                            {
-                                current.ImageUrl = img.Url;
-                                current.Position = position++;
-                                current.UpdateBy = email;
-                                current.UpdateOn = currentDt;
-                                imageOldTh.Remove(current);
-                            }
-                            else
-                            {
-                                isNew = true;
-                            }
-                        }
-                        if (isNew)
-                        {
-                            category.LocalCatImages.Add(new LocalCatImage()
-                            {
-                                ImageUrl = img.Url,
-                                Position = position++,
-                                EnTh = Constant.LANG_TH,
-                                CreateBy = email,
-                                CreateOn = currentDt,
-                                UpdateBy = email,
-                                UpdateOn = currentDt
-                            });
-                        }
-                    }
-                }
-                if (imageOldTh != null && imageOldTh.Count > 0)
-                {
-                    db.LocalCatImages.RemoveRange(imageOldTh);
                 }
                 #endregion
                 #region Local Category Feature Product
@@ -444,8 +327,6 @@ namespace Colsp.Api.Controllers
                     db.LocalCatFeatureProducts.RemoveRange(pidList);
                 }
                 #endregion
-                category.UpdateBy = email;
-                category.UpdateOn = currentDt;
                 Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return GetLocalCategory(category.CategoryId); ;
             }
@@ -598,7 +479,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
         [Route("api/LocalCategoryImages")]
         [HttpPost]
         public async Task<HttpResponseMessage> UploadFile()
@@ -614,7 +494,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupCategory(LocalCategory category, CategoryRequest request)
+        private void SetupCategory(LocalCategory category, CategoryRequest request, string email, DateTime currentDt, bool isNewAdd)
         {
             category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true);
             category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
@@ -623,10 +503,229 @@ namespace Colsp.Api.Controllers
             category.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Category Description (Thai)", false, int.MaxValue, false, string.Empty);
             category.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Category Short Description (English)", false, 500, false, string.Empty);
             category.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Category Short Description (Thai)", false, 500, false, string.Empty);
+            category.DescriptionMobileEn = Validation.ValidateString(request.DescriptionMobileEn, "Category Mobile Description (English)", false, int.MaxValue, false, string.Empty);
+            category.DescriptionMobileTh = Validation.ValidateString(request.DescriptionMobileTh, "Category Mobile Description (Thai)", false, int.MaxValue, false, string.Empty);
+            category.BannerSmallStatus = request.BannerSmallStatus;
+            category.BannerStatus = request.BannerStatus;
+            category.FeatureProductStatus = request.FeatureProductStatus;
             category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
             category.Visibility = request.Visibility;
             category.Status = Constant.STATUS_ACTIVE;
+            #region Banner Image En
+            var imageOldEn = category.LocalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).ToList();
+            if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
+            {
+                int position = 0;
+                foreach (ImageRequest img in request.CategoryBannerEn)
+                {
+                    bool isNew = false;
+                    if (imageOldEn == null || imageOldEn.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = imageOldEn.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
+                        if (current != null)
+                        {
+                            current.ImageUrl = img.Url;
+                            current.Link = img.Link;
+                            current.Position = position++;
+                            current.UpdateBy = User.UserRequest().Email;
+                            current.UpdateOn = DateTime.Now;
+                            imageOldEn.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        category.LocalCatImages.Add(new LocalCatImage()
+                        {
+                            ImageUrl = img.Url,
+                            Link = img.Link,
+                            Position = position++,
+                            EnTh = Constant.LANG_EN,
+                            Type = Constant.MEDIUM,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt
+                        });
+                    }
+                }
+            }
+            if (imageOldEn != null && imageOldEn.Count > 0)
+            {
+                db.LocalCatImages.RemoveRange(imageOldEn);
+            }
+            #endregion
+            #region Banner Image Th
+            var imageOldTh = category.LocalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).ToList();
+            if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
+            {
+                int position = 0;
+                foreach (ImageRequest img in request.CategoryBannerTh)
+                {
+                    bool isNew = false;
+                    if (imageOldTh == null || imageOldTh.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = imageOldTh.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
+                        if (current != null)
+                        {
+                            current.ImageUrl = img.Url;
+                            current.Link = img.Link;
+                            current.Position = position++;
+                            current.UpdateBy = User.UserRequest().Email;
+                            current.UpdateOn = DateTime.Now;
+                            imageOldTh.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        category.LocalCatImages.Add(new LocalCatImage()
+                        {
+                            ImageUrl = img.Url,
+                            Link = img.Link,
+                            Position = position++,
+                            EnTh = Constant.LANG_EN,
+                            Type = Constant.MEDIUM,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt
+                        });
+                    }
+                }
+            }
+            if (imageOldTh != null && imageOldTh.Count > 0)
+            {
+                db.LocalCatImages.RemoveRange(imageOldTh);
+            }
+            #endregion
+            #region Banner Image Small En
+            var imageOldSmallEn = category.LocalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.SMALL.Equals(w.Type)).ToList();
+            if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
+            {
+                int position = 0;
+                foreach (ImageRequest img in request.CategoryBannerEn)
+                {
+                    bool isNew = false;
+                    if (imageOldSmallEn == null || imageOldSmallEn.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = imageOldSmallEn.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
+                        if (current != null)
+                        {
+                            current.ImageUrl = img.Url;
+                            current.Link = img.Link;
+                            current.Position = position++;
+                            current.UpdateBy = User.UserRequest().Email;
+                            current.UpdateOn = DateTime.Now;
+                            imageOldEn.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        category.LocalCatImages.Add(new LocalCatImage()
+                        {
+                            ImageUrl = img.Url,
+                            Link = img.Link,
+                            Position = position++,
+                            EnTh = Constant.LANG_EN,
+                            Type = Constant.MEDIUM,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt
+                        });
+                    }
+                }
+            }
+            if (imageOldSmallEn != null && imageOldSmallEn.Count > 0)
+            {
+                db.LocalCatImages.RemoveRange(imageOldSmallEn);
+            }
+            #endregion
+            #region Banner Image Th
+            var imageOldSmallTh = category.LocalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh) && Constant.SMALL.Equals(w.Type)).ToList();
+            if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
+            {
+                int position = 0;
+                foreach (ImageRequest img in request.CategoryBannerTh)
+                {
+                    bool isNew = false;
+                    if (imageOldSmallTh == null || imageOldSmallTh.Count == 0)
+                    {
+                        isNew = true;
+                    }
+                    if (!isNew)
+                    {
+                        var current = imageOldSmallTh.Where(w => w.CategoryImageId == img.ImageId).SingleOrDefault();
+                        if (current != null)
+                        {
+                            current.ImageUrl = img.Url;
+                            current.Link = img.Link;
+                            current.Position = position++;
+                            current.UpdateBy = User.UserRequest().Email;
+                            current.UpdateOn = DateTime.Now;
+                            imageOldSmallTh.Remove(current);
+                        }
+                        else
+                        {
+                            isNew = true;
+                        }
+                    }
+                    if (isNew)
+                    {
+                        category.LocalCatImages.Add(new LocalCatImage()
+                        {
+                            ImageUrl = img.Url,
+                            Link = img.Link,
+                            Position = position++,
+                            EnTh = Constant.LANG_EN,
+                            Type = Constant.MEDIUM,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt
+                        });
+                    }
+                }
+            }
+            if (imageOldSmallTh != null && imageOldSmallTh.Count > 0)
+            {
+                db.LocalCatImages.RemoveRange(imageOldSmallTh);
+            }
+            #endregion
+            #region Create update
+            if (isNewAdd)
+            {
+                category.CreateBy = email;
+                category.CreateOn = currentDt;
+            }
+            category.UpdateBy = email;
+            category.UpdateOn = currentDt;
+            #endregion
+
         }
 
         protected override void Dispose(bool disposing)

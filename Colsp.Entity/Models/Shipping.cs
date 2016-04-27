@@ -17,7 +17,7 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Shipping()
         {
-            this.ProductStages = new HashSet<ProductStage>();
+            this.ProductStageGroups = new HashSet<ProductStageGroup>();
         }
     
         public int ShippingId { get; set; }
@@ -31,6 +31,6 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStage> ProductStages { get; set; }
+        public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
     }
 }

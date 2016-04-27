@@ -29,13 +29,14 @@ namespace Colsp.Entity.Models
         public string Pid { get; set; }
         public long ProductId { get; set; }
         public int ShopId { get; set; }
-        public int ShippingId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public string ProdTDNameTh { get; set; }
         public string ProdTDNameEn { get; set; }
         public string JDADept { get; set; }
         public string JDASubDept { get; set; }
+        public string SaleUnitTh { get; set; }
+        public string SaleUnitEn { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
         public decimal OriginalPrice { get; set; }
@@ -64,8 +65,6 @@ namespace Colsp.Entity.Models
         public string KillerPoint2Th { get; set; }
         public string KillerPoint3Th { get; set; }
         public string Installment { get; set; }
-        public int TheOneCardEarn { get; set; }
-        public string GiftWrap { get; set; }
         public decimal Length { get; set; }
         public decimal Height { get; set; }
         public decimal Width { get; set; }
@@ -112,7 +111,6 @@ namespace Colsp.Entity.Models
         public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }
         public virtual Inventory Inventory { get; set; }
         public virtual ProductStageGroup ProductStageGroup { get; set; }
-        public virtual Shipping Shipping { get; set; }
         public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }

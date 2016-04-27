@@ -234,9 +234,22 @@ namespace Colsp.Api.Controllers
                                         s.Attribute.AttributeNameEn,
                                         Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault()
                                               :s.ValueEn,
-                                    })
+                                    }),
+                                    Brand = stage.ProductStageGroup.Brand == null ? null : new
+                                    {
+                                        stage.ProductStageGroup.Brand.BrandId,
+                                        stage.ProductStageGroup.Brand.BrandNameEn
+                                    }
                                 });
                 request.DefaultOnNull();
+                if (User.BrandRequest() != null)
+                {
+                    var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
+                    if (brands != null && brands.Count > 0)
+                    {
+                        invenentory = invenentory.Where(w => brands.Contains(w.Brand.BrandId));
+                    }
+                }
                 if (!string.IsNullOrWhiteSpace(request.SearchText))
                 {
                     invenentory = invenentory.Where(w => w.Pid.Contains(request.SearchText)
@@ -278,8 +291,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
-                var inv = db.Inventories.Find(pid);
+                var inv = db.Inventories.Where(w=> w.Pid.Equals(pid) && !w.ProductStage.Shop.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
                 if(inv == null)
                 {
                     throw new Exception("Cannot find inventory");

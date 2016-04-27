@@ -9,6 +9,7 @@
         public int ImageId;
         //public string EnTh { get; set; }
         public decimal SlideDuration { get; set; }
+        public string Link { get; set; }
 
         public ImageRequest()
         {
@@ -18,6 +19,7 @@
             //ImageName = string.Empty;
             ImageId = 0;
             SlideDuration = 0;
+            Link = string.Empty;
             //EnTh = string.Empty;
         }
     }

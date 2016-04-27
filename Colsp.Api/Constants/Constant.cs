@@ -34,8 +34,9 @@ namespace Colsp.Api.Constants
         };
         public static string START_PID = "1111110";
 
-        public static int SHOP_OWNER_GROUP_ID = 2;
+        public static readonly int SHOP_OWNER_GROUP_ID = 2;
         public static readonly Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() { { "Stock", 1 }, { "Pre-Order", 2 } };
+        public static readonly string DEFAULT_STOCK_TYPE = "Stock";
 
         public static readonly int MAX_LOCAL_CATEGORY = 8;
 
@@ -91,6 +92,10 @@ namespace Colsp.Api.Constants
 
         public static readonly string LANG_EN = "EN";
         public static readonly string LANG_TH = "TH";
+
+        public static readonly string SMALL = "SM";
+        public static readonly string MEDIUM = "MD";
+        public static readonly string LARGE = "LG";
 
         public static readonly string DIMENSTION_MM = "MM";
         public static readonly string DIMENSTION_CM = "CM";

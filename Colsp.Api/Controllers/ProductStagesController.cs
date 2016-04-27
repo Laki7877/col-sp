@@ -172,8 +172,8 @@ namespace Colsp.Api.Controllers
                     Remark = string.Empty,
                     Status = Constant.PRODUCT_STATUS_DRAFT,
                     ShopId = shopId,
-                    SaleUnitEn = string.Empty,
-                    SaleUnitTh = string.Empty,
+                    //SaleUnitEn = string.Empty,
+                    //SaleUnitTh = string.Empty,
                     CreateBy = email,
                     CreateOn = DateTime.Now,
                     UpdateBy = email,
@@ -190,7 +190,7 @@ namespace Colsp.Api.Controllers
                     IsMaster = false,
                     IsVariant = false,
                     DefaultVaraint = false,
-                    ShippingId = Constant.SHIPPING_FULFILLMENT,
+                    //ShippingId = Constant.SHIPPING_FULFILLMENT,
                     DescriptionFullEn = string.Empty,
                     DescriptionFullTh = string.Empty,
                     DescriptionShortEn = string.Empty,
@@ -203,7 +203,7 @@ namespace Colsp.Api.Controllers
                     WeightUnit = Constant.WEIGHT_MEASURE_G,
                     Display = Constant.VARIANT_DISPLAY_GROUP,
                     FeatureImgUrl = string.Empty,
-                    GiftWrap = Constant.STATUS_NO,
+                    //GiftWrap = Constant.STATUS_NO,
                     Installment = Constant.STATUS_NO,
                     KillerPoint1En = string.Empty,
                     KillerPoint1Th = string.Empty,
@@ -232,7 +232,7 @@ namespace Colsp.Api.Controllers
                     PrepareSat = 0,
                     PrepareSun = 0,
                     PurchasePrice = 0,
-                    TheOneCardEarn = 0,
+                    //TheOneCardEarn = 0,
                     Visibility = true,
                     VariantCount = request.Variants.Count,
                     Upc = string.Empty,
@@ -279,7 +279,7 @@ namespace Colsp.Api.Controllers
                         IsMaster = false,
                         IsVariant = true,
                         DefaultVaraint = variantRq.DefaultVariant,
-                        ShippingId = Constant.SHIPPING_FULFILLMENT,
+                        //ShippingId = Constant.SHIPPING_FULFILLMENT,
                         DescriptionFullEn = string.Empty,
                         DescriptionFullTh = string.Empty,
                         DescriptionShortEn = string.Empty,
@@ -292,7 +292,7 @@ namespace Colsp.Api.Controllers
                         WeightUnit = Constant.WEIGHT_MEASURE_G,
                         Display = Constant.VARIANT_DISPLAY_GROUP,
                         FeatureImgUrl = string.Empty,
-                        GiftWrap = Constant.STATUS_NO,
+                        //GiftWrap = Constant.STATUS_NO,
                         Installment = Constant.STATUS_NO,
                         KillerPoint1En = string.Empty,
                         KillerPoint1Th = string.Empty,
@@ -321,7 +321,7 @@ namespace Colsp.Api.Controllers
                         PrepareSat = 0,
                         PrepareSun = 0,
                         PurchasePrice = 0,
-                        TheOneCardEarn = 0,
+                        //TheOneCardEarn = 0,
                         Visibility = true,
                         VariantCount = 0,
                         Upc = string.Empty,
@@ -814,10 +814,13 @@ namespace Colsp.Api.Controllers
                 {
                     int shopId = User.ShopRequest().ShopId;
                     products = products.Where(w => w.ShopId == shopId);
-                    var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
-                    if (brands != null && brands.Count > 0)
+                    if (User.BrandRequest() != null)
                     {
-                        products = products.Where(w => brands.Contains(w.Brand.BrandId));
+                        var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
+                        if (brands != null && brands.Count > 0)
+                        {
+                            products = products.Where(w => brands.Contains(w.Brand.BrandId));
+                        }
                     }
                 }
                 if (request == null)
@@ -927,10 +930,13 @@ namespace Colsp.Api.Controllers
                     //add shopid criteria for seller request
                     int shopId = User.ShopRequest().ShopId;
                     products = products.Where(w => w.Shop.ShopId == shopId);
-                    var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
-                    if (brands != null && brands.Count > 0)
+                    if (User.BrandRequest() != null)
                     {
-                        products = products.Where(w => brands.Contains(w.Brand.BrandId));
+                        var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
+                        if (brands != null && brands.Count > 0)
+                        {
+                            products = products.Where(w => brands.Contains(w.Brand.BrandId));
+                        }
                     }
                 }
                 //set request default value
@@ -1134,10 +1140,13 @@ namespace Colsp.Api.Controllers
                 {
                     int shopId = User.ShopRequest().ShopId;
                     products = products.Where(w => w.ShopId == shopId);
-                    var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
-                    if(brands != null && brands.Count > 0)
+                    if(User.BrandRequest() != null)
                     {
-                        products = products.Where(w => brands.Contains(w.Brand.BrandId));
+                        var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
+                        if (brands != null && brands.Count > 0)
+                        {
+                            products = products.Where(w => brands.Contains(w.Brand.BrandId));
+                        }
                     }
                 }
                 request.DefaultOnNull();
@@ -1276,15 +1285,16 @@ namespace Colsp.Api.Controllers
                 var shippingList = db.Shippings.ToList();
                 #endregion
                 string email = User.UserRequest().Email;
+                DateTime currentDt = DateTime.Now;
                 bool adminPermission = User.HasPermission("Approve Products");
                 bool sellerPermission = User.HasPermission("Add Product");
                 #region Setup Group
-                SetupGroup(group, request,false,email, adminPermission, sellerPermission, db);
+                SetupGroup(group, request,false,email, currentDt, adminPermission, sellerPermission, db, shippingList);
                 #endregion
                 #region Master Variant
                 var masterVariant = group.ProductStages.Where(w=>w.IsVariant==false).FirstOrDefault();
                 request.MasterVariant.Status = group.Status;
-                SetupVariant(masterVariant, request.MasterVariant, false, email, adminPermission, sellerPermission, db, shippingList);
+                SetupVariant(masterVariant, request.MasterVariant, false, email, currentDt, adminPermission, sellerPermission, db);
                 masterVariant.Visibility = request.Visibility;
                 SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
                 #endregion
@@ -1319,13 +1329,13 @@ namespace Colsp.Api.Controllers
                             variant.ShopId = masterVariant.ShopId;
                             variant.IsVariant = true;
                             variant.CreateBy = email;
-                            variant.CreateOn = DateTime.Now;
+                            variant.CreateOn = currentDt;
                             variant.UpdateBy = email;
-                            variant.UpdateOn = DateTime.Now;
+                            variant.UpdateOn = currentDt;
                             group.ProductStages.Add(variant);
                         }
                         variantRq.Status = group.Status;
-                        SetupVariant(variant, variantRq, false, email, adminPermission, sellerPermission, db, shippingList);
+                        SetupVariant(variant, variantRq, false, email, currentDt, adminPermission, sellerPermission, db);
                         SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
                     }
                     masterVariant.VariantCount = group.ProductStages.Where(w => w.IsVariant == true && w.Visibility == true).ToList().Count;
@@ -1624,6 +1634,29 @@ namespace Colsp.Api.Controllers
             }
         }
 
+        [Route("api/ProductStages/IgnoreApprove")]
+        [HttpGet]
+        public HttpResponseMessage GetIgnoreApprove()
+        {
+            var ignoreList = new List<string>()
+            {
+                "MinimumAllowedInCart",
+                "MaximumAllowedInCart",
+                "SalePrice",
+                "Quantity",
+                "PromotionPrice",
+                "PromotionEffectiveDate",
+                "PromotionExpireDate",
+                "UnitPrice",
+                "PurchasePrice",
+                "SaleUnitTh",
+                "SaleUnitEn",
+                "SafetyStock",
+
+            };
+            return Request.CreateResponse(HttpStatusCode.OK, ignoreList);
+        }
+
         private ProductStageGroup SetupProduct(ColspEntities db, ProductStageRequest request, int shopId)
         {
             bool adminPermission = User.HasPermission("Approve product");
@@ -1632,17 +1665,18 @@ namespace Colsp.Api.Controllers
             var attributeList = db.Attributes.Include(i => i.AttributeValueMaps).ToList();
             var shippingList = db.Shippings.ToList();
             string email = User.UserRequest().Email;
+            DateTime currentDt = DateTime.Now;
             #region Setup Group
             group = new ProductStageGroup();
             group.ShopId = shopId;
-            SetupGroup(group, request, true, email, adminPermission, sellerPermission, db);
+            SetupGroup(group, request, true, email, currentDt, adminPermission, sellerPermission, db, shippingList);
             #endregion
             #region Master Variant
             var masterVariant = new ProductStage();
             request.MasterVariant.Status = group.Status;
             masterVariant.ShopId = shopId;
             masterVariant.IsVariant = false;
-            SetupVariant(masterVariant, request.MasterVariant, true, email, adminPermission, sellerPermission, db, shippingList);
+            SetupVariant(masterVariant, request.MasterVariant, true, email, currentDt, adminPermission, sellerPermission, db);
             SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, db);
             masterVariant.Visibility = true;
             group.ProductStages.Add(masterVariant);
@@ -1656,7 +1690,7 @@ namespace Colsp.Api.Controllers
                     variant.ShopId = shopId;
                     variant.IsVariant = true;
                     variant.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
-                    SetupVariant(variant, variantRq, true, email, adminPermission, sellerPermission, db, shippingList);
+                    SetupVariant(variant, variantRq, true, email, currentDt, adminPermission, sellerPermission, db);
                     SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
                     group.ProductStages.Add(variant);
                 }
@@ -1797,8 +1831,6 @@ namespace Colsp.Api.Controllers
             var masterVariant = group.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault();
             SetupVariantResponse(masterVariant, response.MasterVariant);
             SetupAttributeResponse(masterVariant, response.MasterAttribute);
-            response.GiftWrap = masterVariant.GiftWrap;
-            response.TheOneCardEarn = masterVariant.TheOneCardEarn;
             response.Visibility = masterVariant.Visibility;
             var variants = group.ProductStages.Where(w => w.IsVariant == true).ToList();
             foreach (var variant in variants)
@@ -1823,17 +1855,17 @@ namespace Colsp.Api.Controllers
                 {
                     response.Revisions.Add(new ProductHistoryRequest()
                     {
-                        ApprovedDt = history.ApprovedDt,
+                        ApproveOn = history.ApproveOn,
                         HistoryId = history.HistoryId,
-                        SubmittedBy = history.SubmittedBy,
-                        SubmittedDt = history.SubmittedDt
+                        SubmitBy = history.SubmitBy,
+                        SubmitOn = history.SubmitOn
                     });
                 }
             }
             
         }
 
-        private void SetupGroup(ProductStageGroup group, ProductStageRequest request,bool addNew,string email,bool adminPermission,bool sellerPermission, ColspEntities db)
+        private void SetupGroup(ProductStageGroup group, ProductStageRequest request,bool addNew,string email, DateTime currentDt, bool adminPermission,bool sellerPermission, ColspEntities db, List<Shipping> shippingList)
         {
             #region Status
             if (adminPermission)
@@ -1874,6 +1906,7 @@ namespace Colsp.Api.Controllers
             {
                 group.BrandId = request.Brand.BrandId;
             }
+            //only draft product can have null brand
             if (!Constant.PRODUCT_STATUS_DRAFT.Equals(request.Status)
                 && (group.BrandId == null || group.BrandId == 0))
             {
@@ -1915,9 +1948,9 @@ namespace Colsp.Api.Controllers
                         {
                             CategoryId = category.CategoryId,
                             CreateBy = email,
-                            CreateOn = DateTime.Now,
+                            CreateOn = currentDt,
                             UpdateBy = email,
-                            UpdateOn = DateTime.Now,
+                            UpdateOn = currentDt,
                         });
                     }
                 }
@@ -1956,9 +1989,9 @@ namespace Colsp.Api.Controllers
                         {
                             CategoryId = category.CategoryId,
                             CreateBy = email,
-                            CreateOn = DateTime.Now,
+                            CreateOn = currentDt,
                             UpdateBy = email,
-                            UpdateOn = DateTime.Now,
+                            UpdateOn = currentDt,
                         });
                     }
                 }
@@ -1998,9 +2031,9 @@ namespace Colsp.Api.Controllers
                         {
                             Tag = tag,
                             CreateBy = email,
-                            CreateOn = DateTime.Now,
+                            CreateOn = currentDt,
                             UpdateBy = email,
-                            UpdateOn = DateTime.Now,
+                            UpdateOn = currentDt,
                         });
                     }
                     
@@ -2041,9 +2074,9 @@ namespace Colsp.Api.Controllers
                             Child = product.ProductId,
                             ShopId = group.ShopId,
                             CreateBy = email,
-                            CreateOn = DateTime.Now,
+                            CreateOn = currentDt,
                             UpdateBy = email,
-                            UpdateOn = DateTime.Now
+                            UpdateOn = currentDt
                         });
                     }
                 }
@@ -2053,34 +2086,49 @@ namespace Colsp.Api.Controllers
                 db.ProductStageRelateds.RemoveRange(tmpRelated);
             }
             #endregion
+            #region Shipping
+            if (request.ShippingMethod == 0)
+            {
+                request.ShippingMethod = 1;
+            }
+            var tmpShipping = shippingList.Where(w => w.ShippingId == request.ShippingMethod).SingleOrDefault();
+            if (tmpShipping == null)
+            {
+                throw new Exception("Invalid Shipping");
+            }
+            group.ShippingId = request.ShippingMethod;
+            #endregion
             #region Other field
+            group.IsNew = request.ControlFlags.IsNew;
+            group.IsClearance = request.ControlFlags.IsClearance;
+            group.IsBestSeller = request.ControlFlags.IsBestSeller;
+            group.IsOnlineExclusive = request.ControlFlags.IsOnlineExclusive;
+            group.IsOnlyAt = request.ControlFlags.IsOnlyAt;
+            group.TheOneCardEarn = request.TheOneCardEarn;
+            group.GiftWrap =  Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             group.EffectiveDate = request.EffectiveDate;
             group.ExpireDate = request.ExpireDate;
-            //group.ControlFlag1 = request.ControlFlags.Flag1;
-            //group.ControlFlag2 = request.ControlFlags.Flag2;
-            //group.ControlFlag3 = request.ControlFlags.Flag3;
             group.Remark = Validation.ValidateString(request.Remark, "Remark", true, 500, false, string.Empty);
-            group.InfoFlag = false;
             group.ImageFlag = false;
+            group.InfoFlag = false;
             group.OnlineFlag = false;
-            
             group.InformationTabStatus = Validation.ValidateString(request.AdminApprove.Information, "Information Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() { Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.ImageTabStatus = Validation.ValidateString(request.AdminApprove.Image, "Image Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.CategoryTabStatus = Validation.ValidateString(request.AdminApprove.Category, "Category Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.MoreOptionTabStatus = Validation.ValidateString(request.AdminApprove.MoreOption, "More Option Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.VariantTabStatus = Validation.ValidateString(request.AdminApprove.Variation, "Variant Tab Status", true, 2, true, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, new List<string>() {Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
             group.RejectReason = Validation.ValidateString(request.AdminApprove.RejectReason, "Reject Reason", true, 500, true, string.Empty);
-            group.SaleUnitEn = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (English)", true, 30, true, string.Empty);
-            group.SaleUnitTh = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (Thai)", true, 30, true, string.Empty);
+            //group.SaleUnitEn = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (English)", true, 30, true, string.Empty);
+            //group.SaleUnitTh = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (Thai)", true, 30, true, string.Empty);
             #endregion
             #region Create/Update
             if (addNew)
             {
                 group.CreateBy = email;
-                group.CreateOn = DateTime.Now;
+                group.CreateOn = currentDt;
             }
             group.UpdateBy = email;
-            group.UpdateOn = DateTime.Now;
+            group.UpdateOn = currentDt;
             #endregion
             #region Submitted and Approved
             if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(group.Status))
@@ -2094,7 +2142,6 @@ namespace Colsp.Api.Controllers
                 group.ApproveOn = DateTime.Now;
             }
             #endregion
-
         }
 
         private void SetupAttribute(ProductStage variant, List<AttributeRequest> requestList, List<Entity.Models.Attribute> attributeList, string email, ColspEntities db)
@@ -2117,6 +2164,7 @@ namespace Colsp.Api.Controllers
                 string value = request.ValueEn;
                 bool isAttributeValue = false;
                 bool checkboxValue = false;
+                int? attributeValueId = null;
                 if (Constant.DATA_TYPE_LIST.Equals(attribute.DataType))
                 {
                     if (request.AttributeValues == null)
@@ -2132,6 +2180,7 @@ namespace Colsp.Api.Controllers
                             request.AttributeValues.FirstOrDefault().AttributeValueId,
                             Constant.ATTRIBUTE_VALUE_MAP_SURFIX);
                         isAttributeValue = true;
+                        attributeValueId = request.AttributeValues.FirstOrDefault().AttributeValueId;
                     }
                     else
                     {
@@ -2156,6 +2205,7 @@ namespace Colsp.Api.Controllers
                                 attributeValue.AttributeValueId,
                                 Constant.ATTRIBUTE_VALUE_MAP_SURFIX);
                             isAttributeValue = true;
+                            attributeValueId = request.AttributeValues.FirstOrDefault().AttributeValueId;
                             checkboxValue = attributeValue.CheckboxValue;
                             #region Add Value
                             isNew = false;
@@ -2191,6 +2241,7 @@ namespace Colsp.Api.Controllers
                                     ValueEn = value,
                                     Position = position++,
                                     IsAttributeValue = isAttributeValue,
+                                    AttributeValueId = attributeValueId,
                                     CreateBy = email,
                                     CreateOn = DateTime.Now,
                                     UpdateBy = email,
@@ -2243,6 +2294,7 @@ namespace Colsp.Api.Controllers
                         ValueEn = value,
                         Position = position++,
                         IsAttributeValue = isAttributeValue,
+                        AttributeValueId = attributeValueId,
                         CreateBy = email,
                         CreateOn = DateTime.Now,
                         UpdateBy = email,
@@ -2256,7 +2308,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupVariant(ProductStage variant,VariantRequest request, bool addNew, string email, bool adminPermission, bool sellerPermission, ColspEntities db,List<Shipping> shippingList)
+        private void SetupVariant(ProductStage variant,VariantRequest request, bool addNew, string email, DateTime currentDt, bool adminPermission, bool sellerPermission, ColspEntities db)
         {
             #region Status
             if (adminPermission)
@@ -2290,6 +2342,8 @@ namespace Colsp.Api.Controllers
             variant.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Short Description (Thai)", false, 500, true, string.Empty);
             variant.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Description (English)", false, int.MaxValue, false, string.Empty);
             variant.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Short Description (English)", false, 500, true, string.Empty);
+            variant.MobileDescriptionEn = Validation.ValidateString(request.MobileDescriptionEn, "Mobile Description (English)", false, 500, true, string.Empty);
+            variant.MobileDescriptionTh = Validation.ValidateString(request.MobileDescriptionTh, "Mobile Description (Thai)", false, 500, true, string.Empty);
             variant.PrepareDay = request.PrepareDay;
             variant.LimitIndividualDay = request.LimitIndividualDay;
             if (variant.LimitIndividualDay)
@@ -2319,8 +2373,8 @@ namespace Colsp.Api.Controllers
             variant.KillerPoint2Th = Validation.ValidateString(request.KillerPoint2Th, "Killer Point 2 (Thai)", false, 200, false, string.Empty);
             variant.KillerPoint3Th = Validation.ValidateString(request.KillerPoint3Th, "Killer Point 3 (Thai)", false, 200, false, string.Empty);
             variant.Installment = Validation.ValidateString(request.Installment, "Installment", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
-            variant.TheOneCardEarn = request.TheOneCardEarn != 0 ? request.TheOneCardEarn : 1;
-            variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            //variant.TheOneCardEarn = request.TheOneCardEarn != 0 ? request.TheOneCardEarn : 1;
+            //variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.Length = Validation.ValidateDecimal(request.Length, "Length", true, 11, 2, true,0).Value;
             variant.Height = Validation.ValidateDecimal(request.Height, "Height", true, 11, 2, true,0).Value;
             variant.Width = Validation.ValidateDecimal(request.Width, "Width", true, 11, 2, true,0).Value;
@@ -2335,26 +2389,19 @@ namespace Colsp.Api.Controllers
             variant.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keyword (Thai)", false, 150, false, string.Empty);
             variant.SeoEn = Validation.ValidateString(request.SEO.SeoEn, "SEO (English)", false, 300, false, string.Empty);
             variant.SeoTh = Validation.ValidateString(request.SEO.SeoTh, "SEO (Thai)", false, 300, false, string.Empty);
-            //variant.UrlEn = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product Url Key", false, 300, false, string.Empty);
+            variant.UrlKey = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product Url Key", false, 300, false, string.Empty);
             variant.BoostWeight = request.SEO.ProductBoostingWeight;
             variant.Visibility = request.Visibility;
             variant.DefaultVaraint = request.DefaultVariant;
             variant.Display = Validation.ValidateString(request.Display, "Display", true, 20, true, Constant.VARIANT_DISPLAY_GROUP, new List<string>() { Constant.VARIANT_DISPLAY_GROUP, Constant.VARIANT_DISPLAY_INDIVIDUAL });
-            #endregion
-            #region Shipping
-            if (request.ShippingMethod == 0)
-            {
-                request.ShippingMethod = 1;
-            }
-            var tmpShipping = shippingList.Where(w => w.ShippingId == request.ShippingMethod).SingleOrDefault();
-            if (tmpShipping == null)
-            {
-                throw new Exception("Invalid Shipping");
-            }
-            variant.ShippingId = request.ShippingMethod;
+            variant.JDADept = string.Empty;
+            variant.JDASubDept = string.Empty;
+            variant.SaleUnitEn = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (English)", false, 30, false, string.Empty);
+            variant.SaleUnitTh = Validation.ValidateString(request.SaleUnitTh, "Sale Unit (Thai)", false, 30, false, string.Empty);
+
             #endregion
             #region Inventory
-            int stockType = Constant.STOCK_TYPE["Stock"];
+            int stockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
             if (Constant.STOCK_TYPE.ContainsKey(request.StockType))
             {
                 stockType = Constant.STOCK_TYPE[request.StockType];
@@ -2363,32 +2410,42 @@ namespace Colsp.Api.Controllers
             {
                 if (variant.Inventory.Quantity != request.Quantity 
                     || variant.Inventory.SafetyStockSeller != request.SafetyStock
-                    //|| variant.Inventory.StockAvailable != stockType
+                    || variant.Inventory.StockType != stockType
+                    || variant.Inventory.MaxQtyAllowInCart != request.MaxQtyAllowInCart
+                    || variant.Inventory.MinQtyAllowInCart != request.MinQtyAllowInCart
+                    || variant.Inventory.MaxQtyPreOrder != request.MaxQtyPreOrder
+                    || variant.Inventory.UseDecimal != request.UseDecimal
                  )
                 {
                     variant.Inventory.Quantity = request.Quantity;
                     variant.Inventory.SafetyStockSeller = request.SafetyStock;
-                    //variant.Inventory.StockAvailable = stockType;
-                    variant.Inventory.UpdateBy = User.UserRequest().Email;
-                    variant.Inventory.UpdateOn = DateTime.Now;
+                    variant.Inventory.StockType = stockType;
+                    variant.Inventory.MaxQtyAllowInCart = request.MaxQtyAllowInCart;
+                    variant.Inventory.MinQtyAllowInCart = request.MinQtyAllowInCart;
+                    variant.Inventory.MaxQtyPreOrder = request.MaxQtyPreOrder;
+                    variant.Inventory.UseDecimal = request.UseDecimal;
+                    variant.Inventory.UpdateBy = email;
+                    variant.Inventory.UpdateOn = currentDt;
 
                     InventoryHistory history = new InventoryHistory()
                     {
                         Pid = variant.Pid,
-                        //StockAvailable = variant.Inventory.StockAvailable,
+                        StockType = variant.Inventory.StockType,
                         Defect = variant.Inventory.Defect,
-                        //MaxQuantity = variant.Inventory.MaxQuantity,
-                        //MinQuantity = variant.Inventory.MinQuantity,
+                        MaxQtyAllowInCart = variant.Inventory.MaxQtyAllowInCart,
+                        MinQtyAllowInCart = variant.Inventory.MinQtyAllowInCart,
+                        MaxQtyPreOrder = variant.Inventory.MaxQtyPreOrder,
+                        UseDecimal = variant.Inventory.UseDecimal,
                         OnHold = variant.Inventory.OnHold,
                         Quantity = variant.Inventory.Quantity,
                         Reserve = variant.Inventory.Reserve,
                         SafetyStockAdmin = variant.Inventory.SafetyStockAdmin,
                         SafetyStockSeller = variant.Inventory.SafetyStockSeller,
                         Status = Constant.INVENTORY_STATUS_UPDATE,
-                        CreateBy = User.UserRequest().Email,
-                        CreateOn = DateTime.Now,
-                        UpdateBy = User.UserRequest().Email,
-                        UpdateOn = DateTime.Now,
+                        CreateBy = email,
+                        CreateOn = currentDt,
+                        UpdateBy = email,
+                        UpdateOn = currentDt,
                     };
                     db.InventoryHistories.Add(history);
                 }
@@ -2397,7 +2454,10 @@ namespace Colsp.Api.Controllers
             {
                 variant.Inventory = new Inventory()
                 {
-                    //StockAvailable = stockType,
+                    StockType = stockType,
+                    MaxQtyAllowInCart = request.MaxQtyAllowInCart,
+                    MinQtyAllowInCart = request.MinQtyAllowInCart,
+                    UseDecimal = request.UseDecimal,
                     Defect = 0,
                     MaxQtyPreOrder = 0,
                     OnHold = 0,
@@ -2405,10 +2465,10 @@ namespace Colsp.Api.Controllers
                     Reserve = 0,
                     SafetyStockAdmin = request.SafetyStock,
                     SafetyStockSeller = request.SafetyStock,
-                    CreateBy = User.UserRequest().Email,
-                    CreateOn = DateTime.Now,
-                    UpdateBy = User.UserRequest().Email,
-                    UpdateOn = DateTime.Now,
+                    CreateBy = email,
+                    CreateOn = currentDt,
+                    UpdateBy = email,
+                    UpdateOn = currentDt,
                 };
             }
 
@@ -2437,8 +2497,8 @@ namespace Colsp.Api.Controllers
                             {
                                 current.Position = position;
                                 current.FeatureFlag = featureImg;
-                                current.UpdateBy = User.UserRequest().Email;
-                                current.UpdateOn = DateTime.Now;
+                                current.UpdateBy = email;
+                                current.UpdateOn = currentDt;
                             }
                             ++position;
                             tmpImage.Remove(current);
@@ -2459,10 +2519,10 @@ namespace Colsp.Api.Controllers
                             ImageName = string.Empty,
                             ImageOriginName = string.Empty,
                             Status = Constant.STATUS_ACTIVE,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         });
                     }
                     if (featureImg)
@@ -2504,8 +2564,8 @@ namespace Colsp.Api.Controllers
                             if(current.Position != position)
                             {
                                 current.Position = position;
-                                current.UpdateBy = User.UserRequest().Email;
-                                current.UpdateOn = DateTime.Now;
+                                current.UpdateBy = email;
+                                current.UpdateOn = currentDt;
                             }
                             ++position;
                             tmpVideo.Remove(current);
@@ -2523,10 +2583,10 @@ namespace Colsp.Api.Controllers
                             VideoUrlEn = video.Url,
                             Status = Constant.STATUS_ACTIVE,
                             Position = position++,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         });
                     }
                 }
@@ -2541,10 +2601,10 @@ namespace Colsp.Api.Controllers
             if (addNew)
             {
                 variant.CreateBy = email;
-                variant.CreateOn = DateTime.Now;
+                variant.CreateOn = currentDt;
             }
             variant.UpdateBy = email;
-            variant.UpdateOn = DateTime.Now;
+            variant.UpdateOn = currentDt;
             #endregion
         }
 
@@ -2728,7 +2788,7 @@ namespace Colsp.Api.Controllers
         {
             response.Pid = variant.Pid;
             response.ShopId = variant.ShopId;
-            response.ShippingMethod = variant.ShippingId;
+            //response.ShippingMethod = variant.ShippingId;
             response.ProductNameTh = variant.ProductNameTh;
             response.ProductNameEn = variant.ProductNameEn;
             response.ProdTDNameEn = variant.ProdTDNameEn;
@@ -2761,8 +2821,8 @@ namespace Colsp.Api.Controllers
             response.KillerPoint2Th = variant.KillerPoint2Th;
             response.KillerPoint3Th = variant.KillerPoint3Th;
             response.Installment = variant.Installment;
-            response.TheOneCardEarn = variant.TheOneCardEarn;
-            response.GiftWrap = variant.GiftWrap;
+            //response.TheOneCardEarn = variant.TheOneCardEarn;
+            //response.GiftWrap = variant.GiftWrap;
             response.Length = variant.Length;
             response.Height = variant.Height;
             response.Width = variant.Width;
@@ -2861,8 +2921,8 @@ namespace Colsp.Api.Controllers
                 {
                     response.RelatedProducts.Add(new VariantRequest()
                     {
-                        ProductId = pro.ProductStageGroup.ProductId,
-                        ProductNameEn = pro.ProductStageGroup.ProductStages.Where(w=>w.IsVariant==false).FirstOrDefault().ProductNameEn,
+                        ProductId = pro.ProductStageGroup1.ProductId,
+                        ProductNameEn = pro.ProductStageGroup1.ProductStages.Where(w=>w.IsVariant==false).FirstOrDefault().ProductNameEn,
                     });
                 }
             }
@@ -2870,12 +2930,16 @@ namespace Colsp.Api.Controllers
             {
                 response.Tags = group.ProductStageTags.Select(s => s.Tag).ToList();
             }
-           
+            response.ShippingMethod = group.ShippingId;
             response.EffectiveDate = group.EffectiveDate;
             response.ExpireDate = group.ExpireDate;
-            //response.ControlFlags.Flag1 = group.ControlFlag1;
-            //response.ControlFlags.Flag2 = group.ControlFlag2;
-            //response.ControlFlags.Flag3 = group.ControlFlag3;
+            response.ControlFlags.IsNew = group.IsNew;
+            response.ControlFlags.IsBestSeller = group.IsBestSeller;
+            response.ControlFlags.IsClearance = group.IsClearance;
+            response.ControlFlags.IsOnlineExclusive = group.IsOnlineExclusive;
+            response.ControlFlags.IsOnlyAt = group.IsOnlyAt;
+            response.TheOneCardEarn = group.TheOneCardEarn;
+            response.GiftWrap = group.GiftWrap;
             response.Remark = group.Remark;
             response.AdminApprove.Information = group.InformationTabStatus;
             response.AdminApprove.Image = group.ImageTabStatus;
@@ -2924,11 +2988,11 @@ namespace Colsp.Api.Controllers
                 UpdateBy = group.UpdateBy,
                 UpdateOn = group.UpdateOn,
                 VariantTabStatus = group.VariantTabStatus,
-                ApprovedBy = group.ApproveBy,
-                ApprovedDt = group.ApproveOn,
+                ApproveBy = group.ApproveBy,
+                ApproveOn = group.ApproveOn,
                 HistoryDt = DateTime.Now,
-                SubmittedBy = group.SubmitBy,
-                SubmittedDt = group.SubmitOn
+                SubmitBy = group.SubmitBy,
+                SubmitOn = group.SubmitOn
             };
             #endregion
             #region History Global Category
@@ -3030,7 +3094,7 @@ namespace Colsp.Api.Controllers
                     DefaultVaraint = stage.DefaultVaraint,
                     Display = stage.Display,
                     FeatureImgUrl = stage.FeatureImgUrl,
-                    GiftWrap = stage.GiftWrap,
+                    //GiftWrap = stage.GiftWrap,
                     GlobalBoostWeight = stage.GlobalBoostWeight,
                     ImageCount = stage.ImageCount,
                     Installment = stage.Installment,
@@ -3065,11 +3129,11 @@ namespace Colsp.Api.Controllers
                     PurchasePrice = stage.PurchasePrice,
                     SalePrice = stage.SalePrice,
                     ShopId = stage.ShopId,
-                    TheOneCardEarn = stage.TheOneCardEarn,
+                    //TheOneCardEarn = stage.TheOneCardEarn,
                     UnitPrice = stage.UnitPrice,
                     Upc = stage.Upc,
                     //UrlEn = stage.UrlEn,
-                    ShippingId = stage.ShippingId,
+                    //ShippingId = stage.ShippingId,
                     VariantCount = stage.VariantCount,
                     Visibility = stage.Visibility,
                     Status = stage.Status,
@@ -3088,7 +3152,7 @@ namespace Colsp.Api.Controllers
                 product.LocalCatId = group.LocalCatId;
                 product.BrandId = group.BrandId;
                 product.Sku = stage.Sku;
-                product.ShippingId = stage.ShippingId;
+                //product.ShippingId = stage.ShippingId;
                 product.ProductNameEn = stage.ProductNameEn;
                 product.ProductNameTh = stage.ProductNameTh;
                 product.DescriptionFullEn = stage.DescriptionFullEn;
@@ -3105,7 +3169,7 @@ namespace Colsp.Api.Controllers
                 product.DefaultVaraint = stage.DefaultVaraint;
                 product.Display = stage.Display;
                 product.FeatureImgUrl = stage.FeatureImgUrl;
-                product.GiftWrap = stage.GiftWrap;
+                //product.GiftWrap = stage.GiftWrap;
                 product.GlobalBoostWeight = stage.GlobalBoostWeight;
                 product.ImageCount = stage.ImageCount;
                 product.Installment = stage.Installment;
@@ -3140,7 +3204,7 @@ namespace Colsp.Api.Controllers
                 product.PurchasePrice = stage.PurchasePrice;
                 product.SalePrice = stage.SalePrice;
                 product.ShopId = stage.ShopId;
-                product.TheOneCardEarn = stage.TheOneCardEarn;
+                //product.TheOneCardEarn = stage.TheOneCardEarn;
                 product.UnitPrice = stage.UnitPrice;
                 product.Upc = stage.Upc;
                 //product.UrlEn = stage.UrlEn;
@@ -3543,7 +3607,7 @@ namespace Colsp.Api.Controllers
                         s.Inventory.SafetyStockSeller,
                         //s.Inventory.StockAvailable,
                     },
-                    s.Shipping.ShippingMethodEn,
+                    //s.Shipping.ShippingMethodEn,
                     s.PrepareDay,
                     s.PrepareMon,
                     s.PrepareTue,
@@ -3565,7 +3629,7 @@ namespace Colsp.Api.Controllers
                     //s.UrlEn,
                     s.BoostWeight,
                     s.GlobalBoostWeight,
-                    s.GiftWrap,
+                    //s.GiftWrap,
                     ProductStageAttributes = s.ProductStageAttributes.Select(ss => new
                     {
                         ss.IsAttributeValue,
@@ -3865,7 +3929,7 @@ namespace Colsp.Api.Controllers
                     #region Shipping Detail
                     if (headDicTmp.ContainsKey("SHM"))
                     {
-                        bodyList[headDicTmp["SHM"].Item2] = p.ShippingMethodEn;
+                        //bodyList[headDicTmp["SHM"].Item2] = p.ShippingMethodEn;
                     }
                     if (headDicTmp.ContainsKey("PRT"))
                     {
@@ -4025,7 +4089,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (headDicTmp.ContainsKey("GIF"))
                     {
-                        bodyList[headDicTmp["GIF"].Item2] = Constant.STATUS_YES.Equals(p.GiftWrap) ? "Yes" : "No" ;
+                        //bodyList[headDicTmp["GIF"].Item2] = Constant.STATUS_YES.Equals(p.GiftWrap) ? "Yes" : "No" ;
                     }
                     if (headDicTmp.ContainsKey("FL1"))
                     {
@@ -4557,7 +4621,7 @@ namespace Colsp.Api.Controllers
                             DimensionUnit = Constant.DIMENSTION_MM,
                             WeightUnit = Constant.WEIGHT_MEASURE_G,
                             GlobalBoostWeight = 0,
-                            TheOneCardEarn = 1,
+                            //TheOneCardEarn = 1,
                             Display = Constant.VARIANT_DISPLAY_GROUP,
                             VariantCount = 0,
                             PurchasePrice = 0,
@@ -4587,7 +4651,7 @@ namespace Colsp.Api.Controllers
                             MetaKeyEn = Validation.ValidateCSVStringColumn(headDic, body, "Meta Keywords (English)", false, 300, errorMessage, row, string.Empty),
                             MetaKeyTh = Validation.ValidateCSVStringColumn(headDic, body, "Meta Keywords (Thai)", false, 300, errorMessage, row, string.Empty),
                             //UrlEn = Validation.ValidateCSVStringColumn(headDic, body, "Product URL Key (English)", false, 300, errorMessage, row),
-                            GiftWrap = string.Equals(body[headDic["Gift Wrap"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
+                            //GiftWrap = string.Equals(body[headDic["Gift Wrap"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
                             Installment = string.Equals(body[headDic["Installment"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
                             PrepareDay = Validation.ValidateCSVIntegerColumn(headDic, body, "Preparation Time", false, int.MaxValue, errorMessage, row, 0),
                             PrepareMon = Validation.ValidateCSVIntegerColumn(headDic, body, "Preparation Time - Monday", false, int.MaxValue, errorMessage, row, 0),
@@ -4662,11 +4726,11 @@ namespace Colsp.Api.Controllers
                             var shippingId = shipping.Where(w => w.ShippingMethodEn.Equals(body[headDic["Shipping Method"]])).Select(s => s.ShippingId).FirstOrDefault();
                             if (shippingId != 0)
                             {
-                                variant.ShippingId = shippingId;
+                                //variant.ShippingId = shippingId;
                             }
                             else
                             {
-                                variant.ShippingId = 1;
+                                //variant.ShippingId = 1;
                             }
                         }
                         #endregion
@@ -5052,7 +5116,7 @@ namespace Colsp.Api.Controllers
                             masterVariant.DimensionUnit = variant.DimensionUnit;
                             masterVariant.Display = variant.Display;
                             masterVariant.FeatureImgUrl = variant.FeatureImgUrl;
-                            masterVariant.GiftWrap = variant.GiftWrap;
+                            //masterVariant.GiftWrap = variant.GiftWrap;
                             masterVariant.GlobalBoostWeight = variant.GlobalBoostWeight;
                             masterVariant.Height = variant.Height;
                             masterVariant.ImageCount = variant.ImageCount;
@@ -5105,9 +5169,9 @@ namespace Colsp.Api.Controllers
                             masterVariant.SalePrice = variant.SalePrice;
                             masterVariant.SeoEn = variant.SeoEn;
                             masterVariant.SeoTh = variant.SeoTh;
-                            masterVariant.ShippingId = variant.ShippingId;
+                            //masterVariant.ShippingId = variant.ShippingId;
                             masterVariant.Sku = variant.Sku;
-                            masterVariant.TheOneCardEarn = variant.TheOneCardEarn;
+                            //masterVariant.TheOneCardEarn = variant.TheOneCardEarn;
                             masterVariant.UnitPrice = variant.UnitPrice;
                             masterVariant.Upc = variant.Upc;
                             masterVariant.Weight = variant.Weight;
@@ -5798,7 +5862,7 @@ namespace Colsp.Api.Controllers
                         }
                         if (header.Contains("Shipping Method"))
                         {
-                            masterVariantEn.ShippingId = importVariantEn.ShippingId;
+                            //masterVariantEn.ShippingId = importVariantEn.ShippingId;
                         }
                         if (header.Contains("Preparation Time"))
                         {
@@ -5882,7 +5946,7 @@ namespace Colsp.Api.Controllers
                         }
                         if (header.Contains("Gift Wrap"))
                         {
-                            masterVariantEn.GiftWrap = importVariantEn.GiftWrap;
+                            //masterVariantEn.GiftWrap = importVariantEn.GiftWrap;
                         }
                         if (header.Contains("Unit Price"))
                         {
@@ -6069,7 +6133,7 @@ namespace Colsp.Api.Controllers
                                     }
                                     if (header.Contains("Shipping Method"))
                                     {
-                                        currentStage.ShippingId = staging.ShippingId;
+                                        //currentStage.ShippingId = staging.ShippingId;
                                     }
                                     if (header.Contains("Preparation Time"))
                                     {
@@ -6153,7 +6217,7 @@ namespace Colsp.Api.Controllers
                                     }
                                     if (header.Contains("Gift Wrap"))
                                     {
-                                        currentStage.GiftWrap = staging.GiftWrap;
+                                        //currentStage.GiftWrap = staging.GiftWrap;
                                     }
                                     if(header.Contains("Product URL Key"))
                                     {

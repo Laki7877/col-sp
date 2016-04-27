@@ -58,7 +58,7 @@ namespace Colsp.Api.Extensions
                     return list;
                 }
             }
-            return new List<BrandRequest>();
+            return null;
         }
     }
 }

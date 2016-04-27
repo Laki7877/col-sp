@@ -82,6 +82,7 @@
     <Compile Include="Requests\ShopCommission.cs" />
     <Compile Include="Requests\ShopRequest.cs" />
     <Compile Include="Requests\ShopTypeRequest.cs" />
+    <Compile Include="Requests\SortByRequest.cs" />
     <Compile Include="Requests\TagRequest.cs" />
     <Compile Include="Requests\UserGroupRequest.cs" />
     <Compile Include="Requests\PermissionRequest.cs" />

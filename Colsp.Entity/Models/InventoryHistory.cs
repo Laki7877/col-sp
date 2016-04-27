@@ -20,8 +20,7 @@ namespace Colsp.Entity.Models
         public int Defect { get; set; }
         public int OnHold { get; set; }
         public int Reserve { get; set; }
-        public int MinQuantity { get; set; }
-        public int MaxQuantity { get; set; }
+        public int MaxQtyPreOrder { get; set; }
         public bool UseDecimal { get; set; }
         public int SafetyStockSeller { get; set; }
         public int SafetyStockAdmin { get; set; }

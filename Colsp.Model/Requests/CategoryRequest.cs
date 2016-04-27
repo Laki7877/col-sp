@@ -19,6 +19,10 @@ namespace Colsp.Model.Requests
         public bool Visibility { get; set; }
         public List<ImageRequest> CategoryBannerEn { get; set; }
         public List<ImageRequest> CategoryBannerTh { get; set; }
+
+        public List<ImageRequest> CategorySmallBannerEn { get; set; }
+        public List<ImageRequest> CategorySmallBannerTh { get; set; }
+
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public List<ProductRequest> FeatureProducts { get; set; }
@@ -26,6 +30,11 @@ namespace Colsp.Model.Requests
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortEn { get; set; }
         public string DescriptionShortTh { get; set; }
+        public string DescriptionMobileEn { get; set; }
+        public string DescriptionMobileTh { get; set; }
+        public bool BannerSmallStatus { get; set; }
+        public bool BannerStatus { get; set; }
+        public bool FeatureProductStatus { get; set; }
 
         public CategoryRequest()
         {
@@ -49,6 +58,10 @@ namespace Colsp.Model.Requests
             CategoryBannerEn = new List<ImageRequest>();
             CategoryBannerTh = new List<ImageRequest>();
             FeatureProducts = new List<ProductRequest>();
+            CategorySmallBannerEn = new List<ImageRequest>();
+            CategorySmallBannerTh = new List<ImageRequest>();
+            DescriptionMobileEn = string.Empty;
+            DescriptionMobileTh = string.Empty;
         }
     }
 }

@@ -697,12 +697,9 @@ namespace Colsp.Api.Controllers
                     db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LoginFailCount = ", (user.LoginFailCount + 1)," WHERE UserId = " , user.UserId));
                     throw new Exception("Email and password not match");
                 }
-                if (user.Type.Equals(Constant.USER_TYPE_SELLER) && 
-                   (
-                        user.UserShopMaps == null 
-                        || user.UserShopMaps.Count() == 0 
-                        || user.UserShopMaps.Any(a => a.Shop.Status.Equals(Constant.STATUS_REMOVE))
-                   ))
+                if (user.Type.Equals(Constant.USER_TYPE_SELLER)
+                    && (user.UserShopMaps == null || user.UserShopMaps.Count() == 0) 
+                    && user.UserShopMaps.Any(a=>a.Shop.Status.Equals(Constant.STATUS_REMOVE)))
                 {
                     throw new Exception("Please contact system administrator.");
                 }
