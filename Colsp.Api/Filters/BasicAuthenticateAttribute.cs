@@ -39,7 +39,7 @@ namespace Colsp.Api.Filters
                 var failResult = new AuthenticationFailureResult("Missing credentials", context.Request);
                 return failResult.ExecuteAsync(cancellationToken);
             }
-            if (cachedPrincipal is UsersPrincipal)
+            /*if (cachedPrincipal is UsersPrincipal)
             {
                 var principal = (UsersPrincipal)cachedPrincipal;
                 
@@ -54,7 +54,7 @@ namespace Colsp.Api.Filters
                     Cache.Delete(authHeader.Parameter);
                     Cache.Add(authHeader.Parameter,principal);
                 }
-            }
+            }*/
             context.Principal = (IPrincipal)cachedPrincipal;
             return Task.FromResult(0);
         }

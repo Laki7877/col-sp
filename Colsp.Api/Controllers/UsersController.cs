@@ -763,12 +763,14 @@ namespace Colsp.Api.Controllers
                         OverrideParent = int.Parse(s.Issuer)
                     }).ToList()
                 };
+
+               
                 Cache.Add(token, principal);
                 return Request.CreateResponse(HttpStatusCode.OK, claimRs);
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, e.Message);
             }
         }
 
@@ -1019,15 +1021,18 @@ namespace Colsp.Api.Controllers
             try
             {
                 var parameter = Request.Headers.Authorization.Parameter;
-                if(string.IsNullOrWhiteSpace(parameter) || Cache.Get(parameter) == null)
+                UsersPrincipal gotPrinciple = (UsersPrincipal)Cache.Get(parameter);
+                if (string.IsNullOrWhiteSpace(parameter) || gotPrinciple == null)
                 {
                     throw new Exception("Invalid user");
                 }
+
+
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.Forbidden, e.Message);
             }
         }
 
