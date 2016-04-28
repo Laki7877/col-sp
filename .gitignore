@@ -6,7 +6,7 @@ Colsp.Entity
 *.user
 *.userosscache
 *.sln.docstates
-
+Colsp.Entity/
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
