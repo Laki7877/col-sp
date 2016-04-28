@@ -17,7 +17,7 @@ namespace Colsp.Api.Helpers
             Constant.ImageRatio ratio)
         {
             string fileName = fileData.LocalFileName;
-            Validation.ValidateImage(fileName, ratio);
+            //Validation.ValidateImage(fileName, ratio);
             string tmp = fileData.Headers.ContentDisposition.FileName;
             if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
             {

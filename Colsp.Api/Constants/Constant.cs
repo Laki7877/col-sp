@@ -99,9 +99,9 @@ namespace Colsp.Api.Constants
         public static readonly string LANG_EN = "EN";
         public static readonly string LANG_TH = "TH";
 
-        public static readonly string SMALL = "SM";
-        public static readonly string MEDIUM = "MD";
-        public static readonly string LARGE = "LG";
+        public static readonly string SMALL = "S";
+        public static readonly string MEDIUM = "M";
+        public static readonly string LARGE = "L";
 
         public static readonly string DIMENSTION_MM = "MM";
         public static readonly string DIMENSTION_CM = "CM";

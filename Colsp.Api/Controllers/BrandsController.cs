@@ -151,7 +151,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var brand = db.Brands.Where(w => w.BrandId == brandId && w.Status.Equals(Constant.STATUS_ACTIVE)).Select(s => new
+                var brand = db.Brands.Where(w => w.BrandId == brandId).Select(s => new
                 {
                     s.BrandId,
                     s.BrandNameEn,
@@ -164,6 +164,7 @@ namespace Colsp.Api.Controllers
                     s.DescriptionShortTh,
                     s.DescriptionMobileEn,
                     s.DescriptionMobileTh,
+                    s.FeatureProductStatus,
                     s.MetaDescriptionEn,
                     s.MetaDescriptionTh,
                     s.MetaKeyEn,
@@ -242,6 +243,7 @@ namespace Colsp.Api.Controllers
                 response.SEO.SeoTh = brand.SeoTh;
                 response.FeatureTitle = brand.FeatureTitle;
                 response.TitleShowcase = brand.TitleShowcase;
+                response.Status = brand.Status;
                 if (brand.BrandImages != null)
                 {
                     var productImgEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).OrderBy(o => o.Position).ToList();
@@ -412,8 +414,10 @@ namespace Colsp.Api.Controllers
             brand.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Brand Display Name (Thai)", true, 300, false);
             brand.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Brand Description (English)", false, int.MaxValue, false, string.Empty);
             brand.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Brand Description (Thai)", false, int.MaxValue, false, string.Empty);
-            brand.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Brand Description (English)", false, 500, false, string.Empty);
-            brand.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Brand Description (Thai)", false, 500, false, string.Empty);
+            brand.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Brand Short Description (English)", false, 500, false, string.Empty);
+            brand.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Brand Short Description (Thai)", false, 500, false, string.Empty);
+            brand.DescriptionMobileEn = Validation.ValidateString(request.DescriptionMobileEn, "Brand Mobile Description (English)", false, int.MaxValue, false, string.Empty);
+            brand.DescriptionMobileTh = Validation.ValidateString(request.DescriptionMobileTh, "Brand Mobile Description (Thai)", false, int.MaxValue, false, string.Empty);
             brand.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             brand.TitleShowcase = request.TitleShowcase;
             brand.BannerSmallStatus = request.BannerSmallStatus;
@@ -463,6 +467,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Position = position++;
+                            current.Type = Constant.MEDIUM;
                             current.Link = img.Link;
                             current.UpdateBy = email;
                             current.UpdateOn = currentDt;
@@ -514,6 +519,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.Type = Constant.MEDIUM;
                             current.Position = position++;
                             current.UpdateBy = email;
                             current.UpdateOn = currentDt;
@@ -565,6 +571,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.Type = Constant.SMALL;
                             current.Position = position++;
                             current.UpdateBy = email;
                             current.UpdateOn = currentDt;
@@ -616,6 +623,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.Type = Constant.SMALL;
                             current.Position = position++;
                             current.UpdateBy = email;
                             current.UpdateOn = currentDt;
