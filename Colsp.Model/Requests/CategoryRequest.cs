@@ -35,6 +35,7 @@ namespace Colsp.Model.Requests
         public bool BannerSmallStatus { get; set; }
         public bool BannerStatus { get; set; }
         public bool FeatureProductStatus { get; set; }
+        public SortByRequest SortBy { get; set; }
 
         public CategoryRequest()
         {
@@ -62,6 +63,7 @@ namespace Colsp.Model.Requests
             CategorySmallBannerTh = new List<ImageRequest>();
             DescriptionMobileEn = string.Empty;
             DescriptionMobileTh = string.Empty;
+            SortBy = new SortByRequest();
         }
     }
 }

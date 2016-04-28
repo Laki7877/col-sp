@@ -90,7 +90,7 @@ namespace Colsp.Entity.Models
         public string UrlKey { get; set; }
         public int BoostWeight { get; set; }
         public int GlobalBoostWeight { get; set; }
-        public bool ExpressDelivery { get; set; }
+        public string ExpressDelivery { get; set; }
         public decimal DeliveryFee { get; set; }
         public decimal PromotionPrice { get; set; }
         public Nullable<System.DateTime> EffectiveDatePromotion { get; set; }

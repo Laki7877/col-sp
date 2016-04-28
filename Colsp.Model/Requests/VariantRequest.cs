@@ -35,8 +35,8 @@ namespace Colsp.Model.Requests
         public int MaxQtyPreOrder    { get; set; }
         public bool UseDecimal { get; set; }
         public decimal PromotionPrice { get; set; }
-        public DateTime? PromotionEffectiveDate { get; set; }
-        public DateTime? PromotionExpireDate { get; set; }
+        public DateTime? EffectiveDatePromotion { get; set; }
+        public DateTime? ExpireDatePromotion { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal PurchasePrice { get; set; }
         public string SaleUnitTh { get; set; }
@@ -147,6 +147,7 @@ namespace Colsp.Model.Requests
             MaxQtyAllowInCart = 0;
             MinQtyAllowInCart = 0;
             MaxQtyPreOrder = 0;
+            ExpressDelivery = string.Empty;
         }
     }
 }

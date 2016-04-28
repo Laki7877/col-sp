@@ -1,6 +1,9 @@
 ﻿using System.Linq;
 using System.Web.Http;
 using Colsp.Entity.Models;
+using System.Net.Http;
+using System;
+using System.Net;
 
 namespace Colsp.Api.Controllers
 {
@@ -9,20 +12,13 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
 
 
-        //[Route("api/ProductHistories/{historyId}")]
+        //[Route("api/ProductHistories/{historyId}/Restore")]
         //[HttpGet]
-        //public HttpResponseMessage GetProductHistory(long historyId)
+        //public HttpResponseMessage RestoreProductHistory(long historyId)
         //{
         //    try
         //    {
-        //        db.ProductHistoryGroups.Where(w=>w.HistoryId == historyId)
-        //            .Include(i => i.ProductHistories)
-        //            .Include(i => i.ProductHistories.Select(s => s.ProductHistoryAttributes.Select(sa => sa.Attribute.AttributeValueMaps.Select(sv => sv.AttributeValue))))
-        //            .Include(i => i.ProductStages.Select(s => s.Inventory))
-        //            .Include(i => i.ProductStages.Select(s => s.ProductStageImages))
-        //            .Include(i => i.ProductStages.Select(s => s.ProductStageVideos))
-        //            .Include(i => i.ProductStageGlobalCatMaps.Select(s => s.GlobalCategory))
-        //            .Include(i => i.ProductStageLocalCatMaps.Select(s => s.LocalCategory));
+        //        db.ProductHistoryGroups.Where(w => w.HistoryId == historyId)
         //    }
         //    catch (Exception e)
         //    {

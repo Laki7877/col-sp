@@ -126,6 +126,13 @@ namespace Colsp.Api.Controllers
                                      UpdatedDt = cat.UpdateOn,
                                      CreatedDt = cat.CreateOn,
                                      cat.Commission,
+                                     SortBy = cat.SortBy == null ? null : new
+                                     {
+                                         cat.SortBy.SortById,
+                                         cat.SortBy.NameEn,
+                                         cat.SortBy.NameTh,
+                                         cat.SortBy.SortByName
+                                     },
 
                                      //ProductCount = cat.ProductStages.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
                                      //               + cat.Products.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
@@ -608,6 +615,10 @@ namespace Colsp.Api.Controllers
             category.TitleShowcase = request.TitleShowcase;
             category.Visibility = request.Visibility;
             category.Status = request.Status;
+            if (request.SortBy.SortById != 0)
+            {
+                category.SortById = request.SortBy.SortById;
+            }
             #region Banner Image En
             var imageOldEn = category.GlobalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).ToList();
             if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)

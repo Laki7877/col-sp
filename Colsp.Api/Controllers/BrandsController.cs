@@ -63,7 +63,7 @@ namespace Colsp.Api.Controllers
                         fileUpload = Util.SetupImage(Request,
                             fileData,
                             AppSettingKey.IMAGE_ROOT_FOLDER,
-                            AppSettingKey.BRAND_FOLDER, 1500, 1500, 2000, 2000, 5, false);
+                            AppSettingKey.BRAND_FOLDER, Constant.ImageRatio.IMAGE_RATIO_16_9);
                         break;
                     }
                 }
@@ -74,7 +74,7 @@ namespace Colsp.Api.Controllers
                         fileUpload = Util.SetupImage(Request,
                             fileData,
                             AppSettingKey.IMAGE_ROOT_FOLDER,
-                            AppSettingKey.BRAND_FOLDER, 1000, 1000, 1200, 1200, 5, false);
+                            AppSettingKey.BRAND_FOLDER, Constant.ImageRatio.IMAGE_RATIO_16_9);
                         break;
                     }
                 }
@@ -85,7 +85,7 @@ namespace Colsp.Api.Controllers
                         fileUpload = Util.SetupImage(Request,
                             fileData,
                             AppSettingKey.IMAGE_ROOT_FOLDER,
-                            AppSettingKey.BRAND_FOLDER, 1500, 1500, 2000, 2000, 5, false);
+                            AppSettingKey.BRAND_FOLDER, Constant.ImageRatio.IMAGE_RATIO_16_9);
                         break;
                     }
                 }
@@ -179,6 +179,7 @@ namespace Colsp.Api.Controllers
                     s.SortBy,
                     s.BannerStatus,
                     s.BannerSmallStatus,
+                    s.Status,
                     BrandImages = s.BrandImages.Select(si => new
                     {
                         si.EnTh,

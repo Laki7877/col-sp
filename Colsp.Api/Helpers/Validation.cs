@@ -338,5 +338,27 @@ namespace Colsp.Api.Helpers
             }
         }
 
+        public static void ValidateImage(string filename,Constant.ImageRatio ratio)
+        {
+
+            using (Image img = Image.FromFile(filename))
+            {
+                if (!ImageFormat.Jpeg.Equals(img.RawFormat)
+                    && !ImageFormat.Png.Equals(img.RawFormat))
+                {
+                    throw new Exception(string.Concat("Wrong file format. Please upload only JPG or PNG file."));
+                }
+                if (Constant.ImageRatio.IMAGE_RATIO_16_9.Equals(ratio))
+                {
+                    if((img.Width / img.Height) != Constant.IMAGE_RATIO_16_9)
+                    {
+                        throw new Exception("The size should be 16:6");
+                    }
+                }
+            }
+
+            
+        }
+
     }
 }

@@ -1339,14 +1339,16 @@ namespace Colsp.Api.Controllers
                         SetupAttribute(variant, new List<AttributeRequest>() { variantRq.FirstAttribute, variantRq.SecondAttribute }, attributeList, email, db);
                     }
                     masterVariant.VariantCount = group.ProductStages.Where(w => w.IsVariant == true && w.Visibility == true).ToList().Count;
-                    if (masterVariant.VariantCount == 0)
-                    {
-                        throw new Exception("Minimum 1 variant is required");
-                    }
+                    masterVariant.IsSell = false;
+                    //if (masterVariant.VariantCount == 0)
+                    //{
+                    //    throw new Exception("Minimum 1 variant is required");
+                    //}
                 }
                 else
                 {
                     masterVariant.VariantCount = 0;
+                    masterVariant.IsSell = true;
                 }
                 if(tmpVariant != null && tmpVariant.Count > 0)
                 {
@@ -1389,11 +1391,16 @@ namespace Colsp.Api.Controllers
                 var historyList = db.ProductHistoryGroups
                     .Where(w => w.ProductId == group.ProductId)
                     .OrderByDescending(o => o.HistoryDt)
-                    .Take(Constant.HISTORY_REVISION).ToList();
+                    .Select(s => new ProductHistoryRequest()
+                    {
+                        ApproveOn = s.ApproveOn,
+                        SubmitBy = s.SubmitBy,
+                        HistoryId = s.HistoryId,
+                        SubmitOn = s.SubmitOn
+                    }).ToList();
                 ProductStageRequest response = new ProductStageRequest();
                 SetupResponse(group, response, historyList);
                 return Request.CreateResponse(HttpStatusCode.OK,response);
-                //return GetProductStage(group.ProductId);
             }
             catch (Exception e)
             {
@@ -1695,14 +1702,12 @@ namespace Colsp.Api.Controllers
                     group.ProductStages.Add(variant);
                 }
                 masterVariant.VariantCount = group.ProductStages.Where(w=> w.IsVariant==true && w.Visibility == true).ToList().Count;
-                if(masterVariant.VariantCount == 0)
-                {
-                    throw new Exception("Minimum 1 variant is required");
-                }
+                masterVariant.IsSell = false;
             }
             else
             {
                 masterVariant.VariantCount = 0;
+                masterVariant.IsSell = true;
             }
             #endregion
             #region Check Flag
@@ -1816,16 +1821,28 @@ namespace Colsp.Api.Controllers
             {
                 throw new Exception("Cannot find product " + productId);
             }
+
             var historyList = db.ProductHistoryGroups
-                .Where(w => w.ProductId == product.ProductId)
-                .OrderByDescending(o => o.HistoryDt)
-                .Take(Constant.HISTORY_REVISION).ToList();
+                    .Where(w => w.ProductId == product.ProductId)
+                    .OrderByDescending(o => o.HistoryDt)
+                    .Select(s => new ProductHistoryRequest()
+                    {
+                        ApproveOn = s.ApproveOn,
+                        SubmitBy = s.SubmitBy,
+                        HistoryId = s.HistoryId,
+                        SubmitOn = s.SubmitOn
+                    }).ToList();
+
+            //var historyList = db.ProductHistoryGroups
+            //    .Where(w => w.ProductId == product.ProductId)
+            //    .OrderByDescending(o => o.HistoryDt)
+            //    .Take(Constant.HISTORY_REVISION).ToList();
             ProductStageRequest response = new ProductStageRequest();
             SetupResponse(product, response, historyList);
             return response;
         }
 
-        private void SetupResponse(ProductStageGroup group, ProductStageRequest response,List<ProductHistoryGroup> historyList)
+        private void SetupResponse(ProductStageGroup group, ProductStageRequest response,List<ProductHistoryRequest> historyList)
         {
             SetupGroupResponse(group, response);
             var masterVariant = group.ProductStages.Where(w => w.IsVariant == false).FirstOrDefault();
@@ -1851,16 +1868,17 @@ namespace Colsp.Api.Controllers
             }
             if(historyList != null)
             {
-                foreach (var history in historyList)
-                {
-                    response.Revisions.Add(new ProductHistoryRequest()
-                    {
-                        ApproveOn = history.ApproveOn,
-                        HistoryId = history.HistoryId,
-                        SubmitBy = history.SubmitBy,
-                        SubmitOn = history.SubmitOn
-                    });
-                }
+                response.Revisions = historyList;
+                //foreach (var history in historyList)
+                //{
+                //    response.Revisions.Add(new ProductHistoryRequest()
+                //    {
+                //        ApproveOn = history.ApproveOn,
+                //        HistoryId = history.HistoryId,
+                //        SubmitBy = history.SubmitBy,
+                //        SubmitOn = history.SubmitOn
+                //    });
+                //}
             }
             
         }
@@ -2373,8 +2391,6 @@ namespace Colsp.Api.Controllers
             variant.KillerPoint2Th = Validation.ValidateString(request.KillerPoint2Th, "Killer Point 2 (Thai)", false, 200, false, string.Empty);
             variant.KillerPoint3Th = Validation.ValidateString(request.KillerPoint3Th, "Killer Point 3 (Thai)", false, 200, false, string.Empty);
             variant.Installment = Validation.ValidateString(request.Installment, "Installment", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
-            //variant.TheOneCardEarn = request.TheOneCardEarn != 0 ? request.TheOneCardEarn : 1;
-            //variant.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             variant.Length = Validation.ValidateDecimal(request.Length, "Length", true, 11, 2, true,0).Value;
             variant.Height = Validation.ValidateDecimal(request.Height, "Height", true, 11, 2, true,0).Value;
             variant.Width = Validation.ValidateDecimal(request.Width, "Width", true, 11, 2, true,0).Value;
@@ -2398,7 +2414,12 @@ namespace Colsp.Api.Controllers
             variant.JDASubDept = string.Empty;
             variant.SaleUnitEn = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (English)", false, 30, false, string.Empty);
             variant.SaleUnitTh = Validation.ValidateString(request.SaleUnitTh, "Sale Unit (Thai)", false, 30, false, string.Empty);
-
+            variant.IsSell = true;
+            variant.ExpressDelivery = Validation.ValidateString(request.ExpressDelivery, "Express Delivery", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
+            variant.EffectiveDatePromotion = request.EffectiveDatePromotion;
+            variant.ExpireDatePromotion = request.ExpireDatePromotion;
+            variant.PromotionPrice = request.PromotionPrice;
+            variant.IsHasExpiryDate = request.IsHasExpiryDate;
             #endregion
             #region Inventory
             int stockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
@@ -2788,7 +2809,6 @@ namespace Colsp.Api.Controllers
         {
             response.Pid = variant.Pid;
             response.ShopId = variant.ShopId;
-            //response.ShippingMethod = variant.ShippingId;
             response.ProductNameTh = variant.ProductNameTh;
             response.ProductNameEn = variant.ProductNameEn;
             response.ProdTDNameEn = variant.ProdTDNameEn;
@@ -2821,8 +2841,6 @@ namespace Colsp.Api.Controllers
             response.KillerPoint2Th = variant.KillerPoint2Th;
             response.KillerPoint3Th = variant.KillerPoint3Th;
             response.Installment = variant.Installment;
-            //response.TheOneCardEarn = variant.TheOneCardEarn;
-            //response.GiftWrap = variant.GiftWrap;
             response.Length = variant.Length;
             response.Height = variant.Height;
             response.Width = variant.Width;
@@ -2835,7 +2853,6 @@ namespace Colsp.Api.Controllers
             response.SEO.MetaDescriptionTh = variant.MetaDescriptionTh;
             response.SEO.MetaKeywordEn = variant.MetaKeyEn;
             response.SEO.MetaKeywordTh = variant.MetaKeyTh;
-            //response.SEO.ProductUrlKeyEn = variant.UrlEn;
             response.SEO.ProductBoostingWeight = variant.BoostWeight;
             response.SEO.SeoEn = variant.SeoEn;
             response.SEO.SeoTh = variant.SeoTh;
@@ -2843,7 +2860,11 @@ namespace Colsp.Api.Controllers
             response.DefaultVariant = variant.DefaultVaraint;
             response.Quantity = variant.Inventory.Quantity;
             response.SafetyStock = variant.Inventory.SafetyStockSeller;
-            //response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockAvailable)).SingleOrDefault().Key;
+            response.PromotionPrice = variant.PromotionPrice;
+            response.EffectiveDatePromotion = variant.EffectiveDatePromotion;
+            response.ExpireDatePromotion = variant.ExpireDatePromotion;
+            response.IsHasExpiryDate = variant.IsHasExpiryDate;
+            response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockType)).SingleOrDefault().Key;
             response.Display = variant.Display;
             response.IsHasExpiryDate = variant.IsHasExpiryDate;
             response.IsVat = variant.IsVat;
@@ -2965,9 +2986,18 @@ namespace Colsp.Api.Controllers
                 AttributeSetId = group.AttributeSetId,
                 BrandId = group.BrandId,
                 CategoryTabStatus = group.CategoryTabStatus,
-                //ControlFlag1 = group.ControlFlag1,
-                //ControlFlag2 = group.ControlFlag2,
-                //ControlFlag3 = group.ControlFlag3,
+                FirstApproveBy = group.FirstApproveBy,
+                FirstApproveOn = group.FirstApproveOn,
+                GiftWrap = group.GiftWrap,
+                IsBestSeller = group.IsBestSeller,
+                IsClearance = group.IsClearance,
+                IsNew = group.IsNew,
+                IsOnlineExclusive = group.IsOnlineExclusive,
+                IsOnlyAt = group.IsOnlyAt,
+                RejecteBy = group.RejecteBy,
+                RejectOn = group.RejectOn,
+                ShippingId = group.ShippingId,
+                TheOneCardEarn = group.TheOneCardEarn,
                 CreateBy = group.CreateBy,
                 CreateOn = group.CreateOn,
                 EffectiveDate = group.EffectiveDate,
@@ -3094,7 +3124,6 @@ namespace Colsp.Api.Controllers
                     DefaultVaraint = stage.DefaultVaraint,
                     Display = stage.Display,
                     FeatureImgUrl = stage.FeatureImgUrl,
-                    //GiftWrap = stage.GiftWrap,
                     GlobalBoostWeight = stage.GlobalBoostWeight,
                     ImageCount = stage.ImageCount,
                     Installment = stage.Installment,
@@ -3129,11 +3158,26 @@ namespace Colsp.Api.Controllers
                     PurchasePrice = stage.PurchasePrice,
                     SalePrice = stage.SalePrice,
                     ShopId = stage.ShopId,
-                    //TheOneCardEarn = stage.TheOneCardEarn,
                     UnitPrice = stage.UnitPrice,
                     Upc = stage.Upc,
-                    //UrlEn = stage.UrlEn,
-                    //ShippingId = stage.ShippingId,
+                    DeliveryFee = stage.DeliveryFee,
+                    EffectiveDatePromotion = stage.EffectiveDatePromotion,
+                    ExpireDatePromotion = stage.ExpireDatePromotion,
+                    ExpressDelivery = stage.ExpressDelivery,
+                    IsHasExpiryDate = stage.IsHasExpiryDate,
+                    IsSell = stage.IsSell,
+                    IsVat = stage.IsVat,
+                    JDADept = stage.JDADept,
+                    JDASubDept = stage.JDASubDept,
+                    MobileDescriptionEn = stage.MobileDescriptionEn,
+                    MobileDescriptionTh = stage.MobileDescriptionTh,
+                    NewArrivalDate = stage.NewArrivalDate,
+                    ProdTDNameEn = stage.ProdTDNameEn,
+                    ProdTDNameTh = stage.ProdTDNameTh,
+                    PromotionPrice = stage.PromotionPrice,
+                    SaleUnitEn = stage.SaleUnitEn,
+                    SaleUnitTh = stage.SaleUnitTh,
+                    UrlKey = stage.UrlKey,
                     VariantCount = stage.VariantCount,
                     Visibility = stage.Visibility,
                     Status = stage.Status,
@@ -3152,7 +3196,6 @@ namespace Colsp.Api.Controllers
                 product.LocalCatId = group.LocalCatId;
                 product.BrandId = group.BrandId;
                 product.Sku = stage.Sku;
-                //product.ShippingId = stage.ShippingId;
                 product.ProductNameEn = stage.ProductNameEn;
                 product.ProductNameTh = stage.ProductNameTh;
                 product.DescriptionFullEn = stage.DescriptionFullEn;
@@ -3169,7 +3212,6 @@ namespace Colsp.Api.Controllers
                 product.DefaultVaraint = stage.DefaultVaraint;
                 product.Display = stage.Display;
                 product.FeatureImgUrl = stage.FeatureImgUrl;
-                //product.GiftWrap = stage.GiftWrap;
                 product.GlobalBoostWeight = stage.GlobalBoostWeight;
                 product.ImageCount = stage.ImageCount;
                 product.Installment = stage.Installment;
@@ -3204,15 +3246,29 @@ namespace Colsp.Api.Controllers
                 product.PurchasePrice = stage.PurchasePrice;
                 product.SalePrice = stage.SalePrice;
                 product.ShopId = stage.ShopId;
-                //product.TheOneCardEarn = stage.TheOneCardEarn;
                 product.UnitPrice = stage.UnitPrice;
                 product.Upc = stage.Upc;
-                //product.UrlEn = stage.UrlEn;
+                product.UrlKey = stage.UrlKey;
                 product.VariantCount = stage.VariantCount;
                 product.Visibility = stage.Visibility;
-                //product.ControlFlag1 = group.ControlFlag1;
-                //product.ControlFlag2 = group.ControlFlag2;
-                //product.ControlFlag3 = group.ControlFlag3;
+                product.DeliveryFee = stage.DeliveryFee;
+                product.EffectiveDatePromotion = stage.EffectiveDatePromotion;
+                product.ExpireDatePromotion = stage.ExpireDatePromotion;
+                product.ExpressDelivery = stage.ExpressDelivery;
+                product.IsHasExpiryDate = stage.IsHasExpiryDate;
+                product.IsSell = stage.IsSell;
+                product.IsVat = stage.IsVat;
+                product.JDADept = stage.JDADept;
+                product.JDASubDept = stage.JDASubDept;
+                product.MobileDescriptionEn = stage.MobileDescriptionEn;
+                product.MobileDescriptionTh = stage.MobileDescriptionTh;
+                product.NewArrivalDate = stage.NewArrivalDate;
+                product.ProdTDNameEn = stage.ProdTDNameEn;
+                product.ProdTDNameTh = stage.ProdTDNameTh;
+                product.PromotionPrice = stage.PromotionPrice;
+                product.SaleUnitEn = stage.SaleUnitEn;
+                product.SaleUnitTh = stage.SaleUnitTh;
+                product.UrlKey = stage.UrlKey;
                 product.EffectiveDate = group.EffectiveDate;
                 product.ExpireDate = group.ExpireDate;
                 product.Remark = group.Remark;

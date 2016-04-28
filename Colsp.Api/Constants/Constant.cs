@@ -5,6 +5,12 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+        public enum Days { Sat = 1, Sun, Mon, Tue, Wed, Thu, Fri };
+
+        public enum ImageRatio  { IMAGE_RATIO_16_9 };
+
+
+        public static readonly decimal IMAGE_RATIO_16_9 = 16 / 9;
 
         public static readonly CultureInfo DATETIME_FORMAT =  new CultureInfo("es-ES");
 
