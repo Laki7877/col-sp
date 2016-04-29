@@ -103,9 +103,9 @@ namespace Colsp.Entity.Models
         public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateOn { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public System.DateTime UpdateOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }

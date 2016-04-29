@@ -115,8 +115,10 @@ namespace Colsp.Api.Controllers
                                      cat.FeatureTitle,
                                      cat.TitleShowcase,
                                      cat.FeatureProductStatus,
-                                     cat.BannerSmallStatus,
-                                     cat.BannerStatus,
+                                     cat.BannerSmallStatusEn,
+                                     cat.BannerStatusEn,
+                                     cat.BannerSmallStatusTh,
+                                     cat.BannerStatusTh,
                                      //cat.CategoryAbbreviation,
                                      cat.Lft,
                                      cat.Rgt,
@@ -608,8 +610,10 @@ namespace Colsp.Api.Controllers
             category.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Category Short Description (Thai)", false, 500, false, string.Empty);
             category.DescriptionMobileEn = Validation.ValidateString(request.DescriptionMobileEn, "Category Mobile Description (English)", false, int.MaxValue, false, string.Empty);
             category.DescriptionMobileTh = Validation.ValidateString(request.DescriptionMobileTh, "Category Mobile Description (Thai)", false, int.MaxValue, false, string.Empty);
-            category.BannerSmallStatus = request.BannerSmallStatus;
-            category.BannerStatus = request.BannerStatus;
+            category.BannerSmallStatusEn = request.BannerSmallStatusEn;
+            category.BannerStatusEn = request.BannerStatusEn;
+            category.BannerSmallStatusTh = request.BannerSmallStatusTh;
+            category.BannerStatusTh = request.BannerStatusTh;
             category.FeatureProductStatus = request.FeatureProductStatus;
             category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
@@ -638,6 +642,8 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.EnTh = Constant.LANG_EN;
+                            current.Type = Constant.MEDIUM;
                             current.Position = position++;
                             current.UpdateBy = User.UserRequest().Email;
                             current.UpdateOn = DateTime.Now;
@@ -689,6 +695,8 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.EnTh = Constant.LANG_TH;
+                            current.Type = Constant.MEDIUM;
                             current.Position = position++;
                             current.UpdateBy = User.UserRequest().Email;
                             current.UpdateOn = DateTime.Now;
@@ -706,7 +714,7 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.Url,
                             Link = img.Link,
                             Position = position++,
-                            EnTh = Constant.LANG_EN,
+                            EnTh = Constant.LANG_TH,
                             Type = Constant.MEDIUM,
                             CreateBy = email,
                             CreateOn = currentDt,
@@ -723,10 +731,10 @@ namespace Colsp.Api.Controllers
             #endregion
             #region Banner Image Small En
             var imageOldSmallEn = category.GlobalCatImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.SMALL.Equals(w.Type)).ToList();
-            if (request.CategoryBannerEn != null && request.CategoryBannerEn.Count > 0)
+            if (request.CategorySmallBannerEn != null && request.CategorySmallBannerEn.Count > 0)
             {
                 int position = 0;
-                foreach (ImageRequest img in request.CategoryBannerEn)
+                foreach (ImageRequest img in request.CategorySmallBannerEn)
                 {
                     bool isNew = false;
                     if (imageOldSmallEn == null || imageOldSmallEn.Count == 0)
@@ -740,6 +748,8 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.EnTh = Constant.LANG_EN;
+                            current.Type = Constant.SMALL;
                             current.Position = position++;
                             current.UpdateBy = User.UserRequest().Email;
                             current.UpdateOn = DateTime.Now;
@@ -758,7 +768,7 @@ namespace Colsp.Api.Controllers
                             Link = img.Link,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
-                            Type = Constant.MEDIUM,
+                            Type = Constant.SMALL,
                             CreateBy = email,
                             CreateOn = currentDt,
                             UpdateBy = email,
@@ -774,10 +784,10 @@ namespace Colsp.Api.Controllers
             #endregion
             #region Banner Image Th
             var imageOldSmallTh = category.GlobalCatImages.Where(w => Constant.LANG_TH.Equals(w.EnTh) && Constant.SMALL.Equals(w.Type)).ToList();
-            if (request.CategoryBannerTh != null && request.CategoryBannerTh.Count > 0)
+            if (request.CategorySmallBannerTh != null && request.CategorySmallBannerTh.Count > 0)
             {
                 int position = 0;
-                foreach (ImageRequest img in request.CategoryBannerTh)
+                foreach (ImageRequest img in request.CategorySmallBannerTh)
                 {
                     bool isNew = false;
                     if (imageOldSmallTh == null || imageOldSmallTh.Count == 0)
@@ -791,6 +801,8 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.EnTh = Constant.LANG_TH;
+                            current.Type = Constant.SMALL;
                             current.Position = position++;
                             current.UpdateBy = User.UserRequest().Email;
                             current.UpdateOn = DateTime.Now;
@@ -808,8 +820,8 @@ namespace Colsp.Api.Controllers
                             ImageUrl = img.Url,
                             Link = img.Link,
                             Position = position++,
-                            EnTh = Constant.LANG_EN,
-                            Type = Constant.MEDIUM,
+                            EnTh = Constant.LANG_TH,
+                            Type = Constant.SMALL,
                             CreateBy = email,
                             CreateOn = currentDt,
                             UpdateBy = email,

@@ -41,8 +41,10 @@ namespace Colsp.Entity.Models
         public string DescriptionMobileTh { get; set; }
         public string DescriptionMobileEn { get; set; }
         public bool FeatureProductStatus { get; set; }
-        public bool BannerStatus { get; set; }
-        public bool BannerSmallStatus { get; set; }
+        public bool BannerStatusEn { get; set; }
+        public bool BannerSmallStatusEn { get; set; }
+        public bool BannerStatusTh { get; set; }
+        public bool BannerSmallStatusTh { get; set; }
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public bool Visibility { get; set; }

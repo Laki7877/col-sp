@@ -119,7 +119,7 @@ namespace Colsp.Entity.Models
         public bool Visibility { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateOn { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
     

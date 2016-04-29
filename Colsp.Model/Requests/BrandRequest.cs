@@ -30,8 +30,10 @@ namespace Colsp.Model.Requests
         public string FeatureTitle                          { get; set; }
         public bool TitleShowcase                           { get; set; }
         public List<ProductRequest> FeatureProducts         { get; set; }
-        public bool BannerStatus                            { get; set; }
-        public bool BannerSmallStatus                       { get; set; }
+        public bool BannerStatusEn                          { get; set; }
+        public bool BannerSmallStatusEn                     { get; set; }
+        public bool BannerStatusTh                          { get; set; }
+        public bool BannerSmallStatusTh                     { get; set; }
 
         public BrandRequest()
         {
@@ -61,8 +63,10 @@ namespace Colsp.Model.Requests
             BrandSmallBannerTh      = new List<ImageRequest>();
             BrandSmallBannerEn      = new List<ImageRequest>();
             SortBy                  = new SortByRequest();
-            BannerStatus            = false;
-            BannerSmallStatus       = false;
+            BannerStatusEn          = false;
+            BannerSmallStatusEn     = false;
+            BannerStatusTh          = false;
+            BannerSmallStatusTh     = false;
         }
 
         public override void DefaultOnNull()

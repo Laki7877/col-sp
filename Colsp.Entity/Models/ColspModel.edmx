@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ColspModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ColspModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AppAuth">
           <Key>
             <PropertyRef Name="AppId" />
@@ -153,8 +153,10 @@
           <Property Name="DescriptionMobileTh" Type="ntext" Nullable="false" />
           <Property Name="DescriptionMobileEn" Type="ntext" Nullable="false" />
           <Property Name="FeatureProductStatus" Type="bit" Nullable="false" />
-          <Property Name="BannerStatus" Type="bit" Nullable="false" />
-          <Property Name="BannerSmallStatus" Type="bit" Nullable="false" />
+          <Property Name="BannerStatusEn" Type="bit" Nullable="false" />
+          <Property Name="BannerSmallStatusEn" Type="bit" Nullable="false" />
+          <Property Name="BannerStatusTh" Type="bit" Nullable="false" />
+          <Property Name="BannerSmallStatusTh" Type="bit" Nullable="false" />
           <Property Name="FeatureTitle" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="MetaTitleEn" Type="varchar" MaxLength="60" Nullable="false" />
@@ -736,7 +738,7 @@
           <Property Name="ProvinceId" Type="int" Nullable="false" />
           <Property Name="CityId" Type="int" Nullable="false" />
           <Property Name="DistrictId" Type="int" Nullable="false" />
-          <Property Name="PostCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="PostCodeId" Type="int" Nullable="false" />
           <Property Name="BranchID" Type="varchar" MaxLength="5" />
           <Property Name="TaxId" Type="varchar" MaxLength="13" />
           <Property Name="MobileNo" Type="varchar" MaxLength="50" />
@@ -746,6 +748,8 @@
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdateOn" Type="smalldatetime" />
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+          <Property Name="IsShipping" Type="bit" Nullable="false" />
+          <Property Name="IsBilling" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="CustomerToken">
           <Key>
@@ -850,8 +854,10 @@
           <Property Name="DescriptionMobileTh" Type="ntext" Nullable="false" />
           <Property Name="DescriptionMobileEn" Type="ntext" Nullable="false" />
           <Property Name="FeatureProductStatus" Type="bit" Nullable="false" />
-          <Property Name="BannerStatus" Type="bit" Nullable="false" />
-          <Property Name="BannerSmallStatus" Type="bit" Nullable="false" />
+          <Property Name="BannerStatusEn" Type="bit" Nullable="false" />
+          <Property Name="BannerSmallStatusEn" Type="bit" Nullable="false" />
+          <Property Name="BannerStatusTh" Type="bit" Nullable="false" />
+          <Property Name="BannerSmallStatusTh" Type="bit" Nullable="false" />
           <Property Name="FeatureTitle" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
@@ -1012,8 +1018,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
           <Property Name="DescriptionMobileTh" Type="ntext" Nullable="false" />
           <Property Name="DescriptionMobileEn" Type="ntext" Nullable="false" />
           <Property Name="FeatureProductStatus" Type="bit" Nullable="false" />
-          <Property Name="BannerStatus" Type="bit" Nullable="false" />
-          <Property Name="BannerSmallStatus" Type="bit" Nullable="false" />
+          <Property Name="BannerStatusEn" Type="bit" Nullable="false" />
+          <Property Name="BannerSmallStatusEn" Type="bit" Nullable="false" />
+          <Property Name="BannerStatusTh" Type="bit" Nullable="false" />
+          <Property Name="BannerSmallStatusTh" Type="bit" Nullable="false" />
           <Property Name="FeatureTitle" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
@@ -1802,8 +1810,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="VariantCount" Type="int" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
-          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
-          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdateOn" Type="datetime" />
         </EntityType>
@@ -2206,10 +2214,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="VariantCount" Type="int" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
-          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
-          <Property Name="CreateOn" Type="datetime" />
-          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
-          <Property Name="UpdateOn" Type="datetime" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdateOn" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductStageAttribute">
           <Key>
@@ -2292,10 +2300,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="RejectOn" Type="datetime" />
           <Property Name="SubmitBy" Type="varchar" MaxLength="100" />
           <Property Name="SubmitOn" Type="datetime" />
-          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
-          <Property Name="CreateOn" Type="datetime" />
-          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
-          <Property Name="UpdateOn" Type="datetime" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdateOn" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductStageImage">
           <Key>
@@ -6393,7 +6401,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
-          </EntityContainer>
+        </EntityContainer>
         <EntityType Name="AppAuth">
           <Key>
             <PropertyRef Name="AppId" />
@@ -6562,8 +6570,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="DescriptionMobileTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FeatureProductStatus" Type="Boolean" Nullable="false" />
-          <Property Name="BannerStatus" Type="Boolean" Nullable="false" />
-          <Property Name="BannerSmallStatus" Type="Boolean" Nullable="false" />
+          <Property Name="BannerStatusEn" Type="Boolean" Nullable="false" />
+          <Property Name="BannerSmallStatusEn" Type="Boolean" Nullable="false" />
+          <Property Name="BannerStatusTh" Type="Boolean" Nullable="false" />
+          <Property Name="BannerSmallStatusTh" Type="Boolean" Nullable="false" />
           <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="MetaTitleEn" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="false" />
@@ -7176,7 +7186,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="ProvinceId" Type="Int32" Nullable="false" />
           <Property Name="CityId" Type="Int32" Nullable="false" />
           <Property Name="DistrictId" Type="Int32" Nullable="false" />
-          <Property Name="PostCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="PostCodeId" Type="Int32" Nullable="false" />
           <Property Name="BranchID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="TaxId" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
           <Property Name="MobileNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -7186,6 +7196,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdateOn" Type="DateTime" Precision="0" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsShipping" Type="Boolean" Nullable="false" />
+          <Property Name="IsBilling" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="CustomerToken">
           <Key>
@@ -7293,8 +7305,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="DescriptionMobileTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FeatureProductStatus" Type="Boolean" Nullable="false" />
-          <Property Name="BannerStatus" Type="Boolean" Nullable="false" />
-          <Property Name="BannerSmallStatus" Type="Boolean" Nullable="false" />
+          <Property Name="BannerStatusEn" Type="Boolean" Nullable="false" />
+          <Property Name="BannerSmallStatusEn" Type="Boolean" Nullable="false" />
+          <Property Name="BannerStatusTh" Type="Boolean" Nullable="false" />
+          <Property Name="BannerSmallStatusTh" Type="Boolean" Nullable="false" />
           <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
@@ -7421,8 +7435,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="DescriptionMobileTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FeatureProductStatus" Type="Boolean" Nullable="false" />
-          <Property Name="BannerStatus" Type="Boolean" Nullable="false" />
-          <Property Name="BannerSmallStatus" Type="Boolean" Nullable="false" />
+          <Property Name="BannerStatusEn" Type="Boolean" Nullable="false" />
+          <Property Name="BannerSmallStatusEn" Type="Boolean" Nullable="false" />
+          <Property Name="BannerStatusTh" Type="Boolean" Nullable="false" />
+          <Property Name="BannerSmallStatusTh" Type="Boolean" Nullable="false" />
           <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
@@ -7744,8 +7760,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="VariantCount" Type="Int32" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ProductAttributes" Relationship="ColspModel.FK_ProductAttribute_ProductStage" FromRole="Product" ToRole="ProductAttribute" />
@@ -8176,10 +8192,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="VariantCount" Type="Int32" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CreateOn" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="CouponPidMaps" Relationship="ColspModel.FK_CouponPidMap_ProductStage" FromRole="ProductStage" ToRole="CouponPidMap" />
           <NavigationProperty Name="Inventory" Relationship="ColspModel.FK_Inventory_ProductStage" FromRole="ProductStage" ToRole="Inventory" />
           <NavigationProperty Name="ProductStageGroup" Relationship="ColspModel.FK_ProductStage_ProductStageGroup" FromRole="ProductStage" ToRole="ProductStageGroup" />
@@ -8278,10 +8294,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="RejectOn" Type="DateTime" Precision="3" />
           <Property Name="SubmitBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="SubmitOn" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CreateOn" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_ProductStageGroup_AttributeSet" FromRole="ProductStageGroup" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FK_ProductStageGroup_Brand" FromRole="ProductStageGroup" ToRole="Brand" />
           <NavigationProperty Name="BrandFeatureProducts" Relationship="ColspModel.FK_BrandFeatureProduct_ProductStageGroup" FromRole="ProductStageGroup" ToRole="BrandFeatureProduct" />
@@ -11413,8 +11429,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="MetaTitleEn" ColumnName="MetaTitleEn" />
                 <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
                 <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
-                <ScalarProperty Name="BannerSmallStatus" ColumnName="BannerSmallStatus" />
-                <ScalarProperty Name="BannerStatus" ColumnName="BannerStatus" />
+                <ScalarProperty Name="BannerSmallStatusTh" ColumnName="BannerSmallStatusTh" />
+                <ScalarProperty Name="BannerStatusTh" ColumnName="BannerStatusTh" />
+                <ScalarProperty Name="BannerSmallStatusEn" ColumnName="BannerSmallStatusEn" />
+                <ScalarProperty Name="BannerStatusEn" ColumnName="BannerStatusEn" />
                 <ScalarProperty Name="FeatureProductStatus" ColumnName="FeatureProductStatus" />
                 <ScalarProperty Name="DescriptionMobileEn" ColumnName="DescriptionMobileEn" />
                 <ScalarProperty Name="DescriptionMobileTh" ColumnName="DescriptionMobileTh" />
@@ -12004,6 +12022,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="CustomerAddress_Staging">
             <EntityTypeMapping TypeName="ColspModel.CustomerAddress_Staging">
               <MappingFragment StoreEntitySet="CustomerAddress_Staging">
+                <ScalarProperty Name="IsBilling" ColumnName="IsBilling" />
+                <ScalarProperty Name="IsShipping" ColumnName="IsShipping" />
                 <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
                 <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
@@ -12013,7 +12033,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
                 <ScalarProperty Name="TaxId" ColumnName="TaxId" />
                 <ScalarProperty Name="BranchID" ColumnName="BranchID" />
-                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="PostCodeId" ColumnName="PostCodeId" />
                 <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
                 <ScalarProperty Name="CityId" ColumnName="CityId" />
                 <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
@@ -12126,8 +12146,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
                 <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
-                <ScalarProperty Name="BannerSmallStatus" ColumnName="BannerSmallStatus" />
-                <ScalarProperty Name="BannerStatus" ColumnName="BannerStatus" />
+                <ScalarProperty Name="BannerSmallStatusTh" ColumnName="BannerSmallStatusTh" />
+                <ScalarProperty Name="BannerStatusTh" ColumnName="BannerStatusTh" />
+                <ScalarProperty Name="BannerSmallStatusEn" ColumnName="BannerSmallStatusEn" />
+                <ScalarProperty Name="BannerStatusEn" ColumnName="BannerStatusEn" />
                 <ScalarProperty Name="FeatureProductStatus" ColumnName="FeatureProductStatus" />
                 <ScalarProperty Name="DescriptionMobileEn" ColumnName="DescriptionMobileEn" />
                 <ScalarProperty Name="DescriptionMobileTh" ColumnName="DescriptionMobileTh" />
@@ -12246,8 +12268,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
                 <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
-                <ScalarProperty Name="BannerSmallStatus" ColumnName="BannerSmallStatus" />
-                <ScalarProperty Name="BannerStatus" ColumnName="BannerStatus" />
+                <ScalarProperty Name="BannerSmallStatusTh" ColumnName="BannerSmallStatusTh" />
+                <ScalarProperty Name="BannerStatusTh" ColumnName="BannerStatusTh" />
+                <ScalarProperty Name="BannerSmallStatusEn" ColumnName="BannerSmallStatusEn" />
+                <ScalarProperty Name="BannerStatusEn" ColumnName="BannerStatusEn" />
                 <ScalarProperty Name="FeatureProductStatus" ColumnName="FeatureProductStatus" />
                 <ScalarProperty Name="DescriptionMobileEn" ColumnName="DescriptionMobileEn" />
                 <ScalarProperty Name="DescriptionMobileTh" ColumnName="DescriptionMobileTh" />
@@ -14233,7 +14257,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          </EntityContainerMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

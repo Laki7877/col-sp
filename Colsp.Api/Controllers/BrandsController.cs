@@ -178,8 +178,10 @@ namespace Colsp.Api.Controllers
                     s.SeoEn,
                     s.SeoTh,
                     s.SortBy,
-                    s.BannerStatus,
-                    s.BannerSmallStatus,
+                    s.BannerStatusEn,
+                    s.BannerSmallStatusEn,
+                    s.BannerStatusTh,
+                    s.BannerSmallStatusTh,
                     s.Status,
                     BrandImages = s.BrandImages.Select(si => new
                     {
@@ -220,8 +222,10 @@ namespace Colsp.Api.Controllers
                 response.DescriptionShortTh = brand.DescriptionShortTh;
                 response.DescriptionMobileEn = brand.DescriptionMobileEn;
                 response.DescriptionMobileTh = brand.DescriptionMobileTh;
-                response.BannerStatus = brand.BannerStatus;
-                response.BannerSmallStatus = brand.BannerSmallStatus;
+                response.BannerStatusEn = brand.BannerStatusEn;
+                response.BannerSmallStatusEn = brand.BannerSmallStatusEn;
+                response.BannerStatusTh = brand.BannerStatusTh;
+                response.BannerSmallStatusTh = brand.BannerSmallStatusTh;
                 if (brand.SortBy != null)
                 {
                     response.SortBy = new SortByRequest()
@@ -420,8 +424,10 @@ namespace Colsp.Api.Controllers
             brand.DescriptionMobileTh = Validation.ValidateString(request.DescriptionMobileTh, "Brand Mobile Description (Thai)", false, int.MaxValue, false, string.Empty);
             brand.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             brand.TitleShowcase = request.TitleShowcase;
-            brand.BannerSmallStatus = request.BannerSmallStatus;
-            brand.BannerStatus = request.BannerStatus;
+            brand.BannerSmallStatusEn = request.BannerSmallStatusEn;
+            brand.BannerStatusEn = request.BannerStatusEn;
+            brand.BannerSmallStatusTh = request.BannerSmallStatusTh;
+            brand.BannerStatusTh = request.BannerStatusTh;
             brand.FeatureProductStatus = request.FeatureProductStatus;
             if (request.SortBy.SortById != 0)
             {
@@ -468,6 +474,7 @@ namespace Colsp.Api.Controllers
                             current.ImageUrl = img.Url;
                             current.Position = position++;
                             current.Type = Constant.MEDIUM;
+                            current.EnTh = Constant.LANG_EN;
                             current.Link = img.Link;
                             current.UpdateBy = email;
                             current.UpdateOn = currentDt;
@@ -520,6 +527,7 @@ namespace Colsp.Api.Controllers
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
                             current.Type = Constant.MEDIUM;
+                            current.EnTh = Constant.LANG_TH;
                             current.Position = position++;
                             current.UpdateBy = email;
                             current.UpdateOn = currentDt;
@@ -572,6 +580,7 @@ namespace Colsp.Api.Controllers
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
                             current.Type = Constant.SMALL;
+                            current.EnTh = Constant.LANG_EN;
                             current.Position = position++;
                             current.UpdateBy = email;
                             current.UpdateOn = currentDt;
@@ -624,6 +633,7 @@ namespace Colsp.Api.Controllers
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
                             current.Type = Constant.SMALL;
+                            current.EnTh = Constant.LANG_TH;
                             current.Position = position++;
                             current.UpdateBy = email;
                             current.UpdateOn = currentDt;

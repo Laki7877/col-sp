@@ -32,8 +32,10 @@ namespace Colsp.Model.Requests
         public string DescriptionShortTh { get; set; }
         public string DescriptionMobileEn { get; set; }
         public string DescriptionMobileTh { get; set; }
-        public bool BannerSmallStatus { get; set; }
-        public bool BannerStatus { get; set; }
+        public bool BannerSmallStatusEn { get; set; }
+        public bool BannerStatusEn { get; set; }
+        public bool BannerSmallStatusTh { get; set; }
+        public bool BannerStatusTh { get; set; }
         public bool FeatureProductStatus { get; set; }
         public SortByRequest SortBy { get; set; }
 

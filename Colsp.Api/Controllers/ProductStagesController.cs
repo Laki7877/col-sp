@@ -1255,18 +1255,14 @@ namespace Colsp.Api.Controllers
                     .Include(i=>i.ProductStageTags)
                     .Include(i=>i.ProductStageRelateds1);
                 ProductStageGroup group = null;
-                if (User.HasPermission("Edit Product"))
-                {
-                    group = tmpProduct.SingleOrDefault();
-                }
-                else if(User.ShopRequest() != null)
+                if(User.ShopRequest() != null)
                 {
                     var shopId = User.ShopRequest().ShopId;
                     group = tmpProduct.Where(w => w.ShopId == shopId).SingleOrDefault();
                 }
                 else
                 {
-                    throw new Exception("Invalid permission");
+                    group = tmpProduct.SingleOrDefault();
                 }
 
                 //var product = db.ProductStageGroups.Where(w => w.ShopId == shopId
@@ -1904,7 +1900,7 @@ namespace Colsp.Api.Controllers
             }
             else
             {
-                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL });
+                group.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.PRODUCT_STATUS_DRAFT, new List<string>() { Constant.PRODUCT_STATUS_DRAFT, Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL, Constant.PRODUCT_STATUS_APPROVE, Constant.PRODUCT_STATUS_NOT_APPROVE });
                 //throw new Exception("Has no permission");
             }
             #endregion
@@ -2866,6 +2862,10 @@ namespace Colsp.Api.Controllers
             response.Display = variant.Display;
             response.IsHasExpiryDate = variant.IsHasExpiryDate;
             response.IsVat = variant.IsVat;
+            response.SaleUnitEn = variant.SaleUnitEn;
+            response.SaleUnitTh = variant.SaleUnitTh;
+            response.ExpressDelivery = variant.ExpressDelivery;
+
             if (variant.ProductStageImages != null && variant.ProductStageImages.Count > 0)
             {
                 variant.ProductStageImages = variant.ProductStageImages.OrderBy(o => o.Position).ToList();
@@ -3270,6 +3270,8 @@ namespace Colsp.Api.Controllers
                 product.EffectiveDate = group.EffectiveDate;
                 product.ExpireDate = group.ExpireDate;
                 product.Remark = group.Remark;
+                product.MasterPid = string.Empty;
+                product.GiftWrap = group.GiftWrap;
                 product.Status = stage.Status;
                 product.CreateBy = stage.CreateBy;
                 product.CreateOn = stage.CreateOn;

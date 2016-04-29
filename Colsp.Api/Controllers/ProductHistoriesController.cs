@@ -25,7 +25,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var tmpProduct = db.ProductHistoryGroups.Where(w => w.HistoryId == historyId)
-                    .Include(i => i.ProductHistories.Select(s => s.ProductHistoryAttributes))
+                    .Include(i => i.ProductHistories.Select(s => s.ProductHistoryAttributes.Select(sv=>sv.Attribute)))
                     .Include(i => i.ProductHistories.Select(s => s.ProductHistoryImages))
                     .Include(i => i.ProductHistories.Select(s => s.ProductHistoryVideos))
                     .Include(i => i.ProductHistoryGlobalCatMaps)
