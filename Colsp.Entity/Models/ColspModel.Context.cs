@@ -20,7 +20,7 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
+            Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -30,11 +30,14 @@ namespace Colsp.Entity.Models
     
         public virtual DbSet<AppAuth> AppAuths { get; set; }
         public virtual DbSet<Attribute> Attributes { get; set; }
+        public virtual DbSet<AttributeFilterMap> AttributeFilterMaps { get; set; }
+        public virtual DbSet<AttributePropertyMap> AttributePropertyMaps { get; set; }
         public virtual DbSet<AttributeSet> AttributeSets { get; set; }
         public virtual DbSet<AttributeSetMap> AttributeSetMaps { get; set; }
         public virtual DbSet<AttributeSetTag> AttributeSetTags { get; set; }
         public virtual DbSet<AttributeValue> AttributeValues { get; set; }
         public virtual DbSet<AttributeValueMap> AttributeValueMaps { get; set; }
+        public virtual DbSet<BankDetail> BankDetails { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual DbSet<BrandImage> BrandImages { get; set; }
@@ -56,6 +59,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSMasterStatu> CMSMasterStatus { get; set; }
         public virtual DbSet<CMSMasterType> CMSMasterTypes { get; set; }
         public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
@@ -66,8 +70,11 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CouponPidMap> CouponPidMaps { get; set; }
         public virtual DbSet<CouponShopMap> CouponShopMaps { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Customer_Staging> Customer_Staging { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
+        public virtual DbSet<CustomerAddress_Staging> CustomerAddress_Staging { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
+        public virtual DbSet<CustomerTokenCreditCard> CustomerTokenCreditCards { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
         public virtual DbSet<Deal> Deals { get; set; }
         public virtual DbSet<District> Districts { get; set; }
@@ -106,6 +113,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
         public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
         public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        public virtual DbSet<ProductNotify> ProductNotifies { get; set; }
         public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
@@ -126,38 +134,100 @@ namespace Colsp.Entity.Models
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
         public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
-        public virtual DbSet<ReportLog> ReportLogs { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopCommission> ShopCommissions { get; set; }
+        public virtual DbSet<ShopComponentMap> ShopComponentMaps { get; set; }
         public virtual DbSet<ShopImage> ShopImages { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
         public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
+        public virtual DbSet<SortBy> SortBies { get; set; }
         public virtual DbSet<StoreBranch> StoreBranches { get; set; }
         public virtual DbSet<StoreReceive> StoreReceives { get; set; }
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<TermPayment> TermPayments { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
+        public virtual DbSet<ThemeComponent> ThemeComponents { get; set; }
+        public virtual DbSet<ThemeComponentMap> ThemeComponentMaps { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserBrandMap> UserBrandMaps { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
+        public virtual DbSet<VendorTaxRate> VendorTaxRates { get; set; }
+        public virtual DbSet<WithholdingTax> WithholdingTaxes { get; set; }
+        public virtual DbSet<Guest> Guests { get; set; }
+        public virtual DbSet<Migrate_TBDepartment> Migrate_TBDepartment { get; set; }
+        public virtual DbSet<Migrate_TBProduct> Migrate_TBProduct { get; set; }
+        public virtual DbSet<Migrate_TBProductApproved> Migrate_TBProductApproved { get; set; }
+        public virtual DbSet<Migrate_TBProductBundle> Migrate_TBProductBundle { get; set; }
+        public virtual DbSet<Migrate_TBProductGroup> Migrate_TBProductGroup { get; set; }
+        public virtual DbSet<Migrate_TBProductMaster> Migrate_TBProductMaster { get; set; }
+        public virtual DbSet<Migrate_TBProductPicture> Migrate_TBProductPicture { get; set; }
+        public virtual DbSet<Migrate_TBProductRelateLink> Migrate_TBProductRelateLink { get; set; }
+        public virtual DbSet<Migrate_TBProductVideoLink> Migrate_TBProductVideoLink { get; set; }
+        public virtual DbSet<Migrate_TBProperty> Migrate_TBProperty { get; set; }
+        public virtual DbSet<Migrate_TBPropertyCategory> Migrate_TBPropertyCategory { get; set; }
+        public virtual DbSet<Migrate_TBPropertyFilter> Migrate_TBPropertyFilter { get; set; }
+        public virtual DbSet<Migrate_TBPropertyGroup> Migrate_TBPropertyGroup { get; set; }
+        public virtual DbSet<Migrate_TBPropertyProduct> Migrate_TBPropertyProduct { get; set; }
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
+        public virtual DbSet<PostCodeMap> PostCodeMaps { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
+        public virtual DbSet<TBCDSBranch> TBCDSBranches { get; set; }
+        public virtual DbSet<TBCMCity> TBCMCities { get; set; }
         public virtual DbSet<TBDvMapZone> TBDvMapZones { get; set; }
         public virtual DbSet<TBPermissionTmp> TBPermissionTmps { get; set; }
         public virtual DbSet<TBRolePermissionTmp> TBRolePermissionTmps { get; set; }
         public virtual DbSet<TBRoleTmp> TBRoleTmps { get; set; }
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
+        public virtual DbSet<TBSetting> TBSettings { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
     
-        public virtual ObjectResult<Nullable<int>> AttributeValueId()
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeId()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("AttributeValueId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeSetId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeSetId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeValueId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeValueId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextBrandId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextBrandId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextCouponId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextCouponId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextGlobalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextGlobalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextLocalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextLocalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextNewsletterId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextNewsletterId");
         }
     
         public virtual ObjectResult<Nullable<long>> GetNextProductHistoryId()
@@ -170,19 +240,29 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
         }
     
+        public virtual ObjectResult<Nullable<long>> GetNextProductStagePid()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStagePid");
+        }
+    
         public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
         }
     
-        public virtual ObjectResult<Nullable<int>> GlobalCategoryId()
+        public virtual ObjectResult<Nullable<int>> GetNextShopId()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GlobalCategoryId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextShopId");
         }
     
-        public virtual ObjectResult<Nullable<int>> LocalCategoryId()
+        public virtual ObjectResult<Nullable<int>> GetNextUserGroupId()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("LocalCategoryId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserGroupId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextUserId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
         }
     }
 }

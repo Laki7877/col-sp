@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Colsp.Model.Requests
 {
@@ -9,19 +10,39 @@ namespace Colsp.Model.Requests
         public decimal Height { get; set; }
         public decimal Weight { get; set; }
         public string ProductNameEn { get; set; }
-        public string Pid { get; set; }
         public string ProductNameTh { get; set; }
+        public string ProdTDNameTh { get; set; }
+        public string ProdTDNameEn { get; set; }
+        public string IsHasExpiryDate { get; set; }
+        public string IsVat { get; set; }
+        public int MinimumAllowedInCart { get; set; }
+        public int MaximumAllowedInCart { get; set; }
+        public string Pid { get; set; }
         public string Sku { get; set; }
         public string DescriptionShortTh { get; set; }
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionFullEn { get; set; }
+        public string MobileDescriptionEn { get; set; }
+        public string MobileDescriptionTh { get; set; }
+
         public decimal OriginalPrice { get; set; }
+        public int MaximumAllowedPreOrder { get; set; }
         public decimal SalePrice { get; set; }
         public int Quantity { get; set; }
-        public int SafetyStock { get; set; }
+        public int MaxQtyAllowInCart { get; set; }
+        public int MinQtyAllowInCart { get; set; }
+        public int MaxQtyPreOrder    { get; set; }
+        public bool UseDecimal { get; set; }
+        public decimal PromotionPrice { get; set; }
+        public DateTime? EffectiveDatePromotion { get; set; }
+        public DateTime? ExpireDatePromotion { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal PurchasePrice { get; set; }
+        public string SaleUnitTh { get; set; }
+        public string SaleUnitEn { get; set; }
         public int PrepareDay { get; set; }
-        public bool LimitIndividualDay { get; set; }
+       
         public int PrepareMon { get; set; }
         public int PrepareTue { get; set; }
         public int PrepareWed { get; set; }
@@ -38,30 +59,27 @@ namespace Colsp.Model.Requests
         public string DimensionUnit { get; set; }
         public string WeightUnit { get; set; }
         public string StockType { get; set; }
+        public int SafetyStock { get; set; }
         public List<ImageRequest> Images { get; set; }
         public string Installment { get; set; }
-        public int TheOneCardEarn { get; set; }
-        public int ShippingMethod { get; set; }
-        public string GiftWrap { get; set; }
+        public string ExpressDelivery { get; set; }
+        public decimal DeliveryFee { get; set; }
         public List<VideoLinkRequest> VideoLinks { get; set; }
         public SEORequest SEO { get; set; }
+        public bool LimitIndividualDay { get; set; }
         public string Upc { get; set; }
         public AttributeRequest FirstAttribute { get; set; }
         public AttributeRequest SecondAttribute { get; set; }
-        //public string ValueEn { get; set; }
-        //public string ValueTh { get; set; }
         public string Display { get; set; }
         public bool Visibility { get; set; }
         public bool DefaultVariant { get; set; }
+        
         public long ProductId { get; set; }
         public int ShopId { get; set; }
-
+        
         public List<ImageRequest> Images360 { get; set; }
-
-        //public int SafetyStock { get; set; }
-        //public bool? DefaultVariant { get; set; }
+        
         public int VariantId { get; set; }
-
         public bool IsVariant { get; set; }
         public string Status { get; set; }
         public List<ImageRequest> MasterImg { get; set; }
@@ -77,6 +95,8 @@ namespace Colsp.Model.Requests
             ProductNameEn = string.Empty;
             Pid = string.Empty;
             ProductNameTh = string.Empty;
+            ProdTDNameTh = string.Empty;
+            ProdTDNameEn = string.Empty;
             Sku = string.Empty;
             DescriptionShortTh = string.Empty;
             DescriptionShortEn = string.Empty;
@@ -105,9 +125,9 @@ namespace Colsp.Model.Requests
             StockType = string.Empty;
             Images = new List<ImageRequest>();
             Installment = string.Empty;
-            TheOneCardEarn = 0;
-            GiftWrap = string.Empty;
-            ShippingMethod = 0;
+            //TheOneCardEarn = 0;
+            //GiftWrap = string.Empty;
+            //ShippingMethod = 0;
             VideoLinks = new List<VideoLinkRequest>();
             SEO = new SEORequest();
             FirstAttribute = new AttributeRequest();
@@ -122,6 +142,12 @@ namespace Colsp.Model.Requests
             DefaultVariant = false;
             VariantImg = new List<ImageRequest>();
             MasterImg = new List<ImageRequest>();
+            IsHasExpiryDate = string.Empty;
+            IsVat = string.Empty;
+            MaxQtyAllowInCart = 0;
+            MinQtyAllowInCart = 0;
+            MaxQtyPreOrder = 0;
+            ExpressDelivery = string.Empty;
         }
     }
 }

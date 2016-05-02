@@ -23,6 +23,7 @@ namespace Colsp.Model.Requests
         public string Fax { get; set; }
         public bool IsAdmin { get; set; }
         public string Token { get; set; }
+        public List<BrandRequest> Brands { get; set; }
 
         public UserRequest()
         {
@@ -44,6 +45,7 @@ namespace Colsp.Model.Requests
             Mobile = string.Empty;
             Fax = string.Empty;
             UserGroup = new List<UserGroupRequest>();
+            Brands = new List<BrandRequest>();
         }
 
 

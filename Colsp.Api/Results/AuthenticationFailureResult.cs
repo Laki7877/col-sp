@@ -11,6 +11,7 @@ namespace Colsp.Api.Results
 	{
 		public string ReasonPhrase { get; private set; }
 		public HttpRequestMessage Request { get; private set; }
+
 		public AuthenticationFailureResult(string reasonPhrase, HttpRequestMessage request)
 		{
 			ReasonPhrase = reasonPhrase;
@@ -20,6 +21,7 @@ namespace Colsp.Api.Results
 		{
 			return Task.FromResult(Execute());
 		}
+
 		private HttpResponseMessage Execute()
 		{
 			HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Unauthorized);

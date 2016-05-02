@@ -4,7 +4,6 @@ using Colsp.Api.Mockup;
 using Colsp.Model.Requests;
 using Colsp.Model.Responses;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -24,7 +23,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var retur = (from or in ReturnMockup.ReturnList
                              where or.ShopId == shopId && or.ReturnId.Equals(returnId)
                              select or).SingleOrDefault();
@@ -48,7 +47,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var retur = (from re in ReturnMockup.ReturnList
                              where re.ShopId == shopId && re.ReturnId.Equals(returnId)
                              select re).SingleOrDefault();
@@ -71,7 +70,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
                 var list = (from re in ReturnMockup.ReturnList
                             where re.ShopId == shopId
                             select new
@@ -104,11 +103,11 @@ namespace Colsp.Api.Controllers
                 {
                     if (string.Equals("Accepted", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.RETURN_STATUS_APPROVE));
+                        list = list.Where(p => p.Status.Equals(Constant.RETURN_STATUS_APPROVE));
                     }
                     else if (string.Equals("Waiting", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        list = list.Where(p => p.Order.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+                        list = list.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
                     }
                 }
                 var total = list.Count();
@@ -135,7 +134,7 @@ namespace Colsp.Api.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, Constant.NOT_AVAILABLE);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, returnCount/orderCount);
+                return Request.CreateResponse(HttpStatusCode.OK, decimal.Multiply(decimal.Divide(returnCount,orderCount),100));
             }
             catch (Exception e)
             {

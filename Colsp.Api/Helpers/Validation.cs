@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Colsp.Api.Constants;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -202,7 +203,7 @@ namespace Colsp.Api.Helpers
             return val.Value.ToString(@"hh\:mm");
         }
 
-        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key,bool require,int maxLenght,HashSet<string> errormessage,int row)
+        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key,bool require,int maxLenght,HashSet<string> errormessage,int row, string defaultValue = null)
         {
             if (dic.ContainsKey(key))
             {
@@ -210,14 +211,14 @@ namespace Colsp.Api.Helpers
                 if(!string.IsNullOrWhiteSpace(val))
                 {
                     val = val.Trim();
-                    if(require && string.IsNullOrEmpty(val))
+                    if(require && string.IsNullOrEmpty(val) && defaultValue == null)
                     {
-                        errormessage.Add(key + " is required at roe " + row);
+                        errormessage.Add(key + " is required at row " + row);
                         return null;
                     }
                     if(val.Length > maxLenght)
                     {
-                        errormessage.Add(key + " field must be no longer than " + maxLenght + " characters at roe " + row);
+                        errormessage.Add(key + " field must be no longer than " + maxLenght + " characters at row " + row);
                         return null;
                     }
                     return val;
@@ -225,12 +226,12 @@ namespace Colsp.Api.Helpers
             }
             if (require)
             {
-                errormessage.Add(key + " is required at roe " + row);
+                errormessage.Add(key + " is required at row " + row);
             }
-            return null;
+            return defaultValue;
         }
 
-        public static DateTime? ValidateCSVDatetimeColumn(Dictionary<string, int> dic, List<string> list, string key)
+        public static int ValidateCSVIntegerColumn(Dictionary<string, int> dic, List<string> list, string key, bool require, int maxLenght, HashSet<string> errormessage, int row, int defaultValue = -1)
         {
             if (dic.ContainsKey(key))
             {
@@ -238,8 +239,55 @@ namespace Colsp.Api.Helpers
                 if (!string.IsNullOrWhiteSpace(val))
                 {
                     val = val.Trim();
-                    return DateTime.Parse(val);
+                    if (require && string.IsNullOrEmpty(val) && defaultValue == -1)
+                    {
+                        errormessage.Add(key + " is required at row " + row);
+                        return -1;
+                    }
+                    if (string.IsNullOrEmpty(val))
+                    {
+                        return defaultValue;
+                    }
+                    try
+                    {
+                        var tmp = decimal.ToInt32(decimal.Parse(val));
+                        if (tmp > maxLenght)
+                        {
+                            errormessage.Add(key + " field must be no longer than " + maxLenght + " at row " + row);
+                            return -1;
+                        }
+                        return tmp;
+                    }
+                    catch(Exception)
+                    {
+                        errormessage.Add("Invalid " + key + " at row " + row);
+                    }
                 }
+            }
+            if (require)
+            {
+                errormessage.Add(key + " is required at row " + row);
+            }
+            return defaultValue;
+        }
+
+        public static DateTime? ValidateCSVDatetimeColumn(Dictionary<string, int> dic, List<string> list, string key, HashSet<string> errormessage, int row)
+        {
+            try
+            {
+                if (dic.ContainsKey(key))
+                {
+                    string val = list[dic[key]];
+                    if (!string.IsNullOrWhiteSpace(val))
+                    {
+                        val = val.Trim();
+                        return Convert.ToDateTime(val, Constant.DATETIME_FORMAT);
+                    }
+                }
+            }
+            catch(Exception)
+            {
+                errormessage.Add("Invalid " + key + " at row " + row);
             }
             return null;
         }
@@ -289,5 +337,28 @@ namespace Colsp.Api.Helpers
                 }
             }
         }
+
+        public static void ValidateImage(string filename,Constant.ImageRatio ratio)
+        {
+
+            using (Image img = Image.FromFile(filename))
+            {
+                if (!ImageFormat.Jpeg.Equals(img.RawFormat)
+                    && !ImageFormat.Png.Equals(img.RawFormat))
+                {
+                    throw new Exception(string.Concat("Wrong file format. Please upload only JPG or PNG file."));
+                }
+                if (Constant.ImageRatio.IMAGE_RATIO_16_9.Equals(ratio))
+                {
+                    if((img.Width / img.Height) != Constant.IMAGE_RATIO_16_9)
+                    {
+                        throw new Exception("The size should be 16:6");
+                    }
+                }
+            }
+
+            
+        }
+
     }
 }

@@ -22,6 +22,7 @@ namespace Colsp.Api.Constants
         public static readonly string IMPORT_ROOT_FOLDER = ConfigurationManager.AppSettings["ImportTmpFolder"];
         public static readonly string IMPORT_ROOT_PATH = HttpContext.Current.Server.MapPath(string.Concat("~/", IMPORT_ROOT_FOLDER));
 
+        public static readonly bool PID_NUMBER_ONLY = bool.Parse(ConfigurationManager.AppSettings["PidNumberOnly"]);
 
     }
 }

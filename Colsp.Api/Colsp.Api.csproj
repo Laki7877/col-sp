@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <ApplicationInsightsResourceId>/subscriptions/af67e898-ef30-46f3-9167-e7e82e81320e/resourcegroups/ahancer-sea/providers/microsoft.insights/components/colsp-dev</ApplicationInsightsResourceId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,9 +55,6 @@
     <Reference Include="CacheManager.SystemRuntimeCaching, Version=0.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CacheManager.SystemRuntimeCaching.0.6.1\lib\net45\CacheManager.SystemRuntimeCaching.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Colsp.Logic">
-      <HintPath>..\Colsp.Logic\bin\Debug\Colsp.Logic.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
@@ -171,42 +169,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\Site.css" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Metadata\deploymentTemplates\apiappconfig.azureresource.json" />
     <Content Include="apiapp.json" />
-    <Content Include="Import\BodyPart_0168c657-b3e7-4d68-ad9b-dfee5b0875bb" />
-    <Content Include="Import\BodyPart_064b9c09-4d9d-47eb-87ea-f5f29fdac5ab" />
-    <Content Include="Import\BodyPart_13b92ecd-40f1-4e15-b622-d871e30c0ebd" />
-    <Content Include="Import\BodyPart_17b32733-ce05-49f2-921b-3f415a08cebe" />
-    <Content Include="Import\BodyPart_2acfe00f-f797-4832-ba1f-7147087f09f4" />
-    <Content Include="Import\BodyPart_360a69ca-bfb3-412e-a609-e70367dbef76" />
-    <Content Include="Import\BodyPart_39bf29ca-8163-4c07-a82b-46b225a9c1aa" />
-    <Content Include="Import\BodyPart_3f6fae03-5b4f-4d7a-8788-571cccf22768" />
-    <Content Include="Import\BodyPart_44518d4a-45b6-4568-bbca-6e1861648f18" />
-    <Content Include="Import\BodyPart_4a9a0077-3dce-4d99-8eec-03730b7fc24c" />
-    <Content Include="Import\BodyPart_4be471de-ae05-40d5-b4a7-1b2c80649127" />
-    <Content Include="Import\BodyPart_569d0e64-017c-496d-b901-23ac669f4ec0" />
-    <Content Include="Import\BodyPart_5a4f228e-cf26-406f-859f-9192e8190790" />
-    <Content Include="Import\BodyPart_63e16d15-c467-4625-98d9-7ee3b2393273" />
-    <Content Include="Import\BodyPart_6e56dcf9-9d6a-4158-8861-36144d3e8e97" />
-    <Content Include="Import\BodyPart_704ec9b8-c045-4d62-9064-4846610eb050" />
-    <Content Include="Import\BodyPart_7811da3d-425c-4f43-92ca-1c9965d7eb0b" />
-    <Content Include="Import\BodyPart_cd3074ee-ca11-4f66-a164-8e4818f82c90" />
-    <Content Include="Import\BodyPart_d54d09bd-3187-4f12-a064-b8630c6226e6" />
-    <Content Include="Import\BodyPart_e418f257-2562-48bd-8e3a-1206fb041e68" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <None Include="Properties\PublishProfiles\ahancer-colsp.pubxml" />
-    <None Include="Properties\PublishProfiles\colsp-dev.pubxml" />
-    <None Include="Properties\PublishProfiles\Colsp.Api%28ahancer-sea%29.pubxml" />
+    <None Include="Properties\PublishProfiles\ahancer-colsp - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\ahancer-colsp - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\colsp-dev - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\colsp-dev - Web Deploy.pubxml" />
+    <Content Include="Service References\Application Insights\ConnectedService.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -223,14 +196,6 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="CMSFunction\CMSProcess.cs" />
-    <Compile Include="Controllers\BuyOneGetOneController.cs" />
-    <Compile Include="Controllers\CMSController.cs" />
-    <Compile Include="Controllers\CMSManagementController.cs" />
-    <Compile Include="Controllers\PromotionController.cs" />
-    <Compile Include="PromotionFunction\BuyOneGetOneProcess.cs" />
-    <Compile Include="CMSFunction\GetCMSSearch.cs" />
-    <Compile Include="CMSFunction\JsonContent.cs" />
     <Compile Include="Constants\AppSettingKey.cs" />
     <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
@@ -244,14 +209,20 @@
     <Compile Include="Controllers\InventoriesController.cs" />
     <Compile Include="Controllers\LocalCategoriesController.cs" />
     <Compile Include="Controllers\NewslettersController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProductHistoriesController.cs" />
     <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductReviewsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ProductStagesController.cs" />
+    <Compile Include="Controllers\ProductTempsController.cs" />
+    <Compile Include="Controllers\ReturnController.cs" />
+    <Compile Include="Controllers\ShippingsController.cs" />
     <Compile Include="Controllers\ShopsController.cs" />
     <Compile Include="Controllers\ShopTypesController.cs" />
+    <Compile Include="Controllers\SortBiesController.cs" />
+    <Compile Include="Controllers\ThemesController.cs" />
     <Compile Include="Controllers\UserGroupsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\IPrincipalExtension.cs" />
@@ -260,6 +231,8 @@
     <Compile Include="Helpers\AutoGenerate.cs" />
     <Compile Include="Helpers\Util.cs" />
     <Compile Include="Helpers\Validation.cs" />
+    <Compile Include="Mockup\OrderMockup.cs" />
+    <Compile Include="Mockup\ReturnMockup.cs" />
     <Compile Include="Security\IPasswordHasher.cs" />
     <Compile Include="Security\SaltedSha256PasswordHasher.cs" />
     <Compile Include="Security\UsersPrincipal.cs" />
@@ -278,10 +251,6 @@
     <ProjectReference Include="..\Colsp.Entity\Colsp.Entity.csproj">
       <Project>{4900b20b-c0bc-4f3f-97c0-3df428740322}</Project>
       <Name>Colsp.Entity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Colsp.Logic\Colsp.Logic.csproj">
-      <Project>{7ab75edd-88fb-4c4a-b092-df49df9a6b87}</Project>
-      <Name>Colsp.Logic</Name>
     </ProjectReference>
     <ProjectReference Include="..\Colsp.Model\Colsp.Model.csproj">
       <Project>{226b2ad2-649f-4d2d-b17e-e2afb474a274}</Project>

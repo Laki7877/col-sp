@@ -17,10 +17,10 @@ namespace Colsp.Entity.Models
         public long Parent { get; set; }
         public long Child { get; set; }
         public int ShopId { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
         public virtual ProductStageGroup ProductStageGroup { get; set; }
         public virtual ProductStageGroup ProductStageGroup1 { get; set; }

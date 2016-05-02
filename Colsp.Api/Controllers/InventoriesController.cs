@@ -10,6 +10,7 @@ using Colsp.Api.Extensions;
 using System;
 using System.Collections.Generic;
 using Colsp.Api.Helpers;
+using Colsp.Api.Constants;
 
 namespace Colsp.Api.Controllers
 {
@@ -27,12 +28,17 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
 
 
-                var products = (from inv in db.Inventories
+                var products = (
+                           from inv in db.Inventories
                            join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
-                           where stage.IsVariant == true || (stage.IsVariant == false && stage.ImageCount == 0)
+                           where !stage.Shop.Status.Equals(Constant.STATUS_REMOVE) && 
+                                 (
+                                    stage.IsVariant == true 
+                                    || (stage.IsVariant == false && stage.ImageCount == 0)
+                                 )
                            select new
                            {
                                ProductId = stage.ProductId,
@@ -46,46 +52,15 @@ namespace Colsp.Api.Controllers
                                inv.OnHold,
                                inv.Reserve,
                                inv.SafetyStockSeller,
-                               inv.UpdatedDt,
+                               UpdatedDt = inv.UpdateOn,
                                Brand = stage.ProductStageGroup.Brand != null ? new { stage.ProductStageGroup.Brand.BrandId, stage.ProductStageGroup.Brand.BrandNameEn } : null,
                                GlobalCategory = stage.ProductStageGroup.GlobalCategory != null ? new { stage.ProductStageGroup.GlobalCategory.Lft, stage.ProductStageGroup.GlobalCategory.Rgt, stage.ProductStageGroup.GlobalCategory.NameEn } : null,
                                LocalCategory = stage.ProductStageGroup.LocalCategory != null ? new { stage.ProductStageGroup.LocalCategory.Lft, stage.ProductStageGroup.LocalCategory.Rgt, stage.ProductStageGroup.LocalCategory.NameEn } : null,
                                Tag = stage.ProductStageGroup.ProductStageTags != null ? string.Join(",",stage.ProductStageGroup.ProductStageTags) :null,
                                SalePrice = stage.SalePrice,
-                               CreatedDt = stage.CreatedDt,
+                               CreateOn = stage.CreateOn,
                                Status = stage.Status,
                            });
-                //var products = (from inv in db.Inventories
-                //             join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId } into mastJoin
-                //             from mast in mastJoin.DefaultIfEmpty()
-                //             join variant in db.ProductStageVariants on new { inv.Pid, ShopId = shopId } equals new { variant.Pid, variant.ShopId } into varJoin
-                //             from vari in varJoin.DefaultIfEmpty()
-                //             where vari != null || mast != null
-                //             select new
-                //             {
-                //                 ProductId = mast != null ? mast.ProductId : vari.ProductId,
-                //                 Sku = vari != null ? vari.Sku : mast.Sku,
-                //                 Upc = vari != null ? vari.Upc : mast.Upc,
-                //                 Pid = vari != null ? vari.Pid : mast.Pid,
-                //                 ProductNameEn = vari != null ? vari.ProductNameEn : mast.ProductNameEn,
-                //                 ProductNameTh = vari != null ? vari.ProductNameTh : mast.ProductNameTh,
-                //                 inv.Quantity,
-                //                 inv.Defect,
-                //                 inv.OnHold,
-                //                 inv.Reserve,
-                //                 inv.SafetyStockSeller,
-                //                 inv.UpdatedDt,
-                //                 Brand = vari != null ? vari.ProductStage.Brand != null ? new { vari.ProductStage.Brand.BrandId, vari.ProductStage.Brand.BrandNameEn } : null
-                //                        : mast.Brand != null ? new { mast.Brand.BrandId, mast.Brand.BrandNameEn } : null,
-                //                 GlobalCategory = vari != null ? vari.ProductStage.GlobalCategory != null ? new { vari.ProductStage.GlobalCategory.Lft, vari.ProductStage.GlobalCategory.Rgt , vari.ProductStage.GlobalCategory.NameEn } : null
-                //                        : mast.GlobalCategory != null ? new { mast.GlobalCategory.Lft, mast.GlobalCategory.Rgt, mast.GlobalCategory.NameEn }:null,
-                //                 LocalCategory = vari != null ? vari.ProductStage.LocalCategory != null ? new { vari.ProductStage.LocalCategory.Lft, vari.ProductStage.LocalCategory.Rgt, vari.ProductStage.LocalCategory.NameEn } : null
-                //                        : mast.LocalCategory != null ? new { mast.LocalCategory.Lft, mast.LocalCategory.Rgt, mast.LocalCategory.NameEn } : null ,
-                //                 Tag = vari != null ? vari.ProductStage.Tag : mast.Tag,
-                //                 SalePrice = vari != null ? vari.SalePrice : mast.SalePrice,
-                //                 CreatedDt = vari != null ? vari.CreatedDt : mast.CreatedDt,
-                //                 Status = vari != null ? vari.Status : mast.Status,
-                //             });
                 request.DefaultOnNull();
                 if (request.ProductNames != null && request.ProductNames.Count > 0)
                 {
@@ -157,12 +132,12 @@ namespace Colsp.Api.Controllers
                 if (!string.IsNullOrEmpty(request.CreatedDtFrom))
                 {
                     DateTime from = Convert.ToDateTime(request.CreatedDtFrom);
-                    products = products.Where(w => w.CreatedDt >= from);
+                    products = products.Where(w => w.CreateOn >= from);
                 }
                 if (!string.IsNullOrEmpty(request.CreatedDtTo))
                 {
                     DateTime to = Convert.ToDateTime(request.CreatedDtTo);
-                    products = products.Where(w => w.CreatedDt <= to);
+                    products = products.Where(w => w.CreateOn <= to);
                 }
 
                 if (!string.IsNullOrEmpty(request.ModifyDtFrom))
@@ -220,7 +195,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if(this.User.ShopRequest() == null)
+                if(User.ShopRequest() == null)
                 {
                     throw new Exception("Your not assigned any shop");
                 }
@@ -229,11 +204,15 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
 
-                var shopId = this.User.ShopRequest().ShopId;
+                var shopId = User.ShopRequest().ShopId;
 
                 var invenentory = (from inv in db.Inventories
                                 join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
-                                where stage.IsVariant == true || (stage.IsVariant == false && stage.ImageCount == 0)
+                                where
+                                !stage.Shop.Status.Equals(Constant.STATUS_REMOVE) &&
+                                (
+                                    stage.IsVariant == true || (stage.IsVariant == false && stage.VariantCount == 0)
+                                )
                                 select new
                                 {
                                     ImageUrl = stage.FeatureImgUrl,
@@ -248,47 +227,29 @@ namespace Colsp.Api.Controllers
                                     inv.OnHold,
                                     inv.Reserve,
                                     inv.SafetyStockSeller,
-                                    inv.UpdatedDt,
+                                    UpdatedDt = inv.UpdateOn,
                                     stage.IsVariant,
                                     VariantAttribute = stage.ProductStageAttributes.Select(s => new
                                     {
                                         s.Attribute.AttributeNameEn,
                                         Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault()
-                                              : s.ValueEn,
-                                    })
+                                              :s.ValueEn,
+                                    }),
+                                    Brand = stage.ProductStageGroup.Brand == null ? null : new
+                                    {
+                                        stage.ProductStageGroup.Brand.BrandId,
+                                        stage.ProductStageGroup.Brand.BrandNameEn
+                                    }
                                 });
-
-
-                //var inven = (from inv in db.Inventories
-                //              join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId } into mastJoin
-                //              from mast in mastJoin.DefaultIfEmpty()
-                //              join variant in db.ProductStageVariants on new { inv.Pid, ShopId = shopId } equals new { variant.Pid, variant.ShopId } into varJoin
-                //              from vari in varJoin.DefaultIfEmpty()
-                //              where (vari != null && vari.Visibility == true) || (mast != null && mast.Visibility == true && mast.ProductStageVariants.Count == 0)
-                //              select new
-                //              {
-                //                  ImageUrl = vari != null ? vari.ProductStage.FeatureImgUrl : mast.FeatureImgUrl,
-                //                  ProductId = mast != null ? mast.ProductId : vari.ProductId,
-                //                  Sku = vari != null ? vari.Sku : mast.Sku,
-                //                  Upc = vari != null ? vari.Upc : mast.Upc,
-                //                  Pid = vari != null ? vari.Pid : mast.Pid,
-                //                  ProductNameEn = vari != null ? vari.ProductNameEn : mast.ProductNameEn,
-                //                  ProductNameTh = vari != null ? vari.ProductNameTh : mast.ProductNameTh,
-                //                  inv.Quantity,
-                //                  inv.Defect,
-                //                  inv.OnHold,
-                //                  inv.Reserve,
-                //                  inv.SafetyStockSeller,
-                //                  inv.UpdatedDt,
-                //                  IsVariant = vari != null ? true : false,
-                //                  VariantAttribute = vari.ProductStageVariantArrtibuteMaps.Select(s => new
-                //                  {
-                //                         s.Attribute.AttributeNameEn,
-                //                         Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.Value) select tt.AttributeValueEn).FirstOrDefault()
-                //                            : s.Value,
-                //                   })
-                //             });
                 request.DefaultOnNull();
+                if (User.BrandRequest() != null)
+                {
+                    var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
+                    if (brands != null && brands.Count > 0)
+                    {
+                        invenentory = invenentory.Where(w => brands.Contains(w.Brand.BrandId));
+                    }
+                }
                 if (!string.IsNullOrWhiteSpace(request.SearchText))
                 {
                     invenentory = invenentory.Where(w => w.Pid.Contains(request.SearchText)
@@ -330,12 +291,12 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var inv = db.Inventories.Find(pid);
+                var inv = db.Inventories.Where(w=> w.Pid.Equals(pid) && !w.ProductStage.Shop.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
                 if(inv == null)
                 {
                     throw new Exception("Cannot find inventory");
                 }
-                inv.Quantity = Validation.ValidationInteger(request.Quantity,"Quantity",true, Int32.MaxValue,0).Value;
+                inv.Quantity = Validation.ValidationInteger(request.Quantity,"Quantity",true, int.MaxValue,0).Value;
                 Util.DeadlockRetry(db.SaveChanges, "Inventory");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

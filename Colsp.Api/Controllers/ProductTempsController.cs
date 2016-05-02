@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Colsp.Entity.Models;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
@@ -27,12 +23,15 @@ namespace Colsp.Api.Controllers
             {
                 var productTemp = db.ProductTmps.Where(w => true);
                 //check if its seller permission
-                if (this.User.HasPermission("Group JDA"))
+                if(User.ShopRequest() != null)
                 {
                     //add shopid criteria for seller request
-                    int shopId = this.User.ShopRequest().ShopId;
+                    int shopId = User.ShopRequest().ShopId;
                     productTemp = productTemp.Where(w => w.Shop.ShopId == shopId);
                 }
+                //if (User.HasPermission("Group JDA"))
+                //{
+                //}
                 if(request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, productTemp);

@@ -20,9 +20,8 @@ namespace Colsp.Entity.Models
             this.BrandFeatureProducts = new HashSet<BrandFeatureProduct>();
             this.BrandImages = new HashSet<BrandImage>();
             this.CouponBrandMaps = new HashSet<CouponBrandMap>();
-            this.Products = new HashSet<Product>();
-            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
+            this.UserBrandMaps = new HashSet<UserBrandMap>();
         }
     
         public int BrandId { get; set; }
@@ -35,6 +34,13 @@ namespace Colsp.Entity.Models
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
+        public string DescriptionMobileTh { get; set; }
+        public string DescriptionMobileEn { get; set; }
+        public bool FeatureProductStatus { get; set; }
+        public bool BannerStatusEn { get; set; }
+        public bool BannerSmallStatusEn { get; set; }
+        public bool BannerStatusTh { get; set; }
+        public bool BannerSmallStatusTh { get; set; }
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public string MetaTitleEn { get; set; }
@@ -43,13 +49,17 @@ namespace Colsp.Entity.Models
         public string MetaDescriptionTh { get; set; }
         public string MetaKeyEn { get; set; }
         public string MetaKeyTh { get; set; }
-        public string UrlEn { get; set; }
+        public string SeoEn { get; set; }
+        public string SeoTh { get; set; }
+        public Nullable<int> SortById { get; set; }
+        public string UrlKey { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public System.DateTime CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
+        public virtual SortBy SortBy { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -57,10 +67,8 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponBrandMap> CouponBrandMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserBrandMap> UserBrandMaps { get; set; }
     }
 }

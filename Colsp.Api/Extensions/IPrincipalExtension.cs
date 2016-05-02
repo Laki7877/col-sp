@@ -48,6 +48,17 @@ namespace Colsp.Api.Extensions
             return null;
         }
 
-
+        public static List<BrandRequest> BrandRequest(this IPrincipal p)
+        {
+            if (p is UsersPrincipal)
+            {
+                var list = ((UsersPrincipal)p).Brands;
+                if (list != null && list.Count > 0)
+                {
+                    return list;
+                }
+            }
+            return null;
+        }
     }
 }

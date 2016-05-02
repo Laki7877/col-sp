@@ -19,16 +19,17 @@ namespace Colsp.Entity.Models
         public int Defect { get; set; }
         public int OnHold { get; set; }
         public int Reserve { get; set; }
-        public int MinQuantity { get; set; }
-        public int MaxQuantity { get; set; }
+        public int MaxQtyPreOrder { get; set; }
         public bool UseDecimal { get; set; }
         public int SafetyStockSeller { get; set; }
         public int SafetyStockAdmin { get; set; }
-        public int StockAvailable { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public int StockType { get; set; }
+        public int MinQtyAllowInCart { get; set; }
+        public int MaxQtyAllowInCart { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
         public virtual ProductStage ProductStage { get; set; }
     }

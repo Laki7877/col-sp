@@ -17,15 +17,17 @@ namespace Colsp.Entity.Models
         public string Pid { get; set; }
         public int AttributeId { get; set; }
         public string ValueEn { get; set; }
+        public Nullable<int> AttributeValueId { get; set; }
         public bool CheckboxValue { get; set; }
         public int Position { get; set; }
         public bool IsAttributeValue { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
         public virtual Attribute Attribute { get; set; }
+        public virtual AttributeValue AttributeValue { get; set; }
         public virtual ProductStage ProductStage { get; set; }
     }
 }

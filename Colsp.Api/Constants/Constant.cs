@@ -1,9 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+        public enum Days { Sat = 1, Sun, Mon, Tue, Wed, Thu, Fri };
+
+        public enum ImageRatio  { IMAGE_RATIO_16_9 };
+
+        public static readonly int HISTORY_REVISION = 10;
+        public static readonly int TOP_SELLING = 10;
+
+        public static readonly decimal IMAGE_RATIO_16_9 = 16 / 9;
+
+        public static readonly CultureInfo DATETIME_FORMAT =  new CultureInfo("es-ES");
 
         public static readonly string AUTHEN_SCHEMA = "Bearer";
 
@@ -17,7 +28,7 @@ namespace Colsp.Api.Constants
         public static int DEFAULT_BOOSTWEIGHT = 5000;
 
         public static List<char> IGNORE_PID = new List<char>() {
-                    '0',
+                   //'0',
                     'D',
                     'E',
                     'F',
@@ -31,8 +42,9 @@ namespace Colsp.Api.Constants
         };
         public static string START_PID = "1111110";
 
-        public static int SHOP_OWNER_GROUP_ID = 2;
+        public static readonly int SHOP_OWNER_GROUP_ID = 2;
         public static readonly Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() { { "Stock", 1 }, { "Pre-Order", 2 } };
+        public static readonly string DEFAULT_STOCK_TYPE = "Stock";
 
         public static readonly int MAX_LOCAL_CATEGORY = 8;
 
@@ -58,6 +70,7 @@ namespace Colsp.Api.Constants
         public static readonly string DATA_TYPE_STRING = "ST";
         public static readonly string DATA_TYPE_LIST = "LT";
         public static readonly string DATA_TYPE_CHECKBOX = "CB";
+        public static readonly string DATA_TYPE_HTML = "HB";
 
         public static readonly string PRODUCT_STATUS_DRAFT = "DF";
         public static readonly string PRODUCT_STATUS_WAIT_FOR_APPROVAL = "WA";
@@ -88,6 +101,10 @@ namespace Colsp.Api.Constants
         public static readonly string LANG_EN = "EN";
         public static readonly string LANG_TH = "TH";
 
+        public static readonly string SMALL = "S";
+        public static readonly string MEDIUM = "M";
+        public static readonly string LARGE = "L";
+
         public static readonly string DIMENSTION_MM = "MM";
         public static readonly string DIMENSTION_CM = "CM";
         public static readonly string DIMENSTION_M = "M";
@@ -108,7 +125,7 @@ namespace Colsp.Api.Constants
         public static readonly string ORDER_READY_TO_SHIP = "RS";
         public static readonly string ORDER_SHIPPING = "SH";
         public static readonly string ORDER_DELIVERED = "DE";
-        public static readonly string ORDER_CANCELLED = "CA";
+        public static readonly string ORDER_CANCELED = "CA";
 
         public static readonly string RETURN_STATUS_WAIT_FOR_APPROVAL = "WA";
         public static readonly string RETURN_STATUS_APPROVE = "AP";

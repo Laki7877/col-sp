@@ -6,7 +6,7 @@
         public bool SetUpShop       { get; set; }
         public bool AddProduct      { get; set; }
         public bool ProductApprove  { get; set; }
-        public bool DecorateStore   { get; set; }
+        //public bool DecorateStore   { get; set; }
 
         public OnBoardRequest()
         {
@@ -14,7 +14,7 @@
             SetUpShop      = false;
             AddProduct     = false;
             ProductApprove = false;
-            DecorateStore  = false;
+            //DecorateStore  = false;
         }
     }
 }
