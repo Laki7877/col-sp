@@ -224,7 +224,7 @@ namespace Colsp.Api.Controllers
                 category.ShopId = shopId;
                 string email = User.UserRequest().Email;
                 DateTime currentDt = DateTime.Now;
-                SetupCategory(category, request, email, currentDt,true);
+                SetupCategory(category, request, shopId, email, currentDt,true);
                 int max = db.LocalCategories.Where(w=>w.ShopId==shopId).Select(s=>s.Rgt).DefaultIfEmpty(0).Max();
                 if (max == 0)
                 {
@@ -273,7 +273,7 @@ namespace Colsp.Api.Controllers
                 }
                 var email = User.UserRequest().Email;
                 var currentDt = DateTime.Now;
-                SetupCategory(category, request, email, currentDt, false);
+                SetupCategory(category, request, shopId, email, currentDt, false);
                 #region Url Key
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
@@ -503,7 +503,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupCategory(LocalCategory category, CategoryRequest request, string email, DateTime currentDt, bool isNewAdd)
+        private void SetupCategory(LocalCategory category, CategoryRequest request, int shopId, string email, DateTime currentDt, bool isNewAdd)
         {
             category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true);
             category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
@@ -546,6 +546,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.ShopId = shopId;
                             current.Type = Constant.LANG_EN;
                             current.Type = Constant.MEDIUM;
                             current.Position = position++;
@@ -564,6 +565,7 @@ namespace Colsp.Api.Controllers
                         {
                             ImageUrl = img.Url,
                             Link = img.Link,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
                             Type = Constant.MEDIUM,
@@ -599,6 +601,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.ShopId = shopId;
                             current.Type = Constant.LANG_TH;
                             current.Type = Constant.MEDIUM;
                             current.Position = position++;
@@ -617,6 +620,7 @@ namespace Colsp.Api.Controllers
                         {
                             ImageUrl = img.Url,
                             Link = img.Link,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
                             Type = Constant.MEDIUM,
@@ -652,6 +656,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.ShopId = shopId;
                             current.Type = Constant.LANG_EN;
                             current.Type = Constant.SMALL;
                             current.Position = position++;
@@ -670,6 +675,7 @@ namespace Colsp.Api.Controllers
                         {
                             ImageUrl = img.Url,
                             Link = img.Link,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
                             Type = Constant.SMALL,
@@ -705,6 +711,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.ShopId = shopId;
                             current.Type = Constant.LANG_TH;
                             current.Type = Constant.SMALL;
                             current.Position = position++;
@@ -723,6 +730,7 @@ namespace Colsp.Api.Controllers
                         {
                             ImageUrl = img.Url,
                             Link = img.Link,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
                             Type = Constant.SMALL,

@@ -699,7 +699,7 @@ namespace Colsp.Api.Controllers
                 }
                 if (user.Type.Equals(Constant.USER_TYPE_SELLER)
                     && (user.UserShopMaps == null || user.UserShopMaps.Count() == 0) 
-                    && user.UserShopMaps.Any(a=>a.Shop.Status.Equals(Constant.STATUS_REMOVE)))
+                    && !user.UserShopMaps.Any(a=> a.Shop.Status.Equals(Constant.STATUS_ACTIVE) || a.Shop.Status.Equals(Constant.PRODUCT_STATUS_NOT_APPROVE)))
                 {
                     throw new Exception("Please contact system administrator.");
                 }

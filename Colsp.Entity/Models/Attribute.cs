@@ -25,6 +25,7 @@ namespace Colsp.Entity.Models
     
         public int AttributeId { get; set; }
         public string AttributeNameEn { get; set; }
+        public string AttributeDescriptionEn { get; set; }
         public string DisplayNameEn { get; set; }
         public string DisplayNameTh { get; set; }
         public bool DefaultAttribute { get; set; }

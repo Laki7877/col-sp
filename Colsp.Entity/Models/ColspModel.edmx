@@ -24,6 +24,7 @@
           </Key>
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="AttributeNameEn" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="AttributeDescriptionEn" Type="varchar" MaxLength="1000" Nullable="false" />
           <Property Name="DisplayNameEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="DisplayNameTh" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="DefaultAttribute" Type="bit" Nullable="false" />
@@ -109,6 +110,7 @@
           <Property Name="AttributeValueId" Type="int" Nullable="false" />
           <Property Name="AttributeValueEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="AttributeValueTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="MapValue" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
@@ -1718,8 +1720,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
             <PropertyRef Name="Pid" />
           </Key>
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
-          <Property Name="ParentPid" Type="char" MaxLength="7" Nullable="false" />
-          <Property Name="MasterPid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="ParentPid" Type="char" MaxLength="7" />
+          <Property Name="MasterPid" Type="char" MaxLength="7" />
           <Property Name="ProductId" Type="bigint" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="ShippingId" Type="int" Nullable="false" />
@@ -2555,6 +2557,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="ShopImageUrl" Type="varchar" MaxLength="1000" Nullable="false" />
           <Property Name="ShopDescriptionEn" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="ShopDescriptionTh" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="DomainName" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="ShopAddress" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="Facebook" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="YouTube" Type="varchar" MaxLength="500" Nullable="false" />
@@ -6401,7 +6404,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="UserGroup" EntitySet="UserGroups" />
             <End Role="UserGroupPermissionMap" EntitySet="UserGroupPermissionMaps" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="AppAuth">
           <Key>
             <PropertyRef Name="AppId" />
@@ -6421,6 +6424,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </Key>
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="AttributeNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AttributeDescriptionEn" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="DisplayNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="DisplayNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="DefaultAttribute" Type="Boolean" Nullable="false" />
@@ -6519,6 +6523,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="AttributeValueId" Type="Int32" Nullable="false" />
           <Property Name="AttributeValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="AttributeValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="MapValue" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -7668,8 +7673,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="Pid" />
           </Key>
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
-          <Property Name="ParentPid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
-          <Property Name="MasterPid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="ParentPid" Type="String" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="MasterPid" Type="String" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="ProductId" Type="Int64" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="ShippingId" Type="Int32" Nullable="false" />
@@ -8581,6 +8586,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="ShopImageUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="ShopDescriptionEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="ShopDescriptionTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DomainName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="ShopAddress" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Facebook" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="YouTube" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
@@ -11312,6 +11318,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="DefaultAttribute" ColumnName="DefaultAttribute" />
                 <ScalarProperty Name="DisplayNameTh" ColumnName="DisplayNameTh" />
                 <ScalarProperty Name="DisplayNameEn" ColumnName="DisplayNameEn" />
+                <ScalarProperty Name="AttributeDescriptionEn" ColumnName="AttributeDescriptionEn" />
                 <ScalarProperty Name="AttributeNameEn" ColumnName="AttributeNameEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
               </MappingFragment>
@@ -11383,6 +11390,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="MapValue" ColumnName="MapValue" />
                 <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="AttributeValueTh" ColumnName="AttributeValueTh" />
                 <ScalarProperty Name="AttributeValueEn" ColumnName="AttributeValueEn" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
@@ -13370,6 +13378,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="YouTube" ColumnName="YouTube" />
                 <ScalarProperty Name="Facebook" ColumnName="Facebook" />
                 <ScalarProperty Name="ShopAddress" ColumnName="ShopAddress" />
+                <ScalarProperty Name="DomainName" ColumnName="DomainName" />
                 <ScalarProperty Name="ShopDescriptionTh" ColumnName="ShopDescriptionTh" />
                 <ScalarProperty Name="ShopDescriptionEn" ColumnName="ShopDescriptionEn" />
                 <ScalarProperty Name="ShopImageUrl" ColumnName="ShopImageUrl" />
@@ -14257,7 +14266,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

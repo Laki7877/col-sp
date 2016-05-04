@@ -28,6 +28,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var globalCat = (from cat in db.GlobalCategories
+                                 where cat.CategoryId != 0
                                  orderby cat.Lft ascending
                                  select new
                                 {
@@ -69,7 +70,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var globalCat = (from cat in db.GlobalCategories
-                                 where cat.CategoryId==categoryId
+                                 where cat.CategoryId != 0 && cat.CategoryId==categoryId
                                  select new
                                  {
                                      cat.CategoryId,
@@ -209,7 +210,7 @@ namespace Colsp.Api.Controllers
                         .Select(s => s.AttributeSet))
                         .Include(i=>i.GlobalCatImages)
                         .Include(i=>i.GlobalCatFeatureProducts)
-                    .Where(w => w.CategoryId == categoryId)
+                    .Where(w => w.CategoryId != 0 && w.CategoryId == categoryId)
                     .SingleOrDefault();
                 if (category == null)
                 {
@@ -297,7 +298,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var querList = new List<int?> { request.Child, request.Parent, request.Sibling };
-                var catList = db.GlobalCategories.Where(w => querList.Contains(w.CategoryId)).ToList();
+                var catList = db.GlobalCategories.Where(w => w.CategoryId != 0 && querList.Contains(w.CategoryId)).ToList();
                 if (catList == null || catList.Count == 0)
                 {
                     throw new Exception("Invalid request");
@@ -401,7 +402,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", attributesetMap), " with attribute set associated"));
                 }
 
-                var catList = db.GlobalCategories.Where(w => ids.Contains(w.CategoryId));
+                var catList = db.GlobalCategories.Where(w => w.CategoryId != 0 && ids.Contains(w.CategoryId));
 
                 foreach (CategoryRequest catRq in request)
                 {
@@ -440,7 +441,7 @@ namespace Colsp.Api.Controllers
                           join attrSet in db.AttributeSets on catMap.AttributeSetId equals attrSet.AttributeSetId
                           join attrSetMap in db.AttributeSetMaps on attrSet.AttributeSetId equals attrSetMap.AttributeSetId
                           join attr in db.Attributes on attrSetMap.AttributeId equals attr.AttributeId
-                          where cat.CategoryId == catId && attr.VariantStatus==true
+                          where cat.CategoryId != 0 && cat.CategoryId == catId && attr.VariantStatus==true
                     select attr);
                 var response = new List<IQueryable<Entity.Models.Attribute>>() { attribute };
 

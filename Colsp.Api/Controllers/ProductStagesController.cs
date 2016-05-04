@@ -28,6 +28,45 @@ namespace Colsp.Api.Controllers
         private ColspEntities db = new ColspEntities();
         private readonly string root = HttpContext.Current.Server.MapPath("~/Import");
 
+        [Route("api/Product")]
+        [HttpGet]
+        public HttpResponseMessage GetAttributeSet(ProductRequest request)
+        {
+            try
+            {
+                var products = db.Products.Where(w => !Constant.STATUS_REMOVE.Equals(w.Status)).Select(s=>new
+                {
+                    s.ProductNameEn,
+                    s.Pid,
+                    s.ProductId
+                });
+                if(request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, products);
+                }
+
+                request.DefaultOnNull();
+                if (!string.IsNullOrEmpty(request.SearchText))
+                {
+                    products = products.Where(w => w.Pid.Contains(request.SearchText)
+                    || w.ProductNameEn.Contains(request.SearchText));
+                }
+
+                //count number of products
+                var total = products.Count();
+                //make paginate query from database
+                var pagedProducts = products.Paginate(request);
+                //create response
+                var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+                //return response
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
         [Route("api/ProductStages/AttributeSet")]
         [HttpPost]
         public HttpResponseMessage GetAttributeSet(List<ProductStageRequest> request)
@@ -367,7 +406,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductStages/Master/{productId}")]
+        [Route("api/Products/Master/{productId}")]
         [HttpPut]
         public HttpResponseMessage SaveMasterProduct([FromUri]long productId, MasterProductRequest request)
         {
@@ -427,7 +466,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductStages/Master")]
+        [Route("api/Products/Master")]
         [HttpPost]
         public HttpResponseMessage AddMasterProduct(MasterProductRequest request)
         {
@@ -437,49 +476,171 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invaide request");
                 }
-                var tmpStage = GetProductStageRequestFromId(db,request.MasterProduct.ProductId);
-                tmpStage.Variants = new List<VariantRequest>();
-                tmpStage.AdminApprove.Information = Constant.PRODUCT_STATUS_APPROVE;
-                tmpStage.AdminApprove.Image = Constant.PRODUCT_STATUS_APPROVE;
-                tmpStage.AdminApprove.Category = Constant.PRODUCT_STATUS_APPROVE;
-                tmpStage.AdminApprove.MoreOption = Constant.PRODUCT_STATUS_APPROVE;
-                tmpStage.AdminApprove.Variation = Constant.PRODUCT_STATUS_APPROVE;
-                tmpStage.Status = Constant.PRODUCT_STATUS_APPROVE;
-                ProductStageGroup group = SetupProduct(db, tmpStage,0);
-                if (string.IsNullOrEmpty(request.MasterProduct.Pid))
-                {
-                    throw new Exception("Pid is required for master");
-                }
-                group.ProductStages.ElementAt(0).ProductStageMasters1.Add(new ProductStageMaster()
-                {
-                    ChildPid = request.MasterProduct.Pid,
-                    CreateBy = User.UserRequest().Email,
-                    CreateOn = DateTime.Now,
-                    UpdateBy = User.UserRequest().Email,
-                    UpdateOn = DateTime.Now
-                });
-                foreach (var child in request.ChildProducts)
-                {
-                    if (string.IsNullOrEmpty(child.Pid))
-                    {
-                        throw new Exception("Pid is required for child");
-                    }
-                    group.ProductStages.ElementAt(0).ProductStageMasters1.Add(new ProductStageMaster()
-                    {
-                        ChildPid = child.Pid,
-                        CreateBy = User.UserRequest().Email,
-                        CreateOn = DateTime.Now,
-                        UpdateBy = User.UserRequest().Email,
-                        UpdateOn = DateTime.Now
-                    });
-                }
 
-                //group.ProductStages.ToList().ForEach(e => { e.Pid = null; e.UrlEn = null; e.IsMaster = true; e.IsVariant = false; });
-                AutoGenerate.GeneratePid(db, group.ProductStages);
-                group.ProductId = db.GetNextProductStageGroupId().Single().Value;
-                db.ProductStageGroups.Add(group);
+                var parentProduct = db.Products
+                    .Where(w => w.Pid.Equals(request.MasterProduct.Pid) && w.IsVariant == false)
+                    .SingleOrDefault();
+
+                var masterProduct = new Product()
+                {
+                    AttributeSetId = parentProduct.AttributeSetId,
+                    CreateBy = parentProduct.CreateBy,
+                    CreateOn = parentProduct.CreateOn,
+                    EffectiveDate = parentProduct.EffectiveDate,
+                    ExpireDate = parentProduct.ExpireDate,
+                    GlobalCatId = parentProduct.GlobalCatId,
+                    IsBestSeller = parentProduct.IsBestSeller,
+                    IsClearance = parentProduct.IsClearance,
+                    IsNew = parentProduct.IsNew,
+                    IsOnlineExclusive = parentProduct.IsOnlineExclusive,
+                    IsOnlyAt = parentProduct.IsOnlyAt,
+                    LocalCatId = parentProduct.LocalCatId,
+                    Remark = parentProduct.Remark,
+                    Status = parentProduct.Status,
+                    UpdateBy = parentProduct.UpdateBy,
+                    UpdateOn = parentProduct.UpdateOn,
+                    TheOneCardEarn = parentProduct.TheOneCardEarn,
+                    ShippingId = parentProduct.ShippingId,
+                    BrandId = parentProduct.BrandId,
+                    GiftWrap = parentProduct.GiftWrap,
+                    BoostWeight = parentProduct.BoostWeight,
+                    DefaultVaraint = parentProduct.DefaultVaraint,
+                    DeliveryFee = parentProduct.DeliveryFee,
+                    DescriptionFullEn = parentProduct.DescriptionFullEn,
+                    DescriptionFullTh = parentProduct.DescriptionFullTh,
+                    DescriptionShortEn = parentProduct.DescriptionShortEn,
+                    DescriptionShortTh = parentProduct.DescriptionShortTh,
+                    DimensionUnit = parentProduct.DimensionUnit,
+                    Display = parentProduct.Display,
+                    EffectiveDatePromotion = parentProduct.EffectiveDatePromotion,
+                    ExpireDatePromotion = parentProduct.ExpireDatePromotion,
+                    ExpressDelivery = parentProduct.ExpressDelivery,
+                    FeatureImgUrl = parentProduct.FeatureImgUrl,
+                    GlobalBoostWeight = parentProduct.GlobalBoostWeight,
+                    Height = parentProduct.Height,
+                    ImageCount = parentProduct.ImageCount,
+                    Installment = parentProduct.Installment,
+                    IsHasExpiryDate = parentProduct.IsHasExpiryDate,
+                    IsMaster = true,
+                    IsSell = false,
+                    IsVariant = false,
+                    IsVat = parentProduct.IsVat,
+                    JDADept = parentProduct.JDADept,
+                    JDASubDept = parentProduct.JDASubDept,
+                    KillerPoint1En = parentProduct.KillerPoint1En,
+                    KillerPoint1Th = parentProduct.KillerPoint1Th,
+                    KillerPoint2En = parentProduct.KillerPoint2En,
+                    KillerPoint2Th = parentProduct.KillerPoint2Th,
+                    KillerPoint3En = parentProduct.KillerPoint3En,
+                    KillerPoint3Th = parentProduct.KillerPoint3Th,
+                    Length = parentProduct.Length,
+                    LimitIndividualDay = parentProduct.LimitIndividualDay,
+                    MaxiQtyAllowed = parentProduct.MaxiQtyAllowed,
+                    MetaDescriptionEn = parentProduct.MetaDescriptionEn,
+                    MetaDescriptionTh = parentProduct.MetaDescriptionTh,
+                    MetaKeyEn = parentProduct.MetaKeyEn,
+                    MetaKeyTh = parentProduct.MetaKeyTh,
+                    MetaTitleEn = parentProduct.MetaTitleEn,
+                    MetaTitleTh = parentProduct.MetaTitleTh,
+                    MiniQtyAllowed = parentProduct.MiniQtyAllowed,
+                    MobileDescriptionEn = parentProduct.MobileDescriptionEn,
+                    MobileDescriptionTh = parentProduct.MobileDescriptionTh,
+                    NewArrivalDate = parentProduct.NewArrivalDate,
+                    OriginalPrice = parentProduct.OriginalPrice,
+                    PrepareDay = parentProduct.PrepareDay,
+                    PrepareFri = parentProduct.PrepareFri,
+                    PrepareMon = parentProduct.PrepareMon,
+                    PrepareSat = parentProduct.PrepareSat,
+                    PrepareSun = parentProduct.PrepareSun,
+                    PrepareThu = parentProduct.PrepareThu,
+                    PrepareTue = parentProduct.PrepareTue,
+                    PrepareWed = parentProduct.PrepareWed,
+                    ProdTDNameEn = parentProduct.ProdTDNameEn,
+                    ProdTDNameTh = parentProduct.ProdTDNameTh,
+                    ProductNameEn = parentProduct.ProductNameEn,
+                    ProductNameTh = parentProduct.ProductNameTh,
+                    PromotionPrice = parentProduct.PromotionPrice,
+                    PurchasePrice = parentProduct.PurchasePrice,
+                    SalePrice = parentProduct.SalePrice,
+                    SaleUnitEn = parentProduct.SaleUnitEn,
+                    SaleUnitTh = parentProduct.SaleUnitTh,
+                    UnitPrice = parentProduct.UnitPrice,
+                    SeoEn = parentProduct.SeoEn,
+                    SeoTh = parentProduct.SeoTh,
+                    Sku = parentProduct.Sku,
+                    Upc = parentProduct.Upc,
+                    Visibility = parentProduct.Visibility,
+                    VariantCount = parentProduct.VariantCount,
+                    Weight = parentProduct.Weight,
+                    WeightUnit = parentProduct.WeightUnit,
+                    Width = parentProduct.Width,
+                    MasterPid = null,
+                    ParentPid = null,
+                    Pid = parentProduct.Pid,
+                };
+
+
+
+                
+                var tmpStageList = new List<ProductStage>()
+                {
+                    new ProductStage()
+                };
+                AutoGenerate.GeneratePid(db, tmpStageList);
+                masterProduct.Pid = tmpStageList.First().Pid;
+                masterProduct.UrlKey = tmpStageList.First().UrlKey;
+                masterProduct.ShopId = Constant.ADMIN_SHOP_ID;
+                masterProduct.ProductId = db.GetNextProductStageGroupId().SingleOrDefault().Value;
+                db.Products.Add(masterProduct);
+                var childPids = request.ChildProducts.Select(s => s.Pid);
+                var childList = db.Products.Where(w => childPids.Contains(w.Pid)).ToList();
+                childList.ForEach(f => f.MasterPid = masterProduct.Pid);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
-                return GetMasterProduct(group.ProductId);
+
+
+                //var tmpStage = GetProductStageRequestFromId(db,request.MasterProduct.ProductId);
+                //tmpStage.Variants = new List<VariantRequest>();
+                //tmpStage.AdminApprove.Information = Constant.PRODUCT_STATUS_APPROVE;
+                //tmpStage.AdminApprove.Image = Constant.PRODUCT_STATUS_APPROVE;
+                //tmpStage.AdminApprove.Category = Constant.PRODUCT_STATUS_APPROVE;
+                //tmpStage.AdminApprove.MoreOption = Constant.PRODUCT_STATUS_APPROVE;
+                //tmpStage.AdminApprove.Variation = Constant.PRODUCT_STATUS_APPROVE;
+                //tmpStage.Status = Constant.PRODUCT_STATUS_APPROVE;
+                //ProductStageGroup group = SetupProduct(db, tmpStage,0);
+                //if (string.IsNullOrEmpty(request.MasterProduct.Pid))
+                //{
+                //    throw new Exception("Pid is required for master");
+                //}
+                //group.ProductStages.ElementAt(0).ProductStageMasters1.Add(new ProductStageMaster()
+                //{
+                //    ChildPid = request.MasterProduct.Pid,
+                //    CreateBy = User.UserRequest().Email,
+                //    CreateOn = DateTime.Now,
+                //    UpdateBy = User.UserRequest().Email,
+                //    UpdateOn = DateTime.Now
+                //});
+                //foreach (var child in request.ChildProducts)
+                //{
+                //    if (string.IsNullOrEmpty(child.Pid))
+                //    {
+                //        throw new Exception("Pid is required for child");
+                //    }
+                //    group.ProductStages.ElementAt(0).ProductStageMasters1.Add(new ProductStageMaster()
+                //    {
+                //        ChildPid = child.Pid,
+                //        CreateBy = User.UserRequest().Email,
+                //        CreateOn = DateTime.Now,
+                //        UpdateBy = User.UserRequest().Email,
+                //        UpdateOn = DateTime.Now
+                //    });
+                //}
+
+                ////group.ProductStages.ToList().ForEach(e => { e.Pid = null; e.UrlEn = null; e.IsMaster = true; e.IsVariant = false; });
+                //AutoGenerate.GeneratePid(db, group.ProductStages);
+                //group.ProductId = db.GetNextProductStageGroupId().Single().Value;
+                //db.ProductStageGroups.Add(group);
+                //Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+                return GetMasterProduct(masterProduct.ProductId);
             }
             catch (Exception e)
             {
@@ -487,33 +648,29 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductStages/Master/{productId}")]
+        [Route("api/Products/Master/{productId}")]
         [HttpGet]
         public HttpResponseMessage GetMasterProduct(long productId)
         {
             try
             {
-                var master = (from mast in db.ProductStageMasters
-                          join stage in db.ProductStages on mast.MasterPid equals stage.Pid
-                          join child in db.ProductStages on mast.ChildPid equals child.Pid
-                          where stage.ProductId == productId
-                          group mast by mast.MasterPid into masterGroup
-                          select new
-                          {
-                              MasterProduct = new
-                              {
-                                  masterGroup.FirstOrDefault().ProductStage1.ProductId,
-                                  masterGroup.FirstOrDefault().ProductStage1.ProductNameEn,
-                                  masterGroup.FirstOrDefault().ProductStage1.Pid
-                               },
-                              ChildProducts = masterGroup.Select(s=> new
-                              {
-                                  s.ProductStage.ProductId,
-                                  s.ProductStage.Pid,
-                                  s.ProductStage.ProductNameEn
-                              }),
-
-                          }).SingleOrDefault();
+                var master = db.Products.Where(w => w.ProductId == productId && w.IsMaster == true)
+                    .Select(s => new
+                {
+                    MasterProduct = new
+                    {
+                        s.ProductId,
+                        s.ProductNameEn,
+                        s.Pid,
+                    },
+                    ChildProducts = db.Products.Where(w => w.MasterPid.Equals(s.Pid)).Select(sc => new
+                    {
+                        sc.ProductId,
+                        sc.Pid,
+                        sc.ProductNameEn
+                    }),
+                    UpdatedDt = s.UpdateOn,
+                }).FirstOrDefault();
                 return Request.CreateResponse(HttpStatusCode.OK, master);
             }
             catch (Exception e)
@@ -522,30 +679,41 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ProductStages/Master")]
+        [Route("api/Products/Master")]
         [HttpGet]
+        //[OverrideAuthentication, OverrideAuthorization]
         public HttpResponseMessage GetMasterProduct([FromUri]ProductRequest request)
         {
             try
             {
-                var master = (from mast in db.ProductStageMasters
-                              join stage in db.ProductStages on mast.MasterPid equals stage.Pid
-                              group mast by mast.MasterPid into masterGroup
-                              select new
-                              {
-                                  masterGroup.FirstOrDefault().ProductStage1.ProductId,
-                                  masterGroup.FirstOrDefault().ProductStage1.ProductNameEn,
-                                  masterGroup.FirstOrDefault().ProductStage1.Pid,
-                                  ChildPids = masterGroup.Select(s => new
-                                  {
-                                      s.ProductStage.Pid
-                                  }),
 
-                              });
-                if (request == null)
+                var master = db.Products.Where(w => w.IsMaster == true).Select(s => new
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, master);
-                }
+                    s.ProductId,
+                    s.ProductNameEn,
+                    s.Pid,
+                    ChildPids = db.Products.Where(w=>w.MasterPid.Equals(s.Pid)).Select(sc=>new
+                    {
+                        sc.Pid
+                    })
+                });
+                //var master = (from mast in db.ProductStageMasters
+                //              join stage in db.ProductStages on mast.MasterPid equals stage.Pid
+                //              group mast by mast.MasterPid into masterGroup
+                //              select new
+                //              {
+                //                  masterGroup.FirstOrDefault().ProductStage1.ProductId,
+                //                  masterGroup.FirstOrDefault().ProductStage1.ProductNameEn,
+                //                  masterGroup.FirstOrDefault().ProductStage1.Pid,
+                //                  ChildPids = masterGroup.Select(s => new
+                //                  {
+                //                      s.ProductStage.Pid
+                //                  }),
+                //              });
+                //if (request == null)
+                //{
+                //    return Request.CreateResponse(HttpStatusCode.OK, master);
+                //}
                 request.DefaultOnNull();
                 var total = master.Count();
                 var pagedProducts = master.Paginate(request);
@@ -796,8 +964,8 @@ namespace Colsp.Api.Controllers
                                  productStage.ProductNameTh,
                                  productStage.Pid,
                                  productStage.Status,
-                                 MasterImg = productStage.ProductStageImages.Select(s => new { ImageId = s.ImageId, url = s.ImageUrlEn, position = s.Position }).OrderBy(o => o.position),
-                                 VariantImg = productStage.ProductStageImages.Select(s => new { ImageId = s.ImageId, url = s.ImageUrlEn, position = s.Position }).OrderBy(o => o.position),
+                                 MasterImg = productStage.ProductStageImages.Select(s => new { ImageId = s.ImageId, Url = s.ImageUrlEn, position = s.Position }).OrderBy(o => o.position),
+                                 VariantImg = productStage.ProductStageImages.Select(s => new { ImageId = s.ImageId, Url = s.ImageUrlEn, position = s.Position }).OrderBy(o => o.position),
                                  productStage.IsVariant,
                                  productStage.VariantCount,
                                  productStage.ProductStageComments.FirstOrDefault().Comment,
@@ -810,7 +978,8 @@ namespace Colsp.Api.Controllers
                                  productStage.ShopId,
                                  Brand = productStage.ProductStageGroup.Brand != null ? new { productStage.ProductStageGroup.Brand.BrandId, productStage.ProductStageGroup.Brand.BrandNameEn } : null,
                              });
-                if (User.HasPermission("View Product"))
+
+                if(User.ShopRequest() != null)
                 {
                     int shopId = User.ShopRequest().ShopId;
                     products = products.Where(w => w.ShopId == shopId);
@@ -1384,19 +1553,20 @@ namespace Colsp.Api.Controllers
                     group.OnlineFlag = true;
                     Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 }
-                var historyList = db.ProductHistoryGroups
-                    .Where(w => w.ProductId == group.ProductId)
-                    .OrderByDescending(o => o.HistoryDt)
-                    .Select(s => new ProductHistoryRequest()
-                    {
-                        ApproveOn = s.ApproveOn,
-                        SubmitBy = s.SubmitBy,
-                        HistoryId = s.HistoryId,
-                        SubmitOn = s.SubmitOn
-                    }).ToList();
-                ProductStageRequest response = new ProductStageRequest();
-                SetupResponse(group, response, historyList);
-                return Request.CreateResponse(HttpStatusCode.OK,response);
+                return GetProductStage(group.ProductId);
+                //var historyList = db.ProductHistoryGroups
+                //    .Where(w => w.ProductId == group.ProductId)
+                //    .OrderByDescending(o => o.HistoryDt)
+                //    .Select(s => new ProductHistoryRequest()
+                //    {
+                //        ApproveOn = s.ApproveOn,
+                //        SubmitBy = s.SubmitBy,
+                //        HistoryId = s.HistoryId,
+                //        SubmitOn = s.SubmitOn
+                //    }).ToList();
+                //ProductStageRequest response = new ProductStageRequest();
+                //SetupResponse(group, response, historyList);
+                //return Request.CreateResponse(HttpStatusCode.OK,response);
             }
             catch (Exception e)
             {
@@ -1573,22 +1743,16 @@ namespace Colsp.Api.Controllers
                 var productIds = request.Products.Select(s => s.ProductId).ToList();
                 var productList = db.ProductStageGroups.Where(w => true).Include(i => i.ProductStageTags);
                 productList = productList.Where(w => productIds.Any(a => a == w.ProductId));
-                if (User.HasPermission("Tag Management"))
-                {
-
-                }
-                else if (User.ShopRequest() != null)
+                bool isAdmin = true;
+                if (User.ShopRequest() != null)
                 {
                     var shopId = User.ShopRequest().ShopId;
                     productList = productList.Where(w => w.ShopId == shopId);
-                }
-                else
-                {
-                    throw new Exception("Has no permission");
+                    isAdmin = false;
                 }
                 foreach (var product in productList)
                 {
-                    if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(product.Status))
+                    if (!isAdmin && Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(product.Status))
                     {
                         throw new Exception("Cannot add tag to Wait for Approval products");
                     }
@@ -1608,7 +1772,14 @@ namespace Colsp.Api.Controllers
                             UpdateOn = DateTime.Now,
                         });
                     }
-                    product.Status = Constant.PRODUCT_STATUS_DRAFT;
+                    if (isAdmin)
+                    {
+                        product.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
+                    }
+                    else
+                    {
+                        product.Status = Constant.PRODUCT_STATUS_DRAFT;
+                    }
                 }
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -2198,7 +2369,7 @@ namespace Colsp.Api.Controllers
                     }
                     else
                     {
-                        throw new Exception(string.Concat("Attribute value ",
+                        throw new Exception(string.Concat("Attribute ", attribute.AttributeNameEn, " id ", attribute.AttributeId, " has no ", "Attribute value ",
                             string.Join(",", request.AttributeValues.Select(s => s.AttributeValueEn))));
                     }
                 }
@@ -3270,7 +3441,6 @@ namespace Colsp.Api.Controllers
                 product.EffectiveDate = group.EffectiveDate;
                 product.ExpireDate = group.ExpireDate;
                 product.Remark = group.Remark;
-                product.MasterPid = string.Empty;
                 product.GiftWrap = group.GiftWrap;
                 product.Status = stage.Status;
                 product.CreateBy = stage.CreateBy;

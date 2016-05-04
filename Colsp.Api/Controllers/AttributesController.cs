@@ -359,6 +359,7 @@ namespace Colsp.Api.Controllers
                 {
                     s.AttributeId,
                     s.AttributeNameEn,
+                    s.AttributeDescriptionEn,
                     s.DataType,
                     s.DataValidation,
                     s.DefaultValue,
@@ -385,6 +386,7 @@ namespace Colsp.Api.Controllers
                             sv.AttributeValue.AttributeValueEn,
                             sv.AttributeValue.AttributeValueTh,
                             sv.AttributeValue.ImageUrl,
+                            sv.AttributeValue.Position
                         }
                     }), 
                 }).SingleOrDefault();
@@ -395,6 +397,7 @@ namespace Colsp.Api.Controllers
             AttributeRequest attribute = new AttributeRequest();
             attribute.AttributeId = attr.AttributeId;
             attribute.AttributeNameEn = attr.AttributeNameEn;
+            attribute.AttributeDescriptionEn = attr.AttributeDescriptionEn;
             attribute.DataType = attr.DataType;
             attribute.DataValidation = attr.DataValidation;
             attribute.DefaultValue = attr.DefaultValue;
@@ -416,12 +419,13 @@ namespace Colsp.Api.Controllers
             if (attr.AttributeValueMaps != null)
             {
                 attribute.AttributeValues = new List<AttributeValueRequest>();
-                foreach (var map in attr.AttributeValueMaps)
+                foreach (var map in attr.AttributeValueMaps.OrderBy(o=>o.AttributeValue.Position))
                 {
                     AttributeValueRequest val = new AttributeValueRequest();
                     val.AttributeValueId = map.AttributeValue.AttributeValueId;
                     val.AttributeValueEn = map.AttributeValue.AttributeValueEn;
                     val.AttributeValueTh = map.AttributeValue.AttributeValueTh;
+                    val.Position = map.AttributeValue.Position;
                     val.Image = new ImageRequest()
                     {
                         Url = map.AttributeValue.ImageUrl
@@ -435,6 +439,7 @@ namespace Colsp.Api.Controllers
         private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request,string email, DateTime currentDt)
         {
             attribute.AttributeNameEn = Validation.ValidateString(request.AttributeNameEn, "Attribute Name (English)", true, 100, true);
+            attribute.AttributeDescriptionEn = Validation.ValidateString(request.AttributeDescriptionEn, "Attribute Description (English)", true, 1000, false,string.Empty);
             attribute.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Display Name (English)", true, 100, true);
             attribute.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Display Name (Thai)", true, 100, true);
             attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", false, 2, true,string.Empty);
@@ -500,11 +505,12 @@ namespace Colsp.Api.Controllers
                         {
                             if(!current.AttributeValueEn.Equals(valRq.AttributeValueEn)
                                 || !current.AttributeValueTh.Equals(valRq.AttributeValueTh)
-                                || !current.ImageUrl.Equals(valRq.Image.Url))
+                                || !current.ImageUrl.Equals(valRq.Image.Url)
+                                || current.Position != valRq.Position)
                             {
-                                
                                 current.AttributeValueEn = Validation.ValidateString(valRq.AttributeValueEn, "Attribute Value (English)", true, 100, true);
                                 current.AttributeValueTh = Validation.ValidateString(valRq.AttributeValueTh, "Attribute Value (Thai)", true, 100, true);
+                                current.Position = valRq.Position;
                                 current.ImageUrl = Validation.ValidateString(valRq.Image.Url, "Attribute Value Url", true, 2000, true,string.Empty);
                                 current.UpdateBy = email;
                                 current.UpdateOn = currentDt;
@@ -522,6 +528,7 @@ namespace Colsp.Api.Controllers
                         {
                             AttributeValueEn = Validation.ValidateString(valRq.AttributeValueEn, "Attribute Value (English)", true, 100, true),
                             AttributeValueTh = Validation.ValidateString(valRq.AttributeValueTh, "Attribute Value (Thai)", true, 100, true),
+                            Position = valRq.Position,
                             ImageUrl = Validation.ValidateString(valRq.Image.Url, "Attribute Value Url", true, 2000, true, string.Empty),
                             Status = Constant.STATUS_ACTIVE,
                             CreateBy = email,
@@ -557,6 +564,7 @@ namespace Colsp.Api.Controllers
         {
             AttributeRequest response = new AttributeRequest();
             response.AttributeId = attribute.AttributeId;
+            response.AttributeDescriptionEn = attribute.AttributeDescriptionEn;
             response.AttributeNameEn = attribute.AttributeNameEn;
             response.DataType = attribute.DataType;
             response.DataValidation = attribute.DataValidation;
@@ -585,6 +593,7 @@ namespace Colsp.Api.Controllers
                     val.AttributeValueId = map.AttributeValue.AttributeValueId;
                     val.AttributeValueEn = map.AttributeValue.AttributeValueEn;
                     val.AttributeValueTh = map.AttributeValue.AttributeValueTh;
+                    val.Position = map.AttributeValue.Position;
                     val.Image = new ImageRequest()
                     {
                         Url = map.AttributeValue.ImageUrl

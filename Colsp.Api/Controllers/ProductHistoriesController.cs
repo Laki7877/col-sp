@@ -196,8 +196,6 @@ namespace Colsp.Api.Controllers
             response.DescriptionShortTh = variant.DescriptionShortTh;
             response.DescriptionFullEn = variant.DescriptionFullEn;
             response.DescriptionShortEn = variant.DescriptionShortEn;
-            //response.Quantity = variant.Inventory.Quantity;
-            //response.SafetyStock = variant.Inventory.SafetyStockSeller;
             response.PrepareDay = variant.PrepareDay;
             response.LimitIndividualDay = variant.LimitIndividualDay;
             response.PrepareMon = variant.PrepareMon;
@@ -235,7 +233,7 @@ namespace Colsp.Api.Controllers
             response.EffectiveDatePromotion = variant.EffectiveDatePromotion;
             response.ExpireDatePromotion = variant.ExpireDatePromotion;
             response.IsHasExpiryDate = variant.IsHasExpiryDate;
-            //response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockType)).SingleOrDefault().Key;
+            response.ExpressDelivery = variant.ExpressDelivery;
             response.Display = variant.Display;
             response.IsHasExpiryDate = variant.IsHasExpiryDate;
             response.IsVat = variant.IsVat;
@@ -325,7 +323,6 @@ namespace Colsp.Api.Controllers
                 attributeList.Add(tmpAttribute);
             }
         }
-
 
         protected override void Dispose(bool disposing)
         {

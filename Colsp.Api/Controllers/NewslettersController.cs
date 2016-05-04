@@ -26,7 +26,17 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var newsLetter = db.Newsletters;
+                var newsLetter = db.Newsletters.Include(i=>i.NewsletterShopMaps)
+                    .Where(w => true);
+                if(User.ShopRequest() != null)
+                {
+                    var shopGroup = User.ShopRequest().ShopGroup;
+                    var shopId = User.ShopRequest().ShopId;
+                    newsLetter = newsLetter.Where(w => DateTime.Now >= w.PublishedDt);
+                    newsLetter = newsLetter.Where(w => (Constant.NEWSLETTER_VISIBLE_TO_ALL.Equals(w.VisibleShopGroup) || w.VisibleShopGroup.Equals(shopGroup)) && !w.NewsletterShopMaps.Any(a=>a.ShopId==shopId && Constant.NEWSLETTER_FILTER_EXCLUDE.Equals(a.Filter)));
+                    newsLetter = newsLetter.Union(db.Newsletters.Where(w=> !(Constant.NEWSLETTER_VISIBLE_TO_ALL.Equals(w.VisibleShopGroup) || w.VisibleShopGroup.Equals(shopGroup)) && w.NewsletterShopMaps.Any(a=>a.ShopId==shopId && Constant.NEWSLETTER_FILTER_INCLUDE.Equals(a.Filter))));
+
+                }
                 if(request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, newsLetter);

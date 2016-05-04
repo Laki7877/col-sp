@@ -49,6 +49,7 @@ namespace Colsp.Entity.Models
         public string ShopImageUrl { get; set; }
         public string ShopDescriptionEn { get; set; }
         public string ShopDescriptionTh { get; set; }
+        public string DomainName { get; set; }
         public string ShopAddress { get; set; }
         public string Facebook { get; set; }
         public string YouTube { get; set; }
