@@ -534,6 +534,9 @@
     <Compile Include="Models\ShopComponentMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ShopGroup.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ShopImage.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

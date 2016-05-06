@@ -90,7 +90,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> EffectiveDatePromotion { get; set; }
         public Nullable<System.DateTime> ExpireDatePromotion { get; set; }
         public Nullable<System.DateTime> NewArrivalDate { get; set; }
-        public bool DefaultVaraint { get; set; }
+        public bool DefaultVariant { get; set; }
         public string Display { get; set; }
         public int MiniQtyAllowed { get; set; }
         public int MaxiQtyAllowed { get; set; }
@@ -101,6 +101,8 @@ namespace Colsp.Entity.Models
         public bool IsMaster { get; set; }
         public int VariantCount { get; set; }
         public bool Visibility { get; set; }
+        public string OldPid { get; set; }
+        public string Bu { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
         public System.DateTime CreateOn { get; set; }

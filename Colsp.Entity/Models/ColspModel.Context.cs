@@ -138,6 +138,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopCommission> ShopCommissions { get; set; }
         public virtual DbSet<ShopComponentMap> ShopComponentMaps { get; set; }
+        public virtual DbSet<ShopGroup> ShopGroups { get; set; }
         public virtual DbSet<ShopImage> ShopImages { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }

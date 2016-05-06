@@ -228,7 +228,7 @@ namespace Colsp.Api.Controllers
                     SalePrice = defaultVariant.SalePrice,
                     IsMaster = false,
                     IsVariant = false,
-                    DefaultVaraint = false,
+                    DefaultVariant = false,
                     //ShippingId = Constant.SHIPPING_FULFILLMENT,
                     DescriptionFullEn = string.Empty,
                     DescriptionFullTh = string.Empty,
@@ -317,7 +317,7 @@ namespace Colsp.Api.Controllers
                         SalePrice = variant.SalePrice,
                         IsMaster = false,
                         IsVariant = true,
-                        DefaultVaraint = variantRq.DefaultVariant,
+                        DefaultVariant = variantRq.DefaultVariant,
                         //ShippingId = Constant.SHIPPING_FULFILLMENT,
                         DescriptionFullEn = string.Empty,
                         DescriptionFullTh = string.Empty,
@@ -504,7 +504,7 @@ namespace Colsp.Api.Controllers
                     BrandId = parentProduct.BrandId,
                     GiftWrap = parentProduct.GiftWrap,
                     BoostWeight = parentProduct.BoostWeight,
-                    DefaultVaraint = parentProduct.DefaultVaraint,
+                    DefaultVariant = parentProduct.DefaultVariant,
                     DeliveryFee = parentProduct.DeliveryFee,
                     DescriptionFullEn = parentProduct.DescriptionFullEn,
                     DescriptionFullTh = parentProduct.DescriptionFullTh,
@@ -1662,6 +1662,272 @@ namespace Colsp.Api.Controllers
             {
                 var response = GetProductStageRequestFromId(db, productId);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
+                #region 
+                //var tmp = db.ProductStageGroups.Where(w => w.ProductId == productId).Select(s => new
+                //{
+                //    s.ProductId,
+                //    MasterVariant = s.ProductStages.Where(w => w.IsVariant == false && w.IsMaster == false).Select(sm => new
+                //    {
+                //        sm.Length,
+                //        sm.Width,
+                //        sm.Height,
+                //        sm.Weight,
+                //        sm.ProductNameEn,
+                //        sm.ProductNameTh,
+                //        sm.ProdTDNameEn,
+                //        sm.ProdTDNameTh,
+                //        sm.IsHasExpiryDate,
+                //        sm.IsVat,
+                //        //sm.MinimumAllowedInCart,
+                //        //sm.MaximumAllowedInCart
+                //        sm.Pid,
+                //        sm.Sku,
+                //        sm.DescriptionShortTh,
+                //        sm.DescriptionShortEn,
+                //        sm.DescriptionFullTh,
+                //        sm.DescriptionFullEn,
+                //        sm.OriginalPrice,
+                //        //sm.MaximumAllowedPreOrder,
+                //        sm.SalePrice,
+                //        Quantity = sm.Inventory != null ? sm.Inventory.Quantity : 0,
+                //        sm.PromotionPrice,
+                //        sm.EffectiveDatePromotion,
+                //        sm.ExpireDatePromotion,
+                //        sm.UnitPrice,
+                //        sm.PurchasePrice,
+                //        sm.SaleUnitTh,
+                //        sm.SaleUnitEn,
+                //        sm.PrepareDay,
+                //        sm.PrepareMon,
+                //        sm.PrepareTue,
+                //        sm.PrepareWed,
+                //        sm.PrepareThu,
+                //        sm.PrepareFri,
+                //        sm.PrepareSat,
+                //        sm.PrepareSun,
+                //        sm.KillerPoint1En,
+                //        sm.KillerPoint2En,
+                //        sm.KillerPoint3En,
+                //        sm.KillerPoint1Th,
+                //        sm.KillerPoint2Th,
+                //        sm.KillerPoint3Th,
+                //        sm.DimensionUnit,
+                //        sm.WeightUnit,
+                //        StockType = sm.Inventory == null ? null : sm.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
+                //        Images = sm.ProductStageImages.Select(si=>new
+                //        {
+                //            ImageId = si.ImageId,
+                //            Url = si.ImageUrlEn,
+                //            Position = si.Position,
+                //        }).OrderBy(oi=>oi.Position),
+                //        sm.Installment,
+                //        sm.ExpressDelivery,
+                //        sm.DeliveryFee,
+                //        VideoLinks = sm.ProductStageVideos.Select(sv=>new
+                //        {
+                //            Url = sv.VideoUrlEn,
+                //            Position = sv.Position,
+                //            VideoId = sv.VideoId
+                //        }).OrderBy(oi => oi.Position),
+                //        SEO = new
+                //        {
+                //            sm.MetaTitleEn,
+                //            sm.MetaTitleTh,
+                //            sm.MetaDescriptionEn,
+                //            sm.MetaDescriptionTh,
+                //            GlobalProductBoostingWeight = sm.GlobalBoostWeight,
+                //            MetaKeywordEn = sm.MetaKeyEn,
+                //            MetaKeywordTh = sm.MetaKeyTh,
+                //            ProductBoostingWeight = sm.BoostWeight,
+                //            ProductUrlKeyEn = sm.UrlKey,
+                //            sm.SeoEn,
+                //            sm.SeoTh
+                //        },
+                //        sm.LimitIndividualDay,
+                //        sm.Upc,
+                //        sm.Display,
+                //        sm.Visibility,
+                //        sm.DefaultVariant
+                //    }).FirstOrDefault(),
+                //    Variants = s.ProductStages.Where(w => w.IsVariant == true && w.IsMaster == false).Select(sm => new
+                //    {
+                //        sm.Length,
+                //        sm.Width,
+                //        sm.Height,
+                //        sm.Weight,
+                //        sm.ProductNameEn,
+                //        sm.ProductNameTh,
+                //        sm.ProdTDNameEn,
+                //        sm.ProdTDNameTh,
+                //        sm.IsHasExpiryDate,
+                //        sm.IsVat,
+                //        //sm.MinimumAllowedInCart,
+                //        //sm.MaximumAllowedInCart
+                //        sm.Pid,
+                //        sm.Sku,
+                //        sm.DescriptionShortTh,
+                //        sm.DescriptionShortEn,
+                //        sm.DescriptionFullTh,
+                //        sm.DescriptionFullEn,
+                //        sm.OriginalPrice,
+                //        //sm.MaximumAllowedPreOrder,
+                //        sm.SalePrice,
+                //        Quantity = sm.Inventory != null ? sm.Inventory.Quantity : 0,
+                //        sm.PromotionPrice,
+                //        sm.EffectiveDatePromotion,
+                //        sm.ExpireDatePromotion,
+                //        sm.UnitPrice,
+                //        sm.PurchasePrice,
+                //        sm.SaleUnitTh,
+                //        sm.SaleUnitEn,
+                //        sm.PrepareDay,
+                //        sm.PrepareMon,
+                //        sm.PrepareTue,
+                //        sm.PrepareWed,
+                //        sm.PrepareThu,
+                //        sm.PrepareFri,
+                //        sm.PrepareSat,
+                //        sm.PrepareSun,
+                //        sm.KillerPoint1En,
+                //        sm.KillerPoint2En,
+                //        sm.KillerPoint3En,
+                //        sm.KillerPoint1Th,
+                //        sm.KillerPoint2Th,
+                //        sm.KillerPoint3Th,
+                //        sm.DimensionUnit,
+                //        sm.WeightUnit,
+                //        StockType = sm.Inventory == null ? null : sm.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
+                //        Images = sm.ProductStageImages.Select(si => new
+                //        {
+                //            ImageId = si.ImageId,
+                //            Url = si.ImageUrlEn,
+                //            Position = si.Position,
+                //        }).OrderBy(oi => oi.Position),
+                //        sm.Installment,
+                //        sm.ExpressDelivery,
+                //        sm.DeliveryFee,
+                //        VideoLinks = sm.ProductStageVideos.Select(sv => new
+                //        {
+                //            Url = sv.VideoUrlEn,
+                //            Position = sv.Position,
+                //            VideoId = sv.VideoId
+                //        }).OrderBy(oi => oi.Position),
+                //        SEO = new
+                //        {
+                //            sm.MetaTitleEn,
+                //            sm.MetaTitleTh,
+                //            sm.MetaDescriptionEn,
+                //            sm.MetaDescriptionTh,
+                //            GlobalProductBoostingWeight = sm.GlobalBoostWeight,
+                //            MetaKeywordEn = sm.MetaKeyEn,
+                //            MetaKeywordTh = sm.MetaKeyTh,
+                //            ProductBoostingWeight = sm.BoostWeight,
+                //            ProductUrlKeyEn = sm.UrlKey,
+                //            sm.SeoEn,
+                //            sm.SeoTh
+                //        },
+                //        sm.LimitIndividualDay,
+                //        sm.Upc,
+                //        FirstAttribute = sm.ProductStageAttributes.Where(w => w.Position == 1).Select(sa => new
+                //        {
+                //            sa.ValueEn,
+                //            sa.ValueTh,
+                //            sa.AttributeId,
+                //            AttributeValues = sa.AttributeValue == null ? null : new
+                //            {
+                //                sa.AttributeValue.AttributeValueEn,
+                //                sa.AttributeValue.AttributeValueId,
+                //                sa.AttributeValue.AttributeValueTh,
+                //                sa.CheckboxValue,
+                //            }
+                //        }).FirstOrDefault(),
+                //        SecondAttribute = sm.ProductStageAttributes.Where(w => w.Position == 2).Select(sa => new
+                //        {
+                //            sa.ValueEn,
+                //            sa.ValueTh,
+                //            sa.AttributeId,
+                //            AttributeValues = sa.AttributeValue == null ? null : new
+                //            {
+                //                sa.AttributeValue.AttributeValueEn,
+                //                sa.AttributeValue.AttributeValueId,
+                //                sa.AttributeValue.AttributeValueTh,
+                //                sa.CheckboxValue,
+                //            }
+                //        }).FirstOrDefault(),
+                //        sm.Display,
+                //        sm.Visibility,
+                //        sm.DefaultVariant,
+                //    }),
+                //    s.Status,
+                //    s.ShopId,
+
+                //    GlobalCategories = s.ProductStageGlobalCatMaps.Select(sg=>new
+                //    {
+                //        sg.GlobalCategory.CategoryId,
+                //    }),
+                //    LocalCategories = s.ProductStageLocalCatMaps.Select(sl=>new
+                //    {
+                //        sl.CategoryId,
+                //    }),
+                //    MainGlobalCategory = new
+                //    {
+                //        CategoryId = s.GlobalCatId,
+                //    },
+                //    MainLocalCategory = new
+                //    {
+                //        CategoryId = s.LocalCatId,
+                //    },
+                //    Tags = s.ProductStageTags.Select(st=>st.Tag),
+                //    ControlFlags = new
+                //    {
+                //        s.IsNew,
+                //        s.IsClearance,
+                //        s.IsBestSeller,
+                //        s.IsOnlineExclusive,
+                //        s.IsOnlyAt
+                //    },
+                //    Brand = s.Brand == null ? null : new
+                //    {
+                //        s.Brand.BrandId,
+                //        s.Brand.BrandNameEn,
+                //    },
+                //    s.TheOneCardEarn,
+                //    s.GiftWrap,
+                //    AttributeSet = s.AttributeSet == null ? null : new
+                //    {
+                //        s.AttributeSet.AttributeSetId,
+                //        s.AttributeSet.AttributeSetNameEn,
+                //        AttributeSetTagMaps = s.AttributeSet.AttributeSetTags.Select(st=>new
+                //        {
+                //            AttributeSetId = st.AttributeSetId,
+                //            Tag = new
+                //            {
+                //                st.Tag
+                //            },
+                //        }),
+                //        AttributeSetMaps = s.AttributeSet.AttributeSetMaps.Select(sm=>new
+                //        {
+                //            Attribute = new
+                //            {
+                //                AttributeValueMaps = sm.Attribute.AttributeValueMaps.Select(sv=> new
+                //                {
+                //                    sv.AttributeValueId,
+                //                    AttributeValue = sv.AttributeValue == null ? null : new
+                //                    {
+                //                        sv.AttributeValue.AttributeValueEn,
+                //                        sv.AttributeValue.AttributeValueId,
+                //                        sv.AttributeValue.AttributeValueTh,
+                //                    },
+                //                    sv.AttributeId
+                //                })
+                //            },
+                //            sm.AttributeId,
+                //            sm.AttributeSetId,
+
+                //        })
+                //    },
+                //}).SingleOrDefault();
+                #endregion
             }
             catch (Exception e)
             {
@@ -2622,7 +2888,7 @@ namespace Colsp.Api.Controllers
             variant.UrlKey = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product Url Key", false, 300, false, string.Empty);
             variant.BoostWeight = request.SEO.ProductBoostingWeight;
             variant.Visibility = request.Visibility;
-            variant.DefaultVaraint = request.DefaultVariant;
+            variant.DefaultVariant = request.DefaultVariant;
             variant.Display = Validation.ValidateString(request.Display, "Display", true, 20, true, Constant.VARIANT_DISPLAY_GROUP, new List<string>() { Constant.VARIANT_DISPLAY_GROUP, Constant.VARIANT_DISPLAY_INDIVIDUAL });
             variant.JDADept = string.Empty;
             variant.JDASubDept = string.Empty;
@@ -3069,7 +3335,7 @@ namespace Colsp.Api.Controllers
             response.SEO.SeoEn = variant.SeoEn;
             response.SEO.SeoTh = variant.SeoTh;
             response.Visibility = variant.Visibility;
-            response.DefaultVariant = variant.DefaultVaraint;
+            response.DefaultVariant = variant.DefaultVariant;
             response.Quantity = variant.Inventory.Quantity;
             response.SafetyStock = variant.Inventory.SafetyStockSeller;
             response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockType)).SingleOrDefault().Key;
@@ -3337,7 +3603,7 @@ namespace Colsp.Api.Controllers
                     Width = stage.Width,
                     WeightUnit = stage.WeightUnit,
                     BoostWeight = stage.BoostWeight,
-                    DefaultVaraint = stage.DefaultVaraint,
+                    DefaultVaraint = stage.DefaultVariant,
                     Display = stage.Display,
                     FeatureImgUrl = stage.FeatureImgUrl,
                     GlobalBoostWeight = stage.GlobalBoostWeight,
@@ -3425,7 +3691,7 @@ namespace Colsp.Api.Controllers
                 product.Width = stage.Width;
                 product.WeightUnit = stage.WeightUnit;
                 product.BoostWeight = stage.BoostWeight;
-                product.DefaultVaraint = stage.DefaultVaraint;
+                product.DefaultVariant = stage.DefaultVariant;
                 product.Display = stage.Display;
                 product.FeatureImgUrl = stage.FeatureImgUrl;
                 product.GlobalBoostWeight = stage.GlobalBoostWeight;
@@ -3853,7 +4119,7 @@ namespace Colsp.Api.Controllers
                     },
                     s.Status,
                     s.ProductId,
-                    s.DefaultVaraint,
+                    s.DefaultVariant,
                     s.Pid,
                     s.ProductNameEn,
                     s.ProductNameTh,
@@ -4067,7 +4333,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (headDicTmp.ContainsKey("DFV"))
                     {
-                        bodyList[headDicTmp["DFV"].Item2] = p.DefaultVaraint == true ? "Yes" : "No";
+                        bodyList[headDicTmp["DFV"].Item2] = p.DefaultVariant == true ? "Yes" : "No";
                     }
                     if (headDicTmp.ContainsKey("PID"))
                     {
@@ -4900,8 +5166,8 @@ namespace Colsp.Api.Controllers
                             PurchasePrice = 0,
                             SalePrice = 0,
                             OriginalPrice = 0,
-                            
-                            DefaultVaraint = false,
+
+                            DefaultVariant = false,
 
                             ProductNameEn = Validation.ValidateCSVStringColumn(headDic, body, "Product Name (English)", true, 300, errorMessage, row),
                             ProductNameTh = Validation.ValidateCSVStringColumn(headDic, body, "Product Name (Thai)", true, 300, errorMessage, row),
@@ -4944,7 +5210,7 @@ namespace Colsp.Api.Controllers
                         if (headDic.ContainsKey("Default Variant"))
                         {
                             string defaultVar = body[headDic["Default Variant"]];
-                            variant.DefaultVaraint = "Yes".Equals(defaultVar);
+                            variant.DefaultVariant = "Yes".Equals(defaultVar);
                         }
                         if (Constant.SHOP_GROUP_INDY.Equals(User.ShopRequest().ShopGroup))
                         {
@@ -5115,9 +5381,9 @@ namespace Colsp.Api.Controllers
                             }
                         }
                         #endregion
-                        if (variant.DefaultVaraint || isNew)
+                        if (variant.DefaultVariant || isNew)
                         {
-                            variant.DefaultVaraint = true;
+                            variant.DefaultVariant = true;
                             #region Relate Product
                             if (headDic.ContainsKey("Related Products"))
                             {
@@ -5374,7 +5640,7 @@ namespace Colsp.Api.Controllers
 
                             masterVariant.ShopId = variant.ShopId;
                             masterVariant.Pid = variant.Pid;
-                            masterVariant.DefaultVaraint = false;
+                            masterVariant.DefaultVariant = false;
                             masterVariant.Status = variant.Status;
                             masterVariant.Visibility = variant.Visibility;
                             masterVariant.CreateBy = variant.CreateBy;
@@ -6030,7 +6296,7 @@ namespace Colsp.Api.Controllers
                         #region Setup Variant
                         if (header.Contains("Default Variant"))
                         {
-                            masterVariantEn.DefaultVaraint = importVariantEn.DefaultVaraint;
+                            masterVariantEn.DefaultVariant = importVariantEn.DefaultVariant;
                         }
                         if (header.Contains("Product Name (English)"))
                         {
@@ -6301,7 +6567,7 @@ namespace Colsp.Api.Controllers
                                     #region Setup Variant
                                     if (header.Contains("Default Variant"))
                                     {
-                                        currentStage.DefaultVaraint = staging.DefaultVaraint;
+                                        currentStage.DefaultVariant = staging.DefaultVariant;
                                     }
                                     if (header.Contains("Product Name (English)"))
                                     {

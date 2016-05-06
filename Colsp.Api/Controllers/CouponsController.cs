@@ -40,12 +40,12 @@ namespace Colsp.Api.Controllers
                                  Shop = new { c.Shop.ShopNameEn },
                                  c.CouponType
                              };
-                if(User.HasPermission("View Promotion"))
+                if(User.ShopRequest() != null)
                 {
                     var shopId = User.ShopRequest().ShopId;
                     coupon = coupon.Where(w => w.ShopId == shopId && w.CouponType.Equals(Constant.USER_TYPE_SELLER));
                 }
-                else if(User.HasPermission("Manage Global Coupons"))
+                else
                 {
                     if (request.IsGlobalCoupon)
                     {
@@ -55,10 +55,6 @@ namespace Colsp.Api.Controllers
                     {
                         coupon = coupon.Where(w => w.CouponType.Equals(Constant.USER_TYPE_SELLER));
                     }
-                }
-                else
-                {
-                    throw new Exception("You don't have a right permission");
                 }
                 if (request == null)
                 {
@@ -117,7 +113,7 @@ namespace Colsp.Api.Controllers
                         }
 
                     });
-                if (User.HasPermission("View Promotion"))
+                if(User.ShopRequest() != null)
                 {
                     var shopId = User.ShopRequest().ShopId;
                     couponList = couponList.Where(w => w.ShopId == shopId);

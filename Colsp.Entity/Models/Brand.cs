@@ -52,6 +52,8 @@ namespace Colsp.Entity.Models
         public string SeoEn { get; set; }
         public string SeoTh { get; set; }
         public Nullable<int> SortById { get; set; }
+        public Nullable<int> OldBrandId { get; set; }
+        public string Bu { get; set; }
         public string UrlKey { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
