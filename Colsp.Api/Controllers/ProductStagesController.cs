@@ -1592,6 +1592,53 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 var shopId = User.ShopRequest().ShopId;
+                
+                //var email = User.UserRequest().Email;
+                //var currentDt = DateTime.Now;
+                //ProductStageGroup newGroup = new ProductStageGroup()
+                //{
+                //    ApproveBy = null,
+                //    ApproveOn = null,
+                //    AttributeSetId = request.AttributeSet,
+                //    CategoryTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                //    CreateBy = email,
+                //    CreateOn = currentDt,
+                //    EffectiveDate = null,
+                //    ExpireDate = null,
+                //    FirstApproveBy = null,
+                //    FirstApproveOn = null,
+                //    GlobalCatId = pidMapCat.ContainsKey(oldProduct.PID) ? pidMapCat[oldProduct.PID] : 0,
+                //    ImageFlag = false,
+                //    ImageTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                //    InfoFlag = false,
+                //    InformationTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                //    IsBestSeller = false,
+                //    IsClearance = false,
+                //    IsNew = oldProduct.NewArrival,
+                //    IsOnlineExclusive = false,
+                //    IsOnlyAt = false,
+                //    LocalCatId = null,
+                //    OnlineFlag = false,
+                //    MoreOptionTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                //    RejecteBy = null,
+                //    RejectOn = null,
+                //    RejectReason = string.Empty,
+                //    Remark = string.Empty,
+                //    Status = Constant.PRODUCT_STATUS_APPROVE,
+                //    VariantTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                //    UpdateBy = email,
+                //    UpdateOn = currentDt,
+                //    TheOneCardEarn = 1,
+                //    SubmitBy = null,
+                //    SubmitOn = null,
+                //    ShopId = 2,
+                //    ShippingId = 1,
+                //    BrandId = brandId != 0 ? brandId : null,
+                //    GiftWrap = Constant.STATUS_NO,
+                //    ProductId = oldGroup != null ? oldGroup.ProductGroupId : index--,
+                //};
+
+
                 ProductStageGroup group = SetupProduct(db, request,shopId);
                 AutoGenerate.GeneratePid(db, group.ProductStages);
                 group.ProductId = db.GetNextProductStageGroupId().Single().Value;

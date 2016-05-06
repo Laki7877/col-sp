@@ -147,19 +147,15 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 coupon = new Coupon();
-                if(User.HasPermission("Edit Promotion"))
+                if(User.ShopRequest() != null)
                 {
                     var shopId = User.ShopRequest().ShopId;
                     coupon.ShopId = shopId;
                     coupon.CouponType = Constant.USER_TYPE_SELLER;
                 }
-                else if (User.HasPermission("Manage Global Coupons"))
-                {
-                    coupon.CouponType = Constant.USER_TYPE_ADMIN;
-                }
                 else
                 {
-                    throw new Exception("You don't have a right permission");
+                    coupon.CouponType = Constant.USER_TYPE_ADMIN;
                 }
                 string email = User.UserRequest().Email;
                 DateTime currentDt = DateTime.Now;
