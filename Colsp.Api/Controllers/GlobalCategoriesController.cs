@@ -519,8 +519,10 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var catEnList = db.GlobalCategories;
-                foreach (CategoryRequest catRq in request)
+                List<GlobalCategory> updateList = new List<GlobalCategory>();
+                string email = User.UserRequest().Email;
+                DateTime currentDt = DateTime.Now;
+                foreach (var catRq in request)
                 {
                     if (catRq.Lft >= catRq.Rgt)
                     {
@@ -531,40 +533,91 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
                     }
-                    if(catRq.CategoryId == 0)
+                    if (catRq.CategoryId == 0)
                     {
                         throw new Exception("Category " + catRq.NameEn + " is invalid.");
                     }
-                    var catEn = catEnList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
-                    if (catEn == null)
+                    GlobalCategory category = new GlobalCategory()
                     {
-                        throw new Exception("Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
+                        CategoryId = catRq.CategoryId,
+                        Lft = catRq.Lft,
+                        Rgt = catRq.Rgt,
+                        UpdateBy = email,
+                        UpdateOn = currentDt,
+                    };
+                    db.GlobalCategories.Attach(category);
+                    db.Entry(category).Property(p => p.Lft).IsModified = true;
+                    db.Entry(category).Property(p => p.Rgt).IsModified = true;
+                    db.Entry(category).Property(p => p.UpdateBy).IsModified = true;
+                    db.Entry(category).Property(p => p.UpdateOn).IsModified = true;
+                }
+                var reqCatIds = request.Select(s => s.CategoryId);
+                var deleteIds = db.GlobalCategories.Where(w => !reqCatIds.Any(a => a == w.CategoryId)).Select(s => s.CategoryId);
+                if(deleteIds != null && deleteIds.Count() > 0)
+                {
+                    var productMap = db.ProductStageGroups.Where(w => deleteIds.Contains(w.GlobalCatId)).Select(s => s.GlobalCategory.NameEn);
+                    if (productMap != null && productMap.Count() > 0)
+                    {
+                        throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", productMap), " with product associated"));
                     }
-                    catEn.Lft = catRq.Lft;
-                    catEn.Rgt = catRq.Rgt;
-                    catEn.UpdateBy = User.UserRequest().Email;
-                    catEn.UpdateOn = DateTime.Now;
-                    catEnList.Remove(catEn);
+                    var attributesetMap = db.GlobalCatAttributeSetMaps.Where(w => deleteIds.Contains(w.CategoryId)).Select(s => s.GlobalCategory.NameEn);
+                    if (attributesetMap != null && attributesetMap.Count() > 0)
+                    {
+                        throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", attributesetMap), " with attribute set associated"));
+                    }
+                    db.GlobalCategories.RemoveRange(db.GlobalCategories.Where(w=> deleteIds.Contains(w.CategoryId)));
                 }
-                var ids = catEnList.Select(s => s.CategoryId);
-                var productMap = db.ProductStageGroups.Where(w=> ids.Contains(w.GlobalCatId)).Select(s=>s.GlobalCategory.NameEn);
-                if (productMap != null && productMap.Count() > 0)
-                {
-                    throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", productMap), " with product associated"));
-                }
-                var attributesetMap = db.GlobalCatAttributeSetMaps.Where(w => ids.Contains(w.CategoryId)).Select(s => s.GlobalCategory.NameEn);
-                if (attributesetMap != null && attributesetMap.Count() > 0)
-                {
-                    throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", attributesetMap), " with attribute set associated"));
-                }
-                if(catEnList != null && catEnList.Count() > 0)
-                {
-                    db.GlobalCategories.RemoveRange(catEnList);
-                }
-                
                 Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
-
                 return Request.CreateResponse(HttpStatusCode.OK);
+
+
+
+
+
+                //var catEnList = db.GlobalCategories;
+                //foreach (CategoryRequest catRq in request)
+                //{
+                //    if (catRq.Lft >= catRq.Rgt)
+                //    {
+                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Node is not properly formated");
+                //    }
+                //    var validate = request.Where(w => w.Lft == catRq.Lft || w.Rgt == catRq.Rgt).ToList();
+                //    if (validate != null && validate.Count > 1)
+                //    {
+                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
+                //    }
+                //    if(catRq.CategoryId == 0)
+                //    {
+                //        throw new Exception("Category " + catRq.NameEn + " is invalid.");
+                //    }
+                //    var catEn = catEnList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
+                //    if (catEn == null)
+                //    {
+                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
+                //    }
+                //    catEn.Lft = catRq.Lft;
+                //    catEn.Rgt = catRq.Rgt;
+                //    catEn.UpdateBy = User.UserRequest().Email;
+                //    catEn.UpdateOn = DateTime.Now;
+                //    catEnList.Remove(catEn);
+                //}
+                //var ids = catEnList.Select(s => s.CategoryId);
+                //var productMap = db.ProductStageGroups.Where(w=> ids.Contains(w.GlobalCatId)).Select(s=>s.GlobalCategory.NameEn);
+                //if (productMap != null && productMap.Count() > 0)
+                //{
+                //    throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", productMap), " with product associated"));
+                //}
+                //var attributesetMap = db.GlobalCatAttributeSetMaps.Where(w => ids.Contains(w.CategoryId)).Select(s => s.GlobalCategory.NameEn);
+                //if (attributesetMap != null && attributesetMap.Count() > 0)
+                //{
+                //    throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", attributesetMap), " with attribute set associated"));
+                //}
+                //if(catEnList != null && catEnList.Count() > 0)
+                //{
+                //    db.GlobalCategories.RemoveRange(catEnList);
+                //}
+
+
             }
             catch (DbUpdateException e)
             {

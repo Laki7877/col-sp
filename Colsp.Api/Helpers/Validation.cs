@@ -10,6 +10,28 @@ namespace Colsp.Api.Helpers
 {
     public static class Validation
     {
+
+        private static Regex regex = new Regex("^[a-z0-9_-]+$");
+
+        public static string ValidateUniqueName(string val, string fieldName)
+        {
+            if (string.IsNullOrWhiteSpace(val))
+            {
+                throw new Exception(string.Concat(fieldName + " is required"));
+            }
+            val = val.ToLower().Trim();
+            if (!regex.IsMatch(val))
+            {
+                throw new Exception(string.Concat(fieldName + " can only be a-z 0-9 _ -"));
+            }
+            return val;
+        }
+
+
+
+
+
+
         public static DateTime? ValidateDateTime(string val,string fieldName,bool required,DateTime? defaultVal = null)
         {
             if (required && string.IsNullOrWhiteSpace(val))

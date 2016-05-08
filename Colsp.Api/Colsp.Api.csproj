@@ -229,6 +229,7 @@
     <Compile Include="Filters\ClaimsAuthorizeAttribute.cs" />
     <Compile Include="Filters\ValidateMimeMultipartContentFilter.cs" />
     <Compile Include="Helpers\AutoGenerate.cs" />
+    <Compile Include="Helpers\SystemHelper.cs" />
     <Compile Include="Helpers\Util.cs" />
     <Compile Include="Helpers\Validation.cs" />
     <Compile Include="Mockup\OrderMockup.cs" />

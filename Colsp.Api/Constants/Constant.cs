@@ -5,6 +5,9 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+        public static int DEFAULT_SHIPPING_ID = 1;
+
+
         public static int ADMIN_SHOP_ID = 0;
 
         public enum ImageRatio  { IMAGE_RATIO_16_9 };

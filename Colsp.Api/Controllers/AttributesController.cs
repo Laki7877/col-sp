@@ -438,7 +438,8 @@ namespace Colsp.Api.Controllers
 
         private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request,string email, DateTime currentDt)
         {
-            attribute.AttributeNameEn = Validation.ValidateString(request.AttributeNameEn, "Attribute Name (English)", true, 100, true);
+
+            attribute.AttributeNameEn = Validation.ValidateUniqueName(request.AttributeNameEn, "Attribute Name (English)");
             attribute.AttributeDescriptionEn = Validation.ValidateString(request.AttributeDescriptionEn, "Attribute Description (English)", true, 1000, false,string.Empty);
             attribute.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Display Name (English)", true, 100, true);
             attribute.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Display Name (Thai)", true, 100, true);

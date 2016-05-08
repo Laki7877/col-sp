@@ -9,12 +9,12 @@ namespace Colsp.Model.Requests
         public decimal Width { get; set; }
         public decimal Height { get; set; }
         public decimal Weight { get; set; }
-        public string ProductNameEn { get; set; }
-        public string ProductNameTh { get; set; }
-        public string ProdTDNameTh { get; set; }
-        public string ProdTDNameEn { get; set; }
-        public string IsHasExpiryDate { get; set; }
-        public string IsVat { get; set; }
+        public string  ProductNameEn { get; set; }
+        public string  ProductNameTh { get; set; }
+        public string  ProdTDNameTh { get; set; }
+        public string  ProdTDNameEn { get; set; }
+        public string  IsHasExpiryDate { get; set; }
+        public string  IsVat { get; set; }
         public int MinimumAllowedInCart { get; set; }
         public int MaximumAllowedInCart { get; set; }
         public string Pid { get; set; }
@@ -25,13 +25,14 @@ namespace Colsp.Model.Requests
         public string DescriptionFullEn { get; set; }
         public string MobileDescriptionEn { get; set; }
         public string MobileDescriptionTh { get; set; }
-
         public decimal OriginalPrice { get; set; }
         public int MaximumAllowedPreOrder { get; set; }
         public decimal SalePrice { get; set; }
         public int Quantity { get; set; }
         public int MaxQtyAllowInCart { get; set; }
         public int MinQtyAllowInCart { get; set; }
+        public int OnHold { get; set; }
+        public int Reserve { get; set; }
         public int MaxQtyPreOrder    { get; set; }
         public bool UseDecimal { get; set; }
         public decimal PromotionPrice { get; set; }
@@ -42,7 +43,6 @@ namespace Colsp.Model.Requests
         public string SaleUnitTh { get; set; }
         public string SaleUnitEn { get; set; }
         public int PrepareDay { get; set; }
-       
         public int PrepareMon { get; set; }
         public int PrepareTue { get; set; }
         public int PrepareWed { get; set; }
@@ -73,12 +73,12 @@ namespace Colsp.Model.Requests
         public string Display { get; set; }
         public bool Visibility { get; set; }
         public bool DefaultVariant { get; set; }
-        
+        public DateTime? NewArrivalDate { get; set; }
+        public int MiniQtyAllowed { get; set; }
+        public int MaxiQtyAllowed { get; set; }
         public long ProductId { get; set; }
         public int ShopId { get; set; }
-        
         public List<ImageRequest> Images360 { get; set; }
-        
         public int VariantId { get; set; }
         public bool IsVariant { get; set; }
         public string Status { get; set; }
@@ -93,20 +93,39 @@ namespace Colsp.Model.Requests
             Height = 0;
             Weight = 0;
             ProductNameEn = string.Empty;
-            Pid = string.Empty;
             ProductNameTh = string.Empty;
             ProdTDNameTh = string.Empty;
             ProdTDNameEn = string.Empty;
+            IsHasExpiryDate = string.Empty;
+            IsVat = string.Empty;
+            MinimumAllowedInCart = 0;
+            MaximumAllowedInCart = 0;
+            Pid = string.Empty;
             Sku = string.Empty;
             DescriptionShortTh = string.Empty;
             DescriptionShortEn = string.Empty;
             DescriptionFullTh = string.Empty;
             DescriptionFullEn = string.Empty;
+            MobileDescriptionEn = string.Empty;
+            MobileDescriptionTh = string.Empty;
             OriginalPrice = 0;
+            MaximumAllowedPreOrder = 0;
             SalePrice = 0;
             Quantity = 0;
+            MaxQtyAllowInCart = 0;
+            MinQtyAllowInCart = 0;
+            OnHold = 0;
+            Reserve = 0;
+            MaxQtyPreOrder = 0;
+            UseDecimal = false;
+            PromotionPrice = 0;
+            EffectiveDatePromotion = null;
+            ExpireDatePromotion = null;
+            UnitPrice = 0;
+            PurchasePrice = 0; ;
+            SaleUnitTh = string.Empty;
+            SaleUnitEn = string.Empty;
             PrepareDay = 0;
-            LimitIndividualDay = false;
             PrepareMon = 0;
             PrepareTue = 0;
             PrepareWed = 0;
@@ -123,31 +142,31 @@ namespace Colsp.Model.Requests
             DimensionUnit = string.Empty;
             WeightUnit = string.Empty;
             StockType = string.Empty;
+            SafetyStock = 0;
             Images = new List<ImageRequest>();
             Installment = string.Empty;
-            //TheOneCardEarn = 0;
-            //GiftWrap = string.Empty;
-            //ShippingMethod = 0;
+            ExpressDelivery = string.Empty;
+            DeliveryFee = 0;
             VideoLinks = new List<VideoLinkRequest>();
             SEO = new SEORequest();
+            LimitIndividualDay = false;
+            Upc = string.Empty;
             FirstAttribute = new AttributeRequest();
             SecondAttribute = new AttributeRequest();
-            //ValueEn = string.Empty;
-            //ValueTh = string.Empty;
             Display = string.Empty;
             Visibility = false;
-            IsVariant = false;
-            ProductId = 0;
-            VariantId = 0;
             DefaultVariant = false;
-            VariantImg = new List<ImageRequest>();
+            NewArrivalDate = null;
+            MiniQtyAllowed = 0;
+            MaxiQtyAllowed = 0;
+            ProductId = 0;
+            ShopId = 0;
+            Images360 = new List<ImageRequest>();
+            VariantId = 0;
+            IsVariant = false;
+            Status = string.Empty;
             MasterImg = new List<ImageRequest>();
-            IsHasExpiryDate = string.Empty;
-            IsVat = string.Empty;
-            MaxQtyAllowInCart = 0;
-            MinQtyAllowInCart = 0;
-            MaxQtyPreOrder = 0;
-            ExpressDelivery = string.Empty;
+            VariantImg = new List<ImageRequest>();
         }
     }
 }
