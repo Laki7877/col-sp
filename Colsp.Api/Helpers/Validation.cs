@@ -1,4 +1,5 @@
 ﻿using Colsp.Api.Constants;
+using Colsp.Model.Requests;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -225,8 +226,13 @@ namespace Colsp.Api.Helpers
             return val.Value.ToString(@"hh\:mm");
         }
 
-        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key,bool require,int maxLenght,HashSet<string> errormessage,int row, string defaultValue = null)
+        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key,List<ImportHeaderRequest> header,bool require,int maxLenght,HashSet<string> errormessage,int row, string defaultValue = null)
         {
+            string headerName = header.Where(w => w.MapName.Equals(key)).Select(s => s.HeaderName).FirstOrDefault();
+            if (string.IsNullOrEmpty(headerName))
+            {
+                headerName = key;
+            }
             if (dic.ContainsKey(key))
             {
                 string val = list[dic[key]];
@@ -235,12 +241,13 @@ namespace Colsp.Api.Helpers
                     val = val.Trim();
                     if(require && string.IsNullOrEmpty(val) && defaultValue == null)
                     {
-                        errormessage.Add(key + " is required at row " + row);
+                        
+                        errormessage.Add(string.Concat(headerName , " is required at row " , row));
                         return null;
                     }
                     if(val.Length > maxLenght)
                     {
-                        errormessage.Add(key + " field must be no longer than " + maxLenght + " characters at row " + row);
+                        errormessage.Add(string.Concat(headerName , " field must be no longer than " , maxLenght , " characters at row " , row));
                         return null;
                     }
                     return val;
@@ -248,13 +255,18 @@ namespace Colsp.Api.Helpers
             }
             if (require)
             {
-                errormessage.Add(key + " is required at row " + row);
+                errormessage.Add(string.Concat(headerName , " is required at row " , row));
             }
             return defaultValue;
         }
 
-        public static int ValidateCSVIntegerColumn(Dictionary<string, int> dic, List<string> list, string key, bool require, int maxLenght, HashSet<string> errormessage, int row, int defaultValue = -1)
+        public static int ValidateCSVIntegerColumn(Dictionary<string, int> dic, List<string> list, string key, List<ImportHeaderRequest> header, bool require, int maxLenght, HashSet<string> errormessage, int row, int defaultValue = -1)
         {
+            string headerName = header.Where(w => w.MapName.Equals(key)).Select(s => s.HeaderName).FirstOrDefault();
+            if (string.IsNullOrEmpty(headerName))
+            {
+                headerName = key;
+            }
             if (dic.ContainsKey(key))
             {
                 string val = list[dic[key]];
@@ -263,7 +275,7 @@ namespace Colsp.Api.Helpers
                     val = val.Trim();
                     if (require && string.IsNullOrEmpty(val) && defaultValue == -1)
                     {
-                        errormessage.Add(key + " is required at row " + row);
+                        errormessage.Add(string.Concat(headerName , " is required at row " , row));
                         return -1;
                     }
                     if (string.IsNullOrEmpty(val))
@@ -275,26 +287,31 @@ namespace Colsp.Api.Helpers
                         var tmp = decimal.ToInt32(decimal.Parse(val));
                         if (tmp > maxLenght)
                         {
-                            errormessage.Add(key + " field must be no longer than " + maxLenght + " at row " + row);
+                            errormessage.Add(string.Concat(headerName , " field must be no longer than " , maxLenght , " at row " , row));
                             return -1;
                         }
                         return tmp;
                     }
                     catch(Exception)
                     {
-                        errormessage.Add("Invalid " + key + " at row " + row);
+                        errormessage.Add(string.Concat("Invalid " , headerName , " at row " , row));
                     }
                 }
             }
             if (require)
             {
-                errormessage.Add(key + " is required at row " + row);
+                errormessage.Add(string.Concat(headerName , " is required at row " , row));
             }
             return defaultValue;
         }
 
-        public static DateTime? ValidateCSVDatetimeColumn(Dictionary<string, int> dic, List<string> list, string key, HashSet<string> errormessage, int row)
+        public static DateTime? ValidateCSVDatetimeColumn(Dictionary<string, int> dic, List<string> list, string key, List<ImportHeaderRequest> header, HashSet<string> errormessage, int row)
         {
+            string headerName = header.Where(w => w.MapName.Equals(key)).Select(s => s.HeaderName).FirstOrDefault();
+            if (string.IsNullOrEmpty(headerName))
+            {
+                headerName = key;
+            }
             try
             {
                 if (dic.ContainsKey(key))
@@ -309,7 +326,7 @@ namespace Colsp.Api.Helpers
             }
             catch(Exception)
             {
-                errormessage.Add("Invalid " + key + " at row " + row);
+                errormessage.Add(string.Concat("Invalid " , headerName , " at row " , row));
             }
             return null;
         }

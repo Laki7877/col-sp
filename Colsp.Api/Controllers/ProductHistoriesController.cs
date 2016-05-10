@@ -244,7 +244,7 @@ namespace Colsp.Api.Controllers
                 {
                     response.Images.Add(new ImageRequest()
                     {
-                        ImageId = image.ImageId,
+                        ImageId = 0,
                         Url = image.ImageUrlEn,
                         Position = image.Position
                     });
@@ -257,7 +257,7 @@ namespace Colsp.Api.Controllers
                 {
                     response.VideoLinks.Add(new VideoLinkRequest()
                     {
-                        VideoId = video.VideoId,
+                        VideoId = 0,
                         Url = video.VideoUrlEn
                     });
                 }

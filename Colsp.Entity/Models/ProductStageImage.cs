@@ -14,12 +14,11 @@ namespace Colsp.Entity.Models
     
     public partial class ProductStageImage
     {
-        public int ImageId { get; set; }
         public string Pid { get; set; }
+        public string ImageUrlEn { get; set; }
         public int ShopId { get; set; }
         public string ImageName { get; set; }
         public string ImageOriginName { get; set; }
-        public string ImageUrlEn { get; set; }
         public int Position { get; set; }
         public bool FeatureFlag { get; set; }
         public string Status { get; set; }

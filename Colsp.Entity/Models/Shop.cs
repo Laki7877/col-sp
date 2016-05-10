@@ -39,7 +39,7 @@ namespace Colsp.Entity.Models
     
         public int ShopId { get; set; }
         public string VendorId { get; set; }
-        public int ShopOwner { get; set; }
+        public Nullable<int> ShopOwner { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
         public int MaxLocalCategory { get; set; }
