@@ -17,26 +17,41 @@ namespace Colsp.Api.Controllers
 
         [Route("api/ProductTemps")]
         [HttpGet]
-        public HttpResponseMessage GetProductTemps([FromUri] ProductTempRequest request)
+        public HttpResponseMessage GetProductTemps([FromUri] UnGroupProductRequest request)
         {
             try
             {
-                var productTemp = db.ProductTmps.Where(w => true);
+                if(request == null)
+                {
+                    throw new Exception("Invalid Request");
+                }
+                var productTemp = db.ProductStages.Where(w => w.ProductStageGroup.GlobalCatId == request.CategoryId && (w.ProductStageGroup.AttributeSetId == null 
+                || w.ProductStageGroup.AttributeSetId == request.AttributeSetId)).Select(s=>new
+                {
+                    s.ShopId,
+                    s.Pid,
+                    s.ProductNameEn,
+                    s.Sku
+                });
                 //check if its seller permission
                 if(User.ShopRequest() != null)
                 {
-                    //add shopid criteria for seller request
                     int shopId = User.ShopRequest().ShopId;
-                    productTemp = productTemp.Where(w => w.Shop.ShopId == shopId);
+                    productTemp = productTemp.Where(w => w.ShopId == shopId);
                 }
-                //if (User.HasPermission("Group JDA"))
-                //{
-                //}
-                if(request == null)
+                else
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, productTemp);
+                    productTemp = productTemp.Where(w => w.ShopId == request.ShopId);
                 }
                 request.DefaultOnNull();
+
+                if (!string.IsNullOrWhiteSpace(request.SearchText))
+                {
+                    productTemp = productTemp.Where(w => w.ProductNameEn.Contains(request.SearchText)
+                    || w.Pid.Contains(request.SearchText)
+                    || w.Sku.Contains(request.SearchText));
+                }
+
                 //count number of products
                 var total = productTemp.Count();
                 //make paginate query from database

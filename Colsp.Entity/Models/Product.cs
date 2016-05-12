@@ -102,8 +102,8 @@ namespace Colsp.Entity.Models
         public int MaxiQtyAllowed { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal PurchasePrice { get; set; }
-        public Nullable<System.DateTime> EffectiveDate { get; set; }
-        public Nullable<System.DateTime> ExpireDate { get; set; }
+        public System.DateTime EffectiveDate { get; set; }
+        public System.DateTime ExpireDate { get; set; }
         public string SaleUnitTh { get; set; }
         public string SaleUnitEn { get; set; }
         public bool IsNew { get; set; }

@@ -1731,8 +1731,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="MaxiQtyAllowed" Type="int" Nullable="false" />
           <Property Name="UnitPrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="PurchasePrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
-          <Property Name="EffectiveDate" Type="datetime" />
-          <Property Name="ExpireDate" Type="datetime" />
+          <Property Name="EffectiveDate" Type="datetime" Nullable="false" />
+          <Property Name="ExpireDate" Type="datetime" Nullable="false" />
           <Property Name="SaleUnitTh" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="SaleUnitEn" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="IsNew" Type="bit" Nullable="false" />
@@ -2220,8 +2220,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="AttributeSetId" Type="int" />
           <Property Name="BrandId" Type="int" />
           <Property Name="ShippingId" Type="int" Nullable="false" />
-          <Property Name="EffectiveDate" Type="datetime" />
-          <Property Name="ExpireDate" Type="datetime" />
+          <Property Name="EffectiveDate" Type="datetime" Nullable="false" />
+          <Property Name="ExpireDate" Type="datetime" Nullable="false" />
+          <Property Name="NewArrivalDate" Type="datetime" />
           <Property Name="TheOneCardEarn" Type="int" Nullable="false" />
           <Property Name="GiftWrap" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="IsNew" Type="bit" Nullable="false" />
@@ -7706,8 +7707,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="MaxiQtyAllowed" Type="Int32" Nullable="false" />
           <Property Name="UnitPrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
           <Property Name="PurchasePrice" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
-          <Property Name="ExpireDate" Type="DateTime" Precision="3" />
+          <Property Name="EffectiveDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ExpireDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="SaleUnitTh" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="SaleUnitEn" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsNew" Type="Boolean" Nullable="false" />
@@ -8239,8 +8240,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="AttributeSetId" Type="Int32" />
           <Property Name="BrandId" Type="Int32" />
           <Property Name="ShippingId" Type="Int32" Nullable="false" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
-          <Property Name="ExpireDate" Type="DateTime" Precision="3" />
+          <Property Name="EffectiveDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ExpireDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="NewArrivalDate" Type="DateTime" Precision="3" />
           <Property Name="TheOneCardEarn" Type="Int32" Nullable="false" />
           <Property Name="GiftWrap" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="IsNew" Type="Boolean" Nullable="false" />
@@ -13003,6 +13005,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="IsNew" ColumnName="IsNew" />
                 <ScalarProperty Name="GiftWrap" ColumnName="GiftWrap" />
                 <ScalarProperty Name="TheOneCardEarn" ColumnName="TheOneCardEarn" />
+                <ScalarProperty Name="NewArrivalDate" ColumnName="NewArrivalDate" />
                 <ScalarProperty Name="ExpireDate" ColumnName="ExpireDate" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
