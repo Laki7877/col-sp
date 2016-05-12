@@ -228,7 +228,7 @@ namespace Colsp.Api.Controllers
             response.SEO.SeoEn = variant.SeoEn;
             response.SEO.SeoTh = variant.SeoTh;
             response.Visibility = variant.Visibility;
-            response.DefaultVariant = variant.DefaultVaraint;
+            response.DefaultVariant = variant.DefaultVariant;
             response.PromotionPrice = variant.PromotionPrice;
             response.EffectiveDatePromotion = variant.EffectiveDatePromotion;
             response.ExpireDatePromotion = variant.ExpireDatePromotion;

@@ -15,8 +15,6 @@ namespace Colsp.Model.Requests
         public string  ProdTDNameEn { get; set; }
         public string  IsHasExpiryDate { get; set; }
         public string  IsVat { get; set; }
-        public int MinimumAllowedInCart { get; set; }
-        public int MaximumAllowedInCart { get; set; }
         public string Pid { get; set; }
         public string Sku { get; set; }
         public string DescriptionShortTh { get; set; }
@@ -26,13 +24,14 @@ namespace Colsp.Model.Requests
         public string MobileDescriptionEn { get; set; }
         public string MobileDescriptionTh { get; set; }
         public decimal OriginalPrice { get; set; }
-        public int MaximumAllowedPreOrder { get; set; }
         public decimal SalePrice { get; set; }
         public int Quantity { get; set; }
+        public int UpdateAmount { get; set; }
         public int MaxQtyAllowInCart { get; set; }
         public int MinQtyAllowInCart { get; set; }
         public int OnHold { get; set; }
         public int Reserve { get; set; }
+        public int Defect { get; set; }
         public int MaxQtyPreOrder    { get; set; }
         public bool UseDecimal { get; set; }
         public decimal PromotionPrice { get; set; }
@@ -98,8 +97,6 @@ namespace Colsp.Model.Requests
             ProdTDNameEn = string.Empty;
             IsHasExpiryDate = string.Empty;
             IsVat = string.Empty;
-            MinimumAllowedInCart = 0;
-            MaximumAllowedInCart = 0;
             Pid = string.Empty;
             Sku = string.Empty;
             DescriptionShortTh = string.Empty;
@@ -109,9 +106,9 @@ namespace Colsp.Model.Requests
             MobileDescriptionEn = string.Empty;
             MobileDescriptionTh = string.Empty;
             OriginalPrice = 0;
-            MaximumAllowedPreOrder = 0;
             SalePrice = 0;
             Quantity = 0;
+            UpdateAmount = 0;
             MaxQtyAllowInCart = 0;
             MinQtyAllowInCart = 0;
             OnHold = 0;

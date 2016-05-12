@@ -364,7 +364,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if(request == null)
+                if(request == null || User.ShopRequest() == null)
                 {
                     throw new Exception("Invalid request");
                 }
@@ -402,7 +402,8 @@ namespace Colsp.Api.Controllers
                     db.Entry(category).Property(p => p.UpdateOn).IsModified = true;
                 }
                 var reqCatIds = request.Select(s => s.CategoryId);
-                var deleteIds = db.LocalCategories.Where(w => !reqCatIds.Any(a => a == w.CategoryId)).Select(s => s.CategoryId);
+                var shopId = User.ShopRequest().ShopId;
+                var deleteIds = db.LocalCategories.Where(w => w.ShopId == shopId &&!reqCatIds.Any(a => a == w.CategoryId)).Select(s => s.CategoryId);
                 if (deleteIds != null && deleteIds.Count() > 0)
                 {
                     var productMap = db.ProductStageGroups.Where(w => deleteIds.Contains(w.LocalCatId.HasValue? w.LocalCatId.Value : 0)).Select(s => s.LocalCategory.NameEn);
@@ -415,8 +416,6 @@ namespace Colsp.Api.Controllers
                 db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
-
-
 
 
 
