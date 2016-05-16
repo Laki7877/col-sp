@@ -42,8 +42,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var query = from report in db.Reports select report;
-                var items = query.ToList();
+                //var query = from report in db.Reports select report;
+                var items = 0;//query.ToList();
 
                 return Request.CreateResponse(HttpStatusCode.OK, items);
             }
@@ -60,13 +60,13 @@ namespace Colsp.Api.Controllers
                 var shopId      = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
                 var createBy    = User.UserRequest().Email;
 
-                ReportLog log   = new ReportLog();
-                log.ReportName  = reportName;
-                log.ShopId      = shopId;
-                log.CreateBy    = createBy;
-                log.CreateOn    = DateTime.Now;
+                //ReportLog log   = new ReportLog();
+                //log.ReportName  = reportName;
+                //log.ShopId      = shopId;
+                //log.CreateBy    = createBy;
+                //log.CreateOn    = DateTime.Now;
 
-                db.ReportLogs.Add(log);
+                //db.ReportLogs.Add(log);
                 db.SaveChanges();
 
             }

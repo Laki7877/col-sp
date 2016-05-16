@@ -306,7 +306,7 @@ namespace Colsp.Logic
                             {
                                 db.CMSImages.Add(new CMSImage()
                                 {
-                                    ImageUrl  = img.url,
+                                    ImageUrl  = img.Url,
                                     Position  = position++,
                                     EnTh      = "EN",
                                     CreateBy  = request.CreateBy,
@@ -322,7 +322,7 @@ namespace Colsp.Logic
                             {
                                 db.CMSImages.Add(new CMSImage()
                                 {
-                                    ImageUrl  = img.url,
+                                    ImageUrl  = img.Url,
                                     Position  = position++,
                                     EnTh      = "TH",
                                     CreateBy  = request.CreateBy,

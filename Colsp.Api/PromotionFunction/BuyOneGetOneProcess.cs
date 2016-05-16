@@ -40,9 +40,9 @@ namespace Colsp.Api.ByOneGetOneFunction
                         newObj.Sequence = Model.Sequence;
                         newObj.Status = Model.Status;
                         newObj.CreateBy = Model.CreateBy;
-                        newObj.Createdate = (DateTime)DateTime.Now;
+                        newObj.CreateOn = (DateTime)DateTime.Now;
                         newObj.UpdateBy = Model.UpdateBy;
-                        newObj.UpdateDate = (DateTime)DateTime.Now;
+                        newObj.UpdateOn = (DateTime)DateTime.Now;
                         newObj.CreateIP = Model.CreateIP;
                         newObj.UpdateIP = Model.UpdateIP;
                         newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
@@ -105,9 +105,9 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.Sequence                     = Model.Sequence ?? newObj.Sequence;
                             newObj.Status                       = Model.Status ?? newObj.Status;
                             newObj.CreateBy                     = Model.CreateBy ?? newObj.CreateBy;
-                            newObj.Createdate                   = Model.Createdate != null ? (DateTime)Model.Createdate : newObj.Createdate ;
+                            newObj.CreateOn                   = Model.CreateOn != null ? (DateTime)Model.CreateOn : newObj.CreateOn ;
                             newObj.UpdateBy                     = Model.UpdateBy ?? newObj.UpdateBy;
-                            newObj.UpdateDate                   = (DateTime)DateTime.Now  ;
+                            newObj.UpdateOn                   = (DateTime)DateTime.Now  ;
                             newObj.CreateIP                     = Model.CreateIP != default(string) ? Model.CreateIP : newObj.CreateIP;
                             newObj.UpdateIP                     = Model.UpdateIP != default(string) ? Model.UpdateIP : newObj.UpdateIP;
                             newObj.CMSStatusFlowId              = Model.CMSStatusFlowId.HasValue ? Model.CMSStatusFlowId : newObj.CMSStatusFlowId;
@@ -165,9 +165,9 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.Sequence = Model.Sequence;
                             newObj.Status = Model.Status;
                             newObj.CreateBy = Model.CreateBy;
-                            newObj.Createdate = Model.Createdate != null ? (DateTime)Model.Createdate : newObj.Createdate;
+                            newObj.CreateOn = Model.CreateOn != null ? (DateTime)Model.CreateOn : newObj.CreateOn;
                             newObj.UpdateBy = Model.UpdateBy;
-                            newObj.UpdateDate = (DateTime)DateTime.Now;
+                            newObj.UpdateOn = (DateTime)DateTime.Now;
                             newObj.CreateIP = Model.CreateIP;
                             newObj.UpdateIP = Model.UpdateIP;
                             newObj.CMSStatusFlowId = Model.CMSStatusFlowId;

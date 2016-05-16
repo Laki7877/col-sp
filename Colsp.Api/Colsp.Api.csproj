@@ -260,6 +260,10 @@
       <Project>{4900b20b-c0bc-4f3f-97c0-3df428740322}</Project>
       <Name>Colsp.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Colsp.Logic\Colsp.Logic.csproj">
+      <Project>{7ab75edd-88fb-4c4a-b092-df49df9a6b87}</Project>
+      <Name>Colsp.Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Colsp.Model\Colsp.Model.csproj">
       <Project>{226b2ad2-649f-4d2d-b17e-e2afb474a274}</Project>
       <Name>Colsp.Model</Name>

@@ -34,8 +34,8 @@ namespace Colsp.Api.Controllers
                 try
                 {
                     OnTop = new PromotionOnTopCreditCard();
-                    OnTop.CreateBy = this.User.UserRequest().UserId;
-                    OnTop.Createdate = DateTime.Now;
+                    OnTop.CreateBy = this.User.UserRequest().Email;
+                    OnTop.CreateOn = DateTime.Now;
                     OnTop.BankNameEN = request.BankNameEN;
                     OnTop.BankNameTH = request.BankNameTH;
                     OnTop.CreateIP = request.CreateIP;
@@ -85,8 +85,8 @@ namespace Colsp.Api.Controllers
                     else
                         OnTop.Status = false;
                     OnTop.UpdateIP = request.CreateIP;
-                    OnTop.UpdateBy = this.User.UserRequest().UserId;
-                    OnTop.UpdateDate = DateTime.Now;
+                    OnTop.UpdateBy = this.User.UserRequest().Email;
+                    OnTop.UpdateOn = DateTime.Now;
                     OnTop.Visibility = request.Visibility;
                     OnTop = db.PromotionOnTopCreditCards.Add(OnTop);
                     if (db.SaveChanges() > 0)
@@ -99,10 +99,10 @@ namespace Colsp.Api.Controllers
                             card.CreditNumberFormat = val.CreditNumberFormat;
                             card.Digit = val.Digit;
                             card.Visibility = val.Visibility;
-                            card.CreateBy = this.User.UserRequest().UserId;
-                            card.Createdate = DateTime.Now;
-                            card.UpdateBy = this.User.UserRequest().UserId;
-                            card.UpdateDate = DateTime.Now;
+                            card.CreateBy = this.User.UserRequest().Email;
+                            card.CreateOn = DateTime.Now;
+                            card.UpdateBy = this.User.UserRequest().Email;
+                            card.UpdateOn = DateTime.Now;
                             card.Status = val.Status;
                             db.PromotionOnTopCreditNumbers.Add(card);
                         }
@@ -169,8 +169,8 @@ namespace Colsp.Api.Controllers
                 {
                     try
                     {
-                        OnTop.CreateBy = this.User.UserRequest().UserId;
-                        OnTop.Createdate = DateTime.Now;
+                        OnTop.CreateBy = this.User.UserRequest().Email;
+                        OnTop.CreateOn = DateTime.Now;
                         OnTop.BankNameEN = request.BankNameEN;
                         OnTop.BankNameTH = request.BankNameTH;
                         OnTop.CreateIP = request.CreateIP;
@@ -220,8 +220,8 @@ namespace Colsp.Api.Controllers
                         else
                             OnTop.Status = false;
                         OnTop.UpdateIP = request.CreateIP;
-                        OnTop.UpdateBy = this.User.UserRequest().UserId;
-                        OnTop.UpdateDate = DateTime.Now;
+                        OnTop.UpdateBy = this.User.UserRequest().Email;
+                        OnTop.UpdateOn = DateTime.Now;
                         OnTop.Visibility = request.Visibility;
 
                         db.Entry(OnTop).State = EntityState.Modified;
@@ -239,10 +239,10 @@ namespace Colsp.Api.Controllers
                                         card.CreditNumberFormat = val.CreditNumberFormat;
                                         card.Digit = val.Digit;
                                         card.Visibility = val.Visibility;
-                                        card.CreateBy = this.User.UserRequest().UserId;
-                                        card.Createdate = DateTime.Now;
-                                        card.UpdateBy = this.User.UserRequest().UserId;
-                                        card.UpdateDate = DateTime.Now;
+                                        card.CreateBy = this.User.UserRequest().Email;
+                                        card.CreateOn = DateTime.Now;
+                                        card.UpdateBy = this.User.UserRequest().Email;
+                                        card.UpdateOn = DateTime.Now;
                                         card.Status = val.Status;
                                         db.Entry(card).State = EntityState.Modified;
                                     }
@@ -366,9 +366,9 @@ namespace Colsp.Api.Controllers
                         newObj.Sequence = Model.Sequence;
                         newObj.Status = Model.Status;
                         newObj.CreateBy = Model.CreateBy;
-                        newObj.Createdate = (DateTime)DateTime.Now;
+                        newObj.CreateOn = (DateTime)DateTime.Now;
                         newObj.UpdateBy = Model.UpdateBy;
-                        newObj.UpdateDate = (DateTime)DateTime.Now;
+                        newObj.UpdateOn = (DateTime)DateTime.Now;
                         newObj.CreateIP = Model.CreateIP;
                         newObj.UpdateIP = Model.UpdateIP;
                         newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
@@ -433,9 +433,9 @@ namespace Colsp.Api.Controllers
                             Obj.Sequence = Model.Sequence;
                             Obj.Status = Model.Status;
                             Obj.CreateBy = Model.CreateBy;
-                            Obj.Createdate = (DateTime)DateTime.Now;
+                            Obj.CreateOn = (DateTime)DateTime.Now;
                             Obj.UpdateBy = Model.UpdateBy;
-                            Obj.UpdateDate = (DateTime)DateTime.Now;
+                            Obj.UpdateOn = (DateTime)DateTime.Now;
                             Obj.CreateIP = Model.CreateIP;
                             Obj.UpdateIP = Model.UpdateIP;
                             Obj.CMSStatusFlowId = Model.CMSStatusFlowId;
@@ -513,9 +513,9 @@ namespace Colsp.Api.Controllers
                     result.Sequence = buy1get1.Sequence;
                     result.Status = buy1get1.Status;
                     result.CreateBy = buy1get1.CreateBy;
-                    result.Createdate = (DateTime)DateTime.Now;
+                    result.CreateOn = (DateTime)DateTime.Now;
                     result.UpdateBy = buy1get1.UpdateBy;
-                    result.UpdateDate = (DateTime)DateTime.Now;
+                    result.UpdateOn = (DateTime)DateTime.Now;
                     result.CreateIP = buy1get1.CreateIP;
                     result.UpdateIP = buy1get1.UpdateIP;
                     result.CMSStatusFlowId = buy1get1.CMSStatusFlowId;
@@ -558,7 +558,7 @@ namespace Colsp.Api.Controllers
                                     MaximumDiscountAmount = (decimal)p.MaximumDiscountAmount,
                                     Status = p.Status == true ? Constant.STATUS_PROMOTION_ACTIVE : Constant.STATUS_PROMOTION_INACTIVE,
                                     Visibility = (bool)p.Visibility,
-                                    UpdateDate = (DateTime)p.UpdateDate,
+                                    UpdateDate = (DateTime)p.UpdateOn,
                                     ShopId = (int)p.ShopId,
                                     DiscountType = p.DiscountType
                                 });
@@ -595,7 +595,7 @@ namespace Colsp.Api.Controllers
                     OnTopCreditCardResponse OnTopCreditCard = new OnTopCreditCardResponse();
                     OnTopCreditCard.BankNameEN = OnTop.BankNameEN;
                     OnTopCreditCard.BankNameTH = OnTop.BankNameTH;
-                    OnTopCreditCard.CreateBy = (int)OnTop.CreateBy;
+                    //OnTopCreditCard.CreateBy = (int)OnTop.CreateBy;
                     OnTopCreditCard.CreateIP = OnTop.CreateIP;
                     OnTopCreditCard.DiscountType = OnTop.DiscountType;
                     OnTopCreditCard.DiscountValue = (decimal)OnTop.DiscountValue;

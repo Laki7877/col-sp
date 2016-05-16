@@ -154,9 +154,9 @@ namespace Colsp.Api.Controllers
                             response.Sequence = B1G.Sequence;
                             response.Status = B1G.Status;
                             response.CreateBy = B1G.CreateBy;
-                            response.Createdate = (DateTime)B1G.Createdate;
+                            response.CreateOn = (DateTime)B1G.CreateOn;
                             response.UpdateBy = B1G.UpdateBy;
-                            response.UpdateDate = (DateTime)B1G.UpdateDate;
+                            response.UpdateOn = (DateTime)B1G.UpdateOn;
                             response.CreateIP = B1G.CreateIP;
                             response.UpdateIP = B1G.UpdateIP;
 
