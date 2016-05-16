@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e497855abcad4c748954346bc7019243" Name="Diagram1">
+      <Diagram DiagramId="64cabbcd977945ee874c0e1cc22426d4" Name="Diagram1">
         <EntityTypeShape EntityType="ColspModel.AppAuth" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="17.5" PointY="63.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.AttributeSet" Width="1.5" PointX="15.25" PointY="62.75" IsExpanded="true" />
@@ -19,20 +19,6 @@
         <EntityTypeShape EntityType="ColspModel.CartDiscount" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.CartHead" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.City" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSCategory" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSCategoryCreteriaMap" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSCategoryProductMap" Width="1.5" PointX="6.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSCategorySchedulerMap" Width="1.5" PointX="0.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSCreteria" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSCriteriaProductMap" Width="1.5" PointX="8.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSGroup" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSMaster" Width="1.5" PointX="4.75" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSMasterGroupMap" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSMasterSchedulerMap" Width="1.5" PointX="10.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSMasterSchedulerShopMap" Width="1.5" PointX="6.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSMasterStatu" Width="1.5" PointX="8.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSMasterType" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.CMSScheduler" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.Coupon" Width="1.5" PointX="5.25" PointY="70.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.CouponBrandMap" Width="1.5" PointX="7.5" PointY="70.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.CouponCondition" Width="1.5" PointX="12.75" PointY="5.75" IsExpanded="true" />
@@ -65,12 +51,12 @@
         <EntityTypeShape EntityType="ColspModel.ODMRole" Width="1.5" PointX="16.75" PointY="7.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ODMRolePermission" Width="1.5" PointX="16.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ODMUser" Width="1.5" PointX="16.75" PointY="13.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.ODMUserMenuItem" Width="1.5" PointX="2.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.ODMUserToken" Width="1.5" PointX="4.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Payment" Width="1.5" PointX="6.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.ODMUserMenuItem" Width="1.5" PointX="6.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.ODMUserToken" Width="1.5" PointX="12.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Payment" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.Permission" Width="1.5" PointX="18" PointY="59.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Pid" Width="1.5" PointX="12.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.PostCode" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Pid" Width="1.5" PointX="2.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.PostCode" Width="1.5" PointX="18.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.Product" Width="1.5" PointX="14.5" PointY="75.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductAttribute" Width="1.5" PointX="19.75" PointY="82.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductGlobalCatMap" Width="1.5" PointX="19.75" PointY="78.875" IsExpanded="true" />
@@ -83,7 +69,7 @@
         <EntityTypeShape EntityType="ColspModel.ProductHistoryTag" Width="1.5" PointX="9.75" PointY="118" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductHistoryVideo" Width="1.5" PointX="12" PointY="111.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductLocalCatMap" Width="1.5" PointX="19.75" PointY="86.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.ProductRelated" Width="1.5" PointX="18.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.ProductRelated" Width="1.5" PointX="18.75" PointY="8.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductReview" Width="1.5" PointX="22.75" PointY="82.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductStage" Width="1.5" PointX="28.75" PointY="74.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductStageAttribute" Width="1.5" PointX="34" PointY="81.125" IsExpanded="true" />
@@ -99,11 +85,12 @@
         <EntityTypeShape EntityType="ColspModel.ProductTag" Width="1.5" PointX="16.75" PointY="96" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductTmp" Width="1.5" PointX="5.25" PointY="92.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ProductVideo" Width="1.5" PointX="16.75" PointY="99.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.PromotionBuy1Get1Item" Width="1.5" PointX="18.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditCard" Width="1.5" PointX="18.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditNumber" Width="1.5" PointX="14.75" PointY="18.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.Province" Width="1.5" PointX="20.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.ReportLog" Width="1.5" PointX="20.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.PromotionBuy1Get1Item" Width="1.5" PointX="18.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditCard" Width="1.5" PointX="14.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditNumber" Width="1.5" PointX="16.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Province" Width="1.5" PointX="18.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.Report" Width="1.5" PointX="20.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.ReportLog" Width="1.5" PointX="20.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.Shipping" Width="1.5" PointX="26.5" PointY="71.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.Shop" Width="1.5" PointX="3" PointY="76.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ShopCommission" Width="1.5" PointX="10.25" PointY="91.625" IsExpanded="true" />
@@ -111,9 +98,9 @@
         <EntityTypeShape EntityType="ColspModel.ShopType" Width="1.5" PointX="0.75" PointY="75.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ShopTypePermissionMap" Width="1.5" PointX="23.25" PointY="67.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.ShopUserGroupMap" Width="1.5" PointX="16.25" PointY="71.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.StoreBranch" Width="1.5" PointX="20.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.StoreReceive" Width="1.5" PointX="20.75" PointY="11.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.StoreReceiveCode" Width="1.5" PointX="20.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.StoreBranch" Width="1.5" PointX="20.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.StoreReceive" Width="1.5" PointX="20.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.StoreReceiveCode" Width="1.5" PointX="20.75" PointY="19.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.StoreReturn" Width="1.5" PointX="0.75" PointY="21.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.Theme" Width="1.5" PointX="2.75" PointY="21.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.User" Width="1.5" PointX="0.75" PointY="79.25" IsExpanded="true" />
@@ -121,16 +108,16 @@
         <EntityTypeShape EntityType="ColspModel.UserGroupMap" Width="1.5" PointX="6" PointY="80.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.UserGroupPermissionMap" Width="1.5" PointX="20.25" PointY="67.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ColspModel.UserShopMap" Width="1.5" PointX="17.25" PointY="75.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.ODMRoleUser" Width="1.5" PointX="8.75" PointY="21.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.StoreReturnReason" Width="1.5" PointX="10.75" PointY="21.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.TBAdminMenuItemTmp" Width="1.5" PointX="22.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.TBDvMapZone" Width="1.5" PointX="22.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.TBPermissionTmp" Width="1.5" PointX="4.75" PointY="22.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.TBRolePermissionTmp" Width="1.5" PointX="22.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.TBRoleTmp" Width="1.5" PointX="22.75" PointY="13.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.TBRoleUserTmp" Width="1.5" PointX="22.75" PointY="16.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.TBUserAdminTmp" Width="1.5" PointX="16.75" PointY="22.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ColspModel.TBUserAdminWebTokenTmp" Width="1.5" PointX="18.75" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.ODMRoleUser" Width="1.5" PointX="6.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.StoreReturnReason" Width="1.5" PointX="8.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.TBAdminMenuItemTmp" Width="1.5" PointX="10.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.TBDvMapZone" Width="1.5" PointX="22.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.TBPermissionTmp" Width="1.5" PointX="22.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.TBRolePermissionTmp" Width="1.5" PointX="22.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.TBRoleTmp" Width="1.5" PointX="22.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.TBRoleUserTmp" Width="1.5" PointX="22.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.TBUserAdminTmp" Width="1.5" PointX="22.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ColspModel.TBUserAdminWebTokenTmp" Width="1.5" PointX="18.75" PointY="23.75" IsExpanded="true" />
         <AssociationConnector Association="ColspModel.FK_ProductHistoryAttribute_Attribute" ManuallyRouted="false" />
         <AssociationConnector Association="ColspModel.FK_ProductStageAttribute_Attribute" ManuallyRouted="false" />
         <AssociationConnector Association="ColspModel.FKAttributeSetMapAttribute" ManuallyRouted="false" />
@@ -234,6 +221,16 @@
         <AssociationConnector Association="ColspModel.FKUserShopUser" ManuallyRouted="false" />
         <AssociationConnector Association="ColspModel.FKUserGroupMapUserGroup" ManuallyRouted="false" />
         <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ColspModel.CMSCategory" Width="1.5" PointX="5.75" PointY="4.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSCategoryProductMap" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSFeatureProduct" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSGroup" Width="1.5" PointX="2.75" PointY="7.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSMaster" Width="1.5" PointX="7.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSMasterGroupMap" Width="1.5" PointX="4.75" PointY="8.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSMasterSchedulerMap" Width="1.5" PointX="9.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSImage" Width="1.5" PointX="21.375" PointY="23.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSScheduler" Width="1.5" PointX="3.375" PointY="13.75" />
+        <EntityTypeShape EntityType="ColspModel.CMSMasterCategoryMap" Width="1.5" PointX="23.375" PointY="23.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -12,18 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSCategoryCreteriaMap
+    public partial class CMSImage
     {
-        public int CMSCategoryCreteriaMapId { get; set; }
-        public Nullable<int> CMSCreteriaId { get; set; }
-        public Nullable<int> CMSCategoryId { get; set; }
-        public string Status { get; set; }
-        public Nullable<bool> Visibility { get; set; }
+        public int CMSImageId { get; set; }
+        public int CMSMasterId { get; set; }
+        public int Position { get; set; }
+        public string ImageUrl { get; set; }
+        public string EnTh { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
-        public string CreateIP { get; set; }
-        public string UpdateIP { get; set; }
+        public Nullable<System.DateTime> UpdatedOn { get; set; }
     }
 }

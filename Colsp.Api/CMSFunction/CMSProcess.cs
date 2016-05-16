@@ -31,27 +31,20 @@ namespace Colsp.Api.CMSFunction
                 {
                     try
                     {
-                        CMSMaster cms = new CMSMaster();
-                        cms.CMSMasterNameEN = Model.CMSMasterNameEN;
-                        cms.CMSMasterNameTH = Model.CMSMasterNameTH;
-                        //cms.CMSTypeId = Model.CMSMasterTypeId;
-                        cms.CMSMasterEffectiveDate = Model.EffectiveDate;
-                        cms.CMSMasterEffectiveTime = Model.EffectiveTime;
-                        cms.CMSMasterExpiryDate = Model.ExpiryDate;
-                        cms.CMSMasterExpiryTime = Model.ExpiryTime;
-                        cms.LongDescriptionEN = Model.LongDescriptionEN;
-                        cms.LongDescriptionTH = Model.LongDescriptionTH;
-                        cms.ShortDescriptionEN = Model.ShortDescriptionEN;
-                        cms.ShortDescriptionTH = Model.ShortDescriptionTH;
-                        //cms.Status = Model.Status;
-                        //cms.CMSMasterStatusId = Model.CMSMasterStatusId;
-                        //cms.Sequence = Model.Sequence;
-                        cms.CMSMasterURLKey = Model.CMSMasterURLKey;
-                        //cms.Visibility = Model.Visibility;
-                        //cms.CreateBy = Model.CreateBy;
-                        //cms.Createdate = DateTime.Now;
-                        cms.CreateIP = Model.CreateIP;
-                        cms.IsCampaign = Model.ISCampaign;
+                        CMSMaster cms               = new CMSMaster();
+                        cms.CMSMasterNameEN         = Model.CMSMasterNameEN;
+                        cms.CMSMasterNameTH         = Model.CMSMasterNameTH;
+                        cms.CMSMasterEffectiveDate  = Model.EffectiveDate;
+                        cms.CMSMasterEffectiveTime  = Model.EffectiveTime;
+                        cms.CMSMasterExpiryDate     = Model.ExpiryDate;
+                        cms.CMSMasterExpiryTime     = Model.ExpiryTime;
+                        cms.LongDescriptionEN       = Model.LongDescriptionEN;
+                        cms.LongDescriptionTH       = Model.LongDescriptionTH;
+                        cms.ShortDescriptionEN      = Model.ShortDescriptionEN;
+                        cms.ShortDescriptionTH      = Model.ShortDescriptionTH;
+                        cms.CMSMasterURLKey         = Model.CMSMasterURLKey;
+                        cms.CreateIP                = Model.CreateIP;
+                        cms.IsCampaign              = Model.ISCampaign;
                         db.CMSMasters.Add(cms);
 
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -73,14 +66,14 @@ namespace Colsp.Api.CMSFunction
                             if (db.SaveChanges() > 0)
                             {
                                 var scheduleId = cmsScheduler.CMSSchedulerId;
-                                foreach (var category in schedule.CategoryList)
-                                {
-                                    CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
-                                    cmsCategorySchedulerMap.CMSSchedulerId          = scheduleId;
-                                    cmsCategorySchedulerMap.CMSCategoryId           = category.CMSCategoryId;
-                                    cmsCategorySchedulerMap.Status                  = null;
-                                    db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
-                                }
+                                //foreach (var category in schedule.CategoryList)
+                                //{
+                                //    CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
+                                //    cmsCategorySchedulerMap.CMSSchedulerId = scheduleId;
+                                //    cmsCategorySchedulerMap.CMSCategoryId = category.CMSCategoryId;
+                                //    cmsCategorySchedulerMap.Status = null;
+                                //    db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
+                                //}
 
                                 db.SaveChanges();
                             }

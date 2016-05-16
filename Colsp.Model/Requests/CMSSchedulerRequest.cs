@@ -10,7 +10,7 @@ namespace Colsp.Model.Requests
     {
         public CMSSchedulerRequest()
         {
-            this.CategoryList = new List<CMSCategoryRequest>();
+            
         }
 
         public int CMSMasterId { get; set; }
@@ -19,8 +19,7 @@ namespace Colsp.Model.Requests
         public Nullable<System.TimeSpan> EffectiveTime { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
         public Nullable<System.TimeSpan> ExpiryTime { get; set; }
-        public List<CMSCategoryRequest> CategoryList { get; set; }
-        public bool? Status { get; set; }
+        public string Status { get; set; }
         public bool? Visibility { get; set; }
         public string UpdateBy { get; set; }
         public DateTime? UpdateDate { get; set; }

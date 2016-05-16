@@ -12,6 +12,7 @@ namespace Colsp.Api.Constants
         public static readonly string TMP_FOLDER = ConfigurationManager.AppSettings["ImageTmpFolder"];
         public static readonly string PRODUCT_FOLDER = ConfigurationManager.AppSettings["ImageProductFolder"];
         public static readonly string BRAND_FOLDER = ConfigurationManager.AppSettings["ImageBrandFolder"];
+        public static readonly string CMS_FOLDER = ConfigurationManager.AppSettings["ImageCMSFolder"];
         public static readonly string SHOP_FOLDER = ConfigurationManager.AppSettings["ImageShopFolder"];
         public static readonly string ATTRIBUTE_VALUE_FOLDER = ConfigurationManager.AppSettings["AttributeValueFolder"];
         public static readonly string GLOBAL_CAT_FOLDER = ConfigurationManager.AppSettings["GlobalCatFolder"];

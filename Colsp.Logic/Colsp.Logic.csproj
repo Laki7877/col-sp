@@ -66,6 +66,7 @@
     <Compile Include="ConditionRequest\CMSMasterCondition.cs" />
     <Compile Include="ConditionRequest\ProductCondition.cs" />
     <Compile Include="ConditionRequest\BrandCondition.cs" />
+    <Compile Include="ConditionRequest\ReportCondition.cs" />
     <Compile Include="Helpers\CMSHelper.cs" />
     <Compile Include="Helpers\OperationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

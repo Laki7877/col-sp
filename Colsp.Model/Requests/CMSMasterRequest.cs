@@ -36,12 +36,21 @@ namespace Colsp.Model.Requests
         public DateTime? CreateOn { get; set; }
         public string CreateIP { get; set; }
         public bool ISCampaign { get; set; }
+        public string FeatureTitle { get; set; }
+        public bool TitleShowcase { get; set; }
+
         public List<CMSSchedulerRequest> ScheduleList { get; set; }
+        public List<CMSFeatureProductRequest> FeatureProductList { get; set; }
+        public List<CMSCategoryRequest> CategoryList{ get; set; }
+        public List<ImageRequest> CMSBannerEN { get; set; }
+        public List<ImageRequest> CMSBannerTH { get; set; }
+
 
         public string SearchText { get; set; }
         public string UpdateBy { get; set; }
         public DateTime? UpdateOn { get; set; }
         public string UpdateIP { get; set; }
+        
 
         public override void DefaultOnNull()
         {
@@ -49,5 +58,28 @@ namespace Colsp.Model.Requests
             _order = GetValueOrDefault(_order, "CMSMasterId");
             base.DefaultOnNull();
         }
+    }
+
+    public class CMSMasterCategoryMapRequest
+    {
+        public int CMSMasterCategoryMapId { get; set; }
+        public int CMSMasterId { get; set; }
+        public int CMSCategoryId { get; set; }
+        public int Sequence { get; set; }
+        public string Status { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public DateTime? UpdateOn { get; set; }
+    }
+
+    public class CMSFeatureProductRequest
+    {
+        public int CMSMasterId { get; set; }
+        public string ProductId { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public DateTime? UpdateOn { get; set; }
     }
 }

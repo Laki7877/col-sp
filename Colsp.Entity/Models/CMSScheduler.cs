@@ -19,8 +19,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.TimeSpan> EffectiveTime { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
         public Nullable<System.TimeSpan> ExpiryTime { get; set; }
-        public Nullable<bool> Status { get; set; }
-        public Nullable<bool> Visibility { get; set; }
+        public string Status { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }

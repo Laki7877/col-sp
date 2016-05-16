@@ -12,21 +12,14 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSMasterSchedulerShopMap
+    public partial class CMSFeatureProduct
     {
-        public int CMSMasterSchedulerShopMapId { get; set; }
-        public Nullable<int> CMSMasterSchedulerMapId { get; set; }
-        public Nullable<int> ShopId { get; set; }
-        public Nullable<bool> IsSendAlertToShop { get; set; }
-        public Nullable<bool> IsRead { get; set; }
-        public Nullable<bool> IsJoinCampaign { get; set; }
-        public Nullable<int> JoinTotal { get; set; }
-        public string Status { get; set; }
+        public int CMSFeatureProductId { get; set; }
+        public int CMSMasterId { get; set; }
+        public string ProductId { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
-        public string CreateIP { get; set; }
-        public string UpdateIP { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace Colsp.Model
         }
 
         public int CMSCategoryId { get; set; }
+        public int Sequence { get; set; }
         public string CMSCategoryNameEN { get; set; }
         public string CMSCategoryNameTH { get; set; }
         public bool Visibility { get; set; }
@@ -26,8 +27,9 @@ namespace Colsp.Model
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
         public List<CMSCategoryProductMapRequest> CategoryProductList { get; set; }
-
+        public int Total { get; set; }
         public string SearchText { get; set; }
+        public int ShopId { get; set; }
 
         public override void DefaultOnNull()
         {
@@ -37,7 +39,7 @@ namespace Colsp.Model
         }
 
     }
-
+    
     public class CMSCategoryProductMapRequest
     {
         public int CMSCategoryProductMapId { get; set; }

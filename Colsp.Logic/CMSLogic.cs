@@ -241,11 +241,12 @@ namespace Colsp.Logic
                 {
                     using (var dbcxtransaction = db.Database.BeginTransaction())
                     {
-                        int row = -1;
-                        DateTime dateNow = DateTime.Now;
-                        DateTime EffectiveDate = new DateTime();
-                        DateTime ExpiryDate = new DateTime();
-                        if (request.EffectiveDate!=null)
+                        int row                 = -1;
+                        DateTime dateNow        = DateTime.Now;
+                        DateTime EffectiveDate  = new DateTime();
+                        DateTime ExpiryDate     = new DateTime();
+
+                        if (request.EffectiveDate != null)
                         {
                             if (!DateTime.TryParse(request.EffectiveDate.ToString(), out EffectiveDate))
                             {
@@ -253,6 +254,7 @@ namespace Colsp.Logic
                             }
 
                         }
+
                         if (request.ExpiryDate!=null)
                         {
                             if (!DateTime.TryParse(request.ExpiryDate.ToString(), out ExpiryDate))
@@ -260,6 +262,7 @@ namespace Colsp.Logic
                                 dbcxtransaction.Rollback();
                             }
                         }
+
                         CMSMaster cms               = new CMSMaster();
                         cms.CMSMasterNameEN         = request.CMSMasterNameEN;
                         cms.CMSMasterNameTH         = request.CMSMasterNameTH;
@@ -283,35 +286,102 @@ namespace Colsp.Logic
                         cms.CreateOn                = dateNow;
                         cms.CreateIP                = request.CreateIP;
                         cms.IsCampaign              = request.ISCampaign;
+                        cms.FeatureTitle            = request.FeatureTitle;
+                        cms.TitleShowcase           = request.TitleShowcase;
                         db.CMSMasters.Add(cms);
 
+                        
                         if (db.SaveChanges() > 0)
                         {
                             dbcxtransaction.Commit();
                         }
                         
-                        // Create Schedule
                         var masterId = cms.CMSMasterId;
-                        foreach (var schedule in request.ScheduleList)
+
+                        // Add cms banner
+                        if (request.CMSBannerEN != null && request.CMSBannerEN.Count > 0)
+                        {
+                            int position = 0;
+                            foreach (ImageRequest img in request.CMSBannerEN)
+                            {
+                                db.CMSImages.Add(new CMSImage()
+                                {
+                                    ImageUrl  = img.url,
+                                    Position  = position++,
+                                    EnTh      = "EN",
+                                    CreateBy  = request.CreateBy,
+                                    CreateOn  = request.CreateOn
+                                });
+                            }
+                        }
+
+                        if (request.CMSBannerTH != null && request.CMSBannerTH.Count > 0)
+                        {
+                            int position = 0;
+                            foreach (ImageRequest img in request.CMSBannerTH)
+                            {
+                                db.CMSImages.Add(new CMSImage()
+                                {
+                                    ImageUrl  = img.url,
+                                    Position  = position++,
+                                    EnTh      = "TH",
+                                    CreateBy  = request.CreateBy,
+                                    CreateOn  = request.CreateOn
+                                });
+                            }
+                        }
+
+                        // Create Feature Product
+                        foreach (var featureProductRq in request.FeatureProductList)
+                        {
+                            CMSFeatureProduct cmsFeatureProduct = new CMSFeatureProduct();
+                            cmsFeatureProduct.CMSMasterId       = masterId;
+                            cmsFeatureProduct.ProductId         = featureProductRq.ProductId;
+                            cmsFeatureProduct.CreateBy          = featureProductRq.CreateBy;
+                            cmsFeatureProduct.CreateOn          = featureProductRq.CreateOn;
+
+                            db.CMSFeatureProducts.Add(cmsFeatureProduct);
+                        }
+
+                        // mapping master category
+                        foreach (var masterCateRq in request.CategoryList)
+                        {
+                            CMSMasterCategoryMap cmsMasterCate  = new CMSMasterCategoryMap();
+                            cmsMasterCate.CMSCategoryId         = masterCateRq.CMSCategoryId;
+                            cmsMasterCate.CMSMasterId           = masterId;
+                            cmsMasterCate.Sequence              = masterCateRq.Sequence;
+                            cmsMasterCate.ShopId                = masterCateRq.ShopId;
+                            cmsMasterCate.Status                = masterCateRq.Status;
+                            cmsMasterCate.CreateBy              = request.CreateBy;
+                            cmsMasterCate.CreateOn              = request.CreateOn;
+                            cmsMasterCate.CreateIP              = request.CreateIP;
+
+                            db.CMSMasterCategoryMaps.Add(cmsMasterCate);
+                        }
+
+                        // Create Schedule
+                        foreach (var scheduleRq in request.ScheduleList)
                         {
                             CMSScheduler cmsScheduler   = new CMSScheduler();
                             DateTime SchEffectiveDate   = new DateTime();
                             DateTime SchExpiryDate      = new DateTime();
-                            if (schedule.EffectiveDate != null)
+
+                            if (scheduleRq.EffectiveDate != null)
                             {
-                                if (!DateTime.TryParse(schedule.EffectiveDate.ToString(), out SchEffectiveDate))
+                                if (!DateTime.TryParse(scheduleRq.EffectiveDate.ToString(), out SchEffectiveDate))
                                 {
                                     dbcxtransaction.Rollback();
                                 }
 
                             }
-                            if (schedule.ExpiryDate != null)
+                            if (scheduleRq.ExpiryDate != null)
                             {
-                                if (!DateTime.TryParse(schedule.ExpiryDate.ToString(), out SchExpiryDate))
+                                if (!DateTime.TryParse(scheduleRq.ExpiryDate.ToString(), out SchExpiryDate))
                                 {
                                     dbcxtransaction.Rollback();
                                 }
                             }
+
                             cmsScheduler.EffectiveDate  = SchEffectiveDate.Date;
                             cmsScheduler.EffectiveTime  = SchEffectiveDate.TimeOfDay;
                             cmsScheduler.ExpiryDate     = SchExpiryDate;
@@ -322,22 +392,13 @@ namespace Colsp.Logic
                             {
                                 var scheduleId = cmsScheduler.CMSSchedulerId;
 
-                                // Map Master Schedule
+                                // Mapping Master Schedule
                                 CMSMasterSchedulerMap cmsMasterScheduleMap  = new CMSMasterSchedulerMap();
                                 cmsMasterScheduleMap.CMSMasterId            = masterId;
                                 cmsMasterScheduleMap.CMSSchedulerId         = scheduleId;
-                                cmsMasterScheduleMap.Status                 = null;
+                                cmsMasterScheduleMap.Status                 = "AT";
                                 db.CMSMasterSchedulerMaps.Add(cmsMasterScheduleMap);
                                 
-                                foreach (var category in schedule.CategoryList)
-                                {
-                                    // Map Category Schedule
-                                    CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
-                                    cmsCategorySchedulerMap.CMSSchedulerId          = scheduleId;
-                                    cmsCategorySchedulerMap.CMSCategoryId           = category.CMSCategoryId;
-                                    cmsCategorySchedulerMap.Status                  = "AT";
-                                    db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
-                                }
                             }
                         }
                         
@@ -355,7 +416,7 @@ namespace Colsp.Logic
         }
 
         // Edit CMS Master
-        public bool EditCMSMaster(CMSMasterRequest request)
+        public bool EditCMSMaster(CMSMasterRequest request, int shopId, string updateBy)
         {
             bool success = false;
 
@@ -395,41 +456,81 @@ namespace Colsp.Logic
                     cms.UpdateOn                = dateNow;
                     cms.UpdateIP                = request.UpdateIP;
                     cms.IsCampaign              = request.ISCampaign;
-                    
+                    cms.FeatureTitle            = request.FeatureTitle;
+                    cms.TitleShowcase           = request.TitleShowcase;
 
-                    foreach (var schedule in request.ScheduleList)
+                    // Remove Feature Product Item in CMSFeatureProducts
+                    var CMSFeatureProductList = db.CMSFeatureProducts.Where(x => x.CMSMasterId == cms.CMSMasterId).ToList();
+                    if (CMSFeatureProductList != null && CMSFeatureProductList.Count > 0)
                     {
-                        var querySchedule = db.CMSSchedulers.Where(x => x.CMSSchedulerId == schedule.CMSSchedulerId).FirstOrDefault();
+                        db.CMSFeatureProducts.RemoveRange(CMSFeatureProductList);
+                    }
+
+                    // Add Feature Product
+                    foreach (var featureProduct in request.FeatureProductList)
+                    {
+                        CMSFeatureProduct cmsFeatureProduct = new CMSFeatureProduct();
+                        cmsFeatureProduct.CMSMasterId       = request.CMSMasterId;
+                        cmsFeatureProduct.ProductId         = featureProduct.ProductId;
+                        cmsFeatureProduct.UpdateBy          = updateBy;
+                        cmsFeatureProduct.UpdateOn          = dateNow;
+
+                        db.CMSFeatureProducts.Add(cmsFeatureProduct);
+                    }
+
+                    // Remove Category Map
+                    var queryCMSMaterCategoryList = db.CMSMasterCategoryMaps.Where(x => x.CMSMasterId == request.CMSMasterId).ToList();
+                    foreach (var masterCate in queryCMSMaterCategoryList)
+                    {
+                        db.CMSMasterCategoryMaps.Remove(masterCate);
+                    }
+
+                    // Map Category
+                    foreach (var categoryRq in request.CategoryList)
+                    {
+                        CMSMasterCategoryMap cmsCategory = new CMSMasterCategoryMap();
+                        cmsCategory.CMSCategoryId   = categoryRq.CMSCategoryId;
+                        cmsCategory.CMSMasterId     = request.CMSMasterId;
+                        cmsCategory.Sequence        = categoryRq.Sequence;
+                        cmsCategory.ShopId          = categoryRq.ShopId;
+                        cmsCategory.Status          = categoryRq.Status;
+                        
+                        cmsCategory.UpdateBy        = updateBy;
+                        cmsCategory.UpdateOn        = dateNow;
+
+                        db.CMSMasterCategoryMaps.Add(cmsCategory);
+                    }
+
+                    foreach (var scheduleRq in request.ScheduleList)
+                    {
+                        // Remove Master Schedule Map
+                        var queryCMSScheduleList = db.CMSMasterSchedulerMaps.Where(x => x.CMSSchedulerId == scheduleRq.CMSSchedulerId).ToList();
+
+                        if (queryCMSScheduleList != null && queryCMSScheduleList.Count > 0)
+                        {
+                            foreach (var cmsSchedule in queryCMSScheduleList)
+                            {
+                                db.CMSMasterSchedulerMaps.Remove(cmsSchedule);
+                            }
+                        }
+
+                        var querySchedule = db.CMSSchedulers.Where(x => x.CMSSchedulerId == scheduleRq.CMSSchedulerId).FirstOrDefault();
                         if (querySchedule !=  null)
                         {
                             // Update Schedule
-                            querySchedule.EffectiveDate = schedule.EffectiveDate;
-                            querySchedule.ExpiryDate    = schedule.ExpiryDate;
-                            querySchedule.Status        = schedule.Status;
-                            querySchedule.Visibility    = schedule.Visibility;
-                            querySchedule.UpdateBy      = schedule.UpdateBy;
-                            querySchedule.UpdateOn      = schedule.UpdateDate;
-                            querySchedule.UpdateIP      = schedule.UpdateIP;
-                            
-                            // Remove Category Item in CMSCategorySchedulerMaps
-                            var queryCategoryScheduleList = db.CMSCategorySchedulerMaps.Where(x => x.CMSSchedulerId == querySchedule.CMSSchedulerId).ToList();
-                            if (queryCategoryScheduleList != null && queryCategoryScheduleList.Count > 0)
-                            {
-                                foreach (var cateSchedule in queryCategoryScheduleList)
-                                {
-                                    db.CMSCategorySchedulerMaps.Remove(cateSchedule);
-                                }
-                            }
+                            querySchedule.EffectiveDate = scheduleRq.EffectiveDate;
+                            querySchedule.ExpiryDate    = scheduleRq.ExpiryDate;
+                            querySchedule.Status        = scheduleRq.Status;
+                            querySchedule.UpdateBy      = scheduleRq.UpdateBy;
+                            querySchedule.UpdateOn      = scheduleRq.UpdateDate;
+                            querySchedule.UpdateIP      = scheduleRq.UpdateIP;
 
-                            // Add New Category Item To CMSCategorySchedulerMaps
-                            foreach (var cate in schedule.CategoryList)
-                            {
-                                CMSCategorySchedulerMap cmsCategorySchedulerMap = new CMSCategorySchedulerMap();
-                                cmsCategorySchedulerMap.CMSSchedulerId          = schedule.CMSSchedulerId;
-                                cmsCategorySchedulerMap.CMSCategoryId           = cate.CMSCategoryId;
-                                cmsCategorySchedulerMap.Status                  = cate.Status;
-                                db.CMSCategorySchedulerMaps.Add(cmsCategorySchedulerMap);
-                            }
+                            // New Map Master Schedule
+                            CMSMasterSchedulerMap cmsMasterScheduleMap  = new CMSMasterSchedulerMap();
+                            cmsMasterScheduleMap.CMSMasterId            = cms.CMSMasterId;
+                            cmsMasterScheduleMap.CMSSchedulerId         = querySchedule.CMSSchedulerId;
+                            cmsMasterScheduleMap.Status                 = scheduleRq.Status;
+                            db.CMSMasterSchedulerMaps.Add(cmsMasterScheduleMap);
                             
                         }
                         

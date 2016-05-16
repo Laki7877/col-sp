@@ -13,6 +13,8 @@ namespace Colsp.Logic
         public string Tag { get; set; }
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }
+        public List<int> CMSCategoryIds { get; set; }
+        public List<string> ProductIds { get; set; }
 
         public List<string> Tags
         {
