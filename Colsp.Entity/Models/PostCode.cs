@@ -17,5 +17,6 @@ namespace Colsp.Entity.Models
         public int PostCodeId { get; set; }
         public int DistrictId { get; set; }
         public string PostCode1 { get; set; }
+        public string Remark { get; set; }
     }
 }

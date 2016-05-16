@@ -14,9 +14,18 @@ namespace Colsp.Entity.Models
     
     public partial class City
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public City()
+        {
+            this.Shops = new HashSet<Shop>();
+        }
+    
         public int CityId { get; set; }
         public int ProvinceId { get; set; }
         public string CityName { get; set; }
         public string CityNameEn { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shop> Shops { get; set; }
     }
 }

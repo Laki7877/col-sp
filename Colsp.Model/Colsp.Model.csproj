@@ -93,6 +93,7 @@
     <Compile Include="Requests\ProductStageRequest.cs" />
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\ReturnRequest.cs" />
+    <Compile Include="Requests\SaleReportForSellerRequest.cs" />
     <Compile Include="Requests\SEORequest.cs" />
     <Compile Include="Requests\ShopAppearanceRequest.cs" />
     <Compile Include="Requests\ShopCommission.cs" />

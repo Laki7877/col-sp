@@ -26,7 +26,7 @@ namespace Colsp.Entity.Models
         public string DistrictEN { get; set; }
         public int ProvinceId { get; set; }
         public string Postcode { get; set; }
-        public int CollectionFloor { get; set; }
+        public string CollectionFloor { get; set; }
         public int Status { get; set; }
         public string MapPath { get; set; }
         public string BranchType { get; set; }

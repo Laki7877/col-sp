@@ -197,7 +197,6 @@
     <Compile Include="Constants\AppSettingKey.cs" />
     <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
-    <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
     <Compile Include="Controllers\CouponConditionsController.cs" />
@@ -213,11 +212,9 @@
     <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductReviewsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
-    <Compile Include="Controllers\ProductStagesController.cs" />
     <Compile Include="Controllers\ProductTempsController.cs" />
     <Compile Include="Controllers\ReturnController.cs" />
     <Compile Include="Controllers\ShippingsController.cs" />
-    <Compile Include="Controllers\ShopsController.cs" />
     <Compile Include="Controllers\ShopTypesController.cs" />
     <Compile Include="Controllers\SortBiesController.cs" />
     <Compile Include="Controllers\StandardReportController.cs" />

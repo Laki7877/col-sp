@@ -17,12 +17,13 @@ namespace Colsp.Entity.Models
         public int CartId { get; set; }
         public string PId { get; set; }
         public string PromotionNo { get; set; }
+        public string PromotionType { get; set; }
         public string DiscountType { get; set; }
         public decimal DiscountRate { get; set; }
         public decimal DiscountAmt { get; set; }
         public System.DateTime CreateOn { get; set; }
-        public int CreateBy { get; set; }
+        public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
-        public Nullable<int> UpdateBy { get; set; }
+        public string UpdateBy { get; set; }
     }
 }

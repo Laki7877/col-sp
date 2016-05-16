@@ -23,6 +23,9 @@ namespace Colsp.Entity.Models
     
         public int PermissionId { get; set; }
         public string PermissionName { get; set; }
+        public int Parent { get; set; }
+        public int OverrideParent { get; set; }
+        public int Position { get; set; }
         public string Type { get; set; }
         public string PermissionGroup { get; set; }
     

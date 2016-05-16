@@ -37,6 +37,8 @@ namespace Colsp.Entity.Models
         public Nullable<bool> IsCampaign { get; set; }
         public Nullable<decimal> MinPrice { get; set; }
         public Nullable<decimal> MaxPrice { get; set; }
+        public string FeatureTitle { get; set; }
+        public Nullable<bool> TitleShowcase { get; set; }
         public string Status { get; set; }
         public Nullable<bool> Visibility { get; set; }
         public string CreateBy { get; set; }

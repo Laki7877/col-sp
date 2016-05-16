@@ -19,10 +19,12 @@ namespace Colsp.Entity.Models
         public int Position { get; set; }
         public string ImageUrl { get; set; }
         public string EnTh { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string Link { get; set; }
+        public string Type { get; set; }
+        public string CreateBy { get; set; }
+        public System.DateTime CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
         public virtual Brand Brand { get; set; }
     }

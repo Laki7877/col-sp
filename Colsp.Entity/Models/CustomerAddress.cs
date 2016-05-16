@@ -23,7 +23,7 @@ namespace Colsp.Entity.Models
         public int ProvinceId { get; set; }
         public int CityId { get; set; }
         public int DistrictId { get; set; }
-        public string PostCode { get; set; }
+        public int PostCodeId { get; set; }
         public string BranchID { get; set; }
         public string TaxId { get; set; }
         public string MobileNo { get; set; }
@@ -33,5 +33,7 @@ namespace Colsp.Entity.Models
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
+        public bool IsShipping { get; set; }
+        public bool IsBilling { get; set; }
     }
 }

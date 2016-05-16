@@ -26,6 +26,7 @@ namespace Colsp.Entity.Models
         public int AttributeValueId { get; set; }
         public string AttributeValueEn { get; set; }
         public string AttributeValueTh { get; set; }
+        public int Position { get; set; }
         public string ImageUrl { get; set; }
         public string MapValue { get; set; }
         public string Status { get; set; }

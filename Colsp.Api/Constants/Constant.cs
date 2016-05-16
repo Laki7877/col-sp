@@ -21,8 +21,7 @@ namespace Colsp.Api.Constants
 
         public static readonly string AUTHEN_SCHEMA = "Bearer";
 
-        public static readonly int HISTORY_REVISION = 10;
-        public static readonly int TOP_SELLING = 10;
+
 
 
         public static int SHIPPING_DROP_SHIP_3PL = 1;
