@@ -2,15 +2,19 @@
 {
     public class ControlFlagRequest
     {
-        public bool Flag1 { get; set; }
-        public bool Flag2 { get; set; }
-        public bool Flag3 { get; set; }
+        public bool IsNew { get; set; }
+        public bool IsClearance { get; set; }
+        public bool IsBestSeller { get; set; }
+        public bool IsOnlineExclusive { get; set; }
+        public bool IsOnlyAt { get; set; }
 
         public ControlFlagRequest()
         {
-            Flag1 = false;
-            Flag2 = false;
-            Flag3 = false;
+            IsNew = false;
+            IsClearance = false;
+            IsBestSeller = false;
+            IsOnlineExclusive = false;
+            IsOnlyAt = false;
         }
     }
 }

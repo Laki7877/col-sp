@@ -16,6 +16,7 @@ namespace Colsp.Entity.Models
     {
         public int PermissionId { get; set; }
         public string PermissionName { get; set; }
+        public string Description { get; set; }
         public string Action { get; set; }
         public string Controller { get; set; }
         public System.DateTime CreateOn { get; set; }

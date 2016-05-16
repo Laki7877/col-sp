@@ -15,9 +15,11 @@ namespace Colsp.Api.Extensions
 			var _order = pagination._order;
             string _dir = pagination._direction.ToUpper().Equals("DESC") ? "DESC" : "ASC";
                 
-			try {
+			try
+            {
 				iq = iq.OrderBy(_order + " " + _dir);
-			} catch (Exception)
+			}
+            catch (Exception)
 			{
                
                 pagination._order = null;

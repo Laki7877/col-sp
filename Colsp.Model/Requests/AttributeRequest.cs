@@ -6,6 +6,7 @@ namespace Colsp.Model.Requests
     {
         public int AttributeId { get; set; }
         public string AttributeNameEn { get; set; }
+        public string AttributeDescriptionEn { get; set; }
         public string AttributeNameTh { get; set; }
         public string DisplayNameEn { get; set; }
         public string DisplayNameTh { get; set; }
@@ -26,6 +27,7 @@ namespace Colsp.Model.Requests
         public bool Required { get; set; }
         public List<AttributeValueRequest> AttributeValues { get; set; }
         public string ValueEn { get; set; }
+        public string ValueTh { get; set; }
         public string SearchText { get; set; }
         public int ProductCount { get; set; }
         public bool DefaultAttribute { get; set; }
@@ -35,6 +37,7 @@ namespace Colsp.Model.Requests
         {
             AttributeId = 0;
             AttributeNameEn = string.Empty;
+            AttributeDescriptionEn = string.Empty;
             AttributeNameTh = string.Empty;
             DisplayNameEn = string.Empty;
             DisplayNameTh = string.Empty;
@@ -57,6 +60,7 @@ namespace Colsp.Model.Requests
             ProductCount = 0;
             DefaultAttribute = false;
             AttributeValues = new List<AttributeValueRequest>();
+            ValueTh = string.Empty;
         }
 
         public override void DefaultOnNull()

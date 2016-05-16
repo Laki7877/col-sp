@@ -21,8 +21,6 @@ namespace Colsp.Entity.Models
             this.GlobalCatAttributeSetMaps = new HashSet<GlobalCatAttributeSetMap>();
             this.GlobalCatFeatureProducts = new HashSet<GlobalCatFeatureProduct>();
             this.GlobalCatImages = new HashSet<GlobalCatImage>();
-            this.Products = new HashSet<Product>();
-            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
             this.ShopCommissions = new HashSet<ShopCommission>();
             this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
@@ -32,36 +30,40 @@ namespace Colsp.Entity.Models
         public int CategoryId { get; set; }
         public string NameEn { get; set; }
         public string NameTh { get; set; }
-        public Nullable<decimal> Commission { get; set; }
-        public string UrlKeyEn { get; set; }
-        public string UrlKeyTh { get; set; }
+        public decimal Commission { get; set; }
+        public string UrlKey { get; set; }
         public int Lft { get; set; }
         public int Rgt { get; set; }
         public string DescriptionFullEn { get; set; }
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
+        public string DescriptionMobileTh { get; set; }
+        public string DescriptionMobileEn { get; set; }
+        public bool FeatureProductStatus { get; set; }
+        public bool BannerStatusEn { get; set; }
+        public bool BannerSmallStatusEn { get; set; }
+        public bool BannerStatusTh { get; set; }
+        public bool BannerSmallStatusTh { get; set; }
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public bool Visibility { get; set; }
+        public Nullable<int> SortById { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponGlobalCatMap> CouponGlobalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GlobalCatAttributeSetMap> GlobalCatAttributeSetMaps { get; set; }
+        public virtual SortBy SortBy { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GlobalCatFeatureProduct> GlobalCatFeatureProducts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GlobalCatImage> GlobalCatImages { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

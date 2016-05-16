@@ -13,6 +13,7 @@
         public bool   IsAttribute       { get; set; } 
         public string AttributeType     { get; set; }
         public bool?  IsVariant         { get; set; }
+        public string MapName           { get; set; }
 
         public ImportHeaderRequest()
         {
@@ -27,6 +28,7 @@
             AttributeType  = string.Empty;
             IsVariant      = false;
             AttributeValue = new object();
+            MapName = string.Empty;
         }
     }
 }

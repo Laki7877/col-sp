@@ -30,11 +30,14 @@ namespace Colsp.Entity.Models
     
         public virtual DbSet<AppAuth> AppAuths { get; set; }
         public virtual DbSet<Attribute> Attributes { get; set; }
+        public virtual DbSet<AttributeFilterMap> AttributeFilterMaps { get; set; }
+        public virtual DbSet<AttributePropertyMap> AttributePropertyMaps { get; set; }
         public virtual DbSet<AttributeSet> AttributeSets { get; set; }
         public virtual DbSet<AttributeSetMap> AttributeSetMaps { get; set; }
         public virtual DbSet<AttributeSetTag> AttributeSetTags { get; set; }
         public virtual DbSet<AttributeValue> AttributeValues { get; set; }
         public virtual DbSet<AttributeValueMap> AttributeValueMaps { get; set; }
+        public virtual DbSet<BankDetail> BankDetails { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual DbSet<BrandImage> BrandImages { get; set; }
@@ -42,6 +45,15 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CartDiscount> CartDiscounts { get; set; }
         public virtual DbSet<CartHead> CartHeads { get; set; }
         public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<CMSCategory> CMSCategories { get; set; }
+        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
+        public virtual DbSet<CMSFeatureProduct> CMSFeatureProducts { get; set; }
+        public virtual DbSet<CMSGroup> CMSGroups { get; set; }
+        public virtual DbSet<CMSMaster> CMSMasters { get; set; }
+        public virtual DbSet<CMSMasterGroupMap> CMSMasterGroupMaps { get; set; }
+        public virtual DbSet<CMSMasterSchedulerMap> CMSMasterSchedulerMaps { get; set; }
+        public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
         public virtual DbSet<CouponCondition> CouponConditions { get; set; }
@@ -52,8 +64,11 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CouponPidMap> CouponPidMaps { get; set; }
         public virtual DbSet<CouponShopMap> CouponShopMaps { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Customer_Staging> Customer_Staging { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
+        public virtual DbSet<CustomerAddress_Staging> CustomerAddress_Staging { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
+        public virtual DbSet<CustomerTokenCreditCard> CustomerTokenCreditCards { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
         public virtual DbSet<Deal> Deals { get; set; }
         public virtual DbSet<District> Districts { get; set; }
@@ -92,6 +107,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
         public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
         public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        public virtual DbSet<ProductNotify> ProductNotifies { get; set; }
         public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<ProductStage> ProductStages { get; set; }
@@ -117,28 +133,43 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopCommission> ShopCommissions { get; set; }
+        public virtual DbSet<ShopGroup> ShopGroups { get; set; }
         public virtual DbSet<ShopImage> ShopImages { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
         public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
+        public virtual DbSet<SortBy> SortBies { get; set; }
         public virtual DbSet<StoreBranch> StoreBranches { get; set; }
         public virtual DbSet<StoreReceive> StoreReceives { get; set; }
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<TermPayment> TermPayments { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
+        public virtual DbSet<ThemeComponent> ThemeComponents { get; set; }
+        public virtual DbSet<ThemeComponentMap> ThemeComponentMaps { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserBrandMap> UserBrandMaps { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserGroupMap> UserGroupMaps { get; set; }
         public virtual DbSet<UserGroupPermissionMap> UserGroupPermissionMaps { get; set; }
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
+        public virtual DbSet<VendorTaxRate> VendorTaxRates { get; set; }
+        public virtual DbSet<WithholdingTax> WithholdingTaxes { get; set; }
+        public virtual DbSet<CMSMasterCategoryMap> CMSMasterCategoryMaps { get; set; }
+        public virtual DbSet<Guest> Guests { get; set; }
         public virtual DbSet<ODMRoleUser> ODMRoleUsers { get; set; }
+        public virtual DbSet<PostCodeMap> PostCodeMaps { get; set; }
         public virtual DbSet<StoreReturnReason> StoreReturnReasons { get; set; }
         public virtual DbSet<TBAdminMenuItemTmp> TBAdminMenuItemTmps { get; set; }
+        public virtual DbSet<TBCDSBranch> TBCDSBranches { get; set; }
+        public virtual DbSet<TBCMCity> TBCMCities { get; set; }
         public virtual DbSet<TBDvMapZone> TBDvMapZones { get; set; }
         public virtual DbSet<TBPermissionTmp> TBPermissionTmps { get; set; }
         public virtual DbSet<TBRolePermissionTmp> TBRolePermissionTmps { get; set; }
         public virtual DbSet<TBRoleTmp> TBRoleTmps { get; set; }
         public virtual DbSet<TBRoleUserTmp> TBRoleUserTmps { get; set; }
+        public virtual DbSet<TBSetting> TBSettings { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
         public virtual DbSet<CMSCategory> CMSCategories { get; set; }
@@ -152,9 +183,44 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
         public virtual DbSet<CMSMasterCategoryMap> CMSMasterCategoryMaps { get; set; }
     
-        public virtual ObjectResult<Nullable<int>> AttributeValueId()
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeId()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("AttributeValueId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeSetId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeSetId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextAttributeValueId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeValueId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextBrandId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextBrandId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextCouponId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextCouponId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextGlobalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextGlobalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextLocalCategoryId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextLocalCategoryId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextNewsletterId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextNewsletterId");
         }
     
         public virtual ObjectResult<Nullable<long>> GetNextProductHistoryId()
@@ -167,19 +233,165 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
         }
     
+        public virtual ObjectResult<Nullable<long>> GetNextProductStagePid()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStagePid");
+        }
+    
         public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
         }
     
-        public virtual ObjectResult<Nullable<int>> GlobalCategoryId()
+        public virtual ObjectResult<Nullable<int>> GetNextShopId()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GlobalCategoryId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextShopId");
         }
     
-        public virtual ObjectResult<Nullable<int>> LocalCategoryId()
+        public virtual ObjectResult<Nullable<int>> GetNextUserGroupId()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("LocalCategoryId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserGroupId");
+        }
+    
+        public virtual ObjectResult<Nullable<int>> GetNextUserId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
+        }
+    
+        public virtual ObjectResult<SaleReportForSeller_Result> SaleReportForSeller()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller_Result>("SaleReportForSeller");
+        }
+    
+        public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_alterdiagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_creatediagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_creatediagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_dropdiagram(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_dropdiagram", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagramdefinition_Result> sp_helpdiagramdefinition(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagramdefinition_Result>("sp_helpdiagramdefinition", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagrams_Result> sp_helpdiagrams(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagrams_Result>("sp_helpdiagrams", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual int sp_renamediagram(string diagramname, Nullable<int> owner_id, string new_diagramname)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var new_diagramnameParameter = new_diagramname != null ?
+                new ObjectParameter("new_diagramname", new_diagramname) :
+                new ObjectParameter("new_diagramname", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_renamediagram", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
+        }
+    
+        public virtual int sp_upgraddiagrams()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
+        }
+    
+        public virtual ObjectResult<spc_tableDescription_Result> spc_tableDescription(string tablename)
+        {
+            var tablenameParameter = tablename != null ?
+                new ObjectParameter("tablename", tablename) :
+                new ObjectParameter("tablename", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spc_tableDescription_Result>("spc_tableDescription", tablenameParameter);
+        }
+    
+        [DbFunction("ColspEntities", "SplitString")]
+        public virtual IQueryable<string> SplitString(string input, string character)
+        {
+            var inputParameter = input != null ?
+                new ObjectParameter("Input", input) :
+                new ObjectParameter("Input", typeof(string));
+    
+            var characterParameter = character != null ?
+                new ObjectParameter("Character", character) :
+                new ObjectParameter("Character", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<string>("[ColspEntities].[SplitString](@Input, @Character)", inputParameter, characterParameter);
+        }
+    
+        public virtual ObjectResult<StockStatusReport_Result> StockStatusReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result>("StockStatusReport");
         }
     }
 }

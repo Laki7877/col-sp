@@ -104,21 +104,10 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Models\ColspModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ColspModel.edmx</DependentUpon>
-      <LastGenOutput>ColspModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\ColspModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ColspModel.edmx</DependentUpon>
-      <LastGenOutput>ColspModel.cs</LastGenOutput>
-    </Content>
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ClassDiagram1.cd" />
     <EntityDeploy Include="Models\ColspModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ColspModel.Designer.cs</LastGenOutput>
@@ -134,6 +123,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Models\ColspModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ColspModel.edmx</DependentUpon>
+      <LastGenOutput>ColspModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\ColspModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ColspModel.edmx</DependentUpon>
+      <LastGenOutput>ColspModel.cs</LastGenOutput>
+    </Content>
     <Content Include="scripts\ai.0.15.0-build58334.js" />
     <Content Include="scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="Web.config">
@@ -145,6 +144,12 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Attribute.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AttributeFilterMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AttributePropertyMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributeSet.cs">
@@ -160,6 +165,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributeValueMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BankDetail.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Brand.cs">
@@ -228,6 +236,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ColspModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Country.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Coupon.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -261,10 +272,19 @@
     <Compile Include="Models\CustomerAddress.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CustomerAddress_Staging.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CustomerToken.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CustomerTokenCreditCard.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CustomerWishList.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Customer_Staging.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Deal.cs">
@@ -283,6 +303,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GlobalCatImage.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Guest.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ImportHeader.cs">
@@ -345,6 +368,9 @@
     <Compile Include="Models\PostCode.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PostCodeMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Product.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -379,6 +405,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductLocalCatMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductNotify.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductRelated.cs">
@@ -456,6 +485,9 @@
     <Compile Include="Models\ShopCommission.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ShopGroup.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ShopImage.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -466,6 +498,21 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopUserGroupMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SortBy.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\spc_tableDescription_Result.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagrams_Result.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockStatusReport_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StoreBranch.cs">
@@ -483,7 +530,16 @@
     <Compile Include="Models\StoreReturnReason.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\TBAdminMenuItemTmp.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TBCDSBranch.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TBCMCity.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBDvMapZone.cs">
@@ -501,16 +557,31 @@
     <Compile Include="Models\TBRoleUserTmp.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TBSetting.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\TBUserAdminTmp.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBUserAdminWebTokenTmp.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TermPayment.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Theme.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ThemeComponent.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ThemeComponentMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserBrandMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserGroup.cs">
@@ -525,12 +596,17 @@
     <Compile Include="Models\UserShopMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\VendorTaxRate.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\WithholdingTax.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

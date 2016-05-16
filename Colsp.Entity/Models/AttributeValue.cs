@@ -17,20 +17,30 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AttributeValue()
         {
+            this.AttributeFilterMaps = new HashSet<AttributeFilterMap>();
+            this.AttributePropertyMaps = new HashSet<AttributePropertyMap>();
+            this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
             this.AttributeValueMaps = new HashSet<AttributeValueMap>();
         }
     
         public int AttributeValueId { get; set; }
         public string AttributeValueEn { get; set; }
         public string AttributeValueTh { get; set; }
+        public int Position { get; set; }
         public string ImageUrl { get; set; }
         public string MapValue { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AttributeFilterMap> AttributeFilterMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AttributePropertyMap> AttributePropertyMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AttributeValueMap> AttributeValueMaps { get; set; }
     }

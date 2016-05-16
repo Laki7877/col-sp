@@ -20,8 +20,6 @@ namespace Colsp.Entity.Models
             this.CouponLocalCatMaps = new HashSet<CouponLocalCatMap>();
             this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
             this.LocalCatImages = new HashSet<LocalCatImage>();
-            this.Products = new HashSet<Product>();
-            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
             this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
             this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
@@ -30,8 +28,7 @@ namespace Colsp.Entity.Models
         public int CategoryId { get; set; }
         public string NameEn { get; set; }
         public string NameTh { get; set; }
-        public string UrlKeyEn { get; set; }
-        public string UrlKeyTh { get; set; }
+        public string UrlKey { get; set; }
         public int ShopId { get; set; }
         public int Lft { get; set; }
         public int Rgt { get; set; }
@@ -39,28 +36,33 @@ namespace Colsp.Entity.Models
         public string DescriptionShortEn { get; set; }
         public string DescriptionFullTh { get; set; }
         public string DescriptionShortTh { get; set; }
+        public string DescriptionMobileTh { get; set; }
+        public string DescriptionMobileEn { get; set; }
+        public bool FeatureProductStatus { get; set; }
+        public bool BannerStatusEn { get; set; }
+        public bool BannerSmallStatusEn { get; set; }
+        public bool BannerStatusTh { get; set; }
+        public bool BannerSmallStatusTh { get; set; }
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public bool Visibility { get; set; }
+        public Nullable<int> SortById { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
+        public virtual Shop Shop { get; set; }
+        public virtual SortBy SortBy { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LocalCatImage> LocalCatImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
-        public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

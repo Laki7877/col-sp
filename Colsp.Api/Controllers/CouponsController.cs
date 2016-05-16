@@ -36,14 +36,16 @@ namespace Colsp.Api.Controllers
                                  c.ExpireDate,
                                  c.Status,
                                  c.ShopId,
+                                 c.MaximumUser,
+                                 Shop = new { c.Shop.ShopNameEn },
                                  c.CouponType
                              };
-                if(this.User.HasPermission("View Promotion"))
+                if(User.ShopRequest() != null)
                 {
-                    var shopId = this.User.ShopRequest().ShopId;
+                    var shopId = User.ShopRequest().ShopId;
                     coupon = coupon.Where(w => w.ShopId == shopId && w.CouponType.Equals(Constant.USER_TYPE_SELLER));
                 }
-                else if(this.User.HasPermission("Manage Global Coupons"))
+                else
                 {
                     if (request.IsGlobalCoupon)
                     {
@@ -53,10 +55,6 @@ namespace Colsp.Api.Controllers
                     {
                         coupon = coupon.Where(w => w.CouponType.Equals(Constant.USER_TYPE_SELLER));
                     }
-                }
-                else
-                {
-                    throw new Exception("You don't have a right permission");
                 }
                 if (request == null)
                 {
@@ -75,7 +73,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -115,9 +113,9 @@ namespace Colsp.Api.Controllers
                         }
 
                     });
-                if (this.User.HasPermission("View Promotion"))
+                if(User.ShopRequest() != null)
                 {
-                    var shopId = this.User.ShopRequest().ShopId;
+                    var shopId = User.ShopRequest().ShopId;
                     couponList = couponList.Where(w => w.ShopId == shopId);
                 }
                 var c = couponList.ToList();
@@ -129,7 +127,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -145,183 +143,29 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 coupon = new Coupon();
-                if(this.User.HasPermission("Edit Promotion"))
+                if(User.ShopRequest() != null)
                 {
-                    var shopId = this.User.ShopRequest().ShopId;
+                    var shopId = User.ShopRequest().ShopId;
                     coupon.ShopId = shopId;
                     coupon.CouponType = Constant.USER_TYPE_SELLER;
                 }
-                else if (this.User.HasPermission("Manage Global Coupons"))
+                else
                 {
                     coupon.CouponType = Constant.USER_TYPE_ADMIN;
                 }
-                else
-                {
-                    throw new Exception("You don't have a right permission");
-                }
-                coupon.CouponName = Validation.ValidateString(request.CouponName, "Coupon Name",true,300,false);
-                coupon.CouponCode = Validation.ValidateString(request.CouponCode, "Coupon Code", true, 50, true); ;
-                coupon.Status = Validation.ValidateString(request.Status,"Status",true,2,true);
-                coupon.ExpireDate = Validation.ValidateDateTime(request.ExpireDate, "Expire Date",false);
-                coupon.StartDate = Validation.ValidateDateTime(request.StartDate, "Start Date",false);
-                coupon.Action = request.Action.Type;
-                coupon.DiscountAmount = request.Action.DiscountAmount;
-                coupon.MaximumAmount = request.Action.MaximumAmount;
-                coupon.UsagePerCustomer = request.UsagePerCustomer;
-                coupon.MaximumUser = request.MaximumUser;
-                coupon.CreatedBy = this.User.UserRequest().Email;
-                coupon.CreatedDt = DateTime.Now;
-                coupon.UpdatedBy = this.User.UserRequest().Email;
-                coupon.UpdatedDt = DateTime.Now;
-                if(request.Conditions != null)
-                {
-                    if(request.Conditions.Order != null && request.Conditions.Order.Count > 0)
-                    {
-                        foreach(OrderRequest o in request.Conditions.Order)
-                        {
-                            coupon.CouponOrders.Add(new CouponOrder()
-                            {
-                                Criteria = o.Type,
-                                CriteriaPrice = o.Value,
-                                CreatedBy = this.User.UserRequest().Email,
-                                CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now
-                            });
-                        }
-                    }
-                    if(request.Conditions.FilterBy != null)
-                    {
-                        coupon.FilterBy = request.Conditions.FilterBy.Type;
-                        if ("Brand".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            if(request.Conditions.FilterBy.Brands != null && request.Conditions.FilterBy.Brands.Count > 0)
-                            {
-                                foreach (BrandRequest b in request.Conditions.FilterBy.Brands)
-                                {
-                                    coupon.CouponBrandMaps.Add(new CouponBrandMap()
-                                    {
-                                        BrandId = b.BrandId,
-                                        Filter = Constant.COUPON_FILTER_INCLUDE,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now,
-                                    });
-                                }
-                            }
-                        }
-                        else if ("Email".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            if (request.Conditions.FilterBy.Emails != null && request.Conditions.FilterBy.Emails.Count > 0)
-                            {
-                                foreach (String e in request.Conditions.FilterBy.Emails)
-                                {
-                                    coupon.CouponCustomerMaps.Add(new CouponCustomerMap()
-                                    {
-                                        Email = e,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now,
-                                    });
-                                }
-                            }
-                        }
-                        else if ("GlobalCategory".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            if (request.Conditions.FilterBy.GlobalCategories != null && request.Conditions.FilterBy.GlobalCategories.Count > 0)
-                            {
-                                foreach (CategoryRequest c in request.Conditions.FilterBy.GlobalCategories)
-                                {
-                                    coupon.CouponGlobalCatMaps.Add(new CouponGlobalCatMap()
-                                    {
-                                        CategoryId = c.CategoryId,
-                                        Filter = Constant.COUPON_FILTER_INCLUDE,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now,
-                                    });
-                                }
-                            }
-                        }
-                        else if ("LocalCategory".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            if (request.Conditions.FilterBy.LocalCategories != null && request.Conditions.FilterBy.LocalCategories.Count > 0)
-                            {
-                                foreach (CategoryRequest c in request.Conditions.FilterBy.LocalCategories)
-                                {
-                                    coupon.CouponLocalCatMaps.Add(new CouponLocalCatMap()
-                                    {
-                                        CategoryId = c.CategoryId,
-                                        Filter = Constant.COUPON_FILTER_INCLUDE,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now,
-                                    });
-                                }
-                            }
-                        }
-                        else if ("Shop".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            if (request.Conditions.FilterBy.Shops != null && request.Conditions.FilterBy.Shops.Count > 0)
-                            {
-                                foreach (ShopRequest s in request.Conditions.FilterBy.Shops)
-                                {
-                                    coupon.CouponShopMaps.Add(new CouponShopMap()
-                                    {
-                                        ShopId = s.ShopId,
-                                        CreatedBy = this.User.UserRequest().Email,
-                                        CreatedDt = DateTime.Now,
-                                        UpdatedBy = this.User.UserRequest().Email,
-                                        UpdatedDt = DateTime.Now,
-                                    });
-                                }
-                            }
-                        }
-
-                    }
-                    if (request.Conditions.Include != null && request.Conditions.Include.Count > 0)
-                    {
-                        foreach (string pid in request.Conditions.Include)
-                        {
-                            coupon.CouponPidMaps.Add(new CouponPidMap()
-                            {
-                                Pid = pid,
-                                Filter = Constant.COUPON_FILTER_INCLUDE,
-                                CreatedBy = this.User.UserRequest().Email,
-                                CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now,
-                            });
-                        }
-                    }
-                    if (request.Conditions.Exclude != null && request.Conditions.Exclude.Count > 0)
-                    {
-                        foreach (string pid in request.Conditions.Exclude)
-                        {
-                            coupon.CouponPidMaps.Add(new CouponPidMap()
-                            {
-                                Pid = pid,
-                                Filter = Constant.COUPON_FILTER_EXCLUDE,
-                                CreatedBy = this.User.UserRequest().Email,
-                                CreatedDt = DateTime.Now,
-                                UpdatedBy = this.User.UserRequest().Email,
-                                UpdatedDt = DateTime.Now,
-                            });
-                        }
-                    }
-                    
-                }
-                coupon = db.Coupons.Add(coupon);
+                string email = User.UserRequest().Email;
+                DateTime currentDt = DateTime.Now;
+                SetupCoupon(coupon, request, email, currentDt, db);
+                coupon.CreateBy = email;
+                coupon.CreateOn = currentDt;
+                coupon.CouponId = db.GetNextCouponId().SingleOrDefault().Value;
+                db.Coupons.Add(coupon);
                 Util.DeadlockRetry(db.SaveChanges, "Coupon");
                 return GetCoupon(coupon.CouponId);
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -332,9 +176,9 @@ namespace Colsp.Api.Controllers
             Coupon coupon = null;
             try
             {
-                if(this.User.HasPermission("Edit Promotion"))
+                if(User.HasPermission("Edit Promotion"))
                 {
-                    int shopId = this.User.ShopRequest().ShopId;
+                    int shopId = User.ShopRequest().ShopId;
                     coupon = db.Coupons.Where(w => w.CouponId == couponId && w.ShopId == shopId)
                         .Include(i=>i.CouponBrandMaps)
                         .Include(i=>i.CouponCustomerMaps)
@@ -344,7 +188,7 @@ namespace Colsp.Api.Controllers
                         .Include(i=>i.CouponShopMaps)
                         .Include(i=>i.CouponOrders).SingleOrDefault();
                 }
-                else if(this.User.HasPermission("Manage Global Coupons"))
+                else if(User.HasPermission("Manage Global Coupons"))
                 {
                     coupon = db.Coupons.Where(w => w.CouponId == couponId)
                         .Include(i => i.CouponBrandMaps)
@@ -363,48 +207,299 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find coupon");
                 }
-                coupon.CouponName = Validation.ValidateString(request.CouponName, "Coupon Name", true, 300, false);
-                coupon.CouponCode = Validation.ValidateString(request.CouponCode, "Coupon Code", true, 50, true); ;
-                coupon.Status = Validation.ValidateString(request.Status, "Status", true, 2, true);
-                coupon.ExpireDate = Validation.ValidateDateTime(request.ExpireDate, "Expire Date", false);
-                coupon.StartDate = Validation.ValidateDateTime(request.StartDate, "Start Date", false);
-                coupon.Action = request.Action.Type;
-                coupon.DiscountAmount = request.Action.DiscountAmount;
-                coupon.MaximumAmount = request.Action.MaximumAmount;
-                coupon.UsagePerCustomer = request.UsagePerCustomer;
-                coupon.MaximumUser = request.MaximumUser;
-                coupon.UpdatedBy = this.User.UserRequest().Email;
-                coupon.UpdatedDt = DateTime.Now;
+                string email = User.UserRequest().Email;
+                DateTime currentDt = DateTime.Now;
+                SetupCoupon(coupon, request, email, currentDt, db);
+                Util.DeadlockRetry(db.SaveChanges, "Coupon");
+                return GetCoupon(coupon.CouponId);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
+            }
+        }
 
-                var orderList = coupon.CouponOrders.ToList();
-                var brandList = coupon.CouponBrandMaps.ToList();
-                var customerList = coupon.CouponCustomerMaps.ToList();
-                var globalCatList = coupon.CouponGlobalCatMaps.ToList();
-                var localCatList = coupon.CouponLocalCatMaps.ToList();
-                var shopList = coupon.CouponShopMaps.ToList();
-                var includeList = coupon.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).ToList();
-                var excludeList = coupon.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).ToList();
-                if (request.Conditions != null)
+
+        private void SetupCoupon(Coupon coupon, CouponRequest request, string email, DateTime currentDt, ColspEntities db)
+        {
+            coupon.CouponName = Validation.ValidateString(request.CouponName, "Coupon Name", true, 300, false);
+            coupon.CouponCode = Validation.ValidateString(request.CouponCode, "Coupon Code", true, 50, true); ;
+            coupon.Status = Validation.ValidateString(request.Status, "Status", true, 2, true);
+            coupon.ExpireDate = Validation.ValidateDateTime(request.ExpireDate, "Expire Date", false);
+            coupon.StartDate = Validation.ValidateDateTime(request.StartDate, "Start Date", false);
+            coupon.Action = request.Action.Type;
+            coupon.DiscountAmount = request.Action.DiscountAmount;
+            coupon.MaximumAmount = request.Action.MaximumAmount;
+            coupon.UsagePerCustomer = request.UsagePerCustomer;
+            coupon.MaximumUser = request.MaximumUser;
+            coupon.UpdateBy = email;
+            coupon.UpdateOn = currentDt;
+
+            var orderList = coupon.CouponOrders.ToList();
+            var brandList = coupon.CouponBrandMaps.ToList();
+            var customerList = coupon.CouponCustomerMaps.ToList();
+            var globalCatList = coupon.CouponGlobalCatMaps.ToList();
+            var localCatList = coupon.CouponLocalCatMaps.ToList();
+            var shopList = coupon.CouponShopMaps.ToList();
+            var includeList = coupon.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).ToList();
+            var excludeList = coupon.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).ToList();
+            if (request.Conditions != null)
+            {
+                if (request.Conditions.Order != null && request.Conditions.Order.Count > 0)
                 {
-                    if (request.Conditions.Order != null && request.Conditions.Order.Count > 0)
+
+                    foreach (OrderRequest o in request.Conditions.Order)
                     {
-                       
-                        foreach (OrderRequest o in request.Conditions.Order)
+                        bool addNew = false;
+                        if (orderList == null || orderList.Count == 0)
+                        {
+                            addNew = true;
+                        }
+                        if (!addNew)
+                        {
+                            CouponOrder current = orderList.Where(w => w.Criteria == o.Type).SingleOrDefault();
+                            if (current != null)
+                            {
+                                if(current.CriteriaPrice != o.Value)
+                                {
+                                    current.CriteriaPrice = o.Value;
+                                    current.UpdateBy = email;
+                                    current.UpdateOn = currentDt;
+                                }
+                                orderList.Remove(current);
+                            }
+                            else
+                            {
+                                addNew = true;
+                            }
+                        }
+                        if (addNew)
+                        {
+                            coupon.CouponOrders.Add(new CouponOrder()
+                            {
+                                Criteria = o.Type,
+                                CriteriaPrice = o.Value,
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt
+                            });
+                        }
+                    }
+                }
+                if (request.Conditions.FilterBy != null)
+                {
+                    coupon.FilterBy = request.Conditions.FilterBy.Type;
+                    if ("Brand".Equals(request.Conditions.FilterBy.Type))
+                    {
+                        if (request.Conditions.FilterBy.Brands != null && request.Conditions.FilterBy.Brands.Count > 0)
+                        {
+
+                            foreach (BrandRequest b in request.Conditions.FilterBy.Brands)
+                            {
+                                bool addNew = false;
+                                if (brandList == null || brandList.Count == 0)
+                                {
+                                    addNew = true;
+                                }
+                                if (!addNew)
+                                {
+                                    CouponBrandMap current = brandList.Where(w => w.BrandId == b.BrandId).SingleOrDefault();
+                                    if (current != null)
+                                    {
+                                        brandList.Remove(current);
+                                    }
+                                    else
+                                    {
+                                        addNew = true;
+                                    }
+                                }
+                                if (addNew)
+                                {
+                                    coupon.CouponBrandMaps.Add(new CouponBrandMap()
+                                    {
+                                        BrandId = b.BrandId,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    else if ("Email".Equals(request.Conditions.FilterBy.Type))
+                    {
+                        if (request.Conditions.FilterBy.Emails != null && request.Conditions.FilterBy.Emails.Count > 0)
+                        {
+
+                            foreach (String e in request.Conditions.FilterBy.Emails)
+                            {
+                                bool addNew = false;
+                                if (customerList == null || customerList.Count == 0)
+                                {
+                                    addNew = true;
+                                }
+                                if (!addNew)
+                                {
+                                    CouponCustomerMap current = customerList.Where(w => w.Email == e).SingleOrDefault();
+                                    if (current != null)
+                                    {
+                                        customerList.Remove(current);
+                                    }
+                                    else
+                                    {
+                                        addNew = true;
+                                    }
+                                }
+                                if (addNew)
+                                {
+                                    coupon.CouponCustomerMaps.Add(new CouponCustomerMap()
+                                    {
+                                        Email = e,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    else if ("GlobalCategory".Equals(request.Conditions.FilterBy.Type))
+                    {
+
+                        if (request.Conditions.FilterBy.GlobalCategories != null && request.Conditions.FilterBy.GlobalCategories.Count > 0)
+                        {
+
+                            foreach (CategoryRequest c in request.Conditions.FilterBy.GlobalCategories)
+                            {
+                                bool addNew = false;
+                                if (globalCatList == null || globalCatList.Count == 0)
+                                {
+                                    addNew = true;
+                                }
+                                if (!addNew)
+                                {
+                                    CouponGlobalCatMap current = globalCatList.Where(w => w.CategoryId == c.CategoryId).SingleOrDefault();
+                                    if (current != null)
+                                    {
+                                        globalCatList.Remove(current);
+                                    }
+                                    else
+                                    {
+                                        addNew = true;
+                                    }
+                                }
+                                if (addNew)
+                                {
+                                    coupon.CouponGlobalCatMaps.Add(new CouponGlobalCatMap()
+                                    {
+                                        Filter = Constant.COUPON_FILTER_INCLUDE,
+                                        CategoryId = c.CategoryId,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    else if ("LocalCategory".Equals(request.Conditions.FilterBy.Type))
+                    {
+                        if (request.Conditions.FilterBy.LocalCategories != null && request.Conditions.FilterBy.LocalCategories.Count > 0)
+                        {
+
+                            foreach (CategoryRequest c in request.Conditions.FilterBy.LocalCategories)
+                            {
+                                bool addNew = false;
+                                if (localCatList == null || localCatList.Count == 0)
+                                {
+                                    addNew = true;
+                                }
+                                if (!addNew)
+                                {
+                                    CouponLocalCatMap current = localCatList.Where(w => w.CategoryId == c.CategoryId).SingleOrDefault();
+                                    if (current != null)
+                                    {
+                                        localCatList.Remove(current);
+                                    }
+                                    else
+                                    {
+                                        addNew = true;
+                                    }
+                                }
+                                if (addNew)
+                                {
+                                    coupon.CouponLocalCatMaps.Add(new CouponLocalCatMap()
+                                    {
+                                        Filter = Constant.COUPON_FILTER_INCLUDE,
+                                        CouponId = coupon.CouponId,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    else if ("Shop".Equals(request.Conditions.FilterBy.Type))
+                    {
+
+                        if (request.Conditions.FilterBy.Shops != null && request.Conditions.FilterBy.Shops.Count > 0)
+                        {
+
+                            foreach (ShopRequest s in request.Conditions.FilterBy.Shops)
+                            {
+                                bool addNew = false;
+                                if (shopList == null || shopList.Count == 0)
+                                {
+                                    addNew = true;
+                                }
+                                if (!addNew)
+                                {
+                                    CouponShopMap current = shopList.Where(w => w.ShopId == s.ShopId).SingleOrDefault();
+                                    if (current != null)
+                                    {
+                                        shopList.Remove(current);
+                                    }
+                                    else
+                                    {
+                                        addNew = true;
+                                    }
+                                }
+                                if (addNew)
+                                {
+                                    coupon.CouponShopMaps.Add(new CouponShopMap()
+                                    {
+                                        ShopId = s.ShopId,
+                                        CreateBy = email,
+                                        CreateOn = currentDt,
+                                        UpdateBy = email,
+                                        UpdateOn = currentDt,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    if (request.Conditions.Include != null && request.Conditions.Include.Count > 0)
+                    {
+
+                        foreach (string pid in request.Conditions.Include)
                         {
                             bool addNew = false;
-                            if (orderList == null || orderList.Count == 0)
+                            if (includeList == null || includeList.Count == 0)
                             {
                                 addNew = true;
                             }
                             if (!addNew)
                             {
-                                CouponOrder current = orderList.Where(w => w.Criteria == o.Type).SingleOrDefault();
+                                CouponPidMap current = includeList.Where(w => w.Pid == pid).SingleOrDefault();
                                 if (current != null)
                                 {
-                                    current.CriteriaPrice = o.Value;
-                                    current.UpdatedBy = this.User.UserRequest().Email;
-                                    current.UpdatedDt = DateTime.Now;
-                                    orderList.Remove(current);
+                                    includeList.Remove(current);
                                 }
                                 else
                                 {
@@ -413,347 +508,93 @@ namespace Colsp.Api.Controllers
                             }
                             if (addNew)
                             {
-                                CouponOrder co = new CouponOrder();
-                                co.CouponId = coupon.CouponId;
-                                co.Criteria = o.Type;
-                                co.CriteriaPrice = o.Value;
-                                co.CreatedBy = this.User.UserRequest().Email;
-                                co.CreatedDt = DateTime.Now;
-                                co.UpdatedBy = this.User.UserRequest().Email;
-                                co.UpdatedDt = DateTime.Now;
-                                db.CouponOrders.Add(co);
+                                coupon.CouponPidMaps.Add(new CouponPidMap()
+                                {
+                                    Pid = pid,
+                                    Filter = Constant.COUPON_FILTER_INCLUDE,
+                                    CreateBy = email,
+                                    CreateOn = currentDt,
+                                    UpdateBy = email,
+                                    UpdateOn = currentDt,
+                                });
                             }
                         }
                     }
-                    if (request.Conditions.FilterBy != null)
+                    if (request.Conditions.Exclude != null && request.Conditions.Exclude.Count > 0)
                     {
-                        coupon.FilterBy = request.Conditions.FilterBy.Type;
-                        if ("Brand".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            if (request.Conditions.FilterBy.Brands != null && request.Conditions.FilterBy.Brands.Count > 0)
-                            {
-                               
-                                foreach (BrandRequest b in request.Conditions.FilterBy.Brands)
-                                {
-                                    bool addNew = false;
-                                    if (brandList == null || brandList.Count == 0)
-                                    {
-                                        addNew = true;
-                                    }
-                                    if (!addNew)
-                                    {
-                                        CouponBrandMap current = brandList.Where(w => w.BrandId == b.BrandId).SingleOrDefault();
-                                        if (current != null)
-                                        {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
-                                            current.UpdatedDt = DateTime.Now;
-                                            brandList.Remove(current);
-                                        }
-                                        else
-                                        {
-                                            addNew = true;
-                                        }
-                                    }
-                                    if (addNew)
-                                    {
-                                        CouponBrandMap map = new CouponBrandMap();
-                                        map.CouponId = coupon.CouponId;
-                                        map.BrandId = b.BrandId;
-                                        map.CreatedBy = this.User.UserRequest().Email;
-                                        map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
-                                        map.UpdatedDt = DateTime.Now;
-                                        db.CouponBrandMaps.Add(map);
-                                    }
-                                }
-                            }
-                        }
-                        else if ("Email".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            if (request.Conditions.FilterBy.Emails != null && request.Conditions.FilterBy.Emails.Count > 0)
-                            {
-                                
-                                foreach (String e in request.Conditions.FilterBy.Emails)
-                                {
-                                    bool addNew = false;
-                                    if (customerList == null || customerList.Count == 0)
-                                    {
-                                        addNew = true;
-                                    }
-                                    if (!addNew)
-                                    {
-                                        CouponCustomerMap current = customerList.Where(w => w.Email == e).SingleOrDefault();
-                                        if (current != null)
-                                        {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
-                                            current.UpdatedDt = DateTime.Now;
-                                            customerList.Remove(current);
-                                        }
-                                        else
-                                        {
-                                            addNew = true;
-                                        }
-                                    }
-                                    if (addNew)
-                                    {
-                                        CouponCustomerMap map = new CouponCustomerMap();
-                                        map.CouponId = coupon.CouponId;
-                                        map.Email = e;
-                                        map.CreatedBy = this.User.UserRequest().Email;
-                                        map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
-                                        map.UpdatedDt = DateTime.Now;
-                                        db.CouponCustomerMaps.Add(map);
-                                    }
-                                }
-                            }
-                        }
-                        else if ("GlobalCategory".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            
-                            if (request.Conditions.FilterBy.GlobalCategories != null && request.Conditions.FilterBy.GlobalCategories.Count > 0)
-                            {
-                                
-                                foreach (CategoryRequest c in request.Conditions.FilterBy.GlobalCategories)
-                                {
-                                    bool addNew = false;
-                                    if (globalCatList == null || globalCatList.Count == 0)
-                                    {
-                                        addNew = true;
-                                    }
-                                    if (!addNew)
-                                    {
-                                        CouponGlobalCatMap current = globalCatList.Where(w => w.CategoryId == c.CategoryId).SingleOrDefault();
-                                        if (current != null)
-                                        {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
-                                            current.UpdatedDt = DateTime.Now;
-                                            globalCatList.Remove(current);
-                                        }
-                                        else
-                                        {
-                                            addNew = true;
-                                        }
-                                    }
-                                    if (addNew)
-                                    {
-                                        CouponGlobalCatMap map = new CouponGlobalCatMap();
-                                        map.Filter = Constant.COUPON_FILTER_INCLUDE;
-                                        map.CouponId = coupon.CouponId;
-                                        map.CategoryId = c.CategoryId;
-                                        map.CreatedBy = this.User.UserRequest().Email;
-                                        map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
-                                        map.UpdatedDt = DateTime.Now;
-                                        db.CouponGlobalCatMaps.Add(map);
-                                    }
-                                   
-                                }
-                            }
-                        }
-                        else if ("LocalCategory".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            if (request.Conditions.FilterBy.LocalCategories != null && request.Conditions.FilterBy.LocalCategories.Count > 0)
-                            {
-                               
-                                foreach (CategoryRequest c in request.Conditions.FilterBy.LocalCategories)
-                                {
-                                    bool addNew = false;
-                                    if (localCatList == null || localCatList.Count == 0)
-                                    {
-                                        addNew = true;
-                                    }
-                                    if (!addNew)
-                                    {
-                                        CouponLocalCatMap current = localCatList.Where(w => w.CategoryId == c.CategoryId).SingleOrDefault();
-                                        if (current != null)
-                                        {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
-                                            current.UpdatedDt = DateTime.Now;
-                                            localCatList.Remove(current);
-                                        }
-                                        else
-                                        {
-                                            addNew = true;
-                                        }
-                                    }
-                                    if (addNew)
-                                    {
-                                        CouponLocalCatMap map = new CouponLocalCatMap();
-                                        map.Filter = Constant.COUPON_FILTER_INCLUDE;
-                                        map.CouponId = coupon.CouponId;
-                                        map.CategoryId = c.CategoryId;
-                                        map.CreatedBy = this.User.UserRequest().Email;
-                                        map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
-                                        map.UpdatedDt = DateTime.Now;
-                                        db.CouponLocalCatMaps.Add(map);
-                                    }
-                                }
-                            }
-                        }
-                        else if ("Shop".Equals(request.Conditions.FilterBy.Type))
-                        {
-                            
-                            if (request.Conditions.FilterBy.Shops != null && request.Conditions.FilterBy.Shops.Count > 0)
-                            {
-                               
-                                foreach (ShopRequest s in request.Conditions.FilterBy.Shops)
-                                {
-                                    bool addNew = false;
-                                    if (shopList == null || shopList.Count == 0)
-                                    {
-                                        addNew = true;
-                                    }
-                                    if (!addNew)
-                                    {
-                                        CouponShopMap current = shopList.Where(w => w.ShopId == s.ShopId).SingleOrDefault();
-                                        if (current != null)
-                                        {
-                                            current.UpdatedBy = this.User.UserRequest().Email;
-                                            current.UpdatedDt = DateTime.Now;
-                                            shopList.Remove(current);
-                                        }
-                                        else
-                                        {
-                                            addNew = true;
-                                        }
-                                    }
-                                    if (addNew)
-                                    {
-                                        CouponShopMap map = new CouponShopMap();
-                                        map.CouponId = coupon.CouponId;
-                                        map.ShopId = s.ShopId;
-                                        map.CreatedBy = this.User.UserRequest().Email;
-                                        map.CreatedDt = DateTime.Now;
-                                        map.UpdatedBy = this.User.UserRequest().Email;
-                                        map.UpdatedDt = DateTime.Now;
-                                        db.CouponShopMaps.Add(map);
-                                    }
-                                }
-                            }
-                        }
-                        if (request.Conditions.Include != null && request.Conditions.Include.Count > 0)
-                        {
-                            
-                            foreach (string pid in request.Conditions.Include)
-                            {
-                                bool addNew = false;
-                                if (includeList == null || includeList.Count == 0)
-                                {
-                                    addNew = true;
-                                }
-                                if (!addNew)
-                                {
-                                    CouponPidMap current = includeList.Where(w => w.Pid == pid).SingleOrDefault();
-                                    if (current != null)
-                                    {
-                                        current.UpdatedBy = this.User.UserRequest().Email;
-                                        current.UpdatedDt = DateTime.Now;
-                                        includeList.Remove(current);
-                                    }
-                                    else
-                                    {
-                                        addNew = true;
-                                    }
-                                }
-                                if (addNew)
-                                {
-                                    CouponPidMap map = new CouponPidMap();
-                                    map.CouponId = coupon.CouponId;
-                                    map.Pid = pid;
-                                    map.Filter = Constant.COUPON_FILTER_INCLUDE;
-                                    map.CreatedBy = this.User.UserRequest().Email;
-                                    map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
-                                    map.UpdatedDt = DateTime.Now;
-                                    db.CouponPidMaps.Add(map);
-                                }
-                            }
-                        }
-                        if (request.Conditions.Exclude != null && request.Conditions.Exclude.Count > 0)
-                        {
-                            
-                            foreach (string pid in request.Conditions.Exclude)
-                            {
-                                bool addNew = false;
-                                if (excludeList == null || excludeList.Count == 0)
-                                {
-                                    addNew = true;
-                                }
-                                if (!addNew)
-                                {
-                                    CouponPidMap current = excludeList.Where(w => w.Pid == pid).SingleOrDefault();
-                                    if (current != null)
-                                    {
-                                        current.UpdatedBy = this.User.UserRequest().Email;
-                                        current.UpdatedDt = DateTime.Now;
-                                        excludeList.Remove(current);
-                                    }
-                                    else
-                                    {
-                                        addNew = true;
-                                    }
-                                }
-                                if (addNew)
-                                {
-                                    CouponPidMap map = new CouponPidMap();
-                                    map.CouponId = coupon.CouponId;
-                                    map.Pid = pid;
-                                    map.Filter = Constant.COUPON_FILTER_EXCLUDE;
-                                    map.CreatedBy = this.User.UserRequest().Email;
-                                    map.CreatedDt = DateTime.Now;
-                                    map.UpdatedBy = this.User.UserRequest().Email;
-                                    map.UpdatedDt = DateTime.Now;
-                                    db.CouponPidMaps.Add(map);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        coupon.FilterBy = string.Empty;
-                    }
-                }
 
-                if(orderList != null && orderList.Count > 0)
-                {
-                    db.CouponOrders.RemoveRange(orderList);
+                        foreach (string pid in request.Conditions.Exclude)
+                        {
+                            bool addNew = false;
+                            if (excludeList == null || excludeList.Count == 0)
+                            {
+                                addNew = true;
+                            }
+                            if (!addNew)
+                            {
+                                CouponPidMap current = excludeList.Where(w => w.Pid == pid).SingleOrDefault();
+                                if (current != null)
+                                {
+                                    excludeList.Remove(current);
+                                }
+                                else
+                                {
+                                    addNew = true;
+                                }
+                            }
+                            if (addNew)
+                            {
+
+                                coupon.CouponPidMaps.Add(new CouponPidMap()
+                                {
+                                    Pid = pid,
+                                    Filter = Constant.COUPON_FILTER_EXCLUDE,
+                                    CreateBy = email,
+                                    CreateOn = currentDt,
+                                    UpdateBy = email,
+                                    UpdateOn = currentDt,
+                                });
+                            }
+                        }
+                    }
                 }
-                if (brandList != null && brandList.Count > 0)
+                else
                 {
-                    db.CouponBrandMaps.RemoveRange(brandList);
+                    coupon.FilterBy = string.Empty;
                 }
-                if (customerList != null && customerList.Count > 0)
-                {
-                    db.CouponCustomerMaps.RemoveRange(customerList);
-                }
-                if (globalCatList != null && globalCatList.Count > 0)
-                {
-                    db.CouponGlobalCatMaps.RemoveRange(globalCatList);
-                }
-                if (localCatList != null && localCatList.Count > 0)
-                {
-                    db.CouponLocalCatMaps.RemoveRange(localCatList);
-                }
-                if (shopList != null && shopList.Count > 0)
-                {
-                    db.CouponShopMaps.RemoveRange(shopList);
-                }
-                if (includeList != null && includeList.Count > 0)
-                {
-                    db.CouponPidMaps.RemoveRange(includeList);
-                }
-                if (excludeList != null && excludeList.Count > 0)
-                {
-                    db.CouponPidMaps.RemoveRange(excludeList);
-                }
-                Util.DeadlockRetry(db.SaveChanges, "Coupon");
-                return GetCoupon(coupon.CouponId);
             }
-            catch (Exception e)
+
+            if (orderList != null && orderList.Count > 0)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                db.CouponOrders.RemoveRange(orderList);
+            }
+            if (brandList != null && brandList.Count > 0)
+            {
+                db.CouponBrandMaps.RemoveRange(brandList);
+            }
+            if (customerList != null && customerList.Count > 0)
+            {
+                db.CouponCustomerMaps.RemoveRange(customerList);
+            }
+            if (globalCatList != null && globalCatList.Count > 0)
+            {
+                db.CouponGlobalCatMaps.RemoveRange(globalCatList);
+            }
+            if (localCatList != null && localCatList.Count > 0)
+            {
+                db.CouponLocalCatMaps.RemoveRange(localCatList);
+            }
+            if (shopList != null && shopList.Count > 0)
+            {
+                db.CouponShopMaps.RemoveRange(shopList);
+            }
+            if (includeList != null && includeList.Count > 0)
+            {
+                db.CouponPidMaps.RemoveRange(includeList);
+            }
+            if (excludeList != null && excludeList.Count > 0)
+            {
+                db.CouponPidMaps.RemoveRange(excludeList);
             }
         }
 

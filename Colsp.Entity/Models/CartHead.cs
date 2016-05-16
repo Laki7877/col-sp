@@ -16,6 +16,7 @@ namespace Colsp.Entity.Models
     {
         public int CartId { get; set; }
         public string CustomerId { get; set; }
+        public string GuestId { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }

@@ -23,7 +23,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -38,7 +38,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Colsp.Api.Controllers
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
 

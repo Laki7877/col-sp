@@ -1,14 +1,5 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+﻿using System.Web.Http;
 using Colsp.Entity.Models;
-using System.Threading.Tasks;
-using Colsp.Api.Constants;
-using System.IO;
-using System.Drawing;
-using Colsp.Model.Responses;
-using System.Drawing.Imaging;
 
 namespace Colsp.Api.Controllers
 {

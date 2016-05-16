@@ -14,6 +14,12 @@ namespace Colsp.Entity.Models
     
     public partial class ImportHeader
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ImportHeader()
+        {
+            this.ShopGroups = new HashSet<ShopGroup>();
+        }
+    
         public int ImportHeaderId { get; set; }
         public string HeaderName { get; set; }
         public string Description { get; set; }
@@ -21,6 +27,10 @@ namespace Colsp.Entity.Models
         public string Example { get; set; }
         public string Note { get; set; }
         public string GroupName { get; set; }
+        public int Position { get; set; }
         public string MapName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopGroup> ShopGroups { get; set; }
     }
 }

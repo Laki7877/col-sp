@@ -34,11 +34,17 @@ namespace Colsp.Entity.Models
         public Nullable<int> LocalCatId { get; set; }
         public Nullable<int> AttributeSetId { get; set; }
         public Nullable<int> BrandId { get; set; }
-        public Nullable<System.DateTime> EffectiveDate { get; set; }
-        public Nullable<System.DateTime> ExpireDate { get; set; }
-        public bool ControlFlag1 { get; set; }
-        public bool ControlFlag2 { get; set; }
-        public bool ControlFlag3 { get; set; }
+        public int ShippingId { get; set; }
+        public System.DateTime EffectiveDate { get; set; }
+        public System.DateTime ExpireDate { get; set; }
+        public Nullable<System.DateTime> NewArrivalDate { get; set; }
+        public int TheOneCardEarn { get; set; }
+        public string GiftWrap { get; set; }
+        public bool IsNew { get; set; }
+        public bool IsClearance { get; set; }
+        public bool IsBestSeller { get; set; }
+        public bool IsOnlineExclusive { get; set; }
+        public bool IsOnlyAt { get; set; }
         public string Remark { get; set; }
         public bool InfoFlag { get; set; }
         public bool ImageFlag { get; set; }
@@ -49,16 +55,19 @@ namespace Colsp.Entity.Models
         public string VariantTabStatus { get; set; }
         public string MoreOptionTabStatus { get; set; }
         public string RejectReason { get; set; }
-        public bool Visibility { get; set; }
         public string Status { get; set; }
-        public string ApprovedBy { get; set; }
-        public Nullable<System.DateTime> ApprovedDt { get; set; }
-        public string SubmittedBy { get; set; }
-        public Nullable<System.DateTime> SubmittedDt { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string FirstApproveBy { get; set; }
+        public Nullable<System.DateTime> FirstApproveOn { get; set; }
+        public string ApproveBy { get; set; }
+        public Nullable<System.DateTime> ApproveOn { get; set; }
+        public string RejecteBy { get; set; }
+        public Nullable<System.DateTime> RejectOn { get; set; }
+        public string SubmitBy { get; set; }
+        public Nullable<System.DateTime> SubmitOn { get; set; }
+        public string CreateBy { get; set; }
+        public System.DateTime CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public System.DateTime UpdateOn { get; set; }
     
         public virtual AttributeSet AttributeSet { get; set; }
         public virtual Brand Brand { get; set; }
@@ -74,6 +83,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStage> ProductStages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
+        public virtual Shipping Shipping { get; set; }
         public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageRelated> ProductStageRelateds { get; set; }

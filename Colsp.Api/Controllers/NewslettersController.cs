@@ -26,7 +26,17 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var newsLetter = db.Newsletters.Where(w => true).Select(s=>s);
+                var newsLetter = db.Newsletters.Include(i=>i.NewsletterShopMaps)
+                    .Where(w => true);
+                if(User.ShopRequest() != null)
+                {
+                    var shopGroup = User.ShopRequest().ShopGroup;
+                    var shopId = User.ShopRequest().ShopId;
+                    newsLetter = newsLetter.Where(w => DateTime.Now >= w.PublishedDt);
+                    newsLetter = newsLetter.Where(w => (Constant.NEWSLETTER_VISIBLE_TO_ALL.Equals(w.VisibleShopGroup) || w.VisibleShopGroup.Equals(shopGroup)) && !w.NewsletterShopMaps.Any(a=>a.ShopId==shopId && Constant.NEWSLETTER_FILTER_EXCLUDE.Equals(a.Filter)));
+                    newsLetter = newsLetter.Union(db.Newsletters.Where(w=> !(Constant.NEWSLETTER_VISIBLE_TO_ALL.Equals(w.VisibleShopGroup) || w.VisibleShopGroup.Equals(shopGroup)) && w.NewsletterShopMaps.Any(a=>a.ShopId==shopId && Constant.NEWSLETTER_FILTER_INCLUDE.Equals(a.Filter))));
+
+                }
                 if(request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, newsLetter);
@@ -48,7 +58,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.NEWSLETTER_FOLDER, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, false);
+                var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.NEWSLETTER_FOLDER, 1, 1, int.MaxValue, int.MaxValue, int.MaxValue, false);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
@@ -69,7 +79,7 @@ namespace Colsp.Api.Controllers
                    s.Subject,
                    s.VisibleShopGroup,
                    s.PublishedDt,
-                   Image = new ImageRequest() { url = s.ImageUrl},
+                   Image = new ImageRequest() { Url = s.ImageUrl},
                    IncludeShop = s.NewsletterShopMaps.Where(w=>w.Filter.Equals(Constant.NEWSLETTER_FILTER_INCLUDE)).Select(si=>new 
                    {
                        ShopId = si.ShopId,
@@ -109,7 +119,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find Newsletter");
                 }
-                string email = this.User.UserRequest().Email;
+                string email = User.UserRequest().Email;
                 SetupnewsLetter(newsLetter,request,email);
                 Util.DeadlockRetry(db.SaveChanges, "Newsletter");
                 return GetNewsletter(newsLetter.NewsletterId);
@@ -127,10 +137,11 @@ namespace Colsp.Api.Controllers
             try
             {
                 Newsletter newsLetter = new Newsletter();
-                string email = this.User.UserRequest().Email;
+                string email = User.UserRequest().Email;
                 SetupnewsLetter(newsLetter, request,email);
-                newsLetter.CreatedBy = email;
-                newsLetter.CreatedDt = DateTime.Now;
+                newsLetter.CreateBy = email;
+                newsLetter.CreateOn = DateTime.Now;
+                newsLetter.NewsletterId = db.GetNextNewsletterId().SingleOrDefault().Value;
                 db.Newsletters.Add(newsLetter);
                 Util.DeadlockRetry(db.SaveChanges, "Newsletter");
                 return GetNewsletter(newsLetter.NewsletterId); 
@@ -171,15 +182,15 @@ namespace Colsp.Api.Controllers
             newsLetter.PublishedDt = request.PublishedDt;
             if (request.Image != null)
             {
-                newsLetter.ImageUrl = request.Image.url;
+                newsLetter.ImageUrl = request.Image.Url;
             }
             else
             {
                 newsLetter.ImageUrl = string.Empty;
             }
             newsLetter.Status = Constant.STATUS_ACTIVE;
-            newsLetter.UpdatedBy = email;
-            newsLetter.UpdatedDt = DateTime.Now;
+            newsLetter.UpdateBy = email;
+            newsLetter.UpdateOn = DateTime.Now;
             var shopMap = newsLetter.NewsletterShopMaps.ToList();
             #region Include shop
             var includeShop = shopMap.Where(w => w.Filter.Equals(Constant.NEWSLETTER_FILTER_INCLUDE)).ToList();
@@ -211,10 +222,10 @@ namespace Colsp.Api.Controllers
                         {
                             ShopId = shop.ShopId,
                             Filter = Constant.NEWSLETTER_FILTER_INCLUDE,
-                            CreatedBy = email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy= email,
-                            UpdatedDt = DateTime.Now
+                            CreateBy = email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = email,
+                            UpdateOn = DateTime.Now
                         });
                     }
                 }
@@ -254,10 +265,10 @@ namespace Colsp.Api.Controllers
                         {
                             ShopId = shop.ShopId,
                             Filter = Constant.NEWSLETTER_FILTER_EXCLUDE,
-                            CreatedBy = email,
-                            CreatedDt = DateTime.Now,
-                            UpdatedBy = email,
-                            UpdatedDt = DateTime.Now
+                            CreateBy = email,
+                            CreateOn = DateTime.Now,
+                            UpdateBy = email,
+                            UpdateOn = DateTime.Now
                         });
                     }
                 }

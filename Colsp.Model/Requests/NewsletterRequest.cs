@@ -29,7 +29,7 @@ namespace Colsp.Model.Requests
 
         public override void DefaultOnNull()
         {
-            _order = GetValueOrDefault(_order, "UpdatedDt");
+            _order = GetValueOrDefault(_order, "UpdateOn");
             base.DefaultOnNull();
         }
     }

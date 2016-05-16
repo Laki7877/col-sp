@@ -16,15 +16,18 @@ namespace Colsp.Entity.Models
     {
         public long ProductReviewId { get; set; }
         public string CustomerId { get; set; }
-        public decimal Rating { get; set; }
+        public decimal DeliverySpeed { get; set; }
+        public decimal ProductContent { get; set; }
+        public decimal ProductValidity { get; set; }
+        public decimal Packaging { get; set; }
         public string Pid { get; set; }
         public int ShopId { get; set; }
         public string Comment { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedOn { get; set; }
+        public string CreateBy { get; set; }
+        public System.DateTime CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
         public virtual Product Product { get; set; }
         public virtual Shop Shop { get; set; }

@@ -1,5 +1,5 @@
 ﻿using Colsp.Api.Constants;
-using Colsp.Model.Responses;
+using Colsp.Model.Requests;
 using System;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
@@ -12,15 +12,68 @@ namespace Colsp.Api.Helpers
 {
     public static class Util
     {
-        public static async Task<FileUploadRespond> SetupImage(HttpRequestMessage Request, string rootPath, string folderName
-            , int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare)
+
+        public static ImageRequest SetupImage(HttpRequestMessage Request, MultipartFileData fileData, string rootPath, string folderName,
+            Constant.ImageRatio ratio)
+        {
+            string fileName = fileData.LocalFileName;
+            //Validation.ValidateImage(fileName, ratio);
+            string tmp = fileData.Headers.ContentDisposition.FileName;
+            if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+            {
+                tmp = tmp.Trim('"');
+            }
+            string ext = Path.GetExtension(tmp);
+            string newName = string.Concat(fileName, ext);
+            File.Move(fileName, newName);
+            ImageRequest fileUpload = new ImageRequest();
+            var name = Path.GetFileName(newName);
+            var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+            var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+            fileUpload.Url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", folderName, "/", name);
+            return fileUpload;
+        }
+
+
+        public static ImageRequest SetupImage(HttpRequestMessage Request, MultipartFileData fileData, string rootPath, string folderName
+            ,int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare)
+        {
+            string fileName = fileData.LocalFileName;
+            Validation.ValidateImage(fileName, minWidth, minHeight, maxWidth, maxHeight, maxSize, isSquare);
+            string tmp = fileData.Headers.ContentDisposition.FileName;
+            if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
+            {
+                tmp = tmp.Trim('"');
+            }
+            string ext = Path.GetExtension(tmp);
+            string newName = string.Concat(fileName, ext);
+            File.Move(fileName, newName);
+            ImageRequest fileUpload = new ImageRequest();
+            var name = Path.GetFileName(newName);
+            var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+            var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+            fileUpload.Url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", folderName, "/", name);
+            return fileUpload;
+        }
+
+
+        public static async Task<ImageRequest> SetupImage(HttpRequestMessage Request, string rootPath, string folderName
+            , int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare, int logoWidth = 100, int logoLength = 100)
         {
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new Exception("In valid content multi-media");
             }
             var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(rootPath, folderName));
-            await Request.Content.ReadAsMultipartAsync(streamProvider);
+            try
+            {
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Image size exceeded " + maxSize + " mb");
+            }
+            
 
             string fileName = string.Empty;
             string ext = string.Empty;
@@ -29,15 +82,26 @@ namespace Colsp.Api.Helpers
                 fileName = fileData.LocalFileName;
                 bool isLogo = false;
                 bool.TryParse(streamProvider.FormData["IsLogo"], out isLogo);
-                if (isLogo)
+                try
                 {
-                    Validation.ValidateImage(fileName, 100, 100, 100, 100, Int32.MaxValue, true);
+                    if (isLogo)
+                    {
+                        Validation.ValidateImage(fileName, logoWidth, logoLength, logoWidth, logoLength, int.MaxValue, true);
+                    }
+                    else
+                    {
+                        Validation.ValidateImage(fileName, minWidth, minHeight, maxWidth, maxHeight, maxSize, isSquare);
+                    }
                 }
-                else
+                catch(Exception e)
                 {
-                    Validation.ValidateImage(fileName, minWidth, minHeight, maxWidth, maxHeight, maxSize, isSquare);
+                    if (File.Exists(fileName))
+                    {
+                        File.Delete(fileName);
+                    }
+                    throw e;
                 }
-                
+
                 string tmp = fileData.Headers.ContentDisposition.FileName;
                 if (tmp.StartsWith("\"") && tmp.EndsWith("\""))
                 {
@@ -48,11 +112,11 @@ namespace Colsp.Api.Helpers
             }
             string newName = string.Concat(fileName, ext);
             File.Move(fileName, newName);
-            FileUploadRespond fileUpload = new FileUploadRespond();
+            ImageRequest fileUpload = new ImageRequest();
             var name = Path.GetFileName(newName);
             var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
             var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-            fileUpload.url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", folderName, "/", name);
+            fileUpload.Url = string.Concat(schema, "://", imageUrl, "/", AppSettingKey.IMAGE_ROOT_FOLDER, "/", folderName, "/", name);
             return fileUpload;
         }
 
@@ -122,8 +186,6 @@ namespace Colsp.Api.Helpers
             throw new Exception("Wait sometime and try again");
         }
 
-
-
         public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
         {
             int diff = dt.DayOfWeek - startOfWeek;
@@ -133,6 +195,8 @@ namespace Colsp.Api.Helpers
             }
             return dt.AddDays(-1 * diff).Date;
         }
+
+
 
     }
 }

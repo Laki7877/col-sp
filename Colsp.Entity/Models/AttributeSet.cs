@@ -18,7 +18,6 @@ namespace Colsp.Entity.Models
         public AttributeSet()
         {
             this.AttributeSetTags = new HashSet<AttributeSetTag>();
-            this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
             this.AttributeSetMaps = new HashSet<AttributeSetMap>();
             this.GlobalCatAttributeSetMaps = new HashSet<GlobalCatAttributeSetMap>();
@@ -29,15 +28,13 @@ namespace Colsp.Entity.Models
         public string AttributeSetDescriptionEn { get; set; }
         public bool Visibility { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AttributeSetTag> AttributeSetTags { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
