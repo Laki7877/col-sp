@@ -1881,8 +1881,8 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             #region setup other field
-            group.EffectiveDate = request.EffectiveDate;
-            group.ExpireDate = request.ExpireDate;
+            group.EffectiveDate = (DateTime)request.EffectiveDate;
+            group.ExpireDate = (DateTime)request.ExpireDate;
             group.TheOneCardEarn = request.TheOneCardEarn;
             group.GiftWrap = request.GiftWrap;
             group.Status = request.Status;
@@ -4381,8 +4381,8 @@ namespace Colsp.Api.Controllers
             group.IsOnlyAt = request.ControlFlags.IsOnlyAt;
             group.TheOneCardEarn = request.TheOneCardEarn;
             group.GiftWrap =  Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
-            group.EffectiveDate = request.EffectiveDate;
-            group.ExpireDate = request.ExpireDate;
+            group.EffectiveDate = (DateTime)request.EffectiveDate;
+            group.ExpireDate = (DateTime)request.ExpireDate;
             group.Remark = Validation.ValidateString(request.Remark, "Remark", true, 500, false, string.Empty);
             group.ImageFlag = false;
             group.InfoFlag = false;
@@ -5931,14 +5931,14 @@ namespace Colsp.Api.Controllers
                     {
                         if (p.ProductStageGroup.EffectiveDate != null)
                         {
-                            bodyList[headDicTmp["ACY"].Item2] = p.ProductStageGroup.EffectiveDate.Value.ToString(Constant.DATETIME_FORMAT);
+                            bodyList[headDicTmp["ACY"].Item2] = p.ProductStageGroup.EffectiveDate.ToString(Constant.DATETIME_FORMAT);
                         }
                     }
                     if (headDicTmp.ContainsKey("ACZ"))
                     {
                         if (p.ProductStageGroup.ExpireDate != null)
                         {
-                            bodyList[headDicTmp["ACZ"].Item2] = p.ProductStageGroup.ExpireDate.Value.ToString(Constant.DATETIME_FORMAT);
+                            bodyList[headDicTmp["ACZ"].Item2] = p.ProductStageGroup.ExpireDate.ToString(Constant.DATETIME_FORMAT);
                         }
                     }
                     if (headDicTmp.ContainsKey("ADA"))
@@ -7294,8 +7294,8 @@ namespace Colsp.Api.Controllers
                                     }
                                 }
                             }
-                            group.EffectiveDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACY", guidance, errorMessage, row);
-                            group.ExpireDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACZ", guidance, errorMessage, row);
+                            group.EffectiveDate = (DateTime)Validation.ValidateCSVDatetimeColumn(headDic, body, "ACY", guidance, errorMessage, row);
+                            group.ExpireDate = (DateTime)Validation.ValidateCSVDatetimeColumn(headDic, body, "ACZ", guidance, errorMessage, row);
                             group.Remark = Validation.ValidateCSVStringColumn(headDic, body, "ADH", guidance, false, 500, errorMessage, row, string.Empty);
                             if (headDic.ContainsKey("ADC"))
                             {
