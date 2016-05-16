@@ -56,6 +56,7 @@ namespace Colsp.Model.Requests
         public string Telex { get; set; }
         public string OverseasVendorIndicator { get; set; }
         public string RemittanceFaxNumber { get; set; }
+        public string DomainName { get; set; }
 
         public ShopRequest()
         {
@@ -109,6 +110,7 @@ namespace Colsp.Model.Requests
             Users = new List<UserRequest>();
             ShopType = new ShopTypeRequest();
             ShopImage = new ImageRequest();
+            DomainName = string.Empty;
         }
 
         public override void DefaultOnNull()

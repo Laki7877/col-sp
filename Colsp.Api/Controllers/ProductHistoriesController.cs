@@ -196,8 +196,6 @@ namespace Colsp.Api.Controllers
             response.DescriptionShortTh = variant.DescriptionShortTh;
             response.DescriptionFullEn = variant.DescriptionFullEn;
             response.DescriptionShortEn = variant.DescriptionShortEn;
-            //response.Quantity = variant.Inventory.Quantity;
-            //response.SafetyStock = variant.Inventory.SafetyStockSeller;
             response.PrepareDay = variant.PrepareDay;
             response.LimitIndividualDay = variant.LimitIndividualDay;
             response.PrepareMon = variant.PrepareMon;
@@ -230,12 +228,12 @@ namespace Colsp.Api.Controllers
             response.SEO.SeoEn = variant.SeoEn;
             response.SEO.SeoTh = variant.SeoTh;
             response.Visibility = variant.Visibility;
-            response.DefaultVariant = variant.DefaultVaraint;
+            response.DefaultVariant = variant.DefaultVariant;
             response.PromotionPrice = variant.PromotionPrice;
             response.EffectiveDatePromotion = variant.EffectiveDatePromotion;
             response.ExpireDatePromotion = variant.ExpireDatePromotion;
             response.IsHasExpiryDate = variant.IsHasExpiryDate;
-            //response.StockType = Constant.STOCK_TYPE.Where(w => w.Value.Equals(variant.Inventory.StockType)).SingleOrDefault().Key;
+            response.ExpressDelivery = variant.ExpressDelivery;
             response.Display = variant.Display;
             response.IsHasExpiryDate = variant.IsHasExpiryDate;
             response.IsVat = variant.IsVat;
@@ -246,7 +244,7 @@ namespace Colsp.Api.Controllers
                 {
                     response.Images.Add(new ImageRequest()
                     {
-                        ImageId = image.ImageId,
+                        ImageId = 0,
                         Url = image.ImageUrlEn,
                         Position = image.Position
                     });
@@ -259,7 +257,7 @@ namespace Colsp.Api.Controllers
                 {
                     response.VideoLinks.Add(new VideoLinkRequest()
                     {
-                        VideoId = video.VideoId,
+                        VideoId = 0,
                         Url = video.VideoUrlEn
                     });
                 }
@@ -325,7 +323,6 @@ namespace Colsp.Api.Controllers
                 attributeList.Add(tmpAttribute);
             }
         }
-
 
         protected override void Dispose(bool disposing)
         {

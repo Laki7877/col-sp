@@ -663,6 +663,18 @@ namespace Colsp.Api.Controllers
                             sm.Shop.ShopNameEn,
                             sm.Shop.Status,
                             sm.Shop.ShopGroup,
+                            ShopType = sm.Shop.ShopType == null ? null : new
+                            {
+                                ShopTypePermissionMaps = sm.Shop.ShopType.ShopTypePermissionMaps.Select(st=>new
+                                {
+                                    Permission = new
+                                    {
+                                        st.PermissionId,
+                                        st.Permission.Parent,
+                                        st.Permission.OverrideParent,
+                                    }
+                                })
+                            }
                         }
                     }),
                     UserBrandMaps = s.UserBrandMaps.Select(sb=>new
@@ -699,7 +711,7 @@ namespace Colsp.Api.Controllers
                 }
                 if (user.Type.Equals(Constant.USER_TYPE_SELLER)
                     && (user.UserShopMaps == null || user.UserShopMaps.Count() == 0) 
-                    && user.UserShopMaps.Any(a=>a.Shop.Status.Equals(Constant.STATUS_REMOVE)))
+                    && (!user.UserShopMaps.Any(a=> a.Shop.Status.Equals(Constant.STATUS_ACTIVE) || a.Shop.Status.Equals(Constant.STATUS_NOT_ACTIVE))))
                 {
                     throw new Exception("Please contact system administrator.");
                 }
@@ -720,6 +732,25 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
+
+                var shop = user.UserShopMaps.FirstOrDefault();
+                if(shop != null)
+                {
+
+                    var shopPermission = shop.Shop.ShopType.ShopTypePermissionMaps.Select(sp => sp.Permission);
+
+                    foreach (var shopGroup in shopPermission)
+                    {
+
+                        if (!claims.Exists(m => m.Value.Equals(shopGroup.PermissionId.ToString())))
+                        {
+                            Claim claim = new Claim("Permission", shopGroup.PermissionId.ToString(), shopGroup.Parent.ToString(), shopGroup.OverrideParent.ToString());
+                            claims.Add(claim);
+                        }
+                    }
+                }
+                
+
                 var identity = new ClaimsIdentity(claims, Constant.AUTHEN_SCHEMA);
                 var token = salt.HashPassword(string.Concat(user.UserId + DateTime.Now.ToString("ddMMyyHHmmss")));
                 var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(token);

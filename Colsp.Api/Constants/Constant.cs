@@ -5,7 +5,10 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
-        public enum Days { Sat = 1, Sun, Mon, Tue, Wed, Thu, Fri };
+        public static int DEFAULT_SHIPPING_ID = 1;
+
+
+        public static int ADMIN_SHOP_ID = 0;
 
         public enum ImageRatio  { IMAGE_RATIO_16_9 };
 
@@ -88,6 +91,11 @@ namespace Colsp.Api.Constants
 
         public static readonly string NEWSLETTER_FILTER_INCLUDE = "I";
         public static readonly string NEWSLETTER_FILTER_EXCLUDE = "E";
+
+        public static readonly string NEWSLETTER_VISIBLE_TO_ALL = "AL";
+        public static readonly string NEWSLETTER_VISIBLE_TO_BU = "BU";
+        public static readonly string NEWSLETTER_VISIBLE_TO_INDY = "IN";
+        public static readonly string NEWSLETTER_VISIBLE_TO_MERCHANT = "ME";
 
 
         public static readonly string SHOP_GROUP_BU = "BU";

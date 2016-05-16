@@ -274,7 +274,7 @@ namespace Colsp.Api.Controllers
                     }
 
                     var productImgSmallEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.SMALL.Equals(w.Type)).OrderBy(o => o.Position).ToList();
-                    foreach (var img in productImgEn)
+                    foreach (var img in productImgSmallEn)
                     {
                         response.BrandSmallBannerEn.Add(new ImageRequest()
                         {
@@ -285,7 +285,7 @@ namespace Colsp.Api.Controllers
                         });
                     }
                     var productImgSmallTh = brand.BrandImages.Where(w => Constant.LANG_TH.Equals(w.EnTh) && Constant.SMALL.Equals(w.Type)).OrderBy(o => o.Position).ToList();
-                    foreach (var img in productImgTh)
+                    foreach (var img in productImgSmallTh)
                     {
                         response.BrandSmallBannerTh.Add(new ImageRequest()
                         {

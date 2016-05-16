@@ -138,7 +138,9 @@ namespace Colsp.Api.Controllers
                                 or.OrderDate,
                                 or.ShippingType,
                                 or.TotalAmt,
-                                or.Status
+                                or.Status,
+                                or.Payment,
+                                or.Carrier
                             }).AsQueryable();
                 if (request == null)
                 {

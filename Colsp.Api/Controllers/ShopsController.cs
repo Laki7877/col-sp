@@ -30,7 +30,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var localCat = db.LocalCategories.Where(w => w.ShopId == shopId).Select(s => new
+                var localCat = db.LocalCategories
+                    .Where(w => w.ShopId == shopId && (w.Shop.Status.Equals(Constant.STATUS_ACTIVE) || w.Shop.Status.Equals(Constant.STATUS_NOT_ACTIVE))).Select(s => new
                 {
                     s.CategoryId,
                     s.NameEn,
@@ -79,7 +80,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopList = db.Shops.Where(w => !w.Status.Equals(Constant.STATUS_REMOVE))
+                var shopList = db.Shops.Where(w => w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE))
                     .Select(s => new
                     {
                         s.ShopId,
@@ -120,7 +121,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopType = db.Shops.Where(s => s.ShopId == shopId).Select(s => s.ShopType).SingleOrDefault();
+                var shopType = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE)))
+                    .Select(s => s.ShopType).SingleOrDefault();
                 return Request.CreateResponse(HttpStatusCode.OK, shopType);
             }
             catch (Exception e)
@@ -136,7 +138,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shop = db.Shops.Include(i=>i.User.UserGroupMaps.Select(ug => ug.UserGroup))
-                    .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE)))
                     .Select(s=>new
                     {
                         s.ShopId,
@@ -154,6 +156,7 @@ namespace Colsp.Api.Controllers
                         s.VendorTaxRate,
                         s.WithholdingTax,
                         s.Payment,
+                        s.DomainName,
                         Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission }),
                         ShopOwner = new
                         {
@@ -215,7 +218,7 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = User.ShopRequest().ShopId;
                 var shop = db.Shops
-                    .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
+                    .Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE)))
                     .Select(s => new
                     {
                         s.ShopId,
@@ -263,6 +266,7 @@ namespace Colsp.Api.Controllers
                         s.District,
                         s.Country,
                         s.UrlKey,
+                        s.DomainName,
                         Users = s.UserShopMaps.Select(u => u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
                         new
                         {
@@ -293,7 +297,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 int shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
+                var shop = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE))).SingleOrDefault();
                 if (shop == null || shop.Status.Equals(Constant.STATUS_REMOVE))
                 {
                     throw new Exception("Cannot find shop");
@@ -381,7 +385,7 @@ namespace Colsp.Api.Controllers
                     .Include(i=>i.User.UserGroupMaps)
                     .Include(i=>i.UserShopMaps)
                     .Include(i=>i.ShopCommissions)
-                    .Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
+                    .Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE))).SingleOrDefault();
                 if (shop == null )
                 {
                     throw new Exception("Shop not found");
@@ -471,11 +475,32 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var ids = request.Select(s => s.ShopId);
-                var shops = db.Shops.Where(w => ids.Contains(w.ShopId));
-                if(shops != null && shops.Count() > 0)
+                var shopNames = db.Shops.Where(w => ids.Contains(w.ShopId)).Select(s => new
                 {
-                    shops.ToList().ForEach(e => { e.Status = Constant.STATUS_REMOVE; });
+                    s.ShopId,
+                    s.ShopNameEn
+                });
+                foreach(var id in ids)
+                {
+                    var shop = new Shop()
+                    {
+                        ShopId = id,
+                        Status = Constant.STATUS_REMOVE,
+                        ShopOwner = null,
+                        ShopNameEn = string.Concat(shopNames.Where(w => w.ShopId == id).Single().ShopNameEn, "_DELETE"),
+                    };
+                    db.Shops.Attach(shop);
+                    db.Entry(shop).Property(p => p.Status).IsModified = true;
+                    db.Entry(shop).Property(p => p.ShopOwner).IsModified = true;
+                    db.Entry(shop).Property(p => p.ShopNameEn).IsModified = true;
+                    db.UserShopMaps.RemoveRange(db.UserShopMaps.Where(w => w.ShopId == id));
                 }
+                //var shops = db.Shops.Where(w => ids.Contains(w.ShopId));
+                //if(shops != null && shops.Count() > 0)
+                //{
+                //    shops.ToList().ForEach(e => { e.Status = Constant.STATUS_REMOVE; });
+                //}
+                db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
             }
@@ -492,7 +517,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
+                var shop = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE))).SingleOrDefault();
                 if(shop == null)
                 {
                     throw new Exception("Shop not found");
@@ -516,7 +541,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE)).Select(s => new
+                var shop = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE))).Select(s => new
                 {
                     s.ShopId,
                     s.ThemeId,
@@ -587,7 +612,7 @@ namespace Colsp.Api.Controllers
                 }
 
                 var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId && !w.Status.Equals(Constant.STATUS_REMOVE))
+                var shop = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE)))
                     .Include(i => i.ShopComponentMaps)
                     .SingleOrDefault();
 
@@ -727,7 +752,7 @@ namespace Colsp.Api.Controllers
                 {
                     s.Description,
                     s.VendorTaxRateCode
-                });
+                }).OrderBy(o=>o.VendorTaxRateCode);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
@@ -1069,7 +1094,7 @@ namespace Colsp.Api.Controllers
             shop.VendorAddressLine2 = Validation.ValidateString(request.VendorAddressLine2, "Vendor Address Line2", true, 35, false, string.Empty);
             shop.VendorAddressLine3 = Validation.ValidateString(request.VendorAddressLine3, "Vendor Address Line3", true, 35, false, string.Empty);
             shop.OverseasVendorIndicator = Validation.ValidateString(request.OverseasVendorIndicator, "Overseas Vendor Indicator", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
-
+            shop.DomainName = Validation.ValidateString(request.DomainName, "Domain Name", true, 500, false, string.Empty);
 
             if (request.Country != null && !string.IsNullOrEmpty(request.Country.CountryCode))
             {

@@ -224,7 +224,7 @@ namespace Colsp.Api.Controllers
                 category.ShopId = shopId;
                 string email = User.UserRequest().Email;
                 DateTime currentDt = DateTime.Now;
-                SetupCategory(category, request, email, currentDt,true);
+                SetupCategory(category, request, shopId, email, currentDt,true);
                 int max = db.LocalCategories.Where(w=>w.ShopId==shopId).Select(s=>s.Rgt).DefaultIfEmpty(0).Max();
                 if (max == 0)
                 {
@@ -273,7 +273,7 @@ namespace Colsp.Api.Controllers
                 }
                 var email = User.UserRequest().Email;
                 var currentDt = DateTime.Now;
-                SetupCategory(category, request, email, currentDt, false);
+                SetupCategory(category, request, shopId, email, currentDt, false);
                 #region Url Key
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
@@ -364,13 +364,15 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = User.ShopRequest().ShopId;
-                if (shopId == 0)
+                if(request == null || User.ShopRequest() == null)
                 {
-                    throw new Exception("Shop is invalid. Cannot find shop in session");
+                    throw new Exception("Invalid request");
                 }
-                var catEnList = db.LocalCategories.Where(w => w.ShopId == shopId).ToList();
-                foreach (CategoryRequest catRq in request)
+
+                string email = User.UserRequest().Email;
+                DateTime currentDt = DateTime.Now;
+
+                foreach (var catRq in request)
                 {
                     if (catRq.Lft >= catRq.Rgt)
                     {
@@ -385,32 +387,85 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Category " + catRq.NameEn + " is invalid.");
                     }
-
-                    var catEn = catEnList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
-                    if (catEn == null)
+                    LocalCategory category = new LocalCategory()
                     {
-                        throw new Exception("Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
+                        CategoryId = catRq.CategoryId,
+                        Lft = catRq.Lft,
+                        Rgt = catRq.Rgt,
+                        UpdateBy = email,
+                        UpdateOn = currentDt
+                    };
+                    db.LocalCategories.Attach(category);
+                    db.Entry(category).Property(p => p.Lft).IsModified = true;
+                    db.Entry(category).Property(p => p.Rgt).IsModified = true;
+                    db.Entry(category).Property(p => p.UpdateBy).IsModified = true;
+                    db.Entry(category).Property(p => p.UpdateOn).IsModified = true;
+                }
+                var reqCatIds = request.Select(s => s.CategoryId);
+                var shopId = User.ShopRequest().ShopId;
+                var deleteIds = db.LocalCategories.Where(w => w.ShopId == shopId &&!reqCatIds.Any(a => a == w.CategoryId)).Select(s => s.CategoryId);
+                if (deleteIds != null && deleteIds.Count() > 0)
+                {
+                    var productMap = db.ProductStageGroups.Where(w => deleteIds.Contains(w.LocalCatId.HasValue? w.LocalCatId.Value : 0)).Select(s => s.LocalCategory.NameEn);
+                    if (productMap != null && productMap.Count() > 0)
+                    {
+                        throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", productMap), " with product associated"));
                     }
-                    catEn.Lft = catRq.Lft;
-                    catEn.Rgt = catRq.Rgt;
-                    catEn.UpdateBy = User.UserRequest().Email;
-                    catEn.UpdateOn = DateTime.Now;
-                    catEnList.Remove(catEn);
+                    db.LocalCategories.RemoveRange(db.LocalCategories.Where(w => deleteIds.Contains(w.CategoryId)));
                 }
-
-                var ids = catEnList.Select(s => s.CategoryId);
-                var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.LocalCatId.HasValue?w.LocalCatId.Value : 0)).Select(s => s.LocalCategory.NameEn);
-                if (productMap != null && productMap.Count() > 0)
-                {
-                    throw new Exception(string.Concat("Cannot delete local category ", string.Join(",", productMap), " with product associated"));
-                }
-                if (catEnList != null && catEnList.Count() > 0)
-                {
-                    db.LocalCategories.RemoveRange(catEnList);
-                }
-                
+                db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
+
+
+
+                //int shopId = User.ShopRequest().ShopId;
+                //if (shopId == 0)
+                //{
+                //    throw new Exception("Shop is invalid. Cannot find shop in session");
+                //}
+                //var catEnList = db.LocalCategories.Where(w => w.ShopId == shopId).ToList();
+                //foreach (CategoryRequest catRq in request)
+                //{
+                //    if (catRq.Lft >= catRq.Rgt)
+                //    {
+                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Node is not properly formated");
+                //    }
+                //    var validate = request.Where(w => w.Lft == catRq.Lft || w.Rgt == catRq.Rgt).ToList();
+                //    if (validate != null && validate.Count > 1)
+                //    {
+                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
+                //    }
+                //    if (catRq.CategoryId == 0)
+                //    {
+                //        throw new Exception("Category " + catRq.NameEn + " is invalid.");
+                //    }
+
+                //    var catEn = catEnList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
+                //    if (catEn == null)
+                //    {
+                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
+                //    }
+                //    catEn.Lft = catRq.Lft;
+                //    catEn.Rgt = catRq.Rgt;
+                //    catEn.UpdateBy = User.UserRequest().Email;
+                //    catEn.UpdateOn = DateTime.Now;
+                //    catEnList.Remove(catEn);
+                //}
+
+                //var ids = catEnList.Select(s => s.CategoryId);
+                //var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.LocalCatId.HasValue?w.LocalCatId.Value : 0)).Select(s => s.LocalCategory.NameEn);
+                //if (productMap != null && productMap.Count() > 0)
+                //{
+                //    throw new Exception(string.Concat("Cannot delete local category ", string.Join(",", productMap), " with product associated"));
+                //}
+                //if (catEnList != null && catEnList.Count() > 0)
+                //{
+                //    db.LocalCategories.RemoveRange(catEnList);
+                //}
+                
+                //Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
+                //return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {
@@ -503,7 +558,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupCategory(LocalCategory category, CategoryRequest request, string email, DateTime currentDt, bool isNewAdd)
+        private void SetupCategory(LocalCategory category, CategoryRequest request, int shopId, string email, DateTime currentDt, bool isNewAdd)
         {
             category.NameEn = Validation.ValidateString(request.NameEn, "Category Name (English)", false, 200, true);
             category.NameTh = Validation.ValidateString(request.NameTh, "Category Name (Thai)", false, 200, true);
@@ -546,6 +601,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.ShopId = shopId;
                             current.Type = Constant.LANG_EN;
                             current.Type = Constant.MEDIUM;
                             current.Position = position++;
@@ -564,6 +620,7 @@ namespace Colsp.Api.Controllers
                         {
                             ImageUrl = img.Url,
                             Link = img.Link,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
                             Type = Constant.MEDIUM,
@@ -599,6 +656,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.ShopId = shopId;
                             current.Type = Constant.LANG_TH;
                             current.Type = Constant.MEDIUM;
                             current.Position = position++;
@@ -617,6 +675,7 @@ namespace Colsp.Api.Controllers
                         {
                             ImageUrl = img.Url,
                             Link = img.Link,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
                             Type = Constant.MEDIUM,
@@ -652,6 +711,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.ShopId = shopId;
                             current.Type = Constant.LANG_EN;
                             current.Type = Constant.SMALL;
                             current.Position = position++;
@@ -670,6 +730,7 @@ namespace Colsp.Api.Controllers
                         {
                             ImageUrl = img.Url,
                             Link = img.Link,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_EN,
                             Type = Constant.SMALL,
@@ -705,6 +766,7 @@ namespace Colsp.Api.Controllers
                         {
                             current.ImageUrl = img.Url;
                             current.Link = img.Link;
+                            current.ShopId = shopId;
                             current.Type = Constant.LANG_TH;
                             current.Type = Constant.SMALL;
                             current.Position = position++;
@@ -723,6 +785,7 @@ namespace Colsp.Api.Controllers
                         {
                             ImageUrl = img.Url,
                             Link = img.Link,
+                            ShopId = shopId,
                             Position = position++,
                             EnTh = Constant.LANG_TH,
                             Type = Constant.SMALL,

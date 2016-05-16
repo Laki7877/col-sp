@@ -10,10 +10,12 @@ namespace Colsp.Model.Requests
         public string TrackingNumber { get; set; }
         public string OrderId { get; set; }
         public string CustomerName { get; set; }
+        public string Carrier { get; set; }
         public string Status { get; set; }
         public decimal TotalAmt { get; set; }
         public decimal GrandTotalAmt { get; set; }
         public string ShippingType { get; set; }
+        public string Payment { get; set; }
         public int ShopId { get; set; }
         public string ShipContactor { get; set; }
         public string ShipAddress1 { get; set; }

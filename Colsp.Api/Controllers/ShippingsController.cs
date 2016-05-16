@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Colsp.Entity.Models;
 using Colsp.Api.Constants;
+using Colsp.Api.Extensions;
 
 namespace Colsp.Api.Controllers
 {
@@ -19,7 +20,16 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shippingList = db.Shippings.Where(w=>w.Status.Equals(Constant.STATUS_ACTIVE)).Select(s => new
+
+                var tmpShipping = db.Shippings.Where(w => w.Status.Equals(Constant.STATUS_ACTIVE));
+
+                if(User.ShopRequest() != null)
+                {
+                    var shopGroup = User.ShopRequest().ShopGroup;
+                    tmpShipping = tmpShipping.Where(w => w.ShopGroups.Any(a => a.Abbr.Equals(shopGroup)));
+                }
+
+                var shippingList = tmpShipping.Select(s => new
                 {
                     s.ShippingId,
                     s.ShippingMethodEn,
