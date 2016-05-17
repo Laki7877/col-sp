@@ -110,7 +110,7 @@ namespace Colsp.Logic
                             cmsCategoryProduct.Status                   = product.Status;
                             cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
                             cmsCategoryProduct.Pid                      = product.Pid;
-                            cmsCategoryProduct.Sequence                 = product.Sequence;
+                            cmsCategoryProduct.Sequence                 = product.Sequence.Value;
                             cmsCategoryProduct.CreateBy                 = product.CreateBy;
                             cmsCategoryProduct.CreateOn                 = dateNow;
                             cmsCategoryProduct.CreateIP                 = product.CreateIP;
@@ -178,7 +178,7 @@ namespace Colsp.Logic
                             cmsCategoryProduct.Status                   = product.Status;
                             cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
                             cmsCategoryProduct.Pid                      = product.Pid;
-                            cmsCategoryProduct.Sequence                 = product.Sequence;
+                            cmsCategoryProduct.Sequence                 = product.Sequence.Value;
                             cmsCategoryProduct.CreateBy                 = product.CreateBy;
                             cmsCategoryProduct.CreateOn                 = dateNow;
                             cmsCategoryProduct.CreateIP                 = product.CreateIP;

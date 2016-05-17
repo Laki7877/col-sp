@@ -19,6 +19,7 @@ namespace Colsp.Entity.Models
         {
             this.AttributeFilterMaps = new HashSet<AttributeFilterMap>();
             this.AttributePropertyMaps = new HashSet<AttributePropertyMap>();
+            this.ProductHistoryAttributes = new HashSet<ProductHistoryAttribute>();
             this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
             this.AttributeValueMaps = new HashSet<AttributeValueMap>();
         }
@@ -39,6 +40,8 @@ namespace Colsp.Entity.Models
         public virtual ICollection<AttributeFilterMap> AttributeFilterMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AttributePropertyMap> AttributePropertyMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

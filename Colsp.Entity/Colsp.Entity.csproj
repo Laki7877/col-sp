@@ -317,6 +317,9 @@
     <Compile Include="Models\InventoryHistory.cs">
       <DependentUpon>ColspEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ItemOnHoldReport_Result.cs">
+      <DependentUpon>ColspEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\LocalCategory.cs">
       <DependentUpon>ColspEntities.tt</DependentUpon>
     </Compile>
