@@ -324,6 +324,20 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="100" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="CMSImage">
+          <Key>
+            <PropertyRef Name="CMSImageId" />
+          </Key>
+          <Property Name="CMSImageId" Type="int" Nullable="false" />
+          <Property Name="CMSMasterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
+          <Property Name="EnTh" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdatedOn" Type="datetime" />
+        </EntityType>
         <EntityType Name="CMSMaster">
           <Key>
             <PropertyRef Name="CMSMasterId" />
@@ -362,17 +376,11 @@
           <Property Name="CreateIP" Type="nvarchar" MaxLength="100" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="100" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'DBMKPOnline.dbo.CMSMasterCategoryMap' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="CMSMasterCategoryMap">
           <Key>
             <PropertyRef Name="CMSMasterCategoryMapId" />
-            <PropertyRef Name="CMSMasterId" />
-            <PropertyRef Name="CMSCategoryId" />
-            <PropertyRef Name="ShopId" />
-            <PropertyRef Name="Sequence" />
           </Key>
-          <Property Name="CMSMasterCategoryMapId" Type="int" Nullable="false" />
+          <Property Name="CMSMasterCategoryMapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CMSMasterId" Type="int" Nullable="false" />
           <Property Name="CMSCategoryId" Type="int" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
@@ -426,7 +434,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.CMSMasterCategoryMap' does not hav
           <Property Name="EffectiveTime" Type="time" Precision="7" />
           <Property Name="ExpiryDate" Type="date" />
           <Property Name="ExpiryTime" Type="time" Precision="7" />
-          <Property Name="Status" Type="bit" />
+          <Property Name="Status" Type="nvarchar" MaxLength="2" />
           <Property Name="CreateBy" Type="nvarchar" MaxLength="100" />
           <Property Name="CreateOn" Type="datetime" />
           <Property Name="UpdateBy" Type="nvarchar" MaxLength="100" />
@@ -4707,7 +4715,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CMSCategoryProductMap" EntityType="Self.CMSCategoryProductMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSFeatureProduct" EntityType="Self.CMSFeatureProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSGroup" EntityType="Self.CMSGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSImage" EntityType="Self.CMSImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMaster" EntityType="Self.CMSMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CMSMasterCategoryMap" EntityType="Self.CMSMasterCategoryMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMasterGroupMap" EntityType="Self.CMSMasterGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSMasterSchedulerMap" EntityType="Self.CMSMasterSchedulerMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CMSScheduler" EntityType="Self.CMSScheduler" Schema="dbo" store:Type="Tables" />
@@ -4814,22 +4824,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="UserShopMap" EntityType="Self.UserShopMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VendorTaxRate" EntityType="Self.VendorTaxRate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WithholdingTax" EntityType="Self.WithholdingTax" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CMSMasterCategoryMap" EntityType="Self.CMSMasterCategoryMap" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [CMSMasterCategoryMap].[CMSMasterCategoryMapId] AS [CMSMasterCategoryMapId], 
-    [CMSMasterCategoryMap].[CMSMasterId] AS [CMSMasterId], 
-    [CMSMasterCategoryMap].[CMSCategoryId] AS [CMSCategoryId], 
-    [CMSMasterCategoryMap].[ShopId] AS [ShopId], 
-    [CMSMasterCategoryMap].[Sequence] AS [Sequence], 
-    [CMSMasterCategoryMap].[Status] AS [Status], 
-    [CMSMasterCategoryMap].[CreateBy] AS [CreateBy], 
-    [CMSMasterCategoryMap].[CreateOn] AS [CreateOn], 
-    [CMSMasterCategoryMap].[UpdateBy] AS [UpdateBy], 
-    [CMSMasterCategoryMap].[UpdateOn] AS [UpdateOn], 
-    [CMSMasterCategoryMap].[CreateIP] AS [CreateIP], 
-    [CMSMasterCategoryMap].[UpdateIP] AS [UpdateIP]
-    FROM [dbo].[CMSMasterCategoryMap] AS [CMSMasterCategoryMap]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="Guest" EntityType="Self.Guest" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Guest].[GuestId] AS [GuestId], 
@@ -5810,7 +5804,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CMSCategoryProductMaps" EntityType="ColspModel.CMSCategoryProductMap" />
           <EntitySet Name="CMSFeatureProducts" EntityType="ColspModel.CMSFeatureProduct" />
           <EntitySet Name="CMSGroups" EntityType="ColspModel.CMSGroup" />
+          <EntitySet Name="CMSImages" EntityType="ColspModel.CMSImage" />
           <EntitySet Name="CMSMasters" EntityType="ColspModel.CMSMaster" />
+          <EntitySet Name="CMSMasterCategoryMaps" EntityType="ColspModel.CMSMasterCategoryMap" />
           <EntitySet Name="CMSMasterGroupMaps" EntityType="ColspModel.CMSMasterGroupMap" />
           <EntitySet Name="CMSMasterSchedulerMaps" EntityType="ColspModel.CMSMasterSchedulerMap" />
           <EntitySet Name="CMSSchedulers" EntityType="ColspModel.CMSScheduler" />
@@ -5915,7 +5911,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="UserShopMaps" EntityType="ColspModel.UserShopMap" />
           <EntitySet Name="VendorTaxRates" EntityType="ColspModel.VendorTaxRate" />
           <EntitySet Name="WithholdingTaxes" EntityType="ColspModel.WithholdingTax" />
-          <EntitySet Name="CMSMasterCategoryMaps" EntityType="ColspModel.CMSMasterCategoryMap" />
           <EntitySet Name="Guests" EntityType="ColspModel.Guest" />
           <EntitySet Name="Migrate_TBDepartment" EntityType="ColspModel.Migrate_TBDepartment" />
           <EntitySet Name="Migrate_TBProduct" EntityType="ColspModel.Migrate_TBProduct" />
@@ -6751,6 +6746,20 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreateIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UpdateIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CMSImage">
+          <Key>
+            <PropertyRef Name="CMSImageId" />
+          </Key>
+          <Property Name="CMSImageId" Type="Int32" Nullable="false" />
+          <Property Name="CMSMasterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
+          <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="EnTh" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedOn" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="CMSMaster">
           <Key>
             <PropertyRef Name="CMSMasterId" />
@@ -6782,6 +6791,23 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="TitleShowcase" Type="Boolean" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Visibility" Type="Boolean" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CMSMasterCategoryMap">
+          <Key>
+            <PropertyRef Name="CMSMasterCategoryMapId" />
+          </Key>
+          <Property Name="CMSMasterCategoryMapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterId" Type="Int32" Nullable="false" />
+          <Property Name="CMSCategoryId" Type="Int32" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -6830,7 +6856,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="EffectiveTime" Type="Time" Precision="7" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
           <Property Name="ExpiryTime" Type="Time" Precision="7" />
-          <Property Name="Status" Type="Boolean" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -8938,27 +8964,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="WithholdingTaxCode" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FK_Shop_WithholdingTax" FromRole="WithholdingTax" ToRole="Shop" />
-        </EntityType>
-        <EntityType Name="CMSMasterCategoryMap">
-          <Key>
-            <PropertyRef Name="CMSMasterCategoryMapId" />
-            <PropertyRef Name="CMSMasterId" />
-            <PropertyRef Name="CMSCategoryId" />
-            <PropertyRef Name="ShopId" />
-            <PropertyRef Name="Sequence" />
-          </Key>
-          <Property Name="CMSMasterCategoryMapId" Type="Int32" Nullable="false" />
-          <Property Name="CMSMasterId" Type="Int32" Nullable="false" />
-          <Property Name="CMSCategoryId" Type="Int32" Nullable="false" />
-          <Property Name="ShopId" Type="Int32" Nullable="false" />
-          <Property Name="Sequence" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CreateOn" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Guest">
           <Key>
@@ -11531,6 +11536,21 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CMSImages">
+            <EntityTypeMapping TypeName="ColspModel.CMSImage">
+              <MappingFragment StoreEntitySet="CMSImage">
+                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="EnTh" ColumnName="EnTh" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
+                <ScalarProperty Name="CMSImageId" ColumnName="CMSImageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CMSMasters">
             <EntityTypeMapping TypeName="ColspModel.CMSMaster">
               <MappingFragment StoreEntitySet="CMSMaster">
@@ -11567,6 +11587,24 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CMSMasterNameTH" ColumnName="CMSMasterNameTH" />
                 <ScalarProperty Name="CMSMasterNameEN" ColumnName="CMSMasterNameEN" />
                 <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMSMasterCategoryMaps">
+            <EntityTypeMapping TypeName="ColspModel.CMSMasterCategoryMap">
+              <MappingFragment StoreEntitySet="CMSMasterCategoryMap">
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
+                <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
+                <ScalarProperty Name="CMSMasterCategoryMapId" ColumnName="CMSMasterCategoryMapId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -13560,24 +13598,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <MappingFragment StoreEntitySet="WithholdingTax">
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="WithholdingTaxCode" ColumnName="WithholdingTaxCode" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CMSMasterCategoryMaps">
-            <EntityTypeMapping TypeName="ColspModel.CMSMasterCategoryMap">
-              <MappingFragment StoreEntitySet="CMSMasterCategoryMap">
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
-                <ScalarProperty Name="CMSCategoryId" ColumnName="CMSCategoryId" />
-                <ScalarProperty Name="CMSMasterId" ColumnName="CMSMasterId" />
-                <ScalarProperty Name="CMSMasterCategoryMapId" ColumnName="CMSMasterCategoryMapId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

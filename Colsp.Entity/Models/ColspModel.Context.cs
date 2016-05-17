@@ -49,7 +49,9 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
         public virtual DbSet<CMSFeatureProduct> CMSFeatureProducts { get; set; }
         public virtual DbSet<CMSGroup> CMSGroups { get; set; }
+        public virtual DbSet<CMSImage> CMSImages { get; set; }
         public virtual DbSet<CMSMaster> CMSMasters { get; set; }
+        public virtual DbSet<CMSMasterCategoryMap> CMSMasterCategoryMaps { get; set; }
         public virtual DbSet<CMSMasterGroupMap> CMSMasterGroupMaps { get; set; }
         public virtual DbSet<CMSMasterSchedulerMap> CMSMasterSchedulerMaps { get; set; }
         public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
@@ -154,7 +156,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
         public virtual DbSet<VendorTaxRate> VendorTaxRates { get; set; }
         public virtual DbSet<WithholdingTax> WithholdingTaxes { get; set; }
-        public virtual DbSet<CMSMasterCategoryMap> CMSMasterCategoryMaps { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
         public virtual DbSet<Migrate_TBDepartment> Migrate_TBDepartment { get; set; }
         public virtual DbSet<Migrate_TBProduct> Migrate_TBProduct { get; set; }
