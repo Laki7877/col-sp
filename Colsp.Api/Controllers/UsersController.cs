@@ -30,7 +30,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if(request == null)
+                if (request == null)
                 {
                     throw new Exception("Invalid request");
                 }
@@ -75,7 +75,7 @@ namespace Colsp.Api.Controllers
                     .Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type))
                     .Select(s => new
                     {
-                        UserShopMaps = s.UserShopMaps.Select(sm=>new
+                        UserShopMaps = s.UserShopMaps.Select(sm => new
                         {
                             sm.ShopId,
                             Shop = sm.Shop == null ? null : new
@@ -88,7 +88,7 @@ namespace Colsp.Api.Controllers
                         s.NameTh,
                         s.Email,
                         s.UpdateOn,
-                        UserGroupMaps = s.UserGroupMaps.Select(sm=>new
+                        UserGroupMaps = s.UserGroupMaps.Select(sm => new
                         {
                             UserGroup = sm.UserGroup == null ? null : new
                             {
@@ -110,7 +110,7 @@ namespace Colsp.Api.Controllers
                     s.Email,
                     UpdatedDt = s.UpdateOn,
                     UserGroup = s.UserGroupMaps.Select(ug => ug.UserGroup.GroupNameEn),
-                    Shops = s.UserShopMaps.Select(sh=>sh.Shop.ShopNameEn),
+                    Shops = s.UserShopMaps.Select(sh => sh.Shop.ShopNameEn),
                 });
 
                 if (request == null)
@@ -128,7 +128,7 @@ namespace Colsp.Api.Controllers
                 {
                     if (string.Equals("ShopOwner", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        userList = userList.Where(w => w.UserGroup.Any(a=>a.Equals("Shop Owner")));
+                        userList = userList.Where(w => w.UserGroup.Any(a => a.Equals("Shop Owner")));
                     }
                     if (string.Equals("NotShopOwner", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
@@ -136,7 +136,7 @@ namespace Colsp.Api.Controllers
                     }
                     if (string.Equals("NoShop", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        userList = userList.Where(w => w.Shops.All(a=>a==null));
+                        userList = userList.Where(w => w.Shops.All(a => a == null));
                     }
                 }
                 var total = userList.Count();
@@ -158,8 +158,8 @@ namespace Colsp.Api.Controllers
             {
                 int shopId = User.ShopRequest().ShopId;
                 var usr = db.Users.Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
-                    .Where(w => w.UserId == userId 
-                                && !w.Status.Equals(Constant.STATUS_REMOVE) 
+                    .Where(w => w.UserId == userId
+                                && !w.Status.Equals(Constant.STATUS_REMOVE)
                                 && w.Type.Equals(Constant.USER_TYPE_SELLER)
                                 && w.UserShopMaps.Any(a => a.ShopId == shopId))
                     .Select(s => new {
@@ -188,7 +188,7 @@ namespace Colsp.Api.Controllers
                             UpdateOn = sb.Brand.UpdateOn
                         })
                     }).SingleOrDefault();
-                if (usr == null )
+                if (usr == null)
                 {
                     throw new Exception("User not found");
                 }
@@ -282,7 +282,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("User not found");
                 }
                 #endregion
-                SetupUser(user, request,db);
+                SetupUser(user, request, db);
                 #region Password
                 if (!string.IsNullOrEmpty(request.Password))
                 {
@@ -352,7 +352,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var userList = db.Users.Include(i=>i.UserGroupMaps.Select(s=>s.UserGroup))
+                var userList = db.Users.Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
                     .Where(w => w.Type.Equals(Constant.USER_TYPE_ADMIN) && !w.Status.Equals(Constant.STATUS_REMOVE))
                     .Select(s => new
                     {
@@ -361,7 +361,7 @@ namespace Colsp.Api.Controllers
                         s.NameTh,
                         s.Email,
                         UpdatedDt = s.UpdateOn,
-                        UserGroup = s.UserGroupMaps.Select(ug=>new
+                        UserGroup = s.UserGroupMaps.Select(ug => new
                         {
                             ug.UserGroup.GroupNameEn
                         })
@@ -395,9 +395,9 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var usr = db.Users.Include(i=>i.UserGroupMaps.Select(s=>s.UserGroup))
+                var usr = db.Users.Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
                     .Where(w => w.UserId == userId && !w.Status.Equals(Constant.STATUS_REMOVE) && w.Type.Equals(Constant.USER_TYPE_ADMIN))
-                    .Select(s=>new {
+                    .Select(s => new {
                         s.UserId,
                         s.Email,
                         s.NameEn,
@@ -421,7 +421,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("User not found");
                 }
-                
+
                 return Request.CreateResponse(HttpStatusCode.OK, usr);
             }
             catch (Exception e)
@@ -438,7 +438,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 user = new User();
-                SetupUser(user, request,db);
+                SetupUser(user, request, db);
                 #region Password
                 user.Password = salt.HashPassword(Validation.ValidateString(request.Password, "Password", true, 100, false));
                 user.PasswordLastChg = string.Empty;
@@ -580,7 +580,7 @@ namespace Colsp.Api.Controllers
                 }
                 var userIds = request.Where(w => w.UserId != 0).Select(s => s.UserId);
                 var usr = db.Users.Where(w => Constant.USER_TYPE_ADMIN.Equals(w.Type) && userIds.Contains(w.UserId));
-                if(usr != null || usr.Count() > 0)
+                if (usr != null || usr.Count() > 0)
                 {
                     db.Users.RemoveRange(usr);
                     Util.DeadlockRetry(db.SaveChanges, "User");
@@ -608,7 +608,7 @@ namespace Colsp.Api.Controllers
             try
             {
                 ClaimRequest claim = new ClaimRequest();
-                
+
                 var claimsIdentity = User.Identity as ClaimsIdentity;
                 claim.Permission = claimsIdentity.Claims
                     .Where(w => w.Type.Equals("Permission"))
@@ -620,7 +620,7 @@ namespace Colsp.Api.Controllers
                 claim.Shop = User.ShopRequest();
                 claim.User = new
                 {
-                    NameEn = User.UserRequest().NameEn ,
+                    NameEn = User.UserRequest().NameEn,
                     Email = User.UserRequest().Email,
                     IsAdmin = Constant.USER_TYPE_ADMIN.Equals(User.UserRequest().Type)
                 };
@@ -634,12 +634,12 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Login")]
         [HttpPost]
-        [OverrideAuthentication,OverrideAuthorization]
+        [OverrideAuthentication, OverrideAuthorization]
         public HttpResponseMessage Login(UserRequest request)
         {
             try
             {
-                if(request == null)
+                if (request == null)
                 {
                     throw new Exception("Invalid request");
                 }
@@ -647,15 +647,15 @@ namespace Colsp.Api.Controllers
                 #region Query
                 var user = db.Users.Where(w => w.Email.Equals(email)).Select(s => new
                 {
-                     s.Email,
-                     s.Password,
-                     s.LoginFailCount,
-                     s.Type,
-                     s.UserId,
-                     s.NameEn,
-                     s.NameTh,
-                     s.PasswordLastChg,
-                    UserShopMaps = s.UserShopMaps.Select(sm=>new
+                    s.Email,
+                    s.Password,
+                    s.LoginFailCount,
+                    s.Type,
+                    s.UserId,
+                    s.NameEn,
+                    s.NameTh,
+                    s.PasswordLastChg,
+                    UserShopMaps = s.UserShopMaps.Select(sm => new
                     {
                         Shop = new
                         {
@@ -665,7 +665,7 @@ namespace Colsp.Api.Controllers
                             sm.Shop.ShopGroup,
                             ShopType = sm.Shop.ShopType == null ? null : new
                             {
-                                ShopTypePermissionMaps = sm.Shop.ShopType.ShopTypePermissionMaps.Select(st=>new
+                                ShopTypePermissionMaps = sm.Shop.ShopType.ShopTypePermissionMaps.Select(st => new
                                 {
                                     Permission = new
                                     {
@@ -677,11 +677,11 @@ namespace Colsp.Api.Controllers
                             }
                         }
                     }),
-                    UserBrandMaps = s.UserBrandMaps.Select(sb=>new
+                    UserBrandMaps = s.UserBrandMaps.Select(sb => new
                     {
                         sb.BrandId
                     }),
-                    UserGroupMaps = s.UserGroupMaps.Select(sg=>new
+                    UserGroupMaps = s.UserGroupMaps.Select(sg => new
                     {
                         UserGroup = new
                         {
@@ -706,12 +706,12 @@ namespace Colsp.Api.Controllers
                 }
                 if (!salt.CheckPassword(password, user.Password))
                 {
-                    db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LoginFailCount = ", (user.LoginFailCount + 1)," WHERE UserId = " , user.UserId));
+                    db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LoginFailCount = ", (user.LoginFailCount + 1), " WHERE UserId = ", user.UserId));
                     throw new Exception("Email and password not match");
                 }
                 if (user.Type.Equals(Constant.USER_TYPE_SELLER)
-                    && (user.UserShopMaps == null || user.UserShopMaps.Count() == 0) 
-                    && (!user.UserShopMaps.Any(a=> a.Shop.Status.Equals(Constant.STATUS_ACTIVE) || a.Shop.Status.Equals(Constant.STATUS_NOT_ACTIVE))))
+                    && (user.UserShopMaps == null || user.UserShopMaps.Count() == 0)
+                    && (!user.UserShopMaps.Any(a => a.Shop.Status.Equals(Constant.STATUS_ACTIVE) || a.Shop.Status.Equals(Constant.STATUS_NOT_ACTIVE))))
                 {
                     throw new Exception("Please contact system administrator.");
                 }
@@ -734,7 +734,7 @@ namespace Colsp.Api.Controllers
                 }
 
                 var shop = user.UserShopMaps.FirstOrDefault();
-                if(shop != null)
+                if (shop != null)
                 {
 
                     var shopPermission = shop.Shop.ShopType.ShopTypePermissionMaps.Select(sp => sp.Permission);
@@ -749,7 +749,7 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-                
+
 
                 var identity = new ClaimsIdentity(claims, Constant.AUTHEN_SCHEMA);
                 var token = salt.HashPassword(string.Concat(user.UserId + DateTime.Now.ToString("ddMMyyHHmmss")));
@@ -764,11 +764,12 @@ namespace Colsp.Api.Controllers
                         Status = s.Shop.Status,
                         ShopGroup = s.Shop.ShopGroup,
                     }).ToList(),
-                    user.UserBrandMaps == null ? null : user.UserBrandMaps.Select(s=> new BrandRequest
+                    user.UserBrandMaps == null ? null : user.UserBrandMaps.Select(s => new BrandRequest
                     {
                         BrandId = s.BrandId,
                     }).ToList(),
-                    new UserRequest {
+                    new UserRequest
+                    {
                         UserId = user.UserId,
                         Email = user.Email,
                         Token = token,
@@ -778,7 +779,7 @@ namespace Colsp.Api.Controllers
                         IsPasswordChange = string.IsNullOrEmpty(user.PasswordLastChg) ? false : true,
                         IsAdmin = Constant.USER_TYPE_ADMIN.Equals(user.Type)
                     }
-                    ,DateTime.Now);
+                    , DateTime.Now);
 
                 db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LastLoginDt = '", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "', LoginFailCount = 0 ", " WHERE UserId = ", user.UserId));
                 User = principal;
@@ -795,7 +796,7 @@ namespace Colsp.Api.Controllers
                     }).ToList()
                 };
 
-               
+
                 Cache.Add(token, principal);
                 return Request.CreateResponse(HttpStatusCode.OK, claimRs);
             }
@@ -811,14 +812,14 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var user = db.Users.Where(u => u.UserId==userId)
+                var user = db.Users.Where(u => u.UserId == userId)
                             .Select(u => new
                             {
                                 u.UserId,
                                 u.NameEn,
                                 u.NameTh,
                                 u.Email,
-                                Shops = u.UserShopMaps.Select(s=>s.Shop),
+                                Shops = u.UserShopMaps.Select(s => s.Shop),
                                 Brands = u.UserBrandMaps,
                                 u.Type,
                                 Permission = u.UserGroupMaps.Select(um => um.UserGroup.UserGroupPermissionMaps.Select(pm => pm.Permission))
@@ -828,7 +829,7 @@ namespace Colsp.Api.Controllers
                 // Check for user
                 if (user == null)
                 {
-                    throw new Exception("Cannot find user with id "+ userId);
+                    throw new Exception("Cannot find user with id " + userId);
                 }
 
                 // Get all permissions
@@ -859,7 +860,7 @@ namespace Colsp.Api.Controllers
                     {
                         BrandId = s.BrandId,
                     }).ToList(),
-                    User.UserRequest(),DateTime.Now);
+                    User.UserRequest(), DateTime.Now);
 
                 ClaimRequest claimRq = new ClaimRequest();
 
@@ -929,11 +930,11 @@ namespace Colsp.Api.Controllers
                         ShopId = s.ShopId,
                         ShopNameEn = s.ShopNameEn
                     }).ToList(),
-                    user.Brands == null ? null : user.Brands.Select(s=> new BrandRequest
+                    user.Brands == null ? null : user.Brands.Select(s => new BrandRequest
                     {
                         BrandId = s.BrandId,
                     }).ToList(),
-                    User.UserRequest(),DateTime.Now);
+                    User.UserRequest(), DateTime.Now);
 
                 ClaimRequest claimRq = new ClaimRequest();
 
@@ -961,14 +962,14 @@ namespace Colsp.Api.Controllers
                 string email = User.UserRequest().Email;
                 User user = null;
 
-                if (!string.IsNullOrEmpty(request.Email)&&Constant.USER_TYPE_ADMIN.Equals(User.UserRequest().Type))
+                if (!string.IsNullOrEmpty(request.Email) && Constant.USER_TYPE_ADMIN.Equals(User.UserRequest().Type))
                 {
                     user = db.Users.Where(w => w.Email.Equals(request.Email)).ToList().SingleOrDefault();
                 }
                 else
                 {
                     user = db.Users.Where(w => w.Email.Equals(email)).SingleOrDefault();
-                    if(!salt.CheckPassword(request.Password, user.Password))
+                    if (!salt.CheckPassword(request.Password, user.Password))
                     {
                         user = null;
                     }
@@ -1080,19 +1081,19 @@ namespace Colsp.Api.Controllers
             user.Fax = Validation.ValidateString(request.Fax, "Fax", false, 20, false, string.Empty);
             #region Brand Map
             var brandMap = user.UserBrandMaps.ToList();
-            if(request.Brands != null && request.Brands.Count > 0)
+            if (request.Brands != null && request.Brands.Count > 0)
             {
-                foreach(var brand in request.Brands)
+                foreach (var brand in request.Brands)
                 {
                     bool isNew = false;
-                    if(brandMap == null || brandMap.Count == 0)
+                    if (brandMap == null || brandMap.Count == 0)
                     {
                         isNew = true;
                     }
                     if (!isNew)
                     {
                         var current = brandMap.Where(w => w.BrandId == brand.BrandId).SingleOrDefault();
-                        if(current != null)
+                        if (current != null)
                         {
                             brandMap.Remove(current);
                         }
@@ -1114,7 +1115,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
             }
-            if(brandMap != null && brandMap.Count > 0)
+            if (brandMap != null && brandMap.Count > 0)
             {
                 db.UserBrandMaps.RemoveRange(brandMap);
             }

@@ -8,18 +8,18 @@ namespace Colsp.Model.Requests
 {
     public class SaleReportForSellerRequest : PaginatedRequest
     {
-        public DateTime OrderDateFrom { get; set; }
-        public DateTime OrderDateEnd { get; set; }
+        public string OrderDateFrom { get; set; }
+        public string OrderDateEnd { get; set; }
         public string ItemStatus { get; set; }
         public int? PID { get; set; }
         public string ItemName { get; set; }
-        public int BrandId { get; set; }
-        public int GlobalCategoryId { get; set; }
-        public int LocalCategoryId { get; set; }
+        public int? BrandId { get; set; }
+        public int? GlobalCategoryId { get; set; }
+        public int? LocalCategoryId { get; set; }
         public SaleReportForSellerRequest()
         {
-            OrderDateFrom = new DateTime();
-            OrderDateEnd = new DateTime();
+            OrderDateFrom = string.Empty;
+            OrderDateEnd = string.Empty;
             ItemStatus = string.Empty;
             PID = 0;
             ItemName = string.Empty;
@@ -27,7 +27,7 @@ namespace Colsp.Model.Requests
             GlobalCategoryId = 0;
             LocalCategoryId = 0;
         }
-        
+
         public override void DefaultOnNull()
         {
             LocalCategoryId = GetValueOrDefault(LocalCategoryId, 0);

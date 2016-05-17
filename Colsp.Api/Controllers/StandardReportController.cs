@@ -28,6 +28,7 @@ namespace Colsp.Api.Controllers
         #region properties
         public class SaleReportForSellerList : PaginatedResponse
         {
+            public Nullable<System.DateTime> OrderDateTime { get; set; }
             public string GlobalCategoryNameEN { get; internal set; }
             public string GlobalCategoryNameTH { get; internal set; }
             public string ItemStatus { get; internal set; }
@@ -44,6 +45,9 @@ namespace Colsp.Api.Controllers
             public decimal? SalePrice { get; internal set; }
             public string TimeOfOrderDate { get; internal set; }
             public decimal TotalPrice { get; internal set; }
+            public int? BrandId { get; set; }
+            public int? GlobalCatId { get; set; }
+            public int? LocalCatId { get; set; }
 
             public SaleReportForSellerList()
             {
@@ -63,6 +67,9 @@ namespace Colsp.Api.Controllers
                 SalePrice = 0;
                 TimeOfOrderDate = null;
                 TotalPrice = 0;
+                BrandId = 0;
+                GlobalCatId = 0;
+                LocalCatId = 0;
             }
         }
 
@@ -116,13 +123,12 @@ namespace Colsp.Api.Controllers
         #region Sale Report For Seller
 
 
-        [Route("api/StandardReport/GetSaleReport")]
+        [Route("api/StandardReport/GetSaleReportForSeller")]
         [HttpGet]
         public HttpResponseMessage GetSaleReportForSeller([FromUri]SaleReportForSellerRequest request)
         {
             try
             {
-
                 List<SaleReportForSellerList> report = new List<SaleReportForSellerList>();
 
                 var List = db.SaleReportForSeller().ToList();
@@ -154,7 +160,40 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, report);
                 }
                 request.DefaultOnNull();
-
+                if (request.GlobalCategoryId.HasValue)
+                {
+                    report = report.Where(c => c.GlobalCatId == (int)request.GlobalCategoryId).ToList();
+                }
+                if (request.BrandId.HasValue)
+                {
+                    report = report.Where(c => c.BrandId == request.BrandId).ToList();
+                }
+                if (request.LocalCategoryId.HasValue)
+                {
+                    report = report.Where(c => c.LocalCatId == request.LocalCategoryId).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.ItemStatus))
+                {
+                    report = report.Where(c => c.ItemStatus.Contains(request.ItemStatus)).ToList();
+                }
+                if (request.PID.HasValue)
+                {
+                    report = report.Where(c => c.PID.Contains(request.PID.ToString())).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.ItemName))
+                {
+                    report = report.Where(c => c.ProductNameEN.Contains(request.ItemName) || c.ProductNameTH.Contains(request.ItemName)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.OrderDateFrom))
+                {
+                    DateTime from = Convert.ToDateTime(request.OrderDateFrom);
+                    report = report.Where(c => c.OrderDateTime >= (DateTime)from).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.OrderDateEnd))
+                {
+                    DateTime to = Convert.ToDateTime(request.OrderDateEnd);
+                    report = report.Where(c => c.OrderDateTime <= to).ToList();
+                }
 
                 var total = report.Count();
                 //var pagedProducts = report.Paginate(request);
@@ -168,7 +207,7 @@ namespace Colsp.Api.Controllers
 
         }
 
-        [Route("api/SaleReport/ExportSaleReportForSeller")]
+        [Route("api/StandardReport/ExportSaleReportForSeller")]
         [HttpGet]
         public HttpResponseMessage ExportSaleReportForSeller([FromUri]SaleReportForSellerRequest request)
         {
@@ -178,8 +217,6 @@ namespace Colsp.Api.Controllers
             {
                 using (ColspEntities dbx = new ColspEntities())
                 {
-
-
                     if (request == null)
                     {
                         throw new Exception("Invalid request");
@@ -232,8 +269,45 @@ namespace Colsp.Api.Controllers
                         model.OrderId = item.OrderId;
                         report.Add(model);
                     }
-
-
+                    if (request == null)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK, report);
+                    }
+                    request.DefaultOnNull();
+                    if (request.GlobalCategoryId.HasValue)
+                    {
+                        report = report.Where(c => c.GlobalCatId == (int)request.GlobalCategoryId).ToList();
+                    }
+                    if (request.BrandId.HasValue)
+                    {
+                        report = report.Where(c => c.BrandId == request.BrandId).ToList();
+                    }
+                    if (request.LocalCategoryId.HasValue)
+                    {
+                        report = report.Where(c => c.LocalCatId == request.LocalCategoryId).ToList();
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.ItemStatus))
+                    {
+                        report = report.Where(c => c.ItemStatus.Contains(request.ItemStatus)).ToList();
+                    }
+                    if (request.PID.HasValue)
+                    {
+                        report = report.Where(c => c.PID.Contains(request.PID.ToString())).ToList();
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.ItemName))
+                    {
+                        report = report.Where(c => c.ProductNameEN.Contains(request.ItemName) || c.ProductNameTH.Contains(request.ItemName)).ToList();
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.OrderDateFrom))
+                    {
+                        DateTime from = Convert.ToDateTime(request.OrderDateFrom);
+                        report = report.Where(c => c.OrderDateTime >= (DateTime)from).ToList();
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.OrderDateEnd))
+                    {
+                        DateTime to = Convert.ToDateTime(request.OrderDateEnd);
+                        report = report.Where(c => c.OrderDateTime <= to).ToList();
+                    }
                     stream = new MemoryStream();
                     writer = new StreamWriter(stream);
                     var csv = new CsvWriter(writer);
@@ -246,7 +320,6 @@ namespace Colsp.Api.Controllers
 
                     foreach (var row in report)
                     {
-
                         csv.WriteField(row.OrderDate);
                         csv.WriteField(row.TimeOfOrderDate);
                         csv.WriteField(row.ItemStatus);
@@ -291,11 +364,10 @@ namespace Colsp.Api.Controllers
         #region Stock Status Report
         [Route("api/StandardReport/GetStockStausReport")]
         [HttpGet]
-        public HttpResponseMessage GetStockStausReport([FromUri]SaleReportForSellerRequest request)
+        public HttpResponseMessage GetStockStausReport([FromUri]StockStatusReportRequest request)
         {
             try
             {
-
                 List<StockStatusReportList> report = new List<StockStatusReportList>();
 
                 var List = db.StockStatusReport().ToList();
@@ -328,6 +400,23 @@ namespace Colsp.Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, report);
                 }
                 request.DefaultOnNull();
+                if (!string.IsNullOrWhiteSpace(request.Pid))
+                {
+                    report = report.Where(c => c.PID.Contains(request.Pid)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.variant))
+                {
+                    report = report.Where(c => c.PID.Contains(request.variant)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.ProductName))
+                {
+                    report = report.Where(c => c.ProductNameEN.Contains(request.ProductName) || c.ProductNameTH.Contains(request.ProductName)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.LastSoldDate))
+                {
+
+                    report = report.Where(c => c.LastSoldDate == request.LastSoldDate).ToList();
+                }
 
 
                 var total = report.Count();
@@ -342,9 +431,9 @@ namespace Colsp.Api.Controllers
 
         }
 
-        [Route("api/SaleReport/ExportStockStatusReport")]
+        [Route("api/StandardReport/ExportStockStatusReport")]
         [HttpGet]
-        public HttpResponseMessage ExportStockStatusReport([FromUri]SaleReportForSellerRequest request)
+        public HttpResponseMessage ExportStockStatusReport([FromUri]StockStatusReportRequest request)
         {
             MemoryStream stream = null;
             StreamWriter writer = null;
@@ -352,8 +441,6 @@ namespace Colsp.Api.Controllers
             {
                 using (ColspEntities dbx = new ColspEntities())
                 {
-
-
                     if (request == null)
                     {
                         throw new Exception("Invalid request");
@@ -405,7 +492,23 @@ namespace Colsp.Api.Controllers
                         model.AgingDay = (int)item.AgingDay;
                         report.Add(model);
                     }
+                    if (!string.IsNullOrWhiteSpace(request.Pid))
+                    {
+                        report = report.Where(c => c.PID.Contains(request.Pid)).ToList();
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.variant))
+                    {
+                        report = report.Where(c => c.PID.Contains(request.variant)).ToList();
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.ProductName))
+                    {
+                        report = report.Where(c => c.ProductNameEN.Contains(request.ProductName) || c.ProductNameTH.Contains(request.ProductName)).ToList();
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.LastSoldDate))
+                    {
 
+                        report = report.Where(c => c.LastSoldDate == request.LastSoldDate).ToList();
+                    }
 
                     stream = new MemoryStream();
                     writer = new StreamWriter(stream);
