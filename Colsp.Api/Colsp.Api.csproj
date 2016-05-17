@@ -200,6 +200,7 @@
     <Compile Include="Controllers\BuyOneGetOneController.cs" />
     <Compile Include="Controllers\CMSController.cs" />
     <Compile Include="Controllers\CMSManagementController.cs" />
+    <Compile Include="Controllers\ProductStagesController.cs" />
     <Compile Include="Controllers\PromotionController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="PromotionFunction\BuyOneGetOneProcess.cs" />

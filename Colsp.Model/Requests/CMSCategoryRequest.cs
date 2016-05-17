@@ -46,7 +46,7 @@ namespace Colsp.Model
         public int? CMSCategoryId { get; set; }
         public string Pid { get; set; }
         public string ProductBoxBadge { get; set; }
-        public int? Sequence { get; set; }
+        public int Sequence { get; set; }
         public int? ShopId { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }

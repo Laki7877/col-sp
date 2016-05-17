@@ -130,7 +130,7 @@ namespace Colsp.Api.Controllers
                                 CMSCategoryId = cate.CMSCategoryId,
                                 CMSCategoryNameEN = cate.CMSCategoryNameEN,
                                 CMSCategoryNameTH = cate.CMSCategoryNameTH,
-                                Visibility = cate.Visibility.Value,
+                                Visibility = cate.Visibility,
                                 Status = cate.Status,
                                 UpdateOn = cate.UpdateOn
                             };
@@ -358,7 +358,7 @@ namespace Colsp.Api.Controllers
                             select new { product, cmsCatePro };
 
                 if (condition.CMSCategoryIds != null && condition.CMSCategoryIds.Count > 0)
-                    query = query.Where(x => condition.CMSCategoryIds.Contains(x.cmsCatePro.CMSCategoryId.Value));
+                    query = query.Where(x => condition.CMSCategoryIds.Contains(x.cmsCatePro.CMSCategoryId));
 
                 if (!string.IsNullOrEmpty(condition.SearchText))
                     query = query.Where(x => x.product.ProductNameEn.Contains(condition.SearchText) || x.product.ProductNameTh.Contains(condition.SearchText));
@@ -426,7 +426,7 @@ namespace Colsp.Api.Controllers
                     item.CMSCategoryId = c.CMSCategoryId;
                     item.CMSCategoryNameEN = c.CMSCategoryNameEN;
                     item.CMSCategoryNameTH = c.CMSCategoryNameTH;
-                    item.Visibility = c.Visibility.Value;
+                    item.Visibility = c.Visibility;
                     item.Total = (from pm in db.CMSCategoryProductMaps where pm.CMSCategoryId == c.CMSCategoryId select pm).Count();
 
                     categories.Add(item);
@@ -714,7 +714,7 @@ namespace Colsp.Api.Controllers
                                                                     CMSCategoryId = cate.CMSCategoryId,
                                                                     CMSCategoryNameEN = cate.CMSCategoryNameEN,
                                                                     CMSCategoryNameTH = cate.CMSCategoryNameTH,
-                                                                    Visibility = cate.Visibility.Value,
+                                                                    Visibility = cate.Visibility,
                                                                     Status = cate.Status,
                                                                     Total = (from pm in db.CMSCategoryProductMaps where pm.CMSCategoryId == cate.CMSCategoryId select pm).Count()
                                                                 }).ToList()

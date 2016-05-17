@@ -2720,7 +2720,11 @@ namespace Colsp.Api.Controllers
                 {
                     s.ProductId,
                     s.ShopId,
-                    s.GlobalCatId,
+                    MainGlobalCategory = new
+                    {
+                        s.GlobalCatId,
+                        s.GlobalCategory.NameEn,
+                    },
                     s.LocalCatId,
                     s.AttributeSetId,
                     s.BrandId,
@@ -2960,18 +2964,21 @@ namespace Colsp.Api.Controllers
                 GiftWrap = tmpPro.GiftWrap,
                 GlobalCategories = tmpPro.GlobalCategories.Select(s => new CategoryRequest()
                 {
-                    CategoryId = s.CategoryId
+                    CategoryId = s.CategoryId,
+                    NameEn = s.NameEn,
                 }).ToList(),
                 LocalCategories = tmpPro.LocalCategories.Select(s => new CategoryRequest()
                 {
-                    CategoryId = s.CategoryId
+                    CategoryId = s.CategoryId,
+                    NameEn = s.NameEn
                 }).ToList(),
                 ImageFlag = tmpPro.ImageFlag,
                 InfoFlag = tmpPro.InfoFlag,
                 ProductId = tmpPro.ProductId,
                 MainGlobalCategory = new CategoryRequest()
                 {
-                    CategoryId = tmpPro.GlobalCatId
+                    CategoryId = tmpPro.MainGlobalCategory.GlobalCatId,
+                    NameEn = tmpPro.MainGlobalCategory.NameEn
                 },
                 MainLocalCategory = new CategoryRequest()
                 {
