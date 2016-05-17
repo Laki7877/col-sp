@@ -22,7 +22,7 @@ namespace Colsp.Api
 
             // Enable CORs
             //var tmp = new EnableCorsAttribute(;
-            config.EnableCors(new EnableCorsAttribute("*","*","*"));
+            config.EnableCors(new EnableCorsAttribute("*","*","GET, POST, PUT, DELETE"));
             //config.EnableCors();
             //config.EnableCors();
             //config.cor

@@ -20,31 +20,6 @@ namespace Colsp.Api.Controllers
     {
         private ColspEntities db = new ColspEntities();
 
-        //[Route("api/AttributeSets/{attributSetId}/Tags")]
-        //[HttpGet]
-        //public HttpResponseMessage GetTag([FromUri]int attributSetId)
-        //{
-        //    try
-        //    {
-        //        var tag = (from attrSetTagMap in db.AttributeSetTags
-        //                  where attrSetTagMap.AttributeSetId==attributSetId 
-        //                  select new {TagId = 0, attrSetTagMap.Tag }).ToList();
-        //        if(tag != null && tag.Count > 0)
-        //        {
-        //            return Request.CreateResponse(HttpStatusCode.OK, tag);
-        //        }
-        //        else
-        //        {
-        //            throw new Exception(HttpErrorMessage.NotFound);
-        //        }
-                
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-        //    }
-        //}
-
         [Route("api/AttributeSets")]
         [HttpGet]
         public HttpResponseMessage GetAttributeSets([FromUri] AttributeSetRequest request)

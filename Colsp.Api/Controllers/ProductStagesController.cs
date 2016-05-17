@@ -20,9 +20,11 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using CsvHelper;
+using System.Web.Http.Cors;
 
 namespace Colsp.Api.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ProductStagesController : ApiController
     {
         private ColspEntities db = new ColspEntities();
