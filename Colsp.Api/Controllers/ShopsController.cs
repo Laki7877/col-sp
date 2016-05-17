@@ -267,7 +267,7 @@ namespace Colsp.Api.Controllers
                         s.VendorTaxRate,
                         s.WithholdingTax,
                         s.Payment,
-                        Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission }),
+                        Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission, sc.GlobalCategory.NameEn }),
                         ShopOwner = new
                         {
                             s.User.UserId,

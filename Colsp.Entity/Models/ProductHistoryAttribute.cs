@@ -29,6 +29,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
         public virtual Attribute Attribute { get; set; }
+        public virtual AttributeValue AttributeValue { get; set; }
         public virtual ProductHistory ProductHistory { get; set; }
     }
 }

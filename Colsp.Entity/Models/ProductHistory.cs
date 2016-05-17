@@ -25,7 +25,7 @@ namespace Colsp.Entity.Models
         public long HistoryId { get; set; }
         public string Pid { get; set; }
         public long ProductId { get; set; }
-        public int ShopId { get; set; }
+        public Nullable<int> ShopId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public string ProdTDNameTh { get; set; }
@@ -102,11 +102,12 @@ namespace Colsp.Entity.Models
         public string Bu { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateOn { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public System.DateTime UpdateOn { get; set; }
     
         public virtual ProductHistoryGroup ProductHistoryGroup { get; set; }
+        public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistoryAttribute> ProductHistoryAttributes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -26,25 +26,26 @@ namespace Colsp.Entity.Models
         public long HistoryId { get; set; }
         public System.DateTime HistoryDt { get; set; }
         public long ProductId { get; set; }
-        public int ShopId { get; set; }
-        public int GlobalCatId { get; set; }
+        public Nullable<int> ShopId { get; set; }
+        public Nullable<int> GlobalCatId { get; set; }
         public Nullable<int> LocalCatId { get; set; }
         public Nullable<int> AttributeSetId { get; set; }
         public Nullable<int> BrandId { get; set; }
-        public int ShippingId { get; set; }
+        public Nullable<int> ShippingId { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<System.DateTime> ExpireDate { get; set; }
-        public int TheOneCardEarn { get; set; }
+        public Nullable<System.DateTime> NewArrivalDate { get; set; }
+        public Nullable<int> TheOneCardEarn { get; set; }
         public string GiftWrap { get; set; }
-        public bool IsNew { get; set; }
-        public bool IsClearance { get; set; }
-        public bool IsBestSeller { get; set; }
-        public bool IsOnlineExclusive { get; set; }
-        public bool IsOnlyAt { get; set; }
+        public Nullable<bool> IsNew { get; set; }
+        public Nullable<bool> IsClearance { get; set; }
+        public Nullable<bool> IsBestSeller { get; set; }
+        public Nullable<bool> IsOnlineExclusive { get; set; }
+        public Nullable<bool> IsOnlyAt { get; set; }
         public string Remark { get; set; }
-        public bool InfoFlag { get; set; }
-        public bool ImageFlag { get; set; }
-        public bool OnlineFlag { get; set; }
+        public Nullable<bool> InfoFlag { get; set; }
+        public Nullable<bool> ImageFlag { get; set; }
+        public Nullable<bool> OnlineFlag { get; set; }
         public string InformationTabStatus { get; set; }
         public string ImageTabStatus { get; set; }
         public string CategoryTabStatus { get; set; }
@@ -65,10 +66,16 @@ namespace Colsp.Entity.Models
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
+        public virtual AttributeSet AttributeSet { get; set; }
+        public virtual Brand Brand { get; set; }
+        public virtual GlobalCategory GlobalCategory { get; set; }
+        public virtual LocalCategory LocalCategory { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistory> ProductHistories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistoryGlobalCatMap> ProductHistoryGlobalCatMaps { get; set; }
+        public virtual Shipping Shipping { get; set; }
+        public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
