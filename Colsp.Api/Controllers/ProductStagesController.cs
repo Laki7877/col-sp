@@ -7476,7 +7476,7 @@ namespace Colsp.Api.Controllers
                             {
                                 if (!string.IsNullOrWhiteSpace(body[headDic["AAK"]]))
                                 {
-                                    var brandId = brands.Where(w => w.BrandNameEn.Equals(body[headDic["AAK"]])).Select(s => s.BrandId).FirstOrDefault();
+                                    var brandId = brands.Where(w => string.Equals(w.BrandNameEn, body[headDic["AAK"]] , StringComparison.OrdinalIgnoreCase)).Select(s => s.BrandId).FirstOrDefault();
                                     if (brandId != 0)
                                     {
                                         group.BrandId = brandId;
@@ -7987,7 +7987,8 @@ namespace Colsp.Api.Controllers
                                 string val = body[headDic["ADI"]];
                                 if (!string.IsNullOrWhiteSpace(val))
                                 {
-                                    var attrSet = attributeSet.Where(w => w.AttributeSetNameEn.Equals(val)).SingleOrDefault();
+                                    
+                                    var attrSet = attributeSet.Where(w => string.Equals(w.AttributeSetNameEn, val, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                                     if (attrSet == null)
                                     {
                                         throw new Exception("Attribute set " + val + " not found in database at row " + row);
@@ -8059,8 +8060,8 @@ namespace Colsp.Api.Controllers
                                                     {
                                                         throw new Exception("Invalid attribute value " + valueEn + " in attribute " + attr.AttributeNameEn);
                                                     }
-                                                    if (attr.AttributeNameEn.Equals(variant1)
-                                                        || attr.AttributeNameEn.Equals(variant2))
+                                                    if (string.Equals(attr.AttributeNameEn, variant1, StringComparison.OrdinalIgnoreCase)
+                                                        || string.Equals(attr.AttributeNameEn, variant2, StringComparison.OrdinalIgnoreCase))
                                                     {
                                                         errorMessage.Add("Checkbox cannot be variant");
                                                         continue;
@@ -8094,7 +8095,8 @@ namespace Colsp.Api.Controllers
                                                 }
                                                 continue;
                                             }
-                                            if (attr.AttributeNameEn.Equals(variant1))
+                                            
+                                            if (string.Equals(attr.AttributeNameEn, variant1, StringComparison.OrdinalIgnoreCase))
                                             {
                                                 if (!attr.VariantStatus && Constant.DATA_TYPE_STRING.Equals(attr.AttributeNameEn))
                                                 {
@@ -8118,7 +8120,8 @@ namespace Colsp.Api.Controllers
                                                     });
                                                 }
                                             }
-                                            else if (attr.AttributeNameEn.Equals(variant2))
+                                            
+                                            else if (string.Equals(attr.AttributeNameEn, variant2, StringComparison.OrdinalIgnoreCase))
                                             {
                                                 if (!attr.VariantStatus && Constant.DATA_TYPE_STRING.Equals(attr.AttributeNameEn))
                                                 {

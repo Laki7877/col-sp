@@ -163,163 +163,168 @@
         
         
         
-        <EntityTypeShape EntityType="ColspModel.AppAuth" Width="1.5" PointX="3.1939612753661173" PointY="5.3336693520348843" />
-        <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="10.327740316431848" PointY="1.9577388325509331" />
-        <EntityTypeShape EntityType="ColspModel.AttributeFilterMap" Width="1.5" PointX="7.9835279472095557" PointY="19.845455074610864" />
-        <EntityTypeShape EntityType="ColspModel.AttributePropertyMap" Width="1.5" PointX="3.5587500611128053" PointY="9.31520639793724" />
-        <EntityTypeShape EntityType="ColspModel.AttributeSet" Width="1.5" PointX="2.459859806327084" PointY="3.1247888669021378" />
-        <EntityTypeShape EntityType="ColspModel.AttributeSetMap" Width="1.5" PointX="9.7687646605860277" PointY="18.669326284280665" />
-        <EntityTypeShape EntityType="ColspModel.AttributeSetTag" Width="1.5" PointX="1.0383076635367738" PointY="1.8420637854570821" />
-        <EntityTypeShape EntityType="ColspModel.AttributeValue" Width="1.5" PointX="10.284199877774435" PointY="17.529430621084494" />
-        <EntityTypeShape EntityType="ColspModel.AttributeValueMap" Width="1.5" PointX="2.7913658035878863" PointY="21.467515240175423" />
-        <EntityTypeShape EntityType="ColspModel.BankDetail" Width="1.5" PointX="4.3052338642558245" PointY="31.710441797836889" />
-        <EntityTypeShape EntityType="ColspModel.Brand" Width="1.5" PointX="10.741189374933573" PointY="27.305014652807738" />
-        <EntityTypeShape EntityType="ColspModel.BrandFeatureProduct" Width="1.5" PointX="6.5036921401059686" PointY="14.545673377134685" />
-        <EntityTypeShape EntityType="ColspModel.BrandImage" Width="1.5" PointX="4.2415328194580653" PointY="8.8586611192946609" />
-        <EntityTypeShape EntityType="ColspModel.CartDetail" Width="1.5" PointX="10.59140240149172" PointY="9.5451124354941363" />
-        <EntityTypeShape EntityType="ColspModel.CartDiscount" Width="1.5" PointX="3.7933362069508694" PointY="19.952670210950387" />
-        <EntityTypeShape EntityType="ColspModel.CartHead" Width="1.5" PointX="4.7761751621850648" PointY="17.603178375215819" />
-        <EntityTypeShape EntityType="ColspModel.City" Width="1.5" PointX="7.7111160940076759" PointY="0.2173160613595117" />
-        <EntityTypeShape EntityType="ColspModel.CMSCategory" Width="1.5" PointX="9.8007897724401154" PointY="9.0206945282503472" />
-        <EntityTypeShape EntityType="ColspModel.CMSCategoryProductMap" Width="1.5" PointX="7.7094605563718179" PointY="21.370088915047276" />
-        <EntityTypeShape EntityType="ColspModel.CMSFeatureProduct" Width="1.5" PointX="9.62101320997859" PointY="12.852204120183458" />
-        <EntityTypeShape EntityType="ColspModel.CMSGroup" Width="1.5" PointX="8.48015057504184" PointY="7.70489736260143" />
-        <EntityTypeShape EntityType="ColspModel.CMSImage" Width="1.5" PointX="0.13891109644384642" PointY="13.348191952960654" />
-        <EntityTypeShape EntityType="ColspModel.CMSMaster" Width="1.5" PointX="0.76936438715521449" PointY="22.63653280895042" />
-        <EntityTypeShape EntityType="ColspModel.CMSMasterCategoryMap" Width="1.5" PointX="5.90014500445693" PointY="22.943798940136936" />
-        <EntityTypeShape EntityType="ColspModel.CMSMasterGroupMap" Width="1.5" PointX="1.9671246381323435" PointY="17.732348599346516" />
-        <EntityTypeShape EntityType="ColspModel.CMSMasterSchedulerMap" Width="1.5" PointX="8.209854319789379" PointY="11.857815286078404" />
-        <EntityTypeShape EntityType="ColspModel.CMSScheduler" Width="1.5" PointX="1.4774571179772993" PointY="4.6797638557291421" />
-        <EntityTypeShape EntityType="ColspModel.Country" Width="1.5" PointX="9.6243152998501031" PointY="13.21221541483524" />
-        <EntityTypeShape EntityType="ColspModel.Coupon" Width="1.5" PointX="7.4964338669071138" PointY="12.994967466683578" />
-        <EntityTypeShape EntityType="ColspModel.CouponBrandMap" Width="1.5" PointX="8.4926192427485354" PointY="12.430746739930822" />
-        <EntityTypeShape EntityType="ColspModel.CouponCondition" Width="1.5" PointX="8.8506432514873534" PointY="31.944887727473343" />
-        <EntityTypeShape EntityType="ColspModel.CouponCustomerMap" Width="1.5" PointX="11.699866192275596" PointY="18.606955939255169" />
-        <EntityTypeShape EntityType="ColspModel.CouponGlobalCatMap" Width="1.5" PointX="8.3956206629032373" PointY="8.4468607196802559" />
-        <EntityTypeShape EntityType="ColspModel.CouponLocalCatMap" Width="1.5" PointX="11.289881262597573" PointY="2.5515043747385517" />
-        <EntityTypeShape EntityType="ColspModel.CouponOrder" Width="1.5" PointX="2.88998414710629" PointY="18.403838479148149" />
-        <EntityTypeShape EntityType="ColspModel.CouponPidMap" Width="1.5" PointX="10.864075926534866" PointY="18.073553227853754" />
-        <EntityTypeShape EntityType="ColspModel.CouponShopMap" Width="1.5" PointX="10.429305005087194" PointY="30.628419517832072" />
-        <EntityTypeShape EntityType="ColspModel.Customer" Width="1.5" PointX="3.4112650991469922" PointY="20.938274303888097" />
-        <EntityTypeShape EntityType="ColspModel.Customer_Staging" Width="1.5" PointX="10.100469398359056" PointY="3.9949870873219275" />
-        <EntityTypeShape EntityType="ColspModel.CustomerAddress" Width="1.5" PointX="4.6852631292702922" PointY="20.674221376271092" />
-        <EntityTypeShape EntityType="ColspModel.CustomerAddress_Staging" Width="1.5" PointX="9.4218529152785671" PointY="5.2999407971743215" />
-        <EntityTypeShape EntityType="ColspModel.CustomerToken" Width="1.5" PointX="1.6122925251779576" PointY="24.383214619189136" />
-        <EntityTypeShape EntityType="ColspModel.CustomerTokenCreditCard" Width="1.5" PointX="11.272397009317016" PointY="0.87865181308176921" />
-        <EntityTypeShape EntityType="ColspModel.CustomerWishList" Width="1.5" PointX="5.123734772728632" PointY="15.883212394957996" />
-        <EntityTypeShape EntityType="ColspModel.Deal" Width="1.5" PointX="2.4571782231597128" PointY="12.923223978338402" />
-        <EntityTypeShape EntityType="ColspModel.District" Width="1.5" PointX="7.8863265811867667" PointY="7.5635940169746032" />
-        <EntityTypeShape EntityType="ColspModel.GlobalCatAttributeSetMap" Width="1.5" PointX="11.521164100394195" PointY="13.225288486678753" />
-        <EntityTypeShape EntityType="ColspModel.GlobalCategory" Width="1.5" PointX="7.9689332935814434" PointY="22.668847139304898" />
-        <EntityTypeShape EntityType="ColspModel.GlobalCatFeatureProduct" Width="1.5" PointX="3.1894703186999402" PointY="13.763473651261755" />
-        <EntityTypeShape EntityType="ColspModel.GlobalCatImage" Width="1.5" PointX="8.609951319457009" PointY="25.604777646066982" />
-        <EntityTypeShape EntityType="ColspModel.ImportHeader" Width="1.5" PointX="9.1988185407588343" PointY="13.182215637146596" />
-        <EntityTypeShape EntityType="ColspModel.Inventory" Width="1.5" PointX="5.71394045544506" PointY="18.8418272225381" />
-        <EntityTypeShape EntityType="ColspModel.InventoryHistory" Width="1.5" PointX="7.7855547982200779" PointY="3.8193916249179241" />
-        <EntityTypeShape EntityType="ColspModel.LocalCategory" Width="1.5" PointX="6.0173757271922081" PointY="5.3114661301073927" />
-        <EntityTypeShape EntityType="ColspModel.LocalCatFeatureProduct" Width="1.5" PointX="10.343646346751434" PointY="4.7265664957121789" />
-        <EntityTypeShape EntityType="ColspModel.LocalCatImage" Width="1.5" PointX="6.85411138220416" PointY="15.995503224430374" />
-        <EntityTypeShape EntityType="ColspModel.Newsletter" Width="1.5" PointX="0.18784967073604914" PointY="1.9727632710583336" />
-        <EntityTypeShape EntityType="ColspModel.NewsletterShopMap" Width="1.5" PointX="7.2396771121954906" PointY="18.301774540125287" />
-        <EntityTypeShape EntityType="ColspModel.ODMPermission" Width="1.5" PointX="10.367040372624546" PointY="6.8164285602124544" />
-        <EntityTypeShape EntityType="ColspModel.ODMProcessLog" Width="1.5" PointX="7.7052114679036716" PointY="21.509669954660193" />
-        <EntityTypeShape EntityType="ColspModel.ODMRole" Width="1.5" PointX="10.043837997151464" PointY="14.223137638635532" />
-        <EntityTypeShape EntityType="ColspModel.ODMRolePermission" Width="1.5" PointX="10.499635917367245" PointY="26.783400413945039" />
-        <EntityTypeShape EntityType="ColspModel.ODMUser" Width="1.5" PointX="11.015112848493789" PointY="21.407275120451708" />
-        <EntityTypeShape EntityType="ColspModel.ODMUserMenuItem" Width="1.5" PointX="7.2564183600509624" PointY="14.586191526887097" />
-        <EntityTypeShape EntityType="ColspModel.ODMUserToken" Width="1.5" PointX="3.5167240256055834" PointY="18.427859791753747" />
-        <EntityTypeShape EntityType="ColspModel.Payment" Width="1.5" PointX="4.6623825452580974" PointY="13.17111141102906" />
-        <EntityTypeShape EntityType="ColspModel.Permission" Width="1.5" PointX="4.8881688382887134" PointY="18.889257365320464" />
-        <EntityTypeShape EntityType="ColspModel.Pid" Width="1.5" PointX="10.554014475342823" PointY="11.942725470262918" />
-        <EntityTypeShape EntityType="ColspModel.PostCode" Width="1.5" PointX="8.27353734349531" PointY="17.457619511269787" />
-        <EntityTypeShape EntityType="ColspModel.Product" Width="1.5" PointX="1.3581506839758488" PointY="26.240333733260787" />
-        <EntityTypeShape EntityType="ColspModel.ProductAttribute" Width="1.5" PointX="6.3121187027134553" PointY="8.35182659716896" />
-        <EntityTypeShape EntityType="ColspModel.ProductGlobalCatMap" Width="1.5" PointX="7.6125583013578124" PointY="1.8259087660470552" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistory" Width="1.5" PointX="9.99209760967274" PointY="5.0347009920676706" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryAttribute" Width="1.5" PointX="2.6484980856294271" PointY="28.750340996659521" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryGlobalCatMap" Width="1.5" PointX="9.71980607030904" PointY="2.948714242758562" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryGroup" Width="1.5" PointX="10.133777304614791" PointY="1.6888256229873866" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryImage" Width="1.5" PointX="9.4560911513194856" PointY="1.450200230558496" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryLocalCatMap" Width="1.5" PointX="11.557953620123655" PointY="10.30704513672136" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryTag" Width="1.5" PointX="6.4436949465627293" PointY="20.453774133908457" />
-        <EntityTypeShape EntityType="ColspModel.ProductHistoryVideo" Width="1.5" PointX="8.0505723599579984" PointY="31.354204341468495" />
-        <EntityTypeShape EntityType="ColspModel.ProductLocalCatMap" Width="1.5" PointX="6.1758534992932592" PointY="1.4601437456254585" />
-        <EntityTypeShape EntityType="ColspModel.ProductNotify" Width="1.5" PointX="10.475075773184688" PointY="9.1551971329167472" />
-        <EntityTypeShape EntityType="ColspModel.ProductRelated" Width="1.5" PointX="9.11007989063397" PointY="5.1065189415153673" />
-        <EntityTypeShape EntityType="ColspModel.ProductReview" Width="1.5" PointX="1.1101448708726767" PointY="13.611675089975668" />
-        <EntityTypeShape EntityType="ColspModel.ProductStage" Width="1.5" PointX="2.1857717513040509" PointY="7.3630801622583908" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageAttribute" Width="1.5" PointX="10.589628109051672" PointY="10.18782148239567" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageComment" Width="1.5" PointX="1.1980100261038216" PointY="26.306896847815672" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageGlobalCatMap" Width="1.5" PointX="1.7540075302841176" PointY="18.43174139523494" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageGroup" Width="1.5" PointX="9.7211183131305123" PointY="26.173120346932262" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageImage" Width="1.5" PointX="0.05167754555664842" PointY="24.338933270582434" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageLocalCatMap" Width="1.5" PointX="5.3792300845399641" PointY="22.600107963476379" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageMaster" Width="1.5" PointX="7.7500157522736188" PointY="6.4292164921896608" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageRelated" Width="1.5" PointX="8.7766701172928663" PointY="10.744194497700871" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageTag" Width="1.5" PointX="7.4830756278164117" PointY="11.58491667154474" />
-        <EntityTypeShape EntityType="ColspModel.ProductStageVideo" Width="1.5" PointX="7.5255178918715178" PointY="17.836993464192837" />
-        <EntityTypeShape EntityType="ColspModel.ProductTag" Width="1.5" PointX="10.034827104785865" PointY="1.6089921154123694" />
-        <EntityTypeShape EntityType="ColspModel.ProductTmp" Width="1.5" PointX="10.49603495676817" PointY="4.2675308158004333" />
-        <EntityTypeShape EntityType="ColspModel.ProductVideo" Width="1.5" PointX="3.6642716506795363" PointY="15.372172794943756" />
-        <EntityTypeShape EntityType="ColspModel.PromotionBuy1Get1Item" Width="1.5" PointX="4.6568592007536722" PointY="11.144958337370753" />
-        <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditCard" Width="1.5" PointX="3.5746358966336755" PointY="21.53907468427861" />
-        <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditNumber" Width="1.5" PointX="0.77786800115269994" PointY="25.450986471702805" />
-        <EntityTypeShape EntityType="ColspModel.Province" Width="1.5" PointX="8.595606122443268" PointY="18.556402691899056" />
-        <EntityTypeShape EntityType="ColspModel.Shipping" Width="1.5" PointX="2.5161397319827881" PointY="16.835584663243772" />
-        <EntityTypeShape EntityType="ColspModel.Shop" Width="1.5" PointX="11.435299582516448" PointY="30.909346222369628" />
-        <EntityTypeShape EntityType="ColspModel.ShopCommission" Width="1.5" PointX="10.789817556175319" PointY="12.38946825842814" />
-        <EntityTypeShape EntityType="ColspModel.ShopGroup" Width="1.5" PointX="6.1440236131399981" PointY="23.010066177235014" />
-        <EntityTypeShape EntityType="ColspModel.ShopImage" Width="1.5" PointX="7.6184877546590224" PointY="29.129259689305563" />
-        <EntityTypeShape EntityType="ColspModel.ShopType" Width="1.5" PointX="6.3785965435107226" PointY="25.868834701305644" />
-        <EntityTypeShape EntityType="ColspModel.ShopTypePermissionMap" Width="1.5" PointX="4.7975381523359282" PointY="21.504318902969509" />
-        <EntityTypeShape EntityType="ColspModel.ShopUserGroupMap" Width="1.5" PointX="6.6565288075509148" PointY="13.54935187732305" />
-        <EntityTypeShape EntityType="ColspModel.SortBy" Width="1.5" PointX="6.4318689752518523" PointY="23.3754696507824" />
-        <EntityTypeShape EntityType="ColspModel.StoreBranch" Width="1.5" PointX="9.5788602668693557" PointY="19.991731205951297" />
-        <EntityTypeShape EntityType="ColspModel.StoreReceive" Width="1.5" PointX="4.7263279560610316" PointY="26.63001617539209" />
-        <EntityTypeShape EntityType="ColspModel.StoreReceiveCode" Width="1.5" PointX="5.3243980991302049" PointY="30.927162587143091" />
-        <EntityTypeShape EntityType="ColspModel.StoreReturn" Width="1.5" PointX="6.2008146672513407" PointY="21.305180619147226" />
-        <EntityTypeShape EntityType="ColspModel.sysdiagram" Width="1.5" PointX="2.2550438224594314" PointY="14.778023830977279" />
-        <EntityTypeShape EntityType="ColspModel.TermPayment" Width="1.5" PointX="6.240284233465923" PointY="10.598732103872454" />
-        <EntityTypeShape EntityType="ColspModel.Theme" Width="1.5" PointX="8.3492319753157123" PointY="20.893627087070431" />
-        <EntityTypeShape EntityType="ColspModel.ThemeComponent" Width="1.5" PointX="11.879434363860373" PointY="2.1103059808305957" />
-        <EntityTypeShape EntityType="ColspModel.ThemeComponentMap" Width="1.5" PointX="11.894816452588335" PointY="6.5688689828705362" />
-        <EntityTypeShape EntityType="ColspModel.User" Width="1.5" PointX="4.5937733541213781" PointY="21.045522118474135" />
-        <EntityTypeShape EntityType="ColspModel.UserBrandMap" Width="1.5" PointX="5.5545261956539589" PointY="7.6785794532292426" />
-        <EntityTypeShape EntityType="ColspModel.UserGroup" Width="1.5" PointX="0.54484893593231631" PointY="3.7494727688606235" />
-        <EntityTypeShape EntityType="ColspModel.UserGroupMap" Width="1.5" PointX="4.9848842886206155" PointY="30.860166862076227" />
-        <EntityTypeShape EntityType="ColspModel.UserGroupPermissionMap" Width="1.5" PointX="7.2217275124144411" PointY="15.902556367173119" />
-        <EntityTypeShape EntityType="ColspModel.UserShopMap" Width="1.5" PointX="0.96702664576798048" PointY="22.913972299040282" />
-        <EntityTypeShape EntityType="ColspModel.VendorTaxRate" Width="1.5" PointX="9.5228305689631174" PointY="27.983010513700084" />
-        <EntityTypeShape EntityType="ColspModel.WithholdingTax" Width="1.5" PointX="1.6452840313526262" PointY="10.698845018958135" />
-        <EntityTypeShape EntityType="ColspModel.Guest" Width="1.5" PointX="11.965259660019195" PointY="2.9298851205640868" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBDepartment" Width="1.5" PointX="2.2323230534011138" PointY="12.07968977656201" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProduct" Width="1.5" PointX="0.98894614958620919" PointY="31.566969632900772" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductApproved" Width="1.5" PointX="5.39019016613727" PointY="7.4676661973202911" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductBundle" Width="1.5" PointX="2.391006774451121" PointY="1.6060391373960483" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductGroup" Width="1.5" PointX="2.3884905829972078" PointY="9.717235241884941" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductMaster" Width="1.5" PointX="2.5742404081738743" PointY="28.115963695624828" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductPicture" Width="1.5" PointX="9.8213786491292439" PointY="10.683129092065212" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductRelateLink" Width="1.5" PointX="8.1693031360252313" PointY="11.181874503931903" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductVideoLink" Width="1.5" PointX="0.48723359987476544" PointY="28.10612848219747" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBProperty" Width="1.5" PointX="3.21127492338944" PointY="17.865047925089044" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBPropertyCategory" Width="1.5" PointX="6.9520502662994206" PointY="8.8540684473021276" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBPropertyFilter" Width="1.5" PointX="5.0013717771514186" PointY="15.338228068937653" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBPropertyGroup" Width="1.5" PointX="4.3759584577642192" PointY="0.63294941216378908" />
-        <EntityTypeShape EntityType="ColspModel.Migrate_TBPropertyProduct" Width="1.5" PointX="7.0224160864122283" PointY="15.099477894184869" />
-        <EntityTypeShape EntityType="ColspModel.ODMRoleUser" Width="1.5" PointX="8.0189283676533627" PointY="20.657747442209043" />
-        <EntityTypeShape EntityType="ColspModel.PostCodeMap" Width="1.5" PointX="2.3292405075995442" PointY="11.565773581883764" />
-        <EntityTypeShape EntityType="ColspModel.StoreReturnReason" Width="1.5" PointX="7.8698504976322177" PointY="28.748606516396908" />
-        <EntityTypeShape EntityType="ColspModel.TBAdminMenuItemTmp" Width="1.5" PointX="10.559041689410361" PointY="19.639820763673551" />
-        <EntityTypeShape EntityType="ColspModel.TBCDSBranch" Width="1.5" PointX="1.4743797189902419" PointY="12.683092644756238" />
-        <EntityTypeShape EntityType="ColspModel.TBCMCity" Width="1.5" PointX="2.5018806282905306" PointY="7.344403657756934" />
-        <EntityTypeShape EntityType="ColspModel.TBDvMapZone" Width="1.5" PointX="0.4884605205098449" PointY="31.846891358423463" />
-        <EntityTypeShape EntityType="ColspModel.TBPermissionTmp" Width="1.5" PointX="11.017561705325527" PointY="3.5757895277700338" />
-        <EntityTypeShape EntityType="ColspModel.TBRolePermissionTmp" Width="1.5" PointX="8.99832216510471" PointY="23.141976337480347" />
-        <EntityTypeShape EntityType="ColspModel.TBRoleTmp" Width="1.5" PointX="8.1420799885606758" PointY="23.895608629982735" />
-        <EntityTypeShape EntityType="ColspModel.TBRoleUserTmp" Width="1.5" PointX="0.42343647611487489" PointY="14.21234034663641" />
-        <EntityTypeShape EntityType="ColspModel.TBSetting" Width="1.5" PointX="10.006395342762767" PointY="8.281295601409532" />
-        <EntityTypeShape EntityType="ColspModel.TBUserAdminTmp" Width="1.5" PointX="0.80079195871986086" PointY="14.042311168295477" />
-        <EntityTypeShape EntityType="ColspModel.TBUserAdminWebTokenTmp" Width="1.5" PointX="6.1466566539121121" PointY="29.098793028434176" />
+        
+        
+        
+        
+        
+        <EntityTypeShape EntityType="ColspModel.AppAuth" Width="1.5" PointX="4.8461349070287" PointY="25.852552023647611" />
+        <EntityTypeShape EntityType="ColspModel.Attribute" Width="1.5" PointX="4.3552869410977166" PointY="1.1821472948333935" />
+        <EntityTypeShape EntityType="ColspModel.AttributeFilterMap" Width="1.5" PointX="8.6539780929004682" PointY="0.46848021469473849" />
+        <EntityTypeShape EntityType="ColspModel.AttributePropertyMap" Width="1.5" PointX="11.533144539004724" PointY="2.5290862184619" />
+        <EntityTypeShape EntityType="ColspModel.AttributeSet" Width="1.5" PointX="6.8580472445385752" PointY="2.5832953912128209" />
+        <EntityTypeShape EntityType="ColspModel.AttributeSetMap" Width="1.5" PointX="3.7853045108659682" PointY="17.241785131973113" />
+        <EntityTypeShape EntityType="ColspModel.AttributeSetTag" Width="1.5" PointX="2.36258373519526" PointY="30.089460014407273" />
+        <EntityTypeShape EntityType="ColspModel.AttributeValue" Width="1.5" PointX="11.368544865105555" PointY="5.532306047869989" />
+        <EntityTypeShape EntityType="ColspModel.AttributeValueMap" Width="1.5" PointX="9.258270865892186" PointY="28.113985104539424" />
+        <EntityTypeShape EntityType="ColspModel.BankDetail" Width="1.5" PointX="3.1596953064015576" PointY="15.614726222872141" />
+        <EntityTypeShape EntityType="ColspModel.Brand" Width="1.5" PointX="7.8425036109250525" PointY="24.334933575398722" />
+        <EntityTypeShape EntityType="ColspModel.BrandFeatureProduct" Width="1.5" PointX="4.5990850946861723" PointY="22.605084489381447" />
+        <EntityTypeShape EntityType="ColspModel.BrandImage" Width="1.5" PointX="11.816202917981986" PointY="26.466788572476613" />
+        <EntityTypeShape EntityType="ColspModel.CartDetail" Width="1.5" PointX="9.11935225367516" PointY="14.084326810242761" />
+        <EntityTypeShape EntityType="ColspModel.CartDiscount" Width="1.5" PointX="2.0213527800614726" PointY="2.3538253318303384" />
+        <EntityTypeShape EntityType="ColspModel.CartHead" Width="1.5" PointX="9.777003887005618" PointY="22.855250860962666" />
+        <EntityTypeShape EntityType="ColspModel.City" Width="1.5" PointX="9.3189073695423588" PointY="15.83083369575014" />
+        <EntityTypeShape EntityType="ColspModel.CMSCategory" Width="1.5" PointX="4.3100048603070924" PointY="17.798041277471018" />
+        <EntityTypeShape EntityType="ColspModel.CMSCategoryProductMap" Width="1.5" PointX="3.8584994468179064" PointY="5.4705084587775676" />
+        <EntityTypeShape EntityType="ColspModel.CMSFeatureProduct" Width="1.5" PointX="7.6122631130797149" PointY="9.1615280551656753" />
+        <EntityTypeShape EntityType="ColspModel.CMSGroup" Width="1.5" PointX="9.0196866695860809" PointY="24.833417933822339" />
+        <EntityTypeShape EntityType="ColspModel.CMSImage" Width="1.5" PointX="2.8697300548058609" PointY="10.999397670384216" />
+        <EntityTypeShape EntityType="ColspModel.CMSMaster" Width="1.5" PointX="9.7710653980127837" PointY="22.545513074167776" />
+        <EntityTypeShape EntityType="ColspModel.CMSMasterCategoryMap" Width="1.5" PointX="11.821889279327305" PointY="16.565372251237449" />
+        <EntityTypeShape EntityType="ColspModel.CMSMasterGroupMap" Width="1.5" PointX="9.256534001443784" PointY="5.3659133340073346" />
+        <EntityTypeShape EntityType="ColspModel.CMSMasterSchedulerMap" Width="1.5" PointX="0.51126306900347718" PointY="19.069180020629048" />
+        <EntityTypeShape EntityType="ColspModel.CMSScheduler" Width="1.5" PointX="10.388449016208039" PointY="21.454700941897325" />
+        <EntityTypeShape EntityType="ColspModel.Country" Width="1.5" PointX="0.34594050624684453" PointY="20.58809284334448" />
+        <EntityTypeShape EntityType="ColspModel.Coupon" Width="1.5" PointX="5.0956219141816828" PointY="21.009014020212465" />
+        <EntityTypeShape EntityType="ColspModel.CouponBrandMap" Width="1.5" PointX="0.62710231758053525" PointY="28.610486341924634" />
+        <EntityTypeShape EntityType="ColspModel.CouponCondition" Width="1.5" PointX="3.0563278268353677" PointY="16.670725293769838" />
+        <EntityTypeShape EntityType="ColspModel.CouponCustomerMap" Width="1.5" PointX="10.92705455186174" PointY="15.934300653605861" />
+        <EntityTypeShape EntityType="ColspModel.CouponGlobalCatMap" Width="1.5" PointX="3.19173188469919" PointY="19.238894501346579" />
+        <EntityTypeShape EntityType="ColspModel.CouponLocalCatMap" Width="1.5" PointX="9.14676205494756" PointY="22.469389598103888" />
+        <EntityTypeShape EntityType="ColspModel.CouponOrder" Width="1.5" PointX="6.9735426450956348" PointY="12.518078362810462" />
+        <EntityTypeShape EntityType="ColspModel.CouponPidMap" Width="1.5" PointX="10.216115321133339" PointY="19.218213850268263" />
+        <EntityTypeShape EntityType="ColspModel.CouponShopMap" Width="1.5" PointX="2.930481301122569" PointY="31.264326095238481" />
+        <EntityTypeShape EntityType="ColspModel.Customer" Width="1.5" PointX="8.8358356639909719" PointY="28.079925028644467" />
+        <EntityTypeShape EntityType="ColspModel.Customer_Staging" Width="1.5" PointX="6.2558700359686608" PointY="1.2648292487789081" />
+        <EntityTypeShape EntityType="ColspModel.CustomerAddress" Width="1.5" PointX="10.705841285505258" PointY="8.96436137378419" />
+        <EntityTypeShape EntityType="ColspModel.CustomerAddress_Staging" Width="1.5" PointX="10.103156435351426" PointY="7.7529004252296412" />
+        <EntityTypeShape EntityType="ColspModel.CustomerToken" Width="1.5" PointX="8.0250885523972517" PointY="0.024360746156592269" />
+        <EntityTypeShape EntityType="ColspModel.CustomerTokenCreditCard" Width="1.5" PointX="0.37142143043289955" PointY="7.0028303447192677" />
+        <EntityTypeShape EntityType="ColspModel.CustomerWishList" Width="1.5" PointX="10.182270056652962" PointY="3.3957187102156312" />
+        <EntityTypeShape EntityType="ColspModel.Deal" Width="1.5" PointX="5.590622129659458" PointY="22.905253450807766" />
+        <EntityTypeShape EntityType="ColspModel.District" Width="1.5" PointX="1.5786435648699495" PointY="21.280317837968617" />
+        <EntityTypeShape EntityType="ColspModel.GlobalCatAttributeSetMap" Width="1.5" PointX="1.4243383544610526" PointY="23.688881959621273" />
+        <EntityTypeShape EntityType="ColspModel.GlobalCategory" Width="1.5" PointX="0.37924519385176025" PointY="7.3817724917930425" />
+        <EntityTypeShape EntityType="ColspModel.GlobalCatFeatureProduct" Width="1.5" PointX="10.385477173321636" PointY="23.718312825876435" />
+        <EntityTypeShape EntityType="ColspModel.GlobalCatImage" Width="1.5" PointX="0.93304224169489092" PointY="6.8172798933541774" />
+        <EntityTypeShape EntityType="ColspModel.ImportHeader" Width="1.5" PointX="11.307805347865356" PointY="9.0556484801022563" />
+        <EntityTypeShape EntityType="ColspModel.Inventory" Width="1.5" PointX="11.238471949118409" PointY="12.166012307706295" />
+        <EntityTypeShape EntityType="ColspModel.InventoryHistory" Width="1.5" PointX="3.7961021791194112" PointY="14.14515433374101" />
+        <EntityTypeShape EntityType="ColspModel.LocalCategory" Width="1.5" PointX="4.2204612066133231" PointY="28.438204614649621" />
+        <EntityTypeShape EntityType="ColspModel.LocalCatFeatureProduct" Width="1.5" PointX="11.209677189220525" PointY="4.8425829880137847" />
+        <EntityTypeShape EntityType="ColspModel.LocalCatImage" Width="1.5" PointX="1.4646647802855191" PointY="12.323495855705577" />
+        <EntityTypeShape EntityType="ColspModel.Newsletter" Width="1.5" PointX="9.1725389720744168" PointY="24.707911473097237" />
+        <EntityTypeShape EntityType="ColspModel.NewsletterShopMap" Width="1.5" PointX="0.62577594287031146" PointY="0.39730711299800647" />
+        <EntityTypeShape EntityType="ColspModel.ODMPermission" Width="1.5" PointX="10.226433432766438" PointY="29.11445139214138" />
+        <EntityTypeShape EntityType="ColspModel.ODMProcessLog" Width="1.5" PointX="5.6039413146692985" PointY="1.5084546811452391" />
+        <EntityTypeShape EntityType="ColspModel.ODMRole" Width="1.5" PointX="9.0323153813520047" PointY="20.995646769644527" />
+        <EntityTypeShape EntityType="ColspModel.ODMRolePermission" Width="1.5" PointX="2.8353989696294994" PointY="27.690860269447256" />
+        <EntityTypeShape EntityType="ColspModel.ODMUser" Width="1.5" PointX="3.1156358211839734" PointY="5.9626563517202884" />
+        <EntityTypeShape EntityType="ColspModel.ODMUserMenuItem" Width="1.5" PointX="5.7824918393895457" PointY="16.125734843372243" />
+        <EntityTypeShape EntityType="ColspModel.ODMUserToken" Width="1.5" PointX="11.344877091862671" PointY="16.180455945516218" />
+        <EntityTypeShape EntityType="ColspModel.Payment" Width="1.5" PointX="0.14449471242003828" PointY="24.964007270039993" />
+        <EntityTypeShape EntityType="ColspModel.Permission" Width="1.5" PointX="11.541268726597199" PointY="21.73163020132651" />
+        <EntityTypeShape EntityType="ColspModel.Pid" Width="1.5" PointX="4.0538301673037145" PointY="17.886102014168213" />
+        <EntityTypeShape EntityType="ColspModel.PostCode" Width="1.5" PointX="3.6688657103427058" PointY="9.2342238320197083" />
+        <EntityTypeShape EntityType="ColspModel.Product" Width="1.5" PointX="8.21303310068931" PointY="18.845302814080057" />
+        <EntityTypeShape EntityType="ColspModel.ProductAttribute" Width="1.5" PointX="10.405600172656403" PointY="30.714515536424944" />
+        <EntityTypeShape EntityType="ColspModel.ProductGlobalCatMap" Width="1.5" PointX="2.0637173271103375" PointY="10.065742691078103" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistory" Width="1.5" PointX="7.124805263767394" PointY="23.886220317280955" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryAttribute" Width="1.5" PointX="10.807580217163814" PointY="11.090324138798902" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryGlobalCatMap" Width="1.5" PointX="8.2575547919876673" PointY="0.6140134039400208" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryGroup" Width="1.5" PointX="4.5417312516559525" PointY="30.580154403382984" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryImage" Width="1.5" PointX="3.2904259950343637" PointY="0.97965796337447031" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryLocalCatMap" Width="1.5" PointX="5.5241645786558111" PointY="9.15850082466309" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryTag" Width="1.5" PointX="0.56046921040884645" PointY="2.278398261535167" />
+        <EntityTypeShape EntityType="ColspModel.ProductHistoryVideo" Width="1.5" PointX="1.4466187942058866" PointY="4.1602827925981405" />
+        <EntityTypeShape EntityType="ColspModel.ProductLocalCatMap" Width="1.5" PointX="11.521941035763334" PointY="27.128828374263286" />
+        <EntityTypeShape EntityType="ColspModel.ProductNotify" Width="1.5" PointX="11.319449638630939" PointY="13.712016559071847" />
+        <EntityTypeShape EntityType="ColspModel.ProductRelated" Width="1.5" PointX="1.6714739080851311" PointY="10.941765477388056" />
+        <EntityTypeShape EntityType="ColspModel.ProductReview" Width="1.5" PointX="5.080042219292392" PointY="2.7284737242052675" />
+        <EntityTypeShape EntityType="ColspModel.ProductStage" Width="1.5" PointX="5.21163663510775" PointY="15.782633833485951" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageAttribute" Width="1.5" PointX="8.4801244570315468" PointY="18.036265322024125" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageComment" Width="1.5" PointX="2.7048861713637069" PointY="28.098540691704741" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageGlobalCatMap" Width="1.5" PointX="2.1600703327730626" PointY="25.37165881384707" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageGroup" Width="1.5" PointX="5.80965021150636" PointY="29.495321227933896" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageImage" Width="1.5" PointX="3.259267337275328" PointY="16.422141872542976" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageLocalCatMap" Width="1.5" PointX="3.4284159147312936" PointY="4.3296540995732204" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageMaster" Width="1.5" PointX="9.7895957742769255" PointY="29.638992174360432" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageRelated" Width="1.5" PointX="1.5259397279126288" PointY="1.8051648297371179" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageTag" Width="1.5" PointX="6.0710767312306331" PointY="29.797058640884728" />
+        <EntityTypeShape EntityType="ColspModel.ProductStageVideo" Width="1.5" PointX="2.62519674684163" PointY="1.6517129548134808" />
+        <EntityTypeShape EntityType="ColspModel.ProductTag" Width="1.5" PointX="6.1468190449042339" PointY="7.5052436327120491" />
+        <EntityTypeShape EntityType="ColspModel.ProductTmp" Width="1.5" PointX="2.0162151428015043" PointY="17.741138809240024" />
+        <EntityTypeShape EntityType="ColspModel.ProductVideo" Width="1.5" PointX="7.5450475195166877" PointY="0.61943875282045391" />
+        <EntityTypeShape EntityType="ColspModel.PromotionBuy1Get1Item" Width="1.5" PointX="0.19849368752841543" PointY="23.79122964655572" />
+        <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditCard" Width="1.5" PointX="2.1031796010691579" PointY="8.0577152259916609" />
+        <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditNumber" Width="1.5" PointX="3.8772903996879653" PointY="26.091740188231572" />
+        <EntityTypeShape EntityType="ColspModel.Province" Width="1.5" PointX="10.947234916941838" PointY="6.23751227848116" />
+        <EntityTypeShape EntityType="ColspModel.Shipping" Width="1.5" PointX="3.750130569445961" PointY="26.075018015725082" />
+        <EntityTypeShape EntityType="ColspModel.Shop" Width="1.5" PointX="8.7626717299049126" PointY="12.675928628386897" />
+        <EntityTypeShape EntityType="ColspModel.ShopCommission" Width="1.5" PointX="10.207301403492362" PointY="21.359446729235092" />
+        <EntityTypeShape EntityType="ColspModel.ShopGroup" Width="1.5" PointX="9.6247875977422979" PointY="3.9992633331563621" />
+        <EntityTypeShape EntityType="ColspModel.ShopImage" Width="1.5" PointX="9.59513201080036" PointY="19.435508245339388" />
+        <EntityTypeShape EntityType="ColspModel.ShopType" Width="1.5" PointX="10.131690132493009" PointY="26.395521995795669" />
+        <EntityTypeShape EntityType="ColspModel.ShopTypePermissionMap" Width="1.5" PointX="0.38371486607180672" PointY="0.54620686198873769" />
+        <EntityTypeShape EntityType="ColspModel.ShopUserGroupMap" Width="1.5" PointX="3.6160664817393138" PointY="2.6520989251565648" />
+        <EntityTypeShape EntityType="ColspModel.SortBy" Width="1.5" PointX="10.032085322789888" PointY="15.749720610561651" />
+        <EntityTypeShape EntityType="ColspModel.StoreBranch" Width="1.5" PointX="10.397980899735345" PointY="12.245984738807186" />
+        <EntityTypeShape EntityType="ColspModel.StoreReceive" Width="1.5" PointX="11.771668642652998" PointY="15.108421586038741" />
+        <EntityTypeShape EntityType="ColspModel.StoreReceiveCode" Width="1.5" PointX="4.7473843529575426" PointY="21.471890981063197" />
+        <EntityTypeShape EntityType="ColspModel.StoreReturn" Width="1.5" PointX="2.9919052398725903" PointY="5.1407488012410463" />
+        <EntityTypeShape EntityType="ColspModel.sysdiagram" Width="1.5" PointX="9.3158783676642347" PointY="23.701170917461241" />
+        <EntityTypeShape EntityType="ColspModel.TermPayment" Width="1.5" PointX="8.9575658594060528" PointY="0.63366434007588046" />
+        <EntityTypeShape EntityType="ColspModel.Theme" Width="1.5" PointX="2.2810128025156504" PointY="15.050702251051879" />
+        <EntityTypeShape EntityType="ColspModel.ThemeComponent" Width="1.5" PointX="2.67638537039812" PointY="19.868076452923976" />
+        <EntityTypeShape EntityType="ColspModel.ThemeComponentMap" Width="1.5" PointX="7.3644914959392" PointY="9.99415459204193" />
+        <EntityTypeShape EntityType="ColspModel.User" Width="1.5" PointX="3.9142650812465072" PointY="3.51360932156146" />
+        <EntityTypeShape EntityType="ColspModel.UserBrandMap" Width="1.5" PointX="0.96659558683940938" PointY="17.641077929009253" />
+        <EntityTypeShape EntityType="ColspModel.UserGroup" Width="1.5" PointX="2.994604760312757" PointY="12.392254119921594" />
+        <EntityTypeShape EntityType="ColspModel.UserGroupMap" Width="1.5" PointX="5.2193343514666584" PointY="17.941065468797955" />
+        <EntityTypeShape EntityType="ColspModel.UserGroupPermissionMap" Width="1.5" PointX="8.521236920972" PointY="25.724604722915497" />
+        <EntityTypeShape EntityType="ColspModel.UserShopMap" Width="1.5" PointX="11.848574666235864" PointY="31.983109638087036" />
+        <EntityTypeShape EntityType="ColspModel.VendorTaxRate" Width="1.5" PointX="5.3056446357190818" PointY="2.9563800110278557" />
+        <EntityTypeShape EntityType="ColspModel.WithholdingTax" Width="1.5" PointX="4.9895578869569857" PointY="26.589720455272925" />
+        <EntityTypeShape EntityType="ColspModel.Guest" Width="1.5" PointX="11.386421670851494" PointY="16.946641706371047" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBDepartment" Width="1.5" PointX="2.5673984617774366" PointY="26.891926599150491" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProduct" Width="1.5" PointX="5.0307474029393617" PointY="1.8952336320165701" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductApproved" Width="1.5" PointX="1.7615679957724959" PointY="22.078721608071923" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductBundle" Width="1.5" PointX="10.693914155798925" PointY="1.9649293431848891" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductGroup" Width="1.5" PointX="4.5421578905275819" PointY="24.953354355391745" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductMaster" Width="1.5" PointX="5.0073027894866193" PointY="11.96713810226281" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductPicture" Width="1.5" PointX="7.2219353780252558" PointY="13.155163189934177" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductRelateLink" Width="1.5" PointX="4.840336077306576" PointY="31.648689359262907" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProductVideoLink" Width="1.5" PointX="9.0802720156872052" PointY="23.23861820587824" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBProperty" Width="1.5" PointX="4.9395496421212091" PointY="10.086871136951666" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBPropertyCategory" Width="1.5" PointX="1.5976395167399382" PointY="18.9988622604864" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBPropertyFilter" Width="1.5" PointX="0.44632374329786917" PointY="26.718626139088826" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBPropertyGroup" Width="1.5" PointX="11.5307221969267" PointY="14.253809250078076" />
+        <EntityTypeShape EntityType="ColspModel.Migrate_TBPropertyProduct" Width="1.5" PointX="2.0792061342295289" PointY="24.859232675684257" />
+        <EntityTypeShape EntityType="ColspModel.ODMRoleUser" Width="1.5" PointX="3.5822944583288834" PointY="20.930462280721621" />
+        <EntityTypeShape EntityType="ColspModel.PostCodeMap" Width="1.5" PointX="7.24806624057147" PointY="11.492980351435477" />
+        <EntityTypeShape EntityType="ColspModel.StoreReturnReason" Width="1.5" PointX="6.2575916732929606" PointY="22.190385948023938" />
+        <EntityTypeShape EntityType="ColspModel.TBAdminMenuItemTmp" Width="1.5" PointX="4.8831302080690531" PointY="24.746717390020713" />
+        <EntityTypeShape EntityType="ColspModel.TBCDSBranch" Width="1.5" PointX="10.717060569076361" PointY="8.54280658464078" />
+        <EntityTypeShape EntityType="ColspModel.TBCMCity" Width="1.5" PointX="11.556035499813051" PointY="12.498866623499835" />
+        <EntityTypeShape EntityType="ColspModel.TBDvMapZone" Width="1.5" PointX="7.9214900675795459" PointY="6.0206833509824627" />
+        <EntityTypeShape EntityType="ColspModel.TBPermissionTmp" Width="1.5" PointX="0.10493740444301507" PointY="20.964870581852679" />
+        <EntityTypeShape EntityType="ColspModel.TBRolePermissionTmp" Width="1.5" PointX="1.7205967613126139" PointY="10.756160353662521" />
+        <EntityTypeShape EntityType="ColspModel.TBRoleTmp" Width="1.5" PointX="2.4247913930680562" PointY="18.441035920028124" />
+        <EntityTypeShape EntityType="ColspModel.TBRoleUserTmp" Width="1.5" PointX="7.1533300369760626" PointY="14.499696335987977" />
+        <EntityTypeShape EntityType="ColspModel.TBSetting" Width="1.5" PointX="4.0283704884482407" PointY="22.066869492673721" />
+        <EntityTypeShape EntityType="ColspModel.TBUserAdminTmp" Width="1.5" PointX="5.0315955286061369" PointY="20.276919985318983" />
+        <EntityTypeShape EntityType="ColspModel.TBUserAdminWebTokenTmp" Width="1.5" PointX="4.7573511231492045" PointY="19.847533637586764" />
         <AssociationConnector Association="ColspModel.FK_ProductHistoryAttribute_Attribute" />
         <AssociationConnector Association="ColspModel.FK_ProductStageAttribute_Attribute" />
         <AssociationConnector Association="ColspModel.FKAttributeSetMapAttribute" />
@@ -327,9 +332,11 @@
         <AssociationConnector Association="ColspModel.FK_AttributeFilterMap_AttributeValue" />
         <AssociationConnector Association="ColspModel.FK_AttributePropertyMap_AttributeValue" />
         <AssociationConnector Association="ColspModel.FK_AttributeSetTagMap_AttributeSet" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistoryGroup_AttributeSet" />
         <AssociationConnector Association="ColspModel.FK_ProductStageGroup_AttributeSet" />
         <AssociationConnector Association="ColspModel.FKAttributeSetMapAttributeSet" />
         <AssociationConnector Association="ColspModel.FKCategoryAttributeSetMapAttributeSet" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistoryAttribute_AttributeValue" />
         <AssociationConnector Association="ColspModel.FK_ProductStageAttribute_AttributeValue" />
         <AssociationConnector Association="ColspModel.FKAttributeValueMapAttributeValue" />
         <AssociationConnector Association="ColspModel.FK_Shop_BankDetail" />
@@ -337,6 +344,7 @@
         <AssociationConnector Association="ColspModel.FK_BrandFeatureProduct_Brand" />
         <AssociationConnector Association="ColspModel.FK_BrandImage_Brand" />
         <AssociationConnector Association="ColspModel.FK_CouponBrandMap_Brand" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistoryGroup_Brand" />
         <AssociationConnector Association="ColspModel.FK_ProductStageGroup_Brand" />
         <AssociationConnector Association="ColspModel.FK_UserBrandMap_Brand" />
         <AssociationConnector Association="ColspModel.FK_BrandFeatureProduct_ProductStageGroup" />
@@ -359,9 +367,11 @@
         <AssociationConnector Association="ColspModel.FK_GlobalCategory_SortBy" />
         <AssociationConnector Association="ColspModel.FK_GlobalCatFeatureProduct_GlobalCategory" />
         <AssociationConnector Association="ColspModel.FK_GlobalCatImage_GlobalCategory" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistoryGroup_GlobalCategory" />
         <AssociationConnector Association="ColspModel.FK_ProductStageGroup_GlobalCategory" />
         <AssociationConnector Association="ColspModel.FK_ShopCommission_GlobalCategory" />
         <AssociationConnector Association="ColspModel.FKProductGlobalCatMapGlobalCategory" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryGlobalCatMapGlobalCategory" />
         <AssociationConnector Association="ColspModel.FKProductStageGlobalCatMapGlobalCategory" />
         <AssociationConnector Association="ColspModel.FK_GlobalCatFeatureProduct_ProductStageGroup" />
         <AssociationConnector Association="ColspModel.FK_Inventory_ProductStage" />
@@ -369,7 +379,9 @@
         <AssociationConnector Association="ColspModel.FK_LocalCategory_SortBy" />
         <AssociationConnector Association="ColspModel.FK_LocalCatFeatureProduct_LocalCategory" />
         <AssociationConnector Association="ColspModel.FK_LocalCatImage_GlobalCategory" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistoryGroup_LocalCategory" />
         <AssociationConnector Association="ColspModel.FK_ProductStageGroup_LocalCategory" />
+        <AssociationConnector Association="ColspModel.FKProductHistoryLocalCatMapLocalCategory" />
         <AssociationConnector Association="ColspModel.FKProductLocalCatMapLocalCategory" />
         <AssociationConnector Association="ColspModel.FKProductStageLocalCatMapLocalCategory" />
         <AssociationConnector Association="ColspModel.FK_LocalCatFeatureProduct_ProductStageGroup" />
@@ -386,10 +398,13 @@
         <AssociationConnector Association="ColspModel.FKProductGlobalCatMapProduct" />
         <AssociationConnector Association="ColspModel.FKProductLocalCatMapProduct" />
         <AssociationConnector Association="ColspModel.FK_ProductHistory_ProductHistoryGroup" />
-        <AssociationConnector Association="ColspModel.FK_ProductHistoryAttribute_ProductHistoryGroup" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistory_Shop" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistoryAttribute_ProductStage" />
         <AssociationConnector Association="ColspModel.FK_ProductHistoryImage_ProductStage" />
         <AssociationConnector Association="ColspModel.FK_ProductHistoryVideo_ProductStage" />
         <AssociationConnector Association="ColspModel.FK_ProductHistoryGlobalCatMap_ProductHistoryGroup" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistoryGroup_Shipping" />
+        <AssociationConnector Association="ColspModel.FK_ProductHistoryGroup_Shop" />
         <AssociationConnector Association="ColspModel.FK_ProductHistoryLocalCatMap_ProductHistoryGroup" />
         <AssociationConnector Association="ColspModel.FK_ProductHistoryTag_ProductHistoryGroup" />
         <AssociationConnector Association="ColspModel.FK_ProductReview_Shop" />
@@ -434,6 +449,1391 @@
         <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />
         <AssociationConnector Association="ColspModel.ImportHeaderShopGroup" />
         <AssociationConnector Association="ColspModel.ShippingShopGroupMap" />
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         

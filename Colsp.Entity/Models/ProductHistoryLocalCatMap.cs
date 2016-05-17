@@ -22,6 +22,7 @@ namespace Colsp.Entity.Models
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
+        public virtual LocalCategory LocalCategory { get; set; }
         public virtual ProductHistoryGroup ProductHistoryGroup { get; set; }
     }
 }
