@@ -5,6 +5,7 @@
         public string Pid { get; set; }
         public string SearchText { get; set; }
         public int Quantity { get; set; }
+        public int UpdateQuantity { get; set; }
 
         public InventoryRequest()
         {

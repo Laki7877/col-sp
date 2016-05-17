@@ -31,7 +31,6 @@ namespace Colsp.Entity.Models
             this.ProductStageVideos = new HashSet<ProductStageVideo>();
             this.ProductTmps = new HashSet<ProductTmp>();
             this.ShopCommissions = new HashSet<ShopCommission>();
-            this.ShopComponentMaps = new HashSet<ShopComponentMap>();
             this.ShopImages = new HashSet<ShopImage>();
             this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
             this.UserShopMaps = new HashSet<UserShopMap>();
@@ -63,6 +62,7 @@ namespace Colsp.Entity.Models
         public string FloatMessageEn { get; set; }
         public string FloatMessageTh { get; set; }
         public Nullable<int> ThemeId { get; set; }
+        public string ShopAppearance { get; set; }
         public string TaxPayerId { get; set; }
         public string TermPaymentCode { get; set; }
         public string Payment { get; set; }
@@ -129,8 +129,6 @@ namespace Colsp.Entity.Models
         public virtual WithholdingTax WithholdingTax { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopCommission> ShopCommissions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ShopComponentMap> ShopComponentMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopImage> ShopImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

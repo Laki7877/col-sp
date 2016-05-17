@@ -32,7 +32,7 @@ namespace Colsp.Api.Controllers
                 {
                     var shopGroup = User.ShopRequest().ShopGroup;
                     var shopId = User.ShopRequest().ShopId;
-                    newsLetter = newsLetter.Where(w => DateTime.Now >= w.PublishedDt);
+                    newsLetter = newsLetter.Where(w => (w.PublishedDt == null || DateTime.Now >= w.PublishedDt) && (w.ExpiredDt == null || DateTime.Now <= w.ExpiredDt));
                     newsLetter = newsLetter.Where(w => (Constant.NEWSLETTER_VISIBLE_TO_ALL.Equals(w.VisibleShopGroup) || w.VisibleShopGroup.Equals(shopGroup)) && !w.NewsletterShopMaps.Any(a=>a.ShopId==shopId && Constant.NEWSLETTER_FILTER_EXCLUDE.Equals(a.Filter)));
                     newsLetter = newsLetter.Union(db.Newsletters.Where(w=> !(Constant.NEWSLETTER_VISIBLE_TO_ALL.Equals(w.VisibleShopGroup) || w.VisibleShopGroup.Equals(shopGroup)) && w.NewsletterShopMaps.Any(a=>a.ShopId==shopId && Constant.NEWSLETTER_FILTER_INCLUDE.Equals(a.Filter))));
 
@@ -79,6 +79,7 @@ namespace Colsp.Api.Controllers
                    s.Subject,
                    s.VisibleShopGroup,
                    s.PublishedDt,
+                   s.ExpiredDt,
                    Image = new ImageRequest() { Url = s.ImageUrl},
                    IncludeShop = s.NewsletterShopMaps.Where(w=>w.Filter.Equals(Constant.NEWSLETTER_FILTER_INCLUDE)).Select(si=>new 
                    {
@@ -180,6 +181,7 @@ namespace Colsp.Api.Controllers
             newsLetter.Description = request.Description;
             newsLetter.VisibleShopGroup = request.VisibleShopGroup;
             newsLetter.PublishedDt = request.PublishedDt;
+            newsLetter.ExpiredDt = request.ExpiredDt;
             if (request.Image != null)
             {
                 newsLetter.ImageUrl = request.Image.Url;

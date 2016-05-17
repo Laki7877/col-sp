@@ -9,6 +9,7 @@ namespace Colsp.Model.Requests
         public PurchaseOrderReuest Order { get; set; }
         public int ShopId { get; set; }
         public string CnNumber { get; set; }
+        public int CnAmount { get; set; }
         public string ReasonForReturn { get; set; }
         public string Status { get; set; }
         public string SearchText { get; set; }

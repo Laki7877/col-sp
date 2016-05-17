@@ -12,6 +12,7 @@ namespace Colsp.Model.Requests
         public ImageRequest Image { get; set; }
         public List<ShopRequest> Shops { get; set; }
         public DateTime? PublishedDt { get; set; }
+        public DateTime ExpiredDt { get; set; }
         public List<ShopRequest> IncludeShop { get; set; }
         public List<ShopRequest> ExcludeShop { get; set; }
 

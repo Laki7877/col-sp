@@ -7,7 +7,7 @@ namespace Colsp.Model.Requests
         public int ShopId { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
-        public string UrlKeyEn { get; set; }
+        public string UrlKey { get; set; }
         public string Status { get; set; }
         public UserRequest ShopOwner { get; set; }
         public List<UserRequest> Users { get; set; }

@@ -16,9 +16,11 @@ using System.Security.Claims;
 using Colsp.Api.Security;
 using System.Data.Entity.SqlServer;
 using Cenergy.Dazzle.Admin.Security.Cryptography;
+using System.Web.Http.Cors;
 
 namespace Colsp.Api.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class UsersController : ApiController
     {
         private ColspEntities db = new ColspEntities();
@@ -797,7 +799,9 @@ namespace Colsp.Api.Controllers
 
                
                 Cache.Add(token, principal);
-                return Request.CreateResponse(HttpStatusCode.OK, claimRs);
+                var tmp = Request.CreateResponse(HttpStatusCode.OK, claimRs);
+                tmp.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5000");
+                return tmp;
             }
             catch (Exception e)
             {
@@ -928,7 +932,13 @@ namespace Colsp.Api.Controllers
                 ClaimRequest claimRq = new ClaimRequest();
 
                 var claimsIdentity = identity;
-                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
+                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission"))
+                    .Select(s => new
+                    {
+                        PermissionId = int.Parse(s.Value),
+                        Parent = int.Parse(s.ValueType),
+                        OverrideParent = int.Parse(s.Issuer),
+                    }).ToList();
                 claimRq.Shop = principal.ShopRequest();
                 claimRq.User = User.UserRequest();
 
@@ -1002,7 +1012,13 @@ namespace Colsp.Api.Controllers
                 ClaimRequest claimRq = new ClaimRequest();
 
                 var claimsIdentity = identity;
-                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
+                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission"))
+                    .Select(s => new
+                    {
+                        PermissionId = int.Parse(s.Value),
+                        Parent = int.Parse(s.ValueType),
+                        OverrideParent = int.Parse(s.Issuer),
+                    }).ToList();
                 claimRq.Shop = principal.ShopRequest();
                 claimRq.User = new { NameEn = User.UserRequest().NameEn, Email = User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(User.UserRequest().Type) };
 
@@ -1089,7 +1105,7 @@ namespace Colsp.Api.Controllers
                 var productTotalCount = db.ProductStages.Where(w => w.ShopId == shopId).Count();
                 var shopBanner = db.ShopImages.Where(w => w.ShopId == shopId).Count();
                 var shopDescription = db.Shops.Where(w => w.ShopId == shopId).Select(s => s.ShopDescriptionEn).SingleOrDefault();
-                var productApprove = db.ProductStages.Where(w => w.ShopId == shopId && Constant.PRODUCT_STATUS_APPROVE.Equals(w.Status)).Count();
+                var productApprove = db.ProductStages.Where(w => w.ShopId == shopId && w.ProductStageGroup.OnlineFlag==true).Count();
                 bool IsProduct = productTotalCount > 0 ? true : false;
                 bool isBanner = shopBanner > 0 ? true : false;
                 bool IsProductApprove = productApprove > 0 ? true : false;

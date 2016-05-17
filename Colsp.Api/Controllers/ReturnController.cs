@@ -32,6 +32,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find return");
                 }
                 retur.CnNumber = request.CnNumber;
+                retur.CnAmount = request.CnAmount;
                 retur.Status = request.Status;
                 return GetReturn(retur.ReturnId);
             }

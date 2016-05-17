@@ -11,6 +11,7 @@ namespace Colsp.Model.Requests
         public List<VideoLinkRequest> Videos { get; set; }
         public bool IsVideo { get; set; }
         public int ThemeId { get; set; }
+        public string Data { get; set; }
 
 
         public ShopAppearanceRequest()
@@ -21,6 +22,7 @@ namespace Colsp.Model.Requests
             IsBanner = false;
             IsLayout = false;
             IsVideo = false;
+            Data = string.Empty;
         }
     }
 }

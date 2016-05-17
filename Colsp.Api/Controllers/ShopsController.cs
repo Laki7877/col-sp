@@ -15,6 +15,7 @@ using Colsp.Api.Helpers;
 using System.Threading.Tasks;
 using Cenergy.Dazzle.Admin.Security.Cryptography;
 using System.Web.Script.Serialization;
+using System.IO;
 
 namespace Colsp.Api.Controllers
 {
@@ -49,14 +50,44 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/ShopImages/{themeId}")]
+        [Route("api/ThemeImages")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UploadBanner([FromUri]int themeId)
+        public async Task<HttpResponseMessage> UploadBanner()
         {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("In valid content multi-media");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.GLOBAL_CAT_FOLDER));
+                try
+                {
+                    await Request.Content.ReadAsMultipartAsync(streamProvider);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Image size exceeded " + 5 + " mb");
+                }
+                #region Validate Image
+                string type = streamProvider.FormData["Type"];
+                ImageRequest fileUpload = null;
+                foreach (MultipartFileData fileData in streamProvider.FileData)
+                {
+                    fileUpload = Util.SetupImage(Request,
+                        fileData,
+                        AppSettingKey.IMAGE_ROOT_FOLDER,
+                        AppSettingKey.GLOBAL_CAT_FOLDER, 0, 0, int.MaxValue, int.MaxValue, int.MaxValue, false);
+                    break;
+                }
+                #endregion
+                return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
 
-            var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.SHOP_FOLDER, 1920, 1080, 1920, 1080, 5, false);
-            return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
-
+            }
+            catch(Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
         }
 
         [Route("api/ShopImages")]
@@ -358,6 +389,44 @@ namespace Colsp.Api.Controllers
                 });
                 shop.User = shop.UserShopMaps.ElementAt(0).User;
                 #endregion
+
+                if (request.CloneGlobalCategory)
+                {
+                    var globalCategory = db.GlobalCategories.Where(w => w.Visibility && Constant.STATUS_ACTIVE.Equals(w.Status));
+                    foreach (var cat in globalCategory)
+                    {
+                        shop.LocalCategories.Add(new LocalCategory()
+                        {
+                            BannerSmallStatusEn = false,
+                            BannerSmallStatusTh = false,
+                            BannerStatusEn = cat.BannerStatusEn,
+                            BannerStatusTh = cat.BannerStatusTh,
+                            CategoryId = db.GetNextLocalCategoryId().SingleOrDefault().Value,
+                            DescriptionFullEn = cat.DescriptionFullEn,
+                            DescriptionFullTh = cat.DescriptionFullTh,
+                            DescriptionMobileEn = cat.DescriptionMobileEn,
+                            DescriptionMobileTh = cat.DescriptionMobileTh,
+                            DescriptionShortEn = cat.DescriptionShortEn,
+                            DescriptionShortTh = cat.DescriptionShortTh,
+                            FeatureProductStatus = false,
+                            Lft = cat.Lft,
+                            Rgt = cat.Rgt,
+                            FeatureTitle = string.Empty,
+                            NameEn = cat.NameEn,
+                            NameTh = cat.NameTh,
+                            SortById = cat.SortById,
+                            Status = cat.Status,
+                            UrlKey = cat.UrlKey,
+                            Visibility = cat.Visibility,
+                            TitleShowcase = false,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
+                        });
+                    }
+                }
+
                 shop.User.UserId = db.GetNextUserId().SingleOrDefault().Value;
                 shop.ShopId = db.GetNextShopId().SingleOrDefault().Value;
                 shop.VendorId = string.Concat(shop.ShopId);
@@ -541,58 +610,18 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE))).Select(s => new
+                var shop = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE)))
+                    .Select(s => new
                 {
                     s.ShopId,
                     s.ThemeId,
-                    ShopComponentMaps = s.ShopComponentMaps.Select(sm=>new
-                    {
-                        sm.IsUse,
-                        sm.Value,
-                        ThemeComponent = sm.ThemeComponent == null ? null : new
-                        {
-                            sm.ThemeComponent.ComponentId,
-                            sm.ThemeComponent.ComponentName
-                        },
-                    }),
+                    Data = s.ShopAppearance,
                 }).SingleOrDefault();
                 if(shop == null)
                 {
                     throw new Exception("Cannot find shop");
                 }
-                ShopAppearanceRequest response = new ShopAppearanceRequest();
-                if(shop.ShopComponentMaps != null)
-                {
-                    foreach (var component in shop.ShopComponentMaps)
-                    {
-                        if (component.ThemeComponent == null)
-                        {
-                            continue;
-                        }
-
-                        if ("Banner".Equals(component.ThemeComponent.ComponentName))
-                        {
-                            response.IsBanner = component.IsUse;
-                            response.Banner = new JavaScriptSerializer().Deserialize<BannerComponent>(component.Value);
-                        }
-                        else if ("Layout".Equals(component.ThemeComponent.ComponentName))
-                        {
-                            response.IsLayout = component.IsUse;
-                            response.Layouts = new JavaScriptSerializer().Deserialize<List<Layout>>(component.Value);
-                        }
-                        else if ("Video".Equals(component.ThemeComponent.ComponentName))
-                        {
-                            response.IsVideo = component.IsUse;
-                            response.Videos = new JavaScriptSerializer().Deserialize<List<VideoLinkRequest>>(component.Value);
-                        }
-                    }
-                }
-                if(shop.ThemeId != null)
-                {
-                    response.ThemeId = shop.ThemeId.Value;
-                }
-                
-                return Request.CreateResponse(HttpStatusCode.OK, response);
+                return Request.CreateResponse(HttpStatusCode.OK, shop);
             }
             catch (Exception e)
             {
@@ -610,114 +639,23 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-
                 var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE)))
-                    .Include(i => i.ShopComponentMaps)
-                    .SingleOrDefault();
-
-                var components = db.ThemeComponents.Select(s => new
+                Shop shop = new Shop()
                 {
-                    s.ComponentId,
-                    s.ComponentName
-                });
-
+                    ShopId = shopId,
+                };
+                db.Shops.Attach(shop);
+                db.Entry(shop).Property(p => p.ThemeId).IsModified = true;
+                db.Entry(shop).Property(p => p.ShopAppearance).IsModified = true;
+                db.Entry(shop).Property(p => p.UpdateBy).IsModified = true;
+                db.Entry(shop).Property(p => p.UpdateOn).IsModified = true;
 
                 shop.ThemeId = request.ThemeId;
+                shop.ShopAppearance = request.Data;
+                shop.UpdateBy = User.UserRequest().Email;
+                shop.UpdateOn = DateTime.Now;
 
-                var banner = components.Where(w => w.ComponentName.Equals("Banner")).SingleOrDefault();
-                var compBanner = shop.ShopComponentMaps.Where(w => w.ComponentId == banner.ComponentId).SingleOrDefault();
-                if (request.Banner != null)
-                {
-                    string val = new JavaScriptSerializer().Serialize(request.Banner);
-                    if (compBanner != null)
-                    {
-                        compBanner.IsUse = request.IsBanner;
-                        compBanner.Value = val;
-                        compBanner.UpdateBy = User.UserRequest().Email;
-                        compBanner.UpdateOn = DateTime.Now;
-                    }
-                    else
-                    {
-                        shop.ShopComponentMaps.Add(new ShopComponentMap()
-                        {
-                            ComponentId = banner.ComponentId,
-                            IsUse = request.IsBanner,
-                            Value = val,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
-                        });
-                    }
-                }
-                else if(compBanner != null)
-                {
-                    db.ShopComponentMaps.Remove(compBanner);
-                }
-
-                var layout = components.Where(w => w.ComponentName.Equals("Layout")).SingleOrDefault();
-                var compLayout = shop.ShopComponentMaps.Where(w => w.ComponentId == layout.ComponentId).SingleOrDefault();
-                if (request.Layouts != null)
-                {
-                    string val = new JavaScriptSerializer().Serialize(request.Layouts);
-                    if (compLayout != null)
-                    {
-                        compLayout.IsUse = request.IsLayout;
-                        compLayout.Value = val;
-                        compLayout.UpdateBy = User.UserRequest().Email;
-                        compLayout.UpdateOn = DateTime.Now;
-                    }
-                    else
-                    {
-                        shop.ShopComponentMaps.Add(new ShopComponentMap()
-                        {
-                            ComponentId = layout.ComponentId,
-                            IsUse = request.IsLayout,
-                            Value = val,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
-                        });
-                    }
-                }
-                else if (compLayout != null)
-                {
-                    db.ShopComponentMaps.Remove(compLayout);
-                }
-
-                var video = components.Where(w => w.ComponentName.Equals("Video")).SingleOrDefault();
-                var compVideo = shop.ShopComponentMaps.Where(w => w.ComponentId == video.ComponentId).SingleOrDefault();
-                if (request.Videos != null)
-                {
-                    string val = new JavaScriptSerializer().Serialize(request.Videos);
-                    if (compVideo != null)
-                    {
-                        compVideo.IsUse = request.IsVideo;
-                        compVideo.Value = val;
-                        compVideo.UpdateBy = User.UserRequest().Email;
-                        compVideo.UpdateOn = DateTime.Now;
-                    }
-                    else
-                    {
-                        shop.ShopComponentMaps.Add(new ShopComponentMap()
-                        {
-                            ComponentId = video.ComponentId,
-                            IsUse = request.IsVideo,
-                            Value = val,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
-                        });
-                    }
-                }
-                else if (compVideo != null)
-                {
-                    db.ShopComponentMaps.Remove(compVideo);
-                }
-
+                db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShopAppearance();
             }
@@ -751,8 +689,9 @@ namespace Colsp.Api.Controllers
                 var response = db.VendorTaxRates.Select(s=>new
                 {
                     s.Description,
-                    s.VendorTaxRateCode
-                }).OrderBy(o=>o.VendorTaxRateCode);
+                    s.VendorTaxRateCode,
+                    s.Position
+                }).OrderBy(o=>o.Position);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception e)
@@ -812,11 +751,6 @@ namespace Colsp.Api.Controllers
                     {
                         Key = "N",
                         Value = "No"
-                    },
-                    new
-                    {
-                            Key = "Y",
-                            Value = "Yes"
                     }
                 };
                 return Request.CreateResponse(HttpStatusCode.OK, overseasList);
@@ -1009,7 +943,7 @@ namespace Colsp.Api.Controllers
                 db.ShopCommissions.RemoveRange(commissions);
             }
             #endregion
-            shop.UrlKey = Validation.ValidateString(request.UrlKeyEn, "Url Key (English)", true, 100, false, shop.ShopNameEn.Replace(" ","-"));
+            shop.UrlKey = Validation.ValidateString(request.UrlKey, "Url Key (English)", true, 100, false, shop.ShopNameEn.ToLower().Replace(" ","-"));
             shop.TaxPayerId = Validation.ValidateString(request.TaxPayerId, "Tax Payer Id", true, 35, false, string.Empty);
             if(request.TermPayment != null && !string.IsNullOrEmpty(request.TermPayment.TermPaymentCode))
             {

@@ -15,6 +15,8 @@ using Colsp.Model.Responses;
 using System.Data.SqlClient;
 using Colsp.Api.Helpers;
 using System.Threading.Tasks;
+using System.IO;
+using System.Text;
 
 namespace Colsp.Api.Controllers
 {
@@ -364,14 +366,15 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if(request == null || User.ShopRequest() == null)
+                if (request == null || User.ShopRequest() == null)
                 {
                     throw new Exception("Invalid request");
                 }
-
+                var shopId = User.ShopRequest().ShopId;
                 string email = User.UserRequest().Email;
                 DateTime currentDt = DateTime.Now;
-
+                StringBuilder sb = new StringBuilder();
+                string update = "UPDATE LocalCategory SET Lft = @1 , Rgt = @2 , UpdateBy = '@4' , UpdateOn = '@5' WHERE CategoryId = @3 AND ShopId = @6 ;";
                 foreach (var catRq in request)
                 {
                     if (catRq.Lft >= catRq.Rgt)
@@ -387,85 +390,29 @@ namespace Colsp.Api.Controllers
                     {
                         throw new Exception("Category " + catRq.NameEn + " is invalid.");
                     }
-                    LocalCategory category = new LocalCategory()
-                    {
-                        CategoryId = catRq.CategoryId,
-                        Lft = catRq.Lft,
-                        Rgt = catRq.Rgt,
-                        UpdateBy = email,
-                        UpdateOn = currentDt
-                    };
-                    db.LocalCategories.Attach(category);
-                    db.Entry(category).Property(p => p.Lft).IsModified = true;
-                    db.Entry(category).Property(p => p.Rgt).IsModified = true;
-                    db.Entry(category).Property(p => p.UpdateBy).IsModified = true;
-                    db.Entry(category).Property(p => p.UpdateOn).IsModified = true;
+                    sb.Append(update
+                        .Replace("@1", string.Concat(catRq.Lft))
+                        .Replace("@2", string.Concat(catRq.Rgt))
+                        .Replace("@3", string.Concat(catRq.CategoryId))
+                        .Replace("@4", email)
+                        .Replace("@5", currentDt.ToString("yyyy-MM-dd HH:mm:ss"))
+                        .Replace("@6", string.Concat(shopId)));
                 }
-                var reqCatIds = request.Select(s => s.CategoryId);
-                var shopId = User.ShopRequest().ShopId;
-                var deleteIds = db.LocalCategories.Where(w => w.ShopId == shopId &&!reqCatIds.Any(a => a == w.CategoryId)).Select(s => s.CategoryId);
+                var reqCatIds = request.Where(w => w.CategoryId != 0).Select(s => s.CategoryId);
+                var allIds = db.LocalCategories.Where(w=>w.ShopId==shopId).Select(s => s.CategoryId).ToList();
+                var deleteIds = allIds.Where(w => !reqCatIds.Any(a => a == w));
                 if (deleteIds != null && deleteIds.Count() > 0)
                 {
-                    var productMap = db.ProductStageGroups.Where(w => deleteIds.Contains(w.LocalCatId.HasValue? w.LocalCatId.Value : 0)).Select(s => s.LocalCategory.NameEn);
+                    var productMap = db.ProductStageGroups.Where(w => w.ShopId == shopId && deleteIds.Contains(w.LocalCatId.HasValue ? w.LocalCatId.Value : 0)).Select(s => s.LocalCategory.NameEn);
                     if (productMap != null && productMap.Count() > 0)
                     {
-                        throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", productMap), " with product associated"));
+                        throw new Exception(string.Concat("Cannot delete local category ", string.Join(",", productMap.Distinct()), " with product associated"));
                     }
-                    db.LocalCategories.RemoveRange(db.LocalCategories.Where(w => deleteIds.Contains(w.CategoryId)));
+                    sb.Append(string.Concat("DELETE LocalCategory WHERE CategoryId IN (", string.Join(",", deleteIds), ");"));
                 }
-                db.Configuration.ValidateOnSaveEnabled = false;
-                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
+
+                db.Database.ExecuteSqlCommand(sb.ToString());
                 return Request.CreateResponse(HttpStatusCode.OK);
-
-
-
-                //int shopId = User.ShopRequest().ShopId;
-                //if (shopId == 0)
-                //{
-                //    throw new Exception("Shop is invalid. Cannot find shop in session");
-                //}
-                //var catEnList = db.LocalCategories.Where(w => w.ShopId == shopId).ToList();
-                //foreach (CategoryRequest catRq in request)
-                //{
-                //    if (catRq.Lft >= catRq.Rgt)
-                //    {
-                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Node is not properly formated");
-                //    }
-                //    var validate = request.Where(w => w.Lft == catRq.Lft || w.Rgt == catRq.Rgt).ToList();
-                //    if (validate != null && validate.Count > 1)
-                //    {
-                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Node child has duplicated left or right key");
-                //    }
-                //    if (catRq.CategoryId == 0)
-                //    {
-                //        throw new Exception("Category " + catRq.NameEn + " is invalid.");
-                //    }
-
-                //    var catEn = catEnList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
-                //    if (catEn == null)
-                //    {
-                //        throw new Exception("Category " + catRq.NameEn + " is invalid. Cannot find Category key " + catRq.CategoryId + " in database");
-                //    }
-                //    catEn.Lft = catRq.Lft;
-                //    catEn.Rgt = catRq.Rgt;
-                //    catEn.UpdateBy = User.UserRequest().Email;
-                //    catEn.UpdateOn = DateTime.Now;
-                //    catEnList.Remove(catEn);
-                //}
-
-                //var ids = catEnList.Select(s => s.CategoryId);
-                //var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.LocalCatId.HasValue?w.LocalCatId.Value : 0)).Select(s => s.LocalCategory.NameEn);
-                //if (productMap != null && productMap.Count() > 0)
-                //{
-                //    throw new Exception(string.Concat("Cannot delete local category ", string.Join(",", productMap), " with product associated"));
-                //}
-                //if (catEnList != null && catEnList.Count() > 0)
-                //{
-                //    db.LocalCategories.RemoveRange(catEnList);
-                //}
-                
-                //Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
-                //return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {
@@ -509,39 +456,39 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/LocalCategories")]
-        [HttpDelete]
-        public HttpResponseMessage DeteleCategory(List<CategoryRequest> request)
-        {
-            try
-            {
-                int shopId = User.ShopRequest().ShopId;
-                var ids = request.Select(s => s.CategoryId);
+        //[Route("api/LocalCategories")]
+        //[HttpDelete]
+        //public HttpResponseMessage DeteleCategory(List<CategoryRequest> request)
+        //{
+        //    try
+        //    {
+        //        int shopId = User.ShopRequest().ShopId;
+        //        var ids = request.Select(s => s.CategoryId);
 
-                var catList = db.LocalCategories.Where(w => ids.Contains(w.CategoryId));
+        //        var catList = db.LocalCategories.Where(w => ids.Contains(w.CategoryId));
 
-                foreach (CategoryRequest rq in request)
-                {
-                    var cat = catList.Where(w=>w.CategoryId==rq.CategoryId && w.ShopId==shopId).SingleOrDefault();
-                    if (cat == null)
-                    {
-                        throw new Exception("Cannot find category");
-                    }
-                    int childSize = cat.Rgt - cat.Lft + 1;
-                    //delete
-                    db.LocalCategories.Where(w => w.Rgt > cat.Rgt && w.ShopId==shopId).ToList()
-                        .ForEach(e => { e.Lft = e.Lft > cat.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
-                    db.LocalCategories.RemoveRange(db.LocalCategories.Where(w => w.Lft >= cat.Lft && w.Rgt <= cat.Rgt && w.ShopId==shopId));
-                    break;
-                }
-                Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
-                return Request.CreateResponse(HttpStatusCode.OK);
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-            }
-        }
+        //        foreach (CategoryRequest rq in request)
+        //        {
+        //            var cat = catList.Where(w=>w.CategoryId==rq.CategoryId && w.ShopId==shopId).SingleOrDefault();
+        //            if (cat == null)
+        //            {
+        //                throw new Exception("Cannot find category");
+        //            }
+        //            int childSize = cat.Rgt - cat.Lft + 1;
+        //            //delete
+        //            db.LocalCategories.Where(w => w.Rgt > cat.Rgt && w.ShopId==shopId).ToList()
+        //                .ForEach(e => { e.Lft = e.Lft > cat.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
+        //            db.LocalCategories.RemoveRange(db.LocalCategories.Where(w => w.Lft >= cat.Lft && w.Rgt <= cat.Rgt && w.ShopId==shopId));
+        //            break;
+        //        }
+        //        Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
+        //        return Request.CreateResponse(HttpStatusCode.OK);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+        //    }
+        //}
 
         [Route("api/LocalCategoryImages")]
         [HttpPost]
@@ -549,7 +496,68 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.LOCAL_CAT_FOLDER, 1500, 1500, 2000, 2000, 5, true);
+                if(!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("In valid content multi-media");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.LOCAL_CAT_FOLDER));
+                try
+                {
+                    await Request.Content.ReadAsMultipartAsync(streamProvider);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Image size exceeded " + 5 + " mb");
+                }
+                #region Validate Image
+                string type = streamProvider.FormData["Type"];
+                ImageRequest fileUpload = null;
+                if ("Logo".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.LOCAL_CAT_FOLDER, 500, 500, 1000, 1000, 5, true);
+                        break;
+                    }
+
+                }
+                else if ("Banner".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.LOCAL_CAT_FOLDER, 1920, 1080, 1920, 1080, 5, false);
+                        break;
+                    }
+                }
+                else if ("SmallBanner".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.LOCAL_CAT_FOLDER, 1600, 900, 1600, 900, 5, false);
+                        break;
+                    }
+                }
+                else
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.LOCAL_CAT_FOLDER, Constant.ImageRatio.IMAGE_RATIO_16_9);
+                        break;
+                    }
+                }
+                #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
