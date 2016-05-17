@@ -259,5 +259,15 @@ namespace Colsp.Entity.Models
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
         }
+    
+        public virtual ObjectResult<SaleReportForSeller_Result> SaleReportForSeller()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller_Result>("SaleReportForSeller");
+        }
+    
+        public virtual ObjectResult<StockStatusReport_Result> StockStatusReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result>("StockStatusReport");
+        }
     }
 }
