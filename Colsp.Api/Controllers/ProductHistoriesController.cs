@@ -337,5 +337,589 @@ namespace Colsp.Api.Controllers
         {
             return db.ProductHistories.Count(e => e.HistoryId == id) > 0;
         }
+
+
+        //private ProductStageRequest GetProductStageRequestFromId(ColspEntities db, long productId)
+        //{
+        //    #region Query
+        //    var tmpPro = db.ProductHistoryGroups.Where(w => !Constant.STATUS_REMOVE.Equals(w.Status) && w.ProductId == productId)
+        //        .Select(s => new
+        //        {
+        //            s.ProductId,
+        //            s.ShopId,
+        //            s.GlobalCatId,
+        //            s.LocalCatId,
+        //            s.AttributeSetId,
+        //            s.BrandId,
+        //            s.ShippingId,
+        //            s.EffectiveDate,
+        //            s.ExpireDate,
+        //            s.NewArrivalDate,
+        //            s.TheOneCardEarn,
+        //            s.GiftWrap,
+        //            s.IsNew,
+        //            s.IsClearance,
+        //            s.IsBestSeller,
+        //            s.IsOnlineExclusive,
+        //            s.IsOnlyAt,
+        //            s.Remark,
+        //            s.InfoFlag,
+        //            s.ImageFlag,
+        //            s.OnlineFlag,
+        //            s.InformationTabStatus,
+        //            s.ImageTabStatus,
+        //            s.CategoryTabStatus,
+        //            s.VariantTabStatus,
+        //            s.MoreOptionTabStatus,
+        //            s.RejectReason,
+        //            s.Status,
+        //            s.FirstApproveBy,
+        //            s.FirstApproveOn,
+        //            s.ApproveBy,
+        //            s.ApproveOn,
+        //            s.RejecteBy,
+        //            s.RejectOn,
+        //            s.SubmitBy,
+        //            s.SubmitOn,
+        //            s.CreateBy,
+        //            s.CreateOn,
+        //            s.UpdateBy,
+        //            s.UpdateOn,
+        //            AttributeSet = s.AttributeSet == null ? null : new
+        //            {
+        //                s.AttributeSet.AttributeSetId,
+        //                s.AttributeSet.AttributeSetNameEn,
+        //                AttributeSetMap = s.AttributeSet.AttributeSetMaps.Select(sm => new
+        //                {
+        //                    sm.Attribute.DataType,
+        //                    sm.AttributeId,
+        //                    AttributeValueMap = sm.Attribute.AttributeValueMaps.Select(sv => new
+        //                    {
+        //                        sv.AttributeValue.AttributeValueId,
+        //                        sv.AttributeValue.AttributeValueEn
+        //                    })
+        //                })
+        //            },
+        //            Brand = s.Brand == null ? null : new
+        //            {
+        //                s.Brand.BrandId,
+        //                s.Brand.BrandNameEn
+        //            },
+        //            GlobalCategories = s.ProductStageGlobalCatMaps.Select(sg => new
+        //            {
+        //                sg.CategoryId,
+        //                sg.GlobalCategory.NameEn
+        //            }),
+        //            LocalCategories = s.ProductStageLocalCatMaps.Select(sl => new
+        //            {
+        //                sl.CategoryId,
+        //                sl.LocalCategory.NameEn
+        //            }),
+        //            Tags = s.ProductStageTags.Select(st => st.Tag),
+        //            ProductStages = s.ProductStages.Select(st => new
+        //            {
+        //                st.Pid,
+        //                st.ProductId,
+        //                st.ShopId,
+        //                st.ProductNameEn,
+        //                st.ProductNameTh,
+        //                st.ProdTDNameTh,
+        //                st.ProdTDNameEn,
+        //                st.JDADept,
+        //                st.JDASubDept,
+        //                st.SaleUnitTh,
+        //                st.SaleUnitEn,
+        //                st.Sku,
+        //                st.Upc,
+        //                st.OriginalPrice,
+        //                st.SalePrice,
+        //                st.DescriptionFullEn,
+        //                st.DescriptionShortEn,
+        //                st.DescriptionFullTh,
+        //                st.DescriptionShortTh,
+        //                st.MobileDescriptionEn,
+        //                st.MobileDescriptionTh,
+        //                st.ImageCount,
+        //                st.FeatureImgUrl,
+        //                st.PrepareDay,
+        //                st.LimitIndividualDay,
+        //                st.PrepareMon,
+        //                st.PrepareTue,
+        //                st.PrepareWed,
+        //                st.PrepareThu,
+        //                st.PrepareFri,
+        //                st.PrepareSat,
+        //                st.PrepareSun,
+        //                st.KillerPoint1En,
+        //                st.KillerPoint2En,
+        //                st.KillerPoint3En,
+        //                st.KillerPoint1Th,
+        //                st.KillerPoint2Th,
+        //                st.KillerPoint3Th,
+        //                st.Installment,
+        //                st.Length,
+        //                st.Height,
+        //                st.Width,
+        //                st.DimensionUnit,
+        //                st.Weight,
+        //                st.WeightUnit,
+        //                st.MetaTitleEn,
+        //                st.MetaTitleTh,
+        //                st.MetaDescriptionEn,
+        //                st.MetaDescriptionTh,
+        //                st.MetaKeyEn,
+        //                st.MetaKeyTh,
+        //                st.SeoEn,
+        //                st.SeoTh,
+        //                st.IsHasExpiryDate,
+        //                st.IsVat,
+        //                st.UrlKey,
+        //                st.BoostWeight,
+        //                st.GlobalBoostWeight,
+        //                st.ExpressDelivery,
+        //                st.DeliveryFee,
+        //                st.PromotionPrice,
+        //                st.EffectiveDatePromotion,
+        //                st.ExpireDatePromotion,
+        //                st.NewArrivalDate,
+        //                st.DefaultVariant,
+        //                st.Display,
+        //                st.MiniQtyAllowed,
+        //                st.MaxiQtyAllowed,
+        //                st.UnitPrice,
+        //                st.PurchasePrice,
+        //                st.IsSell,
+        //                st.IsVariant,
+        //                st.IsMaster,
+        //                st.VariantCount,
+        //                st.Visibility,
+        //                ProductStageAttributes = st.ProductStageAttributes.Select(sa => new
+        //                {
+        //                    sa.Pid,
+        //                    sa.AttributeId,
+        //                    sa.ValueEn,
+        //                    sa.ValueTh,
+        //                    sa.AttributeValueId,
+        //                    sa.CheckboxValue,
+        //                    sa.Position,
+        //                    sa.IsAttributeValue,
+        //                    Attribute = new
+        //                    {
+        //                        sa.Attribute.AttributeId,
+        //                        sa.Attribute.AttributeNameEn,
+        //                        sa.Attribute.DataType,
+        //                        sa.Attribute.VariantStatus,
+        //                    },
+        //                    AttributeValue = sa.AttributeValue == null ? null : new
+        //                    {
+        //                        sa.AttributeValue.AttributeValueId,
+        //                        sa.AttributeValue.AttributeValueEn,
+        //                        sa.AttributeValue.AttributeValueTh,
+        //                    }
+        //                }),
+        //                Images = st.ProductStageImages.Select(si => new
+        //                {
+        //                    si.ImageUrlEn
+        //                }),
+        //                Videos = st.ProductStageVideos.OrderBy(o => o.Position).Select(sv => new
+        //                {
+        //                    sv.VideoUrlEn
+        //                }),
+        //                Inventory = st.Inventory == null ? null : new
+        //                {
+        //                    st.Inventory.OnHold,
+        //                    st.Inventory.Reserve,
+        //                    st.Inventory.Quantity,
+        //                    st.Inventory.SafetyStockSeller,
+        //                    st.Inventory.StockType,
+        //                    st.Inventory.MaxQtyAllowInCart,
+        //                    st.Inventory.MaxQtyPreOrder,
+        //                    st.Inventory.MinQtyAllowInCart,
+        //                    st.Inventory.Defect
+        //                }
+        //            }),
+
+        //        }).SingleOrDefault();
+        //    #endregion
+        //    #region group
+        //    ProductStageRequest response = new ProductStageRequest()
+        //    {
+        //        AdminApprove = new AdminApproveRequest()
+        //        {
+        //            Category = tmpPro.CategoryTabStatus,
+        //            Image = tmpPro.ImageTabStatus,
+        //            Information = tmpPro.InformationTabStatus,
+        //            MoreOption = tmpPro.MoreOptionTabStatus,
+        //            RejectReason = tmpPro.RejectReason,
+        //            Variation = tmpPro.VariantTabStatus
+        //        },
+        //        AttributeSet = tmpPro.AttributeSet == null ? new AttributeSetRequest() : new AttributeSetRequest()
+        //        {
+        //            AttributeSetId = tmpPro.AttributeSet.AttributeSetId,
+        //            AttributeSetNameEn = tmpPro.AttributeSet.AttributeSetNameEn,
+        //            Attributes = tmpPro.AttributeSet.AttributeSetMap.Select(s => new AttributeRequest()
+        //            {
+        //                AttributeId = s.AttributeId,
+        //                DataType = s.DataType,
+        //                AttributeValues = s.AttributeValueMap.Select(sv => new AttributeValueRequest()
+        //                {
+        //                    AttributeValueEn = sv.AttributeValueEn,
+        //                    AttributeValueId = sv.AttributeValueId,
+        //                }).ToList(),
+        //            }).ToList(),
+        //        },
+        //        Brand = tmpPro.Brand == null ? new BrandRequest() : new BrandRequest()
+        //        {
+        //            BrandId = tmpPro.Brand.BrandId,
+        //            BrandNameEn = tmpPro.Brand.BrandNameEn
+        //        },
+        //        ControlFlags = new ControlFlagRequest()
+        //        {
+        //            IsBestSeller = tmpPro.IsBestSeller,
+        //            IsClearance = tmpPro.IsClearance,
+        //            IsNew = tmpPro.IsNew,
+        //            IsOnlineExclusive = tmpPro.IsOnlineExclusive,
+        //            IsOnlyAt = tmpPro.IsOnlyAt
+        //        },
+        //        EffectiveDate = tmpPro.EffectiveDate,
+        //        ExpireDate = tmpPro.ExpireDate,
+        //        NewArrivalDate = tmpPro.NewArrivalDate,
+        //        GiftWrap = tmpPro.GiftWrap,
+        //        GlobalCategories = tmpPro.GlobalCategories.Select(s => new CategoryRequest()
+        //        {
+        //            CategoryId = s.CategoryId
+        //        }).ToList(),
+        //        LocalCategories = tmpPro.LocalCategories.Select(s => new CategoryRequest()
+        //        {
+        //            CategoryId = s.CategoryId
+        //        }).ToList(),
+        //        ImageFlag = tmpPro.ImageFlag,
+        //        InfoFlag = tmpPro.InfoFlag,
+        //        ProductId = tmpPro.ProductId,
+        //        MainGlobalCategory = new CategoryRequest()
+        //        {
+        //            CategoryId = tmpPro.GlobalCatId
+        //        },
+        //        MainLocalCategory = new CategoryRequest()
+        //        {
+        //            CategoryId = tmpPro.LocalCatId.HasValue ? tmpPro.LocalCatId.Value : 0
+        //        },
+        //        OnlineFlag = tmpPro.OnlineFlag,
+        //        Remark = tmpPro.Remark,
+        //        ShippingMethod = tmpPro.ShippingId,
+        //        ShopId = tmpPro.ShopId,
+        //        Status = tmpPro.Status,
+        //        Tags = tmpPro.Tags.ToList()
+        //    };
+
+        //    #endregion
+        //    #region master
+        //    var masterVariant = tmpPro.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+        //    response.MasterVariant = new VariantRequest()
+        //    {
+        //        Pid = masterVariant.Pid,
+        //        ProductId = masterVariant.ProductId,
+        //        ShopId = masterVariant.ShopId,
+        //        ProductNameEn = masterVariant.ProductNameEn,
+        //        ProductNameTh = masterVariant.ProductNameTh,
+        //        ProdTDNameTh = masterVariant.ProdTDNameTh,
+        //        ProdTDNameEn = masterVariant.ProdTDNameEn,
+        //        SaleUnitTh = masterVariant.SaleUnitTh,
+        //        SaleUnitEn = masterVariant.SaleUnitEn,
+        //        Sku = masterVariant.Sku,
+        //        Upc = masterVariant.Upc,
+        //        OriginalPrice = masterVariant.OriginalPrice,
+        //        SalePrice = masterVariant.SalePrice,
+        //        DescriptionFullEn = masterVariant.DescriptionFullEn,
+        //        DescriptionShortEn = masterVariant.DescriptionShortEn,
+        //        DescriptionFullTh = masterVariant.DescriptionFullTh,
+        //        DescriptionShortTh = masterVariant.DescriptionShortTh,
+        //        MobileDescriptionEn = masterVariant.MobileDescriptionEn,
+        //        MobileDescriptionTh = masterVariant.MobileDescriptionTh,
+        //        PrepareDay = masterVariant.PrepareDay,
+        //        LimitIndividualDay = masterVariant.LimitIndividualDay,
+        //        PrepareMon = masterVariant.PrepareMon,
+        //        PrepareTue = masterVariant.PrepareTue,
+        //        PrepareWed = masterVariant.PrepareWed,
+        //        PrepareThu = masterVariant.PrepareThu,
+        //        PrepareFri = masterVariant.PrepareFri,
+        //        PrepareSat = masterVariant.PrepareSat,
+        //        PrepareSun = masterVariant.PrepareSun,
+        //        KillerPoint1En = masterVariant.KillerPoint1En,
+        //        KillerPoint2En = masterVariant.KillerPoint2En,
+        //        KillerPoint3En = masterVariant.KillerPoint3En,
+        //        KillerPoint1Th = masterVariant.KillerPoint1Th,
+        //        KillerPoint2Th = masterVariant.KillerPoint2Th,
+        //        KillerPoint3Th = masterVariant.KillerPoint3Th,
+        //        Installment = masterVariant.Installment,
+        //        Length = Constant.DIMENSTION_CM.Equals(masterVariant.DimensionUnit) ? (masterVariant.Length / 10) : Constant.DIMENSTION_M.Equals(masterVariant.DimensionUnit) ? (masterVariant.Length / 1000) : masterVariant.Length,
+        //        Height = Constant.DIMENSTION_CM.Equals(masterVariant.DimensionUnit) ? (masterVariant.Height / 10) : Constant.DIMENSTION_M.Equals(masterVariant.DimensionUnit) ? (masterVariant.Height / 1000) : masterVariant.Height,
+        //        Width = Constant.DIMENSTION_CM.Equals(masterVariant.DimensionUnit) ? (masterVariant.Width / 10) : Constant.DIMENSTION_M.Equals(masterVariant.DimensionUnit) ? (masterVariant.Width / 1000) : masterVariant.Width,
+        //        DimensionUnit = masterVariant.DimensionUnit,
+        //        Weight = Constant.WEIGHT_MEASURE_KG.Equals(masterVariant.WeightUnit) ? (masterVariant.Weight / 1000) : masterVariant.Weight,
+        //        WeightUnit = masterVariant.WeightUnit,
+        //        SEO = new SEORequest()
+        //        {
+        //            GlobalProductBoostingWeight = masterVariant.GlobalBoostWeight,
+        //            MetaDescriptionEn = masterVariant.MetaDescriptionEn,
+        //            MetaDescriptionTh = masterVariant.MetaDescriptionTh,
+        //            MetaKeywordEn = masterVariant.MetaKeyEn,
+        //            MetaKeywordTh = masterVariant.MetaKeyTh,
+        //            MetaTitleEn = masterVariant.MetaTitleEn,
+        //            MetaTitleTh = masterVariant.MetaTitleTh,
+        //            ProductBoostingWeight = masterVariant.BoostWeight,
+        //            ProductUrlKeyEn = masterVariant.UrlKey,
+        //            SeoEn = masterVariant.SeoEn,
+        //            SeoTh = masterVariant.SeoTh,
+        //        },
+        //        IsHasExpiryDate = masterVariant.IsHasExpiryDate,
+        //        IsVat = masterVariant.IsVat,
+        //        ExpressDelivery = masterVariant.ExpressDelivery,
+        //        DeliveryFee = masterVariant.DeliveryFee,
+        //        PromotionPrice = masterVariant.PromotionPrice,
+        //        EffectiveDatePromotion = masterVariant.EffectiveDatePromotion,
+        //        ExpireDatePromotion = masterVariant.ExpireDatePromotion,
+        //        NewArrivalDate = masterVariant.NewArrivalDate,
+        //        DefaultVariant = masterVariant.DefaultVariant,
+        //        Display = masterVariant.Display,
+        //        MiniQtyAllowed = masterVariant.MiniQtyAllowed,
+        //        MaxiQtyAllowed = masterVariant.MaxiQtyAllowed,
+        //        UnitPrice = masterVariant.UnitPrice,
+        //        PurchasePrice = masterVariant.PurchasePrice,
+        //        IsVariant = masterVariant.IsVariant,
+        //        Visibility = masterVariant.Visibility,
+        //        OnHold = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.OnHold,
+        //        Quantity = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Quantity,
+        //        Defect = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Defect,
+        //        Reserve = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Reserve,
+        //        SafetyStock = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.SafetyStockSeller,
+        //        StockType = masterVariant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : masterVariant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
+        //        MaxQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyAllowInCart,
+        //        MinQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MinQtyAllowInCart,
+        //        MaxQtyPreOrder = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyPreOrder,
+        //    };
+        //    if (masterVariant.ProductStageAttributes != null)
+        //    {
+        //        foreach (var attribute in masterVariant.ProductStageAttributes)
+        //        {
+
+        //            var attr = new AttributeRequest()
+        //            {
+        //                AttributeId = attribute.Attribute.AttributeId,
+        //                DataType = attribute.Attribute.DataType,
+        //                AttributeNameEn = attribute.Attribute.AttributeNameEn,
+        //                ValueEn = attribute.ValueEn,
+        //                ValueTh = attribute.ValueTh,
+        //            };
+        //            if (attribute.AttributeValue != null)
+        //            {
+        //                attr.ValueEn = string.Empty;
+        //                attr.ValueTh = string.Empty;
+        //                attr.AttributeValues.Add(new AttributeValueRequest()
+        //                {
+        //                    AttributeValueId = attribute.AttributeValueId.HasValue ? attribute.AttributeValueId.Value : 0,
+        //                    AttributeValueEn = attribute.AttributeValue.AttributeValueEn,
+        //                    CheckboxValue = attribute.CheckboxValue,
+        //                    AttributeValueTh = attribute.AttributeValue.AttributeValueTh,
+        //                    Position = attribute.Position,
+        //                });
+        //            }
+        //            response.MasterAttribute.Add(attr);
+        //        }
+        //    }
+        //    if (masterVariant.Images != null)
+        //    {
+        //        foreach (var image in masterVariant.Images)
+        //        {
+        //            response.MasterVariant.Images.Add(new ImageRequest()
+        //            {
+        //                Url = image.ImageUrlEn,
+        //            });
+        //        }
+        //    }
+        //    if (masterVariant.Videos != null)
+        //    {
+        //        foreach (var video in masterVariant.Videos)
+        //        {
+        //            response.MasterVariant.VideoLinks.Add(new VideoLinkRequest()
+        //            {
+        //                Url = video.VideoUrlEn,
+        //            });
+        //        }
+        //    }
+        //    response.Visibility = masterVariant.Visibility;
+        //    #endregion
+        //    #region variant
+        //    var variants = tmpPro.ProductStages.Where(w => w.IsVariant == true && w.IsMaster == false);
+        //    foreach (var variant in variants)
+        //    {
+        //        var tmpVariant = new VariantRequest()
+        //        {
+        //            Pid = variant.Pid,
+        //            ProductId = variant.ProductId,
+        //            ShopId = variant.ShopId,
+        //            ProductNameEn = variant.ProductNameEn,
+        //            ProductNameTh = variant.ProductNameTh,
+        //            ProdTDNameTh = variant.ProdTDNameTh,
+        //            ProdTDNameEn = variant.ProdTDNameEn,
+        //            SaleUnitTh = variant.SaleUnitTh,
+        //            SaleUnitEn = variant.SaleUnitEn,
+        //            Sku = variant.Sku,
+        //            Upc = variant.Upc,
+        //            OriginalPrice = variant.OriginalPrice,
+        //            SalePrice = variant.SalePrice,
+        //            DescriptionFullEn = variant.DescriptionFullEn,
+        //            DescriptionShortEn = variant.DescriptionShortEn,
+        //            DescriptionFullTh = variant.DescriptionFullTh,
+        //            DescriptionShortTh = variant.DescriptionShortTh,
+        //            MobileDescriptionEn = variant.MobileDescriptionEn,
+        //            MobileDescriptionTh = variant.MobileDescriptionTh,
+        //            PrepareDay = variant.PrepareDay,
+        //            LimitIndividualDay = variant.LimitIndividualDay,
+        //            PrepareMon = variant.PrepareMon,
+        //            PrepareTue = variant.PrepareTue,
+        //            PrepareWed = variant.PrepareWed,
+        //            PrepareThu = variant.PrepareThu,
+        //            PrepareFri = variant.PrepareFri,
+        //            PrepareSat = variant.PrepareSat,
+        //            PrepareSun = variant.PrepareSun,
+        //            KillerPoint1En = variant.KillerPoint1En,
+        //            KillerPoint2En = variant.KillerPoint2En,
+        //            KillerPoint3En = variant.KillerPoint3En,
+        //            KillerPoint1Th = variant.KillerPoint1Th,
+        //            KillerPoint2Th = variant.KillerPoint2Th,
+        //            KillerPoint3Th = variant.KillerPoint3Th,
+        //            Installment = variant.Installment,
+        //            Length = Constant.DIMENSTION_CM.Equals(variant.DimensionUnit) ? (variant.Length / 10) : Constant.DIMENSTION_M.Equals(variant.DimensionUnit) ? (variant.Length / 1000) : variant.Length,
+        //            Height = Constant.DIMENSTION_CM.Equals(variant.DimensionUnit) ? (variant.Height / 10) : Constant.DIMENSTION_M.Equals(variant.DimensionUnit) ? (variant.Height / 1000) : variant.Height,
+        //            Width = Constant.DIMENSTION_CM.Equals(variant.DimensionUnit) ? (variant.Width / 10) : Constant.DIMENSTION_M.Equals(variant.DimensionUnit) ? (variant.Width / 1000) : variant.Width,
+        //            DimensionUnit = variant.DimensionUnit,
+        //            Weight = Constant.WEIGHT_MEASURE_KG.Equals(variant.WeightUnit) ? (variant.Weight / 1000) : variant.Weight,
+        //            WeightUnit = variant.WeightUnit,
+        //            SEO = new SEORequest()
+        //            {
+        //                GlobalProductBoostingWeight = variant.GlobalBoostWeight,
+        //                MetaDescriptionEn = variant.MetaDescriptionEn,
+        //                MetaDescriptionTh = variant.MetaDescriptionTh,
+        //                MetaKeywordEn = variant.MetaKeyEn,
+        //                MetaKeywordTh = variant.MetaKeyTh,
+        //                MetaTitleEn = variant.MetaTitleEn,
+        //                MetaTitleTh = variant.MetaTitleTh,
+        //                ProductBoostingWeight = variant.BoostWeight,
+        //                ProductUrlKeyEn = variant.UrlKey,
+        //                SeoEn = variant.SeoEn,
+        //                SeoTh = variant.SeoTh,
+        //            },
+        //            IsHasExpiryDate = variant.IsHasExpiryDate,
+        //            IsVat = variant.IsVat,
+        //            ExpressDelivery = variant.ExpressDelivery,
+        //            DeliveryFee = variant.DeliveryFee,
+        //            PromotionPrice = variant.PromotionPrice,
+        //            EffectiveDatePromotion = variant.EffectiveDatePromotion,
+        //            ExpireDatePromotion = variant.ExpireDatePromotion,
+        //            NewArrivalDate = variant.NewArrivalDate,
+        //            DefaultVariant = variant.DefaultVariant,
+        //            Display = variant.Display,
+        //            MiniQtyAllowed = variant.MiniQtyAllowed,
+        //            MaxiQtyAllowed = variant.MaxiQtyAllowed,
+        //            UnitPrice = variant.UnitPrice,
+        //            PurchasePrice = variant.PurchasePrice,
+        //            IsVariant = variant.IsVariant,
+        //            Visibility = variant.Visibility,
+        //            OnHold = variant.Inventory == null ? 0 : variant.Inventory.OnHold,
+        //            Quantity = variant.Inventory == null ? 0 : variant.Inventory.Quantity,
+        //            Reserve = variant.Inventory == null ? 0 : variant.Inventory.Reserve,
+        //            Defect = variant.Inventory == null ? 0 : variant.Inventory.Defect,
+        //            SafetyStock = variant.Inventory == null ? 0 : variant.Inventory.SafetyStockSeller,
+        //            StockType = variant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : variant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
+        //            MaxQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyAllowInCart,
+        //            MinQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MinQtyAllowInCart,
+        //            MaxQtyPreOrder = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyPreOrder,
+        //        };
+
+        //        if (variant.ProductStageAttributes != null)
+        //        {
+        //            foreach (var attribute in variant.ProductStageAttributes)
+        //            {
+
+        //                var attr = new AttributeRequest()
+        //                {
+        //                    AttributeId = attribute.Attribute.AttributeId,
+        //                    DataType = attribute.Attribute.DataType,
+        //                    AttributeNameEn = attribute.Attribute.AttributeNameEn,
+        //                    ValueEn = attribute.ValueEn,
+        //                    ValueTh = attribute.ValueTh,
+        //                };
+        //                if (attribute.AttributeValue != null)
+        //                {
+        //                    attr.ValueEn = string.Empty;
+        //                    attr.ValueTh = string.Empty;
+
+        //                    attr.AttributeValues.Add(new AttributeValueRequest()
+        //                    {
+        //                        AttributeValueId = attribute.AttributeValueId.HasValue ? attribute.AttributeValueId.Value : 0,
+        //                        AttributeValueEn = attribute.AttributeValue.AttributeValueEn,
+        //                        CheckboxValue = attribute.CheckboxValue,
+        //                        AttributeValueTh = attribute.AttributeValue.AttributeValueTh,
+        //                        Position = attribute.Position,
+        //                    });
+        //                }
+        //                if (tmpVariant.FirstAttribute == null || tmpVariant.FirstAttribute.AttributeId == 0)
+        //                {
+        //                    tmpVariant.FirstAttribute = attr;
+        //                }
+        //                else
+        //                {
+        //                    tmpVariant.SecondAttribute = attr;
+        //                }
+        //            }
+        //        }
+        //        if (variant.Images != null)
+        //        {
+        //            foreach (var image in variant.Images)
+        //            {
+        //                tmpVariant.Images.Add(new ImageRequest()
+        //                {
+        //                    Url = image.ImageUrlEn,
+        //                });
+        //            }
+        //        }
+        //        if (variant.Videos != null)
+        //        {
+        //            foreach (var video in variant.Videos)
+        //            {
+        //                tmpVariant.VideoLinks.Add(new VideoLinkRequest()
+        //                {
+        //                    Url = video.VideoUrlEn,
+        //                });
+        //            }
+        //        }
+        //        response.Variants.Add(tmpVariant);
+        //    }
+        //    #endregion
+        //    #region history
+        //    var historyList = db.ProductHistoryGroups
+        //        .Where(w => w.ProductId == response.ProductId)
+        //        .OrderByDescending(o => o.HistoryDt)
+        //        .Select(s => new ProductHistoryRequest()
+        //        {
+        //            ApproveOn = s.ApproveOn,
+        //            SubmitBy = s.SubmitBy,
+        //            HistoryId = s.HistoryId,
+        //            SubmitOn = s.SubmitOn
+        //        }).Take(Constant.HISTORY_REVISION);
+        //    foreach (var history in historyList)
+        //    {
+        //        response.Revisions.Add(new ProductHistoryRequest()
+        //        {
+        //            ApproveOn = history.ApproveOn,
+        //            HistoryId = history.HistoryId,
+        //            SubmitBy = history.SubmitBy,
+        //            SubmitOn = history.SubmitOn
+        //        });
+        //    }
+        //    #endregion
+        //    return response;
+        //}
     }
 }

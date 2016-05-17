@@ -633,7 +633,7 @@ namespace Colsp.Api.Controllers
             category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
             category.Visibility = request.Visibility;
-            category.Status = request.Status;
+            category.Status = Constant.STATUS_ACTIVE;
             if (request.SortBy.SortById != 0)
             {
                 category.SortById = request.SortBy.SortById;

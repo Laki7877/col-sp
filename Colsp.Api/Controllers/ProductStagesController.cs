@@ -1972,9 +1972,6 @@ namespace Colsp.Api.Controllers
 
 
 
-
-
-
         [Route("api/ProductStages")]
         [HttpPost]
         public HttpResponseMessage AddProduct(ProductStageRequest request)
@@ -6707,11 +6704,15 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                int shopId = User.ShopRequest().ShopId;
+                var productList = db.ProductStageGroups.Where(w => true);
+
+                if (User.ShopRequest() != null)
+                {
+                    int shopId = User.ShopRequest().ShopId;
+                    productList = productList.Where(w => w.ShopId == shopId);
+                }
                 var ids = request.Where(w => w.ProductId != 0).Select(s => s.ProductId);
-                var productList = db.ProductStageGroups
-                    .Where(w => w.ShopId == shopId && ids.Any(a=>a==w.ProductId))
-                    .Include(i=>i.ProductStages).ToList();
+                productList = productList.Where(w => ids.Any(a=>a==w.ProductId)).Include(i=>i.ProductStages);
                 string email = User.UserRequest().Email;
                 var currentDt = DateTime.Now;
                 foreach (ProductStageRequest rq in request)
@@ -6719,7 +6720,7 @@ namespace Colsp.Api.Controllers
                     var current = productList.Where(w => w.ProductId.Equals(rq.ProductId)).SingleOrDefault();
                     if (current == null)
                     {
-                        throw new Exception(string.Concat("Cannot find product " , rq.ProductId , " in shop " , shopId));
+                        throw new Exception(string.Concat("Cannot find product " , rq.ProductId));
                     }
                     if (!current.Status.Equals(Constant.PRODUCT_STATUS_DRAFT))
                     {
