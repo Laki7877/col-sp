@@ -189,15 +189,25 @@
     <Content Include="Global.asax" />
     <Content Include="scripts\ai.0.15.0-build58334.js" />
     <Content Include="scripts\ai.0.15.0-build58334.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="CMSFunction\CMSProcess.cs" />
+    <Compile Include="Controllers\BuyOneGetOneController.cs" />
+    <Compile Include="Controllers\CMSController.cs" />
+    <Compile Include="Controllers\CMSManagementController.cs" />
+    <Compile Include="Controllers\PromotionController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="PromotionFunction\BuyOneGetOneProcess.cs" />
+    <Compile Include="CMSFunction\GetCMSSearch.cs" />
+    <Compile Include="CMSFunction\JsonContent.cs" />
     <Compile Include="Constants\AppSettingKey.cs" />
     <Compile Include="Constants\Constant.cs" />
     <Compile Include="Constants\HttpErrorMessage.cs" />
-    <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\AttributeSetsController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
     <Compile Include="Controllers\CouponConditionsController.cs" />
@@ -213,13 +223,12 @@
     <Compile Include="Controllers\ProductImagesController.cs" />
     <Compile Include="Controllers\ProductReviewsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
-    <Compile Include="Controllers\ProductStagesController.cs" />
     <Compile Include="Controllers\ProductTempsController.cs" />
     <Compile Include="Controllers\ReturnController.cs" />
     <Compile Include="Controllers\ShippingsController.cs" />
-    <Compile Include="Controllers\ShopsController.cs" />
     <Compile Include="Controllers\ShopTypesController.cs" />
     <Compile Include="Controllers\SortBiesController.cs" />
+    <Compile Include="Controllers\StandardReportController.cs" />
     <Compile Include="Controllers\ThemesController.cs" />
     <Compile Include="Controllers\UserGroupsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -250,6 +259,10 @@
     <ProjectReference Include="..\Colsp.Entity\Colsp.Entity.csproj">
       <Project>{4900b20b-c0bc-4f3f-97c0-3df428740322}</Project>
       <Name>Colsp.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Colsp.Logic\Colsp.Logic.csproj">
+      <Project>{7ab75edd-88fb-4c4a-b092-df49df9a6b87}</Project>
+      <Name>Colsp.Logic</Name>
     </ProjectReference>
     <ProjectReference Include="..\Colsp.Model\Colsp.Model.csproj">
       <Project>{226b2ad2-649f-4d2d-b17e-e2afb474a274}</Project>

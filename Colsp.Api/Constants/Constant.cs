@@ -17,6 +17,8 @@ namespace Colsp.Api.Constants
 
         public enum ImageRatio  { IMAGE_RATIO_16_9 };
 
+        public static readonly int HISTORY_REVISION = 10;
+        public static readonly int TOP_SELLING = 10;
 
         public static readonly decimal IMAGE_RATIO_16_9 = 16 / 9;
 
@@ -24,8 +26,7 @@ namespace Colsp.Api.Constants
 
         public static readonly string AUTHEN_SCHEMA = "Bearer";
 
-        public static readonly int HISTORY_REVISION = 10;
-        public static readonly int TOP_SELLING = 10;
+
 
 
         public static readonly int SHIPPING_DROP_SHIP_3PL = 1;
@@ -145,6 +146,23 @@ namespace Colsp.Api.Constants
 
         public static readonly double CACHE_TIMEOUT = 60;
 
-        public static readonly int DEFAULT_THEME_ID = 1;
+        public static string STATUS_PROMOTION_INACTIVE = "IA";
+        public static string STATUS_PROMOTION_ACTIVE = "AT";
+        #region CMS
+        public static readonly int CMS_SHOP_GOBAL = 0;
+
+        public static readonly string CMS_STATUS_DRAFT              = "DF";
+        public static readonly string CMS_STATUS_WAIT_FOR_APPROVAL  = "WA";
+        public static readonly string CMS_STATUS_JUNK               = "JU";
+        public static readonly string CMS_STATUS_APPROVE            = "AP";
+        public static readonly string CMS_STATUS_NOT_APPROVE        = "RJ";
+        public static readonly string CMS_STATUS_REMOVE             = "RJ";
+
+        public static readonly string CMS_MASTER_TYPE_STATIC        = "ST";
+        public static readonly string CMS_MASTER_TYPE_COLLECTION    = "CL";
+
+        public static readonly int CMS_TYPE_STATIC_PAGE = 1;
+        public static readonly int CMS_TYPE_COLLECTION_PAGE = 2;
+        #endregion
     }
 }
