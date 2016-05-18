@@ -10,19 +10,25 @@ namespace Colsp.Api
     {
         public static void Register(HttpConfiguration config)
         {
-			// Json self reference handling
-			config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling
+            #region Json Formater
+            // Json self reference handling
+            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling
 				= Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 			config.Formatters.JsonFormatter.SerializerSettings.PreserveReferencesHandling
 				= Newtonsoft.Json.PreserveReferencesHandling.None;
-			//config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling
-			//	= Newtonsoft.Json.NullValueHandling.Ignore;
+            //config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling
+            //	= Newtonsoft.Json.NullValueHandling.Ignore;
+            #endregion
 
-			// Enable CORs
-			config.EnableCors(new EnableCorsAttribute("*","*","*"));
-
-			// Setup authorization and authentication filters
-			config.Filters.Add(new BasicAuthenticateAttribute());
+            // Enable CORs
+            //var tmp = new EnableCorsAttribute(;
+            config.EnableCors(new EnableCorsAttribute("*","*","*"));
+            //config.EnableCors();
+            //config.EnableCors();
+            //config.cor
+            #region Filter
+            // Setup authorization and authentication filters
+            config.Filters.Add(new BasicAuthenticateAttribute());
 			config.Filters.Add(new AuthorizeAttribute());
 
 			// Create web api routes
@@ -36,8 +42,8 @@ namespace Colsp.Api
 
             //enable static image
             config.Routes.IgnoreRoute("ImageRoute", "Images/{file}");
-
-
+            #endregion
+            #region Create Folder
             //crearte folder for image
             // ~/Images
             string imgageRootPath = AppSettingKey.IMAGE_ROOT_PATH;
@@ -54,6 +60,13 @@ namespace Colsp.Api
             if (!Directory.Exists(rootProductPath))
             {
                 Directory.CreateDirectory(rootProductPath);
+            }
+            foreach (var file in Directory.GetFiles(Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER)))
+            {
+                if (Path.GetFileName(file).StartsWith("BodyPart", true, null))
+                {
+                    File.Delete(file);
+                }
             }
 
             //Brand folder
@@ -103,6 +116,14 @@ namespace Colsp.Api
             {
                 Directory.CreateDirectory(rootExcelPath);
             }
+
+            string rootThemePath = Path.Combine(imgageRootPath, "Theme");
+            if (!Directory.Exists(rootThemePath))
+            {
+                Directory.CreateDirectory(rootThemePath);
+            }
+            #endregion
+
         }
     }
 }

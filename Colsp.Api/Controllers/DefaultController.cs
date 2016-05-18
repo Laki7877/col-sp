@@ -22,8 +22,13 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Default")]
         [HttpGet]
+        [OverrideAuthentication, OverrideAuthorization]
         public HttpResponseMessage GetTest()
         {
+
+
+
+
             return Request.CreateErrorResponse(HttpStatusCode.NotFound, "false");
         }
 

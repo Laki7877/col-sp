@@ -7,7 +7,7 @@ namespace Colsp.Model.Requests
         public int ShopId { get; set; }
         public string ShopNameEn { get; set; }
         public string ShopNameTh { get; set; }
-        public string UrlKeyEn { get; set; }
+        public string UrlKey { get; set; }
         public string Status { get; set; }
         public UserRequest ShopOwner { get; set; }
         public List<UserRequest> Users { get; set; }
@@ -57,10 +57,11 @@ namespace Colsp.Model.Requests
         public string OverseasVendorIndicator { get; set; }
         public string RemittanceFaxNumber { get; set; }
         public string DomainName { get; set; }
+        public bool CloneGlobalCategory { get; set; }
 
         public ShopRequest()
         {
-            ShopId = 0;
+            ShopId = -1;
             ThemeId = 0;
             VendorId = string.Empty;
             TaxPayerId = string.Empty;
@@ -111,6 +112,7 @@ namespace Colsp.Model.Requests
             ShopType = new ShopTypeRequest();
             ShopImage = new ImageRequest();
             DomainName = string.Empty;
+            CloneGlobalCategory = false;
         }
 
         public override void DefaultOnNull()

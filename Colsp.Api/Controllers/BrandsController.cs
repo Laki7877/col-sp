@@ -51,7 +51,7 @@ namespace Colsp.Api.Controllers
                         fileUpload = Util.SetupImage(Request,
                             fileData,
                             AppSettingKey.IMAGE_ROOT_FOLDER,
-                            AppSettingKey.BRAND_FOLDER, 100, 100, 100, 100, 5, true);
+                            AppSettingKey.BRAND_FOLDER, 500, 500, 1000, 1000, 5, true);
                         break;
                     }
                         
@@ -63,7 +63,7 @@ namespace Colsp.Api.Controllers
                         fileUpload = Util.SetupImage(Request,
                             fileData,
                             AppSettingKey.IMAGE_ROOT_FOLDER,
-                            AppSettingKey.BRAND_FOLDER, Constant.ImageRatio.IMAGE_RATIO_16_9);
+                            AppSettingKey.BRAND_FOLDER, 1920, 1080, 1920, 1080, 5, false);
                         break;
                     }
                 }
@@ -74,7 +74,7 @@ namespace Colsp.Api.Controllers
                         fileUpload = Util.SetupImage(Request,
                             fileData,
                             AppSettingKey.IMAGE_ROOT_FOLDER,
-                            AppSettingKey.BRAND_FOLDER, Constant.ImageRatio.IMAGE_RATIO_16_9);
+                            AppSettingKey.BRAND_FOLDER, 1600, 900, 1600, 900, 5, false);
                         break;
                     }
                 }

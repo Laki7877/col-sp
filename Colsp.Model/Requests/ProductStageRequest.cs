@@ -36,6 +36,7 @@ namespace Colsp.Model.Requests
         public string GroupId { get; set; }
         public string Pid { get; set; }
         public List<ProductHistoryRequest> Revisions { get; set; }
+        public DateTime? NewArrivalDate { get; set; }
 
         public ProductStageRequest()
         {

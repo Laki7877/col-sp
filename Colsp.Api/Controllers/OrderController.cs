@@ -82,6 +82,8 @@ namespace Colsp.Api.Controllers
                 }
                 
                 order.InvoiceNumber = request.InvoiceNumber;
+                order.Carrier = request.Carrier;
+                order.TrackingNumber = request.TrackingNumber;
                 foreach (var product in request.Products)
                 {
                     var current = order.Products.Where(w => w.Pid.Equals(product.Pid)).SingleOrDefault();
@@ -106,14 +108,15 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = User.ShopRequest().ShopId;
-                var order = (from or in OrderMockup.OrderList
-                             where or.ShopId == shopId && or.OrderId.Equals(orderId)
-                             select or).SingleOrDefault();
+                var order = OrderMockup.OrderList.Where(w => w.ShopId == shopId && w.OrderId.Equals(orderId)).SingleOrDefault();
                 if(order == null)
                 {
                     throw new Exception("Cannot find this order");
                 }
-
+                if (Constant.ORDER_PREPARING.Equals(order.Status))
+                {
+                    order.Products.ForEach(f => f.ShipQuantity = f.Quantity);
+                }
                 return Request.CreateResponse(HttpStatusCode.OK, order);
             }
             catch (Exception e)

@@ -14,6 +14,7 @@ namespace Colsp.Model.Requests
         public List<CategoryRequest> GlobalCategories { get; set; }
         public List<CategoryRequest> LocalCategories { get; set; }
         public List<BrandRequest> Brands { get; set; }
+        public List<ShopRequest> Shops { get; set; }
         public List<AttributeSetRequest> AttributeSets { get; set; }
         public decimal PriceFrom { get; set; }
         public decimal PriceTo { get; set; }
@@ -23,7 +24,7 @@ namespace Colsp.Model.Requests
         public int AttributeSetId { get; set; }
         public int AttributeId { get; set; }
         public string Pid { get; set; }
-        public string _missingfilter { get; set; }
+        public string _filter2 { get; set; }
         public int BrandId { get; set; }
         public int ShopId { get; set; }
         public List<string> SearchTag { get; set; }
@@ -55,7 +56,7 @@ namespace Colsp.Model.Requests
             ProductId = 0;
             ProductNameEn = string.Empty;
 
-            _missingfilter = string.Empty;
+            _filter2 = string.Empty;
 
 
             SearchTag = new List<string>();
@@ -63,6 +64,7 @@ namespace Colsp.Model.Requests
             LocalCategories = new List<CategoryRequest>();
             Brands = new List<BrandRequest>();
             AttributeSets = new List<AttributeSetRequest>();
+            Shops = new List<ShopRequest>();
             Tags = new List<string>();
             ProductNames = new List<string>();
             Pids = new List<string>();

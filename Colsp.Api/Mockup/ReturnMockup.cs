@@ -15,7 +15,28 @@ namespace Colsp.Api.Mockup
         private static ReturnRequest R6 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE006", Order = OrderMockup.O6, ShopId = 3, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_WAIT_FOR_APPROVAL, };
         private static ReturnRequest R7 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE007", Order = OrderMockup.O7, ShopId = 3, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_WAIT_FOR_APPROVAL, };
 
+        private static ReturnRequest R1_1 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE001", Order = OrderMockup.O2_1, ShopId = 15, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_APPROVE, ReasonForReturn = "This shirt makes me look ugly. It is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." };
+        private static ReturnRequest R2_1 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE002", Order = OrderMockup.O3_1, ShopId = 15, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_WAIT_FOR_APPROVAL, ReasonForReturn = "Reason For Return 2" };
+        private static ReturnRequest R3_1 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE003", Order = OrderMockup.O4_1, ShopId = 15, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_WAIT_FOR_APPROVAL, };
+        private static ReturnRequest R4_1 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE004", Order = OrderMockup.O5_1, ShopId = 15, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_WAIT_FOR_APPROVAL, };
+        private static ReturnRequest R5_1 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE005", Order = OrderMockup.O6_1, ShopId = 15, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_APPROVE, };
+        private static ReturnRequest R6_1 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE006", Order = OrderMockup.O7_1, ShopId = 15, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_WAIT_FOR_APPROVAL, };
+        //private static ReturnRequest R7_1 = new ReturnRequest() { ReturnDate = DateTime.Now, ReturnId = "RE007", Order = OrderMockup., ShopId = 15, CnNumber = string.Empty, Status = Constant.RETURN_STATUS_WAIT_FOR_APPROVAL, };
 
-        public static List<ReturnRequest> ReturnList = new List<ReturnRequest>() { R1, R2, R3, R4 };
+
+        public static List<ReturnRequest> ReturnList = new List<ReturnRequest>()
+        {
+            R1,
+            R2,
+            R3,
+            R4,
+            R1_1,
+            R2_1,
+            R3_1,
+            R4_1,
+            R5_1,
+            R6_1,
+            //R7_1
+        };
     }
 }

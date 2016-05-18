@@ -5,10 +5,15 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
-        public static int DEFAULT_SHIPPING_ID = 1;
+
+        public static readonly int DEFAULT_ADD_YEAR = 20;
+
+        public static readonly int BULK_APPROVE_LIMIT = 100;
+
+        public static readonly int DEFAULT_SHIPPING_ID = 1;
 
 
-        public static int ADMIN_SHOP_ID = 0;
+        public static readonly int ADMIN_SHOP_ID = 0;
 
         public enum ImageRatio  { IMAGE_RATIO_16_9 };
 
@@ -24,10 +29,10 @@ namespace Colsp.Api.Constants
 
 
 
-        public static int SHIPPING_DROP_SHIP_3PL = 1;
-        public static int SHIPPING_FULFILLMENT = 2;
+        public static readonly int SHIPPING_DROP_SHIP_3PL = 1;
+        public static readonly int SHIPPING_FULFILLMENT = 2;
 
-        public static int DEFAULT_BOOSTWEIGHT = 5000;
+        public static readonly int DEFAULT_BOOSTWEIGHT = 5000;
 
         public static List<char> IGNORE_PID = new List<char>() {
                    //'0',
@@ -42,7 +47,7 @@ namespace Colsp.Api.Constants
                     'O',
                     'S'
         };
-        public static string START_PID = "1111110";
+        public static readonly string START_PID = "1111110";
 
         public static readonly int SHOP_OWNER_GROUP_ID = 2;
         public static readonly Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() { { "Stock", 1 }, { "Pre-Order", 2 } };

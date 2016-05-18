@@ -16,9 +16,11 @@ using System.Security.Claims;
 using Colsp.Api.Security;
 using System.Data.Entity.SqlServer;
 using Cenergy.Dazzle.Admin.Security.Cryptography;
+using System.Web.Http.Cors;
 
 namespace Colsp.Api.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class UsersController : ApiController
     {
         private ColspEntities db = new ColspEntities();
@@ -798,7 +800,9 @@ namespace Colsp.Api.Controllers
 
 
                 Cache.Add(token, principal);
-                return Request.CreateResponse(HttpStatusCode.OK, claimRs);
+                var tmp = Request.CreateResponse(HttpStatusCode.OK, claimRs);
+                tmp.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5000");
+                return tmp;
             }
             catch (Exception e)
             {
@@ -812,19 +816,60 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var user = db.Users.Where(u => u.UserId == userId)
-                            .Select(u => new
+                #region Query
+                var user = db.Users.Where(w => w.UserId == userId).Select(s => new
+                {
+                    s.Email,
+                    s.Password,
+                    s.LoginFailCount,
+                    s.Type,
+                    s.UserId,
+                    s.NameEn,
+                    s.NameTh,
+                    s.PasswordLastChg,
+                    UserShopMaps = s.UserShopMaps.Select(sm => new
+                    {
+                        Shop = new
+                        {
+                            sm.Shop.ShopId,
+                            sm.Shop.ShopNameEn,
+                            sm.Shop.Status,
+                            sm.Shop.ShopGroup,
+                            ShopType = sm.Shop.ShopType == null ? null : new
                             {
-                                u.UserId,
-                                u.NameEn,
-                                u.NameTh,
-                                u.Email,
-                                Shops = u.UserShopMaps.Select(s => s.Shop),
-                                Brands = u.UserBrandMaps,
-                                u.Type,
-                                Permission = u.UserGroupMaps.Select(um => um.UserGroup.UserGroupPermissionMaps.Select(pm => pm.Permission))
-                            })
-                            .FirstOrDefault();
+                                ShopTypePermissionMaps = sm.Shop.ShopType.ShopTypePermissionMaps.Select(st => new
+                                {
+                                    Permission = new
+                                    {
+                                        st.PermissionId,
+                                        st.Permission.Parent,
+                                        st.Permission.OverrideParent,
+                                    }
+                                })
+                            }
+                        }
+                    }),
+                    UserBrandMaps = s.UserBrandMaps.Select(sb => new
+                    {
+                        sb.BrandId
+                    }),
+                    UserGroupMaps = s.UserGroupMaps.Select(sg => new
+                    {
+                        UserGroup = new
+                        {
+                            UserGroupPermissionMaps = sg.UserGroup.UserGroupPermissionMaps.Select(sp => new
+                            {
+                                Permission = new
+                                {
+                                    sp.PermissionId,
+                                    sp.Permission.Parent,
+                                    sp.Permission.OverrideParent,
+                                }
+                            }),
+                        }
+                    }),
+                }).SingleOrDefault();
+                #endregion
 
                 // Check for user
                 if (user == null)
@@ -833,7 +878,8 @@ namespace Colsp.Api.Controllers
                 }
 
                 // Get all permissions
-                var userPermissions = user.Permission;
+                var userPermissions = user.UserGroupMaps
+                    .Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission));
 
                 // Assign claims
                 var claims = new List<Claim>();
@@ -841,22 +887,45 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (var p in userGroup)
                     {
-                        if (!claims.Exists(m => m.Value.Equals(p.PermissionName)))
+                        if (!claims.Exists(m => m.Value.Equals(p.PermissionId.ToString())))
                         {
-                            Claim claim = new Claim("Permission", p.PermissionName, p.PermissionGroup, null);
+                            Claim claim = new Claim("Permission", p.PermissionId.ToString(), p.Parent.ToString(), p.OverrideParent.ToString());
                             claims.Add(claim);
                         }
                     }
-
                 }
-                var identity = new ClaimsIdentity(claims, "Basic");
-                var principal = new UsersPrincipal(identity,
-                    user.Shops == null ? null : user.Shops.Select(s => new ShopRequest
+
+                var shop = user.UserShopMaps.FirstOrDefault();
+                if (shop != null)
+                {
+
+                    var shopPermission = shop.Shop.ShopType.ShopTypePermissionMaps.Select(sp => sp.Permission);
+
+                    foreach (var shopGroup in shopPermission)
                     {
-                        ShopId = s.ShopId,
-                        ShopNameEn = s.ShopNameEn
+
+                        if (!claims.Exists(m => m.Value.Equals(shopGroup.PermissionId.ToString())))
+                        {
+                            Claim claim = new Claim("Permission", shopGroup.PermissionId.ToString(), shopGroup.Parent.ToString(), shopGroup.OverrideParent.ToString());
+                            claims.Add(claim);
+                        }
+                    }
+                }
+
+                var identity = new ClaimsIdentity(claims, Constant.AUTHEN_SCHEMA);
+                var token = salt.HashPassword(string.Concat(user.UserId + DateTime.Now.ToString("ddMMyyHHmmss")));
+                var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(token);
+                token = Convert.ToBase64String(plainTextBytes);
+
+                var principal = new UsersPrincipal(identity,
+                    user.UserShopMaps == null ? null : user.UserShopMaps.Select(s => new ShopRequest
+                    {
+                        ShopId = s.Shop.ShopId,
+                        ShopNameEn = s.Shop.ShopNameEn,
+                        Status = s.Shop.Status,
+                        ShopGroup = s.Shop.ShopGroup,
                     }).ToList(),
-                    user.Brands == null ? null : user.Brands.Select(s => new BrandRequest
+                    user.UserBrandMaps == null ? null : user.UserBrandMaps.Select(s => new BrandRequest
                     {
                         BrandId = s.BrandId,
                     }).ToList(),
@@ -865,7 +934,13 @@ namespace Colsp.Api.Controllers
                 ClaimRequest claimRq = new ClaimRequest();
 
                 var claimsIdentity = identity;
-                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
+                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission"))
+                    .Select(s => new
+                    {
+                        PermissionId = int.Parse(s.Value),
+                        Parent = int.Parse(s.ValueType),
+                        OverrideParent = int.Parse(s.Issuer),
+                    }).ToList();
                 claimRq.Shop = principal.ShopRequest();
                 claimRq.User = User.UserRequest();
 
@@ -939,7 +1014,13 @@ namespace Colsp.Api.Controllers
                 ClaimRequest claimRq = new ClaimRequest();
 
                 var claimsIdentity = identity;
-                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission")).Select(s => new { Permission = s.Value, PermissionGroup = s.ValueType }).ToList();
+                claimRq.Permission = claims.Where(w => w.Type.Equals("Permission"))
+                    .Select(s => new
+                    {
+                        PermissionId = int.Parse(s.Value),
+                        Parent = int.Parse(s.ValueType),
+                        OverrideParent = int.Parse(s.Issuer),
+                    }).ToList();
                 claimRq.Shop = principal.ShopRequest();
                 claimRq.User = new { NameEn = User.UserRequest().NameEn, Email = User.UserRequest().Email, IsAdmin = Constant.USER_TYPE_ADMIN.Equals(User.UserRequest().Type) };
 
@@ -1026,7 +1107,7 @@ namespace Colsp.Api.Controllers
                 var productTotalCount = db.ProductStages.Where(w => w.ShopId == shopId).Count();
                 var shopBanner = db.ShopImages.Where(w => w.ShopId == shopId).Count();
                 var shopDescription = db.Shops.Where(w => w.ShopId == shopId).Select(s => s.ShopDescriptionEn).SingleOrDefault();
-                var productApprove = db.ProductStages.Where(w => w.ShopId == shopId && Constant.PRODUCT_STATUS_APPROVE.Equals(w.Status)).Count();
+                var productApprove = db.ProductStages.Where(w => w.ShopId == shopId && w.ProductStageGroup.OnlineFlag==true).Count();
                 bool IsProduct = productTotalCount > 0 ? true : false;
                 bool isBanner = shopBanner > 0 ? true : false;
                 bool IsProductApprove = productApprove > 0 ? true : false;
