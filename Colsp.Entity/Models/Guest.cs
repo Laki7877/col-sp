@@ -22,7 +22,7 @@ namespace Colsp.Entity.Models
         public string TelephoneNo { get; set; }
         public byte Gender { get; set; }
         public bool ReceiveSms { get; set; }
-        public string T1CardNo { get; set; }
+        public string T1CNo { get; set; }
         public string CustTaxID { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }

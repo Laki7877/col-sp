@@ -206,9 +206,6 @@
     <Compile Include="Models\CMSImage.cs">
       <DependentUpon>ColspEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\CMSImage.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\CMSMaster.cs">
       <DependentUpon>ColspEntities.tt</DependentUpon>
     </Compile>
@@ -531,7 +528,7 @@
       <DependentUpon>ColspEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopCommission.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
+      <DependentUpon>ColspEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopGroup.cs">
       <DependentUpon>ColspEntities.tt</DependentUpon>
@@ -621,12 +618,6 @@
       <DependentUpon>ColspEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Theme.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ThemeComponent.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ThemeComponentMap.cs">
       <DependentUpon>ColspEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
