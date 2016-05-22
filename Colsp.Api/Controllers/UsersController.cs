@@ -646,6 +646,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 string email = request.Email;
+                var currentDt = DateTime.Now;
                 #region Query
                 var user = db.Users.Where(w => w.Email.Equals(email)).Select(s => new
                 {
@@ -675,7 +676,8 @@ namespace Colsp.Api.Controllers
                                         st.Permission.Parent,
                                         st.Permission.OverrideParent,
                                     }
-                                })
+                                }),
+                                sm.Shop.ShopType.ShopTypeId,
                             }
                         }
                     }),
@@ -718,6 +720,7 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Please contact system administrator.");
                 }
                 #endregion
+                #region Permission
                 // Get all permissions
                 var userPermissions = user.UserGroupMaps
                     .Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission));
@@ -734,7 +737,6 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-
                 var shop = user.UserShopMaps.FirstOrDefault();
                 if (shop != null)
                 {
@@ -751,13 +753,12 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-
-
+                #endregion
+                #region Claims
                 var identity = new ClaimsIdentity(claims, Constant.AUTHEN_SCHEMA);
-                var token = salt.HashPassword(string.Concat(user.UserId + DateTime.Now.ToString("ddMMyyHHmmss")));
+                var token = salt.HashPassword(string.Concat(user.UserId , currentDt.ToString("ddMMyyHHmmss")));
                 var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(token);
                 token = Convert.ToBase64String(plainTextBytes);
-
                 var principal = new UsersPrincipal(identity,
                     user.UserShopMaps == null ? null : user.UserShopMaps.Select(s => new ShopRequest
                     {
@@ -765,6 +766,10 @@ namespace Colsp.Api.Controllers
                         ShopNameEn = s.Shop.ShopNameEn,
                         Status = s.Shop.Status,
                         ShopGroup = s.Shop.ShopGroup,
+                        ShopType = s.Shop.ShopType == null ? null : new ShopTypeRequest()
+                        {
+                             ShopTypeId = s.Shop.ShopType.ShopTypeId
+                        }
                     }).ToList(),
                     user.UserBrandMaps == null ? null : user.UserBrandMaps.Select(s => new BrandRequest
                     {
@@ -781,9 +786,8 @@ namespace Colsp.Api.Controllers
                         IsPasswordChange = string.IsNullOrEmpty(user.PasswordLastChg) ? false : true,
                         IsAdmin = Constant.USER_TYPE_ADMIN.Equals(user.Type)
                     }
-                    , DateTime.Now);
-
-                db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LastLoginDt = '", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "', LoginFailCount = 0 ", " WHERE UserId = ", user.UserId));
+                    , currentDt);
+                db.Database.ExecuteSqlCommand(string.Concat("UPDATE [User] SET LastLoginDt = '", currentDt.ToString("yyyy-MM-dd HH:mm:ss"), "', LoginFailCount = 0 ", " WHERE UserId = ", user.UserId));
                 User = principal;
                 var claimsIdentity = User.Identity as ClaimsIdentity;
                 ClaimRequest claimRs = new ClaimRequest()
@@ -797,12 +801,9 @@ namespace Colsp.Api.Controllers
                         OverrideParent = int.Parse(s.Issuer)
                     }).ToList()
                 };
-
-
                 Cache.Add(token, principal);
-                var tmp = Request.CreateResponse(HttpStatusCode.OK, claimRs);
-                tmp.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5000");
-                return tmp;
+                #endregion
+                return Request.CreateResponse(HttpStatusCode.OK, claimRs);
             }
             catch (Exception e)
             {
@@ -845,7 +846,8 @@ namespace Colsp.Api.Controllers
                                         st.Permission.Parent,
                                         st.Permission.OverrideParent,
                                     }
-                                })
+                                }),
+                                sm.Shop.ShopType.ShopTypeId
                             }
                         }
                     }),
@@ -870,16 +872,17 @@ namespace Colsp.Api.Controllers
                     }),
                 }).SingleOrDefault();
                 #endregion
+                #region Validation
                 // Check for user
                 if (user == null)
                 {
                     throw new Exception("Cannot find user with id " + userId);
                 }
-
+                #endregion
+                #region Permission
                 // Get all permissions
                 var userPermissions = user.UserGroupMaps
                     .Select(s => s.UserGroup.UserGroupPermissionMaps.Select(sp => sp.Permission));
-
                 // Assign claims
                 var claims = new List<Claim>();
                 foreach (var userGroup in userPermissions)
@@ -910,12 +913,12 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-
+                #endregion
+                #region Claims
                 var identity = new ClaimsIdentity(claims, Constant.AUTHEN_SCHEMA);
                 var token = salt.HashPassword(string.Concat(user.UserId + DateTime.Now.ToString("ddMMyyHHmmss")));
                 var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(token);
                 token = Convert.ToBase64String(plainTextBytes);
-
                 var principal = new UsersPrincipal(identity,
                     user.UserShopMaps == null ? null : user.UserShopMaps.Select(s => new ShopRequest
                     {
@@ -923,15 +926,17 @@ namespace Colsp.Api.Controllers
                         ShopNameEn = s.Shop.ShopNameEn,
                         Status = s.Shop.Status,
                         ShopGroup = s.Shop.ShopGroup,
+                        ShopType = s.Shop.ShopType == null ? null : new ShopTypeRequest()
+                        {
+                            ShopTypeId = s.Shop.ShopType.ShopTypeId
+                        }
                     }).ToList(),
                     user.UserBrandMaps == null ? null : user.UserBrandMaps.Select(s => new BrandRequest
                     {
                         BrandId = s.BrandId,
                     }).ToList(),
                     User.UserRequest(), DateTime.Now);
-
                 ClaimRequest claimRq = new ClaimRequest();
-
                 var claimsIdentity = identity;
                 claimRq.Permission = claims.Where(w => w.Type.Equals("Permission"))
                     .Select(s => new
@@ -942,9 +947,9 @@ namespace Colsp.Api.Controllers
                     }).ToList();
                 claimRq.Shop = principal.ShopRequest();
                 claimRq.User = User.UserRequest();
-
                 Cache.Delete(Request.Headers.Authorization.Parameter);
                 Cache.Add(Request.Headers.Authorization.Parameter, principal);
+                #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, claimRq);
             }
             catch (Exception e)
@@ -989,13 +994,12 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (var p in userGroup)
                     {
-                        if (!claims.Exists(m => m.Value.Equals(p.PermissionName)))
+                        if (!claims.Exists(m => m.Value.Equals(p.PermissionId.ToString())))
                         {
-                            Claim claim = new Claim("Permission", p.PermissionName, p.PermissionGroup, null);
+                            Claim claim = new Claim("Permission", p.PermissionId.ToString(), p.Parent.ToString(), p.OverrideParent.ToString());
                             claims.Add(claim);
                         }
                     }
-
                 }
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var principal = new UsersPrincipal(identity,

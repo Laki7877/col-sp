@@ -28,7 +28,7 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> ForgotPasswordOn { get; set; }
         public string VerifyKey { get; set; }
         public bool ReceiveSms { get; set; }
-        public string T1CardNo { get; set; }
+        public string T1CNo { get; set; }
         public bool IsActivate { get; set; }
         public int Role { get; set; }
         public Nullable<System.DateTime> LastLoginDate { get; set; }

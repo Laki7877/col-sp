@@ -14,9 +14,18 @@ namespace Colsp.Entity.Models
     
     public partial class PostCode
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PostCode()
+        {
+            this.Shops = new HashSet<Shop>();
+        }
+    
         public int PostCodeId { get; set; }
         public int DistrictId { get; set; }
         public string PostCode1 { get; set; }
         public string Remark { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shop> Shops { get; set; }
     }
 }

@@ -5,6 +5,7 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+        public static readonly int DEFAULT_THE_ONE_CARD = 1;
 
         public static readonly int DEFAULT_ADD_YEAR = 20;
 

@@ -669,7 +669,7 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             #region Brand Feature Product
-            var brandProList = brand.BrandFeatureProducts.ToList();
+            var brandProList = brand.BrandFeatureProducts.Distinct().ToList();
             if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
             {
                 int brandIdTmp = brand.BrandId;

@@ -12,15 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ThemeComponentMap
+    public partial class ShopTypeThemeMap
     {
+        public int ShopTypeId { get; set; }
         public int ThemeId { get; set; }
-        public int ComponentId { get; set; }
-        public int Count { get; set; }
-        public Nullable<int> Width { get; set; }
-        public Nullable<int> Height { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
+        public virtual ShopType ShopType { get; set; }
         public virtual Theme Theme { get; set; }
-        public virtual ThemeComponent ThemeComponent { get; set; }
     }
 }
