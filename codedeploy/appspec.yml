@@ -1,0 +1,10 @@
+version: 0.0
+os: windows
+files:
+  - source: .\src
+    destination: c:\inetpub\wwwroot
+hooks:
+  ApplicationStop:
+    - location: scripts\app_stop.bat
+  ApplicationStart:
+    - location: scripts\app_start.bat
