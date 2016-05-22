@@ -5,6 +5,8 @@ files:
     destination: c:\inetpub\wwwroot
 hooks:
   ApplicationStop:
+    - location: scripts\dereg_elb.bat
     - location: scripts\app_stop.bat
   ApplicationStart:
     - location: scripts\app_start.bat
+    - location: scripts\reg_elb.bat
