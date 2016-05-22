@@ -3,6 +3,10 @@ os: windows
 files:
   - source: .\src
     destination: c:\inetpub\wwwroot
+  - source: .\scripts\bash
+    destination: c:\temp\sp-win\bash
+  - source: .\scripts\ps
+    destination: c:\temp\sp-win\ps
 hooks:
   ApplicationStop:
     - location: scripts\dereg_elb.bat
