@@ -25,6 +25,7 @@ namespace Colsp.Entity.Models
             this.ProductHistoryLocalCatMaps = new HashSet<ProductHistoryLocalCatMap>();
             this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
             this.ProductStageLocalCatMaps = new HashSet<ProductStageLocalCatMap>();
+            this.CouponLocalCatPidMaps = new HashSet<CouponLocalCatPidMap>();
         }
     
         public int CategoryId { get; set; }
@@ -73,5 +74,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageLocalCatMap> ProductStageLocalCatMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
     }
 }

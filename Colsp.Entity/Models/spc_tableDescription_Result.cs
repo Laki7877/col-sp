@@ -10,17 +10,16 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ThemeComponentMap
+    public partial class spc_tableDescription_Result
     {
-        public int ThemeId { get; set; }
-        public int ComponentId { get; set; }
-        public int Count { get; set; }
-        public Nullable<int> Width { get; set; }
-        public Nullable<int> Height { get; set; }
-    
-        public virtual Theme Theme { get; set; }
-        public virtual ThemeComponent ThemeComponent { get; set; }
+        public string TABLE_NAME { get; set; }
+        public string COLUMN_NAME { get; set; }
+        public string DATA_TYPE { get; set; }
+        public short CHARACTER_MAXIMUM_LENGTH { get; set; }
+        public byte precision { get; set; }
+        public byte scale { get; set; }
+        public string COLUMN_DEFAULT { get; set; }
+        public Nullable<bool> IS_NULLABLE { get; set; }
     }
 }

@@ -1070,7 +1070,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
             }
-            shop.ZipCode = Validation.ValidateString(request.ZipCode, "Zip Code", true, 10, false, string.Empty);
+            //shop.ZipCode = Validation.ValidateString(request.ZipCode, "Zip Code", true, 10, false, string.Empty);
             shop.PhoneNumber = Validation.ValidateString(request.PhoneNumber, "Phone Number", true, 15, false, string.Empty);
             shop.FaxNumber = Validation.ValidateString(request.FaxNumber, "Fax Number", true, 15, false, string.Empty);
             shop.Telex = Validation.ValidateString(request.Telex, "Telex", true, 15, false, string.Empty);

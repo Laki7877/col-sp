@@ -12,23 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ThemeComponent
+    public partial class ShopTypeThemeMap
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ThemeComponent()
-        {
-            this.ThemeComponentMaps = new HashSet<ThemeComponentMap>();
-        }
-    
-        public int ComponentId { get; set; }
-        public string ComponentName { get; set; }
-        public string Status { get; set; }
+        public int ShopTypeId { get; set; }
+        public int ThemeId { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ThemeComponentMap> ThemeComponentMaps { get; set; }
+        public virtual ShopType ShopType { get; set; }
+        public virtual Theme Theme { get; set; }
     }
 }

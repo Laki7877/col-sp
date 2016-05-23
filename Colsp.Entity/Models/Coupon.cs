@@ -24,6 +24,7 @@ namespace Colsp.Entity.Models
             this.CouponOrders = new HashSet<CouponOrder>();
             this.CouponPidMaps = new HashSet<CouponPidMap>();
             this.CouponShopMaps = new HashSet<CouponShopMap>();
+            this.CouponLocalCatPidMaps = new HashSet<CouponLocalCatPidMap>();
         }
     
         public int CouponId { get; set; }
@@ -62,5 +63,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponShopMap> CouponShopMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
     }
 }
