@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Colsp.Model.Requests;
 using Colsp.Api.Helpers;
+using Colsp.Api.Extensions;
 
 namespace Colsp.Api.Controllers
 {
@@ -23,14 +24,25 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var themes = db.Themes
-                    .Where(w => Constant.STATUS_ACTIVE.Equals(w.Status))
-                    .Select(s=>new
+                var tmpThemes = db.Themes.Where(w => Constant.STATUS_ACTIVE.Equals(w.Status));
+                #region Validation
+                var shop = User.ShopRequest();
+                if (shop != null)
+                {
+                    if(shop.ShopType == null)
                     {
-                        s.ThemeId,
-                        s.ThemeName,
-                        s.ThemeImage
-                    });
+                        throw new Exception("Invalid shop type");
+                    }
+                    var shopTypeId = shop.ShopType.ShopTypeId;
+                    tmpThemes = tmpThemes.Where(w => w.ShopTypeThemeMaps.Any(a => a.ShopTypeId == shopTypeId));
+                }
+                #endregion
+                var themes = tmpThemes.Select(s=>new
+                {
+                    s.ThemeId,
+                    s.ThemeName,
+                    s.ThemeImage
+                });
                 return Request.CreateResponse(HttpStatusCode.OK,themes);
             }
             catch (Exception e)
@@ -41,7 +53,6 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Theme/Images")]
         [HttpPost]
-        [OverrideAuthentication, OverrideAuthorization]
         public async Task<HttpResponseMessage> UploadFile()
         {
             try
@@ -79,37 +90,6 @@ namespace Colsp.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
             }
         }
-
-
-
-        //[Route("api/Themes/{ThemeId}")]
-        //[HttpGet]
-        //public HttpResponseMessage GetTheme([FromUri] int themeId)
-        //{
-        //    try
-        //    {
-        //        var themes = db.Themes
-        //            .Where(w => w.ThemeId == themeId)
-        //            .Select(s => new
-        //            {
-        //                s.ThemeId,
-        //                s.ThemeName,
-        //                s.ThemeImage,
-        //                //ThemeComponentMaps = s.ThemeComponentMaps.Select(sc => new
-        //                //{
-        //                //    sc.ThemeComponent.ComponentName,
-        //                //    sc.Count,
-        //                //    sc.Width,
-        //                //    sc.Height,
-        //                //})
-        //            }).SingleOrDefault();
-        //        return Request.CreateResponse(HttpStatusCode.OK, themes);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
-        //    }
-        //}
 
         protected override void Dispose(bool disposing)
         {

@@ -66,7 +66,18 @@ namespace Colsp.Api.Controllers
                     {
                         s.ShopTypeId,
                         s.ShopTypeNameEn,
-                        Permission = s.ShopTypePermissionMaps.Select(p => new { p.Permission.PermissionId, p.Permission.PermissionName, p.Permission.PermissionGroup })
+                        Permission = s.ShopTypePermissionMaps.Select(p => new
+                        {
+                            p.Permission.PermissionId,
+                            p.Permission.PermissionName,
+                            p.Permission.PermissionGroup
+                        }),
+                        Themes = s.ShopTypeThemeMaps.Select(t => new
+                        {
+                            t.Theme.ThemeId,
+                            t.Theme.ThemeName,
+                            t.Theme.ThemeImage,
+                        }),
                     }).ToList();
                 if(shopTypeList == null || shopTypeList.Count == 0)
                 {
@@ -87,13 +98,15 @@ namespace Colsp.Api.Controllers
             ShopType shopType = null;
             try
             {
+                var email = User.UserRequest().Email;
+                var currentDt = DateTime.Now;
                 shopType = new ShopType();
                 shopType.ShopTypeNameEn = request.ShopTypeNameEn;
                 shopType.Status = Constant.STATUS_ACTIVE;
-                shopType.CreateBy = User.UserRequest().Email;
-                shopType.CreateOn = DateTime.Now;
-                shopType.UpdateBy = User.UserRequest().Email;
-                shopType.UpdateOn = DateTime.Now;
+                shopType.CreateBy = email;
+                shopType.CreateOn = currentDt;
+                shopType.UpdateBy = email;
+                shopType.UpdateOn = currentDt;
                 
                 if (request.Permission != null)
                 {
@@ -106,13 +119,30 @@ namespace Colsp.Api.Controllers
                         shopType.ShopTypePermissionMaps.Add(new ShopTypePermissionMap()
                         {
                             PermissionId = perm.PermissionId.Value,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         });
                     }
-                    
+                }
+                if(request.Themes != null)
+                {
+                    foreach(var theme in request.Themes)
+                    {
+                        if(theme.ThemeId != 0)
+                        {
+                            throw new Exception("Theme Id is null");
+                        }
+                        shopType.ShopTypeThemeMaps.Add(new ShopTypeThemeMap()
+                        {
+                            ThemeId = theme.ThemeId,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
+                        });
+                    }
                 }
                 db.ShopTypes.Add(shopType);
                 Util.DeadlockRetry(db.SaveChanges, "ShopType");
@@ -139,25 +169,26 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("User group not found");
                 }
+                var email = User.UserRequest().Email;
+                var currentDt = DateTime.Now;
                 shopType.ShopTypeNameEn = request.ShopTypeNameEn;
-                var mapList = db.ShopTypePermissionMaps.Where(w => w.ShopTypeId == shopType.ShopTypeId).ToList();
+                #region Permission
+                var mapPermissionList = db.ShopTypePermissionMaps.Where(w => w.ShopTypeId == shopType.ShopTypeId).ToList();
                 if (request.Permission != null && request.Permission.Count > 0)
                 {
                     bool addNew = false;
                     foreach (PermissionRequest permission in request.Permission)
                     {
-                        if (mapList == null || mapList.Count == 0)
+                        if (mapPermissionList == null || mapPermissionList.Count == 0)
                         {
                             addNew = true;
                         }
                         if (!addNew)
                         {
-                            var current = mapList.Where(w => w.PermissionId == permission.PermissionId).SingleOrDefault();
+                            var current = mapPermissionList.Where(w => w.PermissionId == permission.PermissionId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdateBy = User.UserRequest().Email;
-                                current.UpdateOn = DateTime.Now;
-                                mapList.Remove(current);
+                                mapPermissionList.Remove(current);
                             }
                             else
                             {
@@ -166,21 +197,63 @@ namespace Colsp.Api.Controllers
                         }
                         if (addNew)
                         {
-                            ShopTypePermissionMap map = new ShopTypePermissionMap();
-                            map.ShopTypeId = shopType.ShopTypeId;
-                            map.PermissionId = permission.PermissionId.Value;
-                            map.CreateBy = User.UserRequest().Email;
-                            map.CreateOn = DateTime.Now;
-                            map.UpdateBy = User.UserRequest().Email;
-                            map.UpdateOn = DateTime.Now;
-                            db.ShopTypePermissionMaps.Add(map);
+                            shopType.ShopTypePermissionMaps.Add(new ShopTypePermissionMap()
+                            {
+                                PermissionId = permission.PermissionId.Value,
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt,
+                            });
                         }
                     }
                 }
-                if (mapList != null && mapList.Count > 0)
+                if (mapPermissionList != null && mapPermissionList.Count > 0)
                 {
-                    db.ShopTypePermissionMaps.RemoveRange(mapList);
+                    db.ShopTypePermissionMaps.RemoveRange(mapPermissionList);
                 }
+                #endregion
+                #region Theme
+                var mapThemeList = db.ShopTypeThemeMaps.Where(w => w.ShopTypeId == shopType.ShopTypeId).ToList();
+                if (request.Themes != null && request.Themes.Count > 0)
+                {
+                    bool addNew = false;
+                    foreach (var theme in request.Themes)
+                    {
+                        if (mapThemeList == null || mapThemeList.Count == 0)
+                        {
+                            addNew = true;
+                        }
+                        if (!addNew)
+                        {
+                            var current = mapThemeList.Where(w => w.ThemeId == theme.ThemeId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                mapThemeList.Remove(current);
+                            }
+                            else
+                            {
+                                addNew = true;
+                            }
+                        }
+                        if (addNew)
+                        {
+                            shopType.ShopTypeThemeMaps.Add(new ShopTypeThemeMap()
+                            {
+                                ThemeId = theme.ThemeId,
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt,
+                            });
+                        }
+                    }
+                }
+                if (mapThemeList != null && mapThemeList.Count > 0)
+                {
+                    db.ShopTypeThemeMaps.RemoveRange(mapThemeList);
+                }
+                #endregion
                 Util.DeadlockRetry(db.SaveChanges, "ShopType");
                 return GetShopType(shopType.ShopTypeId);
             }

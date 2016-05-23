@@ -287,7 +287,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 #region Local Category Feature Product
-                var pidList = category.LocalCatFeatureProducts.ToList();
+                var pidList = category.LocalCatFeatureProducts.Distinct().ToList();
                 if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
                 {
                     var proStageList = db.ProductStages

@@ -10,6 +10,7 @@ namespace Colsp.Model.Requests
         public List<VariantRequest> Variants { get; set; }
         public string Status { get; set; }
         public int ShopId { get; set; }
+        public string ShopName { get; set; }
         public bool Visibility { get; set; }
         public List<CategoryRequest> GlobalCategories { get; set; }
         public List<CategoryRequest> LocalCategories { get; set; }
@@ -44,6 +45,7 @@ namespace Colsp.Model.Requests
             Variants = new List<VariantRequest>();
             Status = string.Empty;
             ShopId = 0;
+            ShopName = string.Empty;
             Visibility = false;
             MainGlobalCategory = new CategoryRequest();
             GlobalCategories = new List<CategoryRequest>();

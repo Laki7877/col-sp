@@ -176,7 +176,7 @@ namespace Colsp.Api.Controllers
             Coupon coupon = null;
             try
             {
-                if(User.HasPermission("Edit Promotion"))
+                if(User.ShopRequest() != null)
                 {
                     int shopId = User.ShopRequest().ShopId;
                     coupon = db.Coupons.Where(w => w.CouponId == couponId && w.ShopId == shopId)
@@ -188,7 +188,7 @@ namespace Colsp.Api.Controllers
                         .Include(i=>i.CouponShopMaps)
                         .Include(i=>i.CouponOrders).SingleOrDefault();
                 }
-                else if(User.HasPermission("Manage Global Coupons"))
+                else
                 {
                     coupon = db.Coupons.Where(w => w.CouponId == couponId)
                         .Include(i => i.CouponBrandMaps)
@@ -198,10 +198,6 @@ namespace Colsp.Api.Controllers
                         .Include(i => i.CouponPidMaps)
                         .Include(i => i.CouponShopMaps)
                         .Include(i => i.CouponOrders).SingleOrDefault();
-                }
-                else
-                {
-                    throw new Exception("You don't have a right permission");
                 }
                 if (coupon == null)
                 {
@@ -439,6 +435,7 @@ namespace Colsp.Api.Controllers
                                     {
                                         Filter = Constant.COUPON_FILTER_INCLUDE,
                                         CouponId = coupon.CouponId,
+                                        CategoryId = c.CategoryId,
                                         CreateBy = email,
                                         CreateOn = currentDt,
                                         UpdateBy = email,

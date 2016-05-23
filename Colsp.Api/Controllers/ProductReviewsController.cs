@@ -31,6 +31,7 @@ namespace Colsp.Api.Controllers
                               from stage in mastJoin.DefaultIfEmpty()
                               join brand in db.Brands on stage.BrandId equals brand.BrandId into brandJoin
                               from brand in brandJoin.DefaultIfEmpty()
+                              where !rev.Shop.Status.Equals(Constant.STATUS_REMOVE)
                               select new
                               {
                                   //ProductId = stage.ProductId,
@@ -157,6 +158,8 @@ namespace Colsp.Api.Controllers
                 review.ProductValidity = request.ProductValidity;
                 review.DeliverySpeed = request.DeliverySpeed;
                 review.Packaging = request.Packaging;
+                review.UpdateBy = User.UserRequest().Email;
+                review.UpdateOn = DateTime.Now;
                 Util.DeadlockRetry(db.SaveChanges, "ProductReview");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

@@ -232,7 +232,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 #region Global Category Feature Product
-                var pidList = category.GlobalCatFeatureProducts.ToList();
+                var pidList = category.GlobalCatFeatureProducts.Distinct().ToList();
                 if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
                 {
                     var proStageList = db.ProductStageGroups

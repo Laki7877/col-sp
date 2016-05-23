@@ -24,41 +24,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var tmpProduct = db.ProductHistoryGroups.Where(w => w.HistoryId == historyId)
-                    .Include(i => i.ProductHistories.Select(s => s.ProductHistoryAttributes.Select(sv=>sv.Attribute)))
-                    .Include(i => i.ProductHistories.Select(s => s.ProductHistoryImages))
-                    .Include(i => i.ProductHistories.Select(s => s.ProductHistoryVideos))
-                    .Include(i => i.ProductHistoryGlobalCatMaps)
-                    .Include(i => i.ProductHistoryLocalCatMaps)
-                    .Include(i => i.ProductHistoryTags);
-
-                ProductHistoryGroup product = null;
-                if (User.ShopRequest() != null)
-                {
-                    var shopId = User.ShopRequest().ShopId;
-                    product = tmpProduct.Where(w => w.ShopId == shopId).SingleOrDefault();
-                }
-                else
-                {
-                    product = tmpProduct.SingleOrDefault();
-                }
-                if (product == null)
-                {
-                    throw new Exception("Cannot find product " + historyId);
-                }
-
-                var historyList = db.ProductHistoryGroups
-                        .Where(w => w.ProductId == product.ProductId)
-                        .OrderByDescending(o => o.HistoryDt)
-                        .Select(s => new ProductHistoryRequest()
-                        {
-                            ApproveOn = s.ApproveOn,
-                            SubmitBy = s.SubmitBy,
-                            HistoryId = s.HistoryId,
-                            SubmitOn = s.SubmitOn
-                        }).ToList();
-                ProductStageRequest response = new ProductStageRequest();
-                //SetupResponse(product, response, historyList);
+                ProductStageRequest response = GetProductHistoryRequestFromId(db, historyId);
                 return Request.CreateResponse(HttpStatusCode.OK, response);
 
             }
@@ -68,16 +34,24 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private ProductStageRequest GetProductStageRequestFromId(ColspEntities db, long productId)
+        private ProductStageRequest GetProductHistoryRequestFromId(ColspEntities db, long historyId)
         {
             #region Query
-            var tmpPro = db.ProductHistoryGroups.Where(w => !Constant.STATUS_REMOVE.Equals(w.Status) && w.ProductId == productId)
+            var tmpPro = db.ProductHistoryGroups.Where(w => !Constant.STATUS_REMOVE.Equals(w.Status) && w.HistoryId == historyId)
                 .Select(s => new
                 {
                     s.ProductId,
                     s.ShopId,
-                    s.GlobalCatId,
-                    s.LocalCatId,
+                    MainGlobalCategory = s.GlobalCatId == null ? null : new
+                    {
+                        s.GlobalCatId,
+                        s.GlobalCategory.NameEn,
+                    },
+                    MainLocaCategory = s.LocalCatId == null ? null : new
+                    {
+                        s.LocalCatId,
+                        s.LocalCategory.NameEn,
+                    },
                     s.AttributeSetId,
                     s.BrandId,
                     s.ShippingId,
@@ -254,18 +228,7 @@ namespace Colsp.Api.Controllers
                         {
                             sv.VideoUrlEn
                         }),
-                        //Inventory = st.Inventory == null ? null : new
-                        //{
-                        //    st.Inventory.OnHold,
-                        //    st.Inventory.Reserve,
-                        //    st.Inventory.Quantity,
-                        //    st.Inventory.SafetyStockSeller,
-                        //    st.Inventory.StockType,
-                        //    st.Inventory.MaxQtyAllowInCart,
-                        //    st.Inventory.MaxQtyPreOrder,
-                        //    st.Inventory.MinQtyAllowInCart,
-                        //    st.Inventory.Defect
-                        //}
+                        Inventory = db.Inventories.Where(w=>w.Pid.Equals(st.Pid)).FirstOrDefault(),
                     }),
 
                 }).SingleOrDefault();
@@ -316,22 +279,26 @@ namespace Colsp.Api.Controllers
                 GiftWrap = tmpPro.GiftWrap,
                 GlobalCategories = tmpPro.GlobalCategories.Select(s => new CategoryRequest()
                 {
-                    CategoryId = s.CategoryId
+                    CategoryId = s.CategoryId,
+                    NameEn = s.NameEn,
                 }).ToList(),
                 LocalCategories = tmpPro.LocalCategories.Select(s => new CategoryRequest()
                 {
-                    CategoryId = s.CategoryId
+                    CategoryId = s.CategoryId,
+                    NameEn = s.NameEn
                 }).ToList(),
                 ImageFlag = tmpPro.ImageFlag.HasValue ? tmpPro.ImageFlag.Value : false,
                 InfoFlag = tmpPro.InfoFlag.HasValue ? tmpPro.InfoFlag.Value : false,
                 ProductId = tmpPro.ProductId,
                 MainGlobalCategory = new CategoryRequest()
                 {
-                    CategoryId = tmpPro.GlobalCatId.HasValue ? tmpPro.GlobalCatId.Value : 0
+                    CategoryId = tmpPro.MainGlobalCategory != null ? tmpPro.MainGlobalCategory.GlobalCatId.Value : 0,
+                    NameEn = tmpPro.MainGlobalCategory != null ? tmpPro.MainGlobalCategory.NameEn : string.Empty,
                 },
                 MainLocalCategory = new CategoryRequest()
                 {
-                    CategoryId = tmpPro.LocalCatId.HasValue ? tmpPro.LocalCatId.Value : 0
+                    CategoryId = tmpPro.MainLocaCategory != null ? tmpPro.MainLocaCategory.LocalCatId.Value : 0,
+                    NameEn = tmpPro.MainLocaCategory != null ? tmpPro.MainLocaCategory.NameEn : string.Empty,
                 },
                 OnlineFlag = tmpPro.OnlineFlag.HasValue ? tmpPro.OnlineFlag.Value : false,
                 Remark = tmpPro.Remark,
@@ -417,15 +384,15 @@ namespace Colsp.Api.Controllers
                 PurchasePrice = masterVariant.PurchasePrice,
                 IsVariant = masterVariant.IsVariant,
                 Visibility = masterVariant.Visibility,
-                //OnHold = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.OnHold,
-                //Quantity = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Quantity,
-                //Defect = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Defect,
-                //Reserve = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Reserve,
-                //SafetyStock = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.SafetyStockSeller,
-                //StockType = masterVariant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : masterVariant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
-                //MaxQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyAllowInCart,
-                //MinQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MinQtyAllowInCart,
-                //MaxQtyPreOrder = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyPreOrder,
+                OnHold = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.OnHold,
+                Quantity = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Quantity,
+                Defect = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Defect,
+                Reserve = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Reserve,
+                SafetyStock = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.SafetyStockSeller,
+                StockType = masterVariant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : masterVariant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
+                MaxQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyAllowInCart,
+                MinQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MinQtyAllowInCart,
+                MaxQtyPreOrder = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyPreOrder,
             };
             if (masterVariant.ProductStageAttributes != null)
             {
@@ -555,15 +522,15 @@ namespace Colsp.Api.Controllers
                     PurchasePrice = variant.PurchasePrice,
                     IsVariant = variant.IsVariant,
                     Visibility = variant.Visibility,
-                    //OnHold = variant.Inventory == null ? 0 : variant.Inventory.OnHold,
-                    //Quantity = variant.Inventory == null ? 0 : variant.Inventory.Quantity,
-                    //Reserve = variant.Inventory == null ? 0 : variant.Inventory.Reserve,
-                    //Defect = variant.Inventory == null ? 0 : variant.Inventory.Defect,
-                    //SafetyStock = variant.Inventory == null ? 0 : variant.Inventory.SafetyStockSeller,
-                    //StockType = variant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : variant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
-                    //MaxQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyAllowInCart,
-                    //MinQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MinQtyAllowInCart,
-                    //MaxQtyPreOrder = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyPreOrder,
+                    OnHold = variant.Inventory == null ? 0 : variant.Inventory.OnHold,
+                    Quantity = variant.Inventory == null ? 0 : variant.Inventory.Quantity,
+                    Reserve = variant.Inventory == null ? 0 : variant.Inventory.Reserve,
+                    Defect = variant.Inventory == null ? 0 : variant.Inventory.Defect,
+                    SafetyStock = variant.Inventory == null ? 0 : variant.Inventory.SafetyStockSeller,
+                    StockType = variant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : variant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
+                    MaxQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyAllowInCart,
+                    MinQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MinQtyAllowInCart,
+                    MaxQtyPreOrder = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyPreOrder,
                 };
 
                 if (variant.ProductStageAttributes != null)

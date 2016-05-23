@@ -50,7 +50,7 @@ namespace Colsp.Model.Requests
         public DistrictRequest District { get; set; }
         public CountryRequest Country { get; set; }
         public string State { get; set; }
-        public string ZipCode { get; set; }
+        public PostCodeRequest PostalCode { get; set; }
         public string PhoneNumber { get; set; }
         public string FaxNumber { get; set; }
         public string Telex { get; set; }
@@ -77,7 +77,7 @@ namespace Colsp.Model.Requests
             City = new CityRequest();
             District = new DistrictRequest();
             State = string.Empty;
-            ZipCode = string.Empty;
+            PostalCode = new PostCodeRequest();
             PhoneNumber = string.Empty;
             FaxNumber = string.Empty;
             Telex = string.Empty;
@@ -227,6 +227,18 @@ namespace Colsp.Model.Requests
             DistrictId = 0;
             DistrictName = string.Empty;
             DistrictNameEn = string.Empty;
+        }
+    }
+
+    public class PostCodeRequest
+    {
+        public int PostCodeId { get; set; }
+        public string PostCode { get; set; }
+
+        public PostCodeRequest()
+        {
+            PostCodeId = 0;
+            PostCode = string.Empty;
         }
     }
 
