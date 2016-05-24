@@ -75,6 +75,7 @@
     <Compile Include="Requests\ImageRequest.cs" />
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
+    <Compile Include="Requests\ItemOnHoldReportRequest.cs" />
     <Compile Include="Requests\Layout.cs" />
     <Compile Include="Requests\MasterProductRequest.cs" />
     <Compile Include="Requests\NewsletterRequest.cs" />
