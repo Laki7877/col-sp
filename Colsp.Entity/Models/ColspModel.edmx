@@ -171,6 +171,7 @@
           <Property Name="MetaKeyTh" Type="varchar" MaxLength="630" Nullable="false" />
           <Property Name="SeoEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="SeoTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="IsLandingPage" Type="bit" Nullable="false" />
           <Property Name="SortById" Type="int" />
           <Property Name="OldBrandId" Type="int" />
           <Property Name="Bu" Type="char" MaxLength="3" />
@@ -830,6 +831,7 @@
           <Property Name="FeatureTitle" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
+          <Property Name="IsLandingPage" Type="bit" Nullable="false" />
           <Property Name="SortById" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -1003,6 +1005,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
           <Property Name="FeatureTitle" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
+          <Property Name="IsLandingPage" Type="bit" Nullable="false" />
           <Property Name="SortById" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -6165,6 +6168,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <FunctionImport Name="SaleReportForSeller" ReturnType="Collection(ColspModel.SaleReportForSeller_Result)" />
           <FunctionImport Name="StockStatusReport" ReturnType="Collection(ColspModel.StockStatusReport_Result)" />
           <FunctionImport Name="GetNextProductStageImageId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="ItemOnHoldReport" ReturnType="Collection(ColspModel.ItemOnHoldReport_Result)" />
           <EntitySet Name="AppAuths" EntityType="ColspModel.AppAuth" />
           <EntitySet Name="Attributes" EntityType="ColspModel.Attribute" />
           <EntitySet Name="AttributeFilterMaps" EntityType="ColspModel.AttributeFilterMap" />
@@ -6850,7 +6854,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shipping" EntitySet="Shippings" />
             <End Role="ShopGroup" EntitySet="ShopGroups" />
           </AssociationSet>
-          <FunctionImport Name="ItemOnHoldReport" ReturnType="Collection(ColspModel.ItemOnHoldReport_Result)" />
           </EntityContainer>
         <ComplexType Name="SaleReportForSeller_Result">
           <Property Type="DateTime" Name="OrderDateTime" Nullable="true" Precision="23" />
@@ -6892,6 +6895,13 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Type="String" Name="LastSoldDate" Nullable="false" />
           <Property Type="Decimal" Name="SalePrice" Nullable="false" Precision="10" Scale="3" />
           <Property Type="Int32" Name="AgingDay" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ItemOnHoldReport_Result">
+          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="Itemname" Nullable="false" MaxLength="200" />
+          <Property Type="DateTime" Name="OnHoldDate" Nullable="true" Precision="16" />
+          <Property Type="String" Name="OnHoldRemark" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Orderid" Nullable="true" MaxLength="12" />
         </ComplexType>
         <EntityType Name="AppAuth">
           <Key>
@@ -7081,6 +7091,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="MetaKeyTh" Type="String" Nullable="false" MaxLength="630" FixedLength="false" Unicode="false" />
           <Property Name="SeoEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="SeoTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsLandingPage" Type="Boolean" Nullable="false" />
           <Property Name="SortById" Type="Int32" />
           <Property Name="OldBrandId" Type="Int32" />
           <Property Name="Bu" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
@@ -7781,6 +7792,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
+          <Property Name="IsLandingPage" Type="Boolean" Nullable="false" />
           <Property Name="SortById" Type="Int32" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -7915,6 +7927,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
+          <Property Name="IsLandingPage" Type="Boolean" Nullable="false" />
           <Property Name="SortById" Type="Int32" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -12000,13 +12013,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="*" />
           <End Type="ColspModel.ShopGroup" Role="ShopGroup" Multiplicity="*" />
         </Association>
-        <ComplexType Name="ItemOnHoldReport_Result">
-          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
-          <Property Type="String" Name="Itemname" Nullable="false" MaxLength="200" />
-          <Property Type="DateTime" Name="OnHoldDate" Nullable="true" Precision="16" />
-          <Property Type="String" Name="OnHoldRemark" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="Orderid" Nullable="true" MaxLength="12" />
-        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -12078,6 +12084,17 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GetNextProductStageImageId" FunctionName="ColspModel.Store.GetNextProductStageImageId" />
+          <FunctionImportMapping FunctionImportName="ItemOnHoldReport" FunctionName="ColspModel.Store.ItemOnHoldReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ItemOnHoldReport_Result">
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="Itemname" ColumnName="Itemname" />
+                <ScalarProperty Name="OnHoldDate" ColumnName="OnHoldDate" />
+                <ScalarProperty Name="OnHoldRemark" ColumnName="OnHoldRemark" />
+                <ScalarProperty Name="Orderid" ColumnName="Orderid" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <EntitySetMapping Name="AppAuths">
             <EntityTypeMapping TypeName="ColspModel.AppAuth">
               <MappingFragment StoreEntitySet="AppAuth">
@@ -12230,6 +12247,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Bu" ColumnName="Bu" />
                 <ScalarProperty Name="OldBrandId" ColumnName="OldBrandId" />
                 <ScalarProperty Name="SortById" ColumnName="SortById" />
+                <ScalarProperty Name="IsLandingPage" ColumnName="IsLandingPage" />
                 <ScalarProperty Name="SeoTh" ColumnName="SeoTh" />
                 <ScalarProperty Name="SeoEn" ColumnName="SeoEn" />
                 <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />
@@ -12911,6 +12929,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="SortById" ColumnName="SortById" />
+                <ScalarProperty Name="IsLandingPage" ColumnName="IsLandingPage" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
                 <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
@@ -13034,6 +13053,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="SortById" ColumnName="SortById" />
+                <ScalarProperty Name="IsLandingPage" ColumnName="IsLandingPage" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
                 <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
@@ -15093,17 +15113,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
             </EndProperty>
           </AssociationSetMapping>
-          <FunctionImportMapping FunctionImportName="ItemOnHoldReport" FunctionName="ColspModel.Store.ItemOnHoldReport">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.ItemOnHoldReport_Result">
-                <ScalarProperty Name="PID" ColumnName="PID" />
-                <ScalarProperty Name="Itemname" ColumnName="Itemname" />
-                <ScalarProperty Name="OnHoldDate" ColumnName="OnHoldDate" />
-                <ScalarProperty Name="OnHoldRemark" ColumnName="OnHoldRemark" />
-                <ScalarProperty Name="Orderid" ColumnName="Orderid" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

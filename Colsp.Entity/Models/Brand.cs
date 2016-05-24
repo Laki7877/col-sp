@@ -53,6 +53,7 @@ namespace Colsp.Entity.Models
         public string MetaKeyTh { get; set; }
         public string SeoEn { get; set; }
         public string SeoTh { get; set; }
+        public bool IsLandingPage { get; set; }
         public Nullable<int> SortById { get; set; }
         public Nullable<int> OldBrandId { get; set; }
         public string Bu { get; set; }

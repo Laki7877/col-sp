@@ -39,8 +39,11 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid Request");
                 }
                 var productTemp = db.ProductStages.Where(w => w.IsSell == true 
-                && w.IsVariant == false && w.ProductStageGroup.GlobalCatId == request.CategoryId && (w.ProductStageGroup.AttributeSetId == null
-                || w.ProductStageGroup.AttributeSetId == request.AttributeSetId)).Select(s => new
+                    && !Constant.STATUS_REMOVE.Equals(w.Status)
+                    && w.IsVariant == false && w.ProductStageGroup.GlobalCatId == request.CategoryId 
+                    && (w.ProductStageGroup.AttributeSetId == null
+                    || w.ProductStageGroup.AttributeSetId == request.AttributeSetId))
+                    .Select(s => new
                 {
                     s.ShopId,
                     s.Pid,
@@ -48,7 +51,6 @@ namespace Colsp.Api.Controllers
                     s.Sku,
                     s.ProductId
                 });
-                //check if its seller permission
                 if (User.ShopRequest() != null)
                 {
                     int shopId = User.ShopRequest().ShopId;

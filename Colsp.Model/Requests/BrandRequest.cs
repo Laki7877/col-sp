@@ -34,6 +34,7 @@ namespace Colsp.Model.Requests
         public bool BannerSmallStatusEn                     { get; set; }
         public bool BannerStatusTh                          { get; set; }
         public bool BannerSmallStatusTh                     { get; set; }
+        public bool IsLandingPage                           { get; set; }
 
         public BrandRequest()
         {
@@ -67,6 +68,7 @@ namespace Colsp.Model.Requests
             BannerSmallStatusEn     = false;
             BannerStatusTh          = false;
             BannerSmallStatusTh     = false;
+            IsLandingPage           = false;
         }
 
         public override void DefaultOnNull()

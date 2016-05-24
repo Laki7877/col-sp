@@ -180,7 +180,6 @@ namespace Colsp.Api.Controllers
                                      cat.BannerStatusEn,
                                      cat.BannerSmallStatusTh,
                                      cat.BannerStatusTh,
-                                     //cat.CategoryAbbreviation,
                                      cat.Lft,
                                      cat.Rgt,
                                      cat.UrlKey,
@@ -195,7 +194,7 @@ namespace Colsp.Api.Controllers
                                      cat.Status,
                                      UpdatedDt = cat.UpdateOn,
                                      CreatedDt = cat.CreateOn,
-                                     
+                                     cat.IsLandingPage,
                                  }).SingleOrDefault();
                 if(localCat == null)
                 {
@@ -211,7 +210,7 @@ namespace Colsp.Api.Controllers
 
         [Route("api/LocalCategories")]
         [HttpPost]
-        public HttpResponseMessage AddGlobalCategory(CategoryRequest request)
+        public HttpResponseMessage AddLocalCategory(CategoryRequest request)
         {
             LocalCategory category = null;
             try
@@ -241,15 +240,16 @@ namespace Colsp.Api.Controllers
                     category.Rgt = max + 2;
                 }
                 category.CategoryId = db.GetNextLocalCategoryId().SingleOrDefault().Value;
+                #region Url Key
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
-                    category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    category.UrlKey = request.UrlKey.Replace(" ", "-");
+                    category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
                 }
-
+                #endregion
                 db.LocalCategories.Add(category);
                 Util.DeadlockRetry(db.SaveChanges, "LocalCategory");
                 return Request.CreateResponse(HttpStatusCode.OK, category);
@@ -281,11 +281,11 @@ namespace Colsp.Api.Controllers
                 #region Url Key
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
-                    category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    category.UrlKey = request.UrlKey.Replace(" ", "-");
+                    category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
                 }
                 #endregion
                 #region Local Category Feature Product
@@ -588,6 +588,7 @@ namespace Colsp.Api.Controllers
             category.TitleShowcase = request.TitleShowcase;
             category.Visibility = request.Visibility;
             category.Status = Constant.STATUS_ACTIVE;
+            category.IsLandingPage = request.IsLandingPage;
             if (request.SortBy.SortById != 0)
             {
                 category.SortById = request.SortBy.SortById;

@@ -969,7 +969,7 @@ namespace Colsp.Api.Controllers
                 db.ShopCommissions.RemoveRange(commissions);
             }
             #endregion
-            shop.UrlKey = Validation.ValidateString(request.UrlKey, "Url Key (English)", true, 100, false, shop.ShopNameEn.ToLower().Replace(" ","-"));
+            shop.UrlKey = Validation.ValidateString(request.UrlKey, "Url Key (English)", true, 100, false, shop.ShopNameEn.Trim().ToLower().Replace(" ","-"));
             shop.TaxPayerId = Validation.ValidateString(request.TaxPayerId, "Tax Payer Id", true, 35, false, string.Empty);
             if(request.TermPayment != null && !string.IsNullOrEmpty(request.TermPayment.TermPaymentCode))
             {

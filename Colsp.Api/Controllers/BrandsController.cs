@@ -185,6 +185,7 @@ namespace Colsp.Api.Controllers
                     s.BannerStatusTh,
                     s.BannerSmallStatusTh,
                     s.Status,
+                    s.IsLandingPage,
                     BrandImages = s.BrandImages.Select(si => new
                     {
                         si.EnTh,
@@ -228,6 +229,7 @@ namespace Colsp.Api.Controllers
                 response.BannerSmallStatusEn = brand.BannerSmallStatusEn;
                 response.BannerStatusTh = brand.BannerStatusTh;
                 response.BannerSmallStatusTh = brand.BannerSmallStatusTh;
+                response.IsLandingPage = brand.IsLandingPage;
                 if (brand.SortBy != null)
                 {
                     response.SortBy = new SortByRequest()
@@ -431,6 +433,7 @@ namespace Colsp.Api.Controllers
             brand.BannerSmallStatusTh = request.BannerSmallStatusTh;
             brand.BannerStatusTh = request.BannerStatusTh;
             brand.FeatureProductStatus = request.FeatureProductStatus;
+            brand.IsLandingPage = request.IsLandingPage;
             if (request.SortBy.SortById != 0)
             {
                 brand.SortById = request.SortBy.SortById;
@@ -450,11 +453,11 @@ namespace Colsp.Api.Controllers
             brand.PicUrl = Validation.ValidateString(request.BrandImage.Url, "Logo", false, 500, false, string.Empty);
             if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
             {
-                brand.UrlKey = brand.BrandNameEn.Replace(" ", "-");
+                brand.UrlKey = brand.BrandNameEn.Trim().ToLower().Replace(" ", "-");
             }
             else
             {
-                brand.UrlKey = request.SEO.ProductUrlKeyEn.Trim().Replace(" ", "-");
+                brand.UrlKey = request.SEO.ProductUrlKeyEn.Trim().ToLower().Replace(" ", "-");
             }
             #region BranImage En
             var imageOldEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).ToList();

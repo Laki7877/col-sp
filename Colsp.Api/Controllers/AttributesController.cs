@@ -34,6 +34,7 @@ namespace Colsp.Api.Controllers
                 {
                     s.AttributeId,
                     s.AttributeNameEn,
+                    s.DisplayNameEn,
                     s.DataType,
                     s.Required,
                     s.Status,

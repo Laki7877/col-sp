@@ -122,7 +122,6 @@ namespace Colsp.Api.Controllers
                                      cat.BannerStatusEn,
                                      cat.BannerSmallStatusTh,
                                      cat.BannerStatusTh,
-                                     //cat.CategoryAbbreviation,
                                      cat.Lft,
                                      cat.Rgt,
                                      cat.UrlKey,
@@ -138,11 +137,13 @@ namespace Colsp.Api.Controllers
                                          cat.SortBy.NameTh,
                                          cat.SortBy.SortByName
                                      },
-
-                                     //ProductCount = cat.ProductStages.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
-                                     //               + cat.Products.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE))
-                                     //               + cat.ProductHistories.Count(c => !c.Status.Equals(Constant.STATUS_REMOVE)),
-                                     AttributeSets = cat.GlobalCatAttributeSetMaps.Select(s => new { s.AttributeSetId, s.AttributeSet.AttributeSetNameEn, ProductCount = s.AttributeSet.ProductStageGroups.Count })
+                                     cat.IsLandingPage,
+                                     AttributeSets = cat.GlobalCatAttributeSetMaps.Select(s => new
+                                     {
+                                         s.AttributeSetId,
+                                         s.AttributeSet.AttributeSetNameEn,
+                                         ProductCount = s.AttributeSet.ProductStageGroups.Count
+                                     })
                                  }).SingleOrDefault();
                 if(globalCat == null)
                 {
@@ -184,11 +185,11 @@ namespace Colsp.Api.Controllers
                 category.CategoryId = db.GetNextGlobalCategoryId().SingleOrDefault().Value;
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
-                    category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"), "-", category.CategoryId);
+                    category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    category.UrlKey = request.UrlKey.Trim().Replace(" ", "-");
+                    category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
                 }
                 #endregion
                 db.GlobalCategories.Add(category);
@@ -224,11 +225,11 @@ namespace Colsp.Api.Controllers
                 #region url
                 if (string.IsNullOrWhiteSpace(request.UrlKey))
                 {
-                    category.UrlKey = string.Concat(category.NameEn.Replace(" ", "-"),"-", category.CategoryId);
+                    category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
                 }
                 else
                 {
-                    category.UrlKey = request.UrlKey.Replace(" ", "-");
+                    category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
                 }
                 #endregion
                 #region Global Category Feature Product
@@ -633,6 +634,7 @@ namespace Colsp.Api.Controllers
             category.FeatureTitle = Validation.ValidateString(request.FeatureTitle, "Feature Products Title", false, 100, false, string.Empty);
             category.TitleShowcase = request.TitleShowcase;
             category.Visibility = request.Visibility;
+            category.IsLandingPage = request.IsLandingPage;
             category.Status = Constant.STATUS_ACTIVE;
             if (request.SortBy.SortById != 0)
             {
