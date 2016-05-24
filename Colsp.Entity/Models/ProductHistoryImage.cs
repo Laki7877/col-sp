@@ -30,12 +30,6 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
-        public long ImageId { get; set; }
-        public int SeqNo { get; set; }
-        public bool Thumbnail { get; set; }
-        public bool Normal { get; set; }
-        public bool Large { get; set; }
-        public bool Zoom { get; set; }
     
         public virtual ProductHistory ProductHistory { get; set; }
     }

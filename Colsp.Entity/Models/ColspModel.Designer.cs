@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\Col Projects\col-sp-api\Colsp.Entity\Models\ColspModel.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Workspace\DotNet\col-sp\Colsp.Entity\Models\ColspModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
