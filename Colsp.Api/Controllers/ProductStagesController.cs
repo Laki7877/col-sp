@@ -6668,10 +6668,12 @@ namespace Colsp.Api.Controllers
                         }
                     }
                     #endregion
+                    #region Update progress
                     if(userExportProducts.ContainsKey(userId))
                     {
                         userExportProducts[userId] = (iter + 1) / len;
                     }
+                    #endregion
                     rs.Add(bodyList);
                 }
                 #region Write header
