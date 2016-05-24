@@ -10,22 +10,9 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Product
+    public partial class My_test_Result
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Product()
-        {
-            this.ProductAttributes = new HashSet<ProductAttribute>();
-            this.ProductReviews = new HashSet<ProductReview>();
-            this.ProductTags = new HashSet<ProductTag>();
-            this.ProductVideos = new HashSet<ProductVideo>();
-            this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
-            this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
-            this.ProductImages = new HashSet<ProductImage>();
-        }
-    
         public string Pid { get; set; }
         public string ParentPid { get; set; }
         public string MasterPid { get; set; }
@@ -126,20 +113,5 @@ namespace Colsp.Entity.Models
         public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductReview> ProductReviews { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductTag> ProductTags { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductVideo> ProductVideos { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

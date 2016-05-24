@@ -10,16 +10,13 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class CMSFeatureProduct
+    public partial class sp_helpdiagrams_Result
     {
-        public int CMSFeatureProductId { get; set; }
-        public int CMSMasterId { get; set; }
-        public string ProductId { get; set; }
-        public string CreateBy { get; set; }
-        public System.DateTime CreateOn { get; set; }
-        public string UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public string Database { get; set; }
+        public string Name { get; set; }
+        public int ID { get; set; }
+        public string Owner { get; set; }
+        public int OwnerID { get; set; }
     }
 }

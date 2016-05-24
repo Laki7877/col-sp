@@ -36,6 +36,7 @@ namespace Colsp.Entity.Models
             this.ShopImages = new HashSet<ShopImage>();
             this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
             this.UserShopMaps = new HashSet<UserShopMap>();
+            this.ProductImages = new HashSet<ProductImage>();
         }
     
         public int ShopId { get; set; }
@@ -142,5 +143,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserShopMap> UserShopMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

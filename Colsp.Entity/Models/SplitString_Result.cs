@@ -10,16 +10,9 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class CMSFeatureProduct
+    public partial class SplitString_Result
     {
-        public int CMSFeatureProductId { get; set; }
-        public int CMSMasterId { get; set; }
-        public string ProductId { get; set; }
-        public string CreateBy { get; set; }
-        public System.DateTime CreateOn { get; set; }
-        public string UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public string Item { get; set; }
     }
 }
