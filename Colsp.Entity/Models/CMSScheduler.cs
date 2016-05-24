@@ -16,12 +16,10 @@ namespace Colsp.Entity.Models
     {
         public int CMSSchedulerId { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
-        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
-        public Nullable<System.DateTime> ExpiryDate { get; set; }
-        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
+        public Nullable<System.DateTime> ExpireDate { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateOn { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string CreateIP { get; set; }

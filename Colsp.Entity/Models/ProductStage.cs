@@ -17,6 +17,7 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ProductStage()
         {
+            this.CouponLocalCatPidMaps = new HashSet<CouponLocalCatPidMap>();
             this.CouponPidMaps = new HashSet<CouponPidMap>();
             this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
             this.ProductStageComments = new HashSet<ProductStageComment>();
@@ -24,7 +25,6 @@ namespace Colsp.Entity.Models
             this.ProductStageMasters = new HashSet<ProductStageMaster>();
             this.ProductStageMasters1 = new HashSet<ProductStageMaster>();
             this.ProductStageVideos = new HashSet<ProductStageVideo>();
-            this.CouponLocalCatPidMaps = new HashSet<CouponLocalCatPidMap>();
         }
     
         public string Pid { get; set; }
@@ -111,6 +111,8 @@ namespace Colsp.Entity.Models
         public System.DateTime UpdateOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }
         public virtual Inventory Inventory { get; set; }
         public virtual ProductStageGroup ProductStageGroup { get; set; }
@@ -127,7 +129,5 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStageMaster> ProductStageMasters1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
     }
 }

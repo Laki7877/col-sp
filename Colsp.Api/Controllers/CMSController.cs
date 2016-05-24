@@ -673,7 +673,7 @@ namespace Colsp.Api.Controllers
                                 CMSMasterType               = master.CMSMasterType,
                                 CMSMasterURLKey             = master.CMSMasterURLKey,
                                 EffectiveDate               = master.CMSMasterEffectiveDate,
-                                ExpiryDate                  = master.CMSMasterExpiryDate,
+                                ExpiryDate                  = master.CMSMasterExpireDate,
                                 LongDescriptionEN           = master.LongDescriptionEN,
                                 LongDescriptionTH           = master.LongDescriptionTH,
                                 ShortDescriptionEN          = master.ShortDescriptionEN,
@@ -683,10 +683,10 @@ namespace Colsp.Api.Controllers
                                 MobileShortDescriptionEN    = master.MobileShortDescriptionEN,
                                 MobileShortDescriptionTH    = master.MobileShortDescriptionTH,
                                 Status                      = master.Status,
-                                Visibility                  = master.Visibility.Value,
-                                ISCampaign                  = master.IsCampaign.Value,
+                                Visibility                  = master.Visibility,
+                                ISCampaign                  = master.IsCampaign,
                                 FeatureTitle                = master.FeatureTitle,
-                                TitleShowcase               = master.TitleShowcase.Value,
+                                TitleShowcase               = master.TitleShowcase,
 
                                 FeatureProductList          = (from feature in db.CMSFeatureProducts
                                                               where feature.CMSMasterId == cmsMasterId
@@ -702,7 +702,7 @@ namespace Colsp.Api.Controllers
                                                                     CMSSchedulerId = schedule.CMSSchedulerId,
                                                                     CMSMasterId = master.CMSMasterId,
                                                                     EffectiveDate = schedule.EffectiveDate,
-                                                                    ExpiryDate = schedule.ExpiryDate
+                                                                    ExpiryDate = schedule.ExpireDate
                                                                 }).ToList(),
 
                                 CategoryList                = (from cate in db.CMSCategories
@@ -983,7 +983,7 @@ namespace Colsp.Api.Controllers
                                                        Status = masterGroup.Status,
                                                        CMSMasterExpiryDate = (from p in db.CMSMasters
                                                                               where p.CMSMasterId.Equals(masterGroup.CMSMasterId)
-                                                                              select p).FirstOrDefault().CMSMasterExpiryDate,
+                                                                              select p).FirstOrDefault().CMSMasterExpireDate,
 
                                                        CMSMasterNameEN = (from p in db.CMSMasters
                                                                           where p.CMSMasterId.Equals(masterGroup.CMSMasterId)
@@ -998,7 +998,7 @@ namespace Colsp.Api.Controllers
                                 CMSGroupNameEN = g.CMSGroupNameEN,
                                 CMSGroupNameTH = g.CMSGroupNameTH,
                                 Status = g.Status,
-                                Visibility = g.Visibility.Value,
+                                Visibility = g.Visibility,
                                 UpdateOn = g.UpdateOn
                             };
 
@@ -1047,7 +1047,7 @@ namespace Colsp.Api.Controllers
                     item.CMSMasterNameTH = m.CMSMasterNameTH;
                     //item.Status                 = m.CMSMasterStatusId;
                     item.CMSMasterEffectiveDate = m.CMSMasterEffectiveDate;
-                    item.CMSMasterExpiryDate = m.CMSMasterExpiryDate;
+                    item.CMSMasterExpireDate    = m.CMSMasterExpireDate;
                     masters.Add(item);
                 }
 

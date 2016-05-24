@@ -12,12 +12,12 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Subscribe
+    public partial class BrandOldMap
     {
-        public string Email { get; set; }
-        public int ShopId { get; set; }
-        public bool IsNewsLetter { get; set; }
-        public System.DateTime CreateOn { get; set; }
-        public string CreateBy { get; set; }
+        public int BrandId { get; set; }
+        public int OldBrandId { get; set; }
+        public string DbName { get; set; }
+    
+        public virtual Brand Brand { get; set; }
     }
 }

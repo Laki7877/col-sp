@@ -106,9 +106,9 @@ namespace Colsp.Entity.Models
         public int VariantCount { get; set; }
         public bool Visibility { get; set; }
         public string OldPid { get; set; }
+        public decimal ProductRating { get; set; }
         public string Bu { get; set; }
         public string Status { get; set; }
-        public decimal ProductRating { get; set; }
         public string CreateBy { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }

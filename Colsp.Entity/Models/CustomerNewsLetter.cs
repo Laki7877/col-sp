@@ -12,13 +12,13 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSFeatureProduct
+    public partial class CustomerNewsLetter
     {
-        public int CMSFeatureProductId { get; set; }
-        public int CMSMasterId { get; set; }
-        public string ProductId { get; set; }
-        public string CreateBy { get; set; }
+        public string Email { get; set; }
+        public int ShopId { get; set; }
+        public bool IsSubscribe { get; set; }
         public System.DateTime CreateOn { get; set; }
+        public string CreateBy { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
     }

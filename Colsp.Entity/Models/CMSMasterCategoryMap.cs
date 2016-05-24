@@ -21,7 +21,7 @@ namespace Colsp.Entity.Models
         public int Sequence { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateOn { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string CreateIP { get; set; }
