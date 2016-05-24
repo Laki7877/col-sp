@@ -231,10 +231,15 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var ids = request.Select(s => s.AttributeId).ToList();
-                var productAttribute = db.ProductStageAttributes.Where(w => ids.Contains(w.AttributeId)).Select(s=>s.Attribute.AttributeNameEn);
-                if(productAttribute != null && productAttribute.Count() > 0)
+                var productAttributeCount = db.ProductStageAttributes.Where(w => ids.Contains(w.AttributeId)).Count();
+                if(productAttributeCount != 0)
                 {
-                    throw new Exception(string.Concat("Cannot delete attribute ",string.Join(",", productAttribute)));
+                    throw new Exception("Cannot delete attribute because it has been associated with products.");
+                }
+                var attributeSetCount = db.AttributeSetMaps.Where(w => ids.Contains(w.AttributeId)).Count();
+                if (attributeSetCount != 0)
+                {
+                    throw new Exception("Cannot delete attribute because it has been associated with attribute set.");
                 }
 
                 var setList = db.Attributes.Where(w=> ids.Contains(w.AttributeId) && !w.Status.Equals(Constant.STATUS_REMOVE));

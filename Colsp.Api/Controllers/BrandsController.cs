@@ -340,7 +340,7 @@ namespace Colsp.Api.Controllers
                 var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.BrandId.HasValue ? w.BrandId.Value : 0)).Select(s=>s.Brand.BrandNameEn);
                 if(productMap != null && productMap.Count() > 0)
                 {
-                    throw new Exception(string.Concat("Cannot delete brand ", string.Join(",", productMap)));
+                    throw new Exception("Cannot delete brand imaginary_brand because it has been associated with products.");
                 }
                 var brandList = db.Brands.Where(w=> ids.Contains(w.BrandId));
                 foreach (BrandRequest brandRq in request)

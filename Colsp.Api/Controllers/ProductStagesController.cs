@@ -533,13 +533,11 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-
                 var masterProduct = db.Products.Where(w => w.ProductId == productId && w.IsMaster == true).SingleOrDefault();
                 if (masterProduct == null)
                 {
                     throw new Exception("Cannot find master product");
                 }
-
                 var dbChild = db.Products.Where(w => w.MasterPid.Equals(masterProduct.Pid)).Select(s=>s.Pid).ToList();
                 List<string> newChildPids = new List<string>();
                 foreach(var child in request.ChildProducts)
@@ -572,7 +570,6 @@ namespace Colsp.Api.Controllers
                         product.MasterPid = masterProduct.Pid;
                     }
                 }
-
                 if (dbChild != null && dbChild.Count > 0)
                 {
                     foreach (var id in dbChild)
@@ -588,47 +585,7 @@ namespace Colsp.Api.Controllers
                 }
                 db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "ProductStageMaster");
-
-                //var masterProduct = db.ProductStageMasters.Where(w => w.).ToList();
-
-                //foreach(var child in request.ChildProducts)
-                //{
-                //    bool isNew = false;
-                //    if(masterProduct == null || masterProduct.Count == 0)
-                //    {
-                //        isNew = true;
-                //    }
-                //    if (!isNew)
-                //    {
-                //        var current = masterProduct.Where(w => w.ChildPid.Equals(child.Pid)).SingleOrDefault();
-                //        if(current != null)
-                //        {
-                //            masterProduct.Remove(current);
-                //        }
-                //        else
-                //        {
-                //            isNew = true;
-                //        }
-                //    }
-                //    if (isNew)
-                //    {
-                //        db.ProductStageMasters.Add(new ProductStageMaster()
-                //        {
-                //            MasterPid = masterProduct[0].MasterPid,
-                //            ChildPid = child.Pid,
-                //            CreateBy = User.UserRequest().Email,
-                //            CreateOn = DateTime.Now,
-                //            UpdateBy = User.UserRequest().Email,
-                //            UpdateOn = DateTime.Now
-                //        });
-                //    }
-                //}
-                //if(masterProduct != null && masterProduct.Count > 0)
-                //{
-                //    db.ProductStageMasters.RemoveRange(masterProduct);
-                //}
-                //Util.DeadlockRetry(db.SaveChanges, "ProductStageMaster");
-                return GetMasterProduct(0);
+                return GetMasterProduct(productId);
             }
             catch (Exception e)
             {
@@ -1404,7 +1361,8 @@ namespace Colsp.Api.Controllers
                 }
                 //Prepare Query to query table ProductStage
                 var products = (from p in db.ProductStageGroups
-                                where p.ProductStages.Any(a => a.IsVariant == false)
+                                where !Constant.STATUS_REMOVE.Equals(p.Status) 
+                                    && p.ProductStages.Any(a => a.IsVariant == false)
                                 select new
                                 {
                                     p.ProductStages.FirstOrDefault().Sku,
@@ -1430,10 +1388,6 @@ namespace Colsp.Api.Controllers
                                     Tags = p.ProductStageTags.Select(s=>s.Tag),
                                     CreatedDt = p.CreateOn,
                                     UpdatedDt = p.UpdateOn,
-                                    //PriceTo = p.SalePrice < p.ProductStageVariants.Max(m => m.SalePrice)
-                                    //        ? p.ProductStageVariants.Max(m => m.SalePrice) : p.SalePrice,
-                                    //PriceFrom = p.SalePrice < p.ProductStageVariants.Min(m => m.SalePrice)
-                                    //        ? p.SalePrice : p.ProductStageVariants.Min(m => m.SalePrice),
                                     Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn },
                                     p.InformationTabStatus,
                                     p.ImageTabStatus,
@@ -2626,9 +2580,9 @@ namespace Colsp.Api.Controllers
                 #region List
                 if (Constant.DATA_TYPE_LIST.Equals(attribute.DataType))
                 {
-                    if (attributeRequest.AttributeValues == null)
+                    if (attributeRequest.AttributeValues == null || attributeRequest.AttributeValues.Count == 0)
                     {
-                        throw new Exception(string.Concat("Attribute ", attribute.AttributeNameEn, " should have value"));
+                        continue;
                     }
                     if (attribute.AttributeValues.Any(a => attributeRequest.AttributeValues
                          .Select(s => s.AttributeValueId)
@@ -4421,45 +4375,37 @@ namespace Colsp.Api.Controllers
                 var productIds = request.Products.Select(s => s.ProductId).ToList();
                 var productList = db.ProductStageGroups.Where(w => true).Include(i => i.ProductStageTags);
                 productList = productList.Where(w => productIds.Any(a => a == w.ProductId));
-                //bool isAdmin = true;
                 if (User.ShopRequest() != null)
                 {
                     var shopId = User.ShopRequest().ShopId;
                     productList = productList.Where(w => w.ShopId == shopId);
-                    //isAdmin = false;
                 }
+                var tagList = request.Tags;
+                var email = User.UserRequest().Email;
+                var currentDt = DateTime.Now;
                 foreach (var product in productList)
                 {
-                    //if (!isAdmin && Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(product.Status))
                     if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(product.Status))
                     {
                         throw new Exception("Cannot add tag to Wait for Approval products");
                     }
-                    var tagList = request.Tags;
-                    var tmpTagList = product.ProductStageTags.Select(s=>s.Tag).ToList();
-                    tagList.AddRange(tmpTagList);
-                    tagList = tagList.Distinct().ToList();
-                    tagList = tagList.Where(w=> !tmpTagList.Contains(w)).ToList();
                     foreach(var tag in tagList)
                     {
+                        if (string.IsNullOrWhiteSpace(tag) 
+                            || product.ProductStageTags.Any(a => string.Equals(a.Tag, tag.Trim(), StringComparison.OrdinalIgnoreCase)))
+                        {
+                            continue;
+                        }
                         product.ProductStageTags.Add(new ProductStageTag()
                         {
-                            Tag = tag,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
+                            Tag = tag.Trim(),
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         });
                     }
                     product.Status = Constant.PRODUCT_STATUS_DRAFT;
-                    //if (isAdmin)
-                    //{
-                    //    product.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
-                    //}
-                    //else
-                    //{
-                    //    product.Status = Constant.PRODUCT_STATUS_DRAFT;
-                    //}
                 }
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 return Request.CreateResponse(HttpStatusCode.OK);

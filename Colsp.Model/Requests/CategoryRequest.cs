@@ -8,21 +8,17 @@ namespace Colsp.Model.Requests
         public string NameEn { get; set; }
         public string NameTh { get; set; }
         public string UrlKey { get; set; }
-        //public string UrlKeyTh { get; set; }
         public string Status { get; set; }
         public int Lft { get; set; }
         public int Rgt { get; set; }
         public int ShopId { get; set; }
-        //public string CategoryAbbreviation { get; set; }
         public List<AttributeSetRequest> AttributeSets { get; set; }
         public decimal Commission { get; set; }
         public bool Visibility { get; set; }
         public List<ImageRequest> CategoryBannerEn { get; set; }
         public List<ImageRequest> CategoryBannerTh { get; set; }
-
         public List<ImageRequest> CategorySmallBannerEn { get; set; }
         public List<ImageRequest> CategorySmallBannerTh { get; set; }
-
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public List<ProductRequest> FeatureProducts { get; set; }
@@ -38,10 +34,9 @@ namespace Colsp.Model.Requests
         public bool BannerStatusTh { get; set; }
         public bool FeatureProductStatus { get; set; }
         public SortByRequest SortBy { get; set; }
-
-        // Include/Exclude in Local categories for Coupon
         public List<string> Include { get; set; }
         public List<string> Exclude { get; set; }
+        public bool IsLandingPage { get; set; }
 
         public CategoryRequest()
         {
@@ -72,6 +67,7 @@ namespace Colsp.Model.Requests
             SortBy = new SortByRequest();
             Include = new List<string>();
             Exclude = new List<string>();
+            IsLandingPage = false;
         }
     }
 }

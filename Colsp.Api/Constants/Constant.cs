@@ -5,7 +5,7 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
-        public static readonly string IMAGE_STATIC_URL = "http://localhost:58127/Images/Product/original/";
+        public static readonly string IMAGE_STATIC_URL = "http://colsp-dev.azurewebsites.net/Images/Product/original/";
 
         public static readonly int DEFAULT_THE_ONE_CARD = 1;
 
