@@ -33,7 +33,10 @@ namespace Colsp.Api.Controllers
                 int shopId = 0;
                 if (request == null)
                 {
-                    shopId = 1; //User.ShopRequest().ShopId;
+                    if(User.ShopRequest() != null)
+                    {
+                        shopId = User.ShopRequest().ShopId;
+                    }
                 }
                 else
                 {
@@ -49,7 +52,6 @@ namespace Colsp.Api.Controllers
                                     cat.Lft,
                                     cat.Rgt,
                                     cat.UrlKey,
-                                    //cat.UrlKeyTh,
                                     cat.Visibility,
                                     cat.Status,
                                     UpdatedDt = cat.UpdateOn,

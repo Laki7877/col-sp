@@ -58,7 +58,7 @@ namespace Colsp.Api.Controllers
                                       rev.ShopId,
                                       rev.Shop.ShopNameEn
                                   },
-                                  UpdateDt = rev.UpdateOn
+                                  UpdatedDt = rev.UpdateOn
                               });
                 if(User.ShopRequest() != null)
                 {
