@@ -5687,7 +5687,7 @@ namespace Colsp.Api.Controllers
             response.Status = group.Status;
         }
 
-        
+        private static volatile Dictionary<int, double> userExportProducts = new Dictionary<int, double>();
 
         [Route("api/ProductStages/Export")]
         [HttpPost]
@@ -5695,6 +5695,7 @@ namespace Colsp.Api.Controllers
         {
             MemoryStream stream = null;
             StreamWriter writer = null;
+            int userId = User.UserRequest().UserId;
             try
             {
                 #region validation
@@ -5911,8 +5912,13 @@ namespace Colsp.Api.Controllers
                 var productList = query.OrderBy(o=>o.ProductId).ThenBy(o=>o.IsVariant);
                 #endregion
                 #region initiate
+                int len = productList.Count();
                 List<List<string>> rs = new List<List<string>>();
                 List<string> bodyList = null;
+
+                //Put progress to global dict
+                userExportProducts[userId] = 0.0;
+
                 if (request.AttributeSets != null && request.AttributeSets.Count > 0)
                 {
                     headDicTmp.Add("ADI", new Tuple<string, int>("Attribute Set", i++));
@@ -5922,8 +5928,9 @@ namespace Colsp.Api.Controllers
                 List<ProductStageAttribute> masterAttribute = null;
                 List<ProductStageAttribute> defaultAttribute = null;
                 #endregion
-                foreach (var p in productList)
+                for (var iter = 0; iter < len; iter++)
                 {
+                    var p = productList.ElementAt(iter);
                     #region Setup Attribute
                     if (p.IsVariant == false)
                     {
@@ -6609,6 +6616,12 @@ namespace Colsp.Api.Controllers
                         }
                     }
                     #endregion
+                    #region Update progress
+                    if(userExportProducts.ContainsKey(userId))
+                    {
+                        userExportProducts[userId] = (iter + 1) / len;
+                    }
+                    #endregion
                     rs.Add(bodyList);
                 }
                 #region Write header
@@ -6662,7 +6675,43 @@ namespace Colsp.Api.Controllers
                     stream.Dispose();
                 }
                 #endregion
+
+                if (userExportProducts.ContainsKey(userId))
+                {
+                    userExportProducts[userId] = -1.0;
+                }
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/ProductStages/Export/Abort")]
+        [HttpPost]
+        public HttpResponseMessage ExportProductAbort()
+        {
+            //Check if userId exist in dictionary
+            if (userExportProducts.ContainsKey(User.UserRequest().UserId))
+            {
+                userExportProducts.Remove(User.UserRequest().UserId);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable);
+            }
+        }
+
+        [Route("api/ProductStages/Export/Progress")]
+        [HttpGet]
+        public HttpResponseMessage ExportProductProgress()
+        {
+            //Check if userId exist in dictionary
+            if (userExportProducts.ContainsKey(User.UserRequest().UserId))
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, userExportProducts[User.UserRequest().UserId]);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable);
             }
         }
 
