@@ -6659,7 +6659,6 @@ namespace Colsp.Api.Controllers
                 result.Content.Headers.ContentDisposition.FileName = "file.csv";
                 #endregion
                 return result;
-
             }
             catch (Exception e)
             {
