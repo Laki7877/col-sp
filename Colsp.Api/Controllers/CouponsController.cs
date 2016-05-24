@@ -176,7 +176,7 @@ namespace Colsp.Api.Controllers
             Coupon coupon = null;
             try
             {
-                if(User.HasPermission("Edit Promotion"))
+                if(User.ShopRequest() != null)
                 {
                     int shopId = User.ShopRequest().ShopId;
                     coupon = db.Coupons.Where(w => w.CouponId == couponId && w.ShopId == shopId)
@@ -188,7 +188,7 @@ namespace Colsp.Api.Controllers
                         .Include(i=>i.CouponShopMaps)
                         .Include(i=>i.CouponOrders).SingleOrDefault();
                 }
-                else if(User.HasPermission("Manage Global Coupons"))
+                else
                 {
                     coupon = db.Coupons.Where(w => w.CouponId == couponId)
                         .Include(i => i.CouponBrandMaps)
@@ -198,10 +198,6 @@ namespace Colsp.Api.Controllers
                         .Include(i => i.CouponPidMaps)
                         .Include(i => i.CouponShopMaps)
                         .Include(i => i.CouponOrders).SingleOrDefault();
-                }
-                else
-                {
-                    throw new Exception("You don't have a right permission");
                 }
                 if (coupon == null)
                 {
@@ -243,6 +239,9 @@ namespace Colsp.Api.Controllers
             var shopList = coupon.CouponShopMaps.ToList();
             var includeList = coupon.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).ToList();
             var excludeList = coupon.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).ToList();
+            var localCatIncludeList = coupon.CouponLocalCatPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).ToList();
+            var localCatExcludeList = coupon.CouponLocalCatPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).ToList();
+
             if (request.Conditions != null)
             {
                 if (request.Conditions.Order != null && request.Conditions.Order.Count > 0)
@@ -436,11 +435,90 @@ namespace Colsp.Api.Controllers
                                     {
                                         Filter = Constant.COUPON_FILTER_INCLUDE,
                                         CouponId = coupon.CouponId,
+                                        CategoryId = c.CategoryId,
                                         CreateBy = email,
                                         CreateOn = currentDt,
                                         UpdateBy = email,
                                         UpdateOn = currentDt,
                                     });
+                                }
+
+                                // Include Product in Local Categories
+                                if (c.Include != null && c.Include.Count > 0)
+                                {
+
+                                    foreach (string pid in c.Include)
+                                    {
+                                        bool _addNew = false;
+                                        if (localCatIncludeList == null || localCatIncludeList.Count == 0)
+                                        {
+                                            _addNew = true;
+                                        }
+                                        if (!_addNew)
+                                        {
+                                            CouponLocalCatPidMap current = localCatIncludeList.Where(w => w.Pid == pid).SingleOrDefault();
+                                            if (current != null)
+                                            {
+                                                localCatIncludeList.Remove(current);
+                                            }
+                                            else
+                                            {
+                                                _addNew = true;
+                                            }
+                                        }
+                                        if (_addNew)
+                                        {
+                                            coupon.CouponLocalCatPidMaps.Add(new CouponLocalCatPidMap()
+                                            {
+                                                Pid         = pid,
+                                                CategoryId  = c.CategoryId,
+                                                Filter      = Constant.COUPON_FILTER_INCLUDE,
+                                                CreateBy    = email,
+                                                CreateOn    = currentDt,
+                                                UpdateBy    = email,
+                                                UpdateOn    = currentDt,
+                                            });
+                                        }
+                                    }
+                                }
+
+                                // Exclude Product in Local Categories
+                                if (c.Exclude != null && c.Exclude.Count > 0)
+                                {
+
+                                    foreach (string pid in c.Exclude)
+                                    {
+                                        bool _addNew = false;
+                                        if (localCatExcludeList == null || localCatExcludeList.Count == 0)
+                                        {
+                                            _addNew = true;
+                                        }
+                                        if (!_addNew)
+                                        {
+                                            CouponLocalCatPidMap current = localCatExcludeList.Where(w => w.Pid == pid).SingleOrDefault();
+                                            if (current != null)
+                                            {
+                                                localCatExcludeList.Remove(current);
+                                            }
+                                            else
+                                            {
+                                                _addNew = true;
+                                            }
+                                        }
+                                        if (_addNew)
+                                        {
+                                            coupon.CouponLocalCatPidMaps.Add(new CouponLocalCatPidMap()
+                                            {
+                                                Pid         = pid,
+                                                CategoryId  = c.CategoryId,
+                                                Filter      = Constant.COUPON_FILTER_EXCLUDE,
+                                                CreateBy    = email,
+                                                CreateOn    = currentDt,
+                                                UpdateBy    = email,
+                                                UpdateOn    = currentDt,
+                                            });
+                                        }
+                                    }
                                 }
                             }
                         }

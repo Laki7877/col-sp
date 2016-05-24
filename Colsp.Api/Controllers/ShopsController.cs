@@ -217,6 +217,11 @@ namespace Colsp.Api.Controllers
                         s.Province,
                         s.District,
                         s.Country,
+                        PostalCode = s.PostCode == null ? null : new
+                        {
+                            s.PostCodeId,
+                            PostCode = s.PostCode.PostCode1,
+                        },
                         s.UrlKey,
                         Users = s.UserShopMaps.Select(u=> u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
                         new
@@ -296,6 +301,11 @@ namespace Colsp.Api.Controllers
                         s.Province,
                         s.District,
                         s.Country,
+                        PostalCode = s.PostCode == null ? null : new
+                        {
+                            s.PostCodeId,
+                            PostCode = s.PostCode.PostCode1,
+                        },
                         s.UrlKey,
                         s.DomainName,
                         Users = s.UserShopMaps.Select(u => u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
@@ -547,7 +557,8 @@ namespace Colsp.Api.Controllers
                 var shopNames = db.Shops.Where(w => ids.Contains(w.ShopId)).Select(s => new
                 {
                     s.ShopId,
-                    s.ShopNameEn
+                    s.ShopNameEn,
+                    s.UrlKey
                 });
                 foreach(var id in ids)
                 {
@@ -556,19 +567,16 @@ namespace Colsp.Api.Controllers
                         ShopId = id,
                         Status = Constant.STATUS_REMOVE,
                         ShopOwner = null,
-                        ShopNameEn = string.Concat(shopNames.Where(w => w.ShopId == id).Single().ShopNameEn, "_DELETE"),
+                        ShopNameEn = string.Concat(shopNames.Where(w => w.ShopId == id).Single().ShopNameEn, "_DELETE_", id),
+                        UrlKey = string.Concat(shopNames.Where(w => w.ShopId == id).Single().UrlKey, "_DELETE_", id),
                     };
                     db.Shops.Attach(shop);
                     db.Entry(shop).Property(p => p.Status).IsModified = true;
                     db.Entry(shop).Property(p => p.ShopOwner).IsModified = true;
                     db.Entry(shop).Property(p => p.ShopNameEn).IsModified = true;
+                    db.Entry(shop).Property(p => p.UrlKey).IsModified = true;
                     db.UserShopMaps.RemoveRange(db.UserShopMaps.Where(w => w.ShopId == id));
                 }
-                //var shops = db.Shops.Where(w => ids.Contains(w.ShopId));
-                //if(shops != null && shops.Count() > 0)
-                //{
-                //    shops.ToList().ForEach(e => { e.Status = Constant.STATUS_REMOVE; });
-                //}
                 db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
@@ -609,19 +617,37 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var shopId = User.ShopRequest().ShopId;
-                var shop = db.Shops.Where(w => w.ShopId == shopId && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE)))
+                if(User.ShopRequest() == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                var shop = User.ShopRequest();
+                var shopId = shop.ShopId;
+                int shopTypeId = 0;
+                if(shop.ShopType != null)
+                {
+                    shopTypeId = shop.ShopType.ShopTypeId;
+                }
+                var shopAppearace = db.Shops
+                    .Where(w => w.ShopId == shopId 
+                    && (w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE))
+                    && (w.ShopType != null && w.ShopType.ShopTypeThemeMaps.Any(a=>a.ShopTypeId == shopTypeId)))
                     .Select(s => new
                 {
                     s.ShopId,
                     s.ThemeId,
                     Data = s.ShopAppearance,
                 }).SingleOrDefault();
-                if(shop == null)
+                if(shopAppearace == null)
                 {
-                    throw new Exception("Cannot find shop");
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        ShopId = shopId,
+                        ThemeId = 0,
+                        Data = string.Empty
+                    });
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, shop);
+                return Request.CreateResponse(HttpStatusCode.OK, shopAppearace);
             }
             catch (Exception e)
             {
@@ -1067,10 +1093,18 @@ namespace Colsp.Api.Controllers
                             throw new Exception("Cannot find District");
                         }
                         shop.DistrictId = districtId;
+                        if (request.PostalCode != null && request.PostalCode.PostCodeId != 0)
+                        {
+                            var postCodeId = db.PostCodes.Where(w => w.PostCodeId == request.PostalCode.PostCodeId).Select(s => s.PostCodeId).SingleOrDefault();
+                            if(postCodeId == 0)
+                            {
+                                throw new Exception("Cannot find Postal Code");
+                            }
+                            shop.PostCodeId = postCodeId;
+                        }
                     }
                 }
             }
-            shop.ZipCode = Validation.ValidateString(request.ZipCode, "Zip Code", true, 10, false, string.Empty);
             shop.PhoneNumber = Validation.ValidateString(request.PhoneNumber, "Phone Number", true, 15, false, string.Empty);
             shop.FaxNumber = Validation.ValidateString(request.FaxNumber, "Fax Number", true, 15, false, string.Empty);
             shop.Telex = Validation.ValidateString(request.Telex, "Telex", true, 15, false, string.Empty);

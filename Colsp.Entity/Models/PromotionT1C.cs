@@ -12,14 +12,19 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSFeatureProduct
+    public partial class PromotionT1C
     {
-        public int CMSFeatureProductId { get; set; }
-        public int CMSMasterId { get; set; }
-        public string ProductId { get; set; }
+        public int TOneCId { get; set; }
+        public decimal Rate { get; set; }
+        public int MaxPoint { get; set; }
+        public int StartPoint { get; set; }
+        public string Day { get; set; }
+        public bool IsEveryDay { get; set; }
+        public System.DateTime EffectiveDate { get; set; }
+        public System.DateTime ExpiredDate { get; set; }
         public string CreateBy { get; set; }
         public System.DateTime CreateOn { get; set; }
-        public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
+        public string UpdateBy { get; set; }
     }
 }

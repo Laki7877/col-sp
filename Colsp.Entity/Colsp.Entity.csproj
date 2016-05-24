@@ -104,26 +104,26 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Models\ColspEntities.Context.tt">
+    <Content Include="Models\ColspModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ColspEntities.edmx</DependentUpon>
-      <LastGenOutput>ColspEntities.Context.cs</LastGenOutput>
+      <DependentUpon>ColspModel.edmx</DependentUpon>
+      <LastGenOutput>ColspModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\ColspEntities.tt">
+    <Content Include="Models\ColspModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ColspEntities.edmx</DependentUpon>
-      <LastGenOutput>ColspEntities.cs</LastGenOutput>
+      <DependentUpon>ColspModel.edmx</DependentUpon>
+      <LastGenOutput>ColspModel.cs</LastGenOutput>
     </Content>
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EntityDeploy Include="Models\ColspEntities.edmx">
+    <EntityDeploy Include="Models\ColspModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ColspEntities.Designer.cs</LastGenOutput>
+      <LastGenOutput>ColspModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\ColspEntities.edmx.diagram">
-      <DependentUpon>ColspEntities.edmx</DependentUpon>
+    <Content Include="Models\ColspModel.edmx.diagram">
+      <DependentUpon>ColspModel.edmx</DependentUpon>
     </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -141,508 +141,517 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\AppAuth.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Attribute.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributeFilterMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributePropertyMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributeSet.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributeSetMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributeSetTag.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributeValue.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AttributeValueMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BankDetail.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Brand.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BrandFeatureProduct.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BrandImage.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BrandOldMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CartDetail.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CartDiscount.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CartHead.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\City.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSCategory.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSCategoryProductMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSFeatureProduct.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSGroup.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSImage.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSMaster.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSMasterCategoryMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSMasterGroupMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSMasterSchedulerMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CMSScheduler.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ColspEntities.Context.cs">
+    <Compile Include="Models\ColspModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ColspEntities.Context.tt</DependentUpon>
+      <DependentUpon>ColspModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ColspEntities.cs">
+    <Compile Include="Models\ColspModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ColspEntities.Designer.cs">
+    <Compile Include="Models\ColspModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ColspEntities.edmx</DependentUpon>
+      <DependentUpon>ColspModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Country.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Coupon.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponBrandMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponCondition.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponCustomerMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponGlobalCatMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponLocalCatMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CouponLocalCatPidMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponOrder.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponPidMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CouponShopMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Customer.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerAddress.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerAddress_Staging.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CustomerNewsLetter.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerToken.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerTokenCreditCard.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerWishList.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Customer_Staging.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Deal.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\District.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GlobalCatAttributeSetMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GlobalCategory.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GlobalCatFeatureProduct.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GlobalCatImage.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Guest.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ImportHeader.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Inventory.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\InventoryHistory.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ItemOnHoldReport_Result.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LocalCategory.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LocalCatFeatureProduct.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LocalCatImage.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBDepartment.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProduct.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProductApproved.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProductBundle.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProductGroup.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProductMaster.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProductPicture.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProductRelateLink.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProductVideoLink.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBProperty.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBPropertyCategory.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBPropertyFilter.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBPropertyGroup.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Migrate_TBPropertyProduct.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\My_test_Result.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Newsletter.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NewsletterShopMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ODMPermission.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ODMProcessLog.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ODMRole.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ODMRolePermission.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ODMRoleUser.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ODMUser.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ODMUserMenuItem.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ODMUserToken.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Payment.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Permission.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Pid.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostCode.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostCodeMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Product.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductAttribute.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductGlobalCatMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductHistory.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductHistoryAttribute.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductHistoryGlobalCatMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductHistoryGroup.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductHistoryImage.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductHistoryLocalCatMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductHistoryTag.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductHistoryVideo.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductImage.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductLocalCatMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductNotify.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductRelated.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductReview.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStage.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageAttribute.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageComment.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageGlobalCatMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageGroup.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageImage.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageLocalCatMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageMaster.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageRelated.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageTag.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductStageVideo.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTag.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTmp.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductVideo.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PromotionBuy1Get1Item.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PromotionOnTopCreditCard.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PromotionOnTopCreditNumber.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PromotionT1C.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Province.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SaleReportForSeller_Result.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipping.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shop.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopCommission.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopGroup.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopImage.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopType.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopTypePermissionMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShopTypeThemeMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopUserGroupMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SortBy.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\spc_tableDescription_Result.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SplitString_Result.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StockStatusReport_Result.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StoreBranch.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StoreReceive.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StoreReceiveCode.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StoreReturn.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StoreReturnReason.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBAdminMenuItemTmp.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBCDSBranch.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBCMCity.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBDvMapZone.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBPermissionTmp.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBRolePermissionTmp.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBRoleTmp.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBRoleUserTmp.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBSetting.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBUserAdminTmp.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TBUserAdminWebTokenTmp.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TermPayment.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Theme.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserBrandMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserGroup.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserGroupMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserGroupPermissionMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserShopMap.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\VendorTaxRate.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\WithholdingTax.cs">
-      <DependentUpon>ColspEntities.tt</DependentUpon>
+      <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

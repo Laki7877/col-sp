@@ -20,7 +20,7 @@ namespace Colsp.Entity.Models
         public string ImageUrl { get; set; }
         public string EnTh { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateOn { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdatedOn { get; set; }
     }

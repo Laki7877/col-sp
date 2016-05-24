@@ -23,6 +23,7 @@ namespace Colsp.Entity.Models
             this.ProductVideos = new HashSet<ProductVideo>();
             this.ProductGlobalCatMaps = new HashSet<ProductGlobalCatMap>();
             this.ProductLocalCatMaps = new HashSet<ProductLocalCatMap>();
+            this.ProductImages = new HashSet<ProductImage>();
         }
     
         public string Pid { get; set; }
@@ -118,6 +119,7 @@ namespace Colsp.Entity.Models
         public int VariantCount { get; set; }
         public bool Visibility { get; set; }
         public string OldPid { get; set; }
+        public decimal ProductRating { get; set; }
         public string Bu { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
@@ -137,5 +139,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

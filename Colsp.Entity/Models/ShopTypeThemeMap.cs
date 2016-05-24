@@ -12,16 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CMSStatusFlow
+    public partial class ShopTypeThemeMap
     {
-        public int CMSStatusId { get; set; }
-        public string CMSStatusName { get; set; }
-        public Nullable<bool> Status { get; set; }
-        public Nullable<int> CreateBy { get; set; }
-        public Nullable<System.DateTime> Createdate { get; set; }
-        public Nullable<int> UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateDate { get; set; }
-        public string CreateIP { get; set; }
-        public string UpdateIP { get; set; }
+        public int ShopTypeId { get; set; }
+        public int ThemeId { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
+    
+        public virtual ShopType ShopType { get; set; }
+        public virtual Theme Theme { get; set; }
     }
 }

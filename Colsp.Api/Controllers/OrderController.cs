@@ -80,10 +80,19 @@ namespace Colsp.Api.Controllers
                 {
                     order.Status = request.Status;
                 }
-                
-                order.InvoiceNumber = request.InvoiceNumber;
-                order.Carrier = request.Carrier;
-                order.TrackingNumber = request.TrackingNumber;
+                if (!string.IsNullOrEmpty(request.InvoiceNumber))
+                {
+                    order.InvoiceNumber = request.InvoiceNumber;
+                }
+
+                if (!string.IsNullOrEmpty(request.Carrier))
+                {
+                    order.Carrier = request.Carrier;
+                }
+                if (!string.IsNullOrEmpty(request.TrackingNumber))
+                {
+                    order.Carrier = request.TrackingNumber;
+                }
                 foreach (var product in request.Products)
                 {
                     var current = order.Products.Where(w => w.Pid.Equals(product.Pid)).SingleOrDefault();

@@ -36,6 +36,7 @@ namespace Colsp.Entity.Models
             this.ShopImages = new HashSet<ShopImage>();
             this.ShopUserGroupMaps = new HashSet<ShopUserGroupMap>();
             this.UserShopMaps = new HashSet<UserShopMap>();
+            this.ProductImages = new HashSet<ProductImage>();
         }
     
         public int ShopId { get; set; }
@@ -76,7 +77,7 @@ namespace Colsp.Entity.Models
         public Nullable<int> CityId { get; set; }
         public Nullable<int> ProvinceId { get; set; }
         public Nullable<int> DistrictId { get; set; }
-        public string ZipCode { get; set; }
+        public Nullable<int> PostCodeId { get; set; }
         public string CountryCode { get; set; }
         public string PhoneNumber { get; set; }
         public string FaxNumber { get; set; }
@@ -108,6 +109,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<LocalCatImage> LocalCatImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NewsletterShopMap> NewsletterShopMaps { get; set; }
+        public virtual PostCode PostCode { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistory> ProductHistories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -141,5 +143,7 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserShopMap> UserShopMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

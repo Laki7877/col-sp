@@ -12,12 +12,19 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GlobalCategoryPID
+    public partial class CouponLocalCatPidMap
     {
+        public int CouponId { get; set; }
         public int CategoryId { get; set; }
-        public string CategoryAbbreviation { get; set; }
-        public string CurrentKey { get; set; }
+        public string Pid { get; set; }
+        public string Filter { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
-        public virtual GlobalCategory GlobalCategory { get; set; }
+        public virtual Coupon Coupon { get; set; }
+        public virtual LocalCategory LocalCategory { get; set; }
+        public virtual ProductStage ProductStage { get; set; }
     }
 }

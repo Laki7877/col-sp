@@ -14,6 +14,7 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using Colsp.Api.Helpers;
 using System.IO;
+using System.Data.Entity.SqlServer;
 
 namespace Colsp.Api.Controllers
 {
@@ -120,7 +121,8 @@ namespace Colsp.Api.Controllers
                 if (request.SearchText != null)
                 {
                     brands = brands.Where(b => b.BrandNameEn.Contains(request.SearchText)
-                    || b.BrandNameTh.Contains(request.SearchText));
+                    || b.BrandNameTh.Contains(request.SearchText)
+                    || SqlFunctions.StringConvert((double)b.BrandId).Equals(request.SearchText));
                 }
                 if (request.BrandId != 0)
                 {
@@ -667,7 +669,7 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             #region Brand Feature Product
-            var brandProList = brand.BrandFeatureProducts.ToList();
+            var brandProList = brand.BrandFeatureProducts.Distinct().ToList();
             if (request.FeatureProducts != null && request.FeatureProducts.Count > 0)
             {
                 int brandIdTmp = brand.BrandId;

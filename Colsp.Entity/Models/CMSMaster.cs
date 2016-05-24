@@ -20,10 +20,8 @@ namespace Colsp.Entity.Models
         public string CMSMasterURLKey { get; set; }
         public string CMSMasterType { get; set; }
         public Nullable<System.DateTime> CMSMasterEffectiveDate { get; set; }
-        public Nullable<System.TimeSpan> CMSMasterEffectiveTime { get; set; }
-        public Nullable<System.DateTime> CMSMasterExpiryDate { get; set; }
-        public Nullable<System.TimeSpan> CMSMasterExpiryTime { get; set; }
-        public Nullable<int> CMSMasterTotal { get; set; }
+        public Nullable<System.DateTime> CMSMasterExpireDate { get; set; }
+        public int CMSMasterTotal { get; set; }
         public string MobileShortDescriptionTH { get; set; }
         public string MobileLongDescriptionTH { get; set; }
         public string ShortDescriptionTH { get; set; }
@@ -34,15 +32,15 @@ namespace Colsp.Entity.Models
         public string ShortDescriptionEN { get; set; }
         public string LongDescriptionEN { get; set; }
         public string LinkToOutside { get; set; }
-        public Nullable<bool> IsCampaign { get; set; }
-        public Nullable<decimal> MinPrice { get; set; }
-        public Nullable<decimal> MaxPrice { get; set; }
+        public bool IsCampaign { get; set; }
+        public decimal MinPrice { get; set; }
+        public decimal MaxPrice { get; set; }
         public string FeatureTitle { get; set; }
-        public Nullable<bool> TitleShowcase { get; set; }
+        public bool TitleShowcase { get; set; }
         public string Status { get; set; }
-        public Nullable<bool> Visibility { get; set; }
+        public bool Visibility { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateOn { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string CreateIP { get; set; }

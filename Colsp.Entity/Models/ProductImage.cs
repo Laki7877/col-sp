@@ -12,24 +12,26 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductStageImage360
+    public partial class ProductImage
     {
-        public int ImageId { get; set; }
+        public long ImageId { get; set; }
         public string Pid { get; set; }
-        public Nullable<int> ShopId { get; set; }
-        public string Path { get; set; }
         public string ImageName { get; set; }
-        public string ImageOriginName { get; set; }
+        public int SeqNo { get; set; }
+        public bool Thumbnail { get; set; }
+        public bool Normal { get; set; }
+        public bool Large { get; set; }
+        public bool Zoom { get; set; }
+        public int ShopId { get; set; }
         public string ImageUrlEn { get; set; }
-        public string ImageUrlTh { get; set; }
-        public Nullable<int> Position { get; set; }
-        public Nullable<bool> FeatureFlag { get; set; }
+        public bool FeatureFlag { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDt { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDt { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     
+        public virtual Product Product { get; set; }
         public virtual Shop Shop { get; set; }
     }
 }

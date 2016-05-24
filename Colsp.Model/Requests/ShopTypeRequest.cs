@@ -8,6 +8,8 @@ namespace Colsp.Model.Requests
         public string ShopTypeNameEn { get; set; }
         public string SearchText { get; set; }
         public List<PermissionRequest> Permission { get; set; }
+        public List<ThemeRequest> Themes { get; set; }
+
 
         public ShopTypeRequest()
         {
@@ -15,6 +17,7 @@ namespace Colsp.Model.Requests
             ShopTypeNameEn = string.Empty;
             SearchText = string.Empty;
             Permission = new List<PermissionRequest>();
+            Themes = new List<ThemeRequest>();
         }
 
         public override void DefaultOnNull()
@@ -23,5 +26,20 @@ namespace Colsp.Model.Requests
             _order = GetValueOrDefault(_order, "UpdateOn");
             base.DefaultOnNull();
         }
+    }
+
+    public class ThemeRequest
+    {
+        public int ThemeId { get; set; }
+        public string ThemeName { get; set; }
+        public string ThemeImage { get; set; }
+
+        public ThemeRequest()
+        {
+            ThemeId = 0;
+            ThemeName = string.Empty;
+            ThemeImage = string.Empty;
+        }
+
     }
 }

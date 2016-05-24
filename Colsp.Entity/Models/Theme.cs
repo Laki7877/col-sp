@@ -18,7 +18,7 @@ namespace Colsp.Entity.Models
         public Theme()
         {
             this.Shops = new HashSet<Shop>();
-            this.ShopTypes = new HashSet<ShopType>();
+            this.ShopTypeThemeMaps = new HashSet<ShopTypeThemeMap>();
         }
     
         public int ThemeId { get; set; }
@@ -33,6 +33,6 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shop> Shops { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ShopType> ShopTypes { get; set; }
+        public virtual ICollection<ShopTypeThemeMap> ShopTypeThemeMaps { get; set; }
     }
 }

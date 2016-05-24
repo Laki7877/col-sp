@@ -12,10 +12,14 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GlobalCategoryAbbrevation
+    public partial class CustomerNewsLetter
     {
-        public int GlobalCategoryAbbrevation1 { get; set; }
-        public string Abbrevation { get; set; }
-        public bool Active { get; set; }
+        public string Email { get; set; }
+        public int ShopId { get; set; }
+        public bool IsSubscribe { get; set; }
+        public System.DateTime CreateOn { get; set; }
+        public string CreateBy { get; set; }
+        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     }
 }

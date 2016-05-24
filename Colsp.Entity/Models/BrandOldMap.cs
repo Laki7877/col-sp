@@ -12,8 +12,12 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Table
+    public partial class BrandOldMap
     {
-        public int Id { get; set; }
+        public int BrandId { get; set; }
+        public int OldBrandId { get; set; }
+        public string DbName { get; set; }
+    
+        public virtual Brand Brand { get; set; }
     }
 }
