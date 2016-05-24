@@ -6646,6 +6646,10 @@ namespace Colsp.Api.Controllers
                 stream.Position = 0;
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                
+                //export file
+                stream.WriteTo(new FileStream("EXPORT", FileMode.OpenOrCreate));
+
                 result.Content = new StreamContent(stream);
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream")
                 {
@@ -6714,6 +6718,13 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotAcceptable);
             }
+        }
+
+        [Route("api/ProductStages/Export")]
+        [HttpGet]
+        public HttpResponseMessage ExportProductGet()
+        {
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
         [Route("api/ProductStages/Import")]
