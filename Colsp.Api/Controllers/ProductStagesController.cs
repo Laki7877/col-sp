@@ -6685,7 +6685,7 @@ namespace Colsp.Api.Controllers
         [HttpPost]
         public HttpResponseMessage ExportProductProducts(ExportRequest request)
         {
-            Task.Run(() => { this.Export(request, User.UserRequest().UserId) });
+            Task.Run(() => { this.Export(request, User.UserRequest().UserId); });
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
