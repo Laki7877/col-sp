@@ -397,8 +397,8 @@ namespace Colsp.Api.Controllers
         }
 
         [Route("api/StandardReport/ExportStockStatusReport")]
-        [HttpGet]
-        public HttpResponseMessage ExportStockStatusReport([FromUri]StockStatusReportRequest request)
+        [HttpPost]
+        public HttpResponseMessage ExportStockStatusReport(StockStatusReportRequest request)
         {
             MemoryStream stream = null;
             StreamWriter writer = null;
@@ -553,8 +553,8 @@ namespace Colsp.Api.Controllers
         }
 
         [Route("api/StandardReport/ExportItemOnHoldReport")]
-        [HttpGet]
-        public HttpResponseMessage ExportItemOnHoldReport([FromUri]ItemOnHoldReportRequest request)
+        [HttpPost]
+        public HttpResponseMessage ExportItemOnHoldReport(ItemOnHoldReportRequest request)
         {
             MemoryStream stream = null;
             StreamWriter writer = null;
@@ -644,7 +644,67 @@ namespace Colsp.Api.Controllers
 
         #endregion
 
+        #region Commission Report
+        //ยังไม่เสร็จ
+        [Route("api/StandardReport/GetCommisionReport")]
+        [HttpGet]
+        public HttpResponseMessage GetCommisionReport([FromUri]StockStatusReportRequest request)
+        {
+            try
+            {
+                List<StockStatusReportList> report = new List<StockStatusReportList>();
 
+                var Query = db.StockStatusReport().AsQueryable();
+
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, report);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrWhiteSpace(request.Pid))
+                {
+                    report = report.Where(c => c.PID.Contains(request.Pid)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.variant))
+                {
+                    report = report.Where(c => (c.variant1.Contains(request.variant) || c.variant2.Contains(request.variant))).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.ProductName))
+                {
+                    report = report.Where(c => c.ProductNameEN.Contains(request.ProductName) || c.ProductNameTH.Contains(request.ProductName)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.LastSoldDate))
+                {
+
+                    report = report.Where(c => c.LastSoldDate == request.LastSoldDate).ToList();
+                }
+
+                var total = report.Count();
+                var pagedProducts = Query.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+
+        }
+
+        #endregion
+
+        #region Return Report
+
+        #endregion
+
+        #region OI Report
+
+        #endregion
+
+        #region Non-Move Report
+
+        #endregion
 
         protected override void Dispose(bool disposing)
         {
