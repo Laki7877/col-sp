@@ -5688,7 +5688,7 @@ namespace Colsp.Api.Controllers
         }
 
         private volatile Dictionary<int, double> userExportProducts = new Dictionary<int, double>();
-        private void Export(int userId)
+        private void Export(ExportRequest request, int userId)
         {
             MemoryStream stream = null;
             StreamWriter writer = null;
@@ -6654,8 +6654,6 @@ namespace Colsp.Api.Controllers
                 result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
                 result.Content.Headers.ContentDisposition.FileName = "file.csv";
                 #endregion
-
-                return result;
             }
             catch (Exception e)
             {
@@ -6683,7 +6681,7 @@ namespace Colsp.Api.Controllers
         [HttpPost]
         public HttpResponseMessage ExportProductProducts(ExportRequest request)
         {
-            Task.Run(() => { this.Export(User.UserRequest().UserId) });
+            Task.Run(() => { this.Export(request, User.UserRequest().UserId) });
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
