@@ -645,41 +645,35 @@ namespace Colsp.Api.Controllers
         #endregion
 
         #region Commission Report
-        //ยังไม่เสร็จ
-        [Route("api/StandardReport/GetCommisionReport")]
+        //ยังไม่เสร็จ เหลือช่วงวัน
+        [Route("api/StandardReport/GetCommissionReport")]
         [HttpGet]
-        public HttpResponseMessage GetCommisionReport([FromUri]StockStatusReportRequest request)
+        public HttpResponseMessage GetCommissionReport([FromUri]CommissionReportRequest request)
         {
             try
             {
                 List<StockStatusReportList> report = new List<StockStatusReportList>();
 
-                var Query = db.StockStatusReport().AsQueryable();
+                var Query = db.ReportProductsCommissionForOrder().AsQueryable();
 
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, report);
                 }
                 request.DefaultOnNull();
-                if (!string.IsNullOrWhiteSpace(request.Pid))
+                if (!string.IsNullOrWhiteSpace(request.PID))
                 {
-                    report = report.Where(c => c.PID.Contains(request.Pid)).ToList();
-                }
-                if (!string.IsNullOrWhiteSpace(request.variant))
-                {
-                    report = report.Where(c => (c.variant1.Contains(request.variant) || c.variant2.Contains(request.variant))).ToList();
+                    Query = Query.Where(c => c.PID.Contains(request.PID)).AsQueryable();
                 }
                 if (!string.IsNullOrWhiteSpace(request.ProductName))
                 {
-                    report = report.Where(c => c.ProductNameEN.Contains(request.ProductName) || c.ProductNameTH.Contains(request.ProductName)).ToList();
+                    Query = Query.Where(c => c.ProductName.Contains(request.ProductName)).AsQueryable();
                 }
-                if (!string.IsNullOrWhiteSpace(request.LastSoldDate))
+                if (!string.IsNullOrWhiteSpace(request.OrderId))
                 {
-
-                    report = report.Where(c => c.LastSoldDate == request.LastSoldDate).ToList();
+                    Query = Query.Where(c => c.OrderId.Contains(request.OrderId) ).AsQueryable();
                 }
-
-                var total = report.Count();
+                var total = Query.Count();
                 var pagedProducts = Query.Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
 

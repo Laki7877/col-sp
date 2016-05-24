@@ -20,7 +20,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -283,6 +282,16 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<ItemOnHoldReport_Result> ItemOnHoldReport()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ItemOnHoldReport_Result>("ItemOnHoldReport");
+        }
+    
+        public virtual ObjectResult<ReportProductsCommissionForOrder_Result> ReportProductsCommissionForOrder()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportProductsCommissionForOrder_Result>("ReportProductsCommissionForOrder");
+        }
+    
+        public virtual ObjectResult<ReportReturnItemByOrderReport_Result> ReportReturnItemByOrderReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportReturnItemByOrderReport_Result>("ReportReturnItemByOrderReport");
         }
     }
 }
