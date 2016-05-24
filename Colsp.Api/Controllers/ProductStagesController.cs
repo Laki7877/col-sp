@@ -6654,12 +6654,8 @@ namespace Colsp.Api.Controllers
                 result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
                 result.Content.Headers.ContentDisposition.FileName = "file.csv";
                 #endregion
-<<<<<<< HEAD
-                
 
-=======
                 return result;
->>>>>>> df074a6056e26ea9a02aa1c268efb4c0dc2b46f9
             }
             catch (Exception e)
             {
