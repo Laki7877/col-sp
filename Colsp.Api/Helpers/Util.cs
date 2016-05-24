@@ -34,7 +34,6 @@ namespace Colsp.Api.Helpers
             return fileUpload;
         }
 
-
         public static ImageRequest SetupImage(HttpRequestMessage Request, MultipartFileData fileData, string rootPath, string folderName
             ,int minWidth, int minHeight, int maxWidth, int maxHeight, int maxSize, bool isSquare)
         {

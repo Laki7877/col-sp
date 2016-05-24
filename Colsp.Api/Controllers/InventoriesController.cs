@@ -34,7 +34,7 @@ namespace Colsp.Api.Controllers
                 var products = (
                            from inv in db.Inventories
                            join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
-                           where !stage.Shop.Status.Equals(Constant.STATUS_REMOVE) && 
+                           where !Constant.STATUS_REMOVE.Equals(stage.Status) && 
                                  (
                                     stage.IsVariant == true 
                                     || (stage.IsVariant == false && stage.ImageCount == 0)

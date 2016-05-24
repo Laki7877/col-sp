@@ -68,6 +68,7 @@ namespace Colsp.Entity.Models
         public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public System.DateTime UpdateOn { get; set; }
+        public Nullable<int> OldGroupId { get; set; }
     
         public virtual AttributeSet AttributeSet { get; set; }
         public virtual Brand Brand { get; set; }

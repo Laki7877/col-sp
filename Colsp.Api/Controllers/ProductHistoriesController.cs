@@ -222,7 +222,7 @@ namespace Colsp.Api.Controllers
                         }),
                         Images = st.ProductHistoryImages.Select(si => new
                         {
-                            si.ImageUrlEn
+                            //si.ImageUrlEn
                         }),
                         Videos = st.ProductHistoryVideos.OrderBy(o => o.Position).Select(sv => new
                         {
@@ -429,7 +429,7 @@ namespace Colsp.Api.Controllers
                 {
                     response.MasterVariant.Images.Add(new ImageRequest()
                     {
-                        Url = image.ImageUrlEn,
+                        //Url = image.ImageUrlEn,
                     });
                 }
             }
@@ -576,7 +576,7 @@ namespace Colsp.Api.Controllers
                     {
                         tmpVariant.Images.Add(new ImageRequest()
                         {
-                            Url = image.ImageUrlEn,
+                            //Url = image.ImageUrlEn,
                         });
                     }
                 }
