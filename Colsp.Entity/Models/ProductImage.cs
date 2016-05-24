@@ -23,6 +23,10 @@ namespace Colsp.Entity.Models
         public bool Large { get; set; }
         public bool Zoom { get; set; }
         public int ShopId { get; set; }
+<<<<<<< HEAD
+=======
+        public string ImageUrlEn { get; set; }
+>>>>>>> dfba9c3cff84d3daefe53727db586f6b8c2fea00
         public bool FeatureFlag { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }

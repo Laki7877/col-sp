@@ -175,6 +175,7 @@
     </Content>
     <Content Include="Metadata\deploymentTemplates\apiappconfig.azureresource.json" />
     <Content Include="apiapp.json" />
+    <None Include="Properties\PublishProfiles\COL-API.pubxml" />
     <None Include="Properties\PublishProfiles\colsp-dev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\colsp-dev - Web Deploy.pubxml" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />

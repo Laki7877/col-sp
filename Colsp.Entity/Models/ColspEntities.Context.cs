@@ -20,7 +20,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -41,11 +40,20 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<BrandFeatureProduct> BrandFeatureProducts { get; set; }
         public virtual DbSet<BrandImage> BrandImages { get; set; }
-        public virtual DbSet<BrandOldMap> BrandOldMaps { get; set; }
         public virtual DbSet<CartDetail> CartDetails { get; set; }
         public virtual DbSet<CartDiscount> CartDiscounts { get; set; }
         public virtual DbSet<CartHead> CartHeads { get; set; }
         public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<CMSCategory> CMSCategories { get; set; }
+        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
+        public virtual DbSet<CMSFeatureProduct> CMSFeatureProducts { get; set; }
+        public virtual DbSet<CMSGroup> CMSGroups { get; set; }
+        public virtual DbSet<CMSImage> CMSImages { get; set; }
+        public virtual DbSet<CMSMaster> CMSMasters { get; set; }
+        public virtual DbSet<CMSMasterCategoryMap> CMSMasterCategoryMaps { get; set; }
+        public virtual DbSet<CMSMasterGroupMap> CMSMasterGroupMaps { get; set; }
+        public virtual DbSet<CMSMasterSchedulerMap> CMSMasterSchedulerMaps { get; set; }
+        public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponBrandMap> CouponBrandMaps { get; set; }
@@ -53,7 +61,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CouponCustomerMap> CouponCustomerMaps { get; set; }
         public virtual DbSet<CouponGlobalCatMap> CouponGlobalCatMaps { get; set; }
         public virtual DbSet<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
-        public virtual DbSet<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
         public virtual DbSet<CouponOrder> CouponOrders { get; set; }
         public virtual DbSet<CouponPidMap> CouponPidMaps { get; set; }
         public virtual DbSet<CouponShopMap> CouponShopMaps { get; set; }
@@ -61,7 +68,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Customer_Staging> Customer_Staging { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<CustomerAddress_Staging> CustomerAddress_Staging { get; set; }
-        public virtual DbSet<CustomerNewsLetter> CustomerNewsLetters { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
         public virtual DbSet<CustomerTokenCreditCard> CustomerTokenCreditCards { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
@@ -101,7 +107,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
         public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
         public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
-        public virtual DbSet<ProductImage> ProductImages { get; set; }
         public virtual DbSet<ProductLocalCatMap> ProductLocalCatMaps { get; set; }
         public virtual DbSet<ProductNotify> ProductNotifies { get; set; }
         public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
@@ -138,6 +143,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<StoreReceive> StoreReceives { get; set; }
         public virtual DbSet<StoreReceiveCode> StoreReceiveCodes { get; set; }
         public virtual DbSet<StoreReturn> StoreReturns { get; set; }
+        public virtual DbSet<Subscribe> Subscribes { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<TermPayment> TermPayments { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
@@ -179,16 +185,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBSetting> TBSettings { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
-        public virtual DbSet<CMSCategory> CMSCategories { get; set; }
-        public virtual DbSet<CMSCategoryProductMap> CMSCategoryProductMaps { get; set; }
-        public virtual DbSet<CMSFeatureProduct> CMSFeatureProducts { get; set; }
-        public virtual DbSet<CMSGroup> CMSGroups { get; set; }
-        public virtual DbSet<CMSImage> CMSImages { get; set; }
-        public virtual DbSet<CMSMaster> CMSMasters { get; set; }
-        public virtual DbSet<CMSMasterCategoryMap> CMSMasterCategoryMaps { get; set; }
-        public virtual DbSet<CMSMasterGroupMap> CMSMasterGroupMaps { get; set; }
-        public virtual DbSet<CMSMasterSchedulerMap> CMSMasterSchedulerMaps { get; set; }
-        public virtual DbSet<CMSScheduler> CMSSchedulers { get; set; }
+        public virtual DbSet<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
     
         [DbFunction("Entities", "SplitString")]
         public virtual IQueryable<SplitString_Result> SplitString(string input, string character)
@@ -336,20 +333,6 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_creatediagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
         }
     
-        public virtual ObjectResult<StockStatusReport_Result> StockStatusReport()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result>("StockStatusReport");
-        }
-    
-        public virtual ObjectResult<Nullable<long>> GetNextProductStageImageId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageImageId");
-        }
-        public virtual ObjectResult<ReportProductsCommissionForOrder_Result> ReportProductsCommissionForOrder()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportProductsCommissionForOrder_Result>("ReportProductsCommissionForOrder");
-        }
-    
         public virtual int sp_dropdiagram(string diagramname, Nullable<int> owner_id)
         {
             var diagramnameParameter = diagramname != null ?
@@ -418,6 +401,11 @@ namespace Colsp.Entity.Models
                 new ObjectParameter("tablename", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spc_tableDescription_Result>("spc_tableDescription", tablenameParameter);
+        }
+    
+        public virtual ObjectResult<StockStatusReport_Result> StockStatusReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result>("StockStatusReport");
         }
     }
 }

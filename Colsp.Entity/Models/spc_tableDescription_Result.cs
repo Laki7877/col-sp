@@ -10,16 +10,16 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class CMSFeatureProduct
+    public partial class spc_tableDescription_Result
     {
-        public int CMSFeatureProductId { get; set; }
-        public int CMSMasterId { get; set; }
-        public string ProductId { get; set; }
-        public string CreateBy { get; set; }
-        public System.DateTime CreateOn { get; set; }
-        public string UpdateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public string TABLE_NAME { get; set; }
+        public string COLUMN_NAME { get; set; }
+        public string DATA_TYPE { get; set; }
+        public short CHARACTER_MAXIMUM_LENGTH { get; set; }
+        public byte precision { get; set; }
+        public byte scale { get; set; }
+        public string COLUMN_DEFAULT { get; set; }
+        public Nullable<bool> IS_NULLABLE { get; set; }
     }
 }

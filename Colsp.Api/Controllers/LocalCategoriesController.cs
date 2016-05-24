@@ -33,7 +33,7 @@ namespace Colsp.Api.Controllers
                 int shopId = 0;
                 if (request == null)
                 {
-                    shopId = User.ShopRequest().ShopId;
+                    shopId = 1; //User.ShopRequest().ShopId;
                 }
                 else
                 {

@@ -10,34 +10,25 @@
 namespace Colsp.Entity.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ProductStage
+    public partial class My_test_Result
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ProductStage()
-        {
-            this.CouponLocalCatPidMaps = new HashSet<CouponLocalCatPidMap>();
-            this.CouponPidMaps = new HashSet<CouponPidMap>();
-            this.ProductStageAttributes = new HashSet<ProductStageAttribute>();
-            this.ProductStageComments = new HashSet<ProductStageComment>();
-            this.ProductStageImages = new HashSet<ProductStageImage>();
-            this.ProductStageMasters = new HashSet<ProductStageMaster>();
-            this.ProductStageMasters1 = new HashSet<ProductStageMaster>();
-            this.ProductStageVideos = new HashSet<ProductStageVideo>();
-        }
-    
         public string Pid { get; set; }
+        public string ParentPid { get; set; }
+        public string MasterPid { get; set; }
         public long ProductId { get; set; }
         public int ShopId { get; set; }
+        public int ShippingId { get; set; }
+        public int GlobalCatId { get; set; }
+        public Nullable<int> LocalCatId { get; set; }
+        public Nullable<int> AttributeSetId { get; set; }
+        public Nullable<int> BrandId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public string ProdTDNameTh { get; set; }
         public string ProdTDNameEn { get; set; }
         public string JDADept { get; set; }
         public string JDASubDept { get; set; }
-        public string SaleUnitTh { get; set; }
-        public string SaleUnitEn { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
         public decimal OriginalPrice { get; set; }
@@ -66,6 +57,8 @@ namespace Colsp.Entity.Models
         public string KillerPoint2Th { get; set; }
         public string KillerPoint3Th { get; set; }
         public string Installment { get; set; }
+        public int TheOneCardEarn { get; set; }
+        public string GiftWrap { get; set; }
         public decimal Length { get; set; }
         public decimal Height { get; set; }
         public decimal Width { get; set; }
@@ -97,38 +90,28 @@ namespace Colsp.Entity.Models
         public int MaxiQtyAllowed { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal PurchasePrice { get; set; }
+        public System.DateTime EffectiveDate { get; set; }
+        public System.DateTime ExpireDate { get; set; }
+        public string SaleUnitTh { get; set; }
+        public string SaleUnitEn { get; set; }
+        public bool IsNew { get; set; }
+        public bool IsClearance { get; set; }
+        public bool IsBestSeller { get; set; }
+        public bool IsOnlineExclusive { get; set; }
+        public bool IsOnlyAt { get; set; }
+        public string Remark { get; set; }
         public bool IsSell { get; set; }
         public bool IsVariant { get; set; }
         public bool IsMaster { get; set; }
         public int VariantCount { get; set; }
         public bool Visibility { get; set; }
         public string OldPid { get; set; }
+        public decimal ProductRating { get; set; }
         public string Bu { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
-        public System.DateTime UpdateOn { get; set; }
-        public Nullable<System.DateTime> EstimateGoodsReceiveDate { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }
-        public virtual Inventory Inventory { get; set; }
-        public virtual ProductStageGroup ProductStageGroup { get; set; }
-        public virtual Shop Shop { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageAttribute> ProductStageAttributes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageComment> ProductStageComments { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageImage> ProductStageImages { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageMaster> ProductStageMasters { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageMaster> ProductStageMasters1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
     }
 }

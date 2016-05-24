@@ -269,7 +269,7 @@ namespace Colsp.Logic
                         cms.CMSMasterType           = request.CMSMasterType;
                         cms.CMSMasterEffectiveDate  = request.EffectiveDate;
                         //cms.CMSMasterEffectiveTime  = request.EffectiveTime;
-                        //cms.CMSMasterExpiryDate     = request.ExpiryDate;
+                        cms.CMSMasterExpireDate     = request.ExpiryDate;
                         //cms.CMSMasterExpiryTime     = request.ExpiryTime;
                         cms.LongDescriptionEN       = request.LongDescriptionEN;
                         cms.LongDescriptionTH       = request.LongDescriptionTH;
@@ -310,7 +310,7 @@ namespace Colsp.Logic
                                     Position  = position++,
                                     EnTh      = "EN",
                                     CreateBy  = request.CreateBy,
-                                    //CreateOn  = request.CreateOn
+                                    CreateOn  = request.CreateOn.Value
                                 });
                             }
                         }
@@ -326,7 +326,7 @@ namespace Colsp.Logic
                                     Position  = position++,
                                     EnTh      = "TH",
                                     CreateBy  = request.CreateBy,
-                                    //CreateOn  = request.CreateOn
+                                    CreateOn  = request.CreateOn.Value
                                 });
                             }
                         }
@@ -338,7 +338,7 @@ namespace Colsp.Logic
                             cmsFeatureProduct.CMSMasterId       = masterId;
                             cmsFeatureProduct.ProductId         = featureProductRq.ProductId;
                             cmsFeatureProduct.CreateBy          = featureProductRq.CreateBy;
-                            //cmsFeatureProduct.CreateOn          = featureProductRq.CreateOn;
+                            cmsFeatureProduct.CreateOn          = featureProductRq.CreateOn.Value;
 
                             db.CMSFeatureProducts.Add(cmsFeatureProduct);
                         }
@@ -353,7 +353,7 @@ namespace Colsp.Logic
                             cmsMasterCate.ShopId                = masterCateRq.ShopId;
                             cmsMasterCate.Status                = masterCateRq.Status;
                             cmsMasterCate.CreateBy              = request.CreateBy;
-                            //cmsMasterCate.CreateOn              = request.CreateOn;
+                            cmsMasterCate.CreateOn              = request.CreateOn.Value;
                             cmsMasterCate.CreateIP              = request.CreateIP;
 
                             db.CMSMasterCategoryMaps.Add(cmsMasterCate);
@@ -384,7 +384,7 @@ namespace Colsp.Logic
 
                             cmsScheduler.EffectiveDate  = SchEffectiveDate.Date;
                             //cmsScheduler.EffectiveTime  = SchEffectiveDate.TimeOfDay;
-                            //cmsScheduler.ExpiryDate     = SchExpiryDate;
+                            cmsScheduler.ExpireDate     = SchExpiryDate;
                             //cmsScheduler.ExpiryTime     = SchExpiryDate.TimeOfDay;
                             db.CMSSchedulers.Add(cmsScheduler);
                             
@@ -439,7 +439,7 @@ namespace Colsp.Logic
                     cms.CMSMasterType           = request.CMSMasterType;
                     cms.CMSMasterEffectiveDate  = request.EffectiveDate;
                     //cms.CMSMasterEffectiveTime  = request.EffectiveTime;
-                    //cms.CMSMasterExpiryDate     = request.ExpiryDate;
+                    cms.CMSMasterExpireDate     = request.ExpiryDate;
                     //cms.CMSMasterExpiryTime     = request.ExpiryTime;
                     cms.LongDescriptionEN       = request.LongDescriptionEN;
                     cms.LongDescriptionTH       = request.LongDescriptionTH;
@@ -519,7 +519,7 @@ namespace Colsp.Logic
                         {
                             // Update Schedule
                             querySchedule.EffectiveDate = scheduleRq.EffectiveDate;
-                            //querySchedule.ExpiryDate    = scheduleRq.ExpiryDate;
+                            querySchedule.ExpireDate    = scheduleRq.ExpiryDate;
                             querySchedule.Status        = scheduleRq.Status;
                             querySchedule.UpdateBy      = scheduleRq.UpdateBy;
                             querySchedule.UpdateOn      = scheduleRq.UpdateDate;

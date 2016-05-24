@@ -6766,7 +6766,11 @@ namespace Colsp.Api.Controllers
                         product.Value.InfoFlag = false;
                     }
 
-                    masterVariant.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+                    masterVariant.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
+                    if(masterVariant.VariantCount == 0)
+                    {
+                        masterVariant.IsSell = true;
+                    }
                     AutoGenerate.GeneratePid(db, product.Value.ProductStages);
                     product.Value.ProductId = db.GetNextProductStageGroupId().SingleOrDefault().Value;
                     db.ProductStageGroups.Add(product.Value);
@@ -9351,8 +9355,13 @@ namespace Colsp.Api.Controllers
                 #region Setup Product for database
                 foreach (var product in groupList)
                 {
-                    product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().VariantCount
-                        = product.Value.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+                    var masterProduct = product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+                    masterProduct.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
+                    if(masterProduct.VariantCount == 0)
+                    {
+                        masterProduct.IsSell = true;
+                    }
+
                     AutoGenerate.GeneratePid(db, product.Value.ProductStages);
                 }
                 #endregion
