@@ -1762,6 +1762,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="GlobalBoostWeight" Type="int" Nullable="false" />
           <Property Name="ExpressDelivery" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="DeliveryFee" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="EstimateGoodsReceiveDate" Type="datetime" />
           <Property Name="PromotionPrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="EffectiveDatePromotion" Type="datetime" />
           <Property Name="ExpireDatePromotion" Type="datetime" />
@@ -2013,7 +2014,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="Large" Type="bit" Nullable="false" />
           <Property Name="Zoom" Type="bit" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
-          <Property Name="ImageUrlEn" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="FeatureFlag" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -2080,7 +2080,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="Large" Type="bit" Nullable="false" />
           <Property Name="Zoom" Type="bit" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
-          <Property Name="ImageUrlEn" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="FeatureFlag" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -2209,6 +2208,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="GlobalBoostWeight" Type="int" Nullable="false" />
           <Property Name="ExpressDelivery" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="DeliveryFee" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="EstimateGoodsReceiveDate" Type="datetime" />
           <Property Name="PromotionPrice" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="EffectiveDatePromotion" Type="datetime" />
           <Property Name="ExpireDatePromotion" Type="datetime" />
@@ -2334,7 +2334,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="Large" Type="bit" Nullable="false" />
           <Property Name="Zoom" Type="bit" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
-          <Property Name="ImageUrlEn" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="FeatureFlag" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -4977,6 +4976,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
         <Function Name="GetNextNewsletterId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextProductHistoryId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextProductStageGroupId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetNextProductStageImageId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextProductStagePid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextProductTempId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextShopId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -4984,6 +4984,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
         <Function Name="GetNextUserId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ItemOnHoldReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="My_test" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="ReportProductsCommissionForOrder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SaleReportForSeller" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
@@ -4996,6 +4997,27 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Parameter Name="owner_id" Type="int" Mode="In" />
           <Parameter Name="version" Type="int" Mode="In" />
           <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="spc_tableDescription" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="tablename" Type="varchar" Mode="In" />
         </Function>
         <Function Name="SplitString" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Input" Type="nvarchar(max)" Mode="In" />
@@ -7357,6 +7379,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="ProductGlobalCatMaps" Relationship="Self.FKProductGlobalCatMapProduct" FromRole="Product" ToRole="ProductGlobalCatMap" />
           <NavigationProperty Name="ProductLocalCatMaps" Relationship="Self.FKProductLocalCatMapProduct" FromRole="Product" ToRole="ProductLocalCatMap" />
           <NavigationProperty Name="ProductImages" Relationship="ColspModel.FK_ProductImage_ProductStage" FromRole="Product" ToRole="ProductImage" />
+          <Property Name="EstimateGoodsReceiveDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductAttribute">
           <Key>
@@ -7820,6 +7843,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="ProductStageMasters" Relationship="Self.FK_ProductStageMaster_ChildGroup" FromRole="ProductStage" ToRole="ProductStageMaster" />
           <NavigationProperty Name="ProductStageMasters1" Relationship="Self.FK_ProductStageMaster_ParentGroup" FromRole="ProductStage" ToRole="ProductStageMaster" />
           <NavigationProperty Name="ProductStageVideos" Relationship="Self.FK_ProductStageVideo_ProductStage" FromRole="ProductStage" ToRole="ProductStageVideo" />
+          <Property Name="EstimateGoodsReceiveDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ProductStageAttribute">
           <Key>
@@ -11788,6 +11812,29 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductImage" EntitySet="ProductImages" />
           </AssociationSet>
+          <FunctionImport Name="GetNextProductStageImageId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="ReportProductsCommissionForOrder" ReturnType="Collection(ColspModel.ReportProductsCommissionForOrder_Result)" />
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(ColspModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(ColspModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="spc_tableDescription" ReturnType="Collection(ColspModel.spc_tableDescription_Result)">
+            <Parameter Name="tablename" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ItemOnHoldReport_Result">
           <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
@@ -12164,6 +12211,36 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <ComplexType Name="ReportProductsCommissionForOrder_Result">
+          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="QTY" Nullable="false" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="22" Scale="3" />
+          <Property Type="Int32" Name="CommissionRate" Nullable="false" />
+          <Property Type="Int32" Name="CommissionFee" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="spc_tableDescription_Result">
+          <Property Type="String" Name="TABLE_NAME" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="COLUMN_NAME" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="DATA_TYPE" Nullable="false" MaxLength="128" />
+          <Property Type="Int16" Name="CHARACTER_MAXIMUM_LENGTH" Nullable="false" />
+          <Property Type="Byte" Name="precision" Nullable="false" />
+          <Property Type="Byte" Name="scale" Nullable="false" />
+          <Property Type="String" Name="COLUMN_DEFAULT" Nullable="true" MaxLength="4000" />
+          <Property Type="Boolean" Name="IS_NULLABLE" Nullable="true" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -13171,6 +13248,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="ColspModel.Product">
               <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="EstimateGoodsReceiveDate" ColumnName="EstimateGoodsReceiveDate" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ParentPid" ColumnName="ParentPid" />
                 <ScalarProperty Name="MasterPid" ColumnName="MasterPid" />
@@ -13484,7 +13562,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="ImageId" ColumnName="ImageId" />
                 <ScalarProperty Name="HistoryId" ColumnName="HistoryId" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
-                <ScalarProperty Name="ImageUrlEn" ColumnName="ImageUrlEn" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="ImageName" ColumnName="ImageName" />
                 <ScalarProperty Name="FeatureFlag" ColumnName="FeatureFlag" />
@@ -13600,6 +13677,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="ProductStages">
             <EntityTypeMapping TypeName="ColspModel.ProductStage">
               <MappingFragment StoreEntitySet="ProductStage">
+                <ScalarProperty Name="EstimateGoodsReceiveDate" ColumnName="EstimateGoodsReceiveDate" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
@@ -13785,7 +13863,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
                 <ScalarProperty Name="ImageId" ColumnName="ImageId" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
-                <ScalarProperty Name="ImageUrlEn" ColumnName="ImageUrlEn" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="ImageName" ColumnName="ImageName" />
                 <ScalarProperty Name="FeatureFlag" ColumnName="FeatureFlag" />
@@ -15361,7 +15438,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="FeatureFlag" ColumnName="FeatureFlag" />
-                <ScalarProperty Name="ImageUrlEn" ColumnName="ImageUrlEn" />
                 <ScalarProperty Name="ShopId" ColumnName="ShopId" />
                 <ScalarProperty Name="Zoom" ColumnName="Zoom" />
                 <ScalarProperty Name="Large" ColumnName="Large" />
@@ -15374,6 +15450,56 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetNextProductStageImageId" FunctionName="ColspModel.Store.GetNextProductStageImageId" />
+          <FunctionImportMapping FunctionImportName="ReportProductsCommissionForOrder" FunctionName="ColspModel.Store.ReportProductsCommissionForOrder">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ReportProductsCommissionForOrder_Result">
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="CommissionRate" ColumnName="CommissionRate" />
+                <ScalarProperty Name="CommissionFee" ColumnName="CommissionFee" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="ColspModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="ColspModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="ColspModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="ColspModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="ColspModel.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="spc_tableDescription" FunctionName="ColspModel.Store.spc_tableDescription">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.spc_tableDescription_Result">
+                <ScalarProperty Name="TABLE_NAME" ColumnName="TABLE_NAME" />
+                <ScalarProperty Name="COLUMN_NAME" ColumnName="COLUMN_NAME" />
+                <ScalarProperty Name="DATA_TYPE" ColumnName="DATA_TYPE" />
+                <ScalarProperty Name="CHARACTER_MAXIMUM_LENGTH" ColumnName="CHARACTER_MAXIMUM_LENGTH" />
+                <ScalarProperty Name="precision" ColumnName="precision" />
+                <ScalarProperty Name="scale" ColumnName="scale" />
+                <ScalarProperty Name="COLUMN_DEFAULT" ColumnName="COLUMN_DEFAULT" />
+                <ScalarProperty Name="IS_NULLABLE" ColumnName="IS_NULLABLE" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
