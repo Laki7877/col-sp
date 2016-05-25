@@ -24,13 +24,9 @@ using System.Web.Http.Cors;
 
 namespace Colsp.Api.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ProductStagesController : ApiController
     {
         private ColspEntities db = new ColspEntities();
-        private readonly string root = HttpContext.Current.Server.MapPath("~/Import");
-
-
 
         [Route("api/ProductStages/UnGroup")]
         [HttpGet]
@@ -1196,10 +1192,10 @@ namespace Colsp.Api.Controllers
                                     CreateOn = currentDt,
                                     FeatureFlag = position == 1 ? true : false,
                                     ImageName = string.Empty,
-                                    ImageOriginName = string.Empty,
-                                    ImageUrlEn = img.Url,
+                                    //ImageOriginName = string.Empty,
+                                    //ImageUrlEn = img.Url,
                                     Pid = pro.Pid,
-                                    Position = position++,
+                                    //Position = position++,
                                     ShopId = shopId,
                                     Status = Constant.STATUS_ACTIVE,
                                     UpdateBy = email,
@@ -1240,10 +1236,10 @@ namespace Colsp.Api.Controllers
                                     CreateOn = currentDt,
                                     FeatureFlag = position == 1 ? true : false,
                                     ImageName = string.Empty,
-                                    ImageOriginName = string.Empty,
-                                    ImageUrlEn = img.Url,
+                                    //ImageOriginName = string.Empty,
+                                    //ImageUrlEn = img.Url,
                                     Pid = pro.Pid,
-                                    Position = position++,
+                                    SeqNo = position++,
                                     ShopId = shopId,
                                     Status = Constant.STATUS_ACTIVE,
                                     UpdateBy = email,
@@ -1298,8 +1294,18 @@ namespace Colsp.Api.Controllers
                     productStage.ProductNameTh,
                     productStage.Pid,
                     productStage.Status,
-                    MasterImg = productStage.ProductStageImages.Select(s => new { ImageId = 0, Url = s.ImageUrlEn, position = s.Position }).OrderBy(o => o.position),
-                    VariantImg = productStage.ProductStageImages.Select(s => new { ImageId = 0, Url = s.ImageUrlEn, position = s.Position }).OrderBy(o => o.position),
+                    MasterImg = productStage.ProductStageImages.Select(s => new
+                    {
+                        ImageId = 0,
+                        //Url = s.ImageUrlEn,
+                        position = s.SeqNo
+                    }).OrderBy(o => o.position),
+                    VariantImg = productStage.ProductStageImages.Select(s => new
+                    {
+                        ImageId = 0,
+                        //Url = s.ImageUrlEn,
+                        position = s.SeqNo
+                    }).OrderBy(o => o.position),
                     productStage.IsVariant,
                     productStage.VariantCount,
                     productStage.ProductStageComments.FirstOrDefault().Comment,
@@ -1676,7 +1682,7 @@ namespace Colsp.Api.Controllers
                     s.Visibility,
                     s.VariantCount,
                     s.IsMaster,
-                    ImageUrl = s.FeatureImgUrl,
+                    ImageUrl = string.Concat(Constant.IMAGE_STATIC_URL,s.FeatureImgUrl),
                     s.ProductStageGroup.GlobalCatId,
                     s.ProductStageGroup.LocalCatId,
                     s.ProductStageGroup.AttributeSetId,
@@ -2100,6 +2106,7 @@ namespace Colsp.Api.Controllers
             {
                 throw new Exception("Invalid global category id");
             }
+            group.LocalCatId = null;
             if (request.MainLocalCategory != null && request.MainLocalCategory.CategoryId != 0)
             {
                 group.LocalCatId = request.MainLocalCategory.CategoryId;
@@ -2134,10 +2141,12 @@ namespace Colsp.Api.Controllers
             }
             #endregion
             #region setup other mapping
+            group.AttributeSetId = null;
             if (request.AttributeSet != null && request.AttributeSet.AttributeSetId != 0)
             {
                 group.AttributeSetId = request.AttributeSet.AttributeSetId;
             }
+            group.BrandId = null;
             if (request.Brand != null && request.Brand.BrandId != 0)
             {
                 group.BrandId = request.Brand.BrandId;
@@ -2371,6 +2380,7 @@ namespace Colsp.Api.Controllers
             stage.MobileDescriptionEn = request.MobileDescriptionEn;
             stage.MobileDescriptionTh = request.MobileDescriptionTh;
             stage.ImageCount = 0;
+            #region Images
             if (request.Images != null)
             {
                 stage.ImageCount = request.Images.Count;
@@ -2384,24 +2394,28 @@ namespace Colsp.Api.Controllers
                     stage.ProductStageImages.Add(new ProductStageImage()
                     {
                         FeatureFlag = position == 1 ? true : false,
+                        Large = true,
+                        Normal = true,
+                        Thumbnail = true,
+                        Zoom = true,
                         CreateBy = email,
                         CreateOn = currentDt,
-                        Position = position++,
+                        SeqNo = position++,
                         ShopId = shopId,
                         Status = Constant.STATUS_ACTIVE,
-                        ImageUrlEn = img.Url,
-                        ImageName = string.Empty,
-                        ImageOriginName = string.Empty,
+                        ImageName = img.Url.Split('/').Last(),
                         UpdateBy = email,
                         UpdateOn = currentDt
                     });
                 }
-                stage.FeatureImgUrl = stage.ProductStageImages.Where(w => w.FeatureFlag == true).Select(s => s.ImageUrlEn).FirstOrDefault();
+                stage.FeatureImgUrl = stage.ProductStageImages.Where(w => w.FeatureFlag == true).Select(s => s.ImageName).FirstOrDefault();
                 if(stage.FeatureImgUrl == null)
                 {
                     stage.FeatureImgUrl = string.Empty;
                 }
             }
+            #endregion
+            #region Video
             if (request.VideoLinks != null)
             {
                 int position = 1;
@@ -2424,6 +2438,7 @@ namespace Colsp.Api.Controllers
                     });
                 }
             }
+            #endregion
             stage.PrepareDay = request.PrepareDay;
             stage.LimitIndividualDay = request.LimitIndividualDay;
             stage.PrepareMon = request.PrepareMon;
@@ -2915,7 +2930,7 @@ namespace Colsp.Api.Controllers
                         }),
                         Images = st.ProductStageImages.Select(si => new
                         {
-                            si.ImageUrlEn
+                            si.ImageName
                         }),
                         Videos = st.ProductStageVideos.OrderBy(o => o.Position).Select(sv => new
                         {
@@ -3149,7 +3164,7 @@ namespace Colsp.Api.Controllers
                 {
                     response.MasterVariant.Images.Add(new ImageRequest()
                     {
-                        Url = image.ImageUrlEn,
+                        Url = string.Concat(Constant.IMAGE_STATIC_URL,image.ImageName),
                     });
                 }
             }
@@ -3296,7 +3311,7 @@ namespace Colsp.Api.Controllers
                     {
                         tmpVariant.Images.Add(new ImageRequest()
                         {
-                            Url = image.ImageUrlEn,
+                            Url = string.Concat(Constant.IMAGE_STATIC_URL, image.ImageName),
                         });
                     }
                 }
@@ -3981,10 +3996,12 @@ namespace Colsp.Api.Controllers
                     {
                         FeatureFlag = image.FeatureFlag,
                         ImageName = image.ImageName,
-                        ImageOriginName = image.ImageOriginName,
-                        ImageUrlEn = image.ImageUrlEn,
+                        Large = image.Large,
+                        Normal = image.Normal,
+                        Thumbnail = image.Thumbnail,
+                        Zoom = image.Zoom,
                         Pid = image.Pid,
-                        Position = image.Position,
+                        SeqNo = image.SeqNo,
                         ShopId = image.ShopId,
                         Status = image.Status,
                         CreateBy = image.CreateBy,
@@ -4008,9 +4025,108 @@ namespace Colsp.Api.Controllers
             db.ProductHistoryGroups.Add(historyGroup);
         }
 
+        private void SetupGroupAfterSave(ProductStageGroup groupProduct, ColspEntities db, bool isNew = false)
+        {
+            //var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
+            //var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
 
+            HashSet<string> tmpImageHash = new HashSet<string>();
+            foreach (var stage in groupProduct.ProductStages)
+            {
+                int index = 0;
+                foreach (var image in stage.ProductStageImages)
+                {
+                    if (tmpImageHash.Contains(image.ImageName))
+                    {
+                        string lastPart = image.ImageName;
+                        string oldFile = Path.Combine(
+                            AppSettingKey.IMAGE_ROOT_PATH, 
+                            AppSettingKey.PRODUCT_FOLDER, 
+                            AppSettingKey.ORIGINAL_FOLDER, 
+                            lastPart);
+                        if (File.Exists(oldFile))
+                        {
+                            string newFileName = string.Concat(stage.Pid, "_", index, Path.GetExtension(lastPart));
+                            image.ImageName = newFileName;
+                            File.Copy(oldFile, Path.Combine(
+                                AppSettingKey.IMAGE_ROOT_PATH, 
+                                AppSettingKey.PRODUCT_FOLDER, 
+                                AppSettingKey.ORIGINAL_FOLDER,
+                                newFileName));
+                            ++index;
+                        }
+                    }
+                    else
+                    {
+                        tmpImageHash.Add(image.ImageName);
+                    }
+                }
+            }
+            foreach (var stage in groupProduct.ProductStages)
+            {
+                SetupStageAfterSave(stage, db, isNew);
+            }
+        }
 
-
+        private void SetupStageAfterSave(ProductStage stage, ColspEntities db = null, bool isNew = false)
+        {
+            #region Image
+            foreach (var image in stage.ProductStageImages)
+            {
+                string lastPart = image.ImageName;
+                string newFile = Path.Combine(
+                    AppSettingKey.IMAGE_ROOT_PATH, 
+                    AppSettingKey.PRODUCT_FOLDER,
+                    AppSettingKey.ORIGINAL_FOLDER,
+                    string.Concat(stage.Pid, "_", image.SeqNo, Path.GetExtension(lastPart)));
+                string oldFile = Path.Combine(
+                    AppSettingKey.IMAGE_ROOT_PATH, 
+                    AppSettingKey.PRODUCT_FOLDER, 
+                    AppSettingKey.ORIGINAL_FOLDER,
+                    lastPart);
+                if (File.Exists(oldFile))
+                {
+                    if (File.Exists(newFile))
+                    {
+                        continue;
+                    }
+                    File.Move(oldFile, newFile);
+                    image.ImageName = Path.GetFileName(newFile);
+                    image.ImageId = db.GetNextProductStageImageId().SingleOrDefault().Value;
+                    if (image.FeatureFlag)
+                    {
+                        stage.FeatureImgUrl = image.ImageName;
+                    }
+                }
+            }
+            #endregion
+            #region Inventory History
+            if (isNew)
+            {
+                InventoryHistory history = new InventoryHistory()
+                {
+                    Pid = stage.Pid,
+                    MaxQtyAllowInCart = stage.Inventory.MaxQtyAllowInCart,
+                    MaxQtyPreOrder = stage.Inventory.MaxQtyPreOrder,
+                    MinQtyAllowInCart = stage.Inventory.MinQtyAllowInCart,
+                    StockType = stage.Inventory.StockType,
+                    UseDecimal = stage.Inventory.UseDecimal,
+                    Defect = stage.Inventory.Defect,
+                    OnHold = stage.Inventory.OnHold,
+                    Quantity = stage.Inventory.Quantity,
+                    Reserve = stage.Inventory.Reserve,
+                    SafetyStockAdmin = stage.Inventory.SafetyStockAdmin,
+                    SafetyStockSeller = stage.Inventory.SafetyStockSeller,
+                    Status = Constant.INVENTORY_STATUS_ADD,
+                    CreateBy = User.UserRequest().Email,
+                    CreateOn = DateTime.Now,
+                    UpdateBy = User.UserRequest().Email,
+                    UpdateOn = DateTime.Now,
+                };
+                db.InventoryHistories.Add(history);
+            }
+            #endregion
+        }
 
 
 
@@ -4362,7 +4478,7 @@ namespace Colsp.Api.Controllers
             {
                 var fileUpload = await Util.SetupImage(Request
                     , AppSettingKey.IMAGE_ROOT_PATH
-                    , AppSettingKey.PRODUCT_FOLDER
+                    , Path.Combine(AppSettingKey.PRODUCT_FOLDER, AppSettingKey.ORIGINAL_FOLDER)
                     , 1500, 1500, 2000, 2000, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
@@ -5246,12 +5362,12 @@ namespace Colsp.Api.Controllers
                     }
                     if (!isNew)
                     {
-                        var current = tmpImage.Where(w => w.ImageUrlEn.Equals(image.Url)).SingleOrDefault();
+                        var current = tmpImage.Where(w => w.ImageName.Equals(image.Url)).SingleOrDefault();
                         if (current != null)
                         {
-                            if (current.Position != position || current.FeatureFlag != featureImg)
+                            if (current.SeqNo != position || current.FeatureFlag != featureImg)
                             {
-                                current.Position = position;
+                                current.SeqNo = position;
                                 current.FeatureFlag = featureImg;
                                 current.UpdateBy = email;
                                 current.UpdateOn = currentDt;
@@ -5269,11 +5385,11 @@ namespace Colsp.Api.Controllers
                         variant.ProductStageImages.Add(new ProductStageImage()
                         {
                             ShopId = variant.ShopId,
-                            ImageUrlEn = image.Url,
-                            Position = position++,
+                            //ImageUrlEn = image.Url,
+                            SeqNo = position++,
                             FeatureFlag = featureImg,
                             ImageName = string.Empty,
-                            ImageOriginName = string.Empty,
+                            //ImageOriginName = string.Empty,
                             Status = Constant.STATUS_ACTIVE,
                             CreateBy = email,
                             CreateOn = currentDt,
@@ -5382,12 +5498,12 @@ namespace Colsp.Api.Controllers
                     }
                     if (!isNew)
                     {
-                        var current = tmpImage.Where(w => w.ImageUrlEn.Equals(image.Url)).SingleOrDefault();
+                        var current = tmpImage.Where(w => w.ImageName.Equals(image.Url)).SingleOrDefault();
                         if (current != null)
                         {
-                            if (current.Position != position || current.FeatureFlag != featureImg)
+                            if (current.SeqNo != position || current.FeatureFlag != featureImg)
                             {
-                                string lastPart = current.ImageUrlEn.Split('/').Last();
+                                string lastPart = current.ImageName.Split('/').Last();
                                 string oldFile = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.PRODUCT_FOLDER, lastPart);
                                 if (File.Exists(oldFile))
                                 {
@@ -5398,9 +5514,9 @@ namespace Colsp.Api.Controllers
                                         File.Delete(newFile);
                                     }
                                     File.Move(oldFile, newFile);
-                                    current.ImageUrlEn = filename; 
+                                    //current.ImageUrlEn = filename; 
                                 }
-                                current.Position = position;
+                                current.SeqNo = position;
                                 current.FeatureFlag = featureImg;
                                 current.UpdateBy = User.UserRequest().Email;
                                 current.UpdateOn = DateTime.Now;
@@ -5418,11 +5534,11 @@ namespace Colsp.Api.Controllers
                         variant.ProductStageImages.Add(new ProductStageImage()
                         {
                             ShopId = variant.ShopId,
-                            ImageUrlEn = image.Url,
-                            Position = position++,
+                            //ImageUrlEn = image.Url,
+                            SeqNo = position++,
                             FeatureFlag = featureImg,
                             ImageName = string.Empty,
-                            ImageOriginName = string.Empty,
+                            //ImageOriginName = string.Empty,
                             Status = Constant.STATUS_ACTIVE,
                             CreateBy = User.UserRequest().Email,
                             CreateOn = DateTime.Now,
@@ -5448,97 +5564,9 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupGroupAfterSave(ProductStageGroup groupProduct, ColspEntities db = null, bool isNew = false)
-        {
-            var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-            var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
+        
 
-            HashSet<string> tmpImageHash = new HashSet<string>();
-            foreach (var stage in groupProduct.ProductStages)
-            {
-                int index = 0;
-                foreach(var image in stage.ProductStageImages)
-                {
-                    if (tmpImageHash.Contains(image.ImageUrlEn))
-                    {
-                        string lastPart = image.ImageUrlEn.Split('/').Last();
-                        string oldFile = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.PRODUCT_FOLDER, lastPart);
-                        if (File.Exists(oldFile))
-                        {
-                            string newFileName = string.Concat(stage.Pid, index.ToString(), Path.GetExtension(lastPart));
-                            image.ImageUrlEn = newFileName;
-                            File.Copy(oldFile, Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.PRODUCT_FOLDER, newFileName));
-                            ++index;
-                        }
-                    }
-                    else
-                    {
-                        tmpImageHash.Add(image.ImageUrlEn);
-                    }
-                }
-            }
-            foreach (var stage in groupProduct.ProductStages)
-            {
-                SetupStageAfterSave(stage, schema, imageUrl, db, isNew);
-            }
-        }
-
-        private void SetupStageAfterSave(ProductStage stage,string schema,string imageUrl, ColspEntities db = null, bool isNew = false)
-        {
-            #region Image
-            foreach (var image in stage.ProductStageImages)
-            {
-                string lastPart = image.ImageUrlEn.Split('/').Last();
-                string newFile = Path.Combine(
-                    AppSettingKey.IMAGE_ROOT_PATH
-                    , AppSettingKey.PRODUCT_FOLDER
-                    , string.Concat(stage.Pid, "_", image.Position, Path.GetExtension(lastPart)));
-                string oldFile = Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.PRODUCT_FOLDER, lastPart);
-                if (File.Exists(oldFile))
-                {
-                    if (File.Exists(newFile))
-                    {
-                        continue;
-                    }
-                    File.Move(oldFile, newFile);
-                    image.ImageUrlEn = string.Concat(
-                        schema, "://", imageUrl, "/"
-                        , AppSettingKey.IMAGE_ROOT_FOLDER
-                        , "/", AppSettingKey.PRODUCT_FOLDER
-                        , "/", Path.GetFileName(newFile));
-                    if (image.FeatureFlag)
-                    {
-                        stage.FeatureImgUrl = image.ImageUrlEn;
-                    }
-                }
-            }
-            #endregion
-            #region Inventory History
-            if (isNew)
-            {
-                InventoryHistory history = new InventoryHistory()
-                {
-                    Pid = stage.Pid,
-                    //StockAvailable = stage.Inventory.StockAvailable,
-                    Defect = stage.Inventory.Defect,
-                    //MaxQuantity = stage.Inventory.MaxQuantity,
-                    //MinQuantity = stage.Inventory.MinQuantity,
-                    OnHold = stage.Inventory.OnHold,
-                    Quantity = stage.Inventory.Quantity,
-                    Reserve = stage.Inventory.Reserve,
-                    SafetyStockAdmin = stage.Inventory.SafetyStockAdmin,
-                    SafetyStockSeller = stage.Inventory.SafetyStockSeller,
-                    Status = Constant.INVENTORY_STATUS_ADD,
-                    CreateBy = User.UserRequest().Email,
-                    CreateOn = DateTime.Now,
-                    UpdateBy = User.UserRequest().Email,
-                    UpdateOn = DateTime.Now,
-                };
-                db.InventoryHistories.Add(history);
-            }
-
-            #endregion
-        }
+        
 
         private void SetupVariantResponse(ProductStage variant, VariantRequest response)
         {
@@ -5607,14 +5635,14 @@ namespace Colsp.Api.Controllers
 
             if (variant.ProductStageImages != null && variant.ProductStageImages.Count > 0)
             {
-                variant.ProductStageImages = variant.ProductStageImages.OrderBy(o => o.Position).ToList();
+                variant.ProductStageImages = variant.ProductStageImages.OrderBy(o => o.SeqNo).ToList();
                 foreach (var image in variant.ProductStageImages)
                 {
                     response.Images.Add(new ImageRequest()
                     {
                         ImageId = 0,
-                        Url = image.ImageUrlEn,
-                        Position = image.Position
+                        //Url = image.ImageUrlEn,
+                        Position = image.SeqNo
                     });
                 }
             }
@@ -5721,12 +5749,13 @@ namespace Colsp.Api.Controllers
             StreamWriter writer = null;
             try
             {
+                #region validation
                 if (request == null)
                 {
                     throw new Exception("Invalid request");
                 }
+                #endregion
                 #region Setup Header
-                
                 Dictionary<string, Tuple<string, int>> headDicTmp = new Dictionary<string, Tuple<string, int>>();
                 var tmpGuidance = db.ImportHeaders.Where(w => true);
                 if (User.ShopRequest() != null)
@@ -5931,8 +5960,9 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-                var productList = query.OrderBy(o=>o.ProductId).ThenBy(o=>o.IsVariant).ToList();
+                var productList = query.OrderBy(o=>o.ProductId).ThenBy(o=>o.IsVariant);
                 #endregion
+                #region initiate
                 List<List<string>> rs = new List<List<string>>();
                 List<string> bodyList = null;
                 if (request.AttributeSets != null && request.AttributeSets.Count > 0)
@@ -5943,6 +5973,7 @@ namespace Colsp.Api.Controllers
                 }
                 List<ProductStageAttribute> masterAttribute = null;
                 List<ProductStageAttribute> defaultAttribute = null;
+                #endregion
                 foreach (var p in productList)
                 {
                     #region Setup Attribute
@@ -6632,9 +6663,7 @@ namespace Colsp.Api.Controllers
                     #endregion
                     rs.Add(bodyList);
                 }
-                //headDicTmp.Remove("ADM");
                 #region Write header
-
                 stream = new MemoryStream();
                 writer = new StreamWriter(stream, Encoding.UTF8);
                 var csv = new CsvWriter(writer);
@@ -6703,6 +6732,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Content Multimedia");
                 }
+                string root = HttpContext.Current.Server.MapPath("~/Import");
                 var streamProvider = new MultipartFormDataStreamProvider(root);
                 await Request.Content.ReadAsMultipartAsync(streamProvider);
 
@@ -6736,7 +6766,11 @@ namespace Colsp.Api.Controllers
                         product.Value.InfoFlag = false;
                     }
 
-                    masterVariant.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+                    masterVariant.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
+                    if(masterVariant.VariantCount == 0)
+                    {
+                        masterVariant.IsSell = true;
+                    }
                     AutoGenerate.GeneratePid(db, product.Value.ProductStages);
                     product.Value.ProductId = db.GetNextProductStageGroupId().SingleOrDefault().Value;
                     db.ProductStageGroups.Add(product.Value);
@@ -8309,6 +8343,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Content Multimedia");
                 }
+                string root = HttpContext.Current.Server.MapPath("~/Import");
                 var streamProvider = new MultipartFormDataStreamProvider(root);
                 await Request.Content.ReadAsMultipartAsync(streamProvider);
 
@@ -9320,8 +9355,13 @@ namespace Colsp.Api.Controllers
                 #region Setup Product for database
                 foreach (var product in groupList)
                 {
-                    product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault().VariantCount
-                        = product.Value.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
+                    var masterProduct = product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+                    masterProduct.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
+                    if(masterProduct.VariantCount == 0)
+                    {
+                        masterProduct.IsSell = true;
+                    }
+
                     AutoGenerate.GeneratePid(db, product.Value.ProductStages);
                 }
                 #endregion

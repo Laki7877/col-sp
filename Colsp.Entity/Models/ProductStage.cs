@@ -87,6 +87,7 @@ namespace Colsp.Entity.Models
         public int GlobalBoostWeight { get; set; }
         public string ExpressDelivery { get; set; }
         public decimal DeliveryFee { get; set; }
+        public Nullable<System.DateTime> EstimateGoodsReceiveDate { get; set; }
         public decimal PromotionPrice { get; set; }
         public Nullable<System.DateTime> EffectiveDatePromotion { get; set; }
         public Nullable<System.DateTime> ExpireDatePromotion { get; set; }

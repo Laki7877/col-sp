@@ -16,6 +16,7 @@ using Colsp.Api.Helpers;
 using Colsp.Logic;
 using Colsp.Model;
 using System.Dynamic;
+using System.IO;
 
 namespace Colsp.Api.Controllers
 {
@@ -673,7 +674,7 @@ namespace Colsp.Api.Controllers
                                 CMSMasterType               = master.CMSMasterType,
                                 CMSMasterURLKey             = master.CMSMasterURLKey,
                                 EffectiveDate               = master.CMSMasterEffectiveDate,
-                                ExpiryDate                  = master.CMSMasterExpiryDate,
+                                ExpiryDate                  = master.CMSMasterExpireDate,
                                 LongDescriptionEN           = master.LongDescriptionEN,
                                 LongDescriptionTH           = master.LongDescriptionTH,
                                 ShortDescriptionEN          = master.ShortDescriptionEN,
@@ -683,10 +684,10 @@ namespace Colsp.Api.Controllers
                                 MobileShortDescriptionEN    = master.MobileShortDescriptionEN,
                                 MobileShortDescriptionTH    = master.MobileShortDescriptionTH,
                                 Status                      = master.Status,
-                                Visibility                  = master.Visibility.Value,
-                                ISCampaign                  = master.IsCampaign.Value,
+                                Visibility                  = master.Visibility,
+                                ISCampaign                  = master.IsCampaign,
                                 FeatureTitle                = master.FeatureTitle,
-                                TitleShowcase               = master.TitleShowcase.Value,
+                                TitleShowcase               = master.TitleShowcase,
 
                                 FeatureProductList          = (from feature in db.CMSFeatureProducts
                                                               where feature.CMSMasterId == cmsMasterId
@@ -702,7 +703,7 @@ namespace Colsp.Api.Controllers
                                                                     CMSSchedulerId = schedule.CMSSchedulerId,
                                                                     CMSMasterId = master.CMSMasterId,
                                                                     EffectiveDate = schedule.EffectiveDate,
-                                                                    ExpiryDate = schedule.ExpiryDate
+                                                                    ExpiryDate = schedule.ExpireDate
                                                                 }).ToList(),
 
                                 CategoryList                = (from cate in db.CMSCategories
@@ -740,9 +741,70 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                //FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.CMS_FOLDER, 1500, 1500, 2000, 2000, 5, true);
-                var fileUpload = 0;
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("In valid content multi-media");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.CMS_FOLDER));
+                try
+                {
+                    await Request.Content.ReadAsMultipartAsync(streamProvider);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Image size exceeded " + 5 + " mb");
+                }
+                #region Validate Image
+                string type = streamProvider.FormData["Type"];
+                ImageRequest fileUpload = null;
+                if ("Logo".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.CMS_FOLDER, 500, 500, 1000, 1000, 5, true);
+                        break;
+                    }
+
+                }
+                else if ("Banner".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.CMS_FOLDER, 1920, 1080, 1920, 1080, 5, false);
+                        break;
+                    }
+                }
+                else if ("SmallBanner".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.CMS_FOLDER, 1600, 900, 1600, 900, 5, false);
+                        break;
+                    }
+                }
+                else
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.CMS_FOLDER, Constant.ImageRatio.IMAGE_RATIO_16_9);
+                        break;
+                    }
+                }
+                #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
+           
             }
             catch (Exception e)
             {
@@ -983,7 +1045,7 @@ namespace Colsp.Api.Controllers
                                                        Status = masterGroup.Status,
                                                        CMSMasterExpiryDate = (from p in db.CMSMasters
                                                                               where p.CMSMasterId.Equals(masterGroup.CMSMasterId)
-                                                                              select p).FirstOrDefault().CMSMasterExpiryDate,
+                                                                              select p).FirstOrDefault().CMSMasterExpireDate,
 
                                                        CMSMasterNameEN = (from p in db.CMSMasters
                                                                           where p.CMSMasterId.Equals(masterGroup.CMSMasterId)
@@ -998,7 +1060,7 @@ namespace Colsp.Api.Controllers
                                 CMSGroupNameEN = g.CMSGroupNameEN,
                                 CMSGroupNameTH = g.CMSGroupNameTH,
                                 Status = g.Status,
-                                Visibility = g.Visibility.Value,
+                                Visibility = g.Visibility,
                                 UpdateOn = g.UpdateOn
                             };
 
@@ -1047,7 +1109,7 @@ namespace Colsp.Api.Controllers
                     item.CMSMasterNameTH = m.CMSMasterNameTH;
                     //item.Status                 = m.CMSMasterStatusId;
                     item.CMSMasterEffectiveDate = m.CMSMasterEffectiveDate;
-                    item.CMSMasterExpiryDate = m.CMSMasterExpiryDate;
+                    item.CMSMasterExpireDate    = m.CMSMasterExpireDate;
                     masters.Add(item);
                 }
 

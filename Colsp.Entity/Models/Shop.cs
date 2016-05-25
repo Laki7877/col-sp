@@ -25,6 +25,7 @@ namespace Colsp.Entity.Models
             this.NewsletterShopMaps = new HashSet<NewsletterShopMap>();
             this.ProductHistories = new HashSet<ProductHistory>();
             this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
+            this.ProductImages = new HashSet<ProductImage>();
             this.ProductReviews = new HashSet<ProductReview>();
             this.ProductStages = new HashSet<ProductStage>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
@@ -113,6 +114,8 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductHistory> ProductHistories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductReview> ProductReviews { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

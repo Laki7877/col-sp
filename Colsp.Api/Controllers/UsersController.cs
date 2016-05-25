@@ -20,7 +20,6 @@ using System.Web.Http.Cors;
 
 namespace Colsp.Api.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class UsersController : ApiController
     {
         private ColspEntities db = new ColspEntities();
@@ -738,7 +737,7 @@ namespace Colsp.Api.Controllers
                     }
                 }
                 var shop = user.UserShopMaps.FirstOrDefault();
-                if (shop != null)
+                if (shop != null && shop.Shop.ShopType != null)
                 {
 
                     var shopPermission = shop.Shop.ShopType.ShopTypePermissionMaps.Select(sp => sp.Permission);

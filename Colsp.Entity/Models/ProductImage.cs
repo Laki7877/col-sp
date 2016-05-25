@@ -12,7 +12,7 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductStageImage
+    public partial class ProductImage
     {
         public long ImageId { get; set; }
         public string Pid { get; set; }
@@ -30,7 +30,7 @@ namespace Colsp.Entity.Models
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
-        public virtual ProductStage ProductStage { get; set; }
+        public virtual Product Product { get; set; }
         public virtual Shop Shop { get; set; }
     }
 }

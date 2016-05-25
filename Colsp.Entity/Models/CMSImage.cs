@@ -12,19 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CartDiscount
+    public partial class CMSImage
     {
-        public int CartId { get; set; }
-        public string PId { get; set; }
-        public string PromotionNo { get; set; }
-        public string PromotionDescription { get; set; }
-        public string PromotionType { get; set; }
-        public string DiscountType { get; set; }
-        public decimal DiscountRate { get; set; }
-        public decimal DiscountAmt { get; set; }
-        public System.DateTime CreateOn { get; set; }
+        public int CMSImageId { get; set; }
+        public int CMSMasterId { get; set; }
+        public int Position { get; set; }
+        public string ImageUrl { get; set; }
+        public string EnTh { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdatedOn { get; set; }
     }
 }

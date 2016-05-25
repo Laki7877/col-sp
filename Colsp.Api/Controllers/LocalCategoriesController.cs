@@ -33,7 +33,7 @@ namespace Colsp.Api.Controllers
                 int shopId = 0;
                 if (request == null)
                 {
-                    shopId = User.ShopRequest().ShopId;
+                    shopId = 37; //1; //User.ShopRequest().ShopId;
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace Colsp.Api.Controllers
                                                     p.ProductStageGroup.ImageFlag,
                                                     p.ProductStageGroup.InfoFlag,
                                                     Modified = p.UpdateOn,
-                                                    ImageUrl = m.Where(w=>w.FeatureFlag == true).FirstOrDefault().ImageUrlEn,
+                                                    //ImageUrl = m.Where(w=>w.FeatureFlag == true).FirstOrDefault().ImageUrlEn,
                                                 }
                                             )
                                             .Paginate(request);
