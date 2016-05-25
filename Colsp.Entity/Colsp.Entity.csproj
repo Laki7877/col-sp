@@ -143,6 +143,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ApiLog.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AppAuth.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -531,6 +534,12 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Province.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ReportProductsCommissionForOrder_Result.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ReportReturnItemByOrderReport_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SaleReportForSeller_Result.cs">

@@ -17,8 +17,6 @@ namespace Colsp.Api.Helper
             {
                 throw new Exception("No product selected");
             }
-
-
             if (AppSettingKey.PID_NUMBER_ONLY)
             {
                 foreach (var pro in products)

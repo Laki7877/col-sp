@@ -22,7 +22,7 @@ namespace Colsp.Api
             #endregion
 
             // Enable CORs
-            config.EnableCors(new EnableCorsAttribute("*","*","GET, POST, PUT, DELETE"));
+            config.EnableCors(new EnableCorsAttribute("*","*","*"));
             #region Filter
             // Setup authorization and authentication filters
             config.Filters.Add(new BasicAuthenticateAttribute());
@@ -44,7 +44,6 @@ namespace Colsp.Api
             //crearte folder for image
             // ~/Images
             string imgageRootPath = AppSettingKey.IMAGE_ROOT_PATH;
-            
 
             //Product Zoom folder
             string rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.ZOOM_FOLDER);
@@ -76,7 +75,7 @@ namespace Colsp.Api
                 Directory.CreateDirectory(rootProductPath);
             }
 
-            foreach (var file in Directory.GetFiles(Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER)))
+            foreach (var file in Directory.GetFiles(Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.ORIGINAL_FOLDER)))
             {
                 if (Path.GetFileName(file).StartsWith("BodyPart", true, null))
                 {
@@ -135,11 +134,22 @@ namespace Colsp.Api
                 Directory.CreateDirectory(rootExcelPath);
             }
 
-            string rootThemePath = Path.Combine(imgageRootPath, "Theme");
+            //Theme Folder
+            string rootThemePath = Path.Combine(imgageRootPath, AppSettingKey.THEME_FOLDER);
             if (!Directory.Exists(rootThemePath))
             {
                 Directory.CreateDirectory(rootThemePath);
             }
+
+
+            //Export Folder
+            string rootExportPath = AppSettingKey.EXPORT_ROOT_PATH;
+            if (!Directory.Exists(rootExportPath))
+            {
+                Directory.CreateDirectory(rootExportPath);
+            }
+
+
             #endregion
 
         }

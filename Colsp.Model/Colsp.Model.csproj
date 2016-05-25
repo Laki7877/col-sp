@@ -62,6 +62,7 @@
     <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\CategoryShiftRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
+    <Compile Include="Requests\CmosRequest.cs" />
     <Compile Include="Requests\CMSBrandInShopRequest.cs" />
     <Compile Include="Requests\CMSCategoryProductGetListRequest.cs" />
     <Compile Include="Requests\CMSCategoryRequest.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
     <Compile Include="Requests\ItemOnHoldReportRequest.cs" />
+    <Compile Include="Requests\JdaRequest.cs" />
     <Compile Include="Requests\Layout.cs" />
     <Compile Include="Requests\MasterProductRequest.cs" />
     <Compile Include="Requests\NewsletterRequest.cs" />
