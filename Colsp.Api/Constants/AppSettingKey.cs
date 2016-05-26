@@ -9,7 +9,7 @@ namespace Colsp.Api.Constants
         //Image Root & Folder 
         public static readonly string IMAGE_ROOT_FOLDER = ConfigurationManager.AppSettings["ImageRootPath"];
         public static readonly string IMAGE_ROOT_PATH = HttpContext.Current.Server.MapPath(string.Concat("~/" , IMAGE_ROOT_FOLDER));
-        public static readonly string ORIGINAL_FOLDER = ConfigurationManager.AppSettings["OriginalTmpFolder"];
+        public static readonly string ORIGINAL_FOLDER = ConfigurationManager.AppSettings["OriginalFolder"];
         public static readonly string ZOOM_FOLDER = ConfigurationManager.AppSettings["ZoomFolder"];
         public static readonly string LARGE_FOLDER = ConfigurationManager.AppSettings["LargeFolder"];
         public static readonly string NORMAL_FOLDER = ConfigurationManager.AppSettings["NormalFolder"];
