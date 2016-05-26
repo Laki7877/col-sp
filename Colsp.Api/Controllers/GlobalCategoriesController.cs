@@ -103,6 +103,7 @@ namespace Colsp.Api.Controllers
                                          Link = si.Link
                                      }),
                                      FeatureProducts = cat.GlobalCatFeatureProducts
+                                        .Where(w => !Constant.STATUS_REMOVE.Equals(w.ProductStageGroup.Status))
                                         .Select(s=> new
                                         {
                                             s.ProductId,
