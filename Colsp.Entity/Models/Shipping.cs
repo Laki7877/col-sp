@@ -19,6 +19,7 @@ namespace Colsp.Entity.Models
         {
             this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
+            this.ShopTypeShippingMaps = new HashSet<ShopTypeShippingMap>();
             this.ShopGroups = new HashSet<ShopGroup>();
         }
     
@@ -36,6 +37,8 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopTypeShippingMap> ShopTypeShippingMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopGroup> ShopGroups { get; set; }
     }

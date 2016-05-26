@@ -5813,20 +5813,10 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 #endregion
-                
                 using (ColspEntities db = new ColspEntities())
                 {
                     //((IObjectContextAdapter)db).ObjectContext.CommandTimeout = 180;
                     #region Setup Header
-                    //Put progress to global dict
-                    if (!userExportProducts.ContainsKey(userId))
-                    {
-                        userExportProducts.Add(userId, 0.0);
-                    }
-                    else
-                    {
-                        userExportProducts[userId] = 0.0;
-                    }
                     Dictionary<string, Tuple<string, int>> headDicTmp = new Dictionary<string, Tuple<string, int>>();
                     var tmpGuidance = db.ImportHeaders.Where(w => true);
                     if (user.ShopRequest() != null)
@@ -6761,7 +6751,12 @@ namespace Colsp.Api.Controllers
                         }
                     }
                     #region Write
-                    using (writer = new StreamWriter(Path.Combine(AppSettingKey.EXPORT_ROOT_PATH, string.Concat(userId)),false,Encoding.UTF8))
+                    string filePath = Path.Combine(AppSettingKey.EXPORT_ROOT_PATH, string.Concat(userId));
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                    using (writer = new StreamWriter(filePath,false,Encoding.UTF8))
                     {
                         var csv = new CsvWriter(writer);
                         string headers = string.Empty;
@@ -6808,6 +6803,16 @@ namespace Colsp.Api.Controllers
         [HttpPost]
         public HttpResponseMessage ExportProductProducts(ExportRequest request)
         {
+            var userId = User.UserRequest().UserId;
+            //Put progress to global dict
+            if (!userExportProducts.ContainsKey(userId))
+            {
+                userExportProducts.Add(userId, 0.0);
+            }
+            else
+            {
+                userExportProducts[userId] = 0.0;
+            }
             Task.Run(() => 
             {
                 Export(request, User);

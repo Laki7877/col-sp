@@ -9,6 +9,7 @@ namespace Colsp.Model.Requests
         public string SearchText { get; set; }
         public List<PermissionRequest> Permission { get; set; }
         public List<ThemeRequest> Themes { get; set; }
+        public List<ShippingRequest> Shippings { get; set; }
 
 
         public ShopTypeRequest()
@@ -40,6 +41,10 @@ namespace Colsp.Model.Requests
             ThemeName = string.Empty;
             ThemeImage = string.Empty;
         }
+    }
+
+    public class ShippingRequest
+    {
 
     }
 }

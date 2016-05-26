@@ -2752,6 +2752,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdateOn" Type="datetime" />
         </EntityType>
+        <EntityType Name="ShopTypeShippingMap">
+          <Key>
+            <PropertyRef Name="ShopTypeId" />
+            <PropertyRef Name="ShippingId" />
+          </Key>
+          <Property Name="ShopTypeId" Type="int" Nullable="false" />
+          <Property Name="ShippingId" Type="int" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdateOn" Type="datetime" />
+        </EntityType>
         <EntityType Name="ShopTypeThemeMap">
           <Key>
             <PropertyRef Name="ShopTypeId" />
@@ -4624,6 +4636,30 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopTypeShippingMap_Shipping">
+          <End Role="Shipping" Type="Self.Shipping" Multiplicity="1" />
+          <End Role="ShopTypeShippingMap" Type="Self.ShopTypeShippingMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shipping">
+              <PropertyRef Name="ShippingId" />
+            </Principal>
+            <Dependent Role="ShopTypeShippingMap">
+              <PropertyRef Name="ShippingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTypeShippingMap_ShopType">
+          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1" />
+          <End Role="ShopTypeShippingMap" Type="Self.ShopTypeShippingMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopType">
+              <PropertyRef Name="ShopTypeId" />
+            </Principal>
+            <Dependent Role="ShopTypeShippingMap">
+              <PropertyRef Name="ShopTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShopTypeThemeMap_ShopType">
           <End Role="ShopType" Type="Self.ShopType" Multiplicity="1" />
           <End Role="ShopTypeThemeMap" Type="Self.ShopTypeThemeMap" Multiplicity="*" />
@@ -5140,6 +5176,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ShopImage" EntityType="Self.ShopImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopTypePermissionMap" EntityType="Self.ShopTypePermissionMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopTypeShippingMap" EntityType="Self.ShopTypeShippingMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopTypeThemeMap" EntityType="Self.ShopTypeThemeMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopUserGroupMap" EntityType="Self.ShopUserGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SortBy" EntityType="Self.SortBy" Schema="dbo" store:Type="Tables" />
@@ -6068,6 +6105,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="ShopType" EntitySet="ShopType" />
             <End Role="ShopTypePermissionMap" EntitySet="ShopTypePermissionMap" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShopTypeShippingMap_Shipping" Association="Self.FK_ShopTypeShippingMap_Shipping">
+            <End Role="Shipping" EntitySet="Shipping" />
+            <End Role="ShopTypeShippingMap" EntitySet="ShopTypeShippingMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTypeShippingMap_ShopType" Association="Self.FK_ShopTypeShippingMap_ShopType">
+            <End Role="ShopType" EntitySet="ShopType" />
+            <End Role="ShopTypeShippingMap" EntitySet="ShopTypeShippingMap" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShopTypeThemeMap_ShopType" Association="Self.FK_ShopTypeThemeMap_ShopType">
             <End Role="ShopType" EntitySet="ShopType" />
             <End Role="ShopTypeThemeMap" EntitySet="ShopTypeThemeMap" />
@@ -6323,6 +6368,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ShopImages" EntityType="ColspModel.ShopImage" />
           <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
           <EntitySet Name="ShopTypePermissionMaps" EntityType="ColspModel.ShopTypePermissionMap" />
+          <EntitySet Name="ShopTypeShippingMaps" EntityType="ColspModel.ShopTypeShippingMap" />
           <EntitySet Name="ShopTypeThemeMaps" EntityType="ColspModel.ShopTypeThemeMap" />
           <EntitySet Name="ShopUserGroupMaps" EntityType="ColspModel.ShopUserGroupMap" />
           <EntitySet Name="SortBies" EntityType="ColspModel.SortBy" />
@@ -6811,6 +6857,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Province" EntitySet="Provinces" />
             <End Role="Shop" EntitySet="Shops" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShopTypeShippingMap_Shipping" Association="ColspModel.FK_ShopTypeShippingMap_Shipping">
+            <End Role="Shipping" EntitySet="Shippings" />
+            <End Role="ShopTypeShippingMap" EntitySet="ShopTypeShippingMaps" />
+          </AssociationSet>
           <AssociationSet Name="FK_Shop_ShopType" Association="ColspModel.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
             <End Role="Shop" EntitySet="Shops" />
@@ -6854,6 +6904,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FK_ShopTypePermissionMap_ShopType" Association="ColspModel.FK_ShopTypePermissionMap_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
             <End Role="ShopTypePermissionMap" EntitySet="ShopTypePermissionMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTypeShippingMap_ShopType" Association="ColspModel.FK_ShopTypeShippingMap_ShopType">
+            <End Role="ShopType" EntitySet="ShopTypes" />
+            <End Role="ShopTypeShippingMap" EntitySet="ShopTypeShippingMaps" />
           </AssociationSet>
           <AssociationSet Name="FK_ShopTypeThemeMap_ShopType" Association="ColspModel.FK_ShopTypeThemeMap_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
@@ -9209,6 +9263,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ProductHistoryGroups" Relationship="ColspModel.FK_ProductHistoryGroup_Shipping" FromRole="Shipping" ToRole="ProductHistoryGroup" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Shipping" FromRole="Shipping" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="ShopTypeShippingMaps" Relationship="ColspModel.FK_ShopTypeShippingMap_Shipping" FromRole="Shipping" ToRole="ShopTypeShippingMap" />
           <NavigationProperty Name="ShopGroups" Relationship="ColspModel.ShippingShopGroupMap" FromRole="Shipping" ToRole="ShopGroup" />
         </EntityType>
         <EntityType Name="Shop">
@@ -9356,6 +9411,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FK_Shop_ShopType" FromRole="ShopType" ToRole="Shop" />
           <NavigationProperty Name="ShopTypePermissionMaps" Relationship="ColspModel.FK_ShopTypePermissionMap_ShopType" FromRole="ShopType" ToRole="ShopTypePermissionMap" />
+          <NavigationProperty Name="ShopTypeShippingMaps" Relationship="ColspModel.FK_ShopTypeShippingMap_ShopType" FromRole="ShopType" ToRole="ShopTypeShippingMap" />
           <NavigationProperty Name="ShopTypeThemeMaps" Relationship="ColspModel.FK_ShopTypeThemeMap_ShopType" FromRole="ShopType" ToRole="ShopTypeThemeMap" />
         </EntityType>
         <EntityType Name="ShopTypePermissionMap">
@@ -9371,6 +9427,20 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Permission" Relationship="ColspModel.FK_ShopTypePermissionMap_Permission" FromRole="ShopTypePermissionMap" ToRole="Permission" />
           <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_ShopTypePermissionMap_ShopType" FromRole="ShopTypePermissionMap" ToRole="ShopType" />
+        </EntityType>
+        <EntityType Name="ShopTypeShippingMap">
+          <Key>
+            <PropertyRef Name="ShopTypeId" />
+            <PropertyRef Name="ShippingId" />
+          </Key>
+          <Property Name="ShopTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ShippingId" Type="Int32" Nullable="false" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shipping" Relationship="ColspModel.FK_ShopTypeShippingMap_Shipping" FromRole="ShopTypeShippingMap" ToRole="Shipping" />
+          <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_ShopTypeShippingMap_ShopType" FromRole="ShopTypeShippingMap" ToRole="ShopType" />
         </EntityType>
         <EntityType Name="ShopTypeThemeMap">
           <Key>
@@ -11849,6 +11919,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopTypeShippingMap_Shipping">
+          <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="1" />
+          <End Type="ColspModel.ShopTypeShippingMap" Role="ShopTypeShippingMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shipping">
+              <PropertyRef Name="ShippingId" />
+            </Principal>
+            <Dependent Role="ShopTypeShippingMap">
+              <PropertyRef Name="ShippingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Shop_ShopType">
           <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="0..1" />
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="*" />
@@ -11987,6 +12069,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <PropertyRef Name="ShopTypeId" />
             </Principal>
             <Dependent Role="ShopTypePermissionMap">
+              <PropertyRef Name="ShopTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTypeShippingMap_ShopType">
+          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1" />
+          <End Type="ColspModel.ShopTypeShippingMap" Role="ShopTypeShippingMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopType">
+              <PropertyRef Name="ShopTypeId" />
+            </Principal>
+            <Dependent Role="ShopTypeShippingMap">
               <PropertyRef Name="ShopTypeId" />
             </Dependent>
           </ReferentialConstraint>
@@ -14437,6 +14531,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+                <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShopTypeShippingMaps">
+            <EntityTypeMapping TypeName="ColspModel.ShopTypeShippingMap">
+              <MappingFragment StoreEntitySet="ShopTypeShippingMap">
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
                 <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />
               </MappingFragment>
             </EntityTypeMapping>
