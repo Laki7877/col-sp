@@ -25,6 +25,7 @@ using System.Data.Entity.Infrastructure;
 using System.Security.Principal;
 using System.Web.Script.Serialization;
 using System.Data.Entity.Validation;
+using System.Drawing;
 
 namespace Colsp.Api.Controllers
 {
@@ -460,7 +461,8 @@ namespace Colsp.Api.Controllers
                     var variant = productStage.Where(w => w.Pid.Equals(variantRq.Pid)).FirstOrDefault();
                     if(variant == null)
                     {
-                        throw new Exception(string.Concat("Cannot find product ", variantRq.Pid));
+                        continue;
+                        //throw new Exception(string.Concat("Cannot find product ", variantRq.Pid));
                     }
                     if(variant.ProductId != parentVariant.ProductId)
                     {
@@ -1049,10 +1051,10 @@ namespace Colsp.Api.Controllers
             }
         }
 
+
+
+
         
-
-
-
 
 
         [Route("api/ProductStages/Guidance")]
@@ -1125,15 +1127,8 @@ namespace Colsp.Api.Controllers
                 string email = User.UserRequest().Email;
                 var currentDt = DateTime.Now;
                 var pids = request.Select(s => s.Pid).ToList();
-                var products = db.ProductStages.Where(w => w.ShopId == shopId && pids.Contains(w.Pid)).Select(s=>new
-                {
-                    s.Pid,
-                    s.ProductId,
-                    s.IsVariant
-                });
+                var products = db.ProductStages.Where(w => w.ShopId == shopId && pids.Contains(w.Pid));
                 db.ProductStageImages.RemoveRange(db.ProductStageImages.Where(w => pids.Contains(w.Pid)));
-                var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-                var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
                 foreach (VariantRequest varRq in request)
                 {
                     var pro = products.Where(w => w.Pid.Equals(varRq.Pid)).SingleOrDefault();
@@ -1149,24 +1144,27 @@ namespace Colsp.Api.Controllers
                             int position = 1;
                             foreach (var img in varRq.VariantImg)
                             {
-                                db.ProductStageImages.Add(new ProductStageImage()
+                                pro.ProductStageImages.Add(new ProductStageImage()
                                 {
+                                    ImageId = img.ImageId,
                                     CreateBy = email,
                                     CreateOn = currentDt,
                                     FeatureFlag = position == 1 ? true : false,
-                                    ImageName = string.Empty,
-                                    Pid = pro.Pid,
+                                    ImageName = img.Url.Split('/').Last(),
                                     SeqNo = position++,
                                     Large = true,
                                     Normal = true,
                                     Thumbnail = true,
                                     Zoom = true,
+                                    Pid = pro.Pid,
                                     ShopId = shopId,
                                     Status = Constant.STATUS_ACTIVE,
                                     UpdateBy = email,
-                                    UpdateOn = currentDt
+                                    UpdateOn = currentDt,
                                 });
                             }
+                            pro.FeatureImgUrl = pro.ProductStageImages.ElementAt(0).ImageName;
+                            pro.Status = Constant.PRODUCT_STATUS_DRAFT;
                             ProductStageGroup group = new ProductStageGroup()
                             {
                                 ProductId = pro.ProductId,
@@ -1180,27 +1178,27 @@ namespace Colsp.Api.Controllers
                             {
                                 Pid = pro.Pid
                             };
-                            db.ProductStages.Attach(stage);
-                            db.Entry(stage).Property(p => p.FeatureImgUrl).IsModified = true;
-                            db.Entry(stage).Property(p => p.Status).IsModified = true;
-                            stage.FeatureImgUrl = varRq.VariantImg[0].Url;
-                            stage.Status = Constant.PRODUCT_STATUS_DRAFT;
+                        }
+                        else
+                        {
+                            pro.FeatureImgUrl = string.Empty;
                         }
                     }
                     else
                     {
-                        
                         if(varRq.MasterImg != null && varRq.MasterImg.Count > 0)
                         {
+
                             int position = 1;
                             foreach (var img in varRq.MasterImg)
                             {
-                                db.ProductStageImages.Add(new ProductStageImage()
+                                pro.ProductStageImages.Add(new ProductStageImage()
                                 {
+                                    ImageId = img.ImageId,
                                     CreateBy = email,
                                     CreateOn = currentDt,
                                     FeatureFlag = position == 1 ? true : false,
-                                    ImageName = string.Empty,
+                                    ImageName = img.Url.Split('/').Last(),
                                     SeqNo = position++,
                                     Large = true,
                                     Normal = true,
@@ -1210,9 +1208,11 @@ namespace Colsp.Api.Controllers
                                     ShopId = shopId,
                                     Status = Constant.STATUS_ACTIVE,
                                     UpdateBy = email,
-                                    UpdateOn = currentDt
+                                    UpdateOn = currentDt,
                                 });
                             }
+                            pro.FeatureImgUrl = pro.ProductStageImages.ElementAt(0).ImageName;
+                            pro.Status = Constant.PRODUCT_STATUS_DRAFT;
                             ProductStageGroup group = new ProductStageGroup()
                             {
                                 ProductId = pro.ProductId,
@@ -1220,19 +1220,22 @@ namespace Colsp.Api.Controllers
                             db.ProductStageGroups.Attach(group);
                             db.Entry(group).Property(p => p.ImageFlag).IsModified = true;
                             db.Entry(group).Property(p => p.Status).IsModified = true;
-                            group.ImageFlag = true;
                             group.Status = Constant.PRODUCT_STATUS_DRAFT;
+                            group.ImageFlag = true;
                             ProductStage stage = new ProductStage()
                             {
                                 Pid = pro.Pid
                             };
-                            db.ProductStages.Attach(stage);
-                            db.Entry(stage).Property(p => p.FeatureImgUrl).IsModified = true;
-                            db.Entry(stage).Property(p => p.Status).IsModified = true;
-                            stage.FeatureImgUrl = varRq.MasterImg[0].Url;
-                            stage.Status = Constant.PRODUCT_STATUS_DRAFT;
+                        }
+                        else
+                        {
+                            pro.FeatureImgUrl = string.Empty;
                         }
                     }
+                }
+                foreach(var stage in products)
+                {
+                    SetupStageAfterSave(stage, db, false);
                 }
                 db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
@@ -4115,6 +4118,25 @@ namespace Colsp.Api.Controllers
                 db.InventoryHistories.Add(history);
             }
             #endregion
+        }
+
+        public static Image ScaleImage(Image image, int maxWidth, int maxHeight)
+        {
+            var ratioX = (double)maxWidth / image.Width;
+            var ratioY = (double)maxHeight / image.Height;
+            var ratio = Math.Min(ratioX, ratioY);
+
+            var newWidth = (int)(image.Width * ratio);
+            var newHeight = (int)(image.Height * ratio);
+
+            var newImage = new Bitmap(newWidth, newHeight);
+
+            using (var graphics = Graphics.FromImage(newImage))
+            {
+                graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+            }
+
+            return newImage;
         }
 
         private void SendToCmos(ProductStageGroup group, string url, string method
