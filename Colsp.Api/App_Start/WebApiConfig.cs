@@ -22,7 +22,7 @@ namespace Colsp.Api
             #endregion
 
             // Enable CORs
-            config.EnableCors(new EnableCorsAttribute("*","*","*"));
+            config.EnableCors(new EnableCorsAttribute("*", "*","*"));
             #region Filter
             // Setup authorization and authentication filters
             config.Filters.Add(new BasicAuthenticateAttribute());

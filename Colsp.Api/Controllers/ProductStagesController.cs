@@ -3419,6 +3419,7 @@ namespace Colsp.Api.Controllers
             db.ProductTags.RemoveRange(db.ProductTags.Where(w => pids.Contains(w.Pid)));
             db.ProductVideos.RemoveRange(db.ProductVideos.Where(w => pids.Contains(w.Pid)));
             db.ProductAttributes.RemoveRange(db.ProductAttributes.Where(w => pids.Contains(w.Pid)));
+            db.ProductImages.RemoveRange(db.ProductImages.Where(w => pids.Contains(w.Pid)));
 
             foreach (var stage in group.ProductStages)
             {
@@ -3954,8 +3955,27 @@ namespace Colsp.Api.Controllers
                 #region Image
                 foreach (var image in stage.ProductStageImages)
                 {
+                    product.ProductImages.Add(new ProductImage()
+                    {
+                        ImageId = image.ImageId,
+                        FeatureFlag = image.FeatureFlag,
+                        ImageName = image.ImageName,
+                        Large = image.Large,
+                        Normal = image.Normal,
+                        Thumbnail = image.Thumbnail,
+                        Zoom = image.Zoom,
+                        Pid = image.Pid,
+                        SeqNo = image.SeqNo,
+                        ShopId = image.ShopId,
+                        Status = image.Status,
+                        CreateBy = image.CreateBy,
+                        CreateOn = image.CreateOn,
+                        UpdateBy = image.UpdateBy,
+                        UpdateOn = image.UpdateOn,
+                    });
                     history.ProductHistoryImages.Add(new ProductHistoryImage()
                     {
+                        ImageId = image.ImageId,
                         FeatureFlag = image.FeatureFlag,
                         ImageName = image.ImageName,
                         Large = image.Large,
