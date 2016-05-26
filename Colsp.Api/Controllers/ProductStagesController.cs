@@ -9592,13 +9592,9 @@ namespace Colsp.Api.Controllers
                     if (current.ProductStages.Any(a=> string.IsNullOrWhiteSpace(a.ProductNameEn))  
                         || current.ProductStages.Any(a => string.IsNullOrWhiteSpace(a.ProductNameTh))
                         || current.ProductStages.Any(a => string.IsNullOrWhiteSpace(a.Sku))
-                        || current.BrandId == null
-                        || current.ProductStages.Any(a => string.IsNullOrWhiteSpace(a.DescriptionFullEn))
-                        || current.ProductStages.Any(a => string.IsNullOrWhiteSpace(a.DescriptionFullTh))
-                        || current.ProductStages.Any(a => string.IsNullOrWhiteSpace(a.MobileDescriptionEn))
-                        || current.ProductStages.Any(a => string.IsNullOrWhiteSpace(a.MobileDescriptionTh)))
+                        || current.BrandId == null)
                     {
-                        throw new Exception(string.Concat("ProudctId ", rq.ProductId, " is not ready for publishing"));
+                        throw new Exception(string.Concat("Product ID ", rq.ProductId, " is not ready for publishing"));
                     }
 
                     current.Status = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL;
