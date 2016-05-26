@@ -74,8 +74,13 @@ namespace Colsp.Api
             {
                 Directory.CreateDirectory(rootProductPath);
             }
+            rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.IMAGE_TMP_FOLDER);
+            if (!Directory.Exists(rootProductPath))
+            {
+                Directory.CreateDirectory(rootProductPath);
+            }
 
-            foreach (var file in Directory.GetFiles(Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.ORIGINAL_FOLDER)))
+            foreach (var file in Directory.GetFiles(Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.IMAGE_TMP_FOLDER)))
             {
                 if (Path.GetFileName(file).StartsWith("BodyPart", true, null))
                 {
