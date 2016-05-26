@@ -4081,7 +4081,7 @@ namespace Colsp.Api.Controllers
                 {
                     if (File.Exists(newFile))
                     {
-                        continue;
+                        File.Delete(newFile);
                     }
                     File.Move(oldFile, newFile);
                     image.ImageName = Path.GetFileName(newFile);
