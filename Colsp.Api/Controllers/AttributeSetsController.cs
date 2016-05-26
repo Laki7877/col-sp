@@ -67,11 +67,12 @@ namespace Colsp.Api.Controllers
                                   Shops = atrS.ProductStageGroups.Where(w=>!Constant.STATUS_REMOVE.Equals(w.Status)).Select(s=>s.ShopId),
                               };
                 //export page
-                if (User.ShopRequest() != null)
+                if (User.ShopRequest() != null && request.ByShop)
                 {
                     var shopId = User.ShopRequest().ShopId;
                     attrSet = attrSet.Where(w => w.Shops.Contains(shopId));
                 }
+
                 if (request == null)
                 {
                     attrSet = attrSet.Where(w => w.Visibility == true);

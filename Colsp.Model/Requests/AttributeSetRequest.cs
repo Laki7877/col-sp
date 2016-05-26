@@ -16,9 +16,11 @@ namespace Colsp.Model.Requests
         public List<TagRequest> Tags { get; set; }
         public List<CategoryRequest> Category { get; set; }
         public int ProductCount { get; set; }
+        public bool ByShop { get; set; }
 
         public AttributeSetRequest()
         {
+            ByShop = false;
             AttributeSetId = 0;
             AttributeSetNameEn = string.Empty;
             AttributeSetNameTh = string.Empty;
@@ -36,7 +38,7 @@ namespace Colsp.Model.Requests
         {
             AttributeSetId = GetValueOrDefault(AttributeSetId, 0);
             SearchText = GetValueOrDefault(SearchText, null);
-            _order = GetValueOrDefault(_order, "UpdatedDt");
+            _order = GetValueOrDefault(_order, "UpdateOn");
             base.DefaultOnNull();
         }
     }
