@@ -1155,10 +1155,12 @@ namespace Colsp.Api.Controllers
                                     CreateOn = currentDt,
                                     FeatureFlag = position == 1 ? true : false,
                                     ImageName = string.Empty,
-                                    //ImageOriginName = string.Empty,
-                                    //ImageUrlEn = img.Url,
                                     Pid = pro.Pid,
-                                    //Position = position++,
+                                    SeqNo = position++,
+                                    Large = true,
+                                    Normal = true,
+                                    Thumbnail = true,
+                                    Zoom = true,
                                     ShopId = shopId,
                                     Status = Constant.STATUS_ACTIVE,
                                     UpdateBy = email,
@@ -1199,10 +1201,12 @@ namespace Colsp.Api.Controllers
                                     CreateOn = currentDt,
                                     FeatureFlag = position == 1 ? true : false,
                                     ImageName = string.Empty,
-                                    //ImageOriginName = string.Empty,
-                                    //ImageUrlEn = img.Url,
-                                    Pid = pro.Pid,
                                     SeqNo = position++,
+                                    Large = true,
+                                    Normal = true,
+                                    Thumbnail = true,
+                                    Zoom = true,
+                                    Pid = pro.Pid,
                                     ShopId = shopId,
                                     Status = Constant.STATUS_ACTIVE,
                                     UpdateBy = email,
@@ -1259,14 +1263,14 @@ namespace Colsp.Api.Controllers
                     productStage.Status,
                     MasterImg = productStage.ProductStageImages.Select(s => new
                     {
-                        ImageId = 0,
-                        //Url = s.ImageUrlEn,
+                        ImageId = s.ImageId,
+                        Url = Constant.IMAGE_STATIC_URL + s.ImageName,
                         position = s.SeqNo
                     }).OrderBy(o => o.position),
                     VariantImg = productStage.ProductStageImages.Select(s => new
                     {
-                        ImageId = 0,
-                        //Url = s.ImageUrlEn,
+                        ImageId = s.ImageId,
+                        Url = Constant.IMAGE_STATIC_URL + s.ImageName,
                         position = s.SeqNo
                     }).OrderBy(o => o.position),
                     productStage.IsVariant,
@@ -1968,8 +1972,11 @@ namespace Colsp.Api.Controllers
                 group.ProductId = db.GetNextProductStageGroupId().Single().Value;
                 db.ProductStageGroups.Add(group);
                 SetupGroupAfterSave(group, db, true);
-                SendToCmos(group, Apis.CmosCreateProduct, "POST", email, currentDt, db);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+                Task.Run(() =>
+                {
+                    SendToCmos(group, Apis.CmosCreateProduct, "POST", email, currentDt);
+                });
                 return GetProductStage(group.ProductId);
             }
             catch (Exception e)
@@ -2355,6 +2362,7 @@ namespace Colsp.Api.Controllers
                     }
                     stage.ProductStageImages.Add(new ProductStageImage()
                     {
+                        ImageId  = img.ImageId,
                         FeatureFlag = position == 1 ? true : false,
                         Large = true,
                         Normal = true,
@@ -2890,8 +2898,9 @@ namespace Colsp.Api.Controllers
                                 sa.AttributeValue.AttributeValueTh,
                             }
                         }),
-                        Images = st.ProductStageImages.Select(si => new
+                        Images = st.ProductStageImages.OrderBy(o=>o.SeqNo).Select(si => new
                         {
+                            si.ImageId,
                             si.ImageName
                         }),
                         Videos = st.ProductStageVideos.OrderBy(o => o.Position).Select(sv => new
@@ -3127,6 +3136,7 @@ namespace Colsp.Api.Controllers
                     response.MasterVariant.Images.Add(new ImageRequest()
                     {
                         Url = string.Concat(Constant.IMAGE_STATIC_URL,image.ImageName),
+                        ImageId = image.ImageId,
                     });
                 }
             }
@@ -3274,6 +3284,7 @@ namespace Colsp.Api.Controllers
                         tmpVariant.Images.Add(new ImageRequest()
                         {
                             Url = string.Concat(Constant.IMAGE_STATIC_URL, image.ImageName),
+                            ImageId = image.ImageId,
                         });
                     }
                 }
@@ -4024,7 +4035,7 @@ namespace Colsp.Api.Controllers
                         string oldFile = Path.Combine(
                             AppSettingKey.IMAGE_ROOT_PATH, 
                             AppSettingKey.PRODUCT_FOLDER, 
-                            AppSettingKey.ORIGINAL_FOLDER, 
+                            AppSettingKey.IMAGE_TMP_FOLDER, 
                             lastPart);
                         if (File.Exists(oldFile))
                         {
@@ -4033,7 +4044,7 @@ namespace Colsp.Api.Controllers
                             File.Copy(oldFile, Path.Combine(
                                 AppSettingKey.IMAGE_ROOT_PATH, 
                                 AppSettingKey.PRODUCT_FOLDER, 
-                                AppSettingKey.ORIGINAL_FOLDER,
+                                AppSettingKey.IMAGE_TMP_FOLDER,
                                 newFileName));
                             ++index;
                         }
@@ -4064,7 +4075,7 @@ namespace Colsp.Api.Controllers
                 string oldFile = Path.Combine(
                     AppSettingKey.IMAGE_ROOT_PATH, 
                     AppSettingKey.PRODUCT_FOLDER, 
-                    AppSettingKey.ORIGINAL_FOLDER,
+                    AppSettingKey.IMAGE_TMP_FOLDER,
                     lastPart);
                 if (File.Exists(oldFile))
                 {
@@ -4111,63 +4122,76 @@ namespace Colsp.Api.Controllers
         }
 
         private void SendToCmos(ProductStageGroup group, string url, string method
-            ,string email,DateTime currentDt,ColspEntities db)
+            ,string email,DateTime currentDt)
         {
-            List<CmosRequest> requests = new List<CmosRequest>();
-            foreach(var stage in group.ProductStages)
+            using (ColspEntities db = new ColspEntities())
             {
-                CmosRequest cms = new CmosRequest()
+                List<CmosRequest> requests = new List<CmosRequest>();
+                foreach (var stage in group.ProductStages)
                 {
-                    BrandId = group.BrandId.HasValue? group.BrandId.Value : 0,
-                    BrandNameEng = string.Empty,
-                    BrandNameThai = string.Empty,
-                    DeliverFee = stage.DeliveryFee,
-                    DescriptionFullEng = stage.DescriptionFullEn,
-                    DescriptionFullThai = stage.DescriptionFullTh,
-                    DescriptionShortThai = stage.DescriptionShortTh,
-                    DescriptionShotEng = stage.DescriptionShortEn,
-                    DocumentNameEng = stage.ProdTDNameEn,
-                    DocumentNameThai = stage.ProdTDNameTh,
-                    Height = stage.Height,
-                    IsBestDeal = group.IsBestSeller,
-                    IsHasExpiryDate = Constant.STATUS_YES.Equals(stage.IsHasExpiryDate),
-                    IsVat = Constant.STATUS_YES.Equals(stage.IsVat),
-                    JDADept = stage.JDADept,
-                    JDASubDept = stage.JDASubDept,
-                    Length = stage.Length,
-                    NameEng = stage.ProductNameEn,
-                    NameThai = stage.ProductNameTh,
-                    OriginalPrice = stage.OriginalPrice,
-                    PrepareDay = stage.PrepareDay,
-                    ProductID = stage.Pid,
-                    ProductStatus = stage.Status,
-                    ProductType = string.Empty,
-                    Remark = group.Remark,
-                    SalePrice = stage.SalePrice,
-                    SaleUnitEng = stage.SaleUnitEn,
-                    SaleUnitThai = stage.SaleUnitTh,
-                    ShopId = stage.ShopId,
-                    Sku = stage.Sku,
-                    Upc = stage.Upc,
-                    Weight = stage.Weight,
-                    Width = stage.Width
-                };
-                requests.Add(cms);
-            }
-            WebRequest request = WebRequest.Create(url);
-            request.Headers.Add(Apis.CmosKeyAppIdKey, Apis.CmosKeyAppIdValue);
-            request.Headers.Add(Apis.CmosKeyAppSecretKey, Apis.CmosKeyAppSecretValue);
-            request.Method = method;
-            foreach (var req in requests)
-            {
-                var json = new JavaScriptSerializer().Serialize(req);
-                SendRequest(request, json,email,currentDt,"SP","CMOS",db);
+                    CmosRequest cms = new CmosRequest()
+                    {
+                        BrandId = group.BrandId.HasValue ? group.BrandId.Value : 0,
+                        BrandNameEng = string.Empty,
+                        BrandNameThai = string.Empty,
+                        DeliverFee = stage.DeliveryFee,
+                        DescriptionFullEng = stage.DescriptionFullEn,
+                        DescriptionFullThai = stage.DescriptionFullTh,
+                        DescriptionShortThai = stage.DescriptionShortTh,
+                        DescriptionShotEng = stage.DescriptionShortEn,
+                        DocumentNameEng = stage.ProdTDNameEn,
+                        DocumentNameThai = stage.ProdTDNameTh,
+                        Height = stage.Height,
+                        IsBestDeal = group.IsBestSeller,
+                        IsHasExpiryDate = Constant.STATUS_YES.Equals(stage.IsHasExpiryDate),
+                        IsVat = Constant.STATUS_YES.Equals(stage.IsVat),
+                        JDADept = stage.JDADept,
+                        JDASubDept = stage.JDASubDept,
+                        Length = stage.Length,
+                        NameEng = stage.ProductNameEn,
+                        NameThai = stage.ProductNameTh,
+                        OriginalPrice = stage.OriginalPrice,
+                        PrepareDay = stage.PrepareDay,
+                        ProductID = stage.Pid,
+                        ProductStatus = stage.Status,
+                        ProductType = string.Empty,
+                        Remark = group.Remark,
+                        SalePrice = stage.SalePrice,
+                        SaleUnitEng = stage.SaleUnitEn,
+                        SaleUnitThai = stage.SaleUnitTh,
+                        ShopId = stage.ShopId,
+                        Sku = stage.Sku,
+                        Upc = stage.Upc,
+                        Weight = stage.Weight,
+                        Width = stage.Width
+                    };
+                    requests.Add(cms);
+                }
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                headers.Add(Apis.CmosKeyAppIdKey, Apis.CmosKeyAppIdValue);
+                headers.Add(Apis.CmosKeyAppSecretKey, Apis.CmosKeyAppSecretValue);
+                foreach (var req in requests)
+                {
+                    var json = new JavaScriptSerializer().Serialize(req);
+                    SendRequest(url, method, headers, json, email, currentDt, "SP", "CMOS", db);
+                }
+                db.SaveChanges();
             }
         }
 
-        private void SendRequest(WebRequest request, string jsonString
+        private void SendRequest(string url,string method,Dictionary<string,string> headers, string jsonString
             , string email, DateTime currentDt, string source, string destination, ColspEntities db)
         {
+            WebRequest request = WebRequest.Create(url);
+
+            if(headers != null)
+            {
+                foreach(var header in headers)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+            }
+            request.Method = method;
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
             request.ContentType = ContentType.ApplicationJson;
             request.ContentLength = byteArray.Length;
@@ -5815,7 +5839,7 @@ namespace Colsp.Api.Controllers
                 #endregion
                 using (ColspEntities db = new ColspEntities())
                 {
-                    //((IObjectContextAdapter)db).ObjectContext.CommandTimeout = 180;
+                    ((IObjectContextAdapter)db).ObjectContext.CommandTimeout = 180;
                     #region Setup Header
                     Dictionary<string, Tuple<string, int>> headDicTmp = new Dictionary<string, Tuple<string, int>>();
                     var tmpGuidance = db.ImportHeaders.Where(w => true);
@@ -6865,6 +6889,7 @@ namespace Colsp.Api.Controllers
                 {
                     CharSet = Encoding.UTF8.WebName
                 };
+                result.Headers.Add("Cache-Control", "no-cache");
                 result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
                 result.Content.Headers.ContentDisposition.FileName = "file.csv";
                 return result;
@@ -9741,7 +9766,7 @@ namespace Colsp.Api.Controllers
                             ShopId = stage.ShopId
                         });
                     }
-                    SendToCmos(group, Apis.CmosCreateProduct, "POST", email, currentDt, db);
+                    //SendToCmos(group, Apis.CmosCreateProduct, "POST", email, currentDt, db);
                 }
                 db.ProductStageGroups.AddRange(groupList);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");

@@ -196,7 +196,7 @@ namespace Colsp.Api.Controllers
                         si.ImageUrl,
                     }),
                     BrandFeatureProducts = s.BrandFeatureProducts
-                        .Where(w=>!Constant.STATUS_REMOVE.Equals(w.ProductStageGroup.Status))
+                        .Where(w => !Constant.STATUS_REMOVE.Equals(w.ProductStageGroup.Status) && w.ProductStageGroup.BrandId.HasValue && w.ProductStageGroup.BrandId == brandId)
                         .Select(sp => new
                     {
                         ProductStageGroup = sp.ProductStageGroup == null ? null : new

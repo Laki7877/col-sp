@@ -142,7 +142,7 @@ namespace Colsp.Api.Controllers
                 attributeSet.AttributeSetId = db.GetNextAttributeSetId().SingleOrDefault().Value;
                 db.AttributeSets.Add(attributeSet);
                 Util.DeadlockRetry(db.SaveChanges, "AttributeSet");
-                return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attributeSet));
+                return GetAttributeSets(attributeSet.AttributeSetId);
                 //return GetAttributeSets(attributeSet.AttributeSetId);
             }
             catch (Exception e)

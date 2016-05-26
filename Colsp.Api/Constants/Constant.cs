@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 
 namespace Colsp.Api.Constants
@@ -7,7 +8,7 @@ namespace Colsp.Api.Constants
     {
         public static readonly int DEFAULT_GLOBAL_CATEGORY = 1;
 
-        public static readonly string IMAGE_STATIC_URL = "http://colsp-dev.azurewebsites.net/Images/Product/original/";
+        public static readonly string IMAGE_STATIC_URL = ConfigurationManager.AppSettings["ImageStaticUrl"];
 
         public static readonly int DEFAULT_THE_ONE_CARD = 1;
 

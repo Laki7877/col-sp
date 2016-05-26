@@ -20,20 +20,16 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-
                 var tmpShipping = db.Shippings.Where(w => w.Status.Equals(Constant.STATUS_ACTIVE));
-
                 if(User.ShopRequest() != null)
                 {
-                    var shopGroup = User.ShopRequest().ShopGroup;
-                    tmpShipping = tmpShipping.Where(w => w.ShopGroups.Any(a => a.Abbr.Equals(shopGroup)));
+                    var shopTypeId = User.ShopRequest().ShopType.ShopTypeId;
+                    tmpShipping = tmpShipping.Where(w => w.ShopTypeShippingMaps.Any(a => a.ShopTypeId.Equals(shopTypeId)));
                 }
-
                 var shippingList = tmpShipping.Select(s => new
                 {
                     s.ShippingId,
                     s.ShippingMethodEn,
-                    s.VisibleTo
                 });
                 return Request.CreateResponse(HttpStatusCode.OK, shippingList);
             }
