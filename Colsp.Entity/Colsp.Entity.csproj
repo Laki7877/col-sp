@@ -536,6 +536,9 @@
     <Compile Include="Models\Province.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ReportLog.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ReportProductsCommissionForOrder_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

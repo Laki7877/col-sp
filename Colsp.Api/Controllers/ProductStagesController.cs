@@ -4539,7 +4539,7 @@ namespace Colsp.Api.Controllers
             {
                 var fileUpload = await Util.SetupImage(Request
                     , AppSettingKey.IMAGE_ROOT_PATH
-                    , Path.Combine(AppSettingKey.PRODUCT_FOLDER, AppSettingKey.ORIGINAL_FOLDER)
+                    , Path.Combine(AppSettingKey.PRODUCT_FOLDER, AppSettingKey.IMAGE_TMP_FOLDER)
                     , 1500, 1500, 2000, 2000, 5, true);
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }

@@ -23,10 +23,10 @@
         <EntityType Name="AppAuth">
           <Key>
             <PropertyRef Name="ServerAppId" />
-            <PropertyRef Name="AppId" />
+            <PropertyRef Name="ClientAppId" />
           </Key>
           <Property Name="ServerAppId" Type="int" Nullable="false" />
-          <Property Name="AppId" Type="int" Nullable="false" />
+          <Property Name="ClientAppId" Type="int" Nullable="false" />
           <Property Name="SecretKey" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="AppName" Type="varchar" MaxLength="100" />
           <Property Name="ExpiredDate" Type="smalldatetime" />
@@ -2600,6 +2600,17 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           <Property Name="ProvinceNameEn" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="ProvinceType" Type="tinyint" Nullable="false" />
         </EntityType>
+        <EntityType Name="ReportLog">
+          <Key>
+            <PropertyRef Name="ReportLogId" />
+          </Key>
+          <Property Name="ReportLogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="ReportName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreatedIP" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="Shipping">
           <Key>
             <PropertyRef Name="ShippingId" />
@@ -2674,6 +2685,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           <Property Name="BankAccountNumber" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="BankAccountName" Type="varchar" MaxLength="80" Nullable="false" />
           <Property Name="RemittanceFaxNumber" Type="varchar" MaxLength="18" Nullable="false" />
+          <Property Name="ContactPersonFirstName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ContactPersonLastName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="CreateOn" Type="datetime" Nullable="false" />
@@ -5117,6 +5131,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="PromotionOnTopCreditCard" EntityType="Self.PromotionOnTopCreditCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PromotionOnTopCreditNumber" EntityType="Self.PromotionOnTopCreditNumber" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReportLog" EntityType="Self.ReportLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShippingShopGroupMap" EntityType="Self.ShippingShopGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
@@ -6190,6 +6205,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <FunctionImport Name="StockStatusReport" ReturnType="Collection(ColspModel.StockStatusReport_Result)" />
           <FunctionImport Name="GetNextProductStageImageId" ReturnType="Collection(Int64)" />
           <FunctionImport Name="ItemOnHoldReport" ReturnType="Collection(ColspModel.ItemOnHoldReport_Result)" />
+          <FunctionImport Name="GetNextAppLogId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="ReportProductsCommissionForOrder" ReturnType="Collection(ColspModel.ReportProductsCommissionForOrder_Result)" />
+          <FunctionImport Name="ReportReturnItemByOrderReport" ReturnType="Collection(ColspModel.ReportReturnItemByOrderReport_Result)" />
           <EntitySet Name="ApiLogs" EntityType="ColspModel.ApiLog" />
           <EntitySet Name="AppAuths" EntityType="ColspModel.AppAuth" />
           <EntitySet Name="Attributes" EntityType="ColspModel.Attribute" />
@@ -6297,6 +6315,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
           <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           <EntitySet Name="Provinces" EntityType="ColspModel.Province" />
+          <EntitySet Name="ReportLogs" EntityType="ColspModel.ReportLog" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
           <EntitySet Name="ShopCommissions" EntityType="ColspModel.ShopCommission" />
@@ -6876,9 +6895,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shipping" EntitySet="Shippings" />
             <End Role="ShopGroup" EntitySet="ShopGroups" />
           </AssociationSet>
-          <FunctionImport Name="GetNextAppLogId" ReturnType="Collection(Int64)" />
-          <FunctionImport Name="ReportProductsCommissionForOrder" ReturnType="Collection(ColspModel.ReportProductsCommissionForOrder_Result)" />
-          <FunctionImport Name="ReportReturnItemByOrderReport" ReturnType="Collection(ColspModel.ReportReturnItemByOrderReport_Result)" />
           </EntityContainer>
         <ComplexType Name="SaleReportForSeller_Result">
           <Property Type="DateTime" Name="OrderDateTime" Nullable="true" Precision="23" />
@@ -6928,6 +6944,28 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Type="String" Name="OnHoldRemark" Nullable="true" MaxLength="100" />
           <Property Type="String" Name="Orderid" Nullable="true" MaxLength="12" />
         </ComplexType>
+        <ComplexType Name="ReportProductsCommissionForOrder_Result">
+          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="QTY" Nullable="false" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="22" Scale="3" />
+          <Property Type="Int32" Name="CommissionRate" Nullable="false" />
+          <Property Type="Int32" Name="CommissionFee" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ReportReturnItemByOrderReport_Result">
+          <Property Type="DateTime" Name="ReturnDate" Nullable="true" Precision="16" />
+          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="12" />
+          <Property Type="String" Name="Pid" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="ItemStatus" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="Quantity" Nullable="false" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="21" Scale="3" />
+          <Property Type="Decimal" Name="LocalDiscount" Nullable="false" Precision="10" Scale="3" />
+          <Property Type="Int32" Name="ReturnPrice" Nullable="false" />
+          <Property Type="Int32" Name="ReturnFee" Nullable="false" />
+          <Property Type="Int32" Name="ReturnAmount" Nullable="false" />
+        </ComplexType>
         <EntityType Name="ApiLog">
           <Key>
             <PropertyRef Name="LogId" />
@@ -6946,10 +6984,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
         <EntityType Name="AppAuth">
           <Key>
             <PropertyRef Name="ServerAppId" />
-            <PropertyRef Name="AppId" />
+            <PropertyRef Name="ClientAppId" />
           </Key>
           <Property Name="ServerAppId" Type="Int32" Nullable="false" />
-          <Property Name="AppId" Type="Int32" Nullable="false" />
+          <Property Name="ClientAppId" Type="Int32" Nullable="false" />
           <Property Name="SecretKey" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="AppName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ExpiredDate" Type="DateTime" Precision="0" />
@@ -9145,6 +9183,17 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="ProvinceType" Type="Byte" Nullable="false" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FK_Shop_Province" FromRole="Province" ToRole="Shop" />
         </EntityType>
+        <EntityType Name="ReportLog">
+          <Key>
+            <PropertyRef Name="ReportLogId" />
+          </Key>
+          <Property Name="ReportLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="ReportName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Shipping">
           <Key>
             <PropertyRef Name="ShippingId" />
@@ -9214,6 +9263,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="BankAccountNumber" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="BankAccountName" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
           <Property Name="RemittanceFaxNumber" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="false" />
+          <Property Name="ContactPersonFirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ContactPersonLastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
@@ -12055,28 +12107,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="*" />
           <End Type="ColspModel.ShopGroup" Role="ShopGroup" Multiplicity="*" />
         </Association>
-        <ComplexType Name="ReportProductsCommissionForOrder_Result">
-          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="15" />
-          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
-          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
-          <Property Type="Int32" Name="QTY" Nullable="false" />
-          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="22" Scale="3" />
-          <Property Type="Int32" Name="CommissionRate" Nullable="false" />
-          <Property Type="Int32" Name="CommissionFee" Nullable="false" />
-        </ComplexType>
-        <ComplexType Name="ReportReturnItemByOrderReport_Result">
-          <Property Type="DateTime" Name="ReturnDate" Nullable="true" Precision="16" />
-          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="12" />
-          <Property Type="String" Name="Pid" Nullable="false" MaxLength="7" />
-          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
-          <Property Type="String" Name="ItemStatus" Nullable="false" MaxLength="20" />
-          <Property Type="Int32" Name="Quantity" Nullable="false" />
-          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="21" Scale="3" />
-          <Property Type="Decimal" Name="LocalDiscount" Nullable="false" Precision="10" Scale="3" />
-          <Property Type="Int32" Name="ReturnPrice" Nullable="false" />
-          <Property Type="Int32" Name="ReturnFee" Nullable="false" />
-          <Property Type="Int32" Name="ReturnAmount" Nullable="false" />
-        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -12159,6 +12189,37 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetNextAppLogId" FunctionName="ColspModel.Store.GetNextAppLogId" />
+          <FunctionImportMapping FunctionImportName="ReportProductsCommissionForOrder" FunctionName="ColspModel.Store.ReportProductsCommissionForOrder">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ReportProductsCommissionForOrder_Result">
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="CommissionRate" ColumnName="CommissionRate" />
+                <ScalarProperty Name="CommissionFee" ColumnName="CommissionFee" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportReturnItemByOrderReport" FunctionName="ColspModel.Store.ReportReturnItemByOrderReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ReportReturnItemByOrderReport_Result">
+                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="LocalDiscount" ColumnName="LocalDiscount" />
+                <ScalarProperty Name="ReturnPrice" ColumnName="ReturnPrice" />
+                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
+                <ScalarProperty Name="ReturnAmount" ColumnName="ReturnAmount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <EntitySetMapping Name="ApiLogs">
             <EntityTypeMapping TypeName="ColspModel.ApiLog">
               <MappingFragment StoreEntitySet="ApiLog">
@@ -12185,7 +12246,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
                 <ScalarProperty Name="AppName" ColumnName="AppName" />
                 <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
-                <ScalarProperty Name="AppId" ColumnName="AppId" />
+                <ScalarProperty Name="ClientAppId" ColumnName="ClientAppId" />
                 <ScalarProperty Name="ServerAppId" ColumnName="ServerAppId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -14230,6 +14291,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ReportLogs">
+            <EntityTypeMapping TypeName="ColspModel.ReportLog">
+              <MappingFragment StoreEntitySet="ReportLog">
+                <ScalarProperty Name="CreatedIP" ColumnName="CreatedIP" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="ReportName" ColumnName="ReportName" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ReportLogId" ColumnName="ReportLogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Shippings">
             <EntityTypeMapping TypeName="ColspModel.Shipping">
               <MappingFragment StoreEntitySet="Shipping">
@@ -14253,6 +14326,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ContactPersonLastName" ColumnName="ContactPersonLastName" />
+                <ScalarProperty Name="ContactPersonFirstName" ColumnName="ContactPersonFirstName" />
                 <ScalarProperty Name="RemittanceFaxNumber" ColumnName="RemittanceFaxNumber" />
                 <ScalarProperty Name="BankAccountName" ColumnName="BankAccountName" />
                 <ScalarProperty Name="BankAccountNumber" ColumnName="BankAccountNumber" />
@@ -15194,37 +15270,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
             </EndProperty>
           </AssociationSetMapping>
-          <FunctionImportMapping FunctionImportName="GetNextAppLogId" FunctionName="ColspModel.Store.GetNextAppLogId" />
-          <FunctionImportMapping FunctionImportName="ReportProductsCommissionForOrder" FunctionName="ColspModel.Store.ReportProductsCommissionForOrder">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.ReportProductsCommissionForOrder_Result">
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="PID" ColumnName="PID" />
-                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
-                <ScalarProperty Name="QTY" ColumnName="QTY" />
-                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
-                <ScalarProperty Name="CommissionRate" ColumnName="CommissionRate" />
-                <ScalarProperty Name="CommissionFee" ColumnName="CommissionFee" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="ReportReturnItemByOrderReport" FunctionName="ColspModel.Store.ReportReturnItemByOrderReport">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.ReportReturnItemByOrderReport_Result">
-                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="Pid" ColumnName="Pid" />
-                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
-                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
-                <ScalarProperty Name="LocalDiscount" ColumnName="LocalDiscount" />
-                <ScalarProperty Name="ReturnPrice" ColumnName="ReturnPrice" />
-                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
-                <ScalarProperty Name="ReturnAmount" ColumnName="ReturnAmount" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -12,16 +12,13 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AppAuth
+    public partial class ReportLog
     {
-        public int ServerAppId { get; set; }
-        public int ClientAppId { get; set; }
-        public string SecretKey { get; set; }
-        public string AppName { get; set; }
-        public Nullable<System.DateTime> ExpiredDate { get; set; }
-        public System.DateTime CreateOn { get; set; }
+        public int ReportLogId { get; set; }
+        public Nullable<int> ShopId { get; set; }
+        public string ReportName { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
-        public string UpdateBy { get; set; }
+        public string CreatedIP { get; set; }
     }
 }

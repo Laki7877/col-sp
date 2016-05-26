@@ -188,6 +188,17 @@ namespace Colsp.Api.Controllers
                         s.WithholdingTax,
                         s.Payment,
                         s.DomainName,
+                        s.ShopAddress,
+                        s.VendorAddressLine1,
+                        s.VendorAddressLine2,
+                        s.VendorAddressLine3,
+                        s.PhoneNumber,
+                        s.FaxNumber,
+                        s.Telex,
+                        s.ContactPersonFirstName,
+                        s.ContactPersonLastName,
+                        s.Email,
+                        s.OverseasVendorIndicator,
                         Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission }),
                         ShopOwner = new
                         {
@@ -204,7 +215,6 @@ namespace Colsp.Api.Controllers
                         s.ShopDescriptionTh,
                         s.FloatMessageEn,
                         s.FloatMessageTh,
-                        s.ShopAddress,
                         s.Facebook,
                         s.YouTube,
                         s.Twitter,
@@ -213,10 +223,27 @@ namespace Colsp.Api.Controllers
                         s.GiftWrap,
                         s.TaxInvoice,
                         s.StockAlert,
-                        s.City,
-                        s.Province,
-                        s.District,
-                        s.Country,
+                        s.RemittanceFaxNumber,
+                        City = s.City == null ? null : new
+                        {
+                            s.City.CityId,
+                            s.City.CityName,
+                        },
+                        Province = s.Province == null ? null : new
+                        {
+                            s.Province.ProvinceId,
+                            s.Province.ProvinceName
+                        },
+                        District = s.District == null ? null : new
+                        {
+                            s.District.DistrictId,
+                            s.District.DistrictName
+                        },
+                        Country = s.Country == null ? null : new
+                        {
+                            s.Country.CountryCode,
+                            s.Country.CountryName
+                        },
                         PostalCode = s.PostCode == null ? null : new
                         {
                             s.PostCodeId,
@@ -1049,12 +1076,14 @@ namespace Colsp.Api.Controllers
             shop.TaxInvoice = Validation.ValidateString(request.TaxInvoice, "Tax Invoice", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, int.MaxValue, 0).Value;
             shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.STATUS_NOT_ACTIVE, new List<string>() { Constant.STATUS_NOT_ACTIVE, Constant.STATUS_ACTIVE});
-
             shop.VendorAddressLine1 = Validation.ValidateString(request.VendorAddressLine1, "Vendor Address Line1", true, 35, false, string.Empty);
             shop.VendorAddressLine2 = Validation.ValidateString(request.VendorAddressLine2, "Vendor Address Line2", true, 35, false, string.Empty);
             shop.VendorAddressLine3 = Validation.ValidateString(request.VendorAddressLine3, "Vendor Address Line3", true, 35, false, string.Empty);
             shop.OverseasVendorIndicator = Validation.ValidateString(request.OverseasVendorIndicator, "Overseas Vendor Indicator", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
             shop.DomainName = Validation.ValidateString(request.DomainName, "Domain Name", true, 500, false, string.Empty);
+            shop.Email = Validation.ValidateString(request.Email, "Email", true, 100, false, string.Empty);
+            shop.ContactPersonFirstName = Validation.ValidateString(request.ContactPersonFirstName, "Contact Person First Name", true, 100, false, string.Empty);
+            shop.ContactPersonLastName = Validation.ValidateString(request.ContactPersonLastName, "Contact Person Last Name", true, 100, false, string.Empty);
 
             if (request.Country != null && !string.IsNullOrEmpty(request.Country.CountryCode))
             {
@@ -1087,7 +1116,7 @@ namespace Colsp.Api.Controllers
 
                     if (request.District != null && request.District.DistrictId != 0)
                     {
-                        var districtId = db.Districts.Where(w => w.CityId == shop.CityId && w.DistrictId == request.District.DistrictId).Select(s => s.CityId).SingleOrDefault();
+                        var districtId = db.Districts.Where(w => w.CityId == shop.CityId && w.DistrictId == request.District.DistrictId).Select(s => s.DistrictId).SingleOrDefault();
                         if (districtId == 0)
                         {
                             throw new Exception("Cannot find District");
