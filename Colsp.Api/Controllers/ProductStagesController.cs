@@ -26,6 +26,7 @@ using System.Security.Principal;
 using System.Web.Script.Serialization;
 using System.Data.Entity.Validation;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Colsp.Api.Controllers
 {
@@ -4066,14 +4067,16 @@ namespace Colsp.Api.Controllers
             foreach (var image in stage.ProductStageImages)
             {
                 string lastPart = image.ImageName;
+                string productRootFolder = Path.Combine(
+                    AppSettingKey.IMAGE_ROOT_PATH,
+                    AppSettingKey.PRODUCT_FOLDER);
+                string newFileName = string.Concat(stage.Pid, "_", image.SeqNo, Path.GetExtension(lastPart));
                 string newFile = Path.Combine(
-                    AppSettingKey.IMAGE_ROOT_PATH, 
-                    AppSettingKey.PRODUCT_FOLDER,
+                    productRootFolder,
                     AppSettingKey.ORIGINAL_FOLDER,
-                    string.Concat(stage.Pid, "_", image.SeqNo, Path.GetExtension(lastPart)));
+                    newFileName);
                 string oldFile = Path.Combine(
-                    AppSettingKey.IMAGE_ROOT_PATH, 
-                    AppSettingKey.PRODUCT_FOLDER, 
+                    productRootFolder,
                     AppSettingKey.IMAGE_TMP_FOLDER,
                     lastPart);
                 if (File.Exists(oldFile))
@@ -4081,6 +4084,28 @@ namespace Colsp.Api.Controllers
                     if (File.Exists(newFile))
                     {
                         File.Delete(newFile);
+                        #region delete old file
+                        string tmpFile = Path.Combine(productRootFolder, AppSettingKey.ZOOM_FOLDER, newFileName);
+                        if (File.Exists(tmpFile))
+                        {
+                            File.Delete(tmpFile);
+                        }
+                        tmpFile = Path.Combine(productRootFolder, AppSettingKey.LARGE_FOLDER, newFileName);
+                        if (File.Exists(tmpFile))
+                        {
+                            File.Delete(tmpFile);
+                        }
+                        tmpFile = Path.Combine(productRootFolder, AppSettingKey.NORMAL_FOLDER, newFileName);
+                        if (File.Exists(tmpFile))
+                        {
+                            File.Delete(tmpFile);
+                        }
+                        tmpFile = Path.Combine(productRootFolder, AppSettingKey.THUMBNAIL_FOLDER, newFileName);
+                        if (File.Exists(tmpFile))
+                        {
+                            File.Delete(tmpFile);
+                        }
+                        #endregion
                     }
                     File.Move(oldFile, newFile);
                     image.ImageName = Path.GetFileName(newFile);
@@ -4089,6 +4114,28 @@ namespace Colsp.Api.Controllers
                     {
                         stage.FeatureImgUrl = image.ImageName;
                     }
+                    #region resize file
+                    using (var originalImage = Image.FromFile(newFile))
+                    {
+                        using (var resizeImage = ScaleImage(originalImage, 1500, 1500))
+                        {
+                            resizeImage.Save(Path.Combine(productRootFolder, AppSettingKey.ZOOM_FOLDER, newFileName), ImageFormat.Jpeg);
+                        }
+                        using (var resizeImage = ScaleImage(originalImage, 600, 600))
+                        {
+                            resizeImage.Save(Path.Combine(productRootFolder, AppSettingKey.LARGE_FOLDER, newFileName), ImageFormat.Jpeg);
+                        }
+                        using (var resizeImage = ScaleImage(originalImage, 300, 300))
+                        {
+                            resizeImage.Save(Path.Combine(productRootFolder, AppSettingKey.NORMAL_FOLDER, newFileName), ImageFormat.Jpeg);
+                        }
+                        using (var resizeImage = ScaleImage(originalImage, 100, 100))
+                        {
+                            resizeImage.Save(Path.Combine(productRootFolder, AppSettingKey.THUMBNAIL_FOLDER, newFileName), ImageFormat.Jpeg);
+                        }
+                    }
+                    
+                    #endregion
                 }
             }
             #endregion
