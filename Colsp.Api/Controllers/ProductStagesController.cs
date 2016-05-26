@@ -2303,11 +2303,7 @@ namespace Colsp.Api.Controllers
             if (!string.IsNullOrWhiteSpace(masterVariant.ProductNameEn)
                 && !string.IsNullOrWhiteSpace(masterVariant.ProductNameTh)
                 && !string.IsNullOrWhiteSpace(masterVariant.Sku)
-                && group.BrandId != null
-                && !string.IsNullOrWhiteSpace(masterVariant.DescriptionFullEn)
-                && !string.IsNullOrWhiteSpace(masterVariant.DescriptionFullTh)
-                && !string.IsNullOrWhiteSpace(masterVariant.MobileDescriptionEn)
-                && !string.IsNullOrWhiteSpace(masterVariant.MobileDescriptionTh))
+                && group.BrandId != null)
             {
                 group.InfoFlag = true;
             }
