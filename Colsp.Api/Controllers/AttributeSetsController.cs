@@ -64,7 +64,7 @@ namespace Colsp.Api.Controllers
                                   AttributeCount = atrS.AttributeSetMaps.Count(),
                                   CategoryCount = atrS.GlobalCatAttributeSetMaps.Count(),
                                   ProductCount = atrS.ProductStageGroups.Count(),
-                                  Shops = atrS.ProductStageGroups.Where(w=>!Constant.STATUS_REMOVE.Equals(w.Status)).Select(s=>s.ShopId),
+                                  Shops = atrS.ProductStageGroups.Where(w=>!Constant.STATUS_REMOVE.Equals(w.Status)).Select(s=>s.ShopId).Distinct(),
                               };
                 //export page
                 if (User.ShopRequest() != null && request.ByShop)

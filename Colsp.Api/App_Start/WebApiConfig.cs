@@ -84,10 +84,7 @@ namespace Colsp.Api
             {
                 if (Path.GetFileName(file).StartsWith("BodyPart", true, null))
                 {
-                    if(File.GetCreationTime(file).CompareTo(DateTime.Now.AddDays(-1)) > 0)
-                    {
-                        File.Delete(file);
-                    }
+                    File.Delete(file);
                 }
             }
 

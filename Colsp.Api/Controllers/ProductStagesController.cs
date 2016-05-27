@@ -27,6 +27,7 @@ using System.Web.Script.Serialization;
 using System.Data.Entity.Validation;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading;
 
 namespace Colsp.Api.Controllers
 {
@@ -1130,6 +1131,7 @@ namespace Colsp.Api.Controllers
                 var pids = request.Select(s => s.Pid).ToList();
                 var products = db.ProductStages.Where(w => w.ShopId == shopId && pids.Contains(w.Pid));
                 db.ProductStageImages.RemoveRange(db.ProductStageImages.Where(w => pids.Contains(w.Pid)));
+                HashSet<long> productGroup = new HashSet<long>();
                 foreach (VariantRequest varRq in request)
                 {
                     var pro = products.Where(w => w.Pid.Equals(varRq.Pid)).SingleOrDefault();
@@ -1166,6 +1168,11 @@ namespace Colsp.Api.Controllers
                             }
                             pro.FeatureImgUrl = pro.ProductStageImages.ElementAt(0).ImageName;
                             pro.Status = Constant.PRODUCT_STATUS_DRAFT;
+
+                            if (productGroup.Contains(pro.ProductId))
+                            {
+                                continue;
+                            }
                             ProductStageGroup group = new ProductStageGroup()
                             {
                                 ProductId = pro.ProductId,
@@ -1175,10 +1182,7 @@ namespace Colsp.Api.Controllers
                             db.Entry(group).Property(p => p.Status).IsModified = true;
                             group.Status = Constant.PRODUCT_STATUS_DRAFT;
                             group.ImageFlag = true;
-                            ProductStage stage = new ProductStage()
-                            {
-                                Pid = pro.Pid
-                            };
+                            productGroup.Add(pro.ProductId);
                         }
                         else
                         {
@@ -1214,6 +1218,10 @@ namespace Colsp.Api.Controllers
                             }
                             pro.FeatureImgUrl = pro.ProductStageImages.ElementAt(0).ImageName;
                             pro.Status = Constant.PRODUCT_STATUS_DRAFT;
+                            if (productGroup.Contains(pro.ProductId))
+                            {
+                                continue;
+                            }
                             ProductStageGroup group = new ProductStageGroup()
                             {
                                 ProductId = pro.ProductId,
@@ -1223,10 +1231,7 @@ namespace Colsp.Api.Controllers
                             db.Entry(group).Property(p => p.Status).IsModified = true;
                             group.Status = Constant.PRODUCT_STATUS_DRAFT;
                             group.ImageFlag = true;
-                            ProductStage stage = new ProductStage()
-                            {
-                                Pid = pro.Pid
-                            };
+                            productGroup.Add(pro.ProductId);
                         }
                         else
                         {
@@ -1395,7 +1400,7 @@ namespace Colsp.Api.Controllers
                                     p.OnlineFlag,
                                     p.ProductStages.FirstOrDefault().Visibility,
                                     p.ProductStages.FirstOrDefault().VariantCount,
-                                    ImageUrl = p.ProductStages.FirstOrDefault().FeatureImgUrl,
+                                    ImageUrl = string.Empty.Equals(p.ProductStages.FirstOrDefault().FeatureImgUrl) ? string.Empty : string.Concat(Constant.IMAGE_STATIC_URL, p.ProductStages.FirstOrDefault().FeatureImgUrl),
                                     GlobalCategory = p.GlobalCategory != null ? new { p.GlobalCategory.CategoryId, p.GlobalCategory.NameEn, p.GlobalCategory.Lft, p.GlobalCategory.Rgt } : null,
                                     LocalCategory = p.LocalCategory != null ? new { p.LocalCategory.CategoryId, p.LocalCategory.NameEn, p.LocalCategory.Lft, p.LocalCategory.Rgt } : null,
                                     Brand = p.Brand != null ? new { p.Brand.BrandId, p.Brand.BrandNameEn } : null,
@@ -1650,7 +1655,7 @@ namespace Colsp.Api.Controllers
                     s.Visibility,
                     s.VariantCount,
                     s.IsMaster,
-                    ImageUrl = string.Concat(Constant.IMAGE_STATIC_URL,s.FeatureImgUrl),
+                    ImageUrl = string.Empty.Equals(s.FeatureImgUrl) ? string.Empty : string.Concat(Constant.IMAGE_STATIC_URL,s.FeatureImgUrl),
                     s.ProductStageGroup.GlobalCatId,
                     s.ProductStageGroup.LocalCatId,
                     s.ProductStageGroup.AttributeSetId,
@@ -4476,13 +4481,11 @@ namespace Colsp.Api.Controllers
                     ProductStages = s.ProductStages.Select(st => new
                     {
                         st.Pid,
-                        st.Inventory
+                        st.Inventory,
                     }),
                 });
                 var stagePids = producGrouptList.SelectMany(s => s.ProductStages.Select(st => st.Pid));
                 var productProd = db.Products.Where(w => stagePids.Contains(w.Pid)).Select(s=>s.Pid);
-
-
                 //var producGrouptList = db.ProductStageGroups.Where(w => w.ShopId == shopId && ids.Contains(w.ProductId)).Include(i=>i.ProductStages.Select(s=>s.Inventory));
                 foreach (ProductStageRequest proRq in request)
                 {
@@ -4501,9 +4504,11 @@ namespace Colsp.Api.Controllers
                         };
                         db.ProductStages.Attach(stage);
                         db.Entry(stage).Property(p => p.Status).IsModified = true;
+                        db.Entry(stage).Property(p => p.UrlKey).IsModified = true;
                         db.Entry(stage).Property(p => p.UpdateBy).IsModified = true;
                         db.Entry(stage).Property(p => p.UpdateOn).IsModified = true;
                         stage.Status = Constant.STATUS_REMOVE;
+                        stage.UrlKey = string.Concat(stage.Pid, "_DELETE");
                         stage.UpdateBy = email;
                         stage.UpdateOn = currentDt;
 
@@ -4515,9 +4520,11 @@ namespace Colsp.Api.Controllers
                             };
                             db.Products.Attach(product);
                             db.Entry(product).Property(p => p.Status).IsModified = true;
+                            db.Entry(product).Property(p => p.UrlKey).IsModified = true;
                             db.Entry(product).Property(p => p.UpdateBy).IsModified = true;
                             db.Entry(product).Property(p => p.UpdateOn).IsModified = true;
                             product.Status = Constant.STATUS_REMOVE;
+                            product.UrlKey = string.Concat(product.Pid, "_DELETE");
                             product.UpdateBy = email;
                             product.UpdateOn = currentDt;
                         }
@@ -5904,7 +5911,7 @@ namespace Colsp.Api.Controllers
                 #endregion
                 using (ColspEntities db = new ColspEntities())
                 {
-                    ((IObjectContextAdapter)db).ObjectContext.CommandTimeout = 180;
+                    //((IObjectContextAdapter)db).ObjectContext.CommandTimeout = 180;
                     #region Setup Header
                     Dictionary<string, Tuple<string, int>> headDicTmp = new Dictionary<string, Tuple<string, int>>();
                     var tmpGuidance = db.ImportHeaders.Where(w => true);
@@ -5931,13 +5938,13 @@ namespace Colsp.Api.Controllers
                     if (request.Options.Contains("ADM"))
                     {
                         List<string> defAttri = null;
-                        if (User.ShopRequest() != null)
+                        if (user.ShopRequest() != null)
                         {
                             defAttri = db.Attributes.Where(w => w.DefaultAttribute && Constant.ATTRIBUTE_VISIBLE_ALL_USER.Equals(w.VisibleTo)).Select(s => s.AttributeNameEn).ToList();
                         }
                         else
                         {
-                            defAttri = db.Attributes.Where(w => w.DefaultAttribute && Constant.ATTRIBUTE_VISIBLE_ADMIN.Equals(w.VisibleTo)).Select(s => s.AttributeNameEn).ToList();
+                            defAttri = db.Attributes.Where(w => w.DefaultAttribute ).Select(s => s.AttributeNameEn).ToList();
                         }
                         if (defAttri != null && defAttri.Count > 0)
                         {
@@ -6611,7 +6618,7 @@ namespace Colsp.Api.Controllers
                             {
                                 bodyList[headDicTmp["ACW"].Item2] = string.Concat(p.BoostWeight);
                             }
-                            if (headDicTmp.ContainsKey("ACX") && User.ShopRequest() == null)
+                            if (headDicTmp.ContainsKey("ACX"))
                             {
                                 bodyList[headDicTmp["ACX"].Item2] = string.Concat(p.GlobalBoostWeight);
                             }
@@ -6838,6 +6845,7 @@ namespace Colsp.Api.Controllers
                             #endregion
                             rs.Add(bodyList);
                         }
+                        Thread.Sleep(500);
                     }
                     #region Write
                     string filePath = Path.Combine(AppSettingKey.EXPORT_ROOT_PATH, string.Concat(userId));
@@ -6999,6 +7007,12 @@ namespace Colsp.Api.Controllers
                 #endregion
                 Dictionary<string, ProductStageGroup> groupList = SetupImport(fileName, errorMessage, row, db);
                 #region Validate Error Message
+                var allUrl = groupList.SelectMany(s => s.Value.ProductStages.Select(su => su.UrlKey));
+                var urlCount = db.ProductStages.Where(w => allUrl.Contains(w.UrlKey)).Select(s=>s.UrlKey).Distinct();
+                if(urlCount.Count() != 0)
+                {
+                    errorMessage.Add(string.Concat("Url already in used ", string.Join(",",urlCount)));
+                }
                 if (errorMessage.Count > 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable, errorMessage.ToList());
@@ -7010,9 +7024,7 @@ namespace Colsp.Api.Controllers
                     var masterVariant = product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
                     if (!string.IsNullOrWhiteSpace(masterVariant.ProductNameEn)
                        && !string.IsNullOrWhiteSpace(masterVariant.ProductNameTh)
-                       && product.Value.BrandId != null
-                       && !string.IsNullOrWhiteSpace(masterVariant.DescriptionFullEn)
-                       && !string.IsNullOrWhiteSpace(masterVariant.DescriptionFullTh))
+                       && product.Value.BrandId != null)
                     {
                         product.Value.InfoFlag = true;
                     }
@@ -7025,6 +7037,10 @@ namespace Colsp.Api.Controllers
                     if(masterVariant.VariantCount == 0)
                     {
                         masterVariant.IsSell = true;
+                    }
+                    else
+                    {
+                        masterVariant.UrlKey = string.Empty;
                     }
                     AutoGenerate.GeneratePid(db, product.Value.ProductStages);
                     product.Value.ProductId = db.GetNextProductStageGroupId().SingleOrDefault().Value;
@@ -7658,10 +7674,10 @@ namespace Colsp.Api.Controllers
                             }
                         }
                     }
-                    if (defaultAttribute != null && defaultAttribute.Count > 0)
-                    {
-                        db.ProductStageAttributes.RemoveRange(defaultAttribute);
-                    }
+                    //if (defaultAttribute != null && defaultAttribute.Count > 0)
+                    //{
+                    //    db.ProductStageAttributes.RemoveRange(defaultAttribute);
+                    //}
                     #endregion
                     #region Variants
                     var stageList = groupEn.ProductStages.Where(w => w.IsVariant == true).ToList();
@@ -8042,10 +8058,10 @@ namespace Colsp.Api.Controllers
                             }
                         }
                     }
-                    if (stageList != null && stageList.Count > 0)
-                    {
-                        db.ProductStages.RemoveRange(stageList);
-                    }
+                    //if (stageList != null && stageList.Count > 0)
+                    //{
+                    //    db.ProductStages.RemoveRange(stageList);
+                    //}
                     #endregion
                     #region Flag
                     var masterVariant = groupEn.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
@@ -8176,9 +8192,9 @@ namespace Colsp.Api.Controllers
                     List<ProductStage> products = new List<ProductStage>();
                     #region Default Query
                     int shopId = User.ShopRequest().ShopId;
-                    var brands = db.Brands.Where(w => w.Status.Equals(Constant.STATUS_ACTIVE)).Select(s => new { BrandNameEn = s.BrandNameEn, BrandId = s.BrandId }).ToList();
-                    var globalCatId = db.GlobalCategories.Where(w => w.Rgt - w.Lft == 1).Select(s => new { CategoryId = s.CategoryId }).ToList();
-                    var localCatId = db.LocalCategories.Where(w => w.Rgt - w.Lft == 1 && w.ShopId == shopId).Select(s => new { CategoryId = s.CategoryId }).ToList();
+                    var brands = db.Brands.Where(w => w.Status.Equals(Constant.STATUS_ACTIVE)).Select(s => new { BrandNameEn = s.BrandNameEn, BrandId = s.BrandId });
+                    var globalCatId = db.GlobalCategories.Where(w => w.Rgt - w.Lft == 1).Select(s => new { CategoryId = s.CategoryId });
+                    var localCatId = db.LocalCategories.Where(w => w.Rgt - w.Lft == 1 && w.ShopId == shopId).Select(s => new { CategoryId = s.CategoryId });
                     var attributeSet = db.AttributeSets
                         .Where(w => w.Status.Equals(Constant.STATUS_ACTIVE))
                         .Select(s => new
@@ -8193,7 +8209,7 @@ namespace Colsp.Api.Controllers
                                 se.Attribute.DataType,
                                 AttributeValue = se.Attribute.AttributeValueMaps.Select(sv => new { sv.AttributeValue.AttributeValueId, sv.AttributeValue.AttributeValueEn })
                             })
-                        }).ToList();
+                        });
 
                     var tmpDefaultAttribute = db.Attributes.Where(w => w.DefaultAttribute == true);
                     if (User.ShopRequest() != null)
@@ -8208,8 +8224,8 @@ namespace Colsp.Api.Controllers
                             se.VariantStatus,
                             se.DataType,
                             AttributeValue = se.AttributeValueMaps.Select(sv => new { sv.AttributeValue.AttributeValueId, sv.AttributeValue.AttributeValueEn })
-                        }).ToList();
-                    var relatedProduct = db.ProductStages.Where(w => w.ShopId == shopId && w.IsVariant == false).Select(s => new { s.Pid, s.ProductId }).ToList();
+                        });
+                    var relatedProduct = db.ProductStages.Where(w => w.ShopId == shopId && w.IsVariant == false).Select(s => new { s.Pid, s.ProductId });
                     var shipping = db.Shippings.ToList();
                     #endregion
                     #region Initialize
@@ -8310,7 +8326,7 @@ namespace Colsp.Api.Controllers
                             UnitPrice = 0,
                             DimensionUnit = Constant.DIMENSTION_MM,
                             WeightUnit = Constant.WEIGHT_MEASURE_G,
-                            GlobalBoostWeight = 0,
+                            GlobalBoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACX", guidance, false, int.MaxValue, errorMessage, row, 0),
                             Display = Constant.VARIANT_DISPLAY_GROUP,
                             VariantCount = 0,
                             PurchasePrice = 0,
@@ -8782,6 +8798,18 @@ namespace Colsp.Api.Controllers
                             }
                         }
                         #endregion
+                        #region inititae inventory
+                        if (!isUpdate && variant.Inventory == null)
+                        {
+                            variant.Inventory = new Inventory()
+                            {
+                                CreateBy = User.UserRequest().Email,
+                                CreateOn = DateTime.Now,
+                                UpdateBy = User.UserRequest().Email,
+                                UpdateOn = DateTime.Now,
+                            };
+                        }
+                        #endregion
                         if (variant.DefaultVariant || isNew)
                         {
                             variant.DefaultVariant = true;
@@ -8822,7 +8850,8 @@ namespace Colsp.Api.Controllers
                             {
                                 if (!string.IsNullOrWhiteSpace(body[headDic["AAK"]]))
                                 {
-                                    var brandId = brands.Where(w => string.Equals(w.BrandNameEn, body[headDic["AAK"]], StringComparison.OrdinalIgnoreCase)).Select(s => s.BrandId).FirstOrDefault();
+                                    var name = body[headDic["AAK"]].Trim().ToLower().Replace(' ', '_');
+                                    var brandId = brands.Where(w => w.BrandNameEn.Equals(name)).Select(s => s.BrandId).FirstOrDefault();
                                     if (brandId != 0)
                                     {
                                         group.BrandId = brandId;
@@ -9103,7 +9132,7 @@ namespace Colsp.Api.Controllers
                             masterVariant.MetaDescriptionTh = variant.MetaDescriptionTh;
                             masterVariant.MetaKeyEn = variant.MetaKeyEn;
                             masterVariant.MetaKeyTh = variant.MetaKeyTh;
-                            masterVariant.UrlKey = string.Empty;
+                            masterVariant.UrlKey = variant.UrlKey;
                             masterVariant.Installment = variant.Installment;
                             masterVariant.PrepareDay = variant.PrepareDay;
                             masterVariant.PrepareMon = variant.PrepareMon;
@@ -9120,44 +9149,47 @@ namespace Colsp.Api.Controllers
                             masterVariant.Weight = variant.Weight;
                             masterVariant.BoostWeight = variant.BoostWeight;
 
-                            if (masterVariant.Inventory == null)
+                            if (variant.Inventory != null)
                             {
-                                masterVariant.Inventory = new Inventory()
+                                if (masterVariant.Inventory == null)
                                 {
-                                    CreateBy = variant.Inventory.CreateBy,
-                                    CreateOn = variant.Inventory.CreateOn,
-                                    Defect = variant.Inventory.Defect,
-                                    Quantity = variant.Inventory.Quantity,
-                                    Reserve = variant.Inventory.Reserve,
-                                    OnHold = variant.Inventory.OnHold,
-                                    SafetyStockAdmin = variant.Inventory.SafetyStockAdmin,
-                                    SafetyStockSeller = variant.Inventory.SafetyStockSeller,
-                                    UseDecimal = variant.Inventory.UseDecimal,
-                                    UpdateBy = variant.Inventory.UpdateBy,
-                                    UpdateOn = variant.Inventory.UpdateOn,
-                                    MaxQtyAllowInCart = variant.Inventory.MaxQtyAllowInCart,
-                                    MaxQtyPreOrder = variant.Inventory.MaxQtyPreOrder,
-                                    MinQtyAllowInCart = variant.Inventory.MinQtyAllowInCart,
-                                    StockType = variant.Inventory.StockType
-                                };
-                            }
-                            else
-                            {
-                                masterVariant.Inventory.CreateBy = variant.Inventory.CreateBy;
-                                masterVariant.Inventory.CreateOn = variant.Inventory.CreateOn;
-                                masterVariant.Inventory.Defect = variant.Inventory.Defect;
-                                masterVariant.Inventory.Quantity = variant.Inventory.Quantity;
-                                masterVariant.Inventory.Reserve = variant.Inventory.Reserve;
-                                masterVariant.Inventory.OnHold = variant.Inventory.OnHold;
-                                masterVariant.Inventory.SafetyStockAdmin = variant.Inventory.SafetyStockAdmin;
-                                masterVariant.Inventory.SafetyStockSeller = variant.Inventory.SafetyStockSeller;
-                                masterVariant.Inventory.UseDecimal = variant.Inventory.UseDecimal;
-                                masterVariant.Inventory.UpdateBy = variant.Inventory.UpdateBy;
-                                masterVariant.Inventory.UpdateOn = variant.Inventory.UpdateOn;
-                                masterVariant.Inventory.MaxQtyAllowInCart = variant.Inventory.MaxQtyAllowInCart;
-                                masterVariant.Inventory.MaxQtyPreOrder = variant.Inventory.MaxQtyPreOrder;
-                                masterVariant.Inventory.MinQtyAllowInCart = variant.Inventory.MinQtyAllowInCart;
-                                masterVariant.Inventory.StockType = variant.Inventory.StockType;
+                                    masterVariant.Inventory = new Inventory()
+                                    {
+                                        CreateBy = variant.Inventory.CreateBy,
+                                        CreateOn = variant.Inventory.CreateOn,
+                                        Defect = variant.Inventory.Defect,
+                                        Quantity = variant.Inventory.Quantity,
+                                        Reserve = variant.Inventory.Reserve,
+                                        OnHold = variant.Inventory.OnHold,
+                                        SafetyStockAdmin = variant.Inventory.SafetyStockAdmin,
+                                        SafetyStockSeller = variant.Inventory.SafetyStockSeller,
+                                        UseDecimal = variant.Inventory.UseDecimal,
+                                        UpdateBy = variant.Inventory.UpdateBy,
+                                        UpdateOn = variant.Inventory.UpdateOn,
+                                        MaxQtyAllowInCart = variant.Inventory.MaxQtyAllowInCart,
+                                        MaxQtyPreOrder = variant.Inventory.MaxQtyPreOrder,
+                                        MinQtyAllowInCart = variant.Inventory.MinQtyAllowInCart,
+                                        StockType = variant.Inventory.StockType
+                                    };
+                                }
+                                else
+                                {
+                                    masterVariant.Inventory.CreateBy = variant.Inventory.CreateBy;
+                                    masterVariant.Inventory.CreateOn = variant.Inventory.CreateOn;
+                                    masterVariant.Inventory.Defect = variant.Inventory.Defect;
+                                    masterVariant.Inventory.Quantity = variant.Inventory.Quantity;
+                                    masterVariant.Inventory.Reserve = variant.Inventory.Reserve;
+                                    masterVariant.Inventory.OnHold = variant.Inventory.OnHold;
+                                    masterVariant.Inventory.SafetyStockAdmin = variant.Inventory.SafetyStockAdmin;
+                                    masterVariant.Inventory.SafetyStockSeller = variant.Inventory.SafetyStockSeller;
+                                    masterVariant.Inventory.UseDecimal = variant.Inventory.UseDecimal;
+                                    masterVariant.Inventory.UpdateBy = variant.Inventory.UpdateBy;
+                                    masterVariant.Inventory.UpdateOn = variant.Inventory.UpdateOn;
+                                    masterVariant.Inventory.MaxQtyAllowInCart = variant.Inventory.MaxQtyAllowInCart;
+                                    masterVariant.Inventory.MaxQtyPreOrder = variant.Inventory.MaxQtyPreOrder;
+                                    masterVariant.Inventory.MinQtyAllowInCart = variant.Inventory.MinQtyAllowInCart;
+                                    masterVariant.Inventory.StockType = variant.Inventory.StockType;
+                                }
                             }
 
                             #endregion
@@ -9334,8 +9366,8 @@ namespace Colsp.Api.Controllers
                                 string val = body[headDic["ADI"]];
                                 if (!string.IsNullOrWhiteSpace(val))
                                 {
-
-                                    var attrSet = attributeSet.Where(w => string.Equals(w.AttributeSetNameEn, val, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                                    var name = val.Trim().ToLower().Replace(' ', '_');
+                                    var attrSet = attributeSet.Where(w => w.AttributeSetNameEn.Equals(name)).SingleOrDefault();
                                     if (attrSet == null)
                                     {
                                         throw new Exception("Attribute set " + val + " not found in database at row " + row);
