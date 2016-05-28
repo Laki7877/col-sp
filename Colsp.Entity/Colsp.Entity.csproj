@@ -143,6 +143,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ApiLog.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AppAuth.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -533,6 +536,9 @@
     <Compile Include="Models\Province.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ReportLog.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ReportProductsCommissionForOrder_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -561,6 +567,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopTypePermissionMap.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShopTypeShippingMap.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShopTypeThemeMap.cs">
@@ -661,6 +670,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

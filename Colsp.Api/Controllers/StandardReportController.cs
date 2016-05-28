@@ -138,17 +138,68 @@ namespace Colsp.Api.Controllers
         #endregion
         #region Sale Report For Seller
 
-
         [Route("api/StandardReport/GetSaleReportForSeller")]
         [HttpGet]
         public HttpResponseMessage GetSaleReportForSeller([FromUri]SaleReportForSellerRequest request)
         {
             try
             {
+                return GetSaleReportForSellerDetail(request); 
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+
+        }
+
+        [Route("api/StandardReport/GetSearchSaleReportForSeller")]
+        [HttpPost]
+        public HttpResponseMessage GetSearchSaleReportForSeller(SaleReportForSellerRequest request)
+        {
+            try
+            {
+                return GetSaleReportForSellerDetail(request);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+
+        }
+
+        public HttpResponseMessage GetSaleReportForSellerDetail(SaleReportForSellerRequest request)
+        {
+            try
+            {
                 List<SaleReportForSellerList> report = new List<SaleReportForSellerList>();
+                int ShopId = User.ShopRequest().ShopId;
+                var Query = (from n in db.SaleReportForSeller() where n.ShopId == ShopId select n);
+                foreach (var item in Query)
+                {
+                    SaleReportForSellerList model = new SaleReportForSellerList();
+                    model.OrderDate = item.OrderDate;
+                    model.TimeOfOrderDate = item.TimeOfOrderDate;
+                    model.ItemStatus = item.ItemStatus;
+                    model.PID = item.PID;
+                    model.ProductNameTH = item.ItemName;
+                    model.ProductNameEN = item.ItemNameEN;
+                    model.QTY = item.QTY;
+                    model.RetailPrice = item.RetailPrice;
+                    model.LocalDiscount = item.LocalDiscount;
+                    model.SalePrice = item.SalePrice;
+                    model.TotalPrice = item.TotalPrice;
+                    model.GlobalCategoryNameEN = item.GlobalCategoryNameEN;
+                    model.GlobalCategoryNameTH = item.GlobalCategoryNameTH;
+                    model.LocalCategoryNameEN = item.LocalCategoryNameEN;
+                    model.LocalCategoryNameTH = item.LcalCategoryNameTH;
+                    model.OrderId = item.OrderId;
+                    model.GlobalCatId = item.GlobalCatId;
+                    model.LocalCatId = item.LocalCatId;
+                    model.BrandId = item.BrandId;
+                    report.Add(model);
 
-                var Query = db.SaleReportForSeller().AsQueryable();
-
+                }
                 if (request == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, report);
@@ -190,7 +241,7 @@ namespace Colsp.Api.Controllers
                 }
 
                 var total = report.Count();
-                var pagedProducts = Query.Paginate(request);
+                var pagedProducts = Query.AsQueryable().Paginate(request);
                 var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
 
 
@@ -353,6 +404,50 @@ namespace Colsp.Api.Controllers
         [Route("api/StandardReport/GetStockStatusReport")]
         [HttpGet]
         public HttpResponseMessage GetStockStatusReport([FromUri]StockStatusReportRequest request)
+        {
+            try
+            {
+                List<StockStatusReportList> report = new List<StockStatusReportList>();
+
+                var Query = db.StockStatusReport().AsQueryable();
+
+                if (request == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, report);
+                }
+                request.DefaultOnNull();
+                if (!string.IsNullOrWhiteSpace(request.Pid))
+                {
+                    report = report.Where(c => c.PID.Contains(request.Pid)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.variant))
+                {
+                    report = report.Where(c => (c.variant1.Contains(request.variant) || c.variant2.Contains(request.variant))).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.ProductName))
+                {
+                    report = report.Where(c => c.ProductNameEN.Contains(request.ProductName) || c.ProductNameTH.Contains(request.ProductName)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(request.LastSoldDate))
+                {
+
+                    report = report.Where(c => c.LastSoldDate == request.LastSoldDate).ToList();
+                }
+
+                var total = report.Count();
+                var pagedProducts = Query.Paginate(request);
+                var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+
+        }
+
+        public HttpResponseMessage GetStockStatusReportDetail(StockStatusReportRequest request)
         {
             try
             {
@@ -671,7 +766,7 @@ namespace Colsp.Api.Controllers
                 }
                 if (!string.IsNullOrWhiteSpace(request.OrderId))
                 {
-                    Query = Query.Where(c => c.OrderId.Contains(request.OrderId) ).AsQueryable();
+                    Query = Query.Where(c => c.OrderId.Contains(request.OrderId)).AsQueryable();
                 }
                 var total = Query.Count();
                 var pagedProducts = Query.Paginate(request);

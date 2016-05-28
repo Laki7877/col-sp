@@ -27,6 +27,7 @@ namespace Colsp.Entity.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<ApiLog> ApiLogs { get; set; }
         public virtual DbSet<AppAuth> AppAuths { get; set; }
         public virtual DbSet<Attribute> Attributes { get; set; }
         public virtual DbSet<AttributeFilterMap> AttributeFilterMaps { get; set; }
@@ -133,6 +134,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
         public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
+        public virtual DbSet<ReportLog> ReportLogs { get; set; }
         public virtual DbSet<Shipping> Shippings { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopCommission> ShopCommissions { get; set; }
@@ -140,6 +142,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ShopImage> ShopImages { get; set; }
         public virtual DbSet<ShopType> ShopTypes { get; set; }
         public virtual DbSet<ShopTypePermissionMap> ShopTypePermissionMaps { get; set; }
+        public virtual DbSet<ShopTypeShippingMap> ShopTypeShippingMaps { get; set; }
         public virtual DbSet<ShopTypeThemeMap> ShopTypeThemeMaps { get; set; }
         public virtual DbSet<ShopUserGroupMap> ShopUserGroupMaps { get; set; }
         public virtual DbSet<SortBy> SortBies { get; set; }
@@ -188,6 +191,11 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBSetting> TBSettings { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextAppLogId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextAppLogId");
+        }
     
         public virtual ObjectResult<Nullable<int>> GetNextAttributeId()
         {
@@ -239,6 +247,11 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
         }
     
+        public virtual ObjectResult<Nullable<long>> GetNextProductStageImageId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageImageId");
+        }
+    
         public virtual ObjectResult<Nullable<long>> GetNextProductStagePid()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStagePid");
@@ -264,21 +277,6 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
         }
     
-        public virtual ObjectResult<SaleReportForSeller_Result> SaleReportForSeller()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller_Result>("SaleReportForSeller");
-        }
-    
-        public virtual ObjectResult<StockStatusReport_Result> StockStatusReport()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result>("StockStatusReport");
-        }
-    
-        public virtual ObjectResult<Nullable<long>> GetNextProductStageImageId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageImageId");
-        }
-    
         public virtual ObjectResult<ItemOnHoldReport_Result> ItemOnHoldReport()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ItemOnHoldReport_Result>("ItemOnHoldReport");
@@ -292,6 +290,16 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<ReportReturnItemByOrderReport_Result> ReportReturnItemByOrderReport()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportReturnItemByOrderReport_Result>("ReportReturnItemByOrderReport");
+        }
+    
+        public virtual ObjectResult<SaleReportForSeller_Result> SaleReportForSeller()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller_Result>("SaleReportForSeller");
+        }
+    
+        public virtual ObjectResult<StockStatusReport_Result> StockStatusReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result>("StockStatusReport");
         }
     }
 }

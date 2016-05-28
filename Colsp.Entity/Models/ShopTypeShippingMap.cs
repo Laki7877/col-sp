@@ -12,16 +12,16 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AppAuth
+    public partial class ShopTypeShippingMap
     {
-        public int ServerAppId { get; set; }
-        public int ClientAppId { get; set; }
-        public string SecretKey { get; set; }
-        public string AppName { get; set; }
-        public Nullable<System.DateTime> ExpiredDate { get; set; }
-        public System.DateTime CreateOn { get; set; }
+        public int ShopTypeId { get; set; }
+        public int ShippingId { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
+    
+        public virtual Shipping Shipping { get; set; }
+        public virtual ShopType ShopType { get; set; }
     }
 }

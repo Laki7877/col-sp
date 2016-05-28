@@ -30,5 +30,6 @@ namespace Colsp.Entity.Models
         public string LastSoldDate { get; set; }
         public decimal SalePrice { get; set; }
         public Nullable<int> AgingDay { get; set; }
+        public int ShopId { get; set; }
     }
 }
