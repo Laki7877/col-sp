@@ -47,7 +47,7 @@ namespace Colsp.Api.Controllers
                 }
                 var productTemp = db.ProductStages.Where(w => w.IsSell == true 
                     && !Constant.STATUS_REMOVE.Equals(w.Status)
-                    && w.IsVariant == false && w.ProductStageGroup.GlobalCatId == request.CategoryId 
+                    && w.IsVariant == false
                     && (w.ProductStageGroup.AttributeSetId == null
                     || w.ProductStageGroup.AttributeSetId == request.AttributeSetId))
                     .Select(s => new
