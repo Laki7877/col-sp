@@ -2764,7 +2764,7 @@ namespace Colsp.Api.Controllers
                     s.UpdateOn,
                     ProductRelated = s.ProductStageRelateds1.Select(r=>new
                     {
-                        Child = r.ProductStageGroup.ProductStages.Where(w=>w.IsVariant==false).Select(sm => new
+                        Child = r.ProductStageGroup.ProductStages.Where(w=>w.IsVariant==false && !Constant.STATUS_REMOVE.Equals(w.Status)).Select(sm => new
                         {
                             sm.ProductId,
                             sm.Pid,
@@ -7110,7 +7110,9 @@ namespace Colsp.Api.Controllers
                     .Include(i => i.ProductStageGlobalCatMaps)
                     .Include(i => i.ProductStageLocalCatMaps)
                     .Include(i => i.ProductStages.Select(s => s.Inventory))
-                    .Include(i => i.ProductStageRelateds).ToList();
+                    .Include(i => i.ProductStageRelateds)
+                    .Include(i => i.ProductStages.Select(s => s.ProductStageImages))
+                    .Include(i => i.ProductStages.Select(s => s.ProductStageVideos));
                 #endregion
                 foreach (var g in groupList.Values)
                 {
@@ -7632,52 +7634,72 @@ namespace Colsp.Api.Controllers
                     }
                     #endregion
                     #region Default Attribute
-                    var defaultAttribute = masterVariantEn.ProductStageAttributes.ToList();
+                    var defaultAttribute = masterVariantEn.ProductStageAttributes;
+                    List<ProductStageAttribute> deleteList = new List<ProductStageAttribute>();
                     if (importVariantEn.ProductStageAttributes != null)
                     {
+                        var attrIds = importVariantEn.ProductStageAttributes.Select(s => s.AttributeId);
+                        deleteList.AddRange(defaultAttribute.Where(w => attrIds.Contains(w.AttributeId)));
+
+
                         foreach (var tmpAttri in importVariantEn.ProductStageAttributes)
                         {
-                            bool isNew = false;
-                            if (defaultAttribute == null || defaultAttribute.Count == 0)
+                            masterVariantEn.ProductStageAttributes.Add(new ProductStageAttribute()
                             {
-                                isNew = true;
-                            }
-                            if (!isNew)
-                            {
-                                var current = defaultAttribute.Where(w => w.AttributeId == tmpAttri.AttributeId
-                                    && w.ValueEn.Equals(tmpAttri.ValueEn)
-                                    && w.ValueTh.Equals(tmpAttri.ValueTh)).SingleOrDefault();
-                                if (current != null)
-                                {
-                                    defaultAttribute.Remove(current);
-                                }
-                                else
-                                {
-                                    isNew = true;
-                                }
-                            }
-                            if (isNew)
-                            {
-                                masterVariantEn.ProductStageAttributes.Add(new ProductStageAttribute()
-                                {
-                                    AttributeId = tmpAttri.AttributeId,
-                                    ValueEn = tmpAttri.ValueEn,
-                                    ValueTh = tmpAttri.ValueTh,
-                                    CheckboxValue = tmpAttri.CheckboxValue,
-                                    CreateBy = tmpAttri.CreateBy,
-                                    CreateOn = tmpAttri.CreateOn,
-                                    IsAttributeValue = tmpAttri.IsAttributeValue,
-                                    Position = tmpAttri.Position,
-                                    UpdateBy = tmpAttri.UpdateBy,
-                                    UpdateOn = tmpAttri.UpdateOn
-                                });
-                            }
+                                AttributeId = tmpAttri.AttributeId,
+                                ValueEn = tmpAttri.ValueEn,
+                                ValueTh = tmpAttri.ValueTh,
+                                CheckboxValue = tmpAttri.CheckboxValue,
+                                CreateBy = tmpAttri.CreateBy,
+                                CreateOn = tmpAttri.CreateOn,
+                                IsAttributeValue = tmpAttri.IsAttributeValue,
+                                Position = tmpAttri.Position,
+                                UpdateBy = tmpAttri.UpdateBy,
+                                UpdateOn = tmpAttri.UpdateOn,
+                                AttributeValueId = tmpAttri.AttributeValueId,
+                            });
+
+                            //bool isNew = false;
+                            //if (defaultAttribute == null || defaultAttribute.Count == 0)
+                            //{
+                            //    isNew = true;
+                            //}
+                            //if (!isNew)
+                            //{
+                            //    var current = defaultAttribute.Where(w => w.AttributeId == tmpAttri.AttributeId
+                            //        && w.ValueEn.Equals(tmpAttri.ValueEn)
+                            //        && w.ValueTh.Equals(tmpAttri.ValueTh)).SingleOrDefault();
+                            //    if (current != null)
+                            //    {
+                            //        defaultAttribute.Remove(current);
+                            //    }
+                            //    else
+                            //    {
+                            //        isNew = true;
+                            //    }
+                            //}
+                            //if (isNew)
+                            //{
+                            //    masterVariantEn.ProductStageAttributes.Add(new ProductStageAttribute()
+                            //    {
+                            //        AttributeId = tmpAttri.AttributeId,
+                            //        ValueEn = tmpAttri.ValueEn,
+                            //        ValueTh = tmpAttri.ValueTh,
+                            //        CheckboxValue = tmpAttri.CheckboxValue,
+                            //        CreateBy = tmpAttri.CreateBy,
+                            //        CreateOn = tmpAttri.CreateOn,
+                            //        IsAttributeValue = tmpAttri.IsAttributeValue,
+                            //        Position = tmpAttri.Position,
+                            //        UpdateBy = tmpAttri.UpdateBy,
+                            //        UpdateOn = tmpAttri.UpdateOn
+                            //    });
+                            //}
                         }
                     }
-                    //if (defaultAttribute != null && defaultAttribute.Count > 0)
-                    //{
-                    //    db.ProductStageAttributes.RemoveRange(defaultAttribute);
-                    //}
+                    if (deleteList != null && deleteList.Count > 0)
+                    {
+                        db.ProductStageAttributes.RemoveRange(deleteList);
+                    }
                     #endregion
                     #region Variants
                     var stageList = groupEn.ProductStages.Where(w => w.IsVariant == true).ToList();
@@ -7947,7 +7969,6 @@ namespace Colsp.Api.Controllers
                                     {
                                         currentStage.Weight = staging.Weight;
                                     }
-
                                     if (header.Contains("ACN"))
                                     {
                                         currentStage.SeoEn = staging.SeoEn;
@@ -7956,7 +7977,6 @@ namespace Colsp.Api.Controllers
                                     {
                                         currentStage.SeoTh = staging.SeoTh;
                                     }
-
                                     if (header.Contains("ACP"))
                                     {
                                         currentStage.MetaTitleEn = staging.MetaTitleEn;
@@ -9873,28 +9893,43 @@ namespace Colsp.Api.Controllers
 
 
 
-        //[Route("api/ProductStages/JdaProduct")]
-        //[HttpPut]
-        //[OverrideAuthentication, OverrideAuthorization]
-        //public HttpResponseMessage SaveProductJda(List<JdaRequest> request)
-        //{
-        //    try
-        //    {
-        //        if (request == null)
-        //        {
-        //            throw new Exception("Invalid request");
-        //        }
-        //        foreach (var jdaProduct in request)
-        //        {
-        //            if()
-        //        }
-
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
-        //    }
-        //}
+        [Route("api/ProductStages/JdaProduct")]
+        [HttpPut]
+        [OverrideAuthentication, OverrideAuthorization]
+        public HttpResponseMessage SaveProductJda(List<JdaRequest> request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    throw new Exception("Invalid request");
+                }
+                foreach (var jdaProduct in request)
+                {
+                    if (string.IsNullOrWhiteSpace(jdaProduct.Pid))
+                    {
+                        throw new Exception("Pid cannot be empty");
+                    }
+                    ProductStage stage = new ProductStage()
+                    {
+                        Pid = jdaProduct.Pid
+                    };
+                    db.ProductStages.Attach(stage);
+                    db.Entry(stage).Property(p => p.SalePrice).IsModified = true;
+                    db.Entry(stage).Property(p => p.DescriptionShortEn).IsModified = true;
+                    db.Entry(stage).Property(p => p.DescriptionShortTh).IsModified = true;
+                    stage.DescriptionShortEn = jdaProduct.ShortDescriptionEn;
+                    stage.DescriptionShortTh = jdaProduct.ShortDescriptionTh;
+                    stage.SalePrice = jdaProduct.Price;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
+            }
+        }
 
 
         /*

@@ -358,7 +358,11 @@ namespace Colsp.Api.Controllers
             {
                 foreach (TagRequest tagRq in request.Tags)
                 {
-
+                    if (string.IsNullOrWhiteSpace(tagRq.TagName)
+                            || set.AttributeSetTags.Any(a => string.Equals(a.Tag, tagRq.TagName.Trim(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
                     set.AttributeSetTags.Add(new AttributeSetTag()
                     {
                         Tag = tagRq.TagName,

@@ -84,7 +84,8 @@ namespace Colsp.Api.Controllers
             try
             {
                 var couponList = db.Coupons
-                    .Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status))
+                    .Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status) 
+                        || !w.ShopId.HasValue || (w.ShopId.HasValue && !Constant.STATUS_REMOVE.Equals(w.Shop.Status)))
                     .Select(s=> new {
                         s.CouponId,
                         s.CouponName,

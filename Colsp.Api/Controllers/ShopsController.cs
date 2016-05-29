@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Cenergy.Dazzle.Admin.Security.Cryptography;
 using System.Web.Script.Serialization;
 using System.IO;
+using System.Text;
 
 namespace Colsp.Api.Controllers
 {
@@ -581,31 +582,35 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var ids = request.Select(s => s.ShopId);
-                var shopNames = db.Shops.Where(w => ids.Contains(w.ShopId)).Select(s => new
+
+                StringBuilder sb = new StringBuilder();
+                string updateShop = string.Concat(
+                    "UPDATE [Shop] SET "
+                    , "[ShopNameEn] = concat([ShopNameEn],'_DELETE_',[ShopId]), "
+                    , "[ShopOwner] = null, "
+                    , "[UrlKey] = concat([UrlKey],'_DELETE_',[ShopId]), "
+                    , "[Status] = '" , Constant.STATUS_REMOVE, "' " 
+                    , "WHERE [ShopId] = @1");
+                string updateGroup = string.Concat(
+                    "UPDATE [ProductStageGroup] SET "
+                    , "[Status] = '", Constant.STATUS_REMOVE, "' "
+                    , "WHERE [ShopId] = @1");
+                string updateStage = string.Concat(
+                    "UPDATE [ProductStage] SET "
+                    , "[UrlKey] = concat([Pid],'_DELETE'), "
+                    , "[Status] = '", Constant.STATUS_REMOVE, "' "
+                    , "WHERE [ShopId] = @1");
+                string deleleShopOwner = string.Concat(
+                    "DELETE [UserShopMap] "
+                    , "WHERE [ShopId] = @1");
+                foreach (var id in ids)
                 {
-                    s.ShopId,
-                    s.ShopNameEn,
-                    s.UrlKey
-                });
-                foreach(var id in ids)
-                {
-                    var shop = new Shop()
-                    {
-                        ShopId = id,
-                        Status = Constant.STATUS_REMOVE,
-                        ShopOwner = null,
-                        ShopNameEn = string.Concat(shopNames.Where(w => w.ShopId == id).Single().ShopNameEn, "_DELETE_", id),
-                        UrlKey = string.Concat(shopNames.Where(w => w.ShopId == id).Single().UrlKey, "_DELETE_", id),
-                    };
-                    db.Shops.Attach(shop);
-                    db.Entry(shop).Property(p => p.Status).IsModified = true;
-                    db.Entry(shop).Property(p => p.ShopOwner).IsModified = true;
-                    db.Entry(shop).Property(p => p.ShopNameEn).IsModified = true;
-                    db.Entry(shop).Property(p => p.UrlKey).IsModified = true;
-                    db.UserShopMaps.RemoveRange(db.UserShopMaps.Where(w => w.ShopId == id));
+                    sb.Append(updateShop.Replace("@1",string.Concat(id)));
+                    sb.Append(updateGroup.Replace("@1", string.Concat(id)));
+                    sb.Append(updateStage.Replace("@1", string.Concat(id)));
+                    sb.Append(deleleShopOwner.Replace("@1", string.Concat(id)));
                 }
-                db.Configuration.ValidateOnSaveEnabled = false;
-                Util.DeadlockRetry(db.SaveChanges, "Shop");
+                db.Database.ExecuteSqlCommand(sb.ToString());
                 return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
             }
             catch (Exception e)
