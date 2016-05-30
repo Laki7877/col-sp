@@ -135,7 +135,7 @@ namespace Colsp.Api.Controllers
                 {
                     foreach(var theme in request.Themes)
                     {
-                        if(theme.ThemeId != 0)
+                        if(theme.ThemeId == 0)
                         {
                             throw new Exception("Theme Id is null");
                         }
@@ -153,7 +153,7 @@ namespace Colsp.Api.Controllers
                 {
                     foreach (var shipping in request.Shippings)
                     {
-                        if (shipping.ShippingId != 0)
+                        if (shipping.ShippingId == 0)
                         {
                             throw new Exception("Shop Id is null");
                         }

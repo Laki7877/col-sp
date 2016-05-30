@@ -41,13 +41,17 @@ namespace Colsp.Api.Controllers
                 .Select(s => new
                 {
                     s.ProductId,
-                    s.ShopId,
-                    MainGlobalCategory = s.GlobalCatId == null ? null : new
+                    Shop = new
+                    {
+                        s.ShopId,
+                        s.Shop.ShopNameEn
+                    },
+                    MainGlobalCategory = !s.GlobalCatId.HasValue ? null : new
                     {
                         s.GlobalCatId,
                         s.GlobalCategory.NameEn,
                     },
-                    MainLocaCategory = s.LocalCatId == null ? null : new
+                    MainLocaCategory = !s.LocalCatId.HasValue ? null : new
                     {
                         s.LocalCatId,
                         s.LocalCategory.NameEn,
@@ -88,6 +92,15 @@ namespace Colsp.Api.Controllers
                     s.CreateOn,
                     s.UpdateBy,
                     s.UpdateOn,
+                    ProductRelated = s.ProductHistoryRelateds.Select(r => new
+                    {
+                        Child = r.ProductStageGroup.ProductStages.Where(w => w.IsVariant == false && !Constant.STATUS_REMOVE.Equals(w.Status)).Select(sm => new
+                        {
+                            sm.ProductId,
+                            sm.Pid,
+                            sm.ProductNameEn
+                        })
+                    }),
                     AttributeSet = s.AttributeSet == null ? null : new
                     {
                         s.AttributeSet.AttributeSetId,
@@ -119,7 +132,7 @@ namespace Colsp.Api.Controllers
                         sl.LocalCategory.NameEn
                     }),
                     Tags = s.ProductHistoryTags.Select(st => st.Tag),
-                    ProductStages = s.ProductHistories.Select(st => new
+                    ProductHistories = s.ProductHistories.Select(st => new
                     {
                         st.Pid,
                         st.ProductId,
@@ -220,15 +233,27 @@ namespace Colsp.Api.Controllers
                                 sa.AttributeValue.AttributeValueTh,
                             }
                         }),
-                        Images = st.ProductHistoryImages.Select(si => new
+                        Images = st.ProductHistoryImages.OrderBy(o => o.SeqNo).Select(si => new
                         {
-                            //si.ImageUrlEn
+                            si.ImageId,
+                            si.ImageName
                         }),
                         Videos = st.ProductHistoryVideos.OrderBy(o => o.Position).Select(sv => new
                         {
                             sv.VideoUrlEn
                         }),
-                        Inventory = db.Inventories.Where(w=>w.Pid.Equals(st.Pid)).FirstOrDefault(),
+                        //Inventory = st.Inventory == null ? null : new
+                        //{
+                        //    st.Inventory.OnHold,
+                        //    st.Inventory.Reserve,
+                        //    st.Inventory.Quantity,
+                        //    st.Inventory.SafetyStockSeller,
+                        //    st.Inventory.StockType,
+                        //    st.Inventory.MaxQtyAllowInCart,
+                        //    st.Inventory.MaxQtyPreOrder,
+                        //    st.Inventory.MinQtyAllowInCart,
+                        //    st.Inventory.Defect
+                        //}
                     }),
 
                 }).SingleOrDefault();
@@ -267,11 +292,11 @@ namespace Colsp.Api.Controllers
                 },
                 ControlFlags = new ControlFlagRequest()
                 {
-                    IsBestSeller = tmpPro.IsBestSeller.HasValue ? tmpPro.IsBestSeller.Value : false,
-                    IsClearance = tmpPro.IsClearance.HasValue ? tmpPro.IsClearance.Value : false,
-                    IsNew = tmpPro.IsNew.HasValue ? tmpPro.IsNew.Value : false,
-                    IsOnlineExclusive = tmpPro.IsOnlineExclusive.HasValue ? tmpPro.IsOnlineExclusive.Value : false,
-                    IsOnlyAt = tmpPro.IsOnlyAt.HasValue ? tmpPro.IsOnlyAt.Value : false
+                    IsBestSeller = tmpPro.IsBestSeller,
+                    IsClearance = tmpPro.IsClearance,
+                    IsNew = tmpPro.IsNew,
+                    IsOnlineExclusive = tmpPro.IsOnlineExclusive,
+                    IsOnlyAt = tmpPro.IsOnlyAt
                 },
                 EffectiveDate = tmpPro.EffectiveDate,
                 ExpireDate = tmpPro.ExpireDate,
@@ -287,8 +312,8 @@ namespace Colsp.Api.Controllers
                     CategoryId = s.CategoryId,
                     NameEn = s.NameEn
                 }).ToList(),
-                ImageFlag = tmpPro.ImageFlag.HasValue ? tmpPro.ImageFlag.Value : false,
-                InfoFlag = tmpPro.InfoFlag.HasValue ? tmpPro.InfoFlag.Value : false,
+                ImageFlag = tmpPro.ImageFlag,
+                InfoFlag = tmpPro.InfoFlag,
                 ProductId = tmpPro.ProductId,
                 MainGlobalCategory = new CategoryRequest()
                 {
@@ -300,22 +325,37 @@ namespace Colsp.Api.Controllers
                     CategoryId = tmpPro.MainLocaCategory != null ? tmpPro.MainLocaCategory.LocalCatId.Value : 0,
                     NameEn = tmpPro.MainLocaCategory != null ? tmpPro.MainLocaCategory.NameEn : string.Empty,
                 },
-                OnlineFlag = tmpPro.OnlineFlag.HasValue ? tmpPro.OnlineFlag.Value : false,
+                OnlineFlag = tmpPro.OnlineFlag,
                 Remark = tmpPro.Remark,
-                ShippingMethod = tmpPro.ShippingId.HasValue ? tmpPro.ShippingId.Value : Constant.DEFAULT_SHIPPING_ID,
-                ShopId = tmpPro.ShopId.HasValue ? tmpPro.ShopId.Value : Constant.ADMIN_SHOP_ID,
+                ShippingMethod = tmpPro.ShippingId,
+                ShopId = tmpPro.Shop.ShopId,
+                ShopName = tmpPro.Shop.ShopNameEn,
                 Status = tmpPro.Status,
                 Tags = tmpPro.Tags.ToList()
             };
 
             #endregion
+            #region related product
+            foreach (var related in tmpPro.ProductRelated)
+            {
+                foreach (var child in related.Child)
+                {
+                    response.RelatedProducts.Add(new VariantRequest()
+                    {
+                        ProductNameEn = child.ProductNameEn,
+                        ProductId = child.ProductId,
+                        Pid = child.Pid
+                    });
+                }
+            }
+            #endregion
             #region master
-            var masterVariant = tmpPro.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+            var masterVariant = tmpPro.ProductHistories.Where(w => w.IsVariant == false).SingleOrDefault();
             response.MasterVariant = new VariantRequest()
             {
                 Pid = masterVariant.Pid,
                 ProductId = masterVariant.ProductId,
-                ShopId = masterVariant.ShopId.HasValue ? masterVariant.ShopId.Value : Constant.ADMIN_SHOP_ID,
+                ShopId = masterVariant.ShopId,
                 ProductNameEn = masterVariant.ProductNameEn,
                 ProductNameTh = masterVariant.ProductNameTh,
                 ProdTDNameTh = masterVariant.ProdTDNameTh,
@@ -384,16 +424,17 @@ namespace Colsp.Api.Controllers
                 PurchasePrice = masterVariant.PurchasePrice,
                 IsVariant = masterVariant.IsVariant,
                 Visibility = masterVariant.Visibility,
-                OnHold = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.OnHold,
-                Quantity = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Quantity,
-                Defect = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Defect,
-                Reserve = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Reserve,
-                SafetyStock = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.SafetyStockSeller,
-                StockType = masterVariant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : masterVariant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
-                MaxQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyAllowInCart,
-                MinQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MinQtyAllowInCart,
-                MaxQtyPreOrder = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyPreOrder,
+                //OnHold = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.OnHold,
+                //Quantity = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Quantity,
+                //Defect = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Defect,
+                //Reserve = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.Reserve,
+                //SafetyStock = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.SafetyStockSeller,
+                //StockType = masterVariant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : masterVariant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
+                //MaxQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyAllowInCart,
+                //MinQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MinQtyAllowInCart,
+                //MaxQtyPreOrder = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyPreOrder,
             };
+            response.NewArrivalDate = masterVariant.NewArrivalDate;
             if (masterVariant.ProductStageAttributes != null)
             {
                 foreach (var attribute in masterVariant.ProductStageAttributes)
@@ -429,7 +470,8 @@ namespace Colsp.Api.Controllers
                 {
                     response.MasterVariant.Images.Add(new ImageRequest()
                     {
-                        //Url = image.ImageUrlEn,
+                        Url = string.Concat(Constant.IMAGE_STATIC_URL, image.ImageName),
+                        ImageId = image.ImageId,
                     });
                 }
             }
@@ -446,14 +488,14 @@ namespace Colsp.Api.Controllers
             response.Visibility = masterVariant.Visibility;
             #endregion
             #region variant
-            var variants = tmpPro.ProductStages.Where(w => w.IsVariant == true && w.IsMaster == false);
+            var variants = tmpPro.ProductHistories.Where(w => w.IsVariant == true && w.IsMaster == false);
             foreach (var variant in variants)
             {
                 var tmpVariant = new VariantRequest()
                 {
                     Pid = variant.Pid,
                     ProductId = variant.ProductId,
-                    ShopId = variant.ShopId.HasValue ? variant.ShopId.Value : Constant.ADMIN_SHOP_ID,
+                    ShopId = variant.ShopId,
                     ProductNameEn = variant.ProductNameEn,
                     ProductNameTh = variant.ProductNameTh,
                     ProdTDNameTh = variant.ProdTDNameTh,
@@ -522,15 +564,15 @@ namespace Colsp.Api.Controllers
                     PurchasePrice = variant.PurchasePrice,
                     IsVariant = variant.IsVariant,
                     Visibility = variant.Visibility,
-                    OnHold = variant.Inventory == null ? 0 : variant.Inventory.OnHold,
-                    Quantity = variant.Inventory == null ? 0 : variant.Inventory.Quantity,
-                    Reserve = variant.Inventory == null ? 0 : variant.Inventory.Reserve,
-                    Defect = variant.Inventory == null ? 0 : variant.Inventory.Defect,
-                    SafetyStock = variant.Inventory == null ? 0 : variant.Inventory.SafetyStockSeller,
-                    StockType = variant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : variant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
-                    MaxQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyAllowInCart,
-                    MinQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MinQtyAllowInCart,
-                    MaxQtyPreOrder = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyPreOrder,
+                    //OnHold = variant.Inventory == null ? 0 : variant.Inventory.OnHold,
+                    //Quantity = variant.Inventory == null ? 0 : variant.Inventory.Quantity,
+                    //Reserve = variant.Inventory == null ? 0 : variant.Inventory.Reserve,
+                    //Defect = variant.Inventory == null ? 0 : variant.Inventory.Defect,
+                    //SafetyStock = variant.Inventory == null ? 0 : variant.Inventory.SafetyStockSeller,
+                    //StockType = variant.Inventory == null ? Constant.DEFAULT_STOCK_TYPE : variant.Inventory.StockType == 1 ? "Stock" : "Pre-Order",
+                    //MaxQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyAllowInCart,
+                    //MinQtyAllowInCart = variant.Inventory == null ? 0 : variant.Inventory.MinQtyAllowInCart,
+                    //MaxQtyPreOrder = variant.Inventory == null ? 0 : variant.Inventory.MaxQtyPreOrder,
                 };
 
                 if (variant.ProductStageAttributes != null)
@@ -576,7 +618,8 @@ namespace Colsp.Api.Controllers
                     {
                         tmpVariant.Images.Add(new ImageRequest()
                         {
-                            //Url = image.ImageUrlEn,
+                            Url = string.Concat(Constant.IMAGE_STATIC_URL, image.ImageName),
+                            ImageId = image.ImageId,
                         });
                     }
                 }

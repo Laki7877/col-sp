@@ -604,8 +604,8 @@ namespace Colsp.Api.Controllers
         }
 
         [Route("api/Products/Master")]
-        [HttpPost]
-        public HttpResponseMessage AddMasterProduct(MasterProductRequest request)
+        [HttpPost] public HttpResponseMessage AddMasterProduct(MasterProductRequest request)
+
         {
             try
             {
@@ -1291,6 +1291,7 @@ namespace Colsp.Api.Controllers
                         Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault()
                             : s.ValueEn,
                     }),
+                    CreatedDt = productStage.CreateOn,
                     productStage.ShopId,
                     Brand = productStage.ProductStageGroup.Brand != null ? new { productStage.ProductStageGroup.Brand.BrandId, productStage.ProductStageGroup.Brand.BrandNameEn } : null,
                 });
@@ -3104,7 +3105,6 @@ namespace Colsp.Api.Controllers
                 MinQtyAllowInCart = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MinQtyAllowInCart,
                 MaxQtyPreOrder = masterVariant.Inventory == null ? 0 : masterVariant.Inventory.MaxQtyPreOrder,
             };
-            response.NewArrivalDate = masterVariant.NewArrivalDate;
             if (masterVariant.ProductStageAttributes != null)
             {
                 foreach (var attribute in masterVariant.ProductStageAttributes)
@@ -3436,7 +3436,32 @@ namespace Colsp.Api.Controllers
             db.ProductVideos.RemoveRange(db.ProductVideos.Where(w => pids.Contains(w.Pid)));
             db.ProductAttributes.RemoveRange(db.ProductAttributes.Where(w => pids.Contains(w.Pid)));
             db.ProductImages.RemoveRange(db.ProductImages.Where(w => pids.Contains(w.Pid)));
-
+            db.ProductRelateds.RemoveRange(db.ProductRelateds.Where(w => w.Parent == group.ProductId));
+            #region Related Product
+            foreach (var related in group.ProductStageRelateds1)
+            {
+                db.ProductRelateds.Add(new ProductRelated()
+                {
+                    Parent = related.Parent,
+                    Child = related.Child,
+                    CreateBy = related.CreateBy,
+                    CreateOn = related.CreateOn,
+                    ShopId = related.ShopId,
+                    UpdateBy = related.UpdateBy,
+                    UpdateOn = related.UpdateOn,
+                });
+                historyGroup.ProductHistoryRelateds.Add(new ProductHistoryRelated()
+                {
+                    Parent = related.Parent,
+                    Child = related.Child,
+                    CreateBy = related.CreateBy,
+                    CreateOn = related.CreateOn,
+                    ShopId = related.ShopId,
+                    UpdateBy = related.UpdateBy,
+                    UpdateOn = related.UpdateOn,
+                });
+            }
+            #endregion
             foreach (var stage in group.ProductStages)
             {
                 bool isNewProduct = false;
@@ -3954,20 +3979,6 @@ namespace Colsp.Api.Controllers
                     db.ProductTags.RemoveRange(tagList);
                 }
                 #endregion
-                #region Related Product
-                //if (!parent.Equals(stage.Pid))
-                //{
-                //    db.ProductRelateds.Add(new ProductRelated()
-                //    {
-                //        ParentPid = parent.Pid,
-                //        ChildPid =  stage.Pid,
-                //        CreateBy = parent.CreateBy,
-                //        CreateOn = parent.CreateOn,
-                //        UpdateBy = parent.UpdateBy,
-                //        UpdateOn = parent.UpdateOn
-                //    });
-                //}
-                #endregion
                 #region Image
                 foreach (var image in stage.ProductStageImages)
                 {
@@ -4224,7 +4235,7 @@ namespace Colsp.Api.Controllers
                         PrepareDay = stage.PrepareDay,
                         ProductID = stage.Pid,
                         ProductStatus = stage.Status,
-                        ProductType = string.Empty,
+                        StockType = stage.Inventory == null ? string.Concat(Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE]) : string.Concat(stage.Inventory.StockType),
                         Remark = group.Remark,
                         SalePrice = stage.SalePrice,
                         SaleUnitEng = stage.SaleUnitEn,
@@ -4268,27 +4279,33 @@ namespace Colsp.Api.Controllers
             Stream dataStream = request.GetRequestStream();
             dataStream.Write(byteArray, 0, byteArray.Length);
             dataStream.Close();
-            WebResponse response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+            var response = (HttpWebResponse)request.GetResponse();
+            Console.WriteLine(response.StatusDescription);
             dataStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);
             string responseFromServer = reader.ReadToEnd();
             Console.WriteLine(responseFromServer);
             reader.Close();
             dataStream.Close();
+            var statusCode = response.StatusCode;
             response.Close();
-            db.ApiLogs.Add(new ApiLog()
-            {
-                LogId = db.GetNextAppLogId().SingleOrDefault().Value,
-                CreateBy = email,
-                CreateOn = currentDt,
-                DestinationApp = destination,
-                SourceApp = source,
-                Method = request.Method,
-                RequestData = jsonString,
-                RequestUrl = request.RequestUri.AbsoluteUri,
-                ResponseData = responseFromServer,
-            });
+            //if (!HttpStatusCode.OK.Equals(statusCode))
+            //{
+                db.ApiLogs.Add(new ApiLog()
+                {
+                    LogId = db.GetNextAppLogId().SingleOrDefault().Value,
+                    CreateBy = email,
+                    CreateOn = currentDt,
+                    DestinationApp = destination,
+                    SourceApp = source,
+                    Method = request.Method,
+                    RequestData = jsonString,
+                    RequestUrl = request.RequestUri.AbsoluteUri,
+                    ResponseData = responseFromServer,
+                    ResponseCode = (int)statusCode,
+                });
+            //}
+            
         }
 
 
@@ -9690,181 +9707,209 @@ namespace Colsp.Api.Controllers
                 }
                 var email = "jda@col.co.th";
                 var currentDt = DateTime.Now;
-                var brands = db.Brands.Select(s => new
-                {
-                    s.BrandId,
-                    s.BrandNameEn
-                });
+                int take = 100;
+                int multiply = 0;
                 List<ProductStageGroup> groupList = new List<ProductStageGroup>();
-                foreach(var jdaProduct in request)
+                var response = new List<JdaRequest>();
+                while (true)
                 {
-                    if(jdaProduct.ShopId == 0 
-                        || string.IsNullOrWhiteSpace(jdaProduct.Sku))
+                    var req = request.Select(s => new { s.Sku, s.ShopId }).Skip(take * multiply).Take(take);
+                    #region validation
+                    if (req.Count() == 0)
                     {
-                        throw new Exception("Shop id and sku are required");
+                        break;
                     }
-                    if(jdaProduct.Sku.Trim().Length > 255)
+                    #endregion
+                    var rqSkus = req.Select(s => s.Sku);
+                    var shopIds = req.Select(s => s.ShopId);
+                    var products = db.ProductStages.Where(w => shopIds.Contains(w.ShopId) && rqSkus.Contains(w.Sku)).Select(s => new
                     {
-                        throw new Exception("Sku cannot be more than 255 characters.");
-                    }
-                    if(jdaProduct.JDADept.Trim().Length > 3)
-                    {
-                        throw new Exception("JDADept cannot be more than 3 characters.");
-                    }
-                    if(jdaProduct.JDASubDept.Trim().Length > 3)
-                    {
-                        throw new Exception("JDASubDept cannot be more than 3 characters.");
-                    }
-                    var brandId = brands.Where(w => w.BrandNameEn.Equals(jdaProduct.BrandName))
-                        .Select(s => s.BrandId).SingleOrDefault();
-                    ProductStageGroup group = new ProductStageGroup()
-                    {
-                        ApproveBy = null,
-                        ApproveOn = null,
-                        AttributeSetId = null,
-                        BrandId = brandId != 0 ? brandId : (int?)null,
-                        CategoryTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
-                        CreateBy = email,
-                        CreateOn = currentDt,
-                        EffectiveDate = currentDt,
-                        ExpireDate = currentDt.AddYears(Constant.DEFAULT_ADD_YEAR),
-                        FirstApproveBy = null,
-                        FirstApproveOn = null,
-                        GiftWrap = Constant.STATUS_NO,
-                        GlobalCatId = Constant.DEFAULT_GLOBAL_CATEGORY,
-                        ImageFlag = false,
-                        ImageTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
-                        InfoFlag = false,
-                        InformationTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
-                        IsBestSeller = false,
-                        IsClearance = false,
-                        IsNew = false,
-                        IsOnlineExclusive = false,
-                        IsOnlyAt = false,
-                        LocalCatId = null,
-                        MoreOptionTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
-                        NewArrivalDate = null,
-                        OldGroupId = null,
-                        OnlineFlag = false,
-                        RejecteBy = null,
-                        RejectOn = null,
-                        RejectReason = string.Empty,
-                        Remark = string.Empty,
-                        ShippingId = Constant.DEFAULT_SHIPPING_ID,
-                        ShopId = jdaProduct.ShopId,
-                        Status = Constant.PRODUCT_STATUS_DRAFT,
-                        SubmitBy = null,
-                        SubmitOn = null,
-                        TheOneCardEarn = Constant.DEFAULT_THE_ONE_CARD,
-                        UpdateBy = email,
-                        UpdateOn = currentDt,
-                        VariantTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
-                    };
-                    group.ProductStages.Add(new ProductStage()
-                    {
-                        BoostWeight = Constant.DEFAULT_BOOSTWEIGHT,
-                        Bu = null,
-                        CreateBy = email,
-                        CreateOn = currentDt,
-                        DefaultVariant = false,
-                        DeliveryFee = 0,
-                        DescriptionFullEn = string.Empty,
-                        DescriptionFullTh = string.Empty,
-                        DescriptionShortEn = jdaProduct.ShortDescriptionEn,
-                        DescriptionShortTh = jdaProduct.ShortDescriptionTh,
-                        DimensionUnit = Constant.DIMENSTION_MM,
-                        Display = string.Empty,
-                        EffectiveDatePromotion = null,
-                        EstimateGoodsReceiveDate = null,
-                        ExpireDatePromotion = null,
-                        ExpressDelivery = Constant.STATUS_NO,
-                        FeatureImgUrl = string.Empty,
-                        GlobalBoostWeight = Constant.DEFAULT_BOOSTWEIGHT,
-                        Height = 0,
-                        ImageCount = 0,
-                        Installment = Constant.STATUS_NO,
-                        IsHasExpiryDate = Constant.STATUS_NO,
-                        IsMaster = false,
-                        IsSell = true,
-                        IsVariant = false,
-                        IsVat = Constant.STATUS_NO,
-                        Inventory = new Inventory()
-                        {
-                             CreateBy = email,
-                             CreateOn = currentDt,
-                             Defect = 0,
-                             MaxQtyAllowInCart = int.MaxValue,
-                             MaxQtyPreOrder = int.MaxValue,
-                             MinQtyAllowInCart = 0,
-                             OnHold = 0,
-                             Quantity = jdaProduct.Quantity,
-                             Reserve = 0,
-                             SafetyStockAdmin = 0,
-                             SafetyStockSeller = 0,
-                             StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE],
-                             UpdateBy = email,
-                             UpdateOn = currentDt,
-                             UseDecimal = false
-                        },
-                        JDADept = jdaProduct.JDADept,
-                        JDASubDept = jdaProduct.JDASubDept,
-                        KillerPoint1En = string.Empty,
-                        KillerPoint1Th = string.Empty,
-                        KillerPoint2En = string.Empty,
-                        KillerPoint2Th = string.Empty,
-                        KillerPoint3En = string.Empty,
-                        KillerPoint3Th = string.Empty,
-                        Length = 0,
-                        LimitIndividualDay = false,
-                        MaxiQtyAllowed = 0,
-                        MetaDescriptionEn = string.Empty,
-                        MetaDescriptionTh = string.Empty,
-                        MetaKeyEn = string.Empty,
-                        MetaKeyTh = string.Empty,
-                        MetaTitleEn = string.Empty,
-                        MetaTitleTh = string.Empty,
-                        MiniQtyAllowed = 0,
-                        MobileDescriptionEn = string.Empty,
-                        MobileDescriptionTh = string.Empty,
-                        NewArrivalDate = null,
-                        OldPid = null,
-                        OriginalPrice = jdaProduct.Price,
-                        PrepareDay = 0,
-                        PrepareFri = 0,
-                        PrepareMon = 0,
-                        PrepareSat = 0,
-                        PrepareSun = 0,
-                        PrepareThu = 0,
-                        PrepareTue = 0,
-                        PrepareWed = 0,
-                        ProdTDNameEn = string.Empty,
-                        ProdTDNameTh = string.Empty,
-                        ProductNameEn = jdaProduct.Sku,
-                        ProductNameTh = string.Empty,
-                        PromotionPrice = 0,
-                        PurchasePrice = 0,
-                        SalePrice = jdaProduct.Price,
-                        SaleUnitEn = string.Empty,
-                        SaleUnitTh = string.Empty,
-                        SeoEn = string.Empty,
-                        SeoTh = string.Empty,
-                        ShopId = jdaProduct.ShopId,
-                        Sku = jdaProduct.Sku,
-                        Status = Constant.PRODUCT_STATUS_DRAFT,
-                        UnitPrice = 0,
-                        Upc = string.Empty,
-                        UpdateBy = email,
-                        UpdateOn = currentDt,
-                        UrlKey = string.Empty,
-                        VariantCount = 0,
-                        Visibility = true,
-                        Weight = 0,
-                        WeightUnit = Constant.WEIGHT_MEASURE_G,
-                        Width = 0,
+                        s.Sku,
+                        s.ShopId,
+                        s.Pid
                     });
-                    groupList.Add(group);
+                    foreach (var jdaProduct in request)
+                    {
+                        #region validation
+                        if (jdaProduct.ShopId == 0
+                            || string.IsNullOrWhiteSpace(jdaProduct.Sku))
+                        {
+                            throw new Exception("Shop id and sku are required");
+                        }
+                        if (jdaProduct.Sku.Trim().Length > 255)
+                        {
+                            throw new Exception("Sku cannot be more than 255 characters.");
+                        }
+                        if (jdaProduct.JDADept.Trim().Length > 3)
+                        {
+                            throw new Exception("JDADept cannot be more than 3 characters.");
+                        }
+                        if (jdaProduct.JDASubDept.Trim().Length > 3)
+                        {
+                            throw new Exception("JDASubDept cannot be more than 3 characters.");
+                        }
+                        var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Sku.Equals(jdaProduct.Sku)).Select(s => s.Pid).SingleOrDefault();
+                        if(!string.IsNullOrWhiteSpace(tmpProduct))
+                        {
+                            jdaProduct.Pid = tmpProduct;
+                            response.Add(jdaProduct);
+                            continue;
+                        }
+                        #endregion
+                        #region setup group
+                        ProductStageGroup group = new ProductStageGroup()
+                        {
+                            ApproveBy = null,
+                            ApproveOn = null,
+                            AttributeSetId = null,
+                            BrandId = null,
+                            CategoryTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            EffectiveDate = currentDt,
+                            ExpireDate = currentDt.AddYears(Constant.DEFAULT_ADD_YEAR),
+                            FirstApproveBy = null,
+                            FirstApproveOn = null,
+                            GiftWrap = Constant.STATUS_NO,
+                            GlobalCatId = Constant.DEFAULT_GLOBAL_CATEGORY,
+                            ImageFlag = false,
+                            ImageTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                            InfoFlag = false,
+                            InformationTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                            IsBestSeller = false,
+                            IsClearance = false,
+                            IsNew = false,
+                            IsOnlineExclusive = false,
+                            IsOnlyAt = false,
+                            LocalCatId = null,
+                            MoreOptionTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                            NewArrivalDate = null,
+                            OldGroupId = null,
+                            OnlineFlag = false,
+                            RejecteBy = null,
+                            RejectOn = null,
+                            RejectReason = string.Empty,
+                            Remark = string.Empty,
+                            ShippingId = Constant.DEFAULT_SHIPPING_ID,
+                            ShopId = jdaProduct.ShopId,
+                            Status = Constant.PRODUCT_STATUS_DRAFT,
+                            SubmitBy = null,
+                            SubmitOn = null,
+                            TheOneCardEarn = Constant.DEFAULT_THE_ONE_CARD,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
+                            VariantTabStatus = Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL,
+                        };
+                        #endregion
+                        #region setup master variant
+                        group.ProductStages.Add(new ProductStage()
+                        {
+                            BoostWeight = Constant.DEFAULT_BOOSTWEIGHT,
+                            Bu = null,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            DefaultVariant = false,
+                            DeliveryFee = 0,
+                            DescriptionFullEn = string.Empty,
+                            DescriptionFullTh = string.Empty,
+                            DescriptionShortEn = jdaProduct.ShortDescriptionEn,
+                            DescriptionShortTh = jdaProduct.ShortDescriptionTh,
+                            DimensionUnit = Constant.DIMENSTION_MM,
+                            Display = string.Empty,
+                            EffectiveDatePromotion = null,
+                            EstimateGoodsReceiveDate = null,
+                            ExpireDatePromotion = null,
+                            ExpressDelivery = Constant.STATUS_NO,
+                            FeatureImgUrl = string.Empty,
+                            GlobalBoostWeight = Constant.DEFAULT_BOOSTWEIGHT,
+                            Height = 0,
+                            ImageCount = 0,
+                            Installment = Constant.STATUS_NO,
+                            IsHasExpiryDate = Constant.STATUS_NO,
+                            IsMaster = false,
+                            IsSell = true,
+                            IsVariant = false,
+                            IsVat = Constant.STATUS_NO,
+                            Inventory = new Inventory()
+                            {
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                Defect = 0,
+                                MaxQtyAllowInCart = int.MaxValue,
+                                MaxQtyPreOrder = int.MaxValue,
+                                MinQtyAllowInCart = 0,
+                                OnHold = 0,
+                                Quantity = jdaProduct.Quantity,
+                                Reserve = 0,
+                                SafetyStockAdmin = 0,
+                                SafetyStockSeller = 0,
+                                StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE],
+                                UpdateBy = email,
+                                UpdateOn = currentDt,
+                                UseDecimal = false
+                            },
+                            JDADept = jdaProduct.JDADept,
+                            JDASubDept = jdaProduct.JDASubDept,
+                            KillerPoint1En = string.Empty,
+                            KillerPoint1Th = string.Empty,
+                            KillerPoint2En = string.Empty,
+                            KillerPoint2Th = string.Empty,
+                            KillerPoint3En = string.Empty,
+                            KillerPoint3Th = string.Empty,
+                            Length = 0,
+                            LimitIndividualDay = false,
+                            MaxiQtyAllowed = 0,
+                            MetaDescriptionEn = string.Empty,
+                            MetaDescriptionTh = string.Empty,
+                            MetaKeyEn = string.Empty,
+                            MetaKeyTh = string.Empty,
+                            MetaTitleEn = string.Empty,
+                            MetaTitleTh = string.Empty,
+                            MiniQtyAllowed = 0,
+                            MobileDescriptionEn = string.Empty,
+                            MobileDescriptionTh = string.Empty,
+                            NewArrivalDate = null,
+                            OldPid = null,
+                            OriginalPrice = jdaProduct.Price,
+                            PrepareDay = 0,
+                            PrepareFri = 0,
+                            PrepareMon = 0,
+                            PrepareSat = 0,
+                            PrepareSun = 0,
+                            PrepareThu = 0,
+                            PrepareTue = 0,
+                            PrepareWed = 0,
+                            ProdTDNameEn = string.Empty,
+                            ProdTDNameTh = string.Empty,
+                            ProductNameEn = jdaProduct.Sku,
+                            ProductNameTh = string.Empty,
+                            PromotionPrice = 0,
+                            PurchasePrice = 0,
+                            SalePrice = jdaProduct.Price,
+                            SaleUnitEn = string.Empty,
+                            SaleUnitTh = string.Empty,
+                            SeoEn = string.Empty,
+                            SeoTh = string.Empty,
+                            ShopId = jdaProduct.ShopId,
+                            Sku = jdaProduct.Sku,
+                            Status = Constant.PRODUCT_STATUS_DRAFT,
+                            UnitPrice = 0,
+                            Upc = string.IsNullOrEmpty(jdaProduct.Barcode) ? string.Empty : jdaProduct.Barcode,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
+                            UrlKey = string.Empty,
+                            VariantCount = 0,
+                            Visibility = true,
+                            Weight = 0,
+                            WeightUnit = Constant.WEIGHT_MEASURE_G,
+                            Width = 0,
+                        });
+                        #endregion
+                        groupList.Add(group);
+                    }
+                    multiply++;
                 }
-                var response = new List<JdaRequest>(); 
+                #region generate id
                 foreach(var group in groupList)
                 {
                     AutoGenerate.GeneratePid(db, group.ProductStages);
@@ -9881,6 +9926,8 @@ namespace Colsp.Api.Controllers
                     }
                     //SendToCmos(group, Apis.CmosCreateProduct, "POST", email, currentDt, db);
                 }
+                #endregion
+                db.Configuration.ValidateOnSaveEnabled = false;
                 db.ProductStageGroups.AddRange(groupList);
                 Util.DeadlockRetry(db.SaveChanges, "ProductStage");
                 return Request.CreateResponse(HttpStatusCode.OK, response);
@@ -9904,26 +9951,50 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                foreach (var jdaProduct in request)
+                int take = 100;
+                int multiply = 0;
+                while (true)
                 {
-                    if (string.IsNullOrWhiteSpace(jdaProduct.Pid))
+                    var rqPids = request.Select(s=>s.Pid).Skip(take * multiply).Take(take);
+                    var products = db.ProductStages.Where(w => rqPids.Contains(w.Pid)).Select(s => new
                     {
-                        throw new Exception("Pid cannot be empty");
+                        s.Pid,
+                        s.ShopId
+                    });
+                    #region validation
+                    if (rqPids.Count() == 0)
+                    {
+                        break;
                     }
-                    ProductStage stage = new ProductStage()
+                    #endregion
+                    foreach (var jdaProduct in request)
                     {
-                        Pid = jdaProduct.Pid
-                    };
-                    db.ProductStages.Attach(stage);
-                    db.Entry(stage).Property(p => p.SalePrice).IsModified = true;
-                    db.Entry(stage).Property(p => p.DescriptionShortEn).IsModified = true;
-                    db.Entry(stage).Property(p => p.DescriptionShortTh).IsModified = true;
-                    stage.DescriptionShortEn = jdaProduct.ShortDescriptionEn;
-                    stage.DescriptionShortTh = jdaProduct.ShortDescriptionTh;
-                    stage.SalePrice = jdaProduct.Price;
+                        if (string.IsNullOrWhiteSpace(jdaProduct.Pid))
+                        {
+                            throw new Exception("Pid cannot be empty");
+                        }
+                        var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Pid.Equals(jdaProduct.Pid)).SingleOrDefault();
+                        if (tmpProduct == null)
+                        {
+                            throw new Exception(string.Concat("Cannot find pid ", jdaProduct.Pid, " in shop id ", jdaProduct.ShopId));
+                        }
+                        ProductStage stage = new ProductStage()
+                        {
+                            Pid = jdaProduct.Pid
+                        };
+                        db.ProductStages.Attach(stage);
+                        db.Entry(stage).Property(p => p.SalePrice).IsModified = true;
+                        db.Entry(stage).Property(p => p.DescriptionShortEn).IsModified = true;
+                        db.Entry(stage).Property(p => p.DescriptionShortTh).IsModified = true;
+                        stage.DescriptionShortEn = jdaProduct.ShortDescriptionEn;
+                        stage.DescriptionShortTh = jdaProduct.ShortDescriptionTh;
+                        stage.SalePrice = jdaProduct.Price;
+                    }
+                    multiply++;
                 }
+                db.Configuration.ValidateOnSaveEnabled = false;
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Request.CreateResponse(HttpStatusCode.OK, request);
             }
             catch (Exception e)
             {

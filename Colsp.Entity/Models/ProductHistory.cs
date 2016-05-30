@@ -25,7 +25,7 @@ namespace Colsp.Entity.Models
         public long HistoryId { get; set; }
         public string Pid { get; set; }
         public long ProductId { get; set; }
-        public Nullable<int> ShopId { get; set; }
+        public int ShopId { get; set; }
         public string ProductNameEn { get; set; }
         public string ProductNameTh { get; set; }
         public string ProdTDNameTh { get; set; }

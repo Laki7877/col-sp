@@ -13,7 +13,7 @@ namespace Colsp.Model.Requests
         public string NameEng;
         public string DocumentNameThai;
         public string DocumentNameEng;
-        public string ProductType;
+        public string StockType;
         public string ProductStatus;
         public string Remark;
         public string DescriptionShortThai;
@@ -49,7 +49,7 @@ namespace Colsp.Model.Requests
             NameEng = string.Empty;
             DocumentNameThai = string.Empty;
             DocumentNameEng = string.Empty;
-            ProductType = string.Empty;
+            StockType = string.Empty;
             ProductStatus = string.Empty;
             Remark = string.Empty;
             DescriptionShortThai = string.Empty;

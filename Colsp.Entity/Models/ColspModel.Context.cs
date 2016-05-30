@@ -110,6 +110,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductHistoryGroup> ProductHistoryGroups { get; set; }
         public virtual DbSet<ProductHistoryImage> ProductHistoryImages { get; set; }
         public virtual DbSet<ProductHistoryLocalCatMap> ProductHistoryLocalCatMaps { get; set; }
+        public virtual DbSet<ProductHistoryRelated> ProductHistoryRelateds { get; set; }
         public virtual DbSet<ProductHistoryTag> ProductHistoryTags { get; set; }
         public virtual DbSet<ProductHistoryVideo> ProductHistoryVideos { get; set; }
         public virtual DbSet<ProductImage> ProductImages { get; set; }

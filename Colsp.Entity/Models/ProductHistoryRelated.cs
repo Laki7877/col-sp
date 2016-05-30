@@ -12,8 +12,9 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductRelated
+    public partial class ProductHistoryRelated
     {
+        public long HistoryId { get; set; }
         public long Parent { get; set; }
         public long Child { get; set; }
         public int ShopId { get; set; }
@@ -22,6 +23,7 @@ namespace Colsp.Entity.Models
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
+        public virtual ProductHistoryGroup ProductHistoryGroup { get; set; }
         public virtual ProductStageGroup ProductStageGroup { get; set; }
         public virtual ProductStageGroup ProductStageGroup1 { get; set; }
         public virtual Shop Shop { get; set; }
