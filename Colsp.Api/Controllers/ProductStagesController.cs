@@ -1578,6 +1578,14 @@ namespace Colsp.Api.Controllers
                     {
                         products = products.Where(p => p.IsMaster == true);
                     }
+                    else if (string.Equals("Single", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.VariantCount == 0);
+                    }
+                    else if (string.Equals("Varaint", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.VariantCount > 0);
+                    }
                 }
                 if (!string.IsNullOrEmpty(request._filter2))
                 {
@@ -1737,6 +1745,14 @@ namespace Colsp.Api.Controllers
                     else if (string.Equals("ProductMaster", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
                         products = products.Where(p => p.IsMaster == true);
+                    }
+                    else if (string.Equals("Single", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.VariantCount == 0);
+                    }
+                    else if (string.Equals("Varaint", request._filter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        products = products.Where(p => p.VariantCount > 0);
                     }
                 }
                 if (!string.IsNullOrEmpty(request._filter2))
@@ -2252,7 +2268,7 @@ namespace Colsp.Api.Controllers
                 group.ProductStages.Add(masterVariant);
             }
             request.MasterVariant.Status = group.Status;
-            SetupProductStage(masterVariant, request.MasterVariant, attributeList,inventoryList.Where(w=>w.Pid.Equals(masterVariant.Pid)).SingleOrDefault(), shopId,isAdmin, isNew, email, currentDt, db);
+            SetupProductStage(masterVariant, request.MasterVariant, attributeList,inventoryList.Where(w=>w.Pid.Equals(masterVariant.Pid)).SingleOrDefault(),shopId,group.ShippingId,isAdmin, isNew, email, currentDt, db);
             if(request.MasterAttribute != null)
             {
                 SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, currentDt);
@@ -2298,7 +2314,7 @@ namespace Colsp.Api.Controllers
                         group.ProductStages.Add(variant);
                     }
                     variantRequest.Status = group.Status;
-                    SetupProductStage(variant, variantRequest, attributeList, inventoryList.Where(w => w.Pid.Equals(variant.Pid)).SingleOrDefault(), shopId, isAdmin, isNew, email, currentDt,db);
+                    SetupProductStage(variant, variantRequest, attributeList, inventoryList.Where(w => w.Pid.Equals(variant.Pid)).SingleOrDefault(), shopId, group.ShippingId, isAdmin, isNew, email, currentDt,db);
                     variant.IsVariant = true;
                     variant.IsSell = true;
                 }
@@ -2332,7 +2348,7 @@ namespace Colsp.Api.Controllers
             #endregion
         }
 
-        private void SetupProductStage(ProductStage stage, VariantRequest request, List<AttributeRequest> attributeList,Inventory inventory, int shopId, bool isAdmin, bool isNew, string email, DateTime currentDt,ColspEntities db)
+        private void SetupProductStage(ProductStage stage, VariantRequest request, List<AttributeRequest> attributeList,Inventory inventory, int shopId,int shippingId, bool isAdmin, bool isNew, string email, DateTime currentDt,ColspEntities db)
         {
             stage.Pid = request.Pid;
             stage.ShopId = shopId;
@@ -2347,7 +2363,10 @@ namespace Colsp.Api.Controllers
             stage.Sku = request.Sku;
             stage.Upc = request.Upc;
             stage.OriginalPrice = request.OriginalPrice;
-            stage.SalePrice = request.SalePrice;
+            if(shippingId != 4)
+            {
+                stage.SalePrice = request.SalePrice;
+            }
             stage.DescriptionFullEn = request.DescriptionFullEn;
             stage.DescriptionShortEn = request.DescriptionShortEn;
             stage.DescriptionFullTh = request.DescriptionFullTh;
@@ -2533,7 +2552,10 @@ namespace Colsp.Api.Controllers
             }
             else
             {
-                inventory.Quantity = inventory.Quantity + request.UpdateAmount;
+                if(shippingId != 3 && shippingId != 4)
+                {
+                    inventory.Quantity = inventory.Quantity + request.UpdateAmount;
+                }
                 inventory.StockType = defaultStockType;
                 inventory.SafetyStockSeller = request.SafetyStock;
                 inventory.MaxQtyAllowInCart = request.MaxQtyAllowInCart;
@@ -4048,20 +4070,37 @@ namespace Colsp.Api.Controllers
                     if (tmpImageHash.Contains(image.ImageName))
                     {
                         string lastPart = image.ImageName;
-                        string oldFile = Path.Combine(
+                        string oldFileTmp = Path.Combine(
                             AppSettingKey.IMAGE_ROOT_PATH, 
                             AppSettingKey.PRODUCT_FOLDER, 
                             AppSettingKey.IMAGE_TMP_FOLDER, 
                             lastPart);
-                        if (File.Exists(oldFile))
+                        string oldFileOriginal = Path.Combine(
+                            AppSettingKey.IMAGE_ROOT_PATH,
+                            AppSettingKey.PRODUCT_FOLDER,
+                            AppSettingKey.ORIGINAL_FOLDER,
+                            lastPart);
+                        if (File.Exists(oldFileTmp))
                         {
-                            string newFileName = string.Concat(stage.Pid, "_", index, Path.GetExtension(lastPart));
+                            string newFileName = string.Concat(stage.Pid, "-", index, Path.GetExtension(lastPart));
                             image.ImageName = newFileName;
-                            File.Copy(oldFile, Path.Combine(
+                            File.Copy(oldFileTmp, Path.Combine(
                                 AppSettingKey.IMAGE_ROOT_PATH, 
                                 AppSettingKey.PRODUCT_FOLDER, 
                                 AppSettingKey.IMAGE_TMP_FOLDER,
                                 newFileName));
+                            image.ImageId = 0;
+                            ++index;
+                        }else if (File.Exists(oldFileOriginal))
+                        {
+                            string newFileName = string.Concat(stage.Pid, "-", index, Path.GetExtension(lastPart));
+                            image.ImageName = newFileName;
+                            File.Copy(oldFileOriginal, Path.Combine(
+                                AppSettingKey.IMAGE_ROOT_PATH,
+                                AppSettingKey.PRODUCT_FOLDER,
+                                AppSettingKey.IMAGE_TMP_FOLDER,
+                                newFileName));
+                            image.ImageId = 0;
                             ++index;
                         }
                     }
@@ -7293,6 +7332,18 @@ namespace Colsp.Api.Controllers
                         }
                     }
                     #endregion
+                    #region Relate Product
+                    if (header.Contains("ACM"))
+                    {
+                        db.ProductStageRelateds.RemoveRange(db.ProductStageRelateds.Where(w => w.Parent == groupEn.ProductId));
+                        groupEn.ProductStageRelateds1.Clear();
+                        foreach (var child in g.ProductStageRelateds1)
+                        {
+                            child.Parent = groupEn.ProductId;
+                            groupEn.ProductStageRelateds1.Add(child);
+                        }
+                    }
+                    #endregion
                     #region Setup Group
                     if (header.Contains("ACY"))
                     {
@@ -7472,7 +7523,7 @@ namespace Colsp.Api.Controllers
                         {
                             masterVariantEn.KillerPoint3Th = importVariantEn.KillerPoint3Th;
                         }
-                        if (header.Contains("ABJ"))
+                        if (header.Contains("ABK"))
                         {
                             if (masterVariantEn.Inventory != null)
                             {
@@ -8581,7 +8632,46 @@ namespace Colsp.Api.Controllers
                                         }
 
                                     }
+                                    if (!isUpdate)
+                                    {
+                                        variant.Inventory.Quantity = variant.Inventory.Quantity + int.Parse(val);
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                errorMessage.Add("Invalid Inventory Amount at row " + row);
+                            }
+                        }
+                        if (headDic.ContainsKey("ABK"))
+                        {
+                            try
+                            {
+                                string val = body[headDic["ABK"]];
+                                if (!string.IsNullOrWhiteSpace(val))
+                                {
+                                    if (variant.Inventory == null)
+                                    {
+                                        variant.Inventory = new Inventory()
+                                        {
+                                            CreateBy = User.UserRequest().Email,
+                                            CreateOn = DateTime.Now,
+                                            UpdateBy = User.UserRequest().Email,
+                                            UpdateOn = DateTime.Now,
+                                        };
+                                        if (Constant.STOCK_TYPE.ContainsKey(body[headDic["ABO"]]))
+                                        {
+                                            variant.Inventory.StockType = Constant.STOCK_TYPE[body[headDic["ABO"]]];
+                                        }
+                                        else
+                                        {
+                                            variant.Inventory.StockType = Constant.STOCK_TYPE[body[headDic[Constant.DEFAULT_STOCK_TYPE]]];
+                                        }
+
+                                    }
                                     variant.Inventory.Quantity = variant.Inventory.Quantity + int.Parse(val);
+                                    
+                                    
                                 }
                             }
                             catch
@@ -8855,6 +8945,7 @@ namespace Colsp.Api.Controllers
                         #endregion
                         if (variant.DefaultVariant || isNew)
                         {
+                            group.ProductStages.ToList().ForEach(f => f.DefaultVariant = false);
                             variant.DefaultVariant = true;
                             #region Relate Product
                             if (headDic.ContainsKey("ACM"))
@@ -8878,6 +8969,7 @@ namespace Colsp.Api.Controllers
                                                 CreateOn = DateTime.Now,
                                                 UpdateBy = User.UserRequest().Email,
                                                 UpdateOn = DateTime.Now,
+                                                ShopId = shopId,
                                             });
                                         }
                                     }
@@ -9632,7 +9724,6 @@ namespace Colsp.Api.Controllers
             }
 
         }
-
 
 
         [Route("api/ProductStages/Publish")]
