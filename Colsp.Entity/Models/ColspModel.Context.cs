@@ -73,6 +73,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<CustomerAddress_Staging> CustomerAddress_Staging { get; set; }
         public virtual DbSet<CustomerNewsLetter> CustomerNewsLetters { get; set; }
+        public virtual DbSet<CustomerProductHistory> CustomerProductHistories { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
         public virtual DbSet<CustomerTokenCreditCard> CustomerTokenCreditCards { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }

@@ -738,6 +738,15 @@
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="UpdateOn" Type="datetime" />
         </EntityType>
+        <EntityType Name="CustomerProductHistory">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="Pid" />
+          </Key>
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="CustomerToken">
           <Key>
             <PropertyRef Name="CustomerId" />
@@ -775,6 +784,7 @@
           </Key>
           <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Deal">
           <Key>
@@ -4740,7 +4750,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeShippingMap_Shipping">
-          <End Role="Shipping" Type="Self.Shipping" Multiplicity="1" />
+          <End Role="Shipping" Type="Self.Shipping" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ShopTypeShippingMap" Type="Self.ShopTypeShippingMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shipping">
@@ -4752,7 +4764,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeShippingMap_ShopType">
-          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1" />
+          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ShopTypeShippingMap" Type="Self.ShopTypeShippingMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShopType">
@@ -4764,7 +4778,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeThemeMap_ShopType">
-          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1" />
+          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ShopTypeThemeMap" Type="Self.ShopTypeThemeMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShopType">
@@ -4776,7 +4792,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeThemeMap_Theme">
-          <End Role="Theme" Type="Self.Theme" Multiplicity="1" />
+          <End Role="Theme" Type="Self.Theme" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ShopTypeThemeMap" Type="Self.ShopTypeThemeMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Theme">
@@ -5207,6 +5225,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CustomerAddress" EntityType="Self.CustomerAddress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerAddress_Staging" EntityType="Self.CustomerAddress_Staging" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerNewsLetter" EntityType="Self.CustomerNewsLetter" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerProductHistory" EntityType="Self.CustomerProductHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerToken" EntityType="Self.CustomerToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerTokenCreditCard" EntityType="Self.CustomerTokenCreditCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerWishList" EntityType="Self.CustomerWishList" Schema="dbo" store:Type="Tables" />
@@ -6430,6 +6449,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CustomerAddresses" EntityType="ColspModel.CustomerAddress" />
           <EntitySet Name="CustomerAddress_Staging" EntityType="ColspModel.CustomerAddress_Staging" />
           <EntitySet Name="CustomerNewsLetters" EntityType="ColspModel.CustomerNewsLetter" />
+          <EntitySet Name="CustomerProductHistories" EntityType="ColspModel.CustomerProductHistory" />
           <EntitySet Name="CustomerTokens" EntityType="ColspModel.CustomerToken" />
           <EntitySet Name="CustomerTokenCreditCards" EntityType="ColspModel.CustomerTokenCreditCard" />
           <EntitySet Name="CustomerWishLists" EntityType="ColspModel.CustomerWishList" />
@@ -7974,6 +7994,15 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="CustomerProductHistory">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="Pid" />
+          </Key>
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
         <EntityType Name="CustomerToken">
           <Key>
             <PropertyRef Name="CustomerId" />
@@ -8011,6 +8040,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </Key>
           <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Deal">
           <Key>
@@ -12198,7 +12228,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeShippingMap_Shipping">
-          <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="1" />
+          <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ShopTypeShippingMap" Role="ShopTypeShippingMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shipping">
@@ -12352,7 +12384,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeShippingMap_ShopType">
-          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1" />
+          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ShopTypeShippingMap" Role="ShopTypeShippingMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShopType">
@@ -12364,7 +12398,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeThemeMap_ShopType">
-          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1" />
+          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ShopTypeThemeMap" Role="ShopTypeThemeMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShopType">
@@ -12376,7 +12412,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeThemeMap_Theme">
-          <End Type="ColspModel.Theme" Role="Theme" Multiplicity="1" />
+          <End Type="ColspModel.Theme" Role="Theme" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ShopTypeThemeMap" Role="ShopTypeThemeMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Theme">
@@ -13346,6 +13384,15 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CustomerProductHistories">
+            <EntityTypeMapping TypeName="ColspModel.CustomerProductHistory">
+              <MappingFragment StoreEntitySet="CustomerProductHistory">
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CustomerTokens">
             <EntityTypeMapping TypeName="ColspModel.CustomerToken">
               <MappingFragment StoreEntitySet="CustomerToken">
@@ -13380,6 +13427,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="CustomerWishLists">
             <EntityTypeMapping TypeName="ColspModel.CustomerWishList">
               <MappingFragment StoreEntitySet="CustomerWishList">
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
               </MappingFragment>

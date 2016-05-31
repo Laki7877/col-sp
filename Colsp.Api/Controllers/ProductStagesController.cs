@@ -7331,12 +7331,10 @@ namespace Colsp.Api.Controllers
                     {
                         groupEn.IsOnlyAt = g.IsOnlyAt;
                     }
-
-                    if (header.Contains("Remark"))
+                    if (header.Contains("ADH"))
                     {
                         groupEn.Remark = g.Remark;
                     }
-
                     if (header.Contains("ADI"))
                     {
                         groupEn.AttributeSetId = g.AttributeSetId;
@@ -7478,7 +7476,7 @@ namespace Colsp.Api.Controllers
                         {
                             if (masterVariantEn.Inventory != null)
                             {
-                                masterVariantEn.Inventory.Quantity = importVariantEn.Inventory.Quantity;
+                                masterVariantEn.Inventory.Quantity = masterVariantEn.Inventory.Quantity + importVariantEn.Inventory.Quantity;
                             }
                             else
                             {
@@ -7619,7 +7617,7 @@ namespace Colsp.Api.Controllers
                         {
                             masterVariantEn.MetaTitleTh = importVariantEn.MetaTitleTh;
                         }
-                        if (header.Contains("ACR)"))
+                        if (header.Contains("ACR"))
                         {
                             masterVariantEn.MetaDescriptionEn = importVariantEn.MetaDescriptionEn;
                         }
@@ -7646,6 +7644,10 @@ namespace Colsp.Api.Controllers
                         if (header.Contains("ADL"))
                         {
                             masterVariantEn.Visibility = importVariantEn.Visibility;
+                        }
+                        if(header.Contains("ACV") && g.ProductStages.Count == 0)
+                        {
+                            masterVariantEn.UrlKey = importVariantEn.UrlKey;
                         }
                         #endregion
                     }
@@ -8030,6 +8032,10 @@ namespace Colsp.Api.Controllers
                                     {
                                         currentStage.Visibility = staging.Visibility;
                                     }
+                                    if (header.Contains("ACV"))
+                                    {
+                                        currentStage.UrlKey = staging.UrlKey;
+                                    }
                                     #endregion
                                     #region Setup Attribute
                                     var attributeTmp = currentStage.ProductStageAttributes.ToList();
@@ -8085,7 +8091,7 @@ namespace Colsp.Api.Controllers
                             }
                             if (isNewStage)
                             {
-                                if (string.IsNullOrEmpty(staging.Pid))
+                                if (!string.IsNullOrEmpty(staging.Pid))
                                 {
                                     errorMessage.Add("New variant cannot have Pid " + staging.Pid);
                                     continue;
@@ -9253,6 +9259,10 @@ namespace Colsp.Api.Controllers
                                     }
                                 }
                             }
+                            if (headDic.ContainsKey("ADB"))
+                            {
+                                group.NewArrivalDate = variant.NewArrivalDate;
+                            }
                             //group.EffectiveDate = request.EffectiveDate.HasValue ? request.EffectiveDate.Value : currentDt;
                             //group.ExpireDate = request.ExpireDate.HasValue && request.ExpireDate.Value.CompareTo(group.EffectiveDate) >= 0 ? request.ExpireDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
                             var tmpDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACY", guidance, errorMessage, row);
@@ -9751,6 +9761,11 @@ namespace Colsp.Api.Controllers
                         var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Sku.Equals(jdaProduct.Sku)).Select(s => s.Pid).SingleOrDefault();
                         if(!string.IsNullOrWhiteSpace(tmpProduct))
                         {
+                            ProductStage stage = new ProductStage()
+                            {
+                                Pid = tmpProduct,
+                            };
+                            UpdateJda(stage, jdaProduct, db);
                             jdaProduct.Pid = tmpProduct;
                             response.Add(jdaProduct);
                             continue;
@@ -9938,8 +9953,6 @@ namespace Colsp.Api.Controllers
             }
         }
 
-
-
         [Route("api/ProductStages/JdaProduct")]
         [HttpPut]
         [OverrideAuthentication, OverrideAuthorization]
@@ -9982,13 +9995,7 @@ namespace Colsp.Api.Controllers
                         {
                             Pid = jdaProduct.Pid
                         };
-                        db.ProductStages.Attach(stage);
-                        db.Entry(stage).Property(p => p.SalePrice).IsModified = true;
-                        db.Entry(stage).Property(p => p.DescriptionShortEn).IsModified = true;
-                        db.Entry(stage).Property(p => p.DescriptionShortTh).IsModified = true;
-                        stage.DescriptionShortEn = jdaProduct.ShortDescriptionEn;
-                        stage.DescriptionShortTh = jdaProduct.ShortDescriptionTh;
-                        stage.SalePrice = jdaProduct.Price;
+                        UpdateJda(stage, jdaProduct, db);
                     }
                     multiply++;
                 }
@@ -10000,6 +10007,17 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
             }
+        }
+
+        private void UpdateJda(ProductStage stage, JdaRequest jdaProduct,ColspEntities db)
+        {
+            db.ProductStages.Attach(stage);
+            db.Entry(stage).Property(p => p.SalePrice).IsModified = true;
+            db.Entry(stage).Property(p => p.DescriptionShortEn).IsModified = true;
+            db.Entry(stage).Property(p => p.DescriptionShortTh).IsModified = true;
+            stage.DescriptionShortEn = jdaProduct.ShortDescriptionEn;
+            stage.DescriptionShortTh = jdaProduct.ShortDescriptionTh;
+            stage.SalePrice = jdaProduct.Price;
         }
 
 

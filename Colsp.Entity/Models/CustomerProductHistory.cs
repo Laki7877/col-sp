@@ -12,10 +12,10 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CustomerWishList
+    public partial class CustomerProductHistory
     {
         public string CustomerId { get; set; }
         public string Pid { get; set; }
-        public int SeqNo { get; set; }
+        public System.DateTime CreateOn { get; set; }
     }
 }

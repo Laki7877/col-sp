@@ -219,7 +219,7 @@ namespace Colsp.Api.Controllers
                                 )
                                 select new
                                 {
-                                    ImageUrl = stage.FeatureImgUrl,
+                                    ImageUrl = string.Empty.Equals(stage.FeatureImgUrl) ? string.Empty : string.Concat(Constant.IMAGE_STATIC_URL, stage.FeatureImgUrl),
                                     ProductId = stage.ProductId,
                                     Sku = stage.Sku,
                                     Upc = stage.Upc,
