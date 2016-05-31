@@ -290,13 +290,13 @@ namespace Colsp.Api.Controllers
                 if (shopId != 0)
                     query = query.Where(x => x.ShopId == shopId);
 
-                if (condition.SearchBy == SearchOption.PID)
+                if (condition.SearchBy == Logic.SearchOption.PID)
                     query = query.Where(x => x.Pid.Equals(condition.SearchText));
 
-                if (condition.SearchBy == SearchOption.SKU)
+                if (condition.SearchBy == Logic.SearchOption.SKU)
                     query = query.Where(x => x.Sku.Equals(condition.SearchText));
 
-                if (condition.SearchBy == SearchOption.ProductName)
+                if (condition.SearchBy == Logic.SearchOption.ProductName)
                     query = query.Where(x => x.ProductNameEn.Contains(condition.SearchText) || x.ProductNameTh.Contains(condition.SearchText));
 
                 if (condition.CategoryId != null)
