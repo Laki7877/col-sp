@@ -104,6 +104,7 @@
     <Compile Include="Requests\ProductStageRequest.cs" />
     <Compile Include="Requests\ReportRequest.cs" />
     <Compile Include="Requests\Request.cs" />
+    <Compile Include="Requests\ReturnReportRequest.cs" />
     <Compile Include="Requests\ReturnRequest.cs" />
     <Compile Include="Requests\SaleReportForSellerRequest.cs" />
     <Compile Include="Requests\SEORequest.cs" />
