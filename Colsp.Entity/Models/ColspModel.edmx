@@ -6382,28 +6382,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
     <edmx:ConceptualModels>
       <Schema Namespace="ColspModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="ColspEntities" annotation:LazyLoadingEnabled="true">
-          <FunctionImport Name="GetNextAttributeId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextAttributeSetId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextAttributeValueId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextBrandId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextCouponId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextGlobalCategoryId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextLocalCategoryId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextNewsletterId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextProductHistoryId" ReturnType="Collection(Int64)" />
-          <FunctionImport Name="GetNextProductStageGroupId" ReturnType="Collection(Int64)" />
-          <FunctionImport Name="GetNextProductStagePid" ReturnType="Collection(Int64)" />
-          <FunctionImport Name="GetNextProductTempId" ReturnType="Collection(Int64)" />
-          <FunctionImport Name="GetNextShopId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextUserGroupId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="GetNextUserId" ReturnType="Collection(Int32)" />
-          <FunctionImport Name="SaleReportForSeller" ReturnType="Collection(ColspModel.SaleReportForSeller_Result)" />
-          <FunctionImport Name="StockStatusReport" ReturnType="Collection(ColspModel.StockStatusReport_Result)" />
-          <FunctionImport Name="GetNextProductStageImageId" ReturnType="Collection(Int64)" />
-          <FunctionImport Name="ItemOnHoldReport" ReturnType="Collection(ColspModel.ItemOnHoldReport_Result)" />
-          <FunctionImport Name="GetNextAppLogId" ReturnType="Collection(Int64)" />
-          <FunctionImport Name="ReportProductsCommissionForOrder" ReturnType="Collection(ColspModel.ReportProductsCommissionForOrder_Result)" />
-          <FunctionImport Name="ReportReturnItemByOrderReport" ReturnType="Collection(ColspModel.ReportReturnItemByOrderReport_Result)" />
           <EntitySet Name="ApiLogs" EntityType="ColspModel.ApiLog" />
           <EntitySet Name="AppAuths" EntityType="ColspModel.AppAuth" />
           <EntitySet Name="Attributes" EntityType="ColspModel.Attribute" />
@@ -7130,7 +7108,29 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shipping" EntitySet="Shippings" />
             <End Role="ShopGroup" EntitySet="ShopGroups" />
           </AssociationSet>
-          </EntityContainer>
+          <FunctionImport Name="GetNextAppLogId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="GetNextAttributeId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextAttributeSetId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextAttributeValueId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextBrandId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextCouponId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextGlobalCategoryId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextLocalCategoryId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextNewsletterId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextProductHistoryId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="GetNextProductStageGroupId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="GetNextProductStageImageId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="GetNextProductStagePid" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="GetNextProductTempId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="GetNextShopId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextUserGroupId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="GetNextUserId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="ItemOnHoldReport" ReturnType="Collection(ColspModel.ItemOnHoldReport_Result1)" />
+          <FunctionImport Name="ReportProductsCommissionForOrder" ReturnType="Collection(ColspModel.ReportProductsCommissionForOrder_Result1)" />
+          <FunctionImport Name="ReportReturnItemByOrderReport" ReturnType="Collection(ColspModel.ReportReturnItemByOrderReport_Result1)" />
+          <FunctionImport Name="SaleReportForSeller" ReturnType="Collection(ColspModel.SaleReportForSeller_Result1)" />
+          <FunctionImport Name="StockStatusReport" ReturnType="Collection(ColspModel.StockStatusReport_Result1)" />
+        </EntityContainer>
         <ComplexType Name="SaleReportForSeller_Result">
           <Property Type="DateTime" Name="OrderDateTime" Nullable="true" Precision="23" />
           <Property Type="String" Name="OrderDate" Nullable="true" MaxLength="10" />
@@ -12517,119 +12517,88 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="*" />
           <End Type="ColspModel.ShopGroup" Role="ShopGroup" Multiplicity="*" />
         </Association>
+        <ComplexType Name="ItemOnHoldReport_Result1">
+          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="Itemname" Nullable="false" MaxLength="200" />
+          <Property Type="DateTime" Name="OnHoldDate" Nullable="true" Precision="16" />
+          <Property Type="String" Name="OnHoldRemark" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Orderid" Nullable="true" MaxLength="12" />
+          <Property Type="Int32" Name="ShopId" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ReportProductsCommissionForOrder_Result1">
+          <Property Type="DateTime" Name="OrderDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="QTY" Nullable="false" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="22" Scale="3" />
+          <Property Type="Int32" Name="CommissionRate" Nullable="false" />
+          <Property Type="Int32" Name="CommissionFee" Nullable="false" />
+          <Property Type="Int32" Name="ShopId" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ReportReturnItemByOrderReport_Result1">
+          <Property Type="DateTime" Name="ReturnDate" Nullable="true" Precision="16" />
+          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="12" />
+          <Property Type="String" Name="Pid" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="ItemStatus" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="Quantity" Nullable="false" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="21" Scale="3" />
+          <Property Type="Decimal" Name="LocalDiscount" Nullable="false" Precision="10" Scale="3" />
+          <Property Type="Int32" Name="ReturnPrice" Nullable="false" />
+          <Property Type="Int32" Name="ReturnFee" Nullable="false" />
+          <Property Type="Int32" Name="ReturnAmount" Nullable="false" />
+          <Property Type="Int32" Name="ShopId" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="SaleReportForSeller_Result1">
+          <Property Type="DateTime" Name="OrderDateTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="OrderDate" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="TimeOfOrderDate" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="ItemStatus" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ItemName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="ItemNameEN" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="QTY" Nullable="false" />
+          <Property Type="Decimal" Name="RetailPrice" Nullable="false" Precision="10" Scale="3" />
+          <Property Type="Decimal" Name="LocalDiscount" Nullable="false" Precision="10" Scale="3" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="11" Scale="3" />
+          <Property Type="Decimal" Name="TotalPrice" Nullable="false" Precision="10" Scale="3" />
+          <Property Type="String" Name="GlobalCategoryNameEN" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="GlobalCategoryNameTH" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="LocalCategoryNameEN" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="LcalCategoryNameTH" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="OrderId" Nullable="false" MaxLength="15" />
+          <Property Type="Int32" Name="BrandId" Nullable="false" />
+          <Property Type="Int32" Name="GlobalCatId" Nullable="false" />
+          <Property Type="Int32" Name="LocalCatId" Nullable="false" />
+          <Property Type="Int32" Name="ShopId" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="StockStatusReport_Result1">
+          <Property Type="String" Name="Pid" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ProductNameEn" Nullable="false" MaxLength="300" />
+          <Property Type="String" Name="ProductNameTh" Nullable="false" MaxLength="300" />
+          <Property Type="String" Name="variant1" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="variant2" Nullable="false" MaxLength="100" />
+          <Property Type="Int32" Name="OnHand" Nullable="false" />
+          <Property Type="Int32" Name="Reserve" Nullable="false" />
+          <Property Type="Int32" Name="OnHold" Nullable="false" />
+          <Property Type="Int32" Name="Defect" Nullable="false" />
+          <Property Type="Int32" Name="StockAvailable" Nullable="true" />
+          <Property Type="Int32" Name="FirstReceiveQTY" Nullable="false" />
+          <Property Type="String" Name="FirstReceiveDate" Nullable="false" />
+          <Property Type="Int32" Name="SafetyStockAdmin" Nullable="false" />
+          <Property Type="Int32" Name="SafetyStockSeller" Nullable="false" />
+          <Property Type="String" Name="LastSoldDate" Nullable="true" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="false" Precision="10" Scale="3" />
+          <Property Type="Int32" Name="AgingDay" Nullable="true" />
+          <Property Type="Int32" Name="ShopId" Nullable="false" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ColspModelStoreContainer" CdmEntityContainer="ColspEntities">
-          <FunctionImportMapping FunctionImportName="GetNextAttributeId" FunctionName="ColspModel.Store.GetNextAttributeId" />
-          <FunctionImportMapping FunctionImportName="GetNextAttributeSetId" FunctionName="ColspModel.Store.GetNextAttributeSetId" />
-          <FunctionImportMapping FunctionImportName="GetNextAttributeValueId" FunctionName="ColspModel.Store.GetNextAttributeValueId" />
-          <FunctionImportMapping FunctionImportName="GetNextBrandId" FunctionName="ColspModel.Store.GetNextBrandId" />
-          <FunctionImportMapping FunctionImportName="GetNextCouponId" FunctionName="ColspModel.Store.GetNextCouponId" />
-          <FunctionImportMapping FunctionImportName="GetNextGlobalCategoryId" FunctionName="ColspModel.Store.GetNextGlobalCategoryId" />
-          <FunctionImportMapping FunctionImportName="GetNextLocalCategoryId" FunctionName="ColspModel.Store.GetNextLocalCategoryId" />
-          <FunctionImportMapping FunctionImportName="GetNextNewsletterId" FunctionName="ColspModel.Store.GetNextNewsletterId" />
-          <FunctionImportMapping FunctionImportName="GetNextProductHistoryId" FunctionName="ColspModel.Store.GetNextProductHistoryId" />
-          <FunctionImportMapping FunctionImportName="GetNextProductStageGroupId" FunctionName="ColspModel.Store.GetNextProductStageGroupId" />
-          <FunctionImportMapping FunctionImportName="GetNextProductStagePid" FunctionName="ColspModel.Store.GetNextProductStagePid" />
-          <FunctionImportMapping FunctionImportName="GetNextProductTempId" FunctionName="ColspModel.Store.GetNextProductTempId" />
-          <FunctionImportMapping FunctionImportName="GetNextShopId" FunctionName="ColspModel.Store.GetNextShopId" />
-          <FunctionImportMapping FunctionImportName="GetNextUserGroupId" FunctionName="ColspModel.Store.GetNextUserGroupId" />
-          <FunctionImportMapping FunctionImportName="GetNextUserId" FunctionName="ColspModel.Store.GetNextUserId" />
-          <FunctionImportMapping FunctionImportName="SaleReportForSeller" FunctionName="ColspModel.Store.SaleReportForSeller">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.SaleReportForSeller_Result">
-                <ScalarProperty Name="OrderDateTime" ColumnName="OrderDateTime" />
-                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
-                <ScalarProperty Name="TimeOfOrderDate" ColumnName="TimeOfOrderDate" />
-                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
-                <ScalarProperty Name="PID" ColumnName="PID" />
-                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
-                <ScalarProperty Name="ItemNameEN" ColumnName="ItemNameEN" />
-                <ScalarProperty Name="QTY" ColumnName="QTY" />
-                <ScalarProperty Name="RetailPrice" ColumnName="RetailPrice" />
-                <ScalarProperty Name="LocalDiscount" ColumnName="LocalDiscount" />
-                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
-                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
-                <ScalarProperty Name="GlobalCategoryNameEN" ColumnName="GlobalCategoryNameEN" />
-                <ScalarProperty Name="GlobalCategoryNameTH" ColumnName="GlobalCategoryNameTH" />
-                <ScalarProperty Name="LocalCategoryNameEN" ColumnName="LocalCategoryNameEN" />
-                <ScalarProperty Name="LcalCategoryNameTH" ColumnName="LcalCategoryNameTH" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
-                <ScalarProperty Name="GlobalCatId" ColumnName="GlobalCatId" />
-                <ScalarProperty Name="LocalCatId" ColumnName="LocalCatId" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="StockStatusReport" FunctionName="ColspModel.Store.StockStatusReport">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.StockStatusReport_Result">
-                <ScalarProperty Name="Pid" ColumnName="Pid" />
-                <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
-                <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
-                <ScalarProperty Name="variant1" ColumnName="variant1" />
-                <ScalarProperty Name="variant2" ColumnName="variant2" />
-                <ScalarProperty Name="OnHand" ColumnName="OnHand" />
-                <ScalarProperty Name="Reserve" ColumnName="Reserve" />
-                <ScalarProperty Name="OnHold" ColumnName="OnHold" />
-                <ScalarProperty Name="Defect" ColumnName="Defect" />
-                <ScalarProperty Name="StockAvailable" ColumnName="StockAvailable" />
-                <ScalarProperty Name="FirstReceiveQTY" ColumnName="FirstReceiveQTY" />
-                <ScalarProperty Name="FirstReceiveDate" ColumnName="FirstReceiveDate" />
-                <ScalarProperty Name="SafetyStockAdmin" ColumnName="SafetyStockAdmin" />
-                <ScalarProperty Name="SafetyStockSeller" ColumnName="SafetyStockSeller" />
-                <ScalarProperty Name="LastSoldDate" ColumnName="LastSoldDate" />
-                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
-                <ScalarProperty Name="AgingDay" ColumnName="AgingDay" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetNextProductStageImageId" FunctionName="ColspModel.Store.GetNextProductStageImageId" />
-          <FunctionImportMapping FunctionImportName="ItemOnHoldReport" FunctionName="ColspModel.Store.ItemOnHoldReport">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.ItemOnHoldReport_Result">
-                <ScalarProperty Name="PID" ColumnName="PID" />
-                <ScalarProperty Name="Itemname" ColumnName="Itemname" />
-                <ScalarProperty Name="OnHoldDate" ColumnName="OnHoldDate" />
-                <ScalarProperty Name="OnHoldRemark" ColumnName="OnHoldRemark" />
-                <ScalarProperty Name="Orderid" ColumnName="Orderid" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetNextAppLogId" FunctionName="ColspModel.Store.GetNextAppLogId" />
-          <FunctionImportMapping FunctionImportName="ReportProductsCommissionForOrder" FunctionName="ColspModel.Store.ReportProductsCommissionForOrder">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.ReportProductsCommissionForOrder_Result">
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="PID" ColumnName="PID" />
-                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
-                <ScalarProperty Name="QTY" ColumnName="QTY" />
-                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
-                <ScalarProperty Name="CommissionRate" ColumnName="CommissionRate" />
-                <ScalarProperty Name="CommissionFee" ColumnName="CommissionFee" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="ReportReturnItemByOrderReport" FunctionName="ColspModel.Store.ReportReturnItemByOrderReport">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.ReportReturnItemByOrderReport_Result">
-                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="Pid" ColumnName="Pid" />
-                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
-                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
-                <ScalarProperty Name="LocalDiscount" ColumnName="LocalDiscount" />
-                <ScalarProperty Name="ReturnPrice" ColumnName="ReturnPrice" />
-                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
-                <ScalarProperty Name="ReturnAmount" ColumnName="ReturnAmount" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <EntitySetMapping Name="ApiLogs">
             <EntityTypeMapping TypeName="ColspModel.ApiLog">
               <MappingFragment StoreEntitySet="ApiLog">
@@ -15718,7 +15687,120 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
             </EndProperty>
           </AssociationSetMapping>
-          </EntityContainerMapping>
+          <FunctionImportMapping FunctionImportName="GetNextAppLogId" FunctionName="ColspModel.Store.GetNextAppLogId" />
+          <FunctionImportMapping FunctionImportName="GetNextAttributeId" FunctionName="ColspModel.Store.GetNextAttributeId" />
+          <FunctionImportMapping FunctionImportName="GetNextAttributeSetId" FunctionName="ColspModel.Store.GetNextAttributeSetId" />
+          <FunctionImportMapping FunctionImportName="GetNextAttributeValueId" FunctionName="ColspModel.Store.GetNextAttributeValueId" />
+          <FunctionImportMapping FunctionImportName="GetNextBrandId" FunctionName="ColspModel.Store.GetNextBrandId" />
+          <FunctionImportMapping FunctionImportName="GetNextCouponId" FunctionName="ColspModel.Store.GetNextCouponId" />
+          <FunctionImportMapping FunctionImportName="GetNextGlobalCategoryId" FunctionName="ColspModel.Store.GetNextGlobalCategoryId" />
+          <FunctionImportMapping FunctionImportName="GetNextLocalCategoryId" FunctionName="ColspModel.Store.GetNextLocalCategoryId" />
+          <FunctionImportMapping FunctionImportName="GetNextNewsletterId" FunctionName="ColspModel.Store.GetNextNewsletterId" />
+          <FunctionImportMapping FunctionImportName="GetNextProductHistoryId" FunctionName="ColspModel.Store.GetNextProductHistoryId" />
+          <FunctionImportMapping FunctionImportName="GetNextProductStageGroupId" FunctionName="ColspModel.Store.GetNextProductStageGroupId" />
+          <FunctionImportMapping FunctionImportName="GetNextProductStageImageId" FunctionName="ColspModel.Store.GetNextProductStageImageId" />
+          <FunctionImportMapping FunctionImportName="GetNextProductStagePid" FunctionName="ColspModel.Store.GetNextProductStagePid" />
+          <FunctionImportMapping FunctionImportName="GetNextProductTempId" FunctionName="ColspModel.Store.GetNextProductTempId" />
+          <FunctionImportMapping FunctionImportName="GetNextShopId" FunctionName="ColspModel.Store.GetNextShopId" />
+          <FunctionImportMapping FunctionImportName="GetNextUserGroupId" FunctionName="ColspModel.Store.GetNextUserGroupId" />
+          <FunctionImportMapping FunctionImportName="GetNextUserId" FunctionName="ColspModel.Store.GetNextUserId" />
+          <FunctionImportMapping FunctionImportName="ItemOnHoldReport" FunctionName="ColspModel.Store.ItemOnHoldReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ItemOnHoldReport_Result1">
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="Itemname" ColumnName="Itemname" />
+                <ScalarProperty Name="OnHoldDate" ColumnName="OnHoldDate" />
+                <ScalarProperty Name="OnHoldRemark" ColumnName="OnHoldRemark" />
+                <ScalarProperty Name="Orderid" ColumnName="Orderid" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportProductsCommissionForOrder" FunctionName="ColspModel.Store.ReportProductsCommissionForOrder">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ReportProductsCommissionForOrder_Result1">
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="CommissionRate" ColumnName="CommissionRate" />
+                <ScalarProperty Name="CommissionFee" ColumnName="CommissionFee" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportReturnItemByOrderReport" FunctionName="ColspModel.Store.ReportReturnItemByOrderReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ReportReturnItemByOrderReport_Result1">
+                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="LocalDiscount" ColumnName="LocalDiscount" />
+                <ScalarProperty Name="ReturnPrice" ColumnName="ReturnPrice" />
+                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
+                <ScalarProperty Name="ReturnAmount" ColumnName="ReturnAmount" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SaleReportForSeller" FunctionName="ColspModel.Store.SaleReportForSeller">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.SaleReportForSeller_Result1">
+                <ScalarProperty Name="OrderDateTime" ColumnName="OrderDateTime" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="TimeOfOrderDate" ColumnName="TimeOfOrderDate" />
+                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="ItemNameEN" ColumnName="ItemNameEN" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="RetailPrice" ColumnName="RetailPrice" />
+                <ScalarProperty Name="LocalDiscount" ColumnName="LocalDiscount" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="GlobalCategoryNameEN" ColumnName="GlobalCategoryNameEN" />
+                <ScalarProperty Name="GlobalCategoryNameTH" ColumnName="GlobalCategoryNameTH" />
+                <ScalarProperty Name="LocalCategoryNameEN" ColumnName="LocalCategoryNameEN" />
+                <ScalarProperty Name="LcalCategoryNameTH" ColumnName="LcalCategoryNameTH" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
+                <ScalarProperty Name="GlobalCatId" ColumnName="GlobalCatId" />
+                <ScalarProperty Name="LocalCatId" ColumnName="LocalCatId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="StockStatusReport" FunctionName="ColspModel.Store.StockStatusReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.StockStatusReport_Result1">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="ProductNameEn" ColumnName="ProductNameEn" />
+                <ScalarProperty Name="ProductNameTh" ColumnName="ProductNameTh" />
+                <ScalarProperty Name="variant1" ColumnName="variant1" />
+                <ScalarProperty Name="variant2" ColumnName="variant2" />
+                <ScalarProperty Name="OnHand" ColumnName="OnHand" />
+                <ScalarProperty Name="Reserve" ColumnName="Reserve" />
+                <ScalarProperty Name="OnHold" ColumnName="OnHold" />
+                <ScalarProperty Name="Defect" ColumnName="Defect" />
+                <ScalarProperty Name="StockAvailable" ColumnName="StockAvailable" />
+                <ScalarProperty Name="FirstReceiveQTY" ColumnName="FirstReceiveQTY" />
+                <ScalarProperty Name="FirstReceiveDate" ColumnName="FirstReceiveDate" />
+                <ScalarProperty Name="SafetyStockAdmin" ColumnName="SafetyStockAdmin" />
+                <ScalarProperty Name="SafetyStockSeller" ColumnName="SafetyStockSeller" />
+                <ScalarProperty Name="LastSoldDate" ColumnName="LastSoldDate" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="AgingDay" ColumnName="AgingDay" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

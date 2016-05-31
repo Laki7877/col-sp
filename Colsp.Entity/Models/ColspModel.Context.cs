@@ -195,6 +195,11 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
     
+        public virtual ObjectResult<Nullable<long>> GetNextAppLogId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextAppLogId");
+        }
+    
         public virtual ObjectResult<Nullable<int>> GetNextAttributeId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextAttributeId");
@@ -245,6 +250,11 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageGroupId");
         }
     
+        public virtual ObjectResult<Nullable<long>> GetNextProductStageImageId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageImageId");
+        }
+    
         public virtual ObjectResult<Nullable<long>> GetNextProductStagePid()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStagePid");
@@ -270,39 +280,29 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
         }
     
-        public virtual ObjectResult<SaleReportForSeller_Result> SaleReportForSeller()
+        public virtual ObjectResult<ItemOnHoldReport_Result1> ItemOnHoldReport()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller_Result>("SaleReportForSeller");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ItemOnHoldReport_Result1>("ItemOnHoldReport");
         }
     
-        public virtual ObjectResult<StockStatusReport_Result> StockStatusReport()
+        public virtual ObjectResult<ReportProductsCommissionForOrder_Result1> ReportProductsCommissionForOrder()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result>("StockStatusReport");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportProductsCommissionForOrder_Result1>("ReportProductsCommissionForOrder");
         }
     
-        public virtual ObjectResult<Nullable<long>> GetNextProductStageImageId()
+        public virtual ObjectResult<ReportReturnItemByOrderReport_Result1> ReportReturnItemByOrderReport()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageImageId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportReturnItemByOrderReport_Result1>("ReportReturnItemByOrderReport");
         }
     
-        public virtual ObjectResult<ItemOnHoldReport_Result> ItemOnHoldReport()
+        public virtual ObjectResult<SaleReportForSeller_Result1> SaleReportForSeller()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ItemOnHoldReport_Result>("ItemOnHoldReport");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller_Result1>("SaleReportForSeller");
         }
     
-        public virtual ObjectResult<Nullable<long>> GetNextAppLogId()
+        public virtual ObjectResult<StockStatusReport_Result1> StockStatusReport()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextAppLogId");
-        }
-    
-        public virtual ObjectResult<ReportProductsCommissionForOrder_Result> ReportProductsCommissionForOrder()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportProductsCommissionForOrder_Result>("ReportProductsCommissionForOrder");
-        }
-    
-        public virtual ObjectResult<ReportReturnItemByOrderReport_Result> ReportReturnItemByOrderReport()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportReturnItemByOrderReport_Result>("ReportReturnItemByOrderReport");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result1>("StockStatusReport");
         }
     }
 }

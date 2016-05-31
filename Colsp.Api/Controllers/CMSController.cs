@@ -16,6 +16,7 @@ using Colsp.Api.Helpers;
 using Colsp.Logic;
 using Colsp.Model;
 using System.Dynamic;
+using System.IO;
 
 namespace Colsp.Api.Controllers
 {
@@ -740,9 +741,70 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                //FileUploadRespond fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.CMS_FOLDER, 1500, 1500, 2000, 2000, 5, true);
-                var fileUpload = 0;
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("In valid content multi-media");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.CMS_FOLDER));
+                try
+                {
+                    await Request.Content.ReadAsMultipartAsync(streamProvider);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Image size exceeded " + 5 + " mb");
+                }
+                #region Validate Image
+                string type = streamProvider.FormData["Type"];
+                ImageRequest fileUpload = null;
+                if ("Logo".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.CMS_FOLDER, 500, 500, 1000, 1000, 5, true);
+                        break;
+                    }
+
+                }
+                else if ("Banner".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.CMS_FOLDER, 1920, 1080, 1920, 1080, 5, false);
+                        break;
+                    }
+                }
+                else if ("SmallBanner".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.CMS_FOLDER, 1600, 900, 1600, 900, 5, false);
+                        break;
+                    }
+                }
+                else
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.CMS_FOLDER, Constant.ImageRatio.IMAGE_RATIO_16_9);
+                        break;
+                    }
+                }
+                #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
+           
             }
             catch (Exception e)
             {

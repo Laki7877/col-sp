@@ -22,11 +22,89 @@ namespace Colsp.Api.Controllers
     public class PromotionController : ApiController
     {
         private ColspEntities db = new ColspEntities();
+        #region Properties
 
+        public class Buy1Get1CallModel
+        {
+            public string id { get; set; }
+            public string promotioncode { get; set; }
+            public DateTime effectivedate { get; set; }
+            public DateTime expireddate { get; set; }
+            public bool status { get; set; }
+            public List<Buyproduct> buyproducts { get; set; }
+            public List<Premiumproduct> premiumproducts { get; set; }
+            public int limitperuser { get; set; }
+            public int limit { get; set; }
+        }
+
+        public class Buyproduct
+        {
+            public string productid { get; set; }
+            public int quantity { get; set; }
+        }
+
+        public class Premiumproduct
+        {
+            public string productid { get; set; }
+            public int quantity { get; set; }
+        }
+
+        #endregion
+        #region API Mongo
+        public async void CallMongoAPI(IQueryable data, string Method, string FunctionName)
+        {
+            /*
+            Test call api    
+            */
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://devmkp-api.cenergy.co.th/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = new HttpResponseMessage();
+                Uri Result;
+                switch (Method)
+                {
+                    case "GET":
+                        // HTTP GET
+                        response = await client.GetAsync(FunctionName);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<IBMPromotionsList>();
+
+                        }
+                        break;
+                    case "POST":
+                        response = await client.PostAsJsonAsync(FunctionName, data);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            Result = response.Headers.Location;
+                        }
+                        break;
+                    case "PUT":
+                        response = await client.PutAsJsonAsync(FunctionName, data);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            Result = response.Headers.Location;
+                        }
+                        break;
+                    case "DELETE":
+                        response = await client.DeleteAsync(FunctionName);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            Result = response.Headers.Location;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        #endregion
 
         [Route("api/Promotion/OntopCreate")]
         [HttpPost]
-        public async Task<HttpResponseMessage> OntopCreate(OnTopCreditCardRequest request)
+        public HttpResponseMessage OntopCreate(OnTopCreditCardRequest request)
         {
             PromotionOnTopCreditCard OnTop = null;
             using (var dbcxtransaction = db.Database.BeginTransaction())
@@ -111,38 +189,7 @@ namespace Colsp.Api.Controllers
                         dbcxtransaction.Commit();
 
 
-                        /*
-                        Test call api    
-                        */
-                        using (var client = new HttpClient())
-                        {
-                            client.BaseAddress = new Uri("https://devmkp-api.cenergy.co.th/");
-                            client.DefaultRequestHeaders.Accept.Clear();
-                            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                            // HTTP GET
-                            HttpResponseMessage response = await client.GetAsync("paymentpromotion");
-                            if (response.IsSuccessStatusCode)
-                            {
-                                var result = await response.Content.ReadAsAsync<IBMPromotionsList>();
-
-                            }
-
-                            //// HTTP POST
-                            //var gizmo = new Product() { Name = "Gizmo", Price = 100, Category = "Widget" };
-                            //response = await client.PostAsJsonAsync("api/products", gizmo);
-                            //if (response.IsSuccessStatusCode)
-                            //{
-                            //    Uri gizmoUrl = response.Headers.Location;
-
-                            //    // HTTP PUT
-                            //    gizmo.Price = 80;   // Update price
-                            //    response = await client.PutAsJsonAsync(gizmoUrl, gizmo);
-
-                            //    // HTTP DELETE
-                            //    response = await client.DeleteAsync(gizmoUrl);
-                            //}
-                        }
                     }
                     else
                     {
@@ -328,6 +375,9 @@ namespace Colsp.Api.Controllers
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
+                    Buy1Get1CallModel callMongoModel = new Buy1Get1CallModel();
+                    List<Buyproduct> buypro = new List<Buyproduct>();
+                    List<Premiumproduct> getpro = new List<Premiumproduct>();
                     try
                     {
                         newObj = new PromotionBuy1Get1Item();
@@ -338,18 +388,30 @@ namespace Colsp.Api.Controllers
                         //Check Pid
                         if (Model.ProductBuyList.Count() > 0)
                         {
-                            foreach (var item in Model.ProductBuyList)
+                            foreach (var itemBuy in Model.ProductBuyList)
                             {
-                                if (IsCanSetProductBuy(item.Pid) == true)
-                                    newObj.PIDBuy = item.Pid;
+                                if (IsCanSetProductBuy(itemBuy.Pid) == true)
+                                {
+                                    Buyproduct proCall = new Buyproduct();
+                                    newObj.PIDBuy = itemBuy.Pid;
+                                    proCall.productid = itemBuy.Pid.ToString();
+                                    proCall.quantity = 1;
+                                    buypro.Add(proCall);
+                                }
                             }
                         }
                         if (Model.ProductGetList.Count() > 0)
                         {
-                            foreach (var item in Model.ProductBuyList)
+                            foreach (var itemGet in Model.ProductGetList)
                             {
-                                if (IsCanSetProductBuy(item.Pid) == true)
-                                    newObj.PIDBuy = item.Pid;
+                                if (IsCanSetProductBuy(itemGet.Pid) == true)
+                                {
+                                    Premiumproduct getCall = new Premiumproduct();
+                                    newObj.PIDGet = itemGet.Pid;
+                                    getCall.productid = itemGet.Pid.ToString();
+                                    getCall.quantity = 1;
+                                    getpro.Add(getCall);
+                                }
                             }
                         }
 
@@ -385,6 +447,11 @@ namespace Colsp.Api.Controllers
                         {
                             dbcxtransaction.Commit();
                             result = newObj.PromotionBuy1Get1ItemId;
+
+                            callMongoModel.buyproducts = buypro;
+                            callMongoModel.effectivedate = (DateTime)Model.EffectiveDate;
+                            callMongoModel.expireddate = (DateTime)Model.ExpiryDate;
+                            
                         }
                         else
                         {
