@@ -50,6 +50,7 @@ namespace Colsp.Entity.Models
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public bool Visibility { get; set; }
+        public bool IsLandingPage { get; set; }
         public Nullable<int> SortById { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }

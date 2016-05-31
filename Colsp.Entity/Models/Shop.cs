@@ -87,6 +87,9 @@ namespace Colsp.Entity.Models
         public string BankAccountNumber { get; set; }
         public string BankAccountName { get; set; }
         public string RemittanceFaxNumber { get; set; }
+        public string ContactPersonFirstName { get; set; }
+        public string ContactPersonLastName { get; set; }
+        public string Email { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
         public System.DateTime CreateOn { get; set; }
