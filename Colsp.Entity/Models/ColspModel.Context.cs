@@ -20,7 +20,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -303,6 +302,31 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<StockStatusReport_Result1> StockStatusReport()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result1>("StockStatusReport");
+        }
+    
+        public virtual ObjectResult<ItemOnHoldReport1_Result> ItemOnHoldReport1()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ItemOnHoldReport1_Result>("ItemOnHoldReport1");
+        }
+    
+        public virtual ObjectResult<ReportProductsCommissionForOrder1_Result> ReportProductsCommissionForOrder1()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportProductsCommissionForOrder1_Result>("ReportProductsCommissionForOrder1");
+        }
+    
+        public virtual ObjectResult<ReportReturnItemByOrderReport1_Result> ReportReturnItemByOrderReport1()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportReturnItemByOrderReport1_Result>("ReportReturnItemByOrderReport1");
+        }
+    
+        public virtual ObjectResult<SaleReportForSeller1_Result> SaleReportForSeller1()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller1_Result>("SaleReportForSeller1");
+        }
+    
+        public virtual ObjectResult<StockStatusReport1_Result> StockStatusReport1()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport1_Result>("StockStatusReport1");
         }
     }
 }
