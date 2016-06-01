@@ -418,6 +418,7 @@ namespace Colsp.Api.Controllers
                         sm.Attribute.VariantStatus,
                         sm.Attribute.AllowHtmlFlag,
                         sm.Attribute.Status,
+                        sm.Attribute.Required,
                         ProductCount = sm.Attribute.ProductStageAttributes.Count,
                         AttributeValueMaps = sm.Attribute.AttributeValueMaps.Select(sv => new
                         {
@@ -465,6 +466,7 @@ namespace Colsp.Api.Controllers
                     attr.VariantStatus = map.Attribute.VariantStatus;
                     attr.AllowHtmlFlag = map.Attribute.AllowHtmlFlag;
                     attr.ProductCount = map.Attribute.ProductCount;
+                    attr.Required = map.Attribute.Required;
                     attr.Status = map.Attribute.Status;
                     if (map.Attribute.AttributeValueMaps != null)
                     {

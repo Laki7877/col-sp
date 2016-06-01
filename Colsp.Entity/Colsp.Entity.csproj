@@ -335,9 +335,6 @@
     <Compile Include="Models\InventoryHistory.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ItemOnHoldReport1_Result.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ItemOnHoldReport_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -551,25 +548,16 @@
     <Compile Include="Models\ReportLog.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ReportProductsCommissionForOrder1_Result.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ReportProductsCommissionForOrder_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ReportProductsCommissionForOrder_Result1.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ReportReturnItemByOrderReport1_Result.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ReportReturnItemByOrderReport_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ReportReturnItemByOrderReport_Result1.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SaleReportForSeller1_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SaleReportForSeller_Result.cs">
@@ -609,9 +597,6 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SortBy.cs">
-      <DependentUpon>ColspModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StockStatusReport1_Result.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StockStatusReport_Result.cs">
