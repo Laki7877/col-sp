@@ -2332,13 +2332,26 @@ namespace Colsp.Api.Controllers
                 && group.BrandId != null)
             {
                 group.InfoFlag = true;
-                var defaultAttr = db.Attributes.Where(w => w.Required && !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) && Constant.STATUS_ACTIVE.Equals(w.Status)).Select(s=>s.AttributeId).ToList();
-                if (defaultAttr != null && defaultAttr.Count > 0)
+                var masterAttrIds = masterVariant.ProductStageAttributes.Where(w => !string.IsNullOrWhiteSpace(w.ValueEn)).Select(s => s.AttributeId);
+                var defaultAttr = db.Attributes.Where(w => w.Required && !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) && w.DefaultAttribute).Select(s=>s.AttributeId);
+                foreach (var id in defaultAttr)
                 {
-                    var defaultIds = masterVariant.ProductStageAttributes.Where(w=>!string.IsNullOrWhiteSpace(w.ValueEn)).Select(s => s.AttributeId);
-                    if (!defaultAttr.Any(a=> defaultIds.Contains(a)))
+                    if (!masterAttrIds.Contains(id))
                     {
                         group.InfoFlag = false;
+                        break;
+                    }
+                }
+                if (group.AttributeSetId.HasValue && group.InfoFlag)
+                {
+                    var masterAttr = db.Attributes.Where(w => w.Required && !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) && w.AttributeSetMaps.Any(a=>a.AttributeSetId == group.AttributeSetId.Value)).Select(s => s.AttributeId);
+                    foreach (var id in masterAttr)
+                    {
+                        if (!masterAttrIds.Contains(id))
+                        {
+                            group.InfoFlag = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -2626,6 +2639,7 @@ namespace Colsp.Api.Controllers
                 #region Instantiate
                 string valueEn = attributeRequest.ValueEn;
                 string valueTh = attributeRequest.ValueTh;
+                string hmtlValue = string.Empty;
                 bool isAttributeValue = false;
                 bool checkboxValue = false;
                 int? attributeValueId = null;
@@ -2688,6 +2702,7 @@ namespace Colsp.Api.Controllers
                             {
                                 AttributeId = attribute.AttributeId,
                                 CheckboxValue = checkboxValue,
+                                HtmlBoxValue = hmtlValue,
                                 ValueEn = valueEn,
                                 ValueTh = valueTh,
                                 Position = position++,
@@ -2701,6 +2716,21 @@ namespace Colsp.Api.Controllers
                         }
                         continue;
                     }
+                }
+                #endregion
+                #region HTML Box
+                else if (Constant.DATA_TYPE_HTML.Equals(attribute.DataType))
+                {
+                    valueEn = string.Concat(
+                            Constant.ATTRIBUTE_VALUE_MAP_PREFIX,
+                            attribute.AttributeId,
+                            Constant.ATTRIBUTE_VALUE_MAP_SURFIX);
+                    valueTh = string.Concat(
+                        Constant.ATTRIBUTE_VALUE_MAP_PREFIX,
+                        attribute.AttributeId,
+                        Constant.ATTRIBUTE_VALUE_MAP_SURFIX);
+                    isAttributeValue = false;
+                    hmtlValue = attributeRequest.ValueEn;
                 }
                 #endregion
                 #region Free text
@@ -2723,6 +2753,7 @@ namespace Colsp.Api.Controllers
                     CheckboxValue = checkboxValue,
                     ValueEn = valueEn,
                     ValueTh = valueTh,
+                    HtmlBoxValue = hmtlValue,
                     Position = position++,
                     IsAttributeValue = isAttributeValue,
                     AttributeValueId = attributeValueId,
@@ -2920,6 +2951,7 @@ namespace Colsp.Api.Controllers
                             sa.ValueTh,
                             sa.AttributeValueId,
                             sa.CheckboxValue,
+                            sa.HtmlBoxValue,
                             sa.Position,
                             sa.IsAttributeValue,
                             Attribute = new
@@ -3148,7 +3180,7 @@ namespace Colsp.Api.Controllers
                         AttributeId = attribute.Attribute.AttributeId,
                         DataType = attribute.Attribute.DataType,
                         AttributeNameEn = attribute.Attribute.AttributeNameEn,
-                        ValueEn = attribute.ValueEn,
+                        ValueEn = Constant.DATA_TYPE_HTML.Equals(attribute.Attribute.DataType) ? attribute.HtmlBoxValue :  attribute.ValueEn,
                         ValueTh = attribute.ValueTh,
                     };
                     if (attribute.AttributeValue != null)
@@ -3288,7 +3320,7 @@ namespace Colsp.Api.Controllers
                             AttributeId = attribute.Attribute.AttributeId,
                             DataType = attribute.Attribute.DataType,
                             AttributeNameEn = attribute.Attribute.AttributeNameEn,
-                            ValueEn = attribute.ValueEn,
+                            ValueEn = Constant.DATA_TYPE_HTML.Equals(attribute.Attribute.DataType) ? attribute.HtmlBoxValue : attribute.ValueEn,
                             ValueTh = attribute.ValueTh,
                         };
                         if (attribute.AttributeValue != null)
@@ -3716,13 +3748,13 @@ namespace Colsp.Api.Controllers
                
                 #endregion
                 #region Attribute
-                //var attribteList = product.ProductAttributes.ToList();
                 foreach (var attribute in stage.ProductStageAttributes)
                 {
                     product.ProductAttributes.Add(new ProductAttribute()
                     {
                         AttributeId = attribute.AttributeId,
                         CheckboxValue = attribute.CheckboxValue,
+                        HtmlBoxValue = attribute.HtmlBoxValue,
                         IsAttributeValue = attribute.IsAttributeValue,
                         Position = attribute.Position,
                         ValueEn = attribute.ValueEn,
@@ -3737,6 +3769,7 @@ namespace Colsp.Api.Controllers
                     {
                         AttributeId = attribute.AttributeId,
                         CheckboxValue = attribute.CheckboxValue,
+                        HtmlBoxValue = attribute.HtmlBoxValue,
                         IsAttributeValue = attribute.IsAttributeValue,
                         AttributeValueId = attribute.AttributeValueId,
                         Position = attribute.Position,
@@ -3747,51 +3780,6 @@ namespace Colsp.Api.Controllers
                         UpdateBy = attribute.UpdateBy,
                         UpdateOn = attribute.UpdateOn,
                     });
-                    //bool isNewAttribute = false;
-                    //if (attribteList == null || attribteList.Count == 0)
-                    //{
-                    //    isNewAttribute = false;
-                    //}
-                    //if (!isNewAttribute)
-                    //{
-                    //    var currentAttribute = attribteList
-                    //        .Where(w => w.Pid.Equals(stage.Pid) && w.AttributeId == attribute.AttributeId && w.ValueEn.Equals(attribute.ValueEn)).SingleOrDefault();
-                    //    if (currentAttribute != null)
-                    //    {
-                    //        attribteList.Remove(currentAttribute);
-                    //    }
-                    //    else
-                    //    {
-                    //        isNewAttribute = true;
-                    //    }
-                    //}
-                    //if (isNewAttribute)
-                    //{
-                    //    product.ProductAttributes.Add(new ProductAttribute()
-                    //    {
-                    //        AttributeId = attribute.AttributeId,
-                    //        CheckboxValue = attribute.CheckboxValue,
-                    //        IsAttributeValue = attribute.IsAttributeValue,
-                    //        Position = attribute.Position,
-                    //        ValueEn = attribute.ValueEn,
-                    //        CreateBy = attribute.CreateBy,
-                    //        CreateOn = attribute.CreateOn,
-                    //        UpdateBy = attribute.UpdateBy,
-                    //        UpdateOn = attribute.UpdateOn,
-                    //    });
-                    //}
-                    //history.ProductHistoryAttributes.Add(new ProductHistoryAttribute()
-                    //{
-                    //    AttributeId = attribute.AttributeId,
-                    //    CheckboxValue = attribute.CheckboxValue,
-                    //    IsAttributeValue = attribute.IsAttributeValue,
-                    //    Position = attribute.Position,
-                    //    ValueEn = attribute.ValueEn,
-                    //    CreateBy = attribute.CreateBy,
-                    //    CreateOn = attribute.CreateOn,
-                    //    UpdateBy = attribute.UpdateBy,
-                    //    UpdateOn = attribute.UpdateOn,
-                    //});
 
                 }
                 //if (attribteList != null && attribteList.Count > 0)
@@ -6102,6 +6090,7 @@ namespace Colsp.Api.Controllers
                                 ss.CheckboxValue,
                                 ss.ValueEn,
                                 ss.ValueTh,
+                                ss.HtmlBoxValue,
                                 Attribute = ss.Attribute == null ? null : new
                                 {
                                     ss.Attribute.AttributeId,
@@ -6189,6 +6178,7 @@ namespace Colsp.Api.Controllers
                                     tmpAttribute.ValueEn = stageAttr.ValueEn;
                                     tmpAttribute.ValueTh = stageAttr.ValueTh;
                                     tmpAttribute.CheckboxValue = stageAttr.CheckboxValue;
+                                    tmpAttribute.HtmlBoxValue = stageAttr.HtmlBoxValue;
                                     if (stageAttr.Attribute != null)
                                     {
                                         tmpAttribute.Attribute = new Entity.Models.Attribute()
@@ -6226,6 +6216,7 @@ namespace Colsp.Api.Controllers
                                     tmpAttribute.ValueEn = stageAttr.ValueEn;
                                     tmpAttribute.ValueTh = stageAttr.ValueTh;
                                     tmpAttribute.CheckboxValue = stageAttr.CheckboxValue;
+                                    tmpAttribute.HtmlBoxValue = stageAttr.HtmlBoxValue;
                                     if (stageAttr.Attribute != null)
                                     {
                                         tmpAttribute.Attribute = new Entity.Models.Attribute()
@@ -6773,8 +6764,11 @@ namespace Colsp.Api.Controllers
                                                     else if(!string.IsNullOrWhiteSpace(masterValue.ValueEn))
                                                     {
                                                         bodyList[desColumn] = string.Concat(masterValue.ValueEn, ";", masterValue.ValueTh);
+                                                        if (Constant.DATA_TYPE_HTML.Equals(masterValue.Attribute.DataType))
+                                                        {
+                                                            bodyList[desColumn] = masterValue.HtmlBoxValue;
+                                                        }
                                                     }
-
                                                 }
                                             }
                                         }
@@ -6813,6 +6807,10 @@ namespace Colsp.Api.Controllers
                                                     else if(!string.IsNullOrWhiteSpace(variantValue.ValueEn))
                                                     {
                                                         bodyList[desColumn] = string.Concat(variantValue.ValueEn, ";", variantValue.ValueTh);
+                                                        if (Constant.DATA_TYPE_HTML.Equals(variantValue.Attribute.DataType))
+                                                        {
+                                                            bodyList[desColumn] = variantValue.HtmlBoxValue;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -6860,6 +6858,10 @@ namespace Colsp.Api.Controllers
                                     else if(!string.IsNullOrWhiteSpace(defaultValue.ValueEn))
                                     {
                                         bodyList[desColumn] = string.Concat(defaultValue.ValueEn, ";", defaultValue.ValueTh);
+                                        if (Constant.DATA_TYPE_HTML.Equals(defaultValue.Attribute.DataType))
+                                        {
+                                            bodyList[desColumn] = defaultValue.HtmlBoxValue;
+                                        }
                                     }
                                 }
                             }
@@ -7710,6 +7712,7 @@ namespace Colsp.Api.Controllers
                                     UpdateBy = tmpAttri.UpdateBy,
                                     UpdateOn = tmpAttri.UpdateOn,
                                     AttributeValueId = tmpAttri.AttributeValueId,
+                                    HtmlBoxValue = tmpAttri.HtmlBoxValue,
                                 });
                             }
                         }
@@ -8071,7 +8074,8 @@ namespace Colsp.Api.Controllers
                                                         IsAttributeValue = tmpAttri.IsAttributeValue,
                                                         Position = tmpAttri.Position,
                                                         UpdateBy = tmpAttri.UpdateBy,
-                                                        UpdateOn = tmpAttri.UpdateOn
+                                                        UpdateOn = tmpAttri.UpdateOn,
+                                                        HtmlBoxValue = tmpAttri.HtmlBoxValue,
                                                     });
                                                 }
                                             }
@@ -8360,7 +8364,7 @@ namespace Colsp.Api.Controllers
                             CreateOn = DateTime.Now,
                             UpdateBy = User.UserRequest().Email,
                             UpdateOn = DateTime.Now,
-                            Visibility = headDic.ContainsKey("ADL") && string.Equals(body[headDic["ADL"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false,
+                            Visibility = headDic.ContainsKey("ADL") && string.Equals(body[headDic["ADL"]],Constant.STATUS_NO, StringComparison.OrdinalIgnoreCase) ? false : true,
                             IsVariant = true,
                             IsMaster = false,
                             FeatureImgUrl = string.Empty,
@@ -8553,6 +8557,12 @@ namespace Colsp.Api.Controllers
                             {
                                 errorMessage.Add("Invalid Sale Price at row " + row);
                             }
+                        }
+                        #endregion
+                        #region Validate Sale Price
+                        if (variant.OriginalPrice < variant.SalePrice)
+                        {
+                            variant.OriginalPrice = variant.SalePrice;
                         }
                         #endregion
                         #region Inventory Amount
@@ -9356,7 +9366,9 @@ namespace Colsp.Api.Controllers
                                         valueTh = spit[1].Trim();
                                     }
                                     int? valueId = null;
+                                    string htmlValue = string.Empty;
                                     bool isValue = false;
+                                    #region List
                                     if (Constant.DATA_TYPE_LIST.Equals(attr.DataType))
                                     {
                                         valueId = attr.AttributeValue.Where(w => w.AttributeValueEn.Equals(valueEn)).Select(s => s.AttributeValueId).FirstOrDefault();
@@ -9368,6 +9380,8 @@ namespace Colsp.Api.Controllers
                                         valueTh = valueEn;
                                         isValue = true;
                                     }
+                                    #endregion
+                                    #region CheckBox
                                     if (Constant.DATA_TYPE_CHECKBOX.Equals(attr.DataType))
                                     {
                                         var tmpValue = valueEn.Split(',');
@@ -9400,12 +9414,25 @@ namespace Colsp.Api.Controllers
                                                     CreateOn = DateTime.Now,
                                                     UpdateBy = User.UserRequest().Email,
                                                     UpdateOn = DateTime.Now,
-
+                                                    HtmlBoxValue = htmlValue,
                                                 });
                                             }
                                         }
                                         continue;
                                     }
+                                    #endregion
+                                    #region HtmlBox
+                                    if (Constant.DATA_TYPE_LIST.Equals(attr.DataType))
+                                    {
+                                        htmlValue = valueEn;
+                                        valueEn = string.Concat(
+                                            Constant.ATTRIBUTE_VALUE_MAP_PREFIX,
+                                            attr.AttributeId,
+                                            Constant.ATTRIBUTE_VALUE_MAP_SURFIX);
+                                        valueTh = valueEn;
+                                        isValue = false;
+                                    }
+                                    #endregion
                                     var tmpMasterVariant = group.ProductStages
                                                     .Where(w => w.IsVariant == false
                                                         && !w.ProductStageAttributes.Any(a => a.AttributeId == attr.AttributeId && a.ValueEn.Equals(valueEn)))
@@ -9415,6 +9442,7 @@ namespace Colsp.Api.Controllers
                                         tmpMasterVariant.ProductStageAttributes.Add(new ProductStageAttribute()
                                         {
                                             AttributeId = attr.AttributeId,
+                                            HtmlBoxValue = htmlValue,
                                             ValueEn = valueEn,
                                             ValueTh = valueTh,
                                             CheckboxValue = false,
@@ -9490,18 +9518,24 @@ namespace Colsp.Api.Controllers
                                             {
                                                 continue;
                                             }
-                                            var spit = valueEn.Split(';');
                                             var valueTh = valueEn;
-                                            if (spit.Count() > 0)
+                                            if (!Constant.DATA_TYPE_HTML.Equals(attr.DataType))
                                             {
-                                                valueEn = spit[0].Trim();
+                                                var spit = valueEn.Split(';');
+
+                                                if (spit.Count() > 0)
+                                                {
+                                                    valueEn = spit[0].Trim();
+                                                }
+                                                if (spit.Count() > 1)
+                                                {
+                                                    valueTh = spit[1].Trim();
+                                                }
                                             }
-                                            if (spit.Count() > 1)
-                                            {
-                                                valueTh = spit[1].Trim();
-                                            }
+                                            string htmlValue = string.Empty;
                                             int? valueId = null;
                                             bool isValue = false;
+                                            #region List
                                             if (Constant.DATA_TYPE_LIST.Equals(attr.DataType))
                                             {
                                                 valueId = attr.AttributeValue.Where(w => w.AttributeValueEn.Equals(valueEn)).Select(s => s.AttributeValueId).FirstOrDefault();
@@ -9510,9 +9544,11 @@ namespace Colsp.Api.Controllers
                                                     throw new Exception("Invalid attribute value " + valueEn + " in attribute " + attr.AttributeNameEn);
                                                 }
                                                 valueEn = string.Concat("((", valueId, "))");
-                                                valueTh = string.Concat("((", valueId, "))");
+                                                valueTh = valueEn;
                                                 isValue = true;
                                             }
+                                            #endregion
+                                            #region CheckBox
                                             if (Constant.DATA_TYPE_CHECKBOX.Equals(attr.DataType))
                                             {
                                                 var tmpValue = valueEn.Split(',');
@@ -9554,13 +9590,23 @@ namespace Colsp.Api.Controllers
                                                                 CreateOn = DateTime.Now,
                                                                 UpdateBy = User.UserRequest().Email,
                                                                 UpdateOn = DateTime.Now,
+                                                                HtmlBoxValue = htmlValue,
                                                             });
                                                         }
                                                     }
                                                 }
                                                 continue;
                                             }
-
+                                            #endregion
+                                            #region HtmlBox
+                                            if (Constant.DATA_TYPE_HTML.Equals(attr.DataType))
+                                            {
+                                                htmlValue = valueEn;
+                                                valueEn = string.Concat("((", attr.AttributeId, "))");
+                                                valueTh = valueEn;
+                                                isValue = false;
+                                            }
+                                            #endregion
                                             if (string.Equals(attr.AttributeNameEn, variant1, StringComparison.OrdinalIgnoreCase))
                                             {
                                                 if (!attr.VariantStatus && Constant.DATA_TYPE_STRING.Equals(attr.AttributeNameEn))
@@ -9582,10 +9628,10 @@ namespace Colsp.Api.Controllers
                                                         CreateOn = DateTime.Now,
                                                         UpdateBy = User.UserRequest().Email,
                                                         UpdateOn = DateTime.Now,
+                                                        HtmlBoxValue = htmlValue,
                                                     });
                                                 }
                                             }
-
                                             else if (string.Equals(attr.AttributeNameEn, variant2, StringComparison.OrdinalIgnoreCase))
                                             {
                                                 if (!attr.VariantStatus && Constant.DATA_TYPE_STRING.Equals(attr.AttributeNameEn))
@@ -9607,6 +9653,7 @@ namespace Colsp.Api.Controllers
                                                         CreateOn = DateTime.Now,
                                                         UpdateBy = User.UserRequest().Email,
                                                         UpdateOn = DateTime.Now,
+                                                        HtmlBoxValue = htmlValue,
                                                     });
                                                 }
                                             }
@@ -9630,6 +9677,7 @@ namespace Colsp.Api.Controllers
                                                         CreateOn = DateTime.Now,
                                                         UpdateBy = User.UserRequest().Email,
                                                         UpdateOn = DateTime.Now,
+                                                        HtmlBoxValue = htmlValue,
                                                     });
                                                 }
                                             }
@@ -9646,9 +9694,7 @@ namespace Colsp.Api.Controllers
                         #region Validate Attribute
                         if (variant.ProductStageAttributes != null && variant.ProductStageAttributes.Count > 0)
                         {
-
                             var productAttribute = group.ProductStages.Select(s => s.ProductStageAttributes);
-
                             foreach (var v in productAttribute)
                             {
                                 if (variant.ProductStageAttributes

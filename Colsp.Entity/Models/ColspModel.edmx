@@ -1838,6 +1838,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="ValueEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="ValueTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="HtmlBoxValue" Type="ntext" Nullable="false" />
           <Property Name="AttributeValueId" Type="int" />
           <Property Name="CheckboxValue" Type="bit" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
@@ -1960,6 +1961,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="ValueEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="ValueTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="HtmlBoxValue" Type="ntext" Nullable="false" />
           <Property Name="AttributeValueId" Type="int" />
           <Property Name="CheckboxValue" Type="bit" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
@@ -2290,6 +2292,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="ValueEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="ValueTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="HtmlBoxValue" Type="ntext" Nullable="false" />
           <Property Name="AttributeValueId" Type="int" />
           <Property Name="CheckboxValue" Type="bit" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
@@ -7130,7 +7133,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shipping" EntitySet="Shippings" />
             <End Role="ShopGroup" EntitySet="ShopGroups" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <ComplexType Name="SaleReportForSeller_Result">
           <Property Type="DateTime" Name="OrderDateTime" Nullable="true" Precision="23" />
           <Property Type="String" Name="OrderDate" Nullable="true" MaxLength="10" />
@@ -8678,6 +8681,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HtmlBoxValue" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueId" Type="Int32" />
           <Property Name="CheckboxValue" Type="Boolean" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
@@ -8808,6 +8812,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HtmlBoxValue" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueId" Type="Int32" />
           <Property Name="CheckboxValue" Type="Boolean" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
@@ -9183,6 +9188,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HtmlBoxValue" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueId" Type="Int32" />
           <Property Name="CheckboxValue" Type="Boolean" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
@@ -14046,6 +14052,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="CheckboxValue" ColumnName="CheckboxValue" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
+                <ScalarProperty Name="HtmlBoxValue" ColumnName="HtmlBoxValue" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
@@ -14165,6 +14172,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="CheckboxValue" ColumnName="CheckboxValue" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
+                <ScalarProperty Name="HtmlBoxValue" ColumnName="HtmlBoxValue" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
@@ -14494,6 +14502,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="CheckboxValue" ColumnName="CheckboxValue" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
+                <ScalarProperty Name="HtmlBoxValue" ColumnName="HtmlBoxValue" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
@@ -15800,7 +15809,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
             </EndProperty>
           </AssociationSetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
