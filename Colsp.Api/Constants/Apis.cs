@@ -7,7 +7,8 @@ namespace Colsp.Api.Constants
 {
     public class Apis
     {
-        public const string CmosRootUrl = "http://devcmos-api.cenergy.co.th/";
+        private const string CmosRootUrl = "http://devcmos-api.cenergy.co.th/";
+        private const string ElasticRootUrl = "http://128.199.77.82/elasticsearch/api/v0.2.0/";
 
 
         public const string CmosKeyAppIdKey         = "X-Cmos-AppId";
@@ -22,6 +23,8 @@ namespace Colsp.Api.Constants
         public const string SellerUpdateStock       = CmosRootUrl + "api/seller/product/updatestock";
         public const string SellerUpdateStatus      = CmosRootUrl + "api/seller/product/updatestatus";
         public const string SellerCreateShop        = CmosRootUrl + "api/seller/shop/info";
+
+        public const string ElasticCreateProduct    = ElasticRootUrl + "reindex/single/insert";
 
 
 

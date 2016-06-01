@@ -6,6 +6,10 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+
+        public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 4 };
+        public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 4 };
+
         public static readonly int DEFAULT_GLOBAL_CATEGORY = 1;
 
         public static readonly string IMAGE_STATIC_URL = ConfigurationManager.AppSettings["ImageStaticUrl"];

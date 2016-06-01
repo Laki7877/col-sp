@@ -6,12 +6,18 @@
         public string SearchText { get; set; }
         public int Quantity { get; set; }
         public int UpdateQuantity { get; set; }
+        public int StockAdjustQty { get; set; }
+        public int HoldAdjustQty { get; set; }
+        public int DefectAdjustQty { get; set; }
+        public int ReserveAdjustQty { get; set; }
+        public string Remark { get; set; }
 
         public InventoryRequest()
         {
             Pid = string.Empty;
             SearchText = string.Empty;
             Quantity = 0;
+            Remark = string.Empty;
         }
 
         public override void DefaultOnNull()

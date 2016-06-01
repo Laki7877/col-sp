@@ -295,6 +295,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                #region Query
                 var inv = db.Inventories.Where(w=> w.Pid.Equals(pid) 
                     && !Constant.STATUS_REMOVE.Equals(w.ProductStage.Status))
                     .Select(s => new
@@ -304,7 +305,9 @@ namespace Colsp.Api.Controllers
                         s.ProductStage.ProductStageGroup.ShippingId
                     })
                     .SingleOrDefault();
-                if(inv == null)
+                #endregion
+                #region Validation
+                if (inv == null)
                 {
                     throw new Exception("Cannot find inventory");
                 }
@@ -312,6 +315,8 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot update inventory with COL Fulfillment or 3PL Fulfillment");
                 }
+                #endregion
+                #region Setup
                 Inventory inventory = new Inventory()
                 {
                     Pid = inv.Pid
@@ -321,11 +326,62 @@ namespace Colsp.Api.Controllers
                 inventory.Quantity = inv.Quantity + request.UpdateQuantity;
                 db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Inventory");
+                #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, inv.Quantity);
             }
             catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Inventories/Cmos/{pid}")]
+        [HttpPut]
+        [OverrideAuthentication, OverrideAuthorization]
+        public HttpResponseMessage SaveChangeInventoriesCmos(string pid, InventoryRequest request)
+        {
+            try
+            {
+                #region Query
+                var inv = db.Inventories.Where(w => w.Pid.Equals(pid))
+                    .Select(s => new
+                    {
+                        s.Pid,
+                        s.Quantity,
+                        s.Defect,
+                        s.Reserve,
+                        s.OnHold,
+                    })
+                    .SingleOrDefault();
+                #endregion
+                #region Validation
+                if (inv == null)
+                {
+                    throw new Exception("Cannot find inventory");
+                }
+                #endregion
+                #region Setup
+                Inventory inventory = new Inventory()
+                {
+                    Pid = inv.Pid
+                };
+                db.Inventories.Attach(inventory);
+                db.Entry(inventory).Property(p => p.Quantity).IsModified = true;
+                db.Entry(inventory).Property(p => p.Defect).IsModified = true;
+                db.Entry(inventory).Property(p => p.Reserve).IsModified = true;
+                db.Entry(inventory).Property(p => p.OnHold).IsModified = true;
+                inventory.Quantity = inv.Quantity + request.StockAdjustQty;
+                inventory.Defect = inv.Defect + request.DefectAdjustQty;
+                inventory.Reserve = inv.Reserve + request.ReserveAdjustQty;
+                inventory.OnHold = inv.OnHold + request.HoldAdjustQty;
+                db.Configuration.ValidateOnSaveEnabled = false;
+                Util.DeadlockRetry(db.SaveChanges, "Inventory");
+                #endregion
+                return Request.CreateResponse(HttpStatusCode.OK,"Successful");
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
             }
         }
 
@@ -336,11 +392,6 @@ namespace Colsp.Api.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private bool InventoryExists(string id)
-        {
-            return db.Inventories.Count(e => e.Pid == id) > 0;
         }
     }
 }
