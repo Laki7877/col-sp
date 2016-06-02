@@ -55,6 +55,13 @@ namespace Colsp.Api.Controllers
                     }),
                     s.VisibleTo
                 });
+                foreach (var item in attribute)
+                {
+                    if (item.AttributeId == 1) {
+                        
+                    }
+
+                }
                 return Request.CreateResponse(HttpStatusCode.OK, attribute);
             }
             catch (Exception e)

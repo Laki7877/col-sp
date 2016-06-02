@@ -305,7 +305,7 @@ namespace Colsp.Api.Controllers
 
                     else
                         query = query.Where(x => x.LocalCatId == condition.CategoryId);
-                
+
                 if (condition.BrandId != null)
                     query = query.Where(x => x.BrandId == condition.BrandId);
 
@@ -487,6 +487,12 @@ namespace Colsp.Api.Controllers
             try
             {
                 request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = User.UserRequest().Email;
+                if (!string.IsNullOrWhiteSpace(request.CreateIP))
+                    request.CreateIP = request.CreateIP;
+                else
+                    request.CreateIP = "";
+                request.ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
 
                 var success = cmsLogic.AddCMSCategory(request);
                 if (!success)
@@ -668,57 +674,58 @@ namespace Colsp.Api.Controllers
                             where master.CMSMasterId == cmsMasterId
                             select new CMSMasterRequest
                             {
-                                CMSMasterId                 = master.CMSMasterId,
-                                CMSMasterNameEN             = master.CMSMasterNameEN,
-                                CMSMasterNameTH             = master.CMSMasterNameTH,
-                                CMSMasterType               = master.CMSMasterType,
-                                CMSMasterURLKey             = master.CMSMasterURLKey,
-                                EffectiveDate               = master.CMSMasterEffectiveDate,
-                                ExpiryDate                  = master.CMSMasterExpireDate,
-                                LongDescriptionEN           = master.LongDescriptionEN,
-                                LongDescriptionTH           = master.LongDescriptionTH,
-                                ShortDescriptionEN          = master.ShortDescriptionEN,
-                                ShortDescriptionTH          = master.ShortDescriptionTH,
-                                MobileLongDescriptionEN     = master.MobileLongDescriptionEN,
-                                MobileLongDescriptionTH     = master.MobileLongDescriptionTH,
-                                MobileShortDescriptionEN    = master.MobileShortDescriptionEN,
-                                MobileShortDescriptionTH    = master.MobileShortDescriptionTH,
-                                Status                      = master.Status,
-                                Visibility                  = master.Visibility,
-                                ISCampaign                  = master.IsCampaign,
-                                FeatureTitle                = master.FeatureTitle,
-                                TitleShowcase               = master.TitleShowcase,
+                                CMSMasterId = master.CMSMasterId,
+                                CMSMasterNameEN = master.CMSMasterNameEN,
+                                CMSMasterNameTH = master.CMSMasterNameTH,
+                                CMSMasterType = master.CMSMasterType,
+                                CMSMasterURLKey = master.CMSMasterURLKey,
+                                EffectiveDate = master.CMSMasterEffectiveDate,
+                                ExpiryDate = master.CMSMasterExpireDate,
+                                LongDescriptionEN = master.LongDescriptionEN,
+                                LongDescriptionTH = master.LongDescriptionTH,
+                                ShortDescriptionEN = master.ShortDescriptionEN,
+                                ShortDescriptionTH = master.ShortDescriptionTH,
+                                MobileLongDescriptionEN = master.MobileLongDescriptionEN,
+                                MobileLongDescriptionTH = master.MobileLongDescriptionTH,
+                                MobileShortDescriptionEN = master.MobileShortDescriptionEN,
+                                MobileShortDescriptionTH = master.MobileShortDescriptionTH,
+                                Status = master.Status,
+                                Visibility = master.Visibility,
+                                ISCampaign = master.IsCampaign,
+                                FeatureTitle = master.FeatureTitle,
+                                TitleShowcase = master.TitleShowcase,
 
-                                FeatureProductList          = (from feature in db.CMSFeatureProducts
-                                                              where feature.CMSMasterId == cmsMasterId
-                                                              select new CMSFeatureProductRequest {
-                                                                  CMSMasterId = feature.CMSMasterId,
-                                                                  ProductId = feature.ProductId
-                                                              }).ToList(),
+                                FeatureProductList = (from feature in db.CMSFeatureProducts
+                                                      where feature.CMSMasterId == cmsMasterId
+                                                      select new CMSFeatureProductRequest
+                                                      {
+                                                          CMSMasterId = feature.CMSMasterId,
+                                                          ProductId = feature.ProductId
+                                                      }).ToList(),
 
-                                ScheduleList                = (from schedule in db.CMSSchedulers
-                                                                where schedule.CMSSchedulerId == masterScheduleMap.CMSSchedulerId
-                                                                select new CMSSchedulerRequest
-                                                                {
-                                                                    CMSSchedulerId = schedule.CMSSchedulerId,
-                                                                    CMSMasterId = master.CMSMasterId,
-                                                                    EffectiveDate = schedule.EffectiveDate,
-                                                                    ExpiryDate = schedule.ExpireDate
-                                                                }).ToList(),
+                                ScheduleList = (from schedule in db.CMSSchedulers
+                                                where schedule.CMSSchedulerId == masterScheduleMap.CMSSchedulerId
+                                                select new CMSSchedulerRequest
+                                                {
+                                                    CMSSchedulerId = schedule.CMSSchedulerId,
+                                                    CMSMasterId = master.CMSMasterId,
+                                                    EffectiveDate = schedule.EffectiveDate,
+                                                    ExpiryDate = schedule.ExpireDate
+                                                }).ToList(),
 
-                                CategoryList                = (from cate in db.CMSCategories
-                                                                join masterCate in db.CMSMasterCategoryMaps 
-                                                                on cate.CMSCategoryId equals masterCate.CMSCategoryId 
-                                                                where masterCate.CMSMasterId == cmsMasterId 
-                                                                select new CMSCategoryRequest
-                                                                {
-                                                                    CMSCategoryId = cate.CMSCategoryId,
-                                                                    CMSCategoryNameEN = cate.CMSCategoryNameEN,
-                                                                    CMSCategoryNameTH = cate.CMSCategoryNameTH,
-                                                                    Visibility = cate.Visibility,
-                                                                    Status = cate.Status,
-                                                                    Total = (from pm in db.CMSCategoryProductMaps where pm.CMSCategoryId == cate.CMSCategoryId select pm).Count()
-                                                                }).ToList()
+                                CategoryList = (from cate in db.CMSCategories
+                                                join masterCate in db.CMSMasterCategoryMaps
+                                                on cate.CMSCategoryId equals masterCate.CMSCategoryId
+                                                where masterCate.CMSMasterId == cmsMasterId
+                                                select new CMSCategoryRequest
+                                                {
+                                                    CMSCategoryId = cate.CMSCategoryId,
+                                                    CMSCategoryNameEN = cate.CMSCategoryNameEN,
+                                                    CMSCategoryNameTH = cate.CMSCategoryNameTH,
+                                                    Visibility = cate.Visibility,
+                                                    Status = cate.Status,
+                                                    Total = (from pm in db.CMSCategoryProductMaps where pm.CMSCategoryId == cate.CMSCategoryId select pm).Count()
+                                                }).ToList()
                             };
 
                 if (!query.Any())
@@ -804,7 +811,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
-           
+
             }
             catch (Exception e)
             {
@@ -820,11 +827,11 @@ namespace Colsp.Api.Controllers
             try
             {
                 var ShopId = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
-                var Email  = this.User.UserRequest().Email;
+                var Email = this.User.UserRequest().Email;
 
-                request.Status      = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
-                request.CreateBy    = Email;
-                
+                request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = Email;
+
                 var success = cmsLogic.AddCMSMaster(request);
 
                 if (!success)
@@ -847,8 +854,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var ShopId  = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
-                var Email   = this.User.UserRequest().Email;
+                var ShopId = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
+                var Email = this.User.UserRequest().Email;
 
                 var success = cmsLogic.EditCMSMaster(request, ShopId, Email);
                 if (!success)
@@ -1109,7 +1116,7 @@ namespace Colsp.Api.Controllers
                     item.CMSMasterNameTH = m.CMSMasterNameTH;
                     //item.Status                 = m.CMSMasterStatusId;
                     item.CMSMasterEffectiveDate = m.CMSMasterEffectiveDate;
-                    item.CMSMasterExpireDate    = m.CMSMasterExpireDate;
+                    item.CMSMasterExpireDate = m.CMSMasterExpireDate;
                     masters.Add(item);
                 }
 
@@ -1133,6 +1140,19 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = User.UserRequest().Email;
+                if (!string.IsNullOrWhiteSpace(request.CreateIP))
+                    request.CreateIP = request.CreateIP;
+                else
+                    request.CreateIP = "";
+
+                if (User.ShopRequest() == null)
+                    request.ShopId = 0;
+                else
+                    request.ShopId = User.ShopRequest().ShopId;
+
+
                 var success = cmsLogic.AddCMSGroup(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
@@ -1156,6 +1176,19 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                //request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = User.UserRequest().Email;
+                if (!string.IsNullOrWhiteSpace(request.CreateIP))
+                    request.CreateIP = request.CreateIP;
+                else
+                    request.CreateIP = "";
+
+                if (User.ShopRequest() == null)
+                    request.ShopId = 0;
+                else
+                    request.ShopId = User.ShopRequest().ShopId;
+
+
                 var success = cmsLogic.EditCMSGroup(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
@@ -1217,6 +1250,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+
                 var success = cmsLogic.DeleteCMSGroup(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");

@@ -13,6 +13,7 @@ namespace Colsp.Entity.Models
     
     public partial class ReportProductsCommissionForOrder_Result
     {
+        public Nullable<System.DateTime> OrderDate { get; set; }
         public string OrderId { get; set; }
         public string PID { get; set; }
         public string ProductName { get; set; }
@@ -20,5 +21,6 @@ namespace Colsp.Entity.Models
         public Nullable<decimal> SalePrice { get; set; }
         public int CommissionRate { get; set; }
         public int CommissionFee { get; set; }
+        public int ShopId { get; set; }
     }
 }

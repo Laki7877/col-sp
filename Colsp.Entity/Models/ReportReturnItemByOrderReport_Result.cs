@@ -24,5 +24,6 @@ namespace Colsp.Entity.Models
         public int ReturnPrice { get; set; }
         public int ReturnFee { get; set; }
         public int ReturnAmount { get; set; }
+        public int ShopId { get; set; }
     }
 }
