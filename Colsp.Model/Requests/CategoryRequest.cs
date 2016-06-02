@@ -34,6 +34,9 @@ namespace Colsp.Model.Requests
         public bool BannerStatusTh { get; set; }
         public bool FeatureProductStatus { get; set; }
         public SortByRequest SortBy { get; set; }
+
+        // Exclude in Local categories for Coupon
+        public List<ProductRequest> Exclude { get; set; }
         public List<string> Include { get; set; }
         public List<string> Exclude { get; set; }
         public bool IsLandingPage { get; set; }
@@ -65,6 +68,7 @@ namespace Colsp.Model.Requests
             DescriptionMobileEn = string.Empty;
             DescriptionMobileTh = string.Empty;
             SortBy = new SortByRequest();
+            Exclude = new List<ProductRequest>();
             Include = new List<string>();
             Exclude = new List<string>();
             IsLandingPage = false;

@@ -162,7 +162,7 @@ namespace Colsp.Api.Constants
         public static readonly string CMS_STATUS_JUNK               = "JU";
         public static readonly string CMS_STATUS_APPROVE            = "AP";
         public static readonly string CMS_STATUS_NOT_APPROVE        = "RJ";
-        public static readonly string CMS_STATUS_REMOVE             = "RJ";
+        public static readonly string CMS_STATUS_REMOVE             = "RM";
 
 
 
