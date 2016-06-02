@@ -140,7 +140,7 @@ namespace Colsp.Api.Controllers
                 if(User.ShopRequest() != null)
                 {
                     var shopId = User.ShopRequest().ShopId;
-                    couponList = couponList.Where(w => w.ShopId == shopId);
+                    couponList = couponList.Where(w => w.ShopId == shopId && w.CouponId == couponId);
                 }
                 var c = couponList.ToList();
                 if(c == null || c.Count == 0)

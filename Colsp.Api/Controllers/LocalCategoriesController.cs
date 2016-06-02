@@ -33,14 +33,16 @@ namespace Colsp.Api.Controllers
                 int shopId = 0;
                 if (request == null)
                 {
-                    if(User.ShopRequest() != null)
+                    if (User.ShopRequest() != null)
                     {
                         shopId = User.ShopRequest().ShopId;
+                    }
                 }
                 else
                 {
                     shopId = request.ShopId;
                 }
+
                 var localCat = (from cat in db.LocalCategories
                                 where cat.ShopId == shopId
                                 select new
@@ -63,6 +65,7 @@ namespace Colsp.Api.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotAcceptable, e.Message);
             }
+            
         }
 
         [Route("api/LocalCategories/{categoryId}/ProductStages")]
