@@ -94,6 +94,7 @@ namespace Colsp.Logic
                     cmsCategory.CreateBy            = request.CreateBy;
                     cmsCategory.CreateOn            = dateNow;
                     cmsCategory.CreateIP            = request.CreateIP;
+                    cmsCategory.UpdateBy            = "";
                     db.CMSCategories.Add(cmsCategory);
                     db.SaveChanges();
 
@@ -105,15 +106,17 @@ namespace Colsp.Logic
                         foreach (var product in request.CategoryProductList)
                         {
                             CMSCategoryProductMap cmsCategoryProduct    = new CMSCategoryProductMap();
+                            cmsCategoryProduct.ShopId                   = request.ShopId;
                             cmsCategoryProduct.CMSCategoryId            = cmsCategoryId.Value;
                             cmsCategoryProduct.CMSCategoryProductMapId  = product.CMSCategoryProductMapId;
                             cmsCategoryProduct.Status                   = product.Status;
                             cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
                             cmsCategoryProduct.Pid                      = product.Pid;
                             cmsCategoryProduct.Sequence                 = product.Sequence;
-                            cmsCategoryProduct.CreateBy                 = product.CreateBy;
+                            cmsCategoryProduct.CreateBy                 = request.CreateBy;
                             cmsCategoryProduct.CreateOn                 = dateNow;
-                            cmsCategoryProduct.CreateIP                 = product.CreateIP;
+                            cmsCategoryProduct.CreateIP                 = request.CreateIP;
+                            cmsCategoryProduct.UpdateBy                 = "";
 
                             db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
                         }
@@ -173,15 +176,16 @@ namespace Colsp.Logic
                         foreach (var product in request.CategoryProductList)
                         {
                             CMSCategoryProductMap cmsCategoryProduct    = new CMSCategoryProductMap();
+                            cmsCategoryProduct.ShopId                   = request.ShopId;
                             cmsCategoryProduct.CMSCategoryId            = cmsCategory.CMSCategoryId;
                             cmsCategoryProduct.CMSCategoryProductMapId  = product.CMSCategoryProductMapId;
-                            cmsCategoryProduct.Status                   = product.Status;
+                            cmsCategoryProduct.Status                   = "AT";
                             cmsCategoryProduct.ProductBoxBadge          = product.ProductBoxBadge;
                             cmsCategoryProduct.Pid                      = product.Pid;
                             cmsCategoryProduct.Sequence                 = product.Sequence;
-                            cmsCategoryProduct.CreateBy                 = product.CreateBy;
+                            cmsCategoryProduct.CreateBy                 = request.CreateBy;
                             cmsCategoryProduct.CreateOn                 = dateNow;
-                            cmsCategoryProduct.CreateIP                 = product.CreateIP;
+                            cmsCategoryProduct.CreateIP                 = request.CreateIP;
 
                             db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
                         }

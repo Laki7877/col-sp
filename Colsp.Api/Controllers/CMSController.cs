@@ -186,7 +186,7 @@ namespace Colsp.Api.Controllers
                 if (!query.Any())
                     return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
 
-                var items = query.ToList();
+                var items = query.ToList().GroupBy(g => g.BrandId).Select(s => s.First()).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, items);
 
             }
@@ -487,6 +487,10 @@ namespace Colsp.Api.Controllers
             try
             {
                 request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = this.User.UserRequest().Email;
+                request.UpdateBy = "";
+                request.CreateIP = "";
+                request.ShopId = this.User.ShopRequest() == null ? 0 : this.User.ShopRequest().ShopId;
 
                 var success = cmsLogic.AddCMSCategory(request);
                 if (!success)
@@ -509,6 +513,9 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                request.UpdateBy = this.User.UserRequest().Email;
+                request.ShopId = this.User.ShopRequest() == null ? 0 : this.User.ShopRequest().ShopId;
+
                 var success = cmsLogic.EditCMSCategory(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
