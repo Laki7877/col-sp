@@ -410,7 +410,7 @@ namespace Colsp.Logic
                                 cmsMasterCate.CMSMasterId = masterId;
                                 cmsMasterCate.Sequence = masterCateRq.Sequence;
                                 cmsMasterCate.ShopId = masterCateRq.ShopId;
-                                cmsMasterCate.Status = masterCateRq.Status;
+                                cmsMasterCate.Status = "AT";
                                 cmsMasterCate.CreateBy = request.CreateBy;
                                 cmsMasterCate.CreateOn = dateNow;
                                 cmsMasterCate.CreateIP = request.CreateIP;
