@@ -33,12 +33,15 @@ namespace Colsp.Api.ByOneGetOneFunction
                         newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
                         newObj.LongDescriptionEN = Model.LongDescriptionEN;
                         newObj.EffectiveDate = Model.EffectiveDate;
-                        newObj.EffectiveTime = Model.EffectiveTime;
+                       
                         newObj.ExpiryDate = Model.ExpiryDate;
-                        newObj.ExpiryTime = Model.ExpiryTime;
+                   
                         newObj.ProductBoxBadge = Model.ProductBoxBadge;
                         newObj.Sequence = Model.Sequence;
-                        newObj.Status = Model.Status;
+                        if (Model.Status == 1)
+                            newObj.Status = true;
+                        else
+                            newObj.Status = false;
                         newObj.CreateBy = Model.CreateBy;
                         newObj.CreateOn = (DateTime)DateTime.Now;
                         newObj.UpdateBy = Model.UpdateBy;
@@ -98,12 +101,15 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.ShortDescriptionEN           = Model.ShortDescriptionEN != default(string) ? Model.ShortDescriptionEN : newObj.ShortDescriptionEN;
                             newObj.LongDescriptionEN            = Model.LongDescriptionEN != default(string) ? Model.LongDescriptionEN : newObj.LongDescriptionEN;
                             newObj.EffectiveDate                = Model.EffectiveDate ?? newObj.EffectiveDate;
-                            newObj.EffectiveTime                = Model.EffectiveTime ?? newObj.EffectiveTime;
+                           
                             newObj.ExpiryDate                   = Model.ExpiryDate ?? newObj.ExpiryDate;
-                            newObj.ExpiryTime                   = Model.ExpiryTime ?? newObj.ExpiryTime;
+                    
                             newObj.ProductBoxBadge              = Model.ProductBoxBadge != default(string) ? Model.ProductBoxBadge : newObj.ProductBoxBadge;
                             newObj.Sequence                     = Model.Sequence ?? newObj.Sequence;
-                            newObj.Status                       = Model.Status ?? newObj.Status;
+                            if (Model.Status == 1)
+                                newObj.Status = true;
+                            else
+                                newObj.Status = false;
                             newObj.CreateBy                     = Model.CreateBy ?? newObj.CreateBy;
                             newObj.CreateOn                   = Model.CreateOn != null ? (DateTime)Model.CreateOn : newObj.CreateOn ;
                             newObj.UpdateBy                     = Model.UpdateBy ?? newObj.UpdateBy;
@@ -158,12 +164,15 @@ namespace Colsp.Api.ByOneGetOneFunction
                             newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
                             newObj.LongDescriptionEN = Model.LongDescriptionEN;
                             newObj.EffectiveDate = Model.EffectiveDate;
-                            newObj.EffectiveTime = Model.EffectiveTime;
+                           
                             newObj.ExpiryDate = Model.ExpiryDate;
-                            newObj.ExpiryTime = Model.ExpiryTime;
+                         
                             newObj.ProductBoxBadge = Model.ProductBoxBadge;
                             newObj.Sequence = Model.Sequence;
-                            newObj.Status = Model.Status;
+                            if (Model.Status == 1)
+                                newObj.Status = true;
+                            else
+                                newObj.Status = false;
                             newObj.CreateBy = Model.CreateBy;
                             newObj.CreateOn = Model.CreateOn != null ? (DateTime)Model.CreateOn : newObj.CreateOn;
                             newObj.UpdateBy = Model.UpdateBy;

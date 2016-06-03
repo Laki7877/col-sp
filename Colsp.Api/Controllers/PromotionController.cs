@@ -17,6 +17,8 @@ using System.Data.SqlClient;
 using Colsp.Api.Filters;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Text;
+
 namespace Colsp.Api.Controllers
 {
     public class PromotionController : ApiController
@@ -49,9 +51,44 @@ namespace Colsp.Api.Controllers
             public int quantity { get; set; }
         }
 
+
+
+        public class Buy1Get1ReturnModel
+        {
+            public Premium premium { get; set; }
+            public string returncode { get; set; }
+            public string message { get; set; }
+        }
+
+        public class Premium
+        {
+            public string id { get; set; }
+            public string promotioncode { get; set; }
+            public DateTime effectivedate { get; set; }
+            public DateTime expireddate { get; set; }
+            public bool status { get; set; }
+            public List<Buyproduct> buyproduct { get; set; }
+            public List<Premiumproduct> premiumproduct { get; set; }
+            public int limitperuser { get; set; }
+            public int limit { get; set; }
+        }
+
+
+        public class SearchBuy1Get1ItemRequest : PaginatedRequest
+        {
+            public string SearchText { get; set; }
+        }
+
+        public class Buy1Get1ReturnMongo
+        {
+            public string _status { get; set; }
+            public string _Id { get; set; }
+            public string _message { get; set; }
+        }
+
         #endregion
         #region API Mongo
-        public async void CallMongoAPI(IQueryable data, string Method, string FunctionName)
+        static async void CallMongoAPI(Buy1Get1CallModel data, string Id, string Method, string FunctionName, Buy1Get1ReturnModel mongoRetrun)
         {
             /*
             Test call api    
@@ -59,10 +96,12 @@ namespace Colsp.Api.Controllers
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://devmkp-api.cenergy.co.th/");
+                byte[] cred = UTF8Encoding.UTF8.GetBytes("mkp:mkp@shopping");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage response = new HttpResponseMessage();
-                Uri Result;
+                dynamic result;
                 switch (Method)
                 {
                     case "GET":
@@ -70,29 +109,39 @@ namespace Colsp.Api.Controllers
                         response = await client.GetAsync(FunctionName);
                         if (response.IsSuccessStatusCode)
                         {
-                            var result = await response.Content.ReadAsAsync<IBMPromotionsList>();
-
+                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
+                        }
+                        break;
+                    case "GETID":
+                        // HTTP GET By Id
+                        response = await client.GetAsync(FunctionName + "?id=" + Id);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
                         }
                         break;
                     case "POST":
                         response = await client.PostAsJsonAsync(FunctionName, data);
                         if (response.IsSuccessStatusCode)
                         {
-                            Result = response.Headers.Location;
+                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
+                            mongoRetrun = result;
                         }
                         break;
                     case "PUT":
-                        response = await client.PutAsJsonAsync(FunctionName, data);
+                        response = await client.PutAsJsonAsync(FunctionName + "?id=" + Id, data);
                         if (response.IsSuccessStatusCode)
                         {
-                            Result = response.Headers.Location;
+                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
+                            mongoRetrun = result;
                         }
                         break;
                     case "DELETE":
                         response = await client.DeleteAsync(FunctionName);
                         if (response.IsSuccessStatusCode)
                         {
-                            Result = response.Headers.Location;
+                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
+                            mongoRetrun = result;
                         }
                         break;
                     default:
@@ -101,6 +150,8 @@ namespace Colsp.Api.Controllers
             }
         }
         #endregion
+
+        #region On Top Create
 
         [Route("api/Promotion/OntopCreate")]
         [HttpPost]
@@ -340,14 +391,15 @@ namespace Colsp.Api.Controllers
         }
 
 
+        #endregion
         [HttpGet]
         [Route("api/Promotion/Buy1Get1")]
-        public HttpResponseMessage GetAllBuy1Get1([FromUri] CMSMasterRequest request)
+        public HttpResponseMessage GetAllBuy1Get1([FromUri] SearchBuy1Get1ItemRequest request)
         {
             try
             {
-
-                var query = from pro in db.PromotionBuy1Get1Item select pro;
+                int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+                var query = from pro in db.PromotionBuy1Get1Item where pro.ShopId == ShopId select pro;
 
                 if (!string.IsNullOrEmpty(request.SearchText))
                     query = query.Where(x => x.NameEN.Contains(request.SearchText) || x.NameTH.Contains(request.SearchText));
@@ -370,6 +422,7 @@ namespace Colsp.Api.Controllers
         public HttpResponseMessage CreateBuy1Get1Item(Buy1Get1ItemRequest Model)
         {
             PromotionBuy1Get1Item newObj = null;
+            Buy1Get1ReturnModel mongoReturn = new Buy1Get1ReturnModel();
             int result = 0;
             using (ColspEntities db = new ColspEntities())
             {
@@ -386,7 +439,7 @@ namespace Colsp.Api.Controllers
                         newObj.NameTH = Model.NameTH;
                         newObj.URLKey = Model.URLKey;
                         //Check Pid
-                        if (Model.ProductBuyList.Count() > 0)
+                        if (Model.ProductBuyList != null && Model.ProductBuyList.Count() > 0)
                         {
                             foreach (var itemBuy in Model.ProductBuyList)
                             {
@@ -400,7 +453,7 @@ namespace Colsp.Api.Controllers
                                 }
                             }
                         }
-                        if (Model.ProductGetList.Count() > 0)
+                        if (Model.ProductGetList != null && Model.ProductGetList.Count() > 0)
                         {
                             foreach (var itemGet in Model.ProductGetList)
                             {
@@ -415,25 +468,31 @@ namespace Colsp.Api.Controllers
                             }
                         }
 
-                        newObj.PIDGet = Model.PIDGet;
                         newObj.ShortDescriptionTH = Model.ShortDescriptionTH;
                         newObj.LongDescriptionTH = Model.LongDescriptionTH;
                         newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
                         newObj.LongDescriptionEN = Model.LongDescriptionEN;
                         newObj.EffectiveDate = Model.EffectiveDate;
-                        newObj.EffectiveTime = Model.EffectiveTime;
                         newObj.ExpiryDate = Model.ExpiryDate;
-                        newObj.ExpiryTime = Model.ExpiryTime;
-                        newObj.ProductBoxBadge = Model.ProductBoxBadge;
-                        newObj.Sequence = Model.Sequence;
-                        newObj.Status = Model.Status;
-                        newObj.CreateBy = Model.CreateBy;
+                        newObj.ProductBoxBadge = "";
+                        newObj.Sequence = 1;
+                        if (Model.Status == 1)
+                            newObj.Status = true;
+                        else
+                            newObj.Status = false;
+                        newObj.CreateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
                         newObj.CreateOn = (DateTime)DateTime.Now;
-                        newObj.UpdateBy = Model.UpdateBy;
+                        newObj.UpdateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
                         newObj.UpdateOn = (DateTime)DateTime.Now;
-                        newObj.CreateIP = Model.CreateIP;
-                        newObj.UpdateIP = Model.UpdateIP;
-                        newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                        if (!string.IsNullOrWhiteSpace(Model.CreateIP))
+                            newObj.CreateIP = Model.CreateIP;
+                        else
+                            newObj.CreateIP = "";
+                        newObj.UpdateIP = newObj.CreateIP;
+                        if (Model.CMSStatusFlowId.HasValue)
+                            newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                        else
+                            newObj.CMSStatusFlowId = 1;
                         newObj.CampaignID = Model.CampaignID;
                         newObj.CampaignName = Model.CampaignName;
                         newObj.PromotionCode = Model.PromotionCode;
@@ -441,6 +500,9 @@ namespace Colsp.Api.Controllers
                         newObj.MarketingAbsorb = Model.MarketingAbsorb;
                         newObj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
                         newObj.VendorAbsorb = Model.VendorAbsorb;
+                        newObj.Limit = Model.Limit;
+                        newObj.LimitPerUser = Model.LimitPerUser;
+                        newObj.ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
                         db.PromotionBuy1Get1Item.Add(newObj);
 
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -451,7 +513,15 @@ namespace Colsp.Api.Controllers
                             callMongoModel.buyproducts = buypro;
                             callMongoModel.effectivedate = (DateTime)Model.EffectiveDate;
                             callMongoModel.expireddate = (DateTime)Model.ExpiryDate;
-                            
+                            callMongoModel.limit = (int)newObj.Limit;
+                            callMongoModel.limitperuser = (int)newObj.LimitPerUser;
+                            callMongoModel.premiumproducts = getpro;
+                            callMongoModel.status = (bool)newObj.Status;
+                            callMongoModel.id = "";
+                            callMongoModel.promotioncode = newObj.PromotionCode;
+                            CallMongoAPI(callMongoModel, "", "POST", "premium", mongoReturn);
+                            var rex = mongoReturn;
+                            UpdatePremiumId(newObj.PromotionBuy1Get1ItemId, rex.premium.id);
                         }
                         else
                         {
@@ -472,60 +542,119 @@ namespace Colsp.Api.Controllers
         [HttpPost]
         public HttpResponseMessage EditBuy1Get1Item(Buy1Get1ItemRequest Model)
         {
-            PromotionBuy1Get1Item Obj = null;
+            PromotionBuy1Get1Item newObj = null;
+            Buy1Get1ReturnModel mongoReturn = new Buy1Get1ReturnModel();
             int result = 0;
             using (ColspEntities db = new ColspEntities())
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
+                    Buy1Get1CallModel callMongoModel = new Buy1Get1CallModel();
+                    List<Buyproduct> buypro = new List<Buyproduct>();
+                    List<Premiumproduct> getpro = new List<Premiumproduct>();
                     try
                     {
-                        Obj = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == Model.PromotionBuy1Get1ItemId).FirstOrDefault();
-                        if (Obj != null)
+                        int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+                        newObj = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == Model.PromotionBuy1Get1ItemId && c.ShopId == ShopId).FirstOrDefault();
+                        if (newObj != null)
                         {
-                            Obj.NameEN = Model.NameEN;
-                            Obj.NameTH = Model.NameTH;
-                            Obj.URLKey = Model.URLKey;
-                            Obj.PIDBuy = Model.PIDBuy;
-                            Obj.PIDGet = Model.PIDGet;
-                            Obj.ShortDescriptionTH = Model.ShortDescriptionTH;
-                            Obj.LongDescriptionTH = Model.LongDescriptionTH;
-                            Obj.ShortDescriptionEN = Model.ShortDescriptionEN;
-                            Obj.LongDescriptionEN = Model.LongDescriptionEN;
-                            Obj.EffectiveDate = Model.EffectiveDate;
-                            Obj.EffectiveTime = Model.EffectiveTime;
-                            Obj.ExpiryDate = Model.ExpiryDate;
-                            Obj.ExpiryTime = Model.ExpiryTime;
-                            Obj.ProductBoxBadge = Model.ProductBoxBadge;
-                            Obj.Sequence = Model.Sequence;
-                            Obj.Status = Model.Status;
-                            Obj.CreateBy = Model.CreateBy;
-                            Obj.CreateOn = (DateTime)DateTime.Now;
-                            Obj.UpdateBy = Model.UpdateBy;
-                            Obj.UpdateOn = (DateTime)DateTime.Now;
-                            Obj.CreateIP = Model.CreateIP;
-                            Obj.UpdateIP = Model.UpdateIP;
-                            Obj.CMSStatusFlowId = Model.CMSStatusFlowId;
-                            Obj.CampaignID = Model.CampaignID;
-                            Obj.CampaignName = Model.CampaignName;
-                            Obj.PromotionCode = Model.PromotionCode;
-                            Obj.PromotionCodeRef = Model.PromotionCodeRef;
-                            Obj.MarketingAbsorb = Model.MarketingAbsorb;
-                            Obj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
-                            Obj.VendorAbsorb = Model.VendorAbsorb;
-                            db.Entry(Obj).State = EntityState.Modified;
+
+                            newObj.NameEN = Model.NameEN;
+                            newObj.NameTH = Model.NameTH;
+                            newObj.URLKey = Model.URLKey;
+                            //Check Pid
+                            if (Model.ProductBuyList != null && Model.ProductBuyList.Count() > 0)
+                            {
+                                foreach (var itemBuy in Model.ProductBuyList)
+                                {
+                                    if (IsCanSetProductBuy(itemBuy.Pid) == true)
+                                    {
+                                        Buyproduct proCall = new Buyproduct();
+                                        newObj.PIDBuy = itemBuy.Pid;
+                                        proCall.productid = itemBuy.Pid.ToString();
+                                        proCall.quantity = 1;
+                                        buypro.Add(proCall);
+                                    }
+                                }
+                            }
+                            if (Model.ProductGetList != null && Model.ProductGetList.Count() > 0)
+                            {
+                                foreach (var itemGet in Model.ProductGetList)
+                                {
+                                    if (IsCanSetProductBuy(itemGet.Pid) == true)
+                                    {
+                                        Premiumproduct getCall = new Premiumproduct();
+                                        newObj.PIDGet = itemGet.Pid;
+                                        getCall.productid = itemGet.Pid.ToString();
+                                        getCall.quantity = 1;
+                                        getpro.Add(getCall);
+                                    }
+                                }
+                            }
+
+                            newObj.ShortDescriptionTH = Model.ShortDescriptionTH;
+                            newObj.LongDescriptionTH = Model.LongDescriptionTH;
+                            newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
+                            newObj.LongDescriptionEN = Model.LongDescriptionEN;
+                            newObj.EffectiveDate = Model.EffectiveDate;
+                            newObj.ExpiryDate = Model.ExpiryDate;
+                            newObj.ProductBoxBadge = "";
+                            newObj.Sequence = 1;
+                            if (Model.Status == 1)
+                                newObj.Status = true;
+                            else
+                                newObj.Status = false;
+                            newObj.CreateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
+                            newObj.CreateOn = (DateTime)DateTime.Now;
+                            newObj.UpdateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
+                            newObj.UpdateOn = (DateTime)DateTime.Now;
+                            if (!string.IsNullOrWhiteSpace(Model.CreateIP))
+                                newObj.CreateIP = Model.CreateIP;
+                            else
+                                newObj.CreateIP = "";
+                            newObj.UpdateIP = newObj.CreateIP;
+                            if (Model.CMSStatusFlowId.HasValue)
+                                newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                            else
+                                newObj.CMSStatusFlowId = 1;
+                            newObj.CampaignID = Model.CampaignID;
+                            newObj.CampaignName = Model.CampaignName;
+                            newObj.PromotionCode = Model.PromotionCode;
+                            newObj.PromotionCodeRef = Model.PromotionCodeRef;
+                            newObj.MarketingAbsorb = Model.MarketingAbsorb;
+                            newObj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
+                            newObj.VendorAbsorb = Model.VendorAbsorb;
+                            newObj.Limit = Model.Limit;
+                            newObj.LimitPerUser = Model.LimitPerUser;
+                            newObj.ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+                            db.Entry(newObj).State = EntityState.Modified;
 
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
                                 dbcxtransaction.Commit();
-                                result = Obj.PromotionBuy1Get1ItemId;
+                                result = newObj.PromotionBuy1Get1ItemId;
+
+                                callMongoModel.buyproducts = buypro;
+                                callMongoModel.effectivedate = (DateTime)Model.EffectiveDate;
+                                callMongoModel.expireddate = (DateTime)Model.ExpiryDate;
+                                callMongoModel.limit = (int)newObj.Limit;
+                                callMongoModel.limitperuser = (int)newObj.LimitPerUser;
+                                callMongoModel.premiumproducts = getpro;
+                                callMongoModel.status = (bool)newObj.Status;
+                                callMongoModel.id = newObj.MongoId;
+                                callMongoModel.promotioncode = newObj.PromotionCode;
+                                //Update Call MongoDB
+                                CallMongoAPI(callMongoModel, newObj.MongoId, "PUT", "premium", mongoReturn);
+
+                                var rex = mongoReturn;
+                                UpdatePremiumId(newObj.PromotionBuy1Get1ItemId, newObj.MongoId);
                             }
                             else
                             {
                                 dbcxtransaction.Rollback();
                             }
                         }
-                        return GetBuy1Get1(Obj.PromotionBuy1Get1ItemId);
+                        return GetBuy1Get1(newObj.PromotionBuy1Get1ItemId);
                     }
                     catch (DbUpdateException e)
                     {
@@ -559,7 +688,8 @@ namespace Colsp.Api.Controllers
         {
             using (ColspEntities db = new ColspEntities())
             {
-                var buy1get1 = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == promotionBuy1Get1ItemId).FirstOrDefault();
+                int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+                var buy1get1 = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == promotionBuy1Get1ItemId && c.ShopId == ShopId).FirstOrDefault();
                 if (buy1get1 != null)
                 {
                     Buy1Get1ItemResponse result = new Buy1Get1ItemResponse();
@@ -573,9 +703,9 @@ namespace Colsp.Api.Controllers
                     result.ShortDescriptionEN = buy1get1.ShortDescriptionEN;
                     result.LongDescriptionEN = buy1get1.LongDescriptionEN;
                     result.EffectiveDate = buy1get1.EffectiveDate;
-                    result.EffectiveTime = buy1get1.EffectiveTime;
+
                     result.ExpiryDate = buy1get1.ExpiryDate;
-                    result.ExpiryTime = buy1get1.ExpiryTime;
+
                     result.ProductBoxBadge = buy1get1.ProductBoxBadge;
                     result.Sequence = buy1get1.Sequence;
                     result.Status = buy1get1.Status;
@@ -593,6 +723,7 @@ namespace Colsp.Api.Controllers
                     result.MarketingAbsorb = buy1get1.MarketingAbsorb;
                     result.MerchandiseAbsorb = buy1get1.MerchandiseAbsorb;
                     result.VendorAbsorb = buy1get1.VendorAbsorb;
+                    result.MongoId = buy1get1.MongoId;
                     return result;
                 }
                 else
@@ -602,7 +733,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        #region List
+        #region Ontop List
         [Route("api/Promotion/Ontopcredit")]
         [HttpGet]
         public HttpResponseMessage GetOntopcredit([FromUri] OnTopCreditCardListRequest request)
@@ -726,7 +857,8 @@ namespace Colsp.Api.Controllers
             {
                 using (ColspEntities db = new ColspEntities())
                 {
-                    var findPidBuy = db.PromotionBuy1Get1Item.Where(c => c.PIDBuy == Pid).ToList();
+                    int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+                    var findPidBuy = db.PromotionBuy1Get1Item.Where(c => c.PIDBuy == Pid && c.ShopId == ShopId).ToList();
                     if (findPidBuy.Count() > 0)
                     {
                         foreach (var item in findPidBuy)
@@ -759,7 +891,8 @@ namespace Colsp.Api.Controllers
             {
                 using (ColspEntities db = new ColspEntities())
                 {
-                    var findPidGet = db.PromotionBuy1Get1Item.Where(c => c.PIDGet == Pid).ToList();
+                    int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+                    var findPidGet = db.PromotionBuy1Get1Item.Where(c => c.PIDGet == Pid && c.ShopId == ShopId).ToList();
                     if (findPidGet.Count() > 0)
                     {
                         foreach (var item in findPidGet)
@@ -780,6 +913,32 @@ namespace Colsp.Api.Controllers
 
                 throw;
             }
+        }
+        #endregion
+
+        #region Update Data From MongoDB Function
+        public bool UpdatePremiumId(int Buy1GetId, string MongoId)
+        {
+            bool result = false;
+            try
+            {
+                int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+                var newObj = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == Buy1GetId && c.ShopId == ShopId).FirstOrDefault();
+                if (newObj != null)
+                {
+                    newObj.MongoId = MongoId;
+                    db.Entry(newObj).State = EntityState.Modified;
+                    db.SaveChanges();
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                //throw;
+            }
+            return result;
+
         }
         #endregion
         protected override void Dispose(bool disposing)

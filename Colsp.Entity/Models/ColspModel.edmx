@@ -2526,9 +2526,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="ShortDescriptionEN" Type="nvarchar" MaxLength="500" />
           <Property Name="LongDescriptionEN" Type="ntext" />
           <Property Name="EffectiveDate" Type="date" />
-          <Property Name="EffectiveTime" Type="time" Precision="7" />
           <Property Name="ExpiryDate" Type="date" />
-          <Property Name="ExpiryTime" Type="time" Precision="7" />
           <Property Name="ProductBoxBadge" Type="nvarchar" MaxLength="200" />
           <Property Name="Sequence" Type="int" />
           <Property Name="Status" Type="bit" />
@@ -2539,6 +2537,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="CreateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="UpdateIP" Type="nvarchar" MaxLength="20" />
           <Property Name="CMSStatusFlowId" Type="int" />
+          <Property Name="Limit" Type="int" />
+          <Property Name="LimitPerUser" Type="int" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="MongoId" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="PromotionOnTopCreditCard">
           <Key>
@@ -2654,6 +2656,13 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           <Property Name="CreateOn" Type="datetime" />
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
           <Property Name="UpdateOn" Type="datetime" />
+          <Property Name="ShippingType" Type="varchar" MaxLength="50" />
+          <Property Name="OldShippingTypeName" Type="varchar" MaxLength="50" />
+          <Property Name="ShopGroup" Type="varchar" MaxLength="50" />
+          <Property Name="StockLocationBy" Type="varchar" MaxLength="50" />
+          <Property Name="PickPackBy" Type="varchar" MaxLength="50" />
+          <Property Name="ShipBy" Type="varchar" MaxLength="50" />
+          <Property Name="InvoiceBy" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ShippingShopGroupMap">
           <Key>
@@ -6512,7 +6521,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ProductTags" EntityType="ColspModel.ProductTag" />
           <EntitySet Name="ProductTmps" EntityType="ColspModel.ProductTmp" />
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
-          <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
           <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
           <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           <EntitySet Name="Provinces" EntityType="ColspModel.Province" />
@@ -7133,6 +7141,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shipping" EntitySet="Shippings" />
             <End Role="ShopGroup" EntitySet="ShopGroups" />
           </AssociationSet>
+          <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
           </EntityContainer>
         <ComplexType Name="ItemOnHoldReport_Result">
           <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
@@ -9370,42 +9379,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Product" Relationship="ColspModel.FK_ProductVideo_Product" FromRole="ProductVideo" ToRole="Product" />
         </EntityType>
-        <EntityType Name="PromotionBuy1Get1Item">
-          <Key>
-            <PropertyRef Name="PromotionBuy1Get1ItemId" />
-          </Key>
-          <Property Name="PromotionBuy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="PIDBuy" Type="Int32" />
-          <Property Name="PIDGet" Type="Int32" />
-          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PromotionCodeRef" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CampaignID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CampaignName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="MarketingAbsorb" Type="Int32" />
-          <Property Name="MerchandiseAbsorb" Type="Int32" />
-          <Property Name="VendorAbsorb" Type="Int32" />
-          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
-          <Property Name="EffectiveTime" Type="Time" Precision="7" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
-          <Property Name="ExpiryTime" Type="Time" Precision="7" />
-          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CreateOn" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
-          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="CMSStatusFlowId" Type="Int32" />
-        </EntityType>
         <EntityType Name="PromotionOnTopCreditCard">
           <Key>
             <PropertyRef Name="OnTopCreditCardId" />
@@ -9497,6 +9470,13 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Shipping" FromRole="Shipping" ToRole="ProductStageGroup" />
           <NavigationProperty Name="ShopTypeShippingMaps" Relationship="ColspModel.FK_ShopTypeShippingMap_Shipping" FromRole="Shipping" ToRole="ShopTypeShippingMap" />
           <NavigationProperty Name="ShopGroups" Relationship="ColspModel.ShippingShopGroupMap" FromRole="Shipping" ToRole="ShopGroup" />
+          <Property Name="ShippingType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OldShippingTypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ShopGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StockLocationBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PickPackBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ShipBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="InvoiceBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
@@ -12529,6 +12509,44 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="*" />
           <End Type="ColspModel.ShopGroup" Role="ShopGroup" Multiplicity="*" />
         </Association>
+        <EntityType Name="PromotionBuy1Get1Item">
+          <Key>
+            <PropertyRef Name="PromotionBuy1Get1ItemId" />
+          </Key>
+          <Property Name="PromotionBuy1Get1ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameEN" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="NameTH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="URLKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="PIDBuy" Type="Int32" />
+          <Property Name="PIDGet" Type="Int32" />
+          <Property Name="PromotionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PromotionCodeRef" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CampaignID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CampaignName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MarketingAbsorb" Type="Int32" />
+          <Property Name="MerchandiseAbsorb" Type="Int32" />
+          <Property Name="VendorAbsorb" Type="Int32" />
+          <Property Name="ShortDescriptionTH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionTH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShortDescriptionEN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescriptionEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="ProductBoxBadge" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CMSStatusFlowId" Type="Int32" />
+          <Property Name="Limit" Type="Int32" />
+          <Property Name="LimitPerUser" Type="Int32" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="MongoId" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -14646,43 +14664,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PromotionBuy1Get1Item">
-            <EntityTypeMapping TypeName="ColspModel.PromotionBuy1Get1Item">
-              <MappingFragment StoreEntitySet="PromotionBuy1Get1Item">
-                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
-                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
-                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
-                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
-                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
-                <ScalarProperty Name="ExpiryTime" ColumnName="ExpiryTime" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="EffectiveTime" ColumnName="EffectiveTime" />
-                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
-                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
-                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
-                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
-                <ScalarProperty Name="VendorAbsorb" ColumnName="VendorAbsorb" />
-                <ScalarProperty Name="MerchandiseAbsorb" ColumnName="MerchandiseAbsorb" />
-                <ScalarProperty Name="MarketingAbsorb" ColumnName="MarketingAbsorb" />
-                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
-                <ScalarProperty Name="CampaignID" ColumnName="CampaignID" />
-                <ScalarProperty Name="PromotionCodeRef" ColumnName="PromotionCodeRef" />
-                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
-                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
-                <ScalarProperty Name="PIDBuy" ColumnName="PIDBuy" />
-                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
-                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
-                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
-                <ScalarProperty Name="PromotionBuy1Get1ItemId" ColumnName="PromotionBuy1Get1ItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PromotionOnTopCreditCards">
             <EntityTypeMapping TypeName="ColspModel.PromotionOnTopCreditCard">
               <MappingFragment StoreEntitySet="PromotionOnTopCreditCard">
@@ -14763,6 +14744,13 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="Shippings">
             <EntityTypeMapping TypeName="ColspModel.Shipping">
               <MappingFragment StoreEntitySet="Shipping">
+                <ScalarProperty Name="InvoiceBy" ColumnName="InvoiceBy" />
+                <ScalarProperty Name="ShipBy" ColumnName="ShipBy" />
+                <ScalarProperty Name="PickPackBy" ColumnName="PickPackBy" />
+                <ScalarProperty Name="StockLocationBy" ColumnName="StockLocationBy" />
+                <ScalarProperty Name="ShopGroup" ColumnName="ShopGroup" />
+                <ScalarProperty Name="OldShippingTypeName" ColumnName="OldShippingTypeName" />
+                <ScalarProperty Name="ShippingType" ColumnName="ShippingType" />
                 <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
                 <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
@@ -15739,6 +15727,45 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="PromotionBuy1Get1Item">
+            <EntityTypeMapping TypeName="ColspModel.PromotionBuy1Get1Item">
+              <MappingFragment StoreEntitySet="PromotionBuy1Get1Item">
+                <ScalarProperty Name="MongoId" ColumnName="MongoId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="LimitPerUser" ColumnName="LimitPerUser" />
+                <ScalarProperty Name="Limit" ColumnName="Limit" />
+                <ScalarProperty Name="CMSStatusFlowId" ColumnName="CMSStatusFlowId" />
+                <ScalarProperty Name="UpdateIP" ColumnName="UpdateIP" />
+                <ScalarProperty Name="CreateIP" ColumnName="CreateIP" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ProductBoxBadge" ColumnName="ProductBoxBadge" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="LongDescriptionEN" ColumnName="LongDescriptionEN" />
+                <ScalarProperty Name="ShortDescriptionEN" ColumnName="ShortDescriptionEN" />
+                <ScalarProperty Name="LongDescriptionTH" ColumnName="LongDescriptionTH" />
+                <ScalarProperty Name="ShortDescriptionTH" ColumnName="ShortDescriptionTH" />
+                <ScalarProperty Name="VendorAbsorb" ColumnName="VendorAbsorb" />
+                <ScalarProperty Name="MerchandiseAbsorb" ColumnName="MerchandiseAbsorb" />
+                <ScalarProperty Name="MarketingAbsorb" ColumnName="MarketingAbsorb" />
+                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
+                <ScalarProperty Name="CampaignID" ColumnName="CampaignID" />
+                <ScalarProperty Name="PromotionCodeRef" ColumnName="PromotionCodeRef" />
+                <ScalarProperty Name="PromotionCode" ColumnName="PromotionCode" />
+                <ScalarProperty Name="PIDGet" ColumnName="PIDGet" />
+                <ScalarProperty Name="PIDBuy" ColumnName="PIDBuy" />
+                <ScalarProperty Name="URLKey" ColumnName="URLKey" />
+                <ScalarProperty Name="NameTH" ColumnName="NameTH" />
+                <ScalarProperty Name="NameEN" ColumnName="NameEN" />
+                <ScalarProperty Name="PromotionBuy1Get1ItemId" ColumnName="PromotionBuy1Get1ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -132,7 +132,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductTag> ProductTags { get; set; }
         public virtual DbSet<ProductTmp> ProductTmps { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
-        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
         public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
@@ -193,6 +192,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBSetting> TBSettings { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
+        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
     
         public virtual ObjectResult<Nullable<long>> GetNextAppLogId()
         {

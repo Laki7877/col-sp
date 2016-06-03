@@ -32,9 +32,7 @@ namespace Colsp.Entity.Models
         public string ShortDescriptionEN { get; set; }
         public string LongDescriptionEN { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
-        public Nullable<System.TimeSpan> EffectiveTime { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
-        public Nullable<System.TimeSpan> ExpiryTime { get; set; }
         public string ProductBoxBadge { get; set; }
         public Nullable<int> Sequence { get; set; }
         public Nullable<bool> Status { get; set; }
@@ -45,5 +43,9 @@ namespace Colsp.Entity.Models
         public string CreateIP { get; set; }
         public string UpdateIP { get; set; }
         public Nullable<int> CMSStatusFlowId { get; set; }
+        public Nullable<int> Limit { get; set; }
+        public Nullable<int> LimitPerUser { get; set; }
+        public Nullable<int> ShopId { get; set; }
+        public string MongoId { get; set; }
     }
 }

@@ -110,7 +110,6 @@
         <EntityTypeShape EntityType="ColspModel.ProductTag" Width="1.5" PointX="16.5" PointY="63.625" />
         <EntityTypeShape EntityType="ColspModel.ProductTmp" Width="1.5" PointX="8.25" PointY="113.625" />
         <EntityTypeShape EntityType="ColspModel.ProductVideo" Width="1.5" PointX="16.5" PointY="71.625" />
-        <EntityTypeShape EntityType="ColspModel.PromotionBuy1Get1Item" Width="1.5" PointX="18.75" PointY="9.75" />
         <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditCard" Width="1.5" PointX="18.75" PointY="17.75" />
         <EntityTypeShape EntityType="ColspModel.PromotionOnTopCreditNumber" Width="1.5" PointX="8.75" PointY="19.75" />
         <EntityTypeShape EntityType="ColspModel.Province" Width="1.5" PointX="3.75" PointY="75.875" />
@@ -311,6 +310,7 @@
         <AssociationConnector Association="ColspModel.FKUserGroupPermissionMapUserGroup" />
         <AssociationConnector Association="ColspModel.ImportHeaderShopGroup" />
         <AssociationConnector Association="ColspModel.ShippingShopGroupMap" />
+        <EntityTypeShape EntityType="ColspModel.PromotionBuy1Get1Item" Width="1.5" PointX="7.375" PointY="27.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
