@@ -219,7 +219,7 @@ namespace Colsp.Api.Controllers
                                 )
                                 select new
                                 {
-                                    ImageUrl = string.Empty.Equals(stage.FeatureImgUrl) ? string.Empty : string.Concat(Constant.IMAGE_STATIC_URL, stage.FeatureImgUrl),
+                                    ImageUrl = string.Empty.Equals(stage.FeatureImgUrl) ? string.Empty : string.Concat(Constant.PRODUCT_IMAGE_URL, stage.FeatureImgUrl),
                                     ProductId = stage.ProductId,
                                     Sku = stage.Sku,
                                     Upc = stage.Upc,
@@ -311,9 +311,9 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find inventory");
                 }
-                if(inv.ShippingId == 3 || inv.ShippingId == 4)
+                if(Constant.IGNORE_INVENTORY_SHIPPING.Contains(inv.ShippingId))
                 {
-                    throw new Exception("Cannot update inventory with COL Fulfillment or 3PL Fulfillment");
+                    throw new Exception("Cannot update inventory. Check you shipping type.");
                 }
                 #endregion
                 #region Setup

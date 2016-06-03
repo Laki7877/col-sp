@@ -7,7 +7,7 @@ namespace Colsp.Api.Constants
 {
     public class Apis
     {
-        private const string CmosRootUrl = "http://devcmos-api.cenergy.co.th/";
+        private const string CmosRootUrl = "https://devmkp-cmosapi.cenergy.co.th/";
         private const string ElasticRootUrl = "http://128.199.77.82/elasticsearch/api/v0.2.0/";
 
 

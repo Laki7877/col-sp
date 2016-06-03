@@ -12,7 +12,7 @@ namespace Colsp.Api.Constants
 
         public static readonly int DEFAULT_GLOBAL_CATEGORY = 1;
 
-        public static readonly string IMAGE_STATIC_URL = ConfigurationManager.AppSettings["ImageStaticUrl"];
+        public static readonly string PRODUCT_IMAGE_URL = string.Concat(AppSettingKey.IMAGE_STATIC_URL, "productimages/large/");
 
         public static readonly int DEFAULT_THE_ONE_CARD = 1;
 
