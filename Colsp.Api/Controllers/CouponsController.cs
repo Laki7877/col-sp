@@ -120,12 +120,12 @@ namespace Colsp.Api.Controllers
 					var shopId = User.ShopRequest().ShopId;
 					couponList = couponList.Where(w => w.ShopId == shopId);
 				}
-				var c = couponList.ToList();
-				if (c == null || c.Count == 0)
+				var coupon = couponList.SingleOrDefault();
+				if (coupon == null)
 				{
 					throw new Exception("Cannot find coupon");
 				}
-				return Request.CreateResponse(HttpStatusCode.OK, c[0]);
+				return Request.CreateResponse(HttpStatusCode.OK, coupon);
 			}
 			catch (Exception e)
 			{
@@ -137,14 +137,13 @@ namespace Colsp.Api.Controllers
 		[HttpPost]
 		public HttpResponseMessage AddCoupon(CouponRequest request)
 		{
-			Coupon coupon = null;
 			try
 			{
 				if (request == null)
 				{
 					throw new Exception("Invalid request");
 				}
-				coupon = new Coupon();
+				Coupon coupon  = new Coupon();
 				if (User.ShopRequest() != null)
 				{
 					var shopId = User.ShopRequest().ShopId;

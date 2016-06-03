@@ -453,6 +453,7 @@ namespace Colsp.Api.Controllers
 						UpdateOn = currentDt,
 						ValueEn = attribute.ValueEn,
 						ValueTh = attribute.ValueTh,
+						HtmlBoxValue = attribute.HtmlBoxValue,
 					});
 				}
 
@@ -464,7 +465,6 @@ namespace Colsp.Api.Controllers
 					if (variant == null)
 					{
 						continue;
-						//throw new Exception(string.Concat("Cannot find product ", variantRq.Pid));
 					}
 					if (variant.ProductId != parentVariant.ProductId)
 					{
@@ -476,7 +476,6 @@ namespace Colsp.Api.Controllers
 					variant.IsMaster = false;
 					variant.Status = Constant.PRODUCT_STATUS_DRAFT;
 					db.ProductStageAttributes.RemoveRange(db.ProductStageAttributes.Where(w => w.Pid.Equals(variant.Pid)));
-
 
 					if (variantRq.FirstAttribute != null && variantRq.FirstAttribute.AttributeId != 0)
 					{
@@ -493,6 +492,7 @@ namespace Colsp.Api.Controllers
 							UpdateBy = email,
 							UpdateOn = currentDt,
 							Position = 1,
+							HtmlBoxValue = string.Empty,
 						});
 					}
 					if (variantRq.SecondAttribute != null && variantRq.SecondAttribute.AttributeId != 0)
@@ -509,7 +509,8 @@ namespace Colsp.Api.Controllers
 							ValueTh = string.Concat("((", variantRq.SecondAttribute.AttributeValues[0].AttributeValueId, "))"),
 							UpdateBy = email,
 							UpdateOn = currentDt,
-							Position = 2
+							Position = 2,
+							HtmlBoxValue = string.Empty,
 						});
 					}
 
