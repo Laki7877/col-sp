@@ -90,6 +90,7 @@
     <Compile Include="Requests\ControlFlagRequest.cs" />
     <Compile Include="Requests\CouponRequest.cs" />
     <Compile Include="Requests\CSVTemplateRequest.cs" />
+    <Compile Include="Requests\ElasticRequest.cs" />
     <Compile Include="Requests\ErrorRequest.cs" />
     <Compile Include="Requests\ExportRequest.cs" />
     <Compile Include="Requests\FilterByRequest.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
     <Compile Include="Requests\ItemOnHoldReportRequest.cs" />
-    <Compile Include="Requests\ItemReturnReportRequest.cs" />
     <Compile Include="Requests\JdaRequest.cs" />
     <Compile Include="Requests\Layout.cs" />
     <Compile Include="Requests\MasterProductRequest.cs" />
@@ -120,7 +120,6 @@
     <Compile Include="Requests\ReturnReportRequest.cs" />
     <Compile Include="Requests\ReturnRequest.cs" />
     <Compile Include="Requests\SaleReportForSellerRequest.cs" />
-    <Compile Include="Requests\SellerReportSaleRequest.cs" />
     <Compile Include="Requests\SEORequest.cs" />
     <Compile Include="Requests\ShopAppearanceRequest.cs" />
     <Compile Include="Requests\ShopCommission.cs" />

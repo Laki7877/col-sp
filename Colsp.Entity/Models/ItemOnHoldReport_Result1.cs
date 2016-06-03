@@ -11,12 +11,13 @@ namespace Colsp.Entity.Models
 {
     using System;
     
-    public partial class ItemOnHoldReport_Result
+    public partial class ItemOnHoldReport_Result1
     {
         public string PID { get; set; }
         public string Itemname { get; set; }
         public Nullable<System.DateTime> OnHoldDate { get; set; }
         public string OnHoldRemark { get; set; }
         public string Orderid { get; set; }
+        public Nullable<int> ShopId { get; set; }
     }
 }

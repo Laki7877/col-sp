@@ -78,8 +78,8 @@ namespace Colsp.Logic
         public bool AddCMSCategory(CMSCategoryRequest request)
         {
             bool success = false;
-            using (ColspEntities db = new ColspEntities())
-            {
+                using (ColspEntities db = new ColspEntities())
+                {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
                     try
@@ -98,15 +98,15 @@ namespace Colsp.Logic
                         cmsCategory.UpdateBy = request.CreateBy;
                         cmsCategory.UpdateOn = dateNow;
                         cmsCategory.UpdateIP = request.CreateIP;
-                        db.CMSCategories.Add(cmsCategory);
-                        db.SaveChanges();
+                    db.CMSCategories.Add(cmsCategory);
+                    db.SaveChanges();
 
-                        int? cmsCategoryId = CMSHelper.GetCMSCategoryId(db, cmsCategory);
+                    int? cmsCategoryId = CMSHelper.GetCMSCategoryId(db, cmsCategory);
 
-                        if (cmsCategoryId != null)
+                    if (cmsCategoryId != null)
+                    {
+                        foreach (var product in request.CategoryProductList)
                         {
-                            foreach (var product in request.CategoryProductList)
-                            {
                                 CMSCategoryProductMap cmsCategoryProduct = new CMSCategoryProductMap();
                                 cmsCategoryProduct.CMSCategoryId = cmsCategoryId.Value;
                                 cmsCategoryProduct.Status = product.Status;
@@ -125,21 +125,21 @@ namespace Colsp.Logic
                                 cmsCategoryProduct.UpdateOn = dateNow;
                                 cmsCategoryProduct.UpdateIP = cmsCategory.CreateIP;
                                 cmsCategoryProduct.Visibility = true;
-                                db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
-                            }
+                            db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
                         }
+                    }
 
                         row = db.SaveChanges();
-                        success = row > -1;
+                    success = row > -1;
                         if (success == true)
                         {
                             dbcxtransaction.Commit();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
+                }
+            }
+            catch (Exception ex)
+            {
                         dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/AddCMSCategory");
+                throw new Exception(ex.Message + " /Logic/AddCMSCategory");
 
                     }
                 }
@@ -152,19 +152,19 @@ namespace Colsp.Logic
         {
             bool success = false;
 
-            using (ColspEntities db = new ColspEntities())
-            {
+                using (ColspEntities db = new ColspEntities())
+                {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
                     try
                     {
-                        int row = -1;
-                        DateTime dateNow = DateTime.Now;
+                    int row = -1;
+                    DateTime dateNow = DateTime.Now;
 
                         var queryCMSCategory = db.CMSCategories.Where(x => x.CMSCategoryId == request.CMSCategoryId).FirstOrDefault();
 
                         if (queryCMSCategory == null)
-                            return false;
+                        return false;
 
                         var cmsCategory = queryCMSCategory;
                         cmsCategory.CMSCategoryNameEN = request.CMSCategoryNameEN;
@@ -179,21 +179,21 @@ namespace Colsp.Logic
                         cmsCategory.UpdateIP = request.CreateIP;
                         db.Entry(cmsCategory).State = EntityState.Modified;
                         db.SaveChanges();
-                        // Remove Category Product
+                    // Remove Category Product
                         var queryCMSCategoryProducts = db.CMSCategoryProductMaps.Where(x => x.CMSCategoryId == cmsCategory.CMSCategoryId).ToList();
                         if (queryCMSCategoryProducts.Count > 0)
+                    {
+                        foreach (var cmsCategoryProduct in queryCMSCategoryProducts)
                         {
-                            foreach (var cmsCategoryProduct in queryCMSCategoryProducts)
-                            {
-                                db.CMSCategoryProductMaps.Remove(cmsCategoryProduct);
+                            db.CMSCategoryProductMaps.Remove(cmsCategoryProduct);
                                 db.SaveChanges();
-                            }
                         }
+                    }
 
-                        if (cmsCategory != null)
+                    if (cmsCategory != null)
+                    {
+                        foreach (var product in request.CategoryProductList)
                         {
-                            foreach (var product in request.CategoryProductList)
-                            {
                                 CMSCategoryProductMap cmsCategoryProduct = new CMSCategoryProductMap();
                                 cmsCategoryProduct.CMSCategoryId = cmsCategory.CMSCategoryId;
                                 cmsCategoryProduct.Status = product.Status;
@@ -213,24 +213,24 @@ namespace Colsp.Logic
                                 cmsCategoryProduct.UpdateIP = cmsCategory.CreateIP;
                                 cmsCategoryProduct.Visibility = true;
 
-                                db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
-                            }
-                            row = db.SaveChanges();
+                            db.CMSCategoryProductMaps.Add(cmsCategoryProduct);
                         }
-                        success = row > -1;
+                    row = db.SaveChanges();
+                        }
+                    success = row > -1;
                         if (success == true)
                         {
                             dbcxtransaction.Commit();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/EditCMSCategory");
-                    }
                 }
-                return success;
             }
+            catch (Exception ex)
+            {
+                        dbcxtransaction.Rollback();
+                throw new Exception(ex.Message + " /Logic/EditCMSCategory");
+            }
+                }
+            return success;
+        }
         }
 
         // Delete CMS Category
@@ -238,30 +238,30 @@ namespace Colsp.Logic
         {
             bool success = false;
 
-            using (ColspEntities db = new ColspEntities())
-            {
+                using (ColspEntities db = new ColspEntities())
+                {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
                     try
                     {
-                        foreach (var cmsCategory in request)
-                        {
+                    foreach (var cmsCategory in request)
+                    {
                             var query = db.CMSCategories.Where(x => x.CMSCategoryId == cmsCategory.CMSCategoryId).FirstOrDefault();
                             if (query != null)
                             {
                                 query.Status = "RM";
                                 db.Entry(query).State = EntityState.Modified;
-                            }
-                        }
+                    }
+                }
 
                         if (db.SaveChanges() > 0)
                             dbcxtransaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
+            }
+            catch (Exception ex)
+            {
                         dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/DeleteCMSCategory");
-                    }
+                throw new Exception(ex.Message + " /Logic/DeleteCMSCategory");
+            }
                 }
             }
             return success;
@@ -276,10 +276,10 @@ namespace Colsp.Logic
             bool success = false;
 
 
-            using (ColspEntities db = new ColspEntities())
-            {
-                using (var dbcxtransaction = db.Database.BeginTransaction())
+                using (ColspEntities db = new ColspEntities())
                 {
+                    using (var dbcxtransaction = db.Database.BeginTransaction())
+                    {
                     try
                     {
                         int row = -1;
@@ -342,22 +342,22 @@ namespace Colsp.Logic
                         cms.UpdateIP = request.CreateIP;
                         db.CMSMasters.Add(cms);
 
-
+                        
                         if (db.SaveChanges() > 0)
                         {
+                        
 
 
+                        var masterId = cms.CMSMasterId;
 
-                            var masterId = cms.CMSMasterId;
-
-                            // Add cms banner
-                            if (request.CMSBannerEN != null && request.CMSBannerEN.Count > 0)
+                        // Add cms banner
+                        if (request.CMSBannerEN != null && request.CMSBannerEN.Count > 0)
+                        {
+                            int position = 0;
+                            foreach (ImageRequest img in request.CMSBannerEN)
                             {
-                                int position = 0;
-                                foreach (ImageRequest img in request.CMSBannerEN)
+                                db.CMSImages.Add(new CMSImage()
                                 {
-                                    db.CMSImages.Add(new CMSImage()
-                                    {
                                         CMSMasterId = cms.CMSMasterId,
                                         ImageUrl = img.Url,
                                         Position = position++,
@@ -366,17 +366,17 @@ namespace Colsp.Logic
                                         CreateOn = dateNow,
                                         UpdateBy = request.CreateBy,
                                         UpdatedOn = dateNow
-                                    });
-                                }
+                                });
                             }
+                        }
 
-                            if (request.CMSBannerTH != null && request.CMSBannerTH.Count > 0)
+                        if (request.CMSBannerTH != null && request.CMSBannerTH.Count > 0)
+                        {
+                            int position = 0;
+                            foreach (ImageRequest img in request.CMSBannerTH)
                             {
-                                int position = 0;
-                                foreach (ImageRequest img in request.CMSBannerTH)
+                                db.CMSImages.Add(new CMSImage()
                                 {
-                                    db.CMSImages.Add(new CMSImage()
-                                    {
                                         CMSMasterId = cms.CMSMasterId,
                                         ImageUrl = img.Url,
                                         Position = position++,
@@ -385,26 +385,26 @@ namespace Colsp.Logic
                                         CreateOn = dateNow,
                                         UpdateBy = request.CreateBy,
                                         UpdatedOn = dateNow
-                                    });
-                                }
+                                });
                             }
+                        }
 
-                            // Create Feature Product
-                            foreach (var featureProductRq in request.FeatureProductList)
-                            {
-                                CMSFeatureProduct cmsFeatureProduct = new CMSFeatureProduct();
+                        // Create Feature Product
+                        foreach (var featureProductRq in request.FeatureProductList)
+                        {
+                            CMSFeatureProduct cmsFeatureProduct = new CMSFeatureProduct();
                                 cmsFeatureProduct.CMSMasterId = masterId;
                                 cmsFeatureProduct.ProductId = featureProductRq.ProductId;
                                 cmsFeatureProduct.CreateBy = request.CreateBy;
                                 cmsFeatureProduct.CreateOn = dateNow;
                                 cmsFeatureProduct.UpdateBy = request.CreateBy;
                                 cmsFeatureProduct.UpdateOn = dateNow;
-                                db.CMSFeatureProducts.Add(cmsFeatureProduct);
-                            }
+                            db.CMSFeatureProducts.Add(cmsFeatureProduct);
+                        }
 
-                            // mapping master category
-                            foreach (var masterCateRq in request.CategoryList)
-                            {
+                        // mapping master category
+                        foreach (var masterCateRq in request.CategoryList)
+                        {
                                 CMSMasterCategoryMap cmsMasterCate = new CMSMasterCategoryMap();
                                 cmsMasterCate.CMSCategoryId = masterCateRq.CMSCategoryId;
                                 cmsMasterCate.CMSMasterId = masterId;
@@ -417,31 +417,31 @@ namespace Colsp.Logic
                                 cmsMasterCate.UpdateBy = request.CreateBy;
                                 cmsMasterCate.UpdateOn = dateNow;
                                 cmsMasterCate.UpdateIP = request.CreateIP;
-                                db.CMSMasterCategoryMaps.Add(cmsMasterCate);
-                            }
+                            db.CMSMasterCategoryMaps.Add(cmsMasterCate);
+                        }
 
-                            // Create Schedule
-                            foreach (var scheduleRq in request.ScheduleList)
-                            {
+                        // Create Schedule
+                        foreach (var scheduleRq in request.ScheduleList)
+                        {
                                 CMSScheduler cmsScheduler = new CMSScheduler();
                                 DateTime SchEffectiveDate = new DateTime();
                                 DateTime SchExpiryDate = new DateTime();
 
                                 if (request.EffectiveDate != null)
-                                {
+                            {
                                     if (!DateTime.TryParse(request.EffectiveDate.ToString(), out SchEffectiveDate))
-                                    {
-                                        dbcxtransaction.Rollback();
-                                    }
-
-                                }
-                                if (request.ExpiryDate != null)
                                 {
-                                    if (!DateTime.TryParse(request.ExpiryDate.ToString(), out SchExpiryDate))
-                                    {
-                                        dbcxtransaction.Rollback();
-                                    }
+                                    dbcxtransaction.Rollback();
                                 }
+
+                            }
+                                if (request.ExpiryDate != null)
+                            {
+                                    if (!DateTime.TryParse(request.ExpiryDate.ToString(), out SchExpiryDate))
+                                {
+                                    dbcxtransaction.Rollback();
+                                }
+                            }
 
                                 cmsScheduler.EffectiveDate = SchEffectiveDate;
                                 cmsScheduler.ExpireDate = SchExpiryDate;
@@ -452,11 +452,11 @@ namespace Colsp.Logic
                                 cmsScheduler.UpdateBy = request.CreateBy;
                                 cmsScheduler.UpdateOn = dateNow;
                                 cmsScheduler.UpdateIP = request.CreateIP;
-                                db.CMSSchedulers.Add(cmsScheduler);
-
-                                if (db.SaveChanges() > 0)
-                                {
-                                    // Mapping Master Schedule
+                            db.CMSSchedulers.Add(cmsScheduler);
+                            
+                            if (db.SaveChanges() > 0)
+                            {
+                                // Mapping Master Schedule
                                     CMSMasterSchedulerMap cmsMasterScheduleMap = new CMSMasterSchedulerMap();
                                     cmsMasterScheduleMap.CMSMasterId = masterId;
                                     cmsMasterScheduleMap.CMSSchedulerId = cmsScheduler.CMSSchedulerId;
@@ -467,22 +467,22 @@ namespace Colsp.Logic
                                     cmsMasterScheduleMap.UpdateBy = request.CreateBy;
                                     cmsMasterScheduleMap.UpdateOn = dateNow;
                                     cmsMasterScheduleMap.UpdateIP = request.CreateIP;
-                                    db.CMSMasterSchedulerMaps.Add(cmsMasterScheduleMap);
+                                db.CMSMasterSchedulerMaps.Add(cmsMasterScheduleMap);
                                 }
                             }
                             row = db.SaveChanges();
                         }
-
+                        
                         success = row > -1;
 
                         if (success == true)
                             dbcxtransaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
+            }
+            catch (Exception ex)
+            {
                         dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/AddCMSCategory");
-                    }
+                throw new Exception(ex.Message + " /Logic/AddCMSCategory");
+            }
                 }
             }
 
@@ -499,17 +499,17 @@ namespace Colsp.Logic
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
-                    try
-                    {
-                        int row = -1;
-                        DateTime dateNow = DateTime.Now;
+            try
+            {
+                    int row = -1;
+                    DateTime dateNow = DateTime.Now;
 
                         var queryCMSMaster = db.CMSMasters.Where(x => x.CMSMasterId == request.CMSMasterId).FirstOrDefault();
 
                         if (queryCMSMaster != null)
-                            return false;
+                        return false;
 
-                        // Update Information
+                    // Update Information
                         var cms = queryCMSMaster;
                         cms.CMSMasterNameEN = request.CMSMasterNameEN;
                         cms.CMSMasterNameTH = request.CMSMasterNameTH;
@@ -519,10 +519,10 @@ namespace Colsp.Logic
                         cms.CMSMasterExpireDate = request.ExpiryDate;
                         cms.CMSMasterTotal = 0;
                         cms.MobileShortDescriptionTH = request.MobileShortDescriptionTH;
-                        cms.MobileLongDescriptionTH = request.MobileLongDescriptionTH;
+                    cms.MobileLongDescriptionTH = request.MobileLongDescriptionTH;
                         cms.ShortDescriptionTH = request.ShortDescriptionTH;
                         cms.LongDescriptionTH = request.LongDescriptionTH;
-                        cms.MobileShortDescriptionEN = request.MobileShortDescriptionEN;
+                    cms.MobileShortDescriptionEN = request.MobileShortDescriptionEN;
                         cms.MobileLongDescriptionEN = request.MobileLongDescriptionEN;
                         cms.SortById = 0;
                         cms.ShortDescriptionEN = request.ShortDescriptionEN;
@@ -544,18 +544,18 @@ namespace Colsp.Logic
                         db.Entry(cms).State = EntityState.Modified;
                         db.SaveChanges();
 
-                        // Remove Feature Product Item in CMSFeatureProducts
-                        var CMSFeatureProductList = db.CMSFeatureProducts.Where(x => x.CMSMasterId == cms.CMSMasterId).ToList();
-                        if (CMSFeatureProductList != null && CMSFeatureProductList.Count > 0)
-                        {
-                            db.CMSFeatureProducts.RemoveRange(CMSFeatureProductList);
+                    // Remove Feature Product Item in CMSFeatureProducts
+                    var CMSFeatureProductList = db.CMSFeatureProducts.Where(x => x.CMSMasterId == cms.CMSMasterId).ToList();
+                    if (CMSFeatureProductList != null && CMSFeatureProductList.Count > 0)
+                    {
+                        db.CMSFeatureProducts.RemoveRange(CMSFeatureProductList);
                             db.SaveChanges();
-                        }
+                    }
 
-                        // Add Feature Product
-                        foreach (var featureProduct in request.FeatureProductList)
-                        {
-                            CMSFeatureProduct cmsFeatureProduct = new CMSFeatureProduct();
+                    // Add Feature Product
+                    foreach (var featureProduct in request.FeatureProductList)
+                    {
+                        CMSFeatureProduct cmsFeatureProduct = new CMSFeatureProduct();
                             cmsFeatureProduct.CMSMasterId = cms.CMSMasterId;
                             cmsFeatureProduct.ProductId = featureProduct.ProductId;
                             cmsFeatureProduct.CreateBy = request.CreateBy;
@@ -563,21 +563,21 @@ namespace Colsp.Logic
                             cmsFeatureProduct.UpdateBy = request.CreateBy;
                             cmsFeatureProduct.UpdateOn = dateNow;
 
-                            db.CMSFeatureProducts.Add(cmsFeatureProduct);
-                        }
+                        db.CMSFeatureProducts.Add(cmsFeatureProduct);
+                    }
 
-                        // Remove Category Map
-                        var queryCMSMaterCategoryList = db.CMSMasterCategoryMaps.Where(x => x.CMSMasterId == request.CMSMasterId).ToList();
-                        foreach (var masterCate in queryCMSMaterCategoryList)
-                        {
-                            db.CMSMasterCategoryMaps.Remove(masterCate);
+                    // Remove Category Map
+                    var queryCMSMaterCategoryList = db.CMSMasterCategoryMaps.Where(x => x.CMSMasterId == request.CMSMasterId).ToList();
+                    foreach (var masterCate in queryCMSMaterCategoryList)
+                    {
+                        db.CMSMasterCategoryMaps.Remove(masterCate);
                             db.SaveChanges(); 
-                        }
+                    }
 
-                        // Map Category
-                        foreach (var categoryRq in request.CategoryList)
-                        {
-                            CMSMasterCategoryMap cmsCategory = new CMSMasterCategoryMap();
+                    // Map Category
+                    foreach (var categoryRq in request.CategoryList)
+                    {
+                        CMSMasterCategoryMap cmsCategory = new CMSMasterCategoryMap();
                             cmsCategory.CMSCategoryId = categoryRq.CMSCategoryId;
                             cmsCategory.CMSMasterId = request.CMSMasterId;
                             cmsCategory.Sequence = categoryRq.Sequence;
@@ -589,29 +589,29 @@ namespace Colsp.Logic
                             cmsCategory.UpdateBy = request.CreateBy;
                             cmsCategory.UpdateOn = dateNow;
                             cmsCategory.UpdateIP = request.CreateIP;
-                            db.CMSMasterCategoryMaps.Add(cmsCategory);
+                        db.CMSMasterCategoryMaps.Add(cmsCategory);
                             db.SaveChanges();
+                    }
+
+                    foreach (var scheduleRq in request.ScheduleList)
+                    {
+                        // Remove Master Schedule Map
+                        var queryCMSScheduleList = db.CMSMasterSchedulerMaps.Where(x => x.CMSSchedulerId == scheduleRq.CMSSchedulerId).ToList();
+
+                        if (queryCMSScheduleList != null && queryCMSScheduleList.Count > 0)
+                        {
+                            foreach (var cmsSchedule in queryCMSScheduleList)
+                            {
+                                db.CMSMasterSchedulerMaps.Remove(cmsSchedule);
+                                    db.SaveChanges();
+                            }
                         }
 
-                        foreach (var scheduleRq in request.ScheduleList)
-                        {
-                            // Remove Master Schedule Map
-                            var queryCMSScheduleList = db.CMSMasterSchedulerMaps.Where(x => x.CMSSchedulerId == scheduleRq.CMSSchedulerId).ToList();
-
-                            if (queryCMSScheduleList != null && queryCMSScheduleList.Count > 0)
-                            {
-                                foreach (var cmsSchedule in queryCMSScheduleList)
-                                {
-                                    db.CMSMasterSchedulerMaps.Remove(cmsSchedule);
-                                    db.SaveChanges();
-                                }
-                            }
-
-                            var querySchedule = db.CMSSchedulers.Where(x => x.CMSSchedulerId == scheduleRq.CMSSchedulerId).FirstOrDefault();
+                        var querySchedule = db.CMSSchedulers.Where(x => x.CMSSchedulerId == scheduleRq.CMSSchedulerId).FirstOrDefault();
                             if (querySchedule != null)
-                            {
-                                // Update Schedule
-                                querySchedule.EffectiveDate = scheduleRq.EffectiveDate;
+                        {
+                            // Update Schedule
+                            querySchedule.EffectiveDate = scheduleRq.EffectiveDate;
                                 querySchedule.ExpireDate = scheduleRq.ExpiryDate;
                                 querySchedule.Status = scheduleRq.Status;
                                 querySchedule.CreateBy = querySchedule.CreateBy;
@@ -621,7 +621,7 @@ namespace Colsp.Logic
                                 querySchedule.UpdateOn = scheduleRq.UpdateDate;
                                 querySchedule.UpdateIP = scheduleRq.UpdateIP;
                                 db.Entry(querySchedule).State = EntityState.Modified;
-                                // New Map Master Schedule
+                            // New Map Master Schedule
                                 CMSMasterSchedulerMap cmsMasterScheduleMap = new CMSMasterSchedulerMap();
                                 cmsMasterScheduleMap.CMSMasterId = cms.CMSMasterId;
                                 cmsMasterScheduleMap.CMSSchedulerId = querySchedule.CMSSchedulerId;
@@ -632,23 +632,23 @@ namespace Colsp.Logic
                                 cmsMasterScheduleMap.UpdateBy = request.CreateBy;
                                 cmsMasterScheduleMap.UpdateOn = dateNow;
                                 cmsMasterScheduleMap.UpdateIP = request.CreateIP;
-                                db.CMSMasterSchedulerMaps.Add(cmsMasterScheduleMap);
-
-                            }
-
+                            db.CMSMasterSchedulerMaps.Add(cmsMasterScheduleMap);
+                            
                         }
+                        
+                    }
 
-                        row = db.SaveChanges();
-                        success = row > -1;
+                    row = db.SaveChanges();
+                    success = row > -1;
                         if (success == true)
                             dbcxtransaction.Commit();
 
-                    }
-                    catch (Exception ex)
-                    {
+            }
+            catch (Exception ex)
+            {
                         dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/EditCMSCategory");
-                    }
+                throw new Exception(ex.Message + " /Logic/EditCMSCategory");
+            }
                 }
             }
             return success;
@@ -667,14 +667,14 @@ namespace Colsp.Logic
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
-                    try
-                    {
-                        int row = -1;
-                        DateTime dateNow = DateTime.Now;
+            try
+            {
+                    int row = -1;
+                    DateTime dateNow = DateTime.Now;
 
                         CMSGroup cmsGroup = new CMSGroup();
-                        cmsGroup.CMSGroupNameEN = request.CMSGroupNameEN;
-                        cmsGroup.CMSGroupNameTH = request.CMSGroupNameTH;
+                    cmsGroup.CMSGroupNameEN = request.CMSGroupNameEN;
+                    cmsGroup.CMSGroupNameTH = request.CMSGroupNameTH;
                         cmsGroup.Status = request.Status;
                         cmsGroup.Visibility = request.Visibility;
                         cmsGroup.CreateBy = request.CreateBy;
@@ -683,14 +683,14 @@ namespace Colsp.Logic
                         cmsGroup.UpdateBy = request.CreateBy;
                         cmsGroup.UpdateOn = dateNow;
                         cmsGroup.UpdateIP = request.CreateIP;
-                        db.CMSGroups.Add(cmsGroup);
-                        db.SaveChanges();
+                    db.CMSGroups.Add(cmsGroup);
+                    db.SaveChanges();
 
-                        var cmsGroupId = cmsGroup.CMSGroupId;
+                    var cmsGroupId = cmsGroup.CMSGroupId;
 
-                        foreach (var master in request.GroupMasterList)
-                        {
-                            CMSMasterGroupMap cmsMasterGroup = new CMSMasterGroupMap();
+                    foreach (var master in request.GroupMasterList)
+                    {
+                        CMSMasterGroupMap cmsMasterGroup = new CMSMasterGroupMap();
                             cmsMasterGroup.CMSMasterId = master.CMSMasterId.Value;
                             cmsMasterGroup.CMSGroupId = cmsGroupId;
                             cmsMasterGroup.Sequence = master.Sequence.Value;
@@ -702,19 +702,19 @@ namespace Colsp.Logic
                             cmsMasterGroup.UpdateOn = dateNow;
                             cmsMasterGroup.UpdateIP = request.CreateIP;
                             cmsMasterGroup.ShopId = request.ShopId;
-                            db.CMSMasterGroupMaps.Add(cmsMasterGroup);
-                        }
+                        db.CMSMasterGroupMaps.Add(cmsMasterGroup);
+                    }
 
-                        row = db.SaveChanges();
-                        success = row > -1;
+                    row = db.SaveChanges();
+                    success = row > -1;
                         if (success == true)
                             dbcxtransaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
+            }
+            catch (Exception ex)
+            {
                         dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/AddCMSGroup");
-                    }
+                throw new Exception(ex.Message + " /Logic/AddCMSGroup");
+            }
                 }
             }
             return success;
@@ -729,19 +729,19 @@ namespace Colsp.Logic
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
-                    try
-                    {
-                        int row = -1;
-                        DateTime dateNow = DateTime.Now;
+            try
+            {
+                    int row = -1;
+                    DateTime dateNow = DateTime.Now;
 
                         var queryCMSGroup = db.CMSGroups.Where(x => x.CMSGroupId == request.CMSGroupId).FirstOrDefault();
 
                         if (queryCMSGroup == null)
-                            return false;
+                        return false;
 
                         var cmsGroup = queryCMSGroup;
-                        cmsGroup.CMSGroupNameEN = request.CMSGroupNameEN;
-                        cmsGroup.CMSGroupNameTH = request.CMSGroupNameTH;
+                    cmsGroup.CMSGroupNameEN = request.CMSGroupNameEN;
+                    cmsGroup.CMSGroupNameTH = request.CMSGroupNameTH;
                         cmsGroup.Status = request.Status;
                         cmsGroup.Visibility = request.Visibility;
                         cmsGroup.UpdateBy = request.UpdateBy;
@@ -752,21 +752,21 @@ namespace Colsp.Logic
                         cmsGroup.UpdateIP = request.CreateIP;
                         db.Entry(cmsGroup).State = EntityState.Modified;
                         db.SaveChanges();
-                        // Remove Master Group
+                    // Remove Master Group
                         var queryCMSMasterGroups = db.CMSMasterGroupMaps.Where(x => x.CMSGroupId == cmsGroup.CMSGroupId).ToList();
                         if (queryCMSMasterGroups.Count() > 0)
+                    {
+                        foreach (var queryCMSMasterGroup in queryCMSMasterGroups)
                         {
-                            foreach (var queryCMSMasterGroup in queryCMSMasterGroups)
-                            {
-                                db.CMSMasterGroupMaps.Remove(queryCMSMasterGroup);
+                            db.CMSMasterGroupMaps.Remove(queryCMSMasterGroup);
                                 db.SaveChanges();
-                            }
                         }
+                    }
 
-                        if (cmsGroup != null)
+                    if (cmsGroup != null)
+                    {
+                        foreach (var master in request.GroupMasterList)
                         {
-                            foreach (var master in request.GroupMasterList)
-                            {
                                 CMSMasterGroupMap cmsMasterGroup = new CMSMasterGroupMap();
                                 cmsMasterGroup.CMSMasterId = master.CMSMasterId.Value;
                                 cmsMasterGroup.CMSGroupId = cmsGroup.CMSGroupId;
@@ -780,19 +780,19 @@ namespace Colsp.Logic
                                 cmsMasterGroup.UpdateIP = master.CreateIP;
                                 cmsMasterGroup.ShopId = request.ShopId;
 
-                                db.CMSMasterGroupMaps.Add(cmsMasterGroup);
-                            }
-                            row = db.SaveChanges();
+                            db.CMSMasterGroupMaps.Add(cmsMasterGroup);
                         }
-                        success = row > -1;
+                    row = db.SaveChanges();
+                        }
+                    success = row > -1;
                         if (success == true)
                             dbcxtransaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
+            }
+            catch (Exception ex)
+            {
                         dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/EditCMSGroup");
-                    }
+                throw new Exception(ex.Message + " /Logic/EditCMSGroup");
+            }
                 }
             }
             return success;
@@ -807,26 +807,26 @@ namespace Colsp.Logic
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
-                    try
+            try
+            {
+                    foreach (var cmsGroup in request)
                     {
-                        foreach (var cmsGroup in request)
-                        {
                             var query = db.CMSGroups.Where(x => x.CMSGroupId == cmsGroup.CMSGroupId).FirstOrDefault();
                             if (query != null)
                             {
                                 query.Status = "RM";
                                 db.Entry(query).State = EntityState.Modified;
                             }
-                        }
-                        db.SaveChanges();
+                    }
+                    db.SaveChanges();
                         dbcxtransaction.Commit();
 
-                    }
-                    catch (Exception ex)
-                    {
+            }
+            catch (Exception ex)
+            {
                         dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/DeleteCMSGroup");
-                    }
+                throw new Exception(ex.Message + " /Logic/DeleteCMSGroup");
+            }
                 }
             }
             return success;
@@ -839,26 +839,26 @@ namespace Colsp.Logic
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
-                    try
+            try
+            {
+                    foreach (var cmsMaster in request)
                     {
-                        foreach (var cmsMaster in request)
-                        {
                             var query = db.CMSMasters.Where(x => x.CMSMasterId == cmsMaster.CMSMasterId).FirstOrDefault();
                             if (query != null)
                             {
                                 query.Status = "RM";
                                 db.Entry(query).State = EntityState.Modified;
                             }
-                        }
-                        db.SaveChanges();
+                    }
+                    db.SaveChanges();
                         dbcxtransaction.Commit();
 
-                    }
-                    catch (Exception ex)
-                    {
+            }
+            catch (Exception ex)
+            {
                         dbcxtransaction.Rollback();
-                        throw new Exception(ex.Message + " /Logic/DeleteCMSMaster");
-                    }
+                throw new Exception(ex.Message + " /Logic/DeleteCMSMaster");
+            }
                 }
             }
             return success;

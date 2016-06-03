@@ -8,16 +8,17 @@ namespace Colsp.Model.Requests
         public List<OrderRequest> Order { get; set; }
         public FilterByRequest FilterBy { get; set; }
         public List<String> Include { get; set; }
-        public List<String> Exclude { get; set; }
+		public List<String> Exclude { get; set; }
 
 
-        public ConditionRequest()
+
+		public ConditionRequest()
         {
             Order = new List<OrderRequest>();
             FilterBy = new FilterByRequest();
-            Include = new List<string>();
-            Exclude = new List<string>();
-        }
+			Include = new List<string>();
+			Exclude = new List<string>();
+		}
 
-    }
+	}
 }

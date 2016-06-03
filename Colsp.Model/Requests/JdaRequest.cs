@@ -20,6 +20,9 @@ namespace Colsp.Model.Requests
         public int Quantity { get; set; }
         public string JDADept { get; set; }
         public string JDASubDept { get; set; }
+        public decimal PromotionPrice { get; set; }
+        public DateTime? EffectiveDatePromotion { get; set; }
+        public DateTime? ExpireDatePromotion { get; set; }
 
         public JdaRequest()
         {
@@ -34,6 +37,9 @@ namespace Colsp.Model.Requests
             Quantity = 0;
             JDADept = string.Empty;
             JDASubDept = string.Empty;
+            PromotionPrice = 0;
+            EffectiveDatePromotion = null;
+            ExpireDatePromotion = null;
         }
     }
 }

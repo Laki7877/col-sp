@@ -11,14 +11,19 @@ namespace Colsp.Entity.Models
 {
     using System;
     
-    public partial class ReportProductsCommissionForOrder_Result
+    public partial class ReportReturnItemByOrderReport_Result1
     {
+        public Nullable<System.DateTime> ReturnDate { get; set; }
         public string OrderId { get; set; }
-        public string PID { get; set; }
+        public string Pid { get; set; }
         public string ProductName { get; set; }
-        public int QTY { get; set; }
+        public string ItemStatus { get; set; }
+        public int Quantity { get; set; }
         public Nullable<decimal> SalePrice { get; set; }
-        public int CommissionRate { get; set; }
-        public int CommissionFee { get; set; }
+        public decimal LocalDiscount { get; set; }
+        public int ReturnPrice { get; set; }
+        public int ReturnFee { get; set; }
+        public int ReturnAmount { get; set; }
+        public int ShopId { get; set; }
     }
 }

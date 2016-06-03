@@ -6,9 +6,13 @@ namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+
+        public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 10 };
+        public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 10 };
+
         public static readonly int DEFAULT_GLOBAL_CATEGORY = 1;
 
-        public static readonly string IMAGE_STATIC_URL = ConfigurationManager.AppSettings["ImageStaticUrl"];
+        public static readonly string PRODUCT_IMAGE_URL = string.Concat(AppSettingKey.IMAGE_STATIC_URL, "productimages/large/");
 
         public static readonly int DEFAULT_THE_ONE_CARD = 1;
 
@@ -162,7 +166,7 @@ namespace Colsp.Api.Constants
         public static readonly string CMS_STATUS_JUNK               = "JU";
         public static readonly string CMS_STATUS_APPROVE            = "AP";
         public static readonly string CMS_STATUS_NOT_APPROVE        = "RJ";
-        public static readonly string CMS_STATUS_REMOVE             = "RJ";
+        public static readonly string CMS_STATUS_REMOVE             = "RM";
 
 
 

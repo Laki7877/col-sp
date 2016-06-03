@@ -186,7 +186,7 @@ namespace Colsp.Api.Controllers
                 if (!query.Any())
                     return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
 
-                var items = query.ToList();
+                var items = query.ToList().GroupBy(g => g.BrandId).Select(s => s.First()).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, items);
 
             }
@@ -305,7 +305,7 @@ namespace Colsp.Api.Controllers
 
                     else
                         query = query.Where(x => x.LocalCatId == condition.CategoryId);
-
+                
                 if (condition.BrandId != null)
                     query = query.Where(x => x.BrandId == condition.BrandId);
 
@@ -515,6 +515,9 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                request.UpdateBy = this.User.UserRequest().Email;
+                request.ShopId = this.User.ShopRequest() == null ? 0 : this.User.ShopRequest().ShopId;
+
                 var success = cmsLogic.EditCMSCategory(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
@@ -696,36 +699,36 @@ namespace Colsp.Api.Controllers
                                 TitleShowcase = master.TitleShowcase,
 
                                 FeatureProductList = (from feature in db.CMSFeatureProducts
-                                                      where feature.CMSMasterId == cmsMasterId
+                                                              where feature.CMSMasterId == cmsMasterId
                                                       select new CMSFeatureProductRequest
                                                       {
-                                                          CMSMasterId = feature.CMSMasterId,
-                                                          ProductId = feature.ProductId
-                                                      }).ToList(),
+                                                                  CMSMasterId = feature.CMSMasterId,
+                                                                  ProductId = feature.ProductId
+                                                              }).ToList(),
 
                                 ScheduleList = (from schedule in db.CMSSchedulers
-                                                where schedule.CMSSchedulerId == masterScheduleMap.CMSSchedulerId
-                                                select new CMSSchedulerRequest
-                                                {
-                                                    CMSSchedulerId = schedule.CMSSchedulerId,
-                                                    CMSMasterId = master.CMSMasterId,
-                                                    EffectiveDate = schedule.EffectiveDate,
-                                                    ExpiryDate = schedule.ExpireDate
-                                                }).ToList(),
+                                                                where schedule.CMSSchedulerId == masterScheduleMap.CMSSchedulerId
+                                                                select new CMSSchedulerRequest
+                                                                {
+                                                                    CMSSchedulerId = schedule.CMSSchedulerId,
+                                                                    CMSMasterId = master.CMSMasterId,
+                                                                    EffectiveDate = schedule.EffectiveDate,
+                                                                    ExpiryDate = schedule.ExpireDate
+                                                                }).ToList(),
 
                                 CategoryList = (from cate in db.CMSCategories
-                                                join masterCate in db.CMSMasterCategoryMaps
-                                                on cate.CMSCategoryId equals masterCate.CMSCategoryId
-                                                where masterCate.CMSMasterId == cmsMasterId
-                                                select new CMSCategoryRequest
-                                                {
-                                                    CMSCategoryId = cate.CMSCategoryId,
-                                                    CMSCategoryNameEN = cate.CMSCategoryNameEN,
-                                                    CMSCategoryNameTH = cate.CMSCategoryNameTH,
-                                                    Visibility = cate.Visibility,
-                                                    Status = cate.Status,
-                                                    Total = (from pm in db.CMSCategoryProductMaps where pm.CMSCategoryId == cate.CMSCategoryId select pm).Count()
-                                                }).ToList()
+                                                                join masterCate in db.CMSMasterCategoryMaps 
+                                                                on cate.CMSCategoryId equals masterCate.CMSCategoryId 
+                                                                where masterCate.CMSMasterId == cmsMasterId 
+                                                                select new CMSCategoryRequest
+                                                                {
+                                                                    CMSCategoryId = cate.CMSCategoryId,
+                                                                    CMSCategoryNameEN = cate.CMSCategoryNameEN,
+                                                                    CMSCategoryNameTH = cate.CMSCategoryNameTH,
+                                                                    Visibility = cate.Visibility,
+                                                                    Status = cate.Status,
+                                                                    Total = (from pm in db.CMSCategoryProductMaps where pm.CMSCategoryId == cate.CMSCategoryId select pm).Count()
+                                                                }).ToList()
                             };
 
                 if (!query.Any())
@@ -811,7 +814,7 @@ namespace Colsp.Api.Controllers
                 }
                 #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
-
+           
             }
             catch (Exception e)
             {
@@ -831,7 +834,7 @@ namespace Colsp.Api.Controllers
 
                 request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
                 request.CreateBy = Email;
-
+                
                 var success = cmsLogic.AddCMSMaster(request);
 
                 if (!success)

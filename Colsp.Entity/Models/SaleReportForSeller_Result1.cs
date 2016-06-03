@@ -11,7 +11,7 @@ namespace Colsp.Entity.Models
 {
     using System;
     
-    public partial class SaleReportForSeller_Result
+    public partial class SaleReportForSeller_Result1
     {
         public Nullable<System.DateTime> OrderDateTime { get; set; }
         public string OrderDate { get; set; }
@@ -33,5 +33,6 @@ namespace Colsp.Entity.Models
         public int BrandId { get; set; }
         public int GlobalCatId { get; set; }
         public int LocalCatId { get; set; }
+        public int ShopId { get; set; }
     }
 }

@@ -35,6 +35,6 @@ namespace Colsp.Api.Constants
         public static readonly bool PID_NUMBER_ONLY = bool.Parse(ConfigurationManager.AppSettings["PidNumberOnly"]);
 
 
-
-    }
+		public static readonly string IMAGE_STATIC_URL = ConfigurationManager.AppSettings["ImageStaticUrl"];
+	}
 }

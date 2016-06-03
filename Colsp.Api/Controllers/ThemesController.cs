@@ -41,7 +41,7 @@ namespace Colsp.Api.Controllers
                 {
                     s.ThemeId,
                     s.ThemeName,
-                    s.ThemeImage
+					ThemeImage = string.Concat(AppSettingKey.IMAGE_STATIC_URL,s.ThemeImage)
                 });
                 return Request.CreateResponse(HttpStatusCode.OK,themes);
             }
