@@ -617,12 +617,12 @@ namespace Colsp.Api.Controllers
 
                     csv.NextRecord();
 
-                    foreach (var row in Query.Take(500))
+                    foreach (var row in report.Take(500))
                     {
 
-                        csv.WriteField("'" + row.Pid);
-                        csv.WriteField(row.ProductNameEn);
-                        csv.WriteField(row.ProductNameTh);
+                        csv.WriteField("'" + row.PID);
+                        csv.WriteField(row.ProductNameEN);
+                        csv.WriteField(row.ProductNameTH);
                         csv.WriteField(row.variant1);
                         csv.WriteField(row.variant2);
                         csv.WriteField(row.OnHand);
@@ -709,7 +709,7 @@ namespace Colsp.Api.Controllers
                     report.Add(model);
                 }
 
-                if (request == null)
+                if (request == null || string.IsNullOrWhiteSpace(request.OrderDateFrom))
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, report);
                 }

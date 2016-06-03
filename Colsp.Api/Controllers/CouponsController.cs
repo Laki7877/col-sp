@@ -110,8 +110,21 @@ namespace Colsp.Api.Controllers
 								LocalCategories = s.CouponLocalCatMaps.Select(se => new { se.LocalCategory.CategoryId, se.LocalCategory.NameEn }),
 								Shops = s.CouponShopMaps.Select(se => new { se.Shop.ShopId, se.Shop.ShopNameEn })
 							},
-							Include = s.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).Select(se => se.Pid),
-							Exclude = s.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).Select(se => se.Pid)
+							//Include = s.CouponPidMaps.Where(w=>w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).Select(se=>se.Pid),
+							//Exclude = s.CouponPidMaps.Where(w=>w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).Select(se=>se.Pid)
+							Include = s.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE) && w.CouponId == s.CouponId).Select(i => new
+							{
+								Pid = i.Pid,
+								ProductNameEn = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.ProductNameEn).FirstOrDefault(),
+								ProductNameTh = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.ProductNameTh).FirstOrDefault(),
+								Sku = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.Sku).FirstOrDefault(),
+							}),
+							Exclude = s.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE) && w.CouponId == s.CouponId).Select(i => new {
+								Pid = i.Pid,
+								ProductNameEn = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.ProductNameEn).FirstOrDefault(),
+								ProductNameTh = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.ProductNameTh).FirstOrDefault(),
+								Sku = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.Sku).FirstOrDefault(),
+							})
 						}
 
 					});
