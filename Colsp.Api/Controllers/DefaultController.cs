@@ -432,7 +432,7 @@ namespace Colsp.Api.Controllers
                                 var split = tmpColumn.Split(',');
                                 foreach (var val in split)
                                 {
-                                    var set = attributeSetList.Where(w => w.AttributeSetNameEn.Equals(val.Trim())).SingleOrDefault();
+                                    var set = attributeSetList.Where(w => w.AttributeSetNameEn.Equals(val.Trim().ToLower().Replace(' ','_'))).SingleOrDefault();
                                     if (set == null)
                                     {
                                         set = attributeSetList.Where(w => w.AttributeSetNameEn.Equals(val.Trim().Replace(' ', '_'))).SingleOrDefault();

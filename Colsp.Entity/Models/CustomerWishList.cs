@@ -16,5 +16,6 @@ namespace Colsp.Entity.Models
     {
         public string CustomerId { get; set; }
         public string Pid { get; set; }
+        public int SeqNo { get; set; }
     }
 }

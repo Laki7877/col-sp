@@ -38,6 +38,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <OutputPath>bin\Test\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -62,6 +71,7 @@
     <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\CategoryShiftRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
+    <Compile Include="Requests\CmosRequest.cs" />
     <Compile Include="Requests\CMSBrandInShopRequest.cs" />
     <Compile Include="Requests\CMSCategoryProductGetListRequest.cs" />
     <Compile Include="Requests\CMSCategoryRequest.cs" />
@@ -75,16 +85,20 @@
     <Compile Include="Requests\CMSSchedulerRequest.cs" />
     <Compile Include="Requests\CMSSearchForAddRequest.cs" />
     <Compile Include="Requests\CollectionListRequest.cs" />
+    <Compile Include="Requests\CommissionReportRequest.cs" />
     <Compile Include="Requests\ConditionRequest.cs" />
     <Compile Include="Requests\ControlFlagRequest.cs" />
     <Compile Include="Requests\CouponRequest.cs" />
     <Compile Include="Requests\CSVTemplateRequest.cs" />
+    <Compile Include="Requests\ErrorRequest.cs" />
     <Compile Include="Requests\ExportRequest.cs" />
     <Compile Include="Requests\FilterByRequest.cs" />
     <Compile Include="Requests\ImageRequest.cs" />
     <Compile Include="Requests\ImportHeaderRequest.cs" />
     <Compile Include="Requests\InventoryRequest.cs" />
     <Compile Include="Requests\ItemOnHoldReportRequest.cs" />
+    <Compile Include="Requests\ItemReturnReportRequest.cs" />
+    <Compile Include="Requests\JdaRequest.cs" />
     <Compile Include="Requests\Layout.cs" />
     <Compile Include="Requests\MasterProductRequest.cs" />
     <Compile Include="Requests\NewsletterRequest.cs" />
@@ -103,8 +117,10 @@
     <Compile Include="Requests\ProductStageRequest.cs" />
     <Compile Include="Requests\ReportRequest.cs" />
     <Compile Include="Requests\Request.cs" />
+    <Compile Include="Requests\ReturnReportRequest.cs" />
     <Compile Include="Requests\ReturnRequest.cs" />
     <Compile Include="Requests\SaleReportForSellerRequest.cs" />
+    <Compile Include="Requests\SellerReportSaleRequest.cs" />
     <Compile Include="Requests\SEORequest.cs" />
     <Compile Include="Requests\ShopAppearanceRequest.cs" />
     <Compile Include="Requests\ShopCommission.cs" />

@@ -58,6 +58,10 @@ namespace Colsp.Model.Requests
         public string RemittanceFaxNumber { get; set; }
         public string DomainName { get; set; }
         public bool CloneGlobalCategory { get; set; }
+        public string Email { get; set; }
+        public string ContactPersonFirstName { get; set; }
+        public string ContactPersonLastName { get; set; }
+
 
         public ShopRequest()
         {
@@ -113,6 +117,9 @@ namespace Colsp.Model.Requests
             ShopImage = new ImageRequest();
             DomainName = string.Empty;
             CloneGlobalCategory = false;
+            Email = string.Empty;
+            ContactPersonFirstName = string.Empty;
+            ContactPersonLastName = string.Empty;
         }
 
         public override void DefaultOnNull()

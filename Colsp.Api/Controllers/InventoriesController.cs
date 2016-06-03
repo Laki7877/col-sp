@@ -209,13 +209,17 @@ namespace Colsp.Api.Controllers
                 var invenentory = (from inv in db.Inventories
                                 join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
                                 where
-                                !stage.Shop.Status.Equals(Constant.STATUS_REMOVE) &&
-                                (
-                                    stage.IsVariant == true || (stage.IsVariant == false && stage.VariantCount == 0)
+                                !stage.Status.Equals(Constant.STATUS_REMOVE)
+                                && (
+                                    stage.IsVariant == true 
+                                    || (
+                                            stage.IsVariant == false 
+                                            && stage.VariantCount == 0
+                                        )
                                 )
                                 select new
                                 {
-                                    ImageUrl = stage.FeatureImgUrl,
+                                    ImageUrl = string.Empty.Equals(stage.FeatureImgUrl) ? string.Empty : string.Concat(Constant.IMAGE_STATIC_URL, stage.FeatureImgUrl),
                                     ProductId = stage.ProductId,
                                     Sku = stage.Sku,
                                     Upc = stage.Upc,
@@ -291,12 +295,31 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var inv = db.Inventories.Where(w=> w.Pid.Equals(pid) && !w.ProductStage.Shop.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
+                var inv = db.Inventories.Where(w=> w.Pid.Equals(pid) 
+                    && !Constant.STATUS_REMOVE.Equals(w.ProductStage.Status))
+                    .Select(s => new
+                    {
+                        s.Pid,
+                        s.Quantity,
+                        s.ProductStage.ProductStageGroup.ShippingId
+                    })
+                    .SingleOrDefault();
                 if(inv == null)
                 {
                     throw new Exception("Cannot find inventory");
                 }
-                inv.Quantity = Validation.ValidationInteger(inv.Quantity + request.UpdateQuantity,"Quantity",true, int.MaxValue,0).Value;
+                if(inv.ShippingId == 3 || inv.ShippingId == 4)
+                {
+                    throw new Exception("Cannot update inventory with COL Fulfillment or 3PL Fulfillment");
+                }
+                Inventory inventory = new Inventory()
+                {
+                    Pid = inv.Pid
+                };
+                db.Inventories.Attach(inventory);
+                db.Entry(inventory).Property(p => p.Quantity).IsModified = true;
+                inventory.Quantity = inv.Quantity + request.UpdateQuantity;
+                db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Inventory");
                 return Request.CreateResponse(HttpStatusCode.OK, inv.Quantity);
             }

@@ -110,6 +110,7 @@ namespace Colsp.Api.Controllers
                     s.BrandId,
                     s.BrandNameEn,
                     s.BrandNameTh,
+                    s.DisplayNameEn,
                     UpdatedDt = s.UpdateOn,
                     s.Status
                 });
@@ -122,6 +123,7 @@ namespace Colsp.Api.Controllers
                 {
                     brands = brands.Where(b => b.BrandNameEn.Contains(request.SearchText)
                     || b.BrandNameTh.Contains(request.SearchText)
+                    || b.DisplayNameEn.Contains(request.SearchText)
                     || SqlFunctions.StringConvert((double)b.BrandId).Equals(request.SearchText));
                 }
                 if (request.BrandId != 0)
@@ -185,6 +187,7 @@ namespace Colsp.Api.Controllers
                     s.BannerStatusTh,
                     s.BannerSmallStatusTh,
                     s.Status,
+                    s.IsLandingPage,
                     BrandImages = s.BrandImages.Select(si => new
                     {
                         si.EnTh,
@@ -194,7 +197,9 @@ namespace Colsp.Api.Controllers
                         si.BrandImageId,
                         si.ImageUrl,
                     }),
-                    BrandFeatureProducts = s.BrandFeatureProducts.Select(sp => new
+                    BrandFeatureProducts = s.BrandFeatureProducts
+                        .Where(w => !Constant.STATUS_REMOVE.Equals(w.ProductStageGroup.Status) && w.ProductStageGroup.BrandId.HasValue && w.ProductStageGroup.BrandId == brandId)
+                        .Select(sp => new
                     {
                         ProductStageGroup = sp.ProductStageGroup == null ? null : new
                         {
@@ -228,6 +233,7 @@ namespace Colsp.Api.Controllers
                 response.BannerSmallStatusEn = brand.BannerSmallStatusEn;
                 response.BannerStatusTh = brand.BannerStatusTh;
                 response.BannerSmallStatusTh = brand.BannerSmallStatusTh;
+                response.IsLandingPage = brand.IsLandingPage;
                 if (brand.SortBy != null)
                 {
                     response.SortBy = new SortByRequest()
@@ -340,7 +346,7 @@ namespace Colsp.Api.Controllers
                 var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.BrandId.HasValue ? w.BrandId.Value : 0)).Select(s=>s.Brand.BrandNameEn);
                 if(productMap != null && productMap.Count() > 0)
                 {
-                    throw new Exception(string.Concat("Cannot delete brand ", string.Join(",", productMap)));
+                    throw new Exception("Cannot delete brand imaginary_brand because it has been associated with products.");
                 }
                 var brandList = db.Brands.Where(w=> ids.Contains(w.BrandId));
                 foreach (BrandRequest brandRq in request)
@@ -431,6 +437,7 @@ namespace Colsp.Api.Controllers
             brand.BannerSmallStatusTh = request.BannerSmallStatusTh;
             brand.BannerStatusTh = request.BannerStatusTh;
             brand.FeatureProductStatus = request.FeatureProductStatus;
+            brand.IsLandingPage = request.IsLandingPage;
             if (request.SortBy.SortById != 0)
             {
                 brand.SortById = request.SortBy.SortById;
@@ -450,11 +457,11 @@ namespace Colsp.Api.Controllers
             brand.PicUrl = Validation.ValidateString(request.BrandImage.Url, "Logo", false, 500, false, string.Empty);
             if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
             {
-                brand.UrlKey = brand.BrandNameEn.Replace(" ", "-");
+                brand.UrlKey = brand.BrandNameEn.Trim().ToLower().Replace(" ", "-");
             }
             else
             {
-                brand.UrlKey = request.SEO.ProductUrlKeyEn.Trim().Replace(" ", "-");
+                brand.UrlKey = request.SEO.ProductUrlKeyEn.Trim().ToLower().Replace(" ", "-");
             }
             #region BranImage En
             var imageOldEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).ToList();

@@ -14,7 +14,8 @@ namespace Colsp.Entity.Models
     
     public partial class AppAuth
     {
-        public string AppId { get; set; }
+        public int ServerAppId { get; set; }
+        public int ClientAppId { get; set; }
         public string SecretKey { get; set; }
         public string AppName { get; set; }
         public Nullable<System.DateTime> ExpiredDate { get; set; }

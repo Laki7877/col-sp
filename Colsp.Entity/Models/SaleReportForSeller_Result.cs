@@ -33,5 +33,6 @@ namespace Colsp.Entity.Models
         public int BrandId { get; set; }
         public int GlobalCatId { get; set; }
         public int LocalCatId { get; set; }
+        public int ShopId { get; set; }
     }
 }

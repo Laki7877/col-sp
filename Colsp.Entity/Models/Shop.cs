@@ -25,7 +25,9 @@ namespace Colsp.Entity.Models
             this.NewsletterShopMaps = new HashSet<NewsletterShopMap>();
             this.ProductHistories = new HashSet<ProductHistory>();
             this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
+            this.ProductHistoryRelateds = new HashSet<ProductHistoryRelated>();
             this.ProductImages = new HashSet<ProductImage>();
+            this.ProductRelateds = new HashSet<ProductRelated>();
             this.ProductReviews = new HashSet<ProductReview>();
             this.ProductStages = new HashSet<ProductStage>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
@@ -87,6 +89,9 @@ namespace Colsp.Entity.Models
         public string BankAccountNumber { get; set; }
         public string BankAccountName { get; set; }
         public string RemittanceFaxNumber { get; set; }
+        public string ContactPersonFirstName { get; set; }
+        public string ContactPersonLastName { get; set; }
+        public string Email { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
         public System.DateTime CreateOn { get; set; }
@@ -115,7 +120,11 @@ namespace Colsp.Entity.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductHistoryRelated> ProductHistoryRelateds { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductImage> ProductImages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductRelated> ProductRelateds { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductReview> ProductReviews { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

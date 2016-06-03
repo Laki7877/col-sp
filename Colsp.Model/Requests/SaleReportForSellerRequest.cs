@@ -9,7 +9,7 @@ namespace Colsp.Model.Requests
     public class SaleReportForSellerRequest : PaginatedRequest
     {
         public string OrderDateFrom { get; set; }
-        public string OrderDateEnd { get; set; }
+        public string OrderDateTo { get; set; }
         public string ItemStatus { get; set; }
         public int? PID { get; set; }
         public string ItemName { get; set; }
@@ -19,7 +19,7 @@ namespace Colsp.Model.Requests
         public SaleReportForSellerRequest()
         {
             OrderDateFrom = string.Empty;
-            OrderDateEnd = string.Empty;
+            OrderDateTo = string.Empty;
             ItemStatus = string.Empty;
             PID = 0;
             ItemName = string.Empty;

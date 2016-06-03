@@ -82,7 +82,7 @@ namespace Colsp.Model.Requests
             AttributeId = GetValueOrDefault(AttributeId, 0);
             SearchText = GetValueOrDefault(SearchText, string.Empty);
             Pid = GetValueOrDefault(Pid, null);
-			_order = GetValueOrDefault(_order, "ProductId");
+			_order = GetValueOrDefault(_order, "CreatedDt");
 			base.DefaultOnNull();
 		}
 

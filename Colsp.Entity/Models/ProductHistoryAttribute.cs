@@ -19,6 +19,7 @@ namespace Colsp.Entity.Models
         public int AttributeId { get; set; }
         public string ValueEn { get; set; }
         public string ValueTh { get; set; }
+        public string HtmlBoxValue { get; set; }
         public Nullable<int> AttributeValueId { get; set; }
         public bool CheckboxValue { get; set; }
         public int Position { get; set; }

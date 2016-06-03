@@ -5,12 +5,29 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="ColspModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ApiLog">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="bigint" Nullable="false" />
+          <Property Name="SourceApp" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="DestinationApp" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="RequestUrl" Type="varchar" MaxLength="2000" Nullable="false" />
+          <Property Name="Method" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="RequestData" Type="text" Nullable="false" />
+          <Property Name="ResponseData" Type="text" Nullable="false" />
+          <Property Name="ResponseCode" Type="int" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="AppAuth">
           <Key>
-            <PropertyRef Name="AppId" />
+            <PropertyRef Name="ServerAppId" />
+            <PropertyRef Name="ClientAppId" />
           </Key>
-          <Property Name="AppId" Type="varchar" MaxLength="9" Nullable="false" />
-          <Property Name="SecretKey" Type="varchar" MaxLength="32" />
+          <Property Name="ServerAppId" Type="int" Nullable="false" />
+          <Property Name="ClientAppId" Type="int" Nullable="false" />
+          <Property Name="SecretKey" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="AppName" Type="varchar" MaxLength="100" />
           <Property Name="ExpiredDate" Type="smalldatetime" />
           <Property Name="CreateOn" Type="smalldatetime" Nullable="false" />
@@ -23,10 +40,10 @@
             <PropertyRef Name="AttributeId" />
           </Key>
           <Property Name="AttributeId" Type="int" Nullable="false" />
-          <Property Name="AttributeNameEn" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="AttributeDescriptionEn" Type="varchar" MaxLength="1000" Nullable="false" />
-          <Property Name="DisplayNameEn" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="DisplayNameTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="AttributeNameEn" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="AttributeDescriptionEn" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DefaultAttribute" Type="bit" Nullable="false" />
           <Property Name="VisibleTo" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="Required" Type="bit" Nullable="false" />
@@ -35,7 +52,7 @@
           <Property Name="DataType" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="VariantDataType" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="DataValidation" Type="char" MaxLength="2" Nullable="false" />
-          <Property Name="DefaultValue" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="DefaultValue" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="ShowAdminFlag" Type="bit" Nullable="false" />
           <Property Name="ShowGlobalSearchFlag" Type="bit" Nullable="false" />
           <Property Name="ShowLocalSearchFlag" Type="bit" Nullable="false" />
@@ -71,8 +88,8 @@
             <PropertyRef Name="AttributeSetId" />
           </Key>
           <Property Name="AttributeSetId" Type="int" Nullable="false" />
-          <Property Name="AttributeSetNameEn" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="AttributeSetDescriptionEn" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="AttributeSetNameEn" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="AttributeSetDescriptionEn" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -99,7 +116,7 @@
             <PropertyRef Name="Tag" />
           </Key>
           <Property Name="AttributeSetId" Type="int" Nullable="false" />
-          <Property Name="Tag" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
           <Property Name="CreateOn" Type="datetime" />
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
@@ -110,8 +127,8 @@
             <PropertyRef Name="AttributeValueId" />
           </Key>
           <Property Name="AttributeValueId" Type="int" Nullable="false" />
-          <Property Name="AttributeValueEn" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="AttributeValueTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="AttributeValueEn" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="AttributeValueTh" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="MapValue" Type="varchar" MaxLength="30" Nullable="false" />
@@ -145,15 +162,15 @@
             <PropertyRef Name="BrandId" />
           </Key>
           <Property Name="BrandId" Type="int" Nullable="false" />
-          <Property Name="BrandNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="BrandNameTh" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="DisplayNameEn" Type="varchar" MaxLength="300" Nullable="false" />
-          <Property Name="DisplayNameTh" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="BrandNameEn" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="BrandNameTh" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="DisplayNameEn" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="DisplayNameTh" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="PicUrl" Type="varchar" MaxLength="1000" Nullable="false" />
           <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
-          <Property Name="DescriptionShortEn" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
-          <Property Name="DescriptionShortTh" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionMobileTh" Type="ntext" Nullable="false" />
           <Property Name="DescriptionMobileEn" Type="ntext" Nullable="false" />
           <Property Name="FeatureProductStatus" Type="bit" Nullable="false" />
@@ -161,20 +178,21 @@
           <Property Name="BannerSmallStatusEn" Type="bit" Nullable="false" />
           <Property Name="BannerStatusTh" Type="bit" Nullable="false" />
           <Property Name="BannerSmallStatusTh" Type="bit" Nullable="false" />
-          <Property Name="FeatureTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
-          <Property Name="MetaTitleEn" Type="varchar" MaxLength="60" Nullable="false" />
-          <Property Name="MetaTitleTh" Type="varchar" MaxLength="60" Nullable="false" />
-          <Property Name="MetaDescriptionEn" Type="varchar" MaxLength="150" Nullable="false" />
-          <Property Name="MetaDescriptionTh" Type="varchar" MaxLength="150" Nullable="false" />
-          <Property Name="MetaKeyEn" Type="varchar" MaxLength="630" Nullable="false" />
-          <Property Name="MetaKeyTh" Type="varchar" MaxLength="630" Nullable="false" />
-          <Property Name="SeoEn" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="SeoTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="MetaTitleEn" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="MetaTitleTh" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="MetaDescriptionEn" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="MetaDescriptionTh" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="MetaKeyEn" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="MetaKeyTh" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="SeoEn" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="SeoTh" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="IsLandingPage" Type="bit" Nullable="false" />
           <Property Name="SortById" Type="int" />
           <Property Name="OldBrandId" Type="int" />
           <Property Name="Bu" Type="char" MaxLength="3" />
-          <Property Name="UrlKey" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="UrlKey" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="CreateOn" Type="datetime" Nullable="false" />
@@ -202,7 +220,7 @@
           <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="EnTh" Type="char" MaxLength="2" Nullable="false" />
-          <Property Name="Link" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="Link" Type="varchar" MaxLength="512" Nullable="false" />
           <Property Name="Type" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="CreateOn" Type="datetime" Nullable="false" />
@@ -339,8 +357,8 @@
           <Key>
             <PropertyRef Name="CMSImageId" />
           </Key>
-          <Property Name="CMSImageId" Type="int" Nullable="false" />
-          <Property Name="CMSMasterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CMSMasterId" Type="int" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="EnTh" Type="char" MaxLength="2" Nullable="false" />
@@ -353,7 +371,7 @@
           <Key>
             <PropertyRef Name="CMSMasterId" />
           </Key>
-          <Property Name="CMSMasterId" Type="int" Nullable="false" />
+          <Property Name="CMSMasterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CMSMasterNameEN" Type="varchar" MaxLength="300" Nullable="false" />
           <Property Name="CMSMasterNameTH" Type="varchar" MaxLength="300" Nullable="false" />
           <Property Name="CMSMasterURLKey" Type="varchar" MaxLength="300" Nullable="false" />
@@ -461,8 +479,8 @@
             <PropertyRef Name="CouponId" />
           </Key>
           <Property Name="CouponId" Type="int" Nullable="false" />
-          <Property Name="CouponCode" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="CouponName" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="CouponCode" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="CouponName" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="ShopId" Type="int" />
           <Property Name="CouponQuantity" Type="int" Nullable="false" />
           <Property Name="CouponUsed" Type="int" Nullable="false" />
@@ -720,6 +738,15 @@
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="UpdateOn" Type="datetime" />
         </EntityType>
+        <EntityType Name="CustomerProductHistory">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="Pid" />
+          </Key>
+          <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="CustomerToken">
           <Key>
             <PropertyRef Name="CustomerId" />
@@ -757,6 +784,7 @@
           </Key>
           <Property Name="CustomerId" Type="varchar" MaxLength="36" Nullable="false" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="SeqNo" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Deal">
           <Key>
@@ -810,16 +838,16 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="int" Nullable="false" />
-          <Property Name="NameEn" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="NameTh" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="Commission" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="NameEn" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="NameTh" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Commission" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="UrlKey" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Lft" Type="int" Nullable="false" />
           <Property Name="Rgt" Type="int" Nullable="false" />
           <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
-          <Property Name="DescriptionShortEn" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
-          <Property Name="DescriptionShortTh" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionMobileTh" Type="ntext" Nullable="false" />
           <Property Name="DescriptionMobileEn" Type="ntext" Nullable="false" />
           <Property Name="FeatureProductStatus" Type="bit" Nullable="false" />
@@ -827,9 +855,10 @@
           <Property Name="BannerSmallStatusEn" Type="bit" Nullable="false" />
           <Property Name="BannerStatusTh" Type="bit" Nullable="false" />
           <Property Name="BannerSmallStatusTh" Type="bit" Nullable="false" />
-          <Property Name="FeatureTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
+          <Property Name="IsLandingPage" Type="bit" Nullable="false" />
           <Property Name="SortById" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -858,7 +887,7 @@
           <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="EnTh" Type="char" MaxLength="2" Nullable="false" />
-          <Property Name="Link" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="Link" Type="varchar" MaxLength="512" Nullable="false" />
           <Property Name="Type" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
           <Property Name="CreateOn" Type="datetime" />
@@ -983,16 +1012,16 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="int" Nullable="false" />
-          <Property Name="NameEn" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="NameTh" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="NameEn" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="NameTh" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="UrlKey" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="Lft" Type="int" Nullable="false" />
           <Property Name="Rgt" Type="int" Nullable="false" />
           <Property Name="DescriptionFullEn" Type="ntext" Nullable="false" />
-          <Property Name="DescriptionShortEn" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionShortEn" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionFullTh" Type="ntext" Nullable="false" />
-          <Property Name="DescriptionShortTh" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="DescriptionShortTh" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DescriptionMobileTh" Type="ntext" Nullable="false" />
           <Property Name="DescriptionMobileEn" Type="ntext" Nullable="false" />
           <Property Name="FeatureProductStatus" Type="bit" Nullable="false" />
@@ -1000,9 +1029,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
           <Property Name="BannerSmallStatusEn" Type="bit" Nullable="false" />
           <Property Name="BannerStatusTh" Type="bit" Nullable="false" />
           <Property Name="BannerSmallStatusTh" Type="bit" Nullable="false" />
-          <Property Name="FeatureTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="FeatureTitle" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="TitleShowcase" Type="bit" Nullable="false" />
           <Property Name="Visibility" Type="bit" Nullable="false" />
+          <Property Name="IsLandingPage" Type="bit" Nullable="false" />
           <Property Name="SortById" Type="int" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -1034,7 +1064,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Guest' does not have a primary key
           <Property Name="Position" Type="int" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="EnTh" Type="char" MaxLength="2" Nullable="false" />
-          <Property Name="Link" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="Link" Type="varchar" MaxLength="512" Nullable="false" />
           <Property Name="Type" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
           <Property Name="CreateOn" Type="datetime" />
@@ -1489,8 +1519,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.Migrate_TBPropertyProduct' does no
             <PropertyRef Name="NewsletterId" />
           </Key>
           <Property Name="NewsletterId" Type="int" Nullable="false" />
-          <Property Name="Subject" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="Description" Type="varchar(max)" Nullable="false" />
+          <Property Name="Subject" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="VisibleShopGroup" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="ImageUrl" Type="varchar" MaxLength="2000" Nullable="false" />
           <Property Name="PublishedDt" Type="datetime" />
@@ -1808,6 +1838,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="ValueEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="ValueTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="HtmlBoxValue" Type="ntext" Nullable="false" />
           <Property Name="AttributeValueId" Type="int" />
           <Property Name="CheckboxValue" Type="bit" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
@@ -1837,7 +1868,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="HistoryId" Type="bigint" Nullable="false" />
           <Property Name="Pid" Type="char" MaxLength="7" Nullable="false" />
           <Property Name="ProductId" Type="bigint" Nullable="false" />
-          <Property Name="ShopId" Type="int" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="ProductNameEn" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="ProductNameTh" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="ProdTDNameTh" Type="varchar" MaxLength="55" Nullable="false" />
@@ -1930,6 +1961,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="ValueEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="ValueTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="HtmlBoxValue" Type="ntext" Nullable="false" />
           <Property Name="AttributeValueId" Type="int" />
           <Property Name="CheckboxValue" Type="bit" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
@@ -1960,33 +1992,33 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="HistoryId" Type="bigint" Nullable="false" />
           <Property Name="HistoryDt" Type="datetime" Nullable="false" />
           <Property Name="ProductId" Type="bigint" Nullable="false" />
-          <Property Name="ShopId" Type="int" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="GlobalCatId" Type="int" />
           <Property Name="LocalCatId" Type="int" />
           <Property Name="AttributeSetId" Type="int" />
           <Property Name="BrandId" Type="int" />
-          <Property Name="ShippingId" Type="int" />
-          <Property Name="EffectiveDate" Type="datetime" />
-          <Property Name="ExpireDate" Type="datetime" />
+          <Property Name="ShippingId" Type="int" Nullable="false" />
+          <Property Name="EffectiveDate" Type="datetime" Nullable="false" />
+          <Property Name="ExpireDate" Type="datetime" Nullable="false" />
           <Property Name="NewArrivalDate" Type="datetime" />
-          <Property Name="TheOneCardEarn" Type="int" />
-          <Property Name="GiftWrap" Type="char" MaxLength="1" />
-          <Property Name="IsNew" Type="bit" />
-          <Property Name="IsClearance" Type="bit" />
-          <Property Name="IsBestSeller" Type="bit" />
-          <Property Name="IsOnlineExclusive" Type="bit" />
-          <Property Name="IsOnlyAt" Type="bit" />
-          <Property Name="Remark" Type="varchar" MaxLength="500" />
-          <Property Name="InfoFlag" Type="bit" />
-          <Property Name="ImageFlag" Type="bit" />
-          <Property Name="OnlineFlag" Type="bit" />
-          <Property Name="InformationTabStatus" Type="char" MaxLength="2" />
-          <Property Name="ImageTabStatus" Type="char" MaxLength="2" />
-          <Property Name="CategoryTabStatus" Type="char" MaxLength="2" />
-          <Property Name="VariantTabStatus" Type="char" MaxLength="2" />
-          <Property Name="MoreOptionTabStatus" Type="char" MaxLength="2" />
-          <Property Name="RejectReason" Type="varchar" MaxLength="1000" />
-          <Property Name="Status" Type="char" MaxLength="2" />
+          <Property Name="TheOneCardEarn" Type="int" Nullable="false" />
+          <Property Name="GiftWrap" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="IsNew" Type="bit" Nullable="false" />
+          <Property Name="IsClearance" Type="bit" Nullable="false" />
+          <Property Name="IsBestSeller" Type="bit" Nullable="false" />
+          <Property Name="IsOnlineExclusive" Type="bit" Nullable="false" />
+          <Property Name="IsOnlyAt" Type="bit" Nullable="false" />
+          <Property Name="Remark" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="InfoFlag" Type="bit" Nullable="false" />
+          <Property Name="ImageFlag" Type="bit" Nullable="false" />
+          <Property Name="OnlineFlag" Type="bit" Nullable="false" />
+          <Property Name="InformationTabStatus" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="ImageTabStatus" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="CategoryTabStatus" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="VariantTabStatus" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="MoreOptionTabStatus" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="RejectReason" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="FirstApproveBy" Type="varchar" MaxLength="100" />
           <Property Name="FirstApproveOn" Type="datetime" />
           <Property Name="ApproveBy" Type="varchar" MaxLength="100" />
@@ -1995,10 +2027,11 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="RejectOn" Type="datetime" />
           <Property Name="SubmitBy" Type="varchar" MaxLength="100" />
           <Property Name="SubmitOn" Type="datetime" />
-          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
-          <Property Name="CreateOn" Type="datetime" />
-          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
-          <Property Name="UpdateOn" Type="datetime" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="UpdateOn" Type="datetime" Nullable="false" />
+          <Property Name="OldGroupId" Type="int" />
         </EntityType>
         <EntityType Name="ProductHistoryImage">
           <Key>
@@ -2031,6 +2064,21 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="HistoryId" Type="bigint" Nullable="false" />
           <Property Name="ProductId" Type="bigint" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdateOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ProductHistoryRelated">
+          <Key>
+            <PropertyRef Name="HistoryId" />
+            <PropertyRef Name="Parent" />
+            <PropertyRef Name="Child" />
+          </Key>
+          <Property Name="HistoryId" Type="bigint" Nullable="false" />
+          <Property Name="Parent" Type="bigint" Nullable="false" />
+          <Property Name="Child" Type="bigint" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
           <Property Name="CreateOn" Type="datetime" />
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
@@ -2116,11 +2164,12 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
         </EntityType>
         <EntityType Name="ProductRelated">
           <Key>
-            <PropertyRef Name="ParentPid" />
-            <PropertyRef Name="ChildPid" />
+            <PropertyRef Name="Parent" />
+            <PropertyRef Name="Child" />
           </Key>
-          <Property Name="ParentPid" Type="char" MaxLength="7" Nullable="false" />
-          <Property Name="ChildPid" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="Parent" Type="bigint" Nullable="false" />
+          <Property Name="Child" Type="bigint" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
           <Property Name="CreateOn" Type="datetime" />
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
@@ -2243,6 +2292,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PostCodeMap' does not have a prima
           <Property Name="AttributeId" Type="int" Nullable="false" />
           <Property Name="ValueEn" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="ValueTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="HtmlBoxValue" Type="ntext" Nullable="false" />
           <Property Name="AttributeValueId" Type="int" />
           <Property Name="CheckboxValue" Type="bit" Nullable="false" />
           <Property Name="Position" Type="int" Nullable="false" />
@@ -2580,6 +2630,17 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           <Property Name="ProvinceNameEn" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="ProvinceType" Type="tinyint" Nullable="false" />
         </EntityType>
+        <EntityType Name="ReportLog">
+          <Key>
+            <PropertyRef Name="ReportLogId" />
+          </Key>
+          <Property Name="ReportLogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopId" Type="int" />
+          <Property Name="ReportName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreatedIP" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="Shipping">
           <Key>
             <PropertyRef Name="ShippingId" />
@@ -2609,8 +2670,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           <Property Name="ShopId" Type="int" Nullable="false" />
           <Property Name="VendorId" Type="char" MaxLength="6" Nullable="false" />
           <Property Name="ShopOwner" Type="int" />
-          <Property Name="ShopNameEn" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="ShopNameTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ShopNameEn" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ShopNameTh" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="MaxLocalCategory" Type="int" Nullable="false" />
           <Property Name="GiftWrap" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="TaxInvoice" Type="char" MaxLength="1" Nullable="false" />
@@ -2618,19 +2679,19 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           <Property Name="ShopImageUrl" Type="varchar" MaxLength="1000" Nullable="false" />
           <Property Name="ShopDescriptionEn" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="ShopDescriptionTh" Type="varchar" MaxLength="500" Nullable="false" />
-          <Property Name="DomainName" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="DomainName" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="ShopAddress" Type="varchar" MaxLength="500" Nullable="false" />
-          <Property Name="Facebook" Type="varchar" MaxLength="500" Nullable="false" />
-          <Property Name="YouTube" Type="varchar" MaxLength="500" Nullable="false" />
-          <Property Name="Twitter" Type="varchar" MaxLength="500" Nullable="false" />
-          <Property Name="Instagram" Type="varchar" MaxLength="500" Nullable="false" />
-          <Property Name="Pinterest" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Facebook" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="YouTube" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Twitter" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Instagram" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Pinterest" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="StockAlert" Type="int" Nullable="false" />
           <Property Name="Commission" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="ShopTypeId" Type="int" />
           <Property Name="UrlKey" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="FloatMessageEn" Type="varchar" MaxLength="500" Nullable="false" />
-          <Property Name="FloatMessageTh" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="FloatMessageEn" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="FloatMessageTh" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="ThemeId" Type="int" />
           <Property Name="ShopAppearance" Type="ntext" />
           <Property Name="TaxPayerId" Type="varchar" MaxLength="13" Nullable="false" />
@@ -2654,6 +2715,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           <Property Name="BankAccountNumber" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="BankAccountName" Type="varchar" MaxLength="80" Nullable="false" />
           <Property Name="RemittanceFaxNumber" Type="varchar" MaxLength="18" Nullable="false" />
+          <Property Name="ContactPersonFirstName" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="ContactPersonLastName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="CreateOn" Type="datetime" Nullable="false" />
@@ -2699,7 +2763,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
             <PropertyRef Name="ShopTypeId" />
           </Key>
           <Property Name="ShopTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ShopTypeNameEn" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ShopTypeNameEn" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
           <Property Name="CreateOn" Type="datetime" />
@@ -2713,6 +2777,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.PromotionT1C' does not have a prim
           </Key>
           <Property Name="ShopTypeId" Type="int" Nullable="false" />
           <Property Name="PermissionId" Type="int" Nullable="false" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
+          <Property Name="UpdateOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ShopTypeShippingMap">
+          <Key>
+            <PropertyRef Name="ShopTypeId" />
+            <PropertyRef Name="ShippingId" />
+          </Key>
+          <Property Name="ShopTypeId" Type="int" Nullable="false" />
+          <Property Name="ShippingId" Type="int" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
           <Property Name="CreateOn" Type="datetime" />
           <Property Name="UpdateBy" Type="varchar" MaxLength="100" />
@@ -3125,11 +3201,11 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="Password" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="PasswordLastChg" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="EmployeeId" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="Position" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="Division" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="NameEn" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="NameTh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="EmployeeId" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Position" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Division" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="NameEn" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="NameTh" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Type" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="Mobile" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Phone" Type="varchar" MaxLength="20" Nullable="false" />
@@ -3159,7 +3235,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="GroupId" />
           </Key>
           <Property Name="GroupId" Type="int" Nullable="false" />
-          <Property Name="GroupNameEn" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="GroupNameEn" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Type" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="2" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="100" />
@@ -3781,7 +3857,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ProductHistory_Shop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
           <End Role="ProductHistory" Type="Self.ProductHistory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -3897,7 +3973,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ProductHistoryGroup_Shipping">
-          <End Role="Shipping" Type="Self.Shipping" Multiplicity="0..1" />
+          <End Role="Shipping" Type="Self.Shipping" Multiplicity="1" />
           <End Role="ProductHistoryGroup" Type="Self.ProductHistoryGroup" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shipping">
@@ -3909,7 +3985,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ProductHistoryGroup_Shop">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
           <End Role="ProductHistoryGroup" Type="Self.ProductHistoryGroup" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -3947,6 +4023,56 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Principal>
             <Dependent Role="ProductHistoryLocalCatMap">
               <PropertyRef Name="HistoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductHistoryRelated_GroupChild">
+          <End Role="ProductStageGroup" Type="Self.ProductStageGroup" Multiplicity="1" />
+          <End Role="ProductHistoryRelated" Type="Self.ProductHistoryRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductHistoryRelated">
+              <PropertyRef Name="Child" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductHistoryRelated_GroupParent">
+          <End Role="ProductStageGroup" Type="Self.ProductStageGroup" Multiplicity="1" />
+          <End Role="ProductHistoryRelated" Type="Self.ProductHistoryRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductHistoryRelated">
+              <PropertyRef Name="Parent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductHistoryRelated_ProductHistoryGroup">
+          <End Role="ProductHistoryGroup" Type="Self.ProductHistoryGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductHistoryRelated" Type="Self.ProductHistoryRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductHistoryGroup">
+              <PropertyRef Name="HistoryId" />
+            </Principal>
+            <Dependent Role="ProductHistoryRelated">
+              <PropertyRef Name="HistoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductHistoryRelated_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="ProductHistoryRelated" Type="Self.ProductHistoryRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductHistoryRelated">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4002,6 +4128,42 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <PropertyRef Name="ShopId" />
             </Principal>
             <Dependent Role="ProductImage">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductRelated_GroupChild">
+          <End Role="ProductStageGroup" Type="Self.ProductStageGroup" Multiplicity="1" />
+          <End Role="ProductRelated" Type="Self.ProductRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductRelated">
+              <PropertyRef Name="Child" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductRelated_GroupParent">
+          <End Role="ProductStageGroup" Type="Self.ProductStageGroup" Multiplicity="1" />
+          <End Role="ProductRelated" Type="Self.ProductRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductRelated">
+              <PropertyRef Name="Parent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductRelated_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
+          <End Role="ProductRelated" Type="Self.ProductRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductRelated">
               <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
@@ -4590,8 +4752,38 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopTypeShippingMap_Shipping">
+          <End Role="Shipping" Type="Self.Shipping" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShopTypeShippingMap" Type="Self.ShopTypeShippingMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shipping">
+              <PropertyRef Name="ShippingId" />
+            </Principal>
+            <Dependent Role="ShopTypeShippingMap">
+              <PropertyRef Name="ShippingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTypeShippingMap_ShopType">
+          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShopTypeShippingMap" Type="Self.ShopTypeShippingMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopType">
+              <PropertyRef Name="ShopTypeId" />
+            </Principal>
+            <Dependent Role="ShopTypeShippingMap">
+              <PropertyRef Name="ShopTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShopTypeThemeMap_ShopType">
-          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1" />
+          <End Role="ShopType" Type="Self.ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ShopTypeThemeMap" Type="Self.ShopTypeThemeMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShopType">
@@ -4603,7 +4795,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeThemeMap_Theme">
-          <End Role="Theme" Type="Self.Theme" Multiplicity="1" />
+          <End Role="Theme" Type="Self.Theme" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ShopTypeThemeMap" Type="Self.ShopTypeThemeMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Theme">
@@ -4966,6 +5160,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="GetNextAppLogId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextAttributeId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextAttributeSetId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextAttributeValueId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -4983,9 +5178,12 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
         <Function Name="GetNextUserGroupId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetNextUserId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ItemOnHoldReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="ReportProductsCommissionForOrder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="ReportReturnItemByOrderReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SaleReportForSeller" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="StockStatusReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="ColspModelStoreContainer">
+          <EntitySet Name="ApiLog" EntityType="Self.ApiLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AppAuth" EntityType="Self.AppAuth" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attribute" EntityType="Self.Attribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttributeFilterMap" EntityType="Self.AttributeFilterMap" Schema="dbo" store:Type="Tables" />
@@ -5030,6 +5228,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CustomerAddress" EntityType="Self.CustomerAddress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerAddress_Staging" EntityType="Self.CustomerAddress_Staging" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerNewsLetter" EntityType="Self.CustomerNewsLetter" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerProductHistory" EntityType="Self.CustomerProductHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerToken" EntityType="Self.CustomerToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerTokenCreditCard" EntityType="Self.CustomerTokenCreditCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerWishList" EntityType="Self.CustomerWishList" Schema="dbo" store:Type="Tables" />
@@ -5068,6 +5267,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ProductHistoryGroup" EntityType="Self.ProductHistoryGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductHistoryImage" EntityType="Self.ProductHistoryImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductHistoryLocalCatMap" EntityType="Self.ProductHistoryLocalCatMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductHistoryRelated" EntityType="Self.ProductHistoryRelated" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductHistoryTag" EntityType="Self.ProductHistoryTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductHistoryVideo" EntityType="Self.ProductHistoryVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductImage" EntityType="Self.ProductImage" Schema="dbo" store:Type="Tables" />
@@ -5093,6 +5293,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="PromotionOnTopCreditCard" EntityType="Self.PromotionOnTopCreditCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PromotionOnTopCreditNumber" EntityType="Self.PromotionOnTopCreditNumber" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReportLog" EntityType="Self.ReportLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipping" EntityType="Self.Shipping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShippingShopGroupMap" EntityType="Self.ShippingShopGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shop" EntityType="Self.Shop" Schema="dbo" store:Type="Tables" />
@@ -5101,6 +5302,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ShopImage" EntityType="Self.ShopImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopType" EntityType="Self.ShopType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopTypePermissionMap" EntityType="Self.ShopTypePermissionMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopTypeShippingMap" EntityType="Self.ShopTypeShippingMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopTypeThemeMap" EntityType="Self.ShopTypeThemeMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShopUserGroupMap" EntityType="Self.ShopUserGroupMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SortBy" EntityType="Self.SortBy" Schema="dbo" store:Type="Tables" />
@@ -5829,6 +6031,22 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="ProductHistoryGroup" EntitySet="ProductHistoryGroup" />
             <End Role="ProductHistoryLocalCatMap" EntitySet="ProductHistoryLocalCatMap" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductHistoryRelated_GroupChild" Association="Self.FK_ProductHistoryRelated_GroupChild">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroup" />
+            <End Role="ProductHistoryRelated" EntitySet="ProductHistoryRelated" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductHistoryRelated_GroupParent" Association="Self.FK_ProductHistoryRelated_GroupParent">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroup" />
+            <End Role="ProductHistoryRelated" EntitySet="ProductHistoryRelated" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductHistoryRelated_ProductHistoryGroup" Association="Self.FK_ProductHistoryRelated_ProductHistoryGroup">
+            <End Role="ProductHistoryGroup" EntitySet="ProductHistoryGroup" />
+            <End Role="ProductHistoryRelated" EntitySet="ProductHistoryRelated" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductHistoryRelated_Shop" Association="Self.FK_ProductHistoryRelated_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductHistoryRelated" EntitySet="ProductHistoryRelated" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProductHistoryTag_ProductHistoryGroup" Association="Self.FK_ProductHistoryTag_ProductHistoryGroup">
             <End Role="ProductHistoryGroup" EntitySet="ProductHistoryGroup" />
             <End Role="ProductHistoryTag" EntitySet="ProductHistoryTag" />
@@ -5844,6 +6062,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <AssociationSet Name="FK_ProductImage_Shop" Association="Self.FK_ProductImage_Shop">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ProductImage" EntitySet="ProductImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductRelated_GroupChild" Association="Self.FK_ProductRelated_GroupChild">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroup" />
+            <End Role="ProductRelated" EntitySet="ProductRelated" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductRelated_GroupParent" Association="Self.FK_ProductRelated_GroupParent">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroup" />
+            <End Role="ProductRelated" EntitySet="ProductRelated" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductRelated_Shop" Association="Self.FK_ProductRelated_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="ProductRelated" EntitySet="ProductRelated" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductReview_Product" Association="Self.FK_ProductReview_Product">
             <End Role="Product" EntitySet="Product" />
@@ -6029,6 +6259,14 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="ShopType" EntitySet="ShopType" />
             <End Role="ShopTypePermissionMap" EntitySet="ShopTypePermissionMap" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShopTypeShippingMap_Shipping" Association="Self.FK_ShopTypeShippingMap_Shipping">
+            <End Role="Shipping" EntitySet="Shipping" />
+            <End Role="ShopTypeShippingMap" EntitySet="ShopTypeShippingMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTypeShippingMap_ShopType" Association="Self.FK_ShopTypeShippingMap_ShopType">
+            <End Role="ShopType" EntitySet="ShopType" />
+            <End Role="ShopTypeShippingMap" EntitySet="ShopTypeShippingMap" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShopTypeThemeMap_ShopType" Association="Self.FK_ShopTypeThemeMap_ShopType">
             <End Role="ShopType" EntitySet="ShopType" />
             <End Role="ShopTypeThemeMap" EntitySet="ShopTypeThemeMap" />
@@ -6147,6 +6385,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
     <edmx:ConceptualModels>
       <Schema Namespace="ColspModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="ColspEntities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="GetNextAppLogId" ReturnType="Collection(Int64)" />
           <FunctionImport Name="GetNextAttributeId" ReturnType="Collection(Int32)" />
           <FunctionImport Name="GetNextAttributeSetId" ReturnType="Collection(Int32)" />
           <FunctionImport Name="GetNextAttributeValueId" ReturnType="Collection(Int32)" />
@@ -6157,14 +6396,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <FunctionImport Name="GetNextNewsletterId" ReturnType="Collection(Int32)" />
           <FunctionImport Name="GetNextProductHistoryId" ReturnType="Collection(Int64)" />
           <FunctionImport Name="GetNextProductStageGroupId" ReturnType="Collection(Int64)" />
+          <FunctionImport Name="GetNextProductStageImageId" ReturnType="Collection(Int64)" />
           <FunctionImport Name="GetNextProductStagePid" ReturnType="Collection(Int64)" />
           <FunctionImport Name="GetNextProductTempId" ReturnType="Collection(Int64)" />
           <FunctionImport Name="GetNextShopId" ReturnType="Collection(Int32)" />
           <FunctionImport Name="GetNextUserGroupId" ReturnType="Collection(Int32)" />
           <FunctionImport Name="GetNextUserId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="ItemOnHoldReport" ReturnType="Collection(ColspModel.ItemOnHoldReport_Result)" />
+          <FunctionImport Name="ReportProductsCommissionForOrder" ReturnType="Collection(ColspModel.ReportProductsCommissionForOrder_Result)" />
+          <FunctionImport Name="ReportReturnItemByOrderReport" ReturnType="Collection(ColspModel.ReportReturnItemByOrderReport_Result)" />
           <FunctionImport Name="SaleReportForSeller" ReturnType="Collection(ColspModel.SaleReportForSeller_Result)" />
           <FunctionImport Name="StockStatusReport" ReturnType="Collection(ColspModel.StockStatusReport_Result)" />
-          <FunctionImport Name="GetNextProductStageImageId" ReturnType="Collection(Int64)" />
+          <EntitySet Name="ApiLogs" EntityType="ColspModel.ApiLog" />
           <EntitySet Name="AppAuths" EntityType="ColspModel.AppAuth" />
           <EntitySet Name="Attributes" EntityType="ColspModel.Attribute" />
           <EntitySet Name="AttributeFilterMaps" EntityType="ColspModel.AttributeFilterMap" />
@@ -6209,6 +6452,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="CustomerAddresses" EntityType="ColspModel.CustomerAddress" />
           <EntitySet Name="CustomerAddress_Staging" EntityType="ColspModel.CustomerAddress_Staging" />
           <EntitySet Name="CustomerNewsLetters" EntityType="ColspModel.CustomerNewsLetter" />
+          <EntitySet Name="CustomerProductHistories" EntityType="ColspModel.CustomerProductHistory" />
           <EntitySet Name="CustomerTokens" EntityType="ColspModel.CustomerToken" />
           <EntitySet Name="CustomerTokenCreditCards" EntityType="ColspModel.CustomerTokenCreditCard" />
           <EntitySet Name="CustomerWishLists" EntityType="ColspModel.CustomerWishList" />
@@ -6246,6 +6490,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ProductHistoryGroups" EntityType="ColspModel.ProductHistoryGroup" />
           <EntitySet Name="ProductHistoryImages" EntityType="ColspModel.ProductHistoryImage" />
           <EntitySet Name="ProductHistoryLocalCatMaps" EntityType="ColspModel.ProductHistoryLocalCatMap" />
+          <EntitySet Name="ProductHistoryRelateds" EntityType="ColspModel.ProductHistoryRelated" />
           <EntitySet Name="ProductHistoryTags" EntityType="ColspModel.ProductHistoryTag" />
           <EntitySet Name="ProductHistoryVideos" EntityType="ColspModel.ProductHistoryVideo" />
           <EntitySet Name="ProductImages" EntityType="ColspModel.ProductImage" />
@@ -6271,6 +6516,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
           <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           <EntitySet Name="Provinces" EntityType="ColspModel.Province" />
+          <EntitySet Name="ReportLogs" EntityType="ColspModel.ReportLog" />
           <EntitySet Name="Shippings" EntityType="ColspModel.Shipping" />
           <EntitySet Name="Shops" EntityType="ColspModel.Shop" />
           <EntitySet Name="ShopCommissions" EntityType="ColspModel.ShopCommission" />
@@ -6278,6 +6524,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ShopImages" EntityType="ColspModel.ShopImage" />
           <EntitySet Name="ShopTypes" EntityType="ColspModel.ShopType" />
           <EntitySet Name="ShopTypePermissionMaps" EntityType="ColspModel.ShopTypePermissionMap" />
+          <EntitySet Name="ShopTypeShippingMaps" EntityType="ColspModel.ShopTypeShippingMap" />
           <EntitySet Name="ShopTypeThemeMaps" EntityType="ColspModel.ShopTypeThemeMap" />
           <EntitySet Name="ShopUserGroupMaps" EntityType="ColspModel.ShopUserGroupMap" />
           <EntitySet Name="SortBies" EntityType="ColspModel.SortBy" />
@@ -6674,13 +6921,41 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="ProductHistoryGroup" EntitySet="ProductHistoryGroups" />
             <End Role="ProductHistoryLocalCatMap" EntitySet="ProductHistoryLocalCatMaps" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductHistoryRelated_ProductHistoryGroup" Association="ColspModel.FK_ProductHistoryRelated_ProductHistoryGroup">
+            <End Role="ProductHistoryGroup" EntitySet="ProductHistoryGroups" />
+            <End Role="ProductHistoryRelated" EntitySet="ProductHistoryRelateds" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProductHistoryTag_ProductHistoryGroup" Association="ColspModel.FK_ProductHistoryTag_ProductHistoryGroup">
             <End Role="ProductHistoryGroup" EntitySet="ProductHistoryGroups" />
             <End Role="ProductHistoryTag" EntitySet="ProductHistoryTags" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductHistoryRelated_GroupChild" Association="ColspModel.FK_ProductHistoryRelated_GroupChild">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
+            <End Role="ProductHistoryRelated" EntitySet="ProductHistoryRelateds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductHistoryRelated_GroupParent" Association="ColspModel.FK_ProductHistoryRelated_GroupParent">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
+            <End Role="ProductHistoryRelated" EntitySet="ProductHistoryRelateds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductHistoryRelated_Shop" Association="ColspModel.FK_ProductHistoryRelated_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductHistoryRelated" EntitySet="ProductHistoryRelateds" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProductImage_Shop" Association="ColspModel.FK_ProductImage_Shop">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ProductImage" EntitySet="ProductImages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductRelated_GroupChild" Association="ColspModel.FK_ProductRelated_GroupChild">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
+            <End Role="ProductRelated" EntitySet="ProductRelateds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductRelated_GroupParent" Association="ColspModel.FK_ProductRelated_GroupParent">
+            <End Role="ProductStageGroup" EntitySet="ProductStageGroups" />
+            <End Role="ProductRelated" EntitySet="ProductRelateds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductRelated_Shop" Association="ColspModel.FK_ProductRelated_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="ProductRelated" EntitySet="ProductRelateds" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductReview_Shop" Association="ColspModel.FK_ProductReview_Shop">
             <End Role="Shop" EntitySet="Shops" />
@@ -6766,6 +7041,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Province" EntitySet="Provinces" />
             <End Role="Shop" EntitySet="Shops" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShopTypeShippingMap_Shipping" Association="ColspModel.FK_ShopTypeShippingMap_Shipping">
+            <End Role="Shipping" EntitySet="Shippings" />
+            <End Role="ShopTypeShippingMap" EntitySet="ShopTypeShippingMaps" />
+          </AssociationSet>
           <AssociationSet Name="FK_Shop_ShopType" Association="ColspModel.FK_Shop_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
             <End Role="Shop" EntitySet="Shops" />
@@ -6810,6 +7089,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="ShopType" EntitySet="ShopTypes" />
             <End Role="ShopTypePermissionMap" EntitySet="ShopTypePermissionMaps" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShopTypeShippingMap_ShopType" Association="ColspModel.FK_ShopTypeShippingMap_ShopType">
+            <End Role="ShopType" EntitySet="ShopTypes" />
+            <End Role="ShopTypeShippingMap" EntitySet="ShopTypeShippingMaps" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShopTypeThemeMap_ShopType" Association="ColspModel.FK_ShopTypeThemeMap_ShopType">
             <End Role="ShopType" EntitySet="ShopTypes" />
             <End Role="ShopTypeThemeMap" EntitySet="ShopTypeThemeMaps" />
@@ -6850,8 +7133,40 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <End Role="Shipping" EntitySet="Shippings" />
             <End Role="ShopGroup" EntitySet="ShopGroups" />
           </AssociationSet>
-          <FunctionImport Name="ItemOnHoldReport" ReturnType="Collection(ColspModel.ItemOnHoldReport_Result)" />
           </EntityContainer>
+        <ComplexType Name="ItemOnHoldReport_Result">
+          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="Itemname" Nullable="false" MaxLength="200" />
+          <Property Type="DateTime" Name="OnHoldDate" Nullable="true" Precision="16" />
+          <Property Type="String" Name="OnHoldRemark" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Orderid" Nullable="true" MaxLength="12" />
+          <Property Type="Int32" Name="ShopId" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ReportProductsCommissionForOrder_Result">
+          <Property Type="DateTime" Name="OrderDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="QTY" Nullable="false" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="22" Scale="3" />
+          <Property Type="Int32" Name="CommissionRate" Nullable="false" />
+          <Property Type="Int32" Name="CommissionFee" Nullable="false" />
+          <Property Type="Int32" Name="ShopId" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ReportReturnItemByOrderReport_Result">
+          <Property Type="DateTime" Name="ReturnDate" Nullable="true" Precision="16" />
+          <Property Type="String" Name="OrderId" Nullable="true" MaxLength="12" />
+          <Property Type="String" Name="Pid" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="ItemStatus" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="Quantity" Nullable="false" />
+          <Property Type="Decimal" Name="SalePrice" Nullable="true" Precision="21" Scale="3" />
+          <Property Type="Decimal" Name="LocalDiscount" Nullable="false" Precision="10" Scale="3" />
+          <Property Type="Int32" Name="ReturnPrice" Nullable="false" />
+          <Property Type="Int32" Name="ReturnFee" Nullable="false" />
+          <Property Type="Int32" Name="ReturnAmount" Nullable="false" />
+          <Property Type="Int32" Name="ShopId" Nullable="false" />
+        </ComplexType>
         <ComplexType Name="SaleReportForSeller_Result">
           <Property Type="DateTime" Name="OrderDateTime" Nullable="true" Precision="23" />
           <Property Type="String" Name="OrderDate" Nullable="true" MaxLength="10" />
@@ -6873,6 +7188,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Type="Int32" Name="BrandId" Nullable="false" />
           <Property Type="Int32" Name="GlobalCatId" Nullable="false" />
           <Property Type="Int32" Name="LocalCatId" Nullable="false" />
+          <Property Type="Int32" Name="ShopId" Nullable="false" />
         </ComplexType>
         <ComplexType Name="StockStatusReport_Result">
           <Property Type="String" Name="Pid" Nullable="false" MaxLength="7" />
@@ -6889,16 +7205,34 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Type="String" Name="FirstReceiveDate" Nullable="false" />
           <Property Type="Int32" Name="SafetyStockAdmin" Nullable="false" />
           <Property Type="Int32" Name="SafetyStockSeller" Nullable="false" />
-          <Property Type="String" Name="LastSoldDate" Nullable="false" />
+          <Property Type="String" Name="LastSoldDate" Nullable="true" />
           <Property Type="Decimal" Name="SalePrice" Nullable="false" Precision="10" Scale="3" />
           <Property Type="Int32" Name="AgingDay" Nullable="true" />
+          <Property Type="Int32" Name="ShopId" Nullable="false" />
         </ComplexType>
+        <EntityType Name="ApiLog">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="Int64" Nullable="false" />
+          <Property Name="SourceApp" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DestinationApp" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="RequestUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="Method" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="RequestData" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ResponseData" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ResponseCode" Type="Int32" Nullable="false" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
         <EntityType Name="AppAuth">
           <Key>
-            <PropertyRef Name="AppId" />
+            <PropertyRef Name="ServerAppId" />
+            <PropertyRef Name="ClientAppId" />
           </Key>
-          <Property Name="AppId" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="SecretKey" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ServerAppId" Type="Int32" Nullable="false" />
+          <Property Name="ClientAppId" Type="Int32" Nullable="false" />
+          <Property Name="SecretKey" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="AppName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ExpiredDate" Type="DateTime" Precision="0" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="0" />
@@ -6911,10 +7245,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="AttributeId" />
           </Key>
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
-          <Property Name="AttributeNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="AttributeDescriptionEn" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <Property Name="DisplayNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="DisplayNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AttributeNameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AttributeDescriptionEn" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameTh" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="DefaultAttribute" Type="Boolean" Nullable="false" />
           <Property Name="VisibleTo" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="Required" Type="Boolean" Nullable="false" />
@@ -6923,7 +7257,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="DataType" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="VariantDataType" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="DataValidation" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="DefaultValue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="DefaultValue" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ShowAdminFlag" Type="Boolean" Nullable="false" />
           <Property Name="ShowGlobalSearchFlag" Type="Boolean" Nullable="false" />
           <Property Name="ShowLocalSearchFlag" Type="Boolean" Nullable="false" />
@@ -6965,8 +7299,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="AttributeSetId" />
           </Key>
           <Property Name="AttributeSetId" Type="Int32" Nullable="false" />
-          <Property Name="AttributeSetNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="AttributeSetDescriptionEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AttributeSetNameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AttributeSetDescriptionEn" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -7000,7 +7334,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="Tag" />
           </Key>
           <Property Name="AttributeSetId" Type="Int32" Nullable="false" />
-          <Property Name="Tag" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Tag" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -7012,8 +7346,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="AttributeValueId" />
           </Key>
           <Property Name="AttributeValueId" Type="Int32" Nullable="false" />
-          <Property Name="AttributeValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="AttributeValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AttributeValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="MapValue" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
@@ -7055,15 +7389,15 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="BrandId" />
           </Key>
           <Property Name="BrandId" Type="Int32" Nullable="false" />
-          <Property Name="BrandNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BrandNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="DisplayNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
-          <Property Name="DisplayNameTh" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="BrandNameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="BrandNameTh" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="DisplayNameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayNameTh" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PicUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FeatureProductStatus" Type="Boolean" Nullable="false" />
@@ -7071,20 +7405,21 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="BannerSmallStatusEn" Type="Boolean" Nullable="false" />
           <Property Name="BannerStatusTh" Type="Boolean" Nullable="false" />
           <Property Name="BannerSmallStatusTh" Type="Boolean" Nullable="false" />
-          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
-          <Property Name="MetaTitleEn" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="MetaTitleTh" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="MetaDescriptionEn" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="MetaDescriptionTh" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="MetaKeyEn" Type="String" Nullable="false" MaxLength="630" FixedLength="false" Unicode="false" />
-          <Property Name="MetaKeyTh" Type="String" Nullable="false" MaxLength="630" FixedLength="false" Unicode="false" />
-          <Property Name="SeoEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="SeoTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MetaTitleEn" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaTitleTh" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionEn" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaDescriptionTh" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyEn" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="MetaKeyTh" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SeoEn" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SeoTh" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="IsLandingPage" Type="Boolean" Nullable="false" />
           <Property Name="SortById" Type="Int32" />
           <Property Name="OldBrandId" Type="Int32" />
           <Property Name="Bu" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
-          <Property Name="UrlKey" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="UrlKey" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
@@ -7122,7 +7457,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="EnTh" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="Link" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="Link" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="false" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
@@ -7262,8 +7597,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Key>
             <PropertyRef Name="CMSImageId" />
           </Key>
-          <Property Name="CMSImageId" Type="Int32" Nullable="false" />
-          <Property Name="CMSMasterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CMSMasterId" Type="Int32" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="EnTh" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
@@ -7276,7 +7611,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Key>
             <PropertyRef Name="CMSMasterId" />
           </Key>
-          <Property Name="CMSMasterId" Type="Int32" Nullable="false" />
+          <Property Name="CMSMasterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CMSMasterNameEN" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
           <Property Name="CMSMasterNameTH" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
           <Property Name="CMSMasterURLKey" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
@@ -7385,8 +7720,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="CouponId" />
           </Key>
           <Property Name="CouponId" Type="Int32" Nullable="false" />
-          <Property Name="CouponCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CouponName" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="CouponCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CouponName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ShopId" Type="Int32" />
           <Property Name="CouponQuantity" Type="Int32" Nullable="false" />
           <Property Name="CouponUsed" Type="Int32" Nullable="false" />
@@ -7668,6 +8003,15 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="CustomerProductHistory">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="Pid" />
+          </Key>
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
         <EntityType Name="CustomerToken">
           <Key>
             <PropertyRef Name="CustomerId" />
@@ -7705,6 +8049,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </Key>
           <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="false" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="SeqNo" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Deal">
           <Key>
@@ -7761,16 +8106,16 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
-          <Property Name="NameEn" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="NameTh" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="Commission" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="NameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NameTh" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Commission" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
           <Property Name="UrlKey" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Lft" Type="Int32" Nullable="false" />
           <Property Name="Rgt" Type="Int32" Nullable="false" />
           <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FeatureProductStatus" Type="Boolean" Nullable="false" />
@@ -7778,9 +8123,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="BannerSmallStatusEn" Type="Boolean" Nullable="false" />
           <Property Name="BannerStatusTh" Type="Boolean" Nullable="false" />
           <Property Name="BannerSmallStatusTh" Type="Boolean" Nullable="false" />
-          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
+          <Property Name="IsLandingPage" Type="Boolean" Nullable="false" />
           <Property Name="SortById" Type="Int32" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -7822,7 +8168,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="EnTh" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="Link" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="Link" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="false" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
@@ -7895,16 +8241,16 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
-          <Property Name="NameEn" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="NameTh" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NameTh" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="UrlKey" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="Lft" Type="Int32" Nullable="false" />
           <Property Name="Rgt" Type="Int32" Nullable="false" />
           <Property Name="DescriptionFullEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DescriptionShortEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionFullTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DescriptionShortTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileTh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DescriptionMobileEn" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FeatureProductStatus" Type="Boolean" Nullable="false" />
@@ -7912,9 +8258,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="BannerSmallStatusEn" Type="Boolean" Nullable="false" />
           <Property Name="BannerStatusTh" Type="Boolean" Nullable="false" />
           <Property Name="BannerSmallStatusTh" Type="Boolean" Nullable="false" />
-          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FeatureTitle" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TitleShowcase" Type="Boolean" Nullable="false" />
           <Property Name="Visibility" Type="Boolean" Nullable="false" />
+          <Property Name="IsLandingPage" Type="Boolean" Nullable="false" />
           <Property Name="SortById" Type="Int32" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -7960,7 +8307,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="EnTh" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="Link" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="Link" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="false" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
@@ -7974,8 +8321,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="NewsletterId" />
           </Key>
           <Property Name="NewsletterId" Type="Int32" Nullable="false" />
-          <Property Name="Subject" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="VisibleShopGroup" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="PublishedDt" Type="DateTime" Precision="3" />
@@ -8264,6 +8611,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HtmlBoxValue" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueId" Type="Int32" />
           <Property Name="CheckboxValue" Type="Boolean" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
@@ -8296,7 +8644,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="HistoryId" Type="Int64" Nullable="false" />
           <Property Name="Pid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
           <Property Name="ProductId" Type="Int64" Nullable="false" />
-          <Property Name="ShopId" Type="Int32" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="ProductNameEn" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ProductNameTh" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ProdTDNameTh" Type="String" Nullable="false" MaxLength="55" FixedLength="false" Unicode="false" />
@@ -8394,6 +8742,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HtmlBoxValue" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueId" Type="Int32" />
           <Property Name="CheckboxValue" Type="Boolean" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
@@ -8429,33 +8778,33 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="HistoryId" Type="Int64" Nullable="false" />
           <Property Name="HistoryDt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ProductId" Type="Int64" Nullable="false" />
-          <Property Name="ShopId" Type="Int32" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="GlobalCatId" Type="Int32" />
           <Property Name="LocalCatId" Type="Int32" />
           <Property Name="AttributeSetId" Type="Int32" />
           <Property Name="BrandId" Type="Int32" />
-          <Property Name="ShippingId" Type="Int32" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
-          <Property Name="ExpireDate" Type="DateTime" Precision="3" />
+          <Property Name="ShippingId" Type="Int32" Nullable="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ExpireDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="NewArrivalDate" Type="DateTime" Precision="3" />
-          <Property Name="TheOneCardEarn" Type="Int32" />
-          <Property Name="GiftWrap" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="IsNew" Type="Boolean" />
-          <Property Name="IsClearance" Type="Boolean" />
-          <Property Name="IsBestSeller" Type="Boolean" />
-          <Property Name="IsOnlineExclusive" Type="Boolean" />
-          <Property Name="IsOnlyAt" Type="Boolean" />
-          <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="InfoFlag" Type="Boolean" />
-          <Property Name="ImageFlag" Type="Boolean" />
-          <Property Name="OnlineFlag" Type="Boolean" />
-          <Property Name="InformationTabStatus" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="ImageTabStatus" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="CategoryTabStatus" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="VariantTabStatus" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="MoreOptionTabStatus" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="RejectReason" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="TheOneCardEarn" Type="Int32" Nullable="false" />
+          <Property Name="GiftWrap" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="IsNew" Type="Boolean" Nullable="false" />
+          <Property Name="IsClearance" Type="Boolean" Nullable="false" />
+          <Property Name="IsBestSeller" Type="Boolean" Nullable="false" />
+          <Property Name="IsOnlineExclusive" Type="Boolean" Nullable="false" />
+          <Property Name="IsOnlyAt" Type="Boolean" Nullable="false" />
+          <Property Name="Remark" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="InfoFlag" Type="Boolean" Nullable="false" />
+          <Property Name="ImageFlag" Type="Boolean" Nullable="false" />
+          <Property Name="OnlineFlag" Type="Boolean" Nullable="false" />
+          <Property Name="InformationTabStatus" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="ImageTabStatus" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CategoryTabStatus" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="VariantTabStatus" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="MoreOptionTabStatus" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="RejectReason" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="FirstApproveBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="FirstApproveOn" Type="DateTime" Precision="3" />
           <Property Name="ApproveBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -8464,10 +8813,11 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="RejectOn" Type="DateTime" Precision="3" />
           <Property Name="SubmitBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="SubmitOn" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CreateOn" Type="DateTime" Precision="3" />
-          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OldGroupId" Type="Int32" />
           <NavigationProperty Name="AttributeSet" Relationship="ColspModel.FK_ProductHistoryGroup_AttributeSet" FromRole="ProductHistoryGroup" ToRole="AttributeSet" />
           <NavigationProperty Name="Brand" Relationship="ColspModel.FK_ProductHistoryGroup_Brand" FromRole="ProductHistoryGroup" ToRole="Brand" />
           <NavigationProperty Name="GlobalCategory" Relationship="ColspModel.FK_ProductHistoryGroup_GlobalCategory" FromRole="ProductHistoryGroup" ToRole="GlobalCategory" />
@@ -8477,6 +8827,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="Shipping" Relationship="ColspModel.FK_ProductHistoryGroup_Shipping" FromRole="ProductHistoryGroup" ToRole="Shipping" />
           <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductHistoryGroup_Shop" FromRole="ProductHistoryGroup" ToRole="Shop" />
           <NavigationProperty Name="ProductHistoryLocalCatMaps" Relationship="ColspModel.FK_ProductHistoryLocalCatMap_ProductHistoryGroup" FromRole="ProductHistoryGroup" ToRole="ProductHistoryLocalCatMap" />
+          <NavigationProperty Name="ProductHistoryRelateds" Relationship="ColspModel.FK_ProductHistoryRelated_ProductHistoryGroup" FromRole="ProductHistoryGroup" ToRole="ProductHistoryRelated" />
           <NavigationProperty Name="ProductHistoryTags" Relationship="ColspModel.FK_ProductHistoryTag_ProductHistoryGroup" FromRole="ProductHistoryGroup" ToRole="ProductHistoryTag" />
         </EntityType>
         <EntityType Name="ProductHistoryImage">
@@ -8517,6 +8868,25 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FKProductHistoryLocalCatMapLocalCategory" FromRole="ProductHistoryLocalCatMap" ToRole="LocalCategory" />
           <NavigationProperty Name="ProductHistoryGroup" Relationship="ColspModel.FK_ProductHistoryLocalCatMap_ProductHistoryGroup" FromRole="ProductHistoryLocalCatMap" ToRole="ProductHistoryGroup" />
+        </EntityType>
+        <EntityType Name="ProductHistoryRelated">
+          <Key>
+            <PropertyRef Name="HistoryId" />
+            <PropertyRef Name="Parent" />
+            <PropertyRef Name="Child" />
+          </Key>
+          <Property Name="HistoryId" Type="Int64" Nullable="false" />
+          <Property Name="Parent" Type="Int64" Nullable="false" />
+          <Property Name="Child" Type="Int64" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ProductHistoryGroup" Relationship="ColspModel.FK_ProductHistoryRelated_ProductHistoryGroup" FromRole="ProductHistoryRelated" ToRole="ProductHistoryGroup" />
+          <NavigationProperty Name="ProductStageGroup" Relationship="ColspModel.FK_ProductHistoryRelated_GroupChild" FromRole="ProductHistoryRelated" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="ProductStageGroup1" Relationship="ColspModel.FK_ProductHistoryRelated_GroupParent" FromRole="ProductHistoryRelated" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductHistoryRelated_Shop" FromRole="ProductHistoryRelated" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ProductHistoryTag">
           <Key>
@@ -8604,15 +8974,19 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
         </EntityType>
         <EntityType Name="ProductRelated">
           <Key>
-            <PropertyRef Name="ParentPid" />
-            <PropertyRef Name="ChildPid" />
+            <PropertyRef Name="Parent" />
+            <PropertyRef Name="Child" />
           </Key>
-          <Property Name="ParentPid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
-          <Property Name="ChildPid" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="Parent" Type="Int64" Nullable="false" />
+          <Property Name="Child" Type="Int64" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ProductStageGroup" Relationship="ColspModel.FK_ProductRelated_GroupChild" FromRole="ProductRelated" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="ProductStageGroup1" Relationship="ColspModel.FK_ProductRelated_GroupParent" FromRole="ProductRelated" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="Shop" Relationship="ColspModel.FK_ProductRelated_Shop" FromRole="ProductRelated" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ProductReview">
           <Key>
@@ -8744,6 +9118,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="AttributeId" Type="Int32" Nullable="false" />
           <Property Name="ValueEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ValueTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HtmlBoxValue" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValueId" Type="Int32" />
           <Property Name="CheckboxValue" Type="Boolean" Nullable="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
@@ -8835,6 +9210,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="GlobalCatFeatureProducts" Relationship="ColspModel.FK_GlobalCatFeatureProduct_ProductStageGroup" FromRole="ProductStageGroup" ToRole="GlobalCatFeatureProduct" />
           <NavigationProperty Name="LocalCategory" Relationship="ColspModel.FK_ProductStageGroup_LocalCategory" FromRole="ProductStageGroup" ToRole="LocalCategory" />
           <NavigationProperty Name="LocalCatFeatureProducts" Relationship="ColspModel.FK_LocalCatFeatureProduct_ProductStageGroup" FromRole="ProductStageGroup" ToRole="LocalCatFeatureProduct" />
+          <NavigationProperty Name="ProductHistoryRelateds" Relationship="ColspModel.FK_ProductHistoryRelated_GroupChild" FromRole="ProductStageGroup" ToRole="ProductHistoryRelated" />
+          <NavigationProperty Name="ProductHistoryRelateds1" Relationship="ColspModel.FK_ProductHistoryRelated_GroupParent" FromRole="ProductStageGroup" ToRole="ProductHistoryRelated" />
+          <NavigationProperty Name="ProductRelateds" Relationship="ColspModel.FK_ProductRelated_GroupChild" FromRole="ProductStageGroup" ToRole="ProductRelated" />
+          <NavigationProperty Name="ProductRelateds1" Relationship="ColspModel.FK_ProductRelated_GroupParent" FromRole="ProductStageGroup" ToRole="ProductRelated" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FK_ProductStage_ProductStageGroup" FromRole="ProductStageGroup" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageGlobalCatMaps" Relationship="ColspModel.FKProductStageGlobalCatMapProduct" FromRole="ProductStageGroup" ToRole="ProductStageGlobalCatMap" />
           <NavigationProperty Name="Shipping" Relationship="ColspModel.FK_ProductStageGroup_Shipping" FromRole="ProductStageGroup" ToRole="Shipping" />
@@ -9090,6 +9469,17 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="ProvinceType" Type="Byte" Nullable="false" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FK_Shop_Province" FromRole="Province" ToRole="Shop" />
         </EntityType>
+        <EntityType Name="ReportLog">
+          <Key>
+            <PropertyRef Name="ReportLogId" />
+          </Key>
+          <Property Name="ReportLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopId" Type="Int32" />
+          <Property Name="ReportName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Shipping">
           <Key>
             <PropertyRef Name="ShippingId" />
@@ -9105,6 +9495,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="ProductHistoryGroups" Relationship="ColspModel.FK_ProductHistoryGroup_Shipping" FromRole="Shipping" ToRole="ProductHistoryGroup" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Shipping" FromRole="Shipping" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="ShopTypeShippingMaps" Relationship="ColspModel.FK_ShopTypeShippingMap_Shipping" FromRole="Shipping" ToRole="ShopTypeShippingMap" />
           <NavigationProperty Name="ShopGroups" Relationship="ColspModel.ShippingShopGroupMap" FromRole="Shipping" ToRole="ShopGroup" />
         </EntityType>
         <EntityType Name="Shop">
@@ -9114,8 +9505,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="VendorId" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
           <Property Name="ShopOwner" Type="Int32" />
-          <Property Name="ShopNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="ShopNameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ShopNameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ShopNameTh" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="MaxLocalCategory" Type="Int32" Nullable="false" />
           <Property Name="GiftWrap" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="TaxInvoice" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
@@ -9123,19 +9514,19 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="ShopImageUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="ShopDescriptionEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="ShopDescriptionTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="DomainName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DomainName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="ShopAddress" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Facebook" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="YouTube" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Twitter" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Instagram" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Pinterest" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Facebook" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="YouTube" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Twitter" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Instagram" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Pinterest" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="StockAlert" Type="Int32" Nullable="false" />
           <Property Name="Commission" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
           <Property Name="ShopTypeId" Type="Int32" />
           <Property Name="UrlKey" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="FloatMessageEn" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="FloatMessageTh" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="FloatMessageEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="FloatMessageTh" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="ThemeId" Type="Int32" />
           <Property Name="ShopAppearance" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TaxPayerId" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
@@ -9159,6 +9550,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="BankAccountNumber" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="BankAccountName" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
           <Property Name="RemittanceFaxNumber" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="false" />
+          <Property Name="ContactPersonFirstName" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ContactPersonLastName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
@@ -9177,7 +9571,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="PostCode" Relationship="ColspModel.FK_Shop_PostalCode" FromRole="Shop" ToRole="PostCode" />
           <NavigationProperty Name="ProductHistories" Relationship="ColspModel.FK_ProductHistory_Shop" FromRole="Shop" ToRole="ProductHistory" />
           <NavigationProperty Name="ProductHistoryGroups" Relationship="ColspModel.FK_ProductHistoryGroup_Shop" FromRole="Shop" ToRole="ProductHistoryGroup" />
+          <NavigationProperty Name="ProductHistoryRelateds" Relationship="ColspModel.FK_ProductHistoryRelated_Shop" FromRole="Shop" ToRole="ProductHistoryRelated" />
           <NavigationProperty Name="ProductImages" Relationship="ColspModel.FK_ProductImage_Shop" FromRole="Shop" ToRole="ProductImage" />
+          <NavigationProperty Name="ProductRelateds" Relationship="ColspModel.FK_ProductRelated_Shop" FromRole="Shop" ToRole="ProductRelated" />
           <NavigationProperty Name="ProductReviews" Relationship="ColspModel.FK_ProductReview_Shop" FromRole="Shop" ToRole="ProductReview" />
           <NavigationProperty Name="ProductStages" Relationship="ColspModel.FK_ProductStage_Shop" FromRole="Shop" ToRole="ProductStage" />
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Shop" FromRole="Shop" ToRole="ProductStageGroup" />
@@ -9241,7 +9637,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="ShopTypeId" />
           </Key>
           <Property Name="ShopTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ShopTypeNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShopTypeNameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
@@ -9249,6 +9645,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Shops" Relationship="ColspModel.FK_Shop_ShopType" FromRole="ShopType" ToRole="Shop" />
           <NavigationProperty Name="ShopTypePermissionMaps" Relationship="ColspModel.FK_ShopTypePermissionMap_ShopType" FromRole="ShopType" ToRole="ShopTypePermissionMap" />
+          <NavigationProperty Name="ShopTypeShippingMaps" Relationship="ColspModel.FK_ShopTypeShippingMap_ShopType" FromRole="ShopType" ToRole="ShopTypeShippingMap" />
           <NavigationProperty Name="ShopTypeThemeMaps" Relationship="ColspModel.FK_ShopTypeThemeMap_ShopType" FromRole="ShopType" ToRole="ShopTypeThemeMap" />
         </EntityType>
         <EntityType Name="ShopTypePermissionMap">
@@ -9264,6 +9661,20 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Permission" Relationship="ColspModel.FK_ShopTypePermissionMap_Permission" FromRole="ShopTypePermissionMap" ToRole="Permission" />
           <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_ShopTypePermissionMap_ShopType" FromRole="ShopTypePermissionMap" ToRole="ShopType" />
+        </EntityType>
+        <EntityType Name="ShopTypeShippingMap">
+          <Key>
+            <PropertyRef Name="ShopTypeId" />
+            <PropertyRef Name="ShippingId" />
+          </Key>
+          <Property Name="ShopTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ShippingId" Type="Int32" Nullable="false" />
+          <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Shipping" Relationship="ColspModel.FK_ShopTypeShippingMap_Shipping" FromRole="ShopTypeShippingMap" ToRole="Shipping" />
+          <NavigationProperty Name="ShopType" Relationship="ColspModel.FK_ShopTypeShippingMap_ShopType" FromRole="ShopTypeShippingMap" ToRole="ShopType" />
         </EntityType>
         <EntityType Name="ShopTypeThemeMap">
           <Key>
@@ -9435,11 +9846,11 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="Password" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="PasswordLastChg" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Position" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Division" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="NameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="NameTh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Position" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Division" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="NameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="NameTh" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Mobile" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Phone" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -9475,7 +9886,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             <PropertyRef Name="GroupId" />
           </Key>
           <Property Name="GroupId" Type="Int32" Nullable="false" />
-          <Property Name="GroupNameEn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="GroupNameEn" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="CreateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -11333,7 +11744,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ProductHistory_Shop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ProductHistory" Role="ProductHistory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -11407,7 +11818,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ProductHistoryGroup_Shipping">
-          <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="0..1" />
+          <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="1" />
           <End Type="ColspModel.ProductHistoryGroup" Role="ProductHistoryGroup" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shipping">
@@ -11419,7 +11830,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ProductHistoryGroup_Shop">
-          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="0..1" />
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ProductHistoryGroup" Role="ProductHistoryGroup" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shop">
@@ -11444,6 +11855,20 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductHistoryRelated_ProductHistoryGroup">
+          <End Type="ColspModel.ProductHistoryGroup" Role="ProductHistoryGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.ProductHistoryRelated" Role="ProductHistoryRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductHistoryGroup">
+              <PropertyRef Name="HistoryId" />
+            </Principal>
+            <Dependent Role="ProductHistoryRelated">
+              <PropertyRef Name="HistoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ProductHistoryTag_ProductHistoryGroup">
           <End Type="ColspModel.ProductHistoryGroup" Role="ProductHistoryGroup" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -11458,6 +11883,42 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductHistoryRelated_GroupChild">
+          <End Type="ColspModel.ProductStageGroup" Role="ProductStageGroup" Multiplicity="1" />
+          <End Type="ColspModel.ProductHistoryRelated" Role="ProductHistoryRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductHistoryRelated">
+              <PropertyRef Name="Child" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductHistoryRelated_GroupParent">
+          <End Type="ColspModel.ProductStageGroup" Role="ProductStageGroup" Multiplicity="1" />
+          <End Type="ColspModel.ProductHistoryRelated" Role="ProductHistoryRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductHistoryRelated">
+              <PropertyRef Name="Parent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductHistoryRelated_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.ProductHistoryRelated" Role="ProductHistoryRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductHistoryRelated">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ProductImage_Shop">
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
           <End Type="ColspModel.ProductImage" Role="ProductImage" Multiplicity="*" />
@@ -11466,6 +11927,42 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <PropertyRef Name="ShopId" />
             </Principal>
             <Dependent Role="ProductImage">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductRelated_GroupChild">
+          <End Type="ColspModel.ProductStageGroup" Role="ProductStageGroup" Multiplicity="1" />
+          <End Type="ColspModel.ProductRelated" Role="ProductRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductRelated">
+              <PropertyRef Name="Child" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductRelated_GroupParent">
+          <End Type="ColspModel.ProductStageGroup" Role="ProductStageGroup" Multiplicity="1" />
+          <End Type="ColspModel.ProductRelated" Role="ProductRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductStageGroup">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductRelated">
+              <PropertyRef Name="Parent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductRelated_Shop">
+          <End Type="ColspModel.Shop" Role="Shop" Multiplicity="1" />
+          <End Type="ColspModel.ProductRelated" Role="ProductRelated" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="ProductRelated">
               <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
@@ -11742,6 +12239,20 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopTypeShippingMap_Shipping">
+          <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.ShopTypeShippingMap" Role="ShopTypeShippingMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shipping">
+              <PropertyRef Name="ShippingId" />
+            </Principal>
+            <Dependent Role="ShopTypeShippingMap">
+              <PropertyRef Name="ShippingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Shop_ShopType">
           <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="0..1" />
           <End Type="ColspModel.Shop" Role="Shop" Multiplicity="*" />
@@ -11884,8 +12395,24 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShopTypeShippingMap_ShopType">
+          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ColspModel.ShopTypeShippingMap" Role="ShopTypeShippingMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopType">
+              <PropertyRef Name="ShopTypeId" />
+            </Principal>
+            <Dependent Role="ShopTypeShippingMap">
+              <PropertyRef Name="ShopTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShopTypeThemeMap_ShopType">
-          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1" />
+          <End Type="ColspModel.ShopType" Role="ShopType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ShopTypeThemeMap" Role="ShopTypeThemeMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShopType">
@@ -11897,7 +12424,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShopTypeThemeMap_Theme">
-          <End Type="ColspModel.Theme" Role="Theme" Multiplicity="1" />
+          <End Type="ColspModel.Theme" Role="Theme" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="ColspModel.ShopTypeThemeMap" Role="ShopTypeThemeMap" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Theme">
@@ -12000,19 +12529,13 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <End Type="ColspModel.Shipping" Role="Shipping" Multiplicity="*" />
           <End Type="ColspModel.ShopGroup" Role="ShopGroup" Multiplicity="*" />
         </Association>
-        <ComplexType Name="ItemOnHoldReport_Result">
-          <Property Type="String" Name="PID" Nullable="false" MaxLength="7" />
-          <Property Type="String" Name="Itemname" Nullable="false" MaxLength="200" />
-          <Property Type="DateTime" Name="OnHoldDate" Nullable="true" Precision="16" />
-          <Property Type="String" Name="OnHoldRemark" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="Orderid" Nullable="true" MaxLength="12" />
-        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ColspModelStoreContainer" CdmEntityContainer="ColspEntities">
+          <FunctionImportMapping FunctionImportName="GetNextAppLogId" FunctionName="ColspModel.Store.GetNextAppLogId" />
           <FunctionImportMapping FunctionImportName="GetNextAttributeId" FunctionName="ColspModel.Store.GetNextAttributeId" />
           <FunctionImportMapping FunctionImportName="GetNextAttributeSetId" FunctionName="ColspModel.Store.GetNextAttributeSetId" />
           <FunctionImportMapping FunctionImportName="GetNextAttributeValueId" FunctionName="ColspModel.Store.GetNextAttributeValueId" />
@@ -12023,11 +12546,57 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <FunctionImportMapping FunctionImportName="GetNextNewsletterId" FunctionName="ColspModel.Store.GetNextNewsletterId" />
           <FunctionImportMapping FunctionImportName="GetNextProductHistoryId" FunctionName="ColspModel.Store.GetNextProductHistoryId" />
           <FunctionImportMapping FunctionImportName="GetNextProductStageGroupId" FunctionName="ColspModel.Store.GetNextProductStageGroupId" />
+          <FunctionImportMapping FunctionImportName="GetNextProductStageImageId" FunctionName="ColspModel.Store.GetNextProductStageImageId" />
           <FunctionImportMapping FunctionImportName="GetNextProductStagePid" FunctionName="ColspModel.Store.GetNextProductStagePid" />
           <FunctionImportMapping FunctionImportName="GetNextProductTempId" FunctionName="ColspModel.Store.GetNextProductTempId" />
           <FunctionImportMapping FunctionImportName="GetNextShopId" FunctionName="ColspModel.Store.GetNextShopId" />
           <FunctionImportMapping FunctionImportName="GetNextUserGroupId" FunctionName="ColspModel.Store.GetNextUserGroupId" />
           <FunctionImportMapping FunctionImportName="GetNextUserId" FunctionName="ColspModel.Store.GetNextUserId" />
+          <FunctionImportMapping FunctionImportName="ItemOnHoldReport" FunctionName="ColspModel.Store.ItemOnHoldReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ItemOnHoldReport_Result">
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="Itemname" ColumnName="Itemname" />
+                <ScalarProperty Name="OnHoldDate" ColumnName="OnHoldDate" />
+                <ScalarProperty Name="OnHoldRemark" ColumnName="OnHoldRemark" />
+                <ScalarProperty Name="Orderid" ColumnName="Orderid" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportProductsCommissionForOrder" FunctionName="ColspModel.Store.ReportProductsCommissionForOrder">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ReportProductsCommissionForOrder_Result">
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="CommissionRate" ColumnName="CommissionRate" />
+                <ScalarProperty Name="CommissionFee" ColumnName="CommissionFee" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportReturnItemByOrderReport" FunctionName="ColspModel.Store.ReportReturnItemByOrderReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ColspModel.ReportReturnItemByOrderReport_Result">
+                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="LocalDiscount" ColumnName="LocalDiscount" />
+                <ScalarProperty Name="ReturnPrice" ColumnName="ReturnPrice" />
+                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
+                <ScalarProperty Name="ReturnAmount" ColumnName="ReturnAmount" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SaleReportForSeller" FunctionName="ColspModel.Store.SaleReportForSeller">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ColspModel.SaleReportForSeller_Result">
@@ -12051,6 +12620,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="BrandId" ColumnName="BrandId" />
                 <ScalarProperty Name="GlobalCatId" ColumnName="GlobalCatId" />
                 <ScalarProperty Name="LocalCatId" ColumnName="LocalCatId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -12074,10 +12644,26 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="LastSoldDate" ColumnName="LastSoldDate" />
                 <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
                 <ScalarProperty Name="AgingDay" ColumnName="AgingDay" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetNextProductStageImageId" FunctionName="ColspModel.Store.GetNextProductStageImageId" />
+          <EntitySetMapping Name="ApiLogs">
+            <EntityTypeMapping TypeName="ColspModel.ApiLog">
+              <MappingFragment StoreEntitySet="ApiLog">
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="ResponseCode" ColumnName="ResponseCode" />
+                <ScalarProperty Name="ResponseData" ColumnName="ResponseData" />
+                <ScalarProperty Name="RequestData" ColumnName="RequestData" />
+                <ScalarProperty Name="Method" ColumnName="Method" />
+                <ScalarProperty Name="RequestUrl" ColumnName="RequestUrl" />
+                <ScalarProperty Name="DestinationApp" ColumnName="DestinationApp" />
+                <ScalarProperty Name="SourceApp" ColumnName="SourceApp" />
+                <ScalarProperty Name="LogId" ColumnName="LogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AppAuths">
             <EntityTypeMapping TypeName="ColspModel.AppAuth">
               <MappingFragment StoreEntitySet="AppAuth">
@@ -12088,7 +12674,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
                 <ScalarProperty Name="AppName" ColumnName="AppName" />
                 <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
-                <ScalarProperty Name="AppId" ColumnName="AppId" />
+                <ScalarProperty Name="ClientAppId" ColumnName="ClientAppId" />
+                <ScalarProperty Name="ServerAppId" ColumnName="ServerAppId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -12230,6 +12817,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Bu" ColumnName="Bu" />
                 <ScalarProperty Name="OldBrandId" ColumnName="OldBrandId" />
                 <ScalarProperty Name="SortById" ColumnName="SortById" />
+                <ScalarProperty Name="IsLandingPage" ColumnName="IsLandingPage" />
                 <ScalarProperty Name="SeoTh" ColumnName="SeoTh" />
                 <ScalarProperty Name="SeoEn" ColumnName="SeoEn" />
                 <ScalarProperty Name="MetaKeyTh" ColumnName="MetaKeyTh" />
@@ -12814,6 +13402,15 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CustomerProductHistories">
+            <EntityTypeMapping TypeName="ColspModel.CustomerProductHistory">
+              <MappingFragment StoreEntitySet="CustomerProductHistory">
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CustomerTokens">
             <EntityTypeMapping TypeName="ColspModel.CustomerToken">
               <MappingFragment StoreEntitySet="CustomerToken">
@@ -12848,6 +13445,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="CustomerWishLists">
             <EntityTypeMapping TypeName="ColspModel.CustomerWishList">
               <MappingFragment StoreEntitySet="CustomerWishList">
+                <ScalarProperty Name="SeqNo" ColumnName="SeqNo" />
                 <ScalarProperty Name="Pid" ColumnName="Pid" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
               </MappingFragment>
@@ -12911,6 +13509,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="SortById" ColumnName="SortById" />
+                <ScalarProperty Name="IsLandingPage" ColumnName="IsLandingPage" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
                 <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
@@ -13034,6 +13633,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="SortById" ColumnName="SortById" />
+                <ScalarProperty Name="IsLandingPage" ColumnName="IsLandingPage" />
                 <ScalarProperty Name="Visibility" ColumnName="Visibility" />
                 <ScalarProperty Name="TitleShowcase" ColumnName="TitleShowcase" />
                 <ScalarProperty Name="FeatureTitle" ColumnName="FeatureTitle" />
@@ -13382,6 +13982,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="CheckboxValue" ColumnName="CheckboxValue" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
+                <ScalarProperty Name="HtmlBoxValue" ColumnName="HtmlBoxValue" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
@@ -13501,6 +14102,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="CheckboxValue" ColumnName="CheckboxValue" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
+                <ScalarProperty Name="HtmlBoxValue" ColumnName="HtmlBoxValue" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
@@ -13525,6 +14127,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySetMapping Name="ProductHistoryGroups">
             <EntityTypeMapping TypeName="ColspModel.ProductHistoryGroup">
               <MappingFragment StoreEntitySet="ProductHistoryGroup">
+                <ScalarProperty Name="OldGroupId" ColumnName="OldGroupId" />
                 <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
                 <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
@@ -13601,6 +14204,20 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="HistoryId" ColumnName="HistoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductHistoryRelateds">
+            <EntityTypeMapping TypeName="ColspModel.ProductHistoryRelated">
+              <MappingFragment StoreEntitySet="ProductHistoryRelated">
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="Parent" ColumnName="Parent" />
                 <ScalarProperty Name="HistoryId" ColumnName="HistoryId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -13689,8 +14306,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ChildPid" ColumnName="ChildPid" />
-                <ScalarProperty Name="ParentPid" ColumnName="ParentPid" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="Parent" ColumnName="Parent" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -13814,6 +14432,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="CheckboxValue" ColumnName="CheckboxValue" />
                 <ScalarProperty Name="AttributeValueId" ColumnName="AttributeValueId" />
+                <ScalarProperty Name="HtmlBoxValue" ColumnName="HtmlBoxValue" />
                 <ScalarProperty Name="ValueTh" ColumnName="ValueTh" />
                 <ScalarProperty Name="ValueEn" ColumnName="ValueEn" />
                 <ScalarProperty Name="AttributeId" ColumnName="AttributeId" />
@@ -14129,6 +14748,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ReportLogs">
+            <EntityTypeMapping TypeName="ColspModel.ReportLog">
+              <MappingFragment StoreEntitySet="ReportLog">
+                <ScalarProperty Name="CreatedIP" ColumnName="CreatedIP" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="ReportName" ColumnName="ReportName" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ReportLogId" ColumnName="ReportLogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Shippings">
             <EntityTypeMapping TypeName="ColspModel.Shipping">
               <MappingFragment StoreEntitySet="Shipping">
@@ -14152,6 +14783,9 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ContactPersonLastName" ColumnName="ContactPersonLastName" />
+                <ScalarProperty Name="ContactPersonFirstName" ColumnName="ContactPersonFirstName" />
                 <ScalarProperty Name="RemittanceFaxNumber" ColumnName="RemittanceFaxNumber" />
                 <ScalarProperty Name="BankAccountName" ColumnName="BankAccountName" />
                 <ScalarProperty Name="BankAccountNumber" ColumnName="BankAccountNumber" />
@@ -14260,6 +14894,18 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
                 <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+                <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShopTypeShippingMaps">
+            <EntityTypeMapping TypeName="ColspModel.ShopTypeShippingMap">
+              <MappingFragment StoreEntitySet="ShopTypeShippingMap">
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
                 <ScalarProperty Name="ShopTypeId" ColumnName="ShopTypeId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -15093,17 +15739,6 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
               <ScalarProperty Name="ShippingId" ColumnName="ShippingId" />
             </EndProperty>
           </AssociationSetMapping>
-          <FunctionImportMapping FunctionImportName="ItemOnHoldReport" FunctionName="ColspModel.Store.ItemOnHoldReport">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ColspModel.ItemOnHoldReport_Result">
-                <ScalarProperty Name="PID" ColumnName="PID" />
-                <ScalarProperty Name="Itemname" ColumnName="Itemname" />
-                <ScalarProperty Name="OnHoldDate" ColumnName="OnHoldDate" />
-                <ScalarProperty Name="OnHoldRemark" ColumnName="OnHoldRemark" />
-                <ScalarProperty Name="Orderid" ColumnName="Orderid" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

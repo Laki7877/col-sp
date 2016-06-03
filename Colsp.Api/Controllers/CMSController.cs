@@ -186,7 +186,7 @@ namespace Colsp.Api.Controllers
                 if (!query.Any())
                     return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
 
-                var items = query.ToList();
+                var items = query.ToList().GroupBy(g => g.BrandId).Select(s => s.First()).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, items);
 
             }
@@ -290,13 +290,13 @@ namespace Colsp.Api.Controllers
                 if (shopId != 0)
                     query = query.Where(x => x.ShopId == shopId);
 
-                if (condition.SearchBy == SearchOption.PID)
+                if (condition.SearchBy == Logic.SearchOption.PID)
                     query = query.Where(x => x.Pid.Equals(condition.SearchText));
 
-                if (condition.SearchBy == SearchOption.SKU)
+                if (condition.SearchBy == Logic.SearchOption.SKU)
                     query = query.Where(x => x.Sku.Equals(condition.SearchText));
 
-                if (condition.SearchBy == SearchOption.ProductName)
+                if (condition.SearchBy == Logic.SearchOption.ProductName)
                     query = query.Where(x => x.ProductNameEn.Contains(condition.SearchText) || x.ProductNameTh.Contains(condition.SearchText));
 
                 if (condition.CategoryId != null)
@@ -487,6 +487,12 @@ namespace Colsp.Api.Controllers
             try
             {
                 request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = User.UserRequest().Email;
+                if (!string.IsNullOrWhiteSpace(request.CreateIP))
+                    request.CreateIP = request.CreateIP;
+                else
+                    request.CreateIP = "";
+                request.ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
 
                 var success = cmsLogic.AddCMSCategory(request);
                 if (!success)
@@ -509,6 +515,9 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                request.UpdateBy = this.User.UserRequest().Email;
+                request.ShopId = this.User.ShopRequest() == null ? 0 : this.User.ShopRequest().ShopId;
+
                 var success = cmsLogic.EditCMSCategory(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
@@ -668,35 +677,36 @@ namespace Colsp.Api.Controllers
                             where master.CMSMasterId == cmsMasterId
                             select new CMSMasterRequest
                             {
-                                CMSMasterId                 = master.CMSMasterId,
-                                CMSMasterNameEN             = master.CMSMasterNameEN,
-                                CMSMasterNameTH             = master.CMSMasterNameTH,
-                                CMSMasterType               = master.CMSMasterType,
-                                CMSMasterURLKey             = master.CMSMasterURLKey,
-                                EffectiveDate               = master.CMSMasterEffectiveDate,
-                                ExpiryDate                  = master.CMSMasterExpireDate,
-                                LongDescriptionEN           = master.LongDescriptionEN,
-                                LongDescriptionTH           = master.LongDescriptionTH,
-                                ShortDescriptionEN          = master.ShortDescriptionEN,
-                                ShortDescriptionTH          = master.ShortDescriptionTH,
-                                MobileLongDescriptionEN     = master.MobileLongDescriptionEN,
-                                MobileLongDescriptionTH     = master.MobileLongDescriptionTH,
-                                MobileShortDescriptionEN    = master.MobileShortDescriptionEN,
-                                MobileShortDescriptionTH    = master.MobileShortDescriptionTH,
-                                Status                      = master.Status,
-                                Visibility                  = master.Visibility,
-                                ISCampaign                  = master.IsCampaign,
-                                FeatureTitle                = master.FeatureTitle,
-                                TitleShowcase               = master.TitleShowcase,
+                                CMSMasterId = master.CMSMasterId,
+                                CMSMasterNameEN = master.CMSMasterNameEN,
+                                CMSMasterNameTH = master.CMSMasterNameTH,
+                                CMSMasterType = master.CMSMasterType,
+                                CMSMasterURLKey = master.CMSMasterURLKey,
+                                EffectiveDate = master.CMSMasterEffectiveDate,
+                                ExpiryDate = master.CMSMasterExpireDate,
+                                LongDescriptionEN = master.LongDescriptionEN,
+                                LongDescriptionTH = master.LongDescriptionTH,
+                                ShortDescriptionEN = master.ShortDescriptionEN,
+                                ShortDescriptionTH = master.ShortDescriptionTH,
+                                MobileLongDescriptionEN = master.MobileLongDescriptionEN,
+                                MobileLongDescriptionTH = master.MobileLongDescriptionTH,
+                                MobileShortDescriptionEN = master.MobileShortDescriptionEN,
+                                MobileShortDescriptionTH = master.MobileShortDescriptionTH,
+                                Status = master.Status,
+                                Visibility = master.Visibility,
+                                ISCampaign = master.IsCampaign,
+                                FeatureTitle = master.FeatureTitle,
+                                TitleShowcase = master.TitleShowcase,
 
-                                FeatureProductList          = (from feature in db.CMSFeatureProducts
+                                FeatureProductList = (from feature in db.CMSFeatureProducts
                                                               where feature.CMSMasterId == cmsMasterId
-                                                              select new CMSFeatureProductRequest {
+                                                      select new CMSFeatureProductRequest
+                                                      {
                                                                   CMSMasterId = feature.CMSMasterId,
                                                                   ProductId = feature.ProductId
                                                               }).ToList(),
 
-                                ScheduleList                = (from schedule in db.CMSSchedulers
+                                ScheduleList = (from schedule in db.CMSSchedulers
                                                                 where schedule.CMSSchedulerId == masterScheduleMap.CMSSchedulerId
                                                                 select new CMSSchedulerRequest
                                                                 {
@@ -706,7 +716,7 @@ namespace Colsp.Api.Controllers
                                                                     ExpiryDate = schedule.ExpireDate
                                                                 }).ToList(),
 
-                                CategoryList                = (from cate in db.CMSCategories
+                                CategoryList = (from cate in db.CMSCategories
                                                                 join masterCate in db.CMSMasterCategoryMaps 
                                                                 on cate.CMSCategoryId equals masterCate.CMSCategoryId 
                                                                 where masterCate.CMSMasterId == cmsMasterId 
@@ -820,10 +830,10 @@ namespace Colsp.Api.Controllers
             try
             {
                 var ShopId = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
-                var Email  = this.User.UserRequest().Email;
+                var Email = this.User.UserRequest().Email;
 
-                request.Status      = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
-                request.CreateBy    = Email;
+                request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = Email;
                 
                 var success = cmsLogic.AddCMSMaster(request);
 
@@ -847,8 +857,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var ShopId  = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
-                var Email   = this.User.UserRequest().Email;
+                var ShopId = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
+                var Email = this.User.UserRequest().Email;
 
                 var success = cmsLogic.EditCMSMaster(request, ShopId, Email);
                 if (!success)
@@ -1109,7 +1119,7 @@ namespace Colsp.Api.Controllers
                     item.CMSMasterNameTH = m.CMSMasterNameTH;
                     //item.Status                 = m.CMSMasterStatusId;
                     item.CMSMasterEffectiveDate = m.CMSMasterEffectiveDate;
-                    item.CMSMasterExpireDate    = m.CMSMasterExpireDate;
+                    item.CMSMasterExpireDate = m.CMSMasterExpireDate;
                     masters.Add(item);
                 }
 
@@ -1133,6 +1143,19 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = User.UserRequest().Email;
+                if (!string.IsNullOrWhiteSpace(request.CreateIP))
+                    request.CreateIP = request.CreateIP;
+                else
+                    request.CreateIP = "";
+
+                if (User.ShopRequest() == null)
+                    request.ShopId = 0;
+                else
+                    request.ShopId = User.ShopRequest().ShopId;
+
+
                 var success = cmsLogic.AddCMSGroup(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
@@ -1156,6 +1179,19 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                //request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = User.UserRequest().Email;
+                if (!string.IsNullOrWhiteSpace(request.CreateIP))
+                    request.CreateIP = request.CreateIP;
+                else
+                    request.CreateIP = "";
+
+                if (User.ShopRequest() == null)
+                    request.ShopId = 0;
+                else
+                    request.ShopId = User.ShopRequest().ShopId;
+
+
                 var success = cmsLogic.EditCMSGroup(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");
@@ -1217,6 +1253,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+
                 var success = cmsLogic.DeleteCMSGroup(request);
                 if (!success)
                     Request.CreateResponse(HttpStatusCode.BadRequest, "Bad Request");

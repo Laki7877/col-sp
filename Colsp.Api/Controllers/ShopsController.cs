@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Cenergy.Dazzle.Admin.Security.Cryptography;
 using System.Web.Script.Serialization;
 using System.IO;
+using System.Text;
 
 namespace Colsp.Api.Controllers
 {
@@ -96,7 +97,48 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.SHOP_FOLDER, 0, 0, int.MaxValue, int.MaxValue, 5, true);
+
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new Exception("In valid content multi-media");
+                }
+                var streamProvider = new MultipartFormDataStreamProvider(Path.Combine(AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.SHOP_FOLDER));
+                try
+                {
+                    await Request.Content.ReadAsMultipartAsync(streamProvider);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Image size exceeded " + 5 + " mb");
+                }
+                #region Validate Image
+                string type = streamProvider.FormData["Type"];
+                ImageRequest fileUpload = null;
+                if ("Logo".Equals(type))
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.SHOP_FOLDER, 500, 500, 1000, 1000, 5, true);
+                        break;
+                    }
+
+                }
+                else 
+                {
+                    foreach (MultipartFileData fileData in streamProvider.FileData)
+                    {
+                        fileUpload = Util.SetupImage(Request,
+                            fileData,
+                            AppSettingKey.IMAGE_ROOT_FOLDER,
+                            AppSettingKey.SHOP_FOLDER, 0, 0, int.MaxValue, int.MaxValue, 5, false);
+                        break;
+                    }
+                }
+                
+                #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
             }
             catch (Exception e)
@@ -188,6 +230,17 @@ namespace Colsp.Api.Controllers
                         s.WithholdingTax,
                         s.Payment,
                         s.DomainName,
+                        s.ShopAddress,
+                        s.VendorAddressLine1,
+                        s.VendorAddressLine2,
+                        s.VendorAddressLine3,
+                        s.PhoneNumber,
+                        s.FaxNumber,
+                        s.Telex,
+                        s.ContactPersonFirstName,
+                        s.ContactPersonLastName,
+                        s.Email,
+                        s.OverseasVendorIndicator,
                         Commissions = s.ShopCommissions.Select(sc => new { sc.CategoryId, sc.Commission }),
                         ShopOwner = new
                         {
@@ -204,7 +257,6 @@ namespace Colsp.Api.Controllers
                         s.ShopDescriptionTh,
                         s.FloatMessageEn,
                         s.FloatMessageTh,
-                        s.ShopAddress,
                         s.Facebook,
                         s.YouTube,
                         s.Twitter,
@@ -213,10 +265,27 @@ namespace Colsp.Api.Controllers
                         s.GiftWrap,
                         s.TaxInvoice,
                         s.StockAlert,
-                        s.City,
-                        s.Province,
-                        s.District,
-                        s.Country,
+                        s.RemittanceFaxNumber,
+                        City = s.City == null ? null : new
+                        {
+                            s.City.CityId,
+                            s.City.CityName,
+                        },
+                        Province = s.Province == null ? null : new
+                        {
+                            s.Province.ProvinceId,
+                            s.Province.ProvinceName
+                        },
+                        District = s.District == null ? null : new
+                        {
+                            s.District.DistrictId,
+                            s.District.DistrictName
+                        },
+                        Country = s.Country == null ? null : new
+                        {
+                            s.Country.CountryCode,
+                            s.Country.CountryName
+                        },
                         PostalCode = s.PostCode == null ? null : new
                         {
                             s.PostCodeId,
@@ -554,31 +623,35 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var ids = request.Select(s => s.ShopId);
-                var shopNames = db.Shops.Where(w => ids.Contains(w.ShopId)).Select(s => new
+
+                StringBuilder sb = new StringBuilder();
+                string updateShop = string.Concat(
+                    "UPDATE [Shop] SET "
+                    , "[ShopNameEn] = concat([ShopNameEn],'_DELETE_',[ShopId]), "
+                    , "[ShopOwner] = null, "
+                    , "[UrlKey] = concat([UrlKey],'_DELETE_',[ShopId]), "
+                    , "[Status] = '" , Constant.STATUS_REMOVE, "' " 
+                    , "WHERE [ShopId] = @1");
+                string updateGroup = string.Concat(
+                    "UPDATE [ProductStageGroup] SET "
+                    , "[Status] = '", Constant.STATUS_REMOVE, "' "
+                    , "WHERE [ShopId] = @1");
+                string updateStage = string.Concat(
+                    "UPDATE [ProductStage] SET "
+                    , "[UrlKey] = concat([Pid],'_DELETE'), "
+                    , "[Status] = '", Constant.STATUS_REMOVE, "' "
+                    , "WHERE [ShopId] = @1");
+                string deleleShopOwner = string.Concat(
+                    "DELETE [UserShopMap] "
+                    , "WHERE [ShopId] = @1");
+                foreach (var id in ids)
                 {
-                    s.ShopId,
-                    s.ShopNameEn,
-                    s.UrlKey
-                });
-                foreach(var id in ids)
-                {
-                    var shop = new Shop()
-                    {
-                        ShopId = id,
-                        Status = Constant.STATUS_REMOVE,
-                        ShopOwner = null,
-                        ShopNameEn = string.Concat(shopNames.Where(w => w.ShopId == id).Single().ShopNameEn, "_DELETE_", id),
-                        UrlKey = string.Concat(shopNames.Where(w => w.ShopId == id).Single().UrlKey, "_DELETE_", id),
-                    };
-                    db.Shops.Attach(shop);
-                    db.Entry(shop).Property(p => p.Status).IsModified = true;
-                    db.Entry(shop).Property(p => p.ShopOwner).IsModified = true;
-                    db.Entry(shop).Property(p => p.ShopNameEn).IsModified = true;
-                    db.Entry(shop).Property(p => p.UrlKey).IsModified = true;
-                    db.UserShopMaps.RemoveRange(db.UserShopMaps.Where(w => w.ShopId == id));
+                    sb.Append(updateShop.Replace("@1",string.Concat(id)));
+                    sb.Append(updateGroup.Replace("@1", string.Concat(id)));
+                    sb.Append(updateStage.Replace("@1", string.Concat(id)));
+                    sb.Append(deleleShopOwner.Replace("@1", string.Concat(id)));
                 }
-                db.Configuration.ValidateOnSaveEnabled = false;
-                Util.DeadlockRetry(db.SaveChanges, "Shop");
+                db.Database.ExecuteSqlCommand(sb.ToString());
                 return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
             }
             catch (Exception e)
@@ -969,7 +1042,7 @@ namespace Colsp.Api.Controllers
                 db.ShopCommissions.RemoveRange(commissions);
             }
             #endregion
-            shop.UrlKey = Validation.ValidateString(request.UrlKey, "Url Key (English)", true, 100, false, shop.ShopNameEn.ToLower().Replace(" ","-"));
+            shop.UrlKey = Validation.ValidateString(request.UrlKey, "Url Key (English)", true, 100, false, shop.ShopNameEn.Trim().ToLower().Replace(" ","-"));
             shop.TaxPayerId = Validation.ValidateString(request.TaxPayerId, "Tax Payer Id", true, 35, false, string.Empty);
             if(request.TermPayment != null && !string.IsNullOrEmpty(request.TermPayment.TermPaymentCode))
             {
@@ -1049,12 +1122,14 @@ namespace Colsp.Api.Controllers
             shop.TaxInvoice = Validation.ValidateString(request.TaxInvoice, "Tax Invoice", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, int.MaxValue, 0).Value;
             shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.STATUS_NOT_ACTIVE, new List<string>() { Constant.STATUS_NOT_ACTIVE, Constant.STATUS_ACTIVE});
-
             shop.VendorAddressLine1 = Validation.ValidateString(request.VendorAddressLine1, "Vendor Address Line1", true, 35, false, string.Empty);
             shop.VendorAddressLine2 = Validation.ValidateString(request.VendorAddressLine2, "Vendor Address Line2", true, 35, false, string.Empty);
             shop.VendorAddressLine3 = Validation.ValidateString(request.VendorAddressLine3, "Vendor Address Line3", true, 35, false, string.Empty);
             shop.OverseasVendorIndicator = Validation.ValidateString(request.OverseasVendorIndicator, "Overseas Vendor Indicator", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
             shop.DomainName = Validation.ValidateString(request.DomainName, "Domain Name", true, 500, false, string.Empty);
+            shop.Email = Validation.ValidateString(request.Email, "Email", true, 100, false, string.Empty);
+            shop.ContactPersonFirstName = Validation.ValidateString(request.ContactPersonFirstName, "Contact Person First Name", true, 100, false, string.Empty);
+            shop.ContactPersonLastName = Validation.ValidateString(request.ContactPersonLastName, "Contact Person Last Name", true, 100, false, string.Empty);
 
             if (request.Country != null && !string.IsNullOrEmpty(request.Country.CountryCode))
             {
@@ -1087,7 +1162,7 @@ namespace Colsp.Api.Controllers
 
                     if (request.District != null && request.District.DistrictId != 0)
                     {
-                        var districtId = db.Districts.Where(w => w.CityId == shop.CityId && w.DistrictId == request.District.DistrictId).Select(s => s.CityId).SingleOrDefault();
+                        var districtId = db.Districts.Where(w => w.CityId == shop.CityId && w.DistrictId == request.District.DistrictId).Select(s => s.DistrictId).SingleOrDefault();
                         if (districtId == 0)
                         {
                             throw new Exception("Cannot find District");

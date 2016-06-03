@@ -64,14 +64,15 @@ namespace Colsp.Api.Controllers
                                   AttributeCount = atrS.AttributeSetMaps.Count(),
                                   CategoryCount = atrS.GlobalCatAttributeSetMaps.Count(),
                                   ProductCount = atrS.ProductStageGroups.Count(),
-                                  Shops = atrS.ProductStageGroups.Where(w=>!Constant.STATUS_REMOVE.Equals(w.Status)).Select(s=>s.ShopId),
+                                  Shops = atrS.ProductStageGroups.Where(w=>!Constant.STATUS_REMOVE.Equals(w.Status)).Select(s=>s.ShopId).Distinct(),
                               };
                 //export page
-                if (User.ShopRequest() != null)
+                if (User.ShopRequest() != null && request.ByShop)
                 {
                     var shopId = User.ShopRequest().ShopId;
                     attrSet = attrSet.Where(w => w.Shops.Contains(shopId));
                 }
+
                 if (request == null)
                 {
                     attrSet = attrSet.Where(w => w.Visibility == true);
@@ -142,7 +143,7 @@ namespace Colsp.Api.Controllers
                 attributeSet.AttributeSetId = db.GetNextAttributeSetId().SingleOrDefault().Value;
                 db.AttributeSets.Add(attributeSet);
                 Util.DeadlockRetry(db.SaveChanges, "AttributeSet");
-                return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attributeSet));
+                return GetAttributeSets(attributeSet.AttributeSetId);
                 //return GetAttributeSets(attributeSet.AttributeSetId);
             }
             catch (Exception e)
@@ -357,7 +358,11 @@ namespace Colsp.Api.Controllers
             {
                 foreach (TagRequest tagRq in request.Tags)
                 {
-
+                    if (string.IsNullOrWhiteSpace(tagRq.TagName)
+                            || set.AttributeSetTags.Any(a => string.Equals(a.Tag, tagRq.TagName.Trim(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
                     set.AttributeSetTags.Add(new AttributeSetTag()
                     {
                         Tag = tagRq.TagName,
@@ -413,6 +418,7 @@ namespace Colsp.Api.Controllers
                         sm.Attribute.VariantStatus,
                         sm.Attribute.AllowHtmlFlag,
                         sm.Attribute.Status,
+                        sm.Attribute.Required,
                         ProductCount = sm.Attribute.ProductStageAttributes.Count,
                         AttributeValueMaps = sm.Attribute.AttributeValueMaps.Select(sv => new
                         {
@@ -460,6 +466,7 @@ namespace Colsp.Api.Controllers
                     attr.VariantStatus = map.Attribute.VariantStatus;
                     attr.AllowHtmlFlag = map.Attribute.AllowHtmlFlag;
                     attr.ProductCount = map.Attribute.ProductCount;
+                    attr.Required = map.Attribute.Required;
                     attr.Status = map.Attribute.Status;
                     if (map.Attribute.AttributeValueMaps != null)
                     {
