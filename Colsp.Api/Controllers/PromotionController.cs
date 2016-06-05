@@ -421,9 +421,9 @@ namespace Colsp.Api.Controllers
                         newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
                         newObj.LongDescriptionEN = Model.LongDescriptionEN;
                         newObj.EffectiveDate = Model.EffectiveDate;
-                        newObj.EffectiveTime = Model.EffectiveTime;
+                        //newObj.EffectiveTime = Model.EffectiveTime;
                         newObj.ExpiryDate = Model.ExpiryDate;
-                        newObj.ExpiryTime = Model.ExpiryTime;
+                        //newObj.ExpiryTime = Model.ExpiryTime;
                         newObj.ProductBoxBadge = Model.ProductBoxBadge;
                         newObj.Sequence = Model.Sequence;
                         newObj.Status = Model.Status;
@@ -493,9 +493,9 @@ namespace Colsp.Api.Controllers
                             Obj.ShortDescriptionEN = Model.ShortDescriptionEN;
                             Obj.LongDescriptionEN = Model.LongDescriptionEN;
                             Obj.EffectiveDate = Model.EffectiveDate;
-                            Obj.EffectiveTime = Model.EffectiveTime;
+                            //Obj.EffectiveTime = Model.EffectiveTime;
                             Obj.ExpiryDate = Model.ExpiryDate;
-                            Obj.ExpiryTime = Model.ExpiryTime;
+                            //Obj.ExpiryTime = Model.ExpiryTime;
                             Obj.ProductBoxBadge = Model.ProductBoxBadge;
                             Obj.Sequence = Model.Sequence;
                             Obj.Status = Model.Status;
@@ -573,9 +573,9 @@ namespace Colsp.Api.Controllers
                     result.ShortDescriptionEN = buy1get1.ShortDescriptionEN;
                     result.LongDescriptionEN = buy1get1.LongDescriptionEN;
                     result.EffectiveDate = buy1get1.EffectiveDate;
-                    result.EffectiveTime = buy1get1.EffectiveTime;
+                    //result.EffectiveTime = buy1get1.EffectiveTime;
                     result.ExpiryDate = buy1get1.ExpiryDate;
-                    result.ExpiryTime = buy1get1.ExpiryTime;
+                    //result.ExpiryTime = buy1get1.ExpiryTime;
                     result.ProductBoxBadge = buy1get1.ProductBoxBadge;
                     result.Sequence = buy1get1.Sequence;
                     result.Status = buy1get1.Status;

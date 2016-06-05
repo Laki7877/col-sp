@@ -37,13 +37,13 @@ namespace Colsp.Api.Controllers
 								 c.Status,
 								 c.ShopId,
 								 c.MaximumUser,
-								 Shop = new { c.Shop.ShopNameEn },
+								 Shop = new { c.Shop.ShopNameEn, c.Shop.Status },
 								 c.CouponType
 							 };
 				if (User.ShopRequest() != null)
 				{
 					var shopId = User.ShopRequest().ShopId;
-					coupon = coupon.Where(w => w.ShopId == shopId && w.CouponType.Equals(Constant.USER_TYPE_SELLER));
+					coupon = coupon.Where(w => w.ShopId == shopId && !Constant.STATUS_REMOVE.Equals(w.Shop.Status) && Constant.USER_TYPE_SELLER.Equals(w.CouponType));
 				}
 				else
 				{
@@ -84,8 +84,7 @@ namespace Colsp.Api.Controllers
 			try
 			{
 				var couponList = db.Coupons
-					.Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status)
-						|| !w.ShopId.HasValue || (w.ShopId.HasValue && !Constant.STATUS_REMOVE.Equals(w.Shop.Status)))
+					.Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status))
 					.Select(s => new
 					{
 						s.CouponId,
@@ -98,6 +97,7 @@ namespace Colsp.Api.Controllers
 						Action = new { Type = s.Action, s.DiscountAmount, s.MaximumAmount },
 						s.UsagePerCustomer,
 						s.MaximumUser,
+						ShopStatus = s.Shop.Status,
 						Conditions = new
 						{
 							Order = s.CouponOrders.Select(se => new { Type = se.Criteria, Value = se.CriteriaPrice }),
@@ -134,7 +134,8 @@ namespace Colsp.Api.Controllers
 					couponList = couponList.Where(w => w.ShopId == shopId);
 				}
 				var coupon = couponList.SingleOrDefault();
-				if (coupon == null)
+
+				if (coupon == null || Constant.STATUS_REMOVE.Equals(coupon.ShopStatus))
 				{
 					throw new Exception("Cannot find coupon");
 				}

@@ -171,7 +171,6 @@ namespace Colsp.Api.Controllers
 				});
 				foreach (ProductStageRequest proRq in request)
 				{
-
 					var current = productList.Where(w => w.ProductId.Equals(proRq.ProductId)).SingleOrDefault();
 					if (current == null)
 					{
@@ -184,7 +183,6 @@ namespace Colsp.Api.Controllers
 					{
 						ProductId = current.ProductId
 					};
-
 					var currentReal = realProduct.Where(w => w.Pid.Equals(current.Pid)).SingleOrDefault();
 					if (currentReal != null)
 					{
@@ -213,7 +211,6 @@ namespace Colsp.Api.Controllers
 						{
 							group.OnlineFlag = true;
 						}
-
 					}
 				}
 				db.Configuration.ValidateOnSaveEnabled = false;
@@ -239,6 +236,7 @@ namespace Colsp.Api.Controllers
 				}
 				var productTemp = db.ProductStages.Where(w => w.IsSell == true
 					&& !Constant.STATUS_REMOVE.Equals(w.Status)
+					&& !Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(w.Status)
 					&& w.IsVariant == false
 					&& (w.ProductStageGroup.AttributeSetId == null
 					|| w.ProductStageGroup.AttributeSetId == request.AttributeSetId))
@@ -335,6 +333,7 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				defaultVariant.ProductStageGroup.AttributeSetId = request.AttributeSet.AttributeSetId;
+				defaultVariant.Status = Constant.PRODUCT_STATUS_DRAFT;
 				var parentVariant = new ProductStage()
 				{
 					ProductId = defaultVariant.ProductId,
@@ -436,8 +435,6 @@ namespace Colsp.Api.Controllers
 						UseDecimal = defaultVariant.Inventory.UseDecimal
 					}
 				};
-
-
 				foreach (var attribute in defaultVariant.ProductStageAttributes)
 				{
 					parentVariant.ProductStageAttributes.Add(new ProductStageAttribute()
@@ -456,7 +453,6 @@ namespace Colsp.Api.Controllers
 						HtmlBoxValue = attribute.HtmlBoxValue,
 					});
 				}
-
 				parentVariant.VariantCount = request.Variants.Count;
 				List<long> groupIds = new List<long>();
 				foreach (var variantRq in request.Variants)
@@ -470,13 +466,13 @@ namespace Colsp.Api.Controllers
 					{
 						groupIds.Add(variant.ProductId);
 					}
+					variant.DefaultVariant = false;
 					variant.ProductId = parentVariant.ProductId;
 					variant.IsVariant = true;
 					variant.IsSell = true;
 					variant.IsMaster = false;
 					variant.Status = Constant.PRODUCT_STATUS_DRAFT;
 					db.ProductStageAttributes.RemoveRange(db.ProductStageAttributes.Where(w => w.Pid.Equals(variant.Pid)));
-
 					if (variantRq.FirstAttribute != null && variantRq.FirstAttribute.AttributeId != 0)
 					{
 						variant.ProductStageAttributes.Add(new ProductStageAttribute()
@@ -513,8 +509,8 @@ namespace Colsp.Api.Controllers
 							HtmlBoxValue = string.Empty,
 						});
 					}
-
 				}
+				productStage.First().DefaultVariant = true;
 				db.ProductStageGroups.RemoveRange(db.ProductStageGroups.Where(w => groupIds.Contains(w.ProductId)));
 				AutoGenerate.GeneratePid(db, new List<ProductStage>() { parentVariant });
 				db.ProductStages.Add(parentVariant);
@@ -1656,6 +1652,7 @@ namespace Colsp.Api.Controllers
 					s.ProductStageGroup.AttributeSetId,
 					s.ProductStageAttributes,
 					UpdatedDt = s.ProductStageGroup.UpdateOn,
+					CreatedDt = s.ProductStageGroup.CreateOn,
 					s.ShopId,
 					s.ProductStageGroup.InformationTabStatus,
 					s.ProductStageGroup.ImageTabStatus,
@@ -1898,10 +1895,12 @@ namespace Colsp.Api.Controllers
 				SetupProductStageGroup(group, request, attributeList, inventoryList, group.ShopId, isAdmin, false, email, currentDt, db);
 				AutoGenerate.GeneratePid(db, group.ProductStages);
 				SetupGroupAfterSave(group, db, false);
+				
 				if (Constant.RETURN_STATUS_APPROVE.Equals(group.Status))
 				{
 					SetupApprovedProduct(group, db);
 				}
+				
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
 				#endregion
 				Task.Run(() =>
@@ -2126,9 +2125,7 @@ namespace Colsp.Api.Controllers
 			#region setup variant
 			if (request.Variants != null)
 			{
-
 				var varaintList = group.ProductStages.Where(w => !Constant.STATUS_REMOVE.Equals(group.Status)).ToList();
-
 				foreach (var variantRequest in request.Variants)
 				{
 
@@ -2299,7 +2296,8 @@ namespace Colsp.Api.Controllers
 						Status = Constant.STATUS_ACTIVE,
 						VideoUrlEn = video.Url,
 						UpdateBy = email,
-						UpdateOn = currentDt
+						UpdateOn = currentDt,
+						VideoId = video.VideoId
 					});
 				}
 			}
@@ -2822,7 +2820,8 @@ namespace Colsp.Api.Controllers
 						}),
 						Videos = st.ProductStageVideos.OrderBy(o => o.Position).Select(sv => new
 						{
-							sv.VideoUrlEn
+							sv.VideoUrlEn,
+							sv.VideoId
 						}),
 						Inventory = st.Inventory == null ? null : new
 						{
@@ -3063,6 +3062,7 @@ namespace Colsp.Api.Controllers
 				{
 					response.MasterVariant.VideoLinks.Add(new VideoLinkRequest()
 					{
+						VideoId = video.VideoId,
 						Url = video.VideoUrlEn,
 					});
 				}
@@ -3211,6 +3211,7 @@ namespace Colsp.Api.Controllers
 					{
 						tmpVariant.VideoLinks.Add(new VideoLinkRequest()
 						{
+							VideoId = video.VideoId,
 							Url = video.VideoUrlEn,
 						});
 					}
@@ -3734,10 +3735,9 @@ namespace Colsp.Api.Controllers
 				var videoList = product.ProductVideos.ToList();
 				foreach (var video in stage.ProductStageVideos)
 				{
-
 					product.ProductVideos.Add(new ProductVideo()
 					{
-						VideoId = 0,
+						VideoId = video.VideoId,
 						VideoUrlEn = video.VideoUrlEn,
 						Position = video.Position,
 						Status = video.Status,
@@ -3749,6 +3749,7 @@ namespace Colsp.Api.Controllers
 
 					history.ProductHistoryVideos.Add(new ProductHistoryVideo()
 					{
+						VideoId = video.VideoId,
 						VideoUrlEn = video.VideoUrlEn,
 						Position = video.Position,
 						Status = video.Status,
@@ -3909,9 +3910,7 @@ namespace Colsp.Api.Controllers
 
 		private void SetupGroupAfterSave(ProductStageGroup groupProduct, ColspEntities db, bool isNew = false)
 		{
-			//var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-			//var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-
+			#region Image
 			HashSet<string> tmpImageHash = new HashSet<string>();
 			foreach (var stage in groupProduct.ProductStages)
 			{
@@ -3954,6 +3953,31 @@ namespace Colsp.Api.Controllers
 								newFileName));
 							image.ImageId = 0;
 							++index;
+						}else
+						{
+							
+							var myStringWebResource = string.Concat(Constant.PRODUCT_IMAGE_URL, lastPart);
+							string newFileName = string.Concat(stage.Pid, "-", index, Path.GetExtension(lastPart));
+							string newFile = Path.Combine(
+									AppSettingKey.IMAGE_ROOT_PATH,
+									AppSettingKey.PRODUCT_FOLDER,
+									AppSettingKey.IMAGE_TMP_FOLDER,
+									newFileName);
+							using (WebClient myWebClient = new WebClient())
+							{
+								try
+								{
+									myWebClient.DownloadFile(myStringWebResource, newFile);
+								}
+								catch (Exception e)
+								{
+									throw e.GetBaseException();
+								}
+								
+							}
+							image.ImageName = newFileName;
+							image.ImageId = 0;
+							++index;
 						}
 					}
 					else
@@ -3966,6 +3990,16 @@ namespace Colsp.Api.Controllers
 			{
 				SetupStageAfterSave(stage, db, isNew);
 			}
+			#endregion
+			#region Video
+			foreach (var video in groupProduct.ProductStages.SelectMany(s => s.ProductStageVideos))
+			{
+				if (video.VideoId == 0)
+				{
+					video.VideoId = db.GetNextProductStageVideoId().SingleOrDefault().Value;
+				}
+			}
+			#endregion
 		}
 
 		private void SetupStageAfterSave(ProductStage stage, ColspEntities db = null, bool isNew = false)
@@ -7130,8 +7164,15 @@ namespace Colsp.Api.Controllers
 							updateHeader.Add(headerGuidance);
 						}
 					}
-					#endregion
 					csvRows = ReadExcel(csvResult, headers, firstRow);
+					foreach(var ignore in Constant.IMPORT_REQUIRE_FIELD)
+					{
+						if (!headDic.ContainsKey(ignore))
+						{
+							throw new Exception("The uploaded file has invalid format");
+						}
+					}
+					#endregion
 					List<ProductStage> products = new List<ProductStage>();
 					#region Default Query
 					int shopId = User.ShopRequest().ShopId;

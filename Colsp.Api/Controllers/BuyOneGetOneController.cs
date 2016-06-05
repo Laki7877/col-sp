@@ -147,9 +147,9 @@ namespace Colsp.Api.Controllers
                             response.ShortDescriptionEN = B1G.ShortDescriptionEN;
                             response.LongDescriptionEN = B1G.LongDescriptionEN;
                             response.EffectiveDate = B1G.EffectiveDate;
-                            response.EffectiveTime = B1G.EffectiveTime;
+                            //response.EffectiveTime = B1G.EffectiveTime;
                             response.ExpiryDate = B1G.ExpiryDate;
-                            response.ExpiryTime = B1G.ExpiryTime;
+                            //response.ExpiryTime = B1G.ExpiryTime;
                             response.ProductBoxBadge = B1G.ProductBoxBadge;
                             response.Sequence = B1G.Sequence;
                             response.Status = B1G.Status;

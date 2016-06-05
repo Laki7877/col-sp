@@ -308,6 +308,9 @@
     <Compile Include="Models\Deal.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DeliveryLeadTime.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\District.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>

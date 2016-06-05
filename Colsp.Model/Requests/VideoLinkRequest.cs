@@ -3,7 +3,7 @@
     public class VideoLinkRequest
     {
         public string Url { get; set; }
-        public int VideoId { get; set; }
+        public long VideoId { get; set; }
         public string Description { get; set; }
         public string Thumbnail { get; set; }
         public int Position { get; set; }

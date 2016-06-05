@@ -14,26 +14,69 @@ namespace Colsp.Api.Helpers
 
         private static Regex regex = new Regex("^[a-z0-9_-]+$");
 
-        public static string ValidateUniqueName(string val, string fieldName)
+        public static string ValidateUniqueName(string val, string fieldName,int maxLength)
         {
             if (string.IsNullOrWhiteSpace(val))
             {
-                throw new Exception(string.Concat(fieldName + " is required"));
+                throw new Exception(string.Concat(fieldName + " is required field"));
             }
             val = val.ToLower().Trim();
             if (!regex.IsMatch(val))
             {
-                throw new Exception(string.Concat(fieldName + " can only be a-z 0-9 _ -"));
+                throw new Exception(string.Concat(fieldName + " only 0-9 a-z - _ are allowed (no spaces)"));
             }
+			if(val.Length > maxLength)
+			{
+				throw new Exception(string.Concat(fieldName + " field must be no longer than ", maxLength," characters"));
+			}
             return val;
         }
 
+		public static string ValidateString(string val, string fieldName, bool required, int maxLenght, bool isAlphanumeric, string defaultVal = null, List<string> valueOnly = null)
+		{
+
+			if (string.IsNullOrWhiteSpace(val))
+			{
+				if (required)
+				{
+					if (defaultVal != null)
+					{
+						return defaultVal;
+					}
+					throw new Exception(string.Concat(fieldName, " is a required field"));
+				}
+				return defaultVal;
+			}
+			val = val.Trim();
+			if (isAlphanumeric)
+			{
+				Regex rg = new Regex(@"^[^<>]+$");
+				if (!rg.IsMatch(val))
+				{
+					throw new Exception(string.Concat(fieldName, " only letters and numbers allowed"));
+				}
+			}
+			if (val.Length > maxLenght)
+			{
+				throw new Exception(string.Concat(fieldName, " field must be no longer than " + maxLenght + " characters"));
+			}
+			if (valueOnly != null)
+			{
+				if (!valueOnly.Contains(val))
+				{
+					throw new Exception(string.Concat(fieldName, " must be ", string.Join(",", valueOnly), " only"));
+				}
+			}
+			return val;
+		}
 
 
 
 
 
-        public static DateTime? ValidateDateTime(string val,string fieldName,bool required,DateTime? defaultVal = null)
+
+
+		public static DateTime? ValidateDateTime(string val,string fieldName,bool required,DateTime? defaultVal = null)
         {
             if (required && string.IsNullOrWhiteSpace(val))
             {
@@ -62,44 +105,7 @@ namespace Colsp.Api.Helpers
             }
         }
 
-        public static string ValidateString(string val,string fieldName, bool required, int maxLenght, bool isAlphanumeric, string defaultVal = null,List<string> valueOnly = null)
-        {
-            
-            if(required && string.IsNullOrWhiteSpace(val))
-            {
-                if (defaultVal != null)
-                {
-                    return defaultVal;
-                }
-                throw new Exception(string.Concat(fieldName , " is a required field"));
-            }
-            if (string.IsNullOrEmpty(val))
-            {
-                return defaultVal;
-            }
-            val = val.Trim();
-            if (isAlphanumeric)
-            {
-                Regex rg = new Regex(@"^[^<>]+$");
-                //Regex rg = new Regex(@"^[ก-๙A-Za-z0-9\s]*$");
-                if (!rg.IsMatch(val))
-                {
-                    throw new Exception(string.Concat(fieldName , " only letters and numbers allowed"));
-                }
-            }
-            if (val.Length > maxLenght)
-            {
-                throw new Exception(string.Concat(fieldName , " field must be no longer than " + maxLenght + " characters"));
-            }
-            if (valueOnly != null)
-            {
-                if (!valueOnly.Contains(val))
-                {
-                    throw new Exception(string.Concat(fieldName, " ", string.Join(",", valueOnly), " only"));
-                }
-            }
-            return val;
-        }
+        
 
         public static decimal? ValidateDecimal(decimal? val, string fieldName, bool required, int maxLenght, int decimalPlace,bool isPositive, decimal? defaultVal = null)
         {

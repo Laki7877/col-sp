@@ -174,7 +174,7 @@ namespace Colsp.Api.Controllers
 				attribute = new Entity.Models.Attribute();
 				string email = User.UserRequest().Email;
 				DateTime cuurentDt = DateTime.Now;
-				SetupAttribute(attribute, request, email, cuurentDt);
+				SetupAttribute(attribute, request, email, cuurentDt, db);
 				attribute.CreateBy = email;
 				attribute.CreateOn = cuurentDt;
 				attribute.AttributeId = db.GetNextAttributeId().SingleOrDefault().Value;
@@ -210,7 +210,7 @@ namespace Colsp.Api.Controllers
 				}
 				string email = User.UserRequest().Email;
 				DateTime cuurentDt = DateTime.Now;
-				SetupAttribute(attribute, request, email, cuurentDt);
+				SetupAttribute(attribute, request, email, cuurentDt, db);
 				Util.DeadlockRetry(db.SaveChanges, "Attribute");
 				return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attribute));
 				//return GetAttribute(attribute.AttributeId);
@@ -320,6 +320,7 @@ namespace Colsp.Api.Controllers
 		{
 			try
 			{
+				#region Validation
 				if (!Request.Content.IsMimeMultipartContent())
 				{
 					throw new Exception("In valid content multi-media");
@@ -333,7 +334,7 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Image size exceeded " + 5 + " mb");
 				}
-				//var fileUpload = await Util.SetupImage(Request, AppSettingKey.IMAGE_ROOT_PATH, AppSettingKey.ATTRIBUTE_VALUE_FOLDER, 100, 100, 100, 100, 5, true);
+				#endregion
 				#region Validate Image
 				ImageRequest fileUpload = null;
 				foreach (MultipartFileData fileData in streamProvider.FileData)
@@ -345,10 +346,6 @@ namespace Colsp.Api.Controllers
 					break;
 				}
 				#endregion
-
-
-
-
 				return Request.CreateResponse(HttpStatusCode.OK, fileUpload);
 			}
 			catch (Exception e)
@@ -442,28 +439,31 @@ namespace Colsp.Api.Controllers
 			return attribute;
 		}
 
-		private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request, string email, DateTime currentDt)
+		private void SetupAttribute(Entity.Models.Attribute attribute, AttributeRequest request, string email, DateTime currentDt, ColspEntities db)
 		{
-
-			attribute.AttributeNameEn = Validation.ValidateUniqueName(request.AttributeNameEn, "Attribute Name (English)");
+			attribute.AttributeNameEn = Validation.ValidateUniqueName(request.AttributeNameEn, "Attribute Name (English)",255);
+			#region Validate Attribute Name
+			if (db.Attributes.Where(w => w.AttributeId != attribute.AttributeId && w.AttributeNameEn.Equals(attribute.AttributeNameEn)).Count() != 0)
+			{
+				throw new Exception(string.Concat(attribute.AttributeNameEn," has already been used."));
+			}
+			#endregion
+			attribute.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Display Name (English)", true, 255, false);
+			attribute.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Display Name (Thai)", true, 255, false);
 			attribute.AttributeDescriptionEn = Validation.ValidateString(request.AttributeDescriptionEn, "Attribute Description (English)", true, 1000, false, string.Empty);
-			attribute.DisplayNameEn = Validation.ValidateString(request.DisplayNameEn, "Display Name (English)", true, 100, true);
-			attribute.DisplayNameTh = Validation.ValidateString(request.DisplayNameTh, "Display Name (Thai)", true, 100, true);
-			attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", false, 2, true, string.Empty);
+			attribute.DataType = Validation.ValidateString(request.DataType, "Attribute Input Type", true, 2, true, Constant.DATA_TYPE_STRING,new List<string>() { Constant.DATA_TYPE_STRING, Constant.DATA_TYPE_LIST, Constant.DATA_TYPE_HTML, Constant.DATA_TYPE_CHECKBOX });
 			attribute.DefaultAttribute = request.DefaultAttribute;
 			attribute.VariantStatus = request.VariantStatus;
-			if (!string.IsNullOrEmpty(attribute.DataType))
+			#region Validate Data Type
+			if (request.AttributeValues == null || request.AttributeValues.Count == 0)
 			{
-				if (request.AttributeValues == null || request.AttributeValues.Count == 0)
+				if (Constant.DATA_TYPE_LIST.Equals(request.DataType))
 				{
-					if (Constant.DATA_TYPE_LIST.Equals(request.DataType))
-					{
-						throw new Exception("Data Type Dropdown should have at least 1 value");
-					}
-					else if (Constant.DATA_TYPE_CHECKBOX.Equals(request.DataType))
-					{
-						throw new Exception("Data Type Checkbox should have at least 1 value");
-					}
+					throw new Exception("Data Type Dropdown should have at least 1 value");
+				}
+				else if (Constant.DATA_TYPE_CHECKBOX.Equals(request.DataType))
+				{
+					throw new Exception("Data Type Checkbox should have at least 1 value");
 				}
 			}
 			if ((Constant.DATA_TYPE_STRING.Equals(attribute.DataType)
@@ -476,9 +476,10 @@ namespace Colsp.Api.Controllers
 			{
 				throw new Exception("Default attribute cannot be variant");
 			}
-			attribute.VisibleTo = Validation.ValidateString(request.VisibleTo, "Visible To", false, 2, false, string.Empty, new List<string>() { Constant.ATTRIBUTE_VISIBLE_ADMIN, Constant.ATTRIBUTE_VISIBLE_ALL_USER, string.Empty });
+			#endregion
+			attribute.VisibleTo = Validation.ValidateString(request.VisibleTo, "Visible To", true, 2, false, Constant.ATTRIBUTE_VISIBLE_ALL_USER , new List<string>() { Constant.ATTRIBUTE_VISIBLE_ADMIN, Constant.ATTRIBUTE_VISIBLE_ALL_USER });
 			attribute.DataValidation = Validation.ValidateString(request.DataValidation, "Input Validation", false, 2, true, string.Empty);
-			attribute.DefaultValue = Validation.ValidateString(request.DefaultValue, "If empty, value equals", false, 100, true, string.Empty);
+			attribute.DefaultValue = Validation.ValidateString(request.DefaultValue, "If empty, value equals", false, 255, true, string.Empty);
 			attribute.ShowAdminFlag = request.ShowAdminFlag;
 			attribute.ShowGlobalFilterFlag = request.ShowGlobalFilterFlag;
 			attribute.ShowGlobalSearchFlag = request.ShowGlobalSearchFlag;
@@ -491,7 +492,6 @@ namespace Colsp.Api.Controllers
 			attribute.Status = Constant.STATUS_ACTIVE;
 			attribute.UpdateBy = email;
 			attribute.UpdateOn = currentDt;
-
 			#region AttributeValue
 			var attributeVal = attribute.AttributeValueMaps.Select(s => s.AttributeValue).ToList();
 			AttributeValue value = null;
@@ -518,7 +518,6 @@ namespace Colsp.Api.Controllers
 								current.AttributeValueEn = Validation.ValidateString(valRq.AttributeValueEn, "Attribute Value (English)", true, 100, true);
 								current.AttributeValueTh = Validation.ValidateString(valRq.AttributeValueTh, "Attribute Value (Thai)", true, 100, true);
 								current.Position = valRq.Position;
-								current.ImageUrl = Validation.ValidateString(valRq.Image.Url, "Attribute Value Url", true, 2000, true, string.Empty);
 								current.UpdateBy = email;
 								current.UpdateOn = currentDt;
 							}

@@ -20,7 +20,7 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            Configuration.LazyLoadingEnabled = false;
+			Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -164,6 +164,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
         public virtual DbSet<VendorTaxRate> VendorTaxRates { get; set; }
         public virtual DbSet<WithholdingTax> WithholdingTaxes { get; set; }
+        public virtual DbSet<DeliveryLeadTime> DeliveryLeadTimes { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
         public virtual DbSet<Migrate_TBDepartment> Migrate_TBDepartment { get; set; }
         public virtual DbSet<Migrate_TBProduct> Migrate_TBProduct { get; set; }
@@ -303,6 +304,11 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<StockStatusReport_Result1> StockStatusReport()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result1>("StockStatusReport");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductStageVideoId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageVideoId");
         }
     }
 }

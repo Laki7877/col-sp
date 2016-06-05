@@ -18,7 +18,6 @@ namespace Colsp.Model.Requests
         public List<AttributeSetRequest> AttributeSets { get; set; }
         public decimal PriceFrom { get; set; }
         public decimal PriceTo { get; set; }
-      
         public List<string> Tags { get; set; }
         public int LocalCatId { get; set; }
         public int AttributeSetId { get; set; }
@@ -30,14 +29,10 @@ namespace Colsp.Model.Requests
         public List<string> SearchTag { get; set; }
         public long ProductId { get; set; }
         public string ProductNameEn { get; set; }
-
-
         public string CreatedDtFrom { get; set; }
         public string CreatedDtTo { get; set; }
         public string ModifyDtFrom { get; set; }
         public string ModifyDtTo { get; set; }
-        
-
 
         public ProductRequest()
         {
@@ -55,10 +50,7 @@ namespace Colsp.Model.Requests
             ShopId = 0;
             ProductId = 0;
             ProductNameEn = string.Empty;
-
             _filter2 = string.Empty;
-
-
             SearchTag = new List<string>();
             GlobalCategories = new List<CategoryRequest>();
             LocalCategories = new List<CategoryRequest>();
