@@ -23,7 +23,7 @@ namespace Colsp.Api.Constants
 
         public static readonly int DEFAULT_THE_ONE_CARD = 1;
 
-        public static readonly int DEFAULT_ADD_YEAR = 20;
+        public static readonly int DEFAULT_ADD_YEAR = 10;
 
         public static readonly int BULK_APPROVE_LIMIT = 100;
 
@@ -50,8 +50,9 @@ namespace Colsp.Api.Constants
         public static readonly int SHIPPING_FULFILLMENT = 2;
 
         public static readonly int DEFAULT_BOOSTWEIGHT = 5000;
+		public static readonly int DEFAULT_GLOBAL_BOOSTWEIGHT = 5000;
 
-        public static List<char> IGNORE_PID = new List<char>() {
+		public static List<char> IGNORE_PID = new List<char>() {
                     'D',
                     'E',
                     'F',

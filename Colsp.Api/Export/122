@@ -1,28 +1,43 @@
-﻿PID,Search_Flag,testrequireddefaultattribute
-0011007,"IsSearch,IsLocalSearch,IsGlobalSearch",
-"11024  ","IsSearch,IsGlobalSearch",
-"11025  ","IsSearch,IsGlobalSearch",
-"11026  ","IsSearch,IsGlobalSearch",
-0011009,IsLocalSearch,
-"12984  ","IsSearch,IsLocalSearch",
-"12985  ","IsSearch,IsLocalSearch",
-"12986  ","IsSearch,IsLocalSearch",
-0039637,"IsSearch,IsLocalSearch,IsGlobalSearch",
-0039639,"IsSearch,IsLocalSearch",
-0039640,"IsSearch,IsLocalSearch",
-0039641,IsSearch,
-0039642,IsSearch,
-0039643,IsSearch,
-0044470,,
-0044472,"IsSearch,IsGlobalSearch",
-0044473,"IsSearch,IsGlobalSearch",
-0067310,"IsSearch,IsLocalSearch,IsGlobalSearch",
-0067311,,
-0067315,,
-0067321,"IsLocalSearch,IsGlobalSearch",
-0067443,,
-0067552,,
-"67746  ",,
-"67747  ",,
-"67748  ",,
-0067764,,
+﻿Product Status,Group ID,Default Variant,PID
+Approve,8004,Yes,0011007
+Approve,8005,Yes,"11024  "
+Approve,8005,No,"11025  "
+Approve,8005,No,"11026  "
+Approve,8006,Yes,0011009
+Approve,9956,Yes,"12984  "
+Approve,9956,No,"12985  "
+Approve,9956,No,"12986  "
+Approve,36588,Yes,0039639
+Approve,36588,No,0039640
+Draft,36589,Yes,0039637
+Draft,36589,No,0039641
+Draft,36589,No,0039642
+Draft,36589,No,0039643
+Draft,36589,No,0044470
+Draft,36589,No,0068411
+Draft,36589,No,0068412
+Draft,36589,No,0068413
+Draft,36589,No,0068414
+Approve,41413,Yes,0044472
+Approve,41413,No,0044473
+Approve,64233,Yes,0067310
+Approve,64234,Yes,0067311
+Approve,64236,Yes,0067315
+Draft,64237,Yes,0067321
+Draft,64316,Yes,0068077
+Draft,64341,No,0067552
+Approve,64447,Yes,0067823
+Draft,64457,No,0067853
+Draft,64457,No,0067854
+Draft,64457,Yes,0067855
+Draft,64457,No,0067856
+Draft,64465,No,0067886
+Draft,64594,No,0068114
+Draft,64598,Yes,0068146
+Draft,64652,No,0068229
+Draft,64660,Yes,0068244
+Draft,64715,No,0068331
+Draft,64716,No,0068334
+Draft,64717,No,0068342
+Draft,64730,No,0068388
+Draft,64738,Yes,0068401

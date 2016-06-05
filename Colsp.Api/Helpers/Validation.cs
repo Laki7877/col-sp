@@ -232,36 +232,40 @@ namespace Colsp.Api.Helpers
             return val.Value.ToString(@"hh\:mm");
         }
 
-        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key,List<ImportHeaderRequest> header,bool require,int maxLenght,HashSet<string> errormessage,int row, string defaultValue = null)
+        public static string ValidateCSVStringColumn(Dictionary<string, int> headDic, List<string> body
+			, string key,List<ImportHeaderRequest> guidance, bool require,int maxLenght
+			,HashSet<string> errormessage,int row, string defaultValue = null
+			, Regex validation = null)
         {
-            string headerName = header.Where(w => w.MapName.Equals(key)).Select(s => s.HeaderName).FirstOrDefault();
+            string headerName = guidance.Where(w => w.MapName.Equals(key)).Select(s => s.HeaderName).FirstOrDefault();
             if (string.IsNullOrEmpty(headerName))
             {
                 headerName = key;
             }
-            if (dic.ContainsKey(key))
+            if (headDic.ContainsKey(key))
             {
-                string val = list[dic[key]];
-                if(!string.IsNullOrWhiteSpace(val))
-                {
-                    val = val.Trim();
-                    if(require && string.IsNullOrEmpty(val) && defaultValue == null)
-                    {
-                        
-                        errormessage.Add(string.Concat(headerName , " is required at row " , row));
-                        return null;
-                    }
-                    if(val.Length > maxLenght)
-                    {
-                        errormessage.Add(string.Concat(headerName , " field must be no longer than " , maxLenght , " characters at row " , row));
-                        return null;
-                    }
-                    return val;
-                }
-            }
-            if (require)
+                string val = body[headDic[key]];
+				val = val.Trim();
+				if (require && string.IsNullOrEmpty(val) && defaultValue == null)
+				{
+					errormessage.Add(string.Concat(headerName, " is required at row ", row));
+					return null;
+				}
+				if (val.Length > maxLenght)
+				{
+					errormessage.Add(string.Concat(headerName, " field must be no longer than ", maxLenght, " characters at row ", row));
+					return null;
+				}
+				if(validation != null && !validation.IsMatch(val))
+				{
+					errormessage.Add(string.Concat(headerName, " must be ", validation.ToString(), " only at row ", row));
+					return null;
+				}
+				return val;
+			}
+            else if (require)
             {
-                errormessage.Add(string.Concat(headerName , " is required at row " , row));
+                errormessage.Add(string.Concat(headerName , " column is required"));
             }
             return defaultValue;
         }

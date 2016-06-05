@@ -7148,7 +7148,7 @@ namespace Colsp.Api.Controllers
 						{
 							throw new Exception(head + " is duplicate header");
 						}
-						var headerGuidance = guidance.Where(w => w.HeaderName.Equals(head)).Select(s => s.MapName).FirstOrDefault();
+						var headerGuidance = guidance.Where(w => w.HeaderName.Equals(head.Trim())).Select(s => s.MapName).FirstOrDefault();
 						if (string.IsNullOrEmpty(headerGuidance))
 						{
 							headDic.Add(head, i++);
@@ -7157,7 +7157,6 @@ namespace Colsp.Api.Controllers
 						{
 							headDic.Add(headerGuidance, i++);
 						}
-
 						firstRow.Add(csvResult.GetField<string>(head));
 						if (isUpdate)
 						{
@@ -7217,6 +7216,8 @@ namespace Colsp.Api.Controllers
 					groupList = new Dictionary<string, ProductStageGroup>();
 					int tmpGroupId = 0;
 					Regex rg = new Regex(@"/(\(\()\d+(\)\))/");
+					Regex rgNumOnly = new Regex(@"^[0-9]*$");
+					Regex rgAlphaNumeric = new Regex(@"^[a-zA-Z0-9-]*$");
 					List<string> body = null;
 					string groupId = null;
 					bool isNew = true;
@@ -7310,7 +7311,7 @@ namespace Colsp.Api.Controllers
 							UnitPrice = 0,
 							DimensionUnit = Constant.DIMENSTION_MM,
 							WeightUnit = Constant.WEIGHT_MEASURE_G,
-							GlobalBoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACX", guidance, false, int.MaxValue, errorMessage, row, 0),
+							GlobalBoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACX", guidance, false, 10000, errorMessage, row, Constant.DEFAULT_GLOBAL_BOOSTWEIGHT),
 							Display = Constant.VARIANT_DISPLAY_GROUP,
 							VariantCount = 0,
 							PurchasePrice = 0,
@@ -7327,39 +7328,38 @@ namespace Colsp.Api.Controllers
 							NewArrivalDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ADB", guidance, errorMessage, row),
 							PromotionPrice = 0,
 							OldPid = null,
-							ProductNameEn = Validation.ValidateCSVStringColumn(headDic, body, "AAE", guidance, true, 300, errorMessage, row),
-							ProductNameTh = Validation.ValidateCSVStringColumn(headDic, body, "AAF", guidance, true, 300, errorMessage, row),
+							ProductNameEn = Validation.ValidateCSVStringColumn(headDic, body, "AAE", guidance, !isUpdate, 255, errorMessage, row),
+							ProductNameTh = Validation.ValidateCSVStringColumn(headDic, body, "AAF", guidance, !isUpdate, 255, errorMessage, row),
 							ProdTDNameEn = Validation.ValidateCSVStringColumn(headDic, body, "AAG", guidance, false, 55, errorMessage, row, string.Empty),
 							ProdTDNameTh = Validation.ValidateCSVStringColumn(headDic, body, "AAH", guidance, false, 55, errorMessage, row, string.Empty),
-							Sku = Validation.ValidateCSVStringColumn(headDic, body, "AAI", guidance, false, 300, errorMessage, row, string.Empty),
-							Upc = Validation.ValidateCSVStringColumn(headDic, body, "AAJ", guidance, false, 300, errorMessage, row, string.Empty),
-							SaleUnitEn = Validation.ValidateCSVStringColumn(headDic, body, "AAT", guidance, false, 100, errorMessage, row, string.Empty),
-							SaleUnitTh = Validation.ValidateCSVStringColumn(headDic, body, "AAU", guidance, false, 100, errorMessage, row, string.Empty),
+							Sku = Validation.ValidateCSVStringColumn(headDic, body, "AAI", guidance, !isUpdate, 255, errorMessage, row),
+							Upc = Validation.ValidateCSVStringColumn(headDic, body, "AAJ", guidance, false, 13, errorMessage, row, string.Empty, rgNumOnly),
+							SaleUnitEn = Validation.ValidateCSVStringColumn(headDic, body, "AAT", guidance, false, 255, errorMessage, row, string.Empty),
+							SaleUnitTh = Validation.ValidateCSVStringColumn(headDic, body, "AAU", guidance, false, 255, errorMessage, row, string.Empty),
 							IsVat = headDic.ContainsKey("AAV") && string.Equals(body[headDic["AAV"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
-							DescriptionFullEn = Validation.ValidateCSVStringColumn(headDic, body, "AAW", guidance, false, int.MaxValue, errorMessage, row, string.Empty),
-							DescriptionFullTh = Validation.ValidateCSVStringColumn(headDic, body, "AAX", guidance, false, int.MaxValue, errorMessage, row, string.Empty),
-							MobileDescriptionEn = Validation.ValidateCSVStringColumn(headDic, body, "AAY", guidance, false, int.MaxValue, errorMessage, row, string.Empty),
-							MobileDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "AAZ", guidance, false, int.MaxValue, errorMessage, row, string.Empty),
+							DescriptionFullEn = Validation.ValidateCSVStringColumn(headDic, body, "AAW", guidance, false, 50000, errorMessage, row, string.Empty),
+							DescriptionFullTh = Validation.ValidateCSVStringColumn(headDic, body, "AAX", guidance, false, 50000, errorMessage, row, string.Empty),
+							MobileDescriptionEn = Validation.ValidateCSVStringColumn(headDic, body, "AAY", guidance, false, 50000, errorMessage, row, string.Empty),
+							MobileDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "AAZ", guidance, false, 50000, errorMessage, row, string.Empty),
 							DescriptionShortEn = Validation.ValidateCSVStringColumn(headDic, body, "ABA", guidance, false, 500, errorMessage, row, string.Empty),
 							DescriptionShortTh = Validation.ValidateCSVStringColumn(headDic, body, "ABB", guidance, false, 500, errorMessage, row, string.Empty),
-							KillerPoint1En = Validation.ValidateCSVStringColumn(headDic, body, "ABC", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint1Th = Validation.ValidateCSVStringColumn(headDic, body, "ABD", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint2En = Validation.ValidateCSVStringColumn(headDic, body, "ABE", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint2Th = Validation.ValidateCSVStringColumn(headDic, body, "ABF", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint3En = Validation.ValidateCSVStringColumn(headDic, body, "ABG", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint3Th = Validation.ValidateCSVStringColumn(headDic, body, "ABH", guidance, false, 200, errorMessage, row, string.Empty),
+							KillerPoint1En = Validation.ValidateCSVStringColumn(headDic, body, "ABC", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint1Th = Validation.ValidateCSVStringColumn(headDic, body, "ABD", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint2En = Validation.ValidateCSVStringColumn(headDic, body, "ABE", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint2Th = Validation.ValidateCSVStringColumn(headDic, body, "ABF", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint3En = Validation.ValidateCSVStringColumn(headDic, body, "ABG", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint3Th = Validation.ValidateCSVStringColumn(headDic, body, "ABH", guidance, false, 50, errorMessage, row, string.Empty),
 							IsHasExpiryDate = headDic.ContainsKey("ABQ") && string.Equals(body[headDic["ABQ"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
 							ExpressDelivery = headDic.ContainsKey("ABS") && string.Equals(body[headDic["ABS"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
-							SeoEn = Validation.ValidateCSVStringColumn(headDic, body, "ACN", guidance, false, 300, errorMessage, row, string.Empty),
-							SeoTh = Validation.ValidateCSVStringColumn(headDic, body, "ACO", guidance, false, 300, errorMessage, row, string.Empty),
-							MetaTitleEn = Validation.ValidateCSVStringColumn(headDic, body, "ACP", guidance, false, 300, errorMessage, row, string.Empty),
-							MetaTitleTh = Validation.ValidateCSVStringColumn(headDic, body, "ACQ", guidance, false, 300, errorMessage, row, string.Empty),
-							MetaDescriptionEn = Validation.ValidateCSVStringColumn(headDic, body, "ACR", guidance, false, 500, errorMessage, row, string.Empty),
-							MetaDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "ACS", guidance, false, 500, errorMessage, row, string.Empty),
-							MetaKeyEn = Validation.ValidateCSVStringColumn(headDic, body, "ACT", guidance, false, 300, errorMessage, row, string.Empty),
-							MetaKeyTh = Validation.ValidateCSVStringColumn(headDic, body, "ACU", guidance, false, 300, errorMessage, row, string.Empty),
-							UrlKey = Validation.ValidateCSVStringColumn(headDic, body, "ACV", guidance, false, 300, errorMessage, row),
-							//GiftWrap = string.Equals(body[headDic["Gift Wrap"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
+							SeoEn = Validation.ValidateCSVStringColumn(headDic, body, "ACN", guidance, false, 1000, errorMessage, row, string.Empty),
+							SeoTh = Validation.ValidateCSVStringColumn(headDic, body, "ACO", guidance, false, 1000, errorMessage, row, string.Empty),
+							MetaTitleEn = Validation.ValidateCSVStringColumn(headDic, body, "ACP", guidance, false, 60, errorMessage, row, string.Empty),
+							MetaTitleTh = Validation.ValidateCSVStringColumn(headDic, body, "ACQ", guidance, false, 60, errorMessage, row, string.Empty),
+							MetaDescriptionEn = Validation.ValidateCSVStringColumn(headDic, body, "ACR", guidance, false, 150, errorMessage, row, string.Empty),
+							MetaDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "ACS", guidance, false, 150, errorMessage, row, string.Empty),
+							MetaKeyEn = Validation.ValidateCSVStringColumn(headDic, body, "ACT", guidance, false, 1000, errorMessage, row, string.Empty),
+							MetaKeyTh = Validation.ValidateCSVStringColumn(headDic, body, "ACU", guidance, false, 1000, errorMessage, row, string.Empty),
+							UrlKey = Validation.ValidateCSVStringColumn(headDic, body, "ACV", guidance, false, 100, errorMessage, row, string.Empty, rgAlphaNumeric),
 							Installment = headDic.ContainsKey("AAN") && string.Equals(body[headDic["AAN"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
 							PrepareDay = Validation.ValidateCSVIntegerColumn(headDic, body, "ABU", guidance, false, int.MaxValue, errorMessage, row, 0),
 							PrepareMon = Validation.ValidateCSVIntegerColumn(headDic, body, "ABV", guidance, false, int.MaxValue, errorMessage, row, 0),
@@ -7374,13 +7374,17 @@ namespace Colsp.Api.Controllers
 							Height = Validation.ValidateCSVIntegerColumn(headDic, body, "ACD", guidance, false, int.MaxValue, errorMessage, row, 0),
 							Width = Validation.ValidateCSVIntegerColumn(headDic, body, "ACE", guidance, false, int.MaxValue, errorMessage, row, 0),
 							Weight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACF", guidance, false, int.MaxValue, errorMessage, row, 0),
-							BoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACW", guidance, false, int.MaxValue, errorMessage, row, 0),
+							BoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACW", guidance, false, 10000, errorMessage, row, 0),
 						};
 						if (headDic.ContainsKey("AAC"))
 						{
-							string defaultVar = body[headDic["AAC"]];
-							variant.DefaultVariant = "Yes".Equals(defaultVar);
+							variant.DefaultVariant = string.Equals(body[headDic["AAC"]], "yes", StringComparison.OrdinalIgnoreCase);
 						}
+						if (!string.IsNullOrWhiteSpace(variant.UrlKey))
+						{
+							variant.UrlKey = variant.UrlKey.ToLower();
+						}
+						#region Price
 						if (headDic.ContainsKey("AAO"))
 						{
 							try
@@ -7429,6 +7433,8 @@ namespace Colsp.Api.Controllers
 								errorMessage.Add("Invalid Purchase Price at row " + row);
 							}
 						}
+						#endregion
+						#region Pid
 						if (isUpdate)
 						{
 							if (headDic.ContainsKey("AAD"))
@@ -7440,6 +7446,18 @@ namespace Colsp.Api.Controllers
 								throw new Exception("No PID column found");
 							}
 						}
+						#endregion
+						#region Validate Promotion
+						if (variant.EffectiveDatePromotion.HasValue
+							&& variant.ExpireDatePromotion.HasValue)
+						{
+							if (variant.EffectiveDatePromotion.Value.CompareTo(variant.ExpireDatePromotion.Value)
+								> 0)
+							{
+								errorMessage.Add(string.Concat("Promotion Effective Date must be earlier than Promotion Expire Date at row ", row));
+							}
+						}
+						#endregion
 						#endregion
 						#region Delivery Fee
 						if (headDic.ContainsKey("ABT"))
@@ -7483,16 +7501,20 @@ namespace Colsp.Api.Controllers
 							try
 							{
 								var salePriceSt = body[headDic["AAL"]];
-								if (!string.IsNullOrWhiteSpace(salePriceSt))
-								{
-									decimal salePrice = decimal.Parse(salePriceSt);
-									variant.SalePrice = salePrice;
-								}
+								decimal salePrice = decimal.Parse(salePriceSt);
+								variant.SalePrice = salePrice;
 							}
 							catch
 							{
-								errorMessage.Add("Invalid Sale Price at row " + row);
+								if (!isUpdate)
+								{
+									errorMessage.Add("Invalid Sale Price at row " + row);
+								}
 							}
+						}
+						else if (!isUpdate)
+						{
+							errorMessage.Add("Sale Price field is required");
 						}
 						#endregion
 						#region Validate Sale Price
@@ -7885,19 +7907,20 @@ namespace Colsp.Api.Controllers
 							#region Brand 
 							if (headDic.ContainsKey("AAK"))
 							{
-								if (!string.IsNullOrWhiteSpace(body[headDic["AAK"]]))
+								var name = body[headDic["AAK"]].Trim().ToLower().Replace(' ', '_');
+								var brandId = brands.Where(w => w.BrandNameEn.Equals(name)).Select(s => s.BrandId).FirstOrDefault();
+								if (brandId != 0)
 								{
-									var name = body[headDic["AAK"]].Trim().ToLower().Replace(' ', '_');
-									var brandId = brands.Where(w => w.BrandNameEn.Equals(name)).Select(s => s.BrandId).FirstOrDefault();
-									if (brandId != 0)
-									{
-										group.BrandId = brandId;
-									}
-									else
-									{
-										errorMessage.Add("Invalid Brand Name at row " + row);
-									}
+									group.BrandId = brandId;
 								}
+								else if(!isUpdate)
+								{
+									errorMessage.Add("Invalid Brand Name at row " + row);
+								}
+							}
+							else if (!isUpdate)
+							{
+								errorMessage.Add("Brand Name column is required");
 							}
 							#endregion
 							#region Global category
@@ -7921,17 +7944,17 @@ namespace Colsp.Api.Controllers
 									}
 									else if (!isUpdate)
 									{
-										errorMessage.Add("Global Category ID is required at row " + row);
+										errorMessage.Add(string.Concat(guidance.Where(w => w.MapName.Equals("ACG")).Select(s => s.HeaderName).Single(), " is required at row " + row));
 									}
 								}
 								catch (Exception)
 								{
-									errorMessage.Add("Invalid Global Category ID at row " + row);
+									errorMessage.Add(string.Concat("Invalid ",guidance.Where(w => w.MapName.Equals("ACG")).Select(s => s.HeaderName).Single(), " at row " + row));
 								}
 							}
 							else if (!isUpdate)
 							{
-								throw new Exception("Global Category field is required");
+								errorMessage.Add(string.Concat(guidance.Where(w => w.MapName.Equals("ACG")).Select(s => s.HeaderName).Single(), " column is required"));
 							}
 							if (headDic.ContainsKey("ACH"))
 							{
@@ -8240,11 +8263,22 @@ namespace Colsp.Api.Controllers
 									{
 										continue;
 									}
-									if (!group.ProductStageTags.Any(a => a.Tag.Equals(tag)))
+									var insertTag = tag.Trim();
+									if(insertTag.Length > 30)
 									{
+										errorMessage.Add(string.Concat("Each tag cannot be more than 30 characters"));
+										break;
+									}
+									if (!group.ProductStageTags.Any(a => a.Tag.Equals(insertTag)))
+									{
+										if (group.ProductStageTags.Count() >= 30)
+										{
+											errorMessage.Add(string.Concat("Can have only 30 tags for each product"));
+											break;
+										}
 										group.ProductStageTags.Add(new ProductStageTag()
 										{
-											Tag = tag,
+											Tag = insertTag,
 											CreateBy = User.UserRequest().Email,
 											CreateOn = DateTime.Now,
 											UpdateBy = User.UserRequest().Email,
@@ -8263,7 +8297,12 @@ namespace Colsp.Api.Controllers
 							group.EffectiveDate = tmpDate.HasValue ? tmpDate.Value : DateTime.Now;
 							tmpDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACZ", guidance, errorMessage, row);
 							group.ExpireDate = tmpDate.HasValue ? tmpDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
-							group.Remark = Validation.ValidateCSVStringColumn(headDic, body, "ADH", guidance, false, 500, errorMessage, row, string.Empty);
+							if (group.EffectiveDate.CompareTo(group.ExpireDate)
+																> 0)
+							{
+								errorMessage.Add(string.Concat("Effective Date must be earlier than Expire Date at row ", row));
+							}
+							group.Remark = Validation.ValidateCSVStringColumn(headDic, body, "ADH", guidance, false, 5000, errorMessage, row, string.Empty);
 							if (headDic.ContainsKey("ADC"))
 							{
 								group.IsNew = string.Equals(body[headDic["ADC"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false;
@@ -8407,10 +8446,10 @@ namespace Colsp.Api.Controllers
 								{
 									group.ShippingId = shippingId;
 								}
-								else
-								{
-									group.ShippingId = Constant.DEFAULT_SHIPPING_ID;
-								}
+							}
+							if(group.ShippingId == 0)
+							{
+								group.ShippingId = Constant.DEFAULT_SHIPPING_ID;
 							}
 							#endregion
 						}
