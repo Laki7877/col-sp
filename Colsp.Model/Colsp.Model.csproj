@@ -109,6 +109,7 @@
     <Compile Include="Requests\PendingProduct.cs" />
     <Compile Include="Requests\ProductHistoryRequest.cs" />
     <Compile Include="Requests\ProductTempRequest.cs" />
+    <Compile Include="Requests\PromotionCoreRequest.cs" />
     <Compile Include="Requests\PurchaseOrderDetailReuest.cs" />
     <Compile Include="Requests\PurchaseOrderReuest.cs" />
     <Compile Include="Requests\PaginatedRequest.cs" />

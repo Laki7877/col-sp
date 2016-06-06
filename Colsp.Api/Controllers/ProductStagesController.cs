@@ -2005,11 +2005,24 @@ namespace Colsp.Api.Controllers
 			{
 				foreach (var tag in request.Tags)
 				{
+					var tmpTag = tag.Trim();
+					if(tmpTag.Length > 30)
+					{
+						throw new Exception("Tag field must be no longer than 30 characters.");
+					}
+					if(group.ProductStageTags.Any(a=>string.Equals(a.Tag, tmpTag, StringComparison.OrdinalIgnoreCase)))
+					{
+						continue;
+					}
+					if(group.ProductStageTags.Count >= 30)
+					{
+						throw new Exception("A product can have only 30 tags.");
+					}
 					group.ProductStageTags.Add(new ProductStageTag()
 					{
 						CreateBy = email,
 						CreateOn = currentDt,
-						Tag = tag,
+						Tag = tmpTag,
 						UpdateBy = email,
 						UpdateOn = currentDt
 					});
@@ -4201,79 +4214,79 @@ namespace Colsp.Api.Controllers
 			foreach (var req in requests)
 			{
 				var json = new JavaScriptSerializer().Serialize(req);
-				SendRequest(url, method, headers, json, email, currentDt, "SP", "CMOS", db);
+				SystemHelper.SendRequest(url, method, headers, json, email, currentDt, "SP", "CMOS", db);
 			}
 		}
 
-		private void SendRequest(string url, string method, Dictionary<string, string> headers, string jsonString
-			, string email, DateTime currentDt, string source, string destination, ColspEntities db)
-		{
-			string responseFromServer = string.Empty;
-			int statusCodeValue = 200;
-			try
-			{
-				WebRequest request = WebRequest.Create(url);
-				if (headers != null)
-				{
-					foreach (var header in headers)
-					{
-						request.Headers.Add(header.Key, header.Value);
-					}
-				}
-				request.Method = method;
-				byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
-				request.ContentType = ContentType.ApplicationJson;
-				request.ContentLength = byteArray.Length;
-				using (Stream dataStream = request.GetRequestStream())
-				{
-					dataStream.Write(byteArray, 0, byteArray.Length);
-					using (var response = request.GetResponse())
-					{
-						using (Stream responseDataStream = response.GetResponseStream())
-						{
-							using (StreamReader reader = new StreamReader(responseDataStream))
-							{
-								responseFromServer = reader.ReadToEnd();
-								var statusCode = ((HttpWebResponse)response).StatusCode;
-								statusCodeValue = (int)statusCode;
-							}
-						}
-					}
-				}
-			}
-			catch (WebException ex)
-			{
-				using (var response = ex.Response)
-				{
-					using (var stream = response.GetResponseStream())
-					{
-						using (var reader = new StreamReader(stream))
-						{
-							responseFromServer = reader.ReadToEnd();
-							var statusCode = ((HttpWebResponse)response).StatusCode;
-							statusCodeValue = (int)statusCode;
-						}
-					}
-				}
-			}
-			finally
-			{
-				db.ApiLogs.Add(new ApiLog()
-				{
-					LogId = db.GetNextAppLogId().SingleOrDefault().Value,
-					CreateBy = email,
-					CreateOn = currentDt,
-					DestinationApp = destination,
-					SourceApp = source,
-					Method = method,
-					RequestData = jsonString,
-					RequestUrl = url,
-					ResponseData = responseFromServer,
-					ResponseCode = statusCodeValue,
-				});
-			}
+		//private void SendRequest(string url, string method, Dictionary<string, string> headers, string jsonString
+		//	, string email, DateTime currentDt, string source, string destination, ColspEntities db)
+		//{
+		//	string responseFromServer = string.Empty;
+		//	int statusCodeValue = 200;
+		//	try
+		//	{
+		//		WebRequest request = WebRequest.Create(url);
+		//		if (headers != null)
+		//		{
+		//			foreach (var header in headers)
+		//			{
+		//				request.Headers.Add(header.Key, header.Value);
+		//			}
+		//		}
+		//		request.Method = method;
+		//		byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
+		//		request.ContentType = ContentType.ApplicationJson;
+		//		request.ContentLength = byteArray.Length;
+		//		using (Stream dataStream = request.GetRequestStream())
+		//		{
+		//			dataStream.Write(byteArray, 0, byteArray.Length);
+		//			using (var response = request.GetResponse())
+		//			{
+		//				using (Stream responseDataStream = response.GetResponseStream())
+		//				{
+		//					using (StreamReader reader = new StreamReader(responseDataStream))
+		//					{
+		//						responseFromServer = reader.ReadToEnd();
+		//						var statusCode = ((HttpWebResponse)response).StatusCode;
+		//						statusCodeValue = (int)statusCode;
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
+		//	catch (WebException ex)
+		//	{
+		//		using (var response = ex.Response)
+		//		{
+		//			using (var stream = response.GetResponseStream())
+		//			{
+		//				using (var reader = new StreamReader(stream))
+		//				{
+		//					responseFromServer = reader.ReadToEnd();
+		//					var statusCode = ((HttpWebResponse)response).StatusCode;
+		//					statusCodeValue = (int)statusCode;
+		//				}
+		//			}
+		//		}
+		//	}
+		//	finally
+		//	{
+		//		db.ApiLogs.Add(new ApiLog()
+		//		{
+		//			LogId = db.GetNextAppLogId().SingleOrDefault().Value,
+		//			CreateBy = email,
+		//			CreateOn = currentDt,
+		//			DestinationApp = destination,
+		//			SourceApp = source,
+		//			Method = method,
+		//			RequestData = jsonString,
+		//			RequestUrl = url,
+		//			ResponseData = responseFromServer,
+		//			ResponseCode = statusCodeValue,
+		//		});
+		//	}
 
-		}
+		//}
 
 		private void SendToElastic(ProductStageGroup productGroup, string url, string method
 			, string email, DateTime currentDt, ColspEntities db)
@@ -4509,7 +4522,7 @@ namespace Colsp.Api.Controllers
 					data = req
 				};
 				var json = new JavaScriptSerializer().Serialize(tmpJson);
-				SendRequest(url, method, null, json, email, currentDt, "SP", "ELAS", db);
+				SystemHelper.SendRequest(url, method, null, json, email, currentDt, "SP", "ELAS", db);
 			}
 		}
 
