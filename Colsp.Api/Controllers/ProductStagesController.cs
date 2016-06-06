@@ -2366,7 +2366,7 @@ namespace Colsp.Api.Controllers
 			stage.PromotionPrice = request.PromotionPrice;
 			stage.EffectiveDatePromotion = request.EffectiveDatePromotion;
 			stage.ExpireDatePromotion = request.ExpireDatePromotion;
-			stage.NewArrivalDate = request.NewArrivalDate;
+			stage.NewArrivalDate = request.NewArrivalDate.HasValue ? request.NewArrivalDate.Value : currentDt;
 			stage.DefaultVariant = request.DefaultVariant;
 			stage.Display = request.Display;
 			stage.MiniQtyAllowed = request.MiniQtyAllowed;
@@ -7380,10 +7380,16 @@ namespace Colsp.Api.Controllers
 						{
 							variant.DefaultVariant = string.Equals(body[headDic["AAC"]], "yes", StringComparison.OrdinalIgnoreCase);
 						}
+						#region Variant Validation
 						if (!string.IsNullOrWhiteSpace(variant.UrlKey))
 						{
 							variant.UrlKey = variant.UrlKey.ToLower();
 						}
+						if (!variant.NewArrivalDate.HasValue)
+						{
+							variant.NewArrivalDate = DateTime.Now;
+						}
+						#endregion
 						#region Price
 						if (headDic.ContainsKey("AAO"))
 						{
