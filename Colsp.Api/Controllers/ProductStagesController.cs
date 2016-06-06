@@ -4218,75 +4218,6 @@ namespace Colsp.Api.Controllers
 			}
 		}
 
-		//private void SendRequest(string url, string method, Dictionary<string, string> headers, string jsonString
-		//	, string email, DateTime currentDt, string source, string destination, ColspEntities db)
-		//{
-		//	string responseFromServer = string.Empty;
-		//	int statusCodeValue = 200;
-		//	try
-		//	{
-		//		WebRequest request = WebRequest.Create(url);
-		//		if (headers != null)
-		//		{
-		//			foreach (var header in headers)
-		//			{
-		//				request.Headers.Add(header.Key, header.Value);
-		//			}
-		//		}
-		//		request.Method = method;
-		//		byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
-		//		request.ContentType = ContentType.ApplicationJson;
-		//		request.ContentLength = byteArray.Length;
-		//		using (Stream dataStream = request.GetRequestStream())
-		//		{
-		//			dataStream.Write(byteArray, 0, byteArray.Length);
-		//			using (var response = request.GetResponse())
-		//			{
-		//				using (Stream responseDataStream = response.GetResponseStream())
-		//				{
-		//					using (StreamReader reader = new StreamReader(responseDataStream))
-		//					{
-		//						responseFromServer = reader.ReadToEnd();
-		//						var statusCode = ((HttpWebResponse)response).StatusCode;
-		//						statusCodeValue = (int)statusCode;
-		//					}
-		//				}
-		//			}
-		//		}
-		//	}
-		//	catch (WebException ex)
-		//	{
-		//		using (var response = ex.Response)
-		//		{
-		//			using (var stream = response.GetResponseStream())
-		//			{
-		//				using (var reader = new StreamReader(stream))
-		//				{
-		//					responseFromServer = reader.ReadToEnd();
-		//					var statusCode = ((HttpWebResponse)response).StatusCode;
-		//					statusCodeValue = (int)statusCode;
-		//				}
-		//			}
-		//		}
-		//	}
-		//	finally
-		//	{
-		//		db.ApiLogs.Add(new ApiLog()
-		//		{
-		//			LogId = db.GetNextAppLogId().SingleOrDefault().Value,
-		//			CreateBy = email,
-		//			CreateOn = currentDt,
-		//			DestinationApp = destination,
-		//			SourceApp = source,
-		//			Method = method,
-		//			RequestData = jsonString,
-		//			RequestUrl = url,
-		//			ResponseData = responseFromServer,
-		//			ResponseCode = statusCodeValue,
-		//		});
-		//	}
-
-		//}
 
 		private void SendToElastic(ProductStageGroup productGroup, string url, string method
 			, string email, DateTime currentDt, ColspEntities db)
@@ -5995,20 +5926,48 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				#region Setup Product for database
+				var requireDefaultAttr = db.Attributes.Where(w => w.Required && !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) && w.DefaultAttribute).Select(s => s.AttributeId);
 				foreach (var product in groupList)
 				{
+					
 					var masterVariant = product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+					#region Validate flag
 					if (!string.IsNullOrWhiteSpace(masterVariant.ProductNameEn)
 					   && !string.IsNullOrWhiteSpace(masterVariant.ProductNameTh)
 					   && product.Value.BrandId != null)
 					{
 						product.Value.InfoFlag = true;
+						var attrIds = masterVariant.ProductStageAttributes.Where(w => !string.IsNullOrWhiteSpace(w.ValueEn)).Select(s => s.AttributeId);
+						foreach (var id in requireDefaultAttr)
+						{
+							if (!attrIds.Contains(id))
+							{
+								product.Value.InfoFlag = false;
+								break;
+							}
+						}
+						if (product.Value.AttributeSetId.HasValue && product.Value.InfoFlag)
+						{
+							var masterAttr = db.Attributes
+								.Where(w => w.Required 
+									&& !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) 
+									&& w.AttributeSetMaps.Any(a => a.AttributeSetId == product.Value.AttributeSetId.Value))
+								.Select(s => s.AttributeId);
+							foreach (var id in masterAttr)
+							{
+								if (!masterAttr.Contains(id))
+								{
+									product.Value.InfoFlag = false;
+									break;
+								}
+							}
+						}
 					}
 					else
 					{
 						product.Value.InfoFlag = false;
 					}
-
+					#endregion
 					masterVariant.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
 					if (masterVariant.VariantCount == 0)
 					{
@@ -7082,15 +7041,52 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				#region Setup Product for database
+				var requireDefaultAttr = db.Attributes.Where(w => w.Required && !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) && w.DefaultAttribute).Select(s => s.AttributeId);
 				foreach (var product in groupList)
 				{
 					var masterProduct = product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+					#region Validate Flag
+					if (!string.IsNullOrWhiteSpace(masterProduct.ProductNameEn)
+					   && !string.IsNullOrWhiteSpace(masterProduct.ProductNameTh)
+					   && product.Value.BrandId != null)
+					{
+						product.Value.InfoFlag = true;
+						var attrIds = masterProduct.ProductStageAttributes.Where(w => !string.IsNullOrWhiteSpace(w.ValueEn)).Select(s => s.AttributeId);
+						foreach (var id in requireDefaultAttr)
+						{
+							if (!attrIds.Contains(id))
+							{
+								product.Value.InfoFlag = false;
+								break;
+							}
+						}
+						if (product.Value.AttributeSetId.HasValue && product.Value.InfoFlag)
+						{
+							var masterAttr = db.Attributes
+								.Where(w => w.Required
+									&& !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType)
+									&& w.AttributeSetMaps.Any(a => a.AttributeSetId == product.Value.AttributeSetId.Value))
+								.Select(s => s.AttributeId);
+							foreach (var id in masterAttr)
+							{
+								if (!masterAttr.Contains(id))
+								{
+									product.Value.InfoFlag = false;
+									break;
+								}
+							}
+						}
+					}
+					else
+					{
+						product.Value.InfoFlag = false;
+					}
+					#endregion
 					masterProduct.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
 					if (masterProduct.VariantCount == 0)
 					{
 						masterProduct.IsSell = true;
 					}
-
 					AutoGenerate.GeneratePid(db, product.Value.ProductStages);
 				}
 				#endregion
@@ -7314,7 +7310,7 @@ namespace Colsp.Api.Controllers
 							CreateOn = DateTime.Now,
 							UpdateBy = User.UserRequest().Email,
 							UpdateOn = DateTime.Now,
-							Visibility = headDic.ContainsKey("ADL") && string.Equals(body[headDic["ADL"]], Constant.STATUS_NO, StringComparison.OrdinalIgnoreCase) ? false : true,
+							Visibility = headDic.ContainsKey("ADL") && string.Equals(body[headDic["ADL"]], "no", StringComparison.OrdinalIgnoreCase) ? false : true,
 							IsVariant = true,
 							IsMaster = false,
 							FeatureImgUrl = string.Empty,
