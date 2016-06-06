@@ -24,7 +24,7 @@ namespace Colsp.Model.Requests
         public Nullable<System.TimeSpan> ExpiryTime { get; set; }
         public string ProductBoxBadge { get; set; }
         public Nullable<int> Sequence { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public int Status { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }
@@ -42,6 +42,8 @@ namespace Colsp.Model.Requests
         public int? VendorAbsorb { get; set; }
         public List<ProductBuy> ProductBuyList { get; set; }
         public List<ProductGet> ProductGetList { get; set; }
+        public int Limit { get; set; }
+        public int LimitPerUser { get; set; }
     }
 
     public class ProductBuy {
