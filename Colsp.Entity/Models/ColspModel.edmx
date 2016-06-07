@@ -6674,6 +6674,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <EntitySet Name="ProductTags" EntityType="ColspModel.ProductTag" />
           <EntitySet Name="ProductTmps" EntityType="ColspModel.ProductTmp" />
           <EntitySet Name="ProductVideos" EntityType="ColspModel.ProductVideo" />
+          <EntitySet Name="PromotionBuy1Get1Item" EntityType="ColspModel.PromotionBuy1Get1Item" />
           <EntitySet Name="PromotionOnTopCreditCards" EntityType="ColspModel.PromotionOnTopCreditCard" />
           <EntitySet Name="PromotionOnTopCreditNumbers" EntityType="ColspModel.PromotionOnTopCreditNumber" />
           <EntitySet Name="Provinces" EntityType="ColspModel.Province" />
@@ -9789,6 +9790,7 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
           <Property Name="UpdateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+<<<<<<< 9fc9e300426ffd33c41c0a41bdca3c0b3f6bba8f
           <Property Name="ShippingType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="OldShippingTypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ShopGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -9800,6 +9802,8 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Shipping" FromRole="Shipping" ToRole="ProductStageGroup" />
           <NavigationProperty Name="ShopTypeShippingMaps" Relationship="ColspModel.FK_ShopTypeShippingMap_Shipping" FromRole="Shipping" ToRole="ShopTypeShippingMap" />
           <NavigationProperty Name="ShopGroups" Relationship="ColspModel.ShippingShopGroupMap" FromRole="Shipping" ToRole="ShopGroup" />
+=======
+>>>>>>> fix CMS API, Update Model
           <Property Name="ShippingType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="OldShippingTypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ShopGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -9807,6 +9811,10 @@ warning 6002: The table/view 'DBMKPOnline.dbo.TBUserAdminWebTokenTmp' does not h
           <Property Name="PickPackBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ShipBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="InvoiceBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ProductHistoryGroups" Relationship="ColspModel.FK_ProductHistoryGroup_Shipping" FromRole="Shipping" ToRole="ProductHistoryGroup" />
+          <NavigationProperty Name="ProductStageGroups" Relationship="ColspModel.FK_ProductStageGroup_Shipping" FromRole="Shipping" ToRole="ProductStageGroup" />
+          <NavigationProperty Name="ShopTypeShippingMaps" Relationship="ColspModel.FK_ShopTypeShippingMap_Shipping" FromRole="Shipping" ToRole="ShopTypeShippingMap" />
+          <NavigationProperty Name="ShopGroups" Relationship="ColspModel.ShippingShopGroupMap" FromRole="Shipping" ToRole="ShopGroup" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
