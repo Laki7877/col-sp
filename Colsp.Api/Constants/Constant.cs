@@ -166,8 +166,14 @@ namespace Colsp.Api.Constants
 
         public static string STATUS_PROMOTION_INACTIVE = "IA";
         public static string STATUS_PROMOTION_ACTIVE = "AT";
-        #region CMS
-        public static readonly int CMS_SHOP_GOBAL = 0;
+
+
+		public static string COUPON_ACTION_AMOUNT = "AMOUNT";
+		public static string COUPON_ACTION_PERCENT = "PERCENT";
+
+
+		#region CMS
+		public static readonly int CMS_SHOP_GOBAL = 0;
 
         public static readonly string CMS_STATUS_DRAFT              = "DF";
         public static readonly string CMS_STATUS_WAIT_FOR_APPROVAL  = "WA";

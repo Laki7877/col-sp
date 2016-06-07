@@ -165,7 +165,7 @@ namespace Colsp.Api.Helpers
         }
 
 
-		public static void SendRequest(string url, string method, Dictionary<string, string> headers, string jsonString
+		public static string SendRequest(string url, string method, Dictionary<string, string> headers, string jsonString
 			, string email, DateTime currentDt, string source, string destination, ColspEntities db)
 		{
 			string responseFromServer = string.Empty;
@@ -232,7 +232,7 @@ namespace Colsp.Api.Helpers
 					ResponseCode = statusCodeValue,
 				});
 			}
-
+			return responseFromServer;
 		}
 	}
 

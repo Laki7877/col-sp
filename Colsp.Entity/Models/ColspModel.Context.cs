@@ -74,6 +74,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CustomerAddress_Staging> CustomerAddress_Staging { get; set; }
         public virtual DbSet<CustomerNewsLetter> CustomerNewsLetters { get; set; }
         public virtual DbSet<CustomerProductHistory> CustomerProductHistories { get; set; }
+        public virtual DbSet<CustomerSearchList> CustomerSearchLists { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
         public virtual DbSet<CustomerTokenCreditCard> CustomerTokenCreditCards { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
@@ -164,6 +165,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
         public virtual DbSet<VendorTaxRate> VendorTaxRates { get; set; }
         public virtual DbSet<WithholdingTax> WithholdingTaxes { get; set; }
+        public virtual DbSet<CartPremium> CartPremiums { get; set; }
         public virtual DbSet<DeliveryLeadTime> DeliveryLeadTimes { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
         public virtual DbSet<Migrate_TBDepartment> Migrate_TBDepartment { get; set; }

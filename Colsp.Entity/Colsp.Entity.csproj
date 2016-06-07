@@ -197,6 +197,9 @@
     <Compile Include="Models\CartHead.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CartPremium.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\City.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
@@ -291,6 +294,9 @@
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerProductHistory.cs">
+      <DependentUpon>ColspModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CustomerSearchList.cs">
       <DependentUpon>ColspModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerToken.cs">

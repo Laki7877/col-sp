@@ -301,6 +301,10 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("No pid selected");
 				}
+				if (pids.GroupBy(n => n).Any(c => c.Count() > 1))
+				{
+					throw new Exception("Unable to group products. Please choose different products for each variant.");
+				};
 				#endregion
 				#region Shop and User
 				int shopId = -1;
@@ -333,6 +337,7 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				defaultVariant.ProductStageGroup.AttributeSetId = request.AttributeSet.AttributeSetId;
+				defaultVariant.ProductStageGroup.GlobalCatId = request.Category.CategoryId;
 				defaultVariant.Status = Constant.PRODUCT_STATUS_DRAFT;
 				var parentVariant = new ProductStage()
 				{
@@ -466,7 +471,7 @@ namespace Colsp.Api.Controllers
 					{
 						groupIds.Add(variant.ProductId);
 					}
-					variant.DefaultVariant = false;
+					variant.DefaultVariant = variantRq.DefaultVariant;
 					variant.ProductId = parentVariant.ProductId;
 					variant.IsVariant = true;
 					variant.IsSell = true;
@@ -510,7 +515,7 @@ namespace Colsp.Api.Controllers
 						});
 					}
 				}
-				productStage.First().DefaultVariant = true;
+				db.ProductStageRelateds.RemoveRange(db.ProductStageRelateds.Where(w => groupIds.Contains(w.Child)));
 				db.ProductStageGroups.RemoveRange(db.ProductStageGroups.Where(w => groupIds.Contains(w.ProductId)));
 				AutoGenerate.GeneratePid(db, new List<ProductStage>() { parentVariant });
 				db.ProductStages.Add(parentVariant);
@@ -919,8 +924,16 @@ namespace Colsp.Api.Controllers
 					}),
 					UpdatedDt = s.UpdateOn,
 				});
-
 				request.DefaultOnNull();
+
+				if (!string.IsNullOrEmpty(request.SearchText))
+				{
+					master = master.Where(p => p.ProductId.ToString().Equals(request.SearchText)
+					|| p.ProductNameEn.Contains(request.SearchText)
+					|| p.Pid.Contains(request.SearchText)
+					|| p.ChildPids.Any(a => a.Pid.Contains(request.SearchText)));
+				}
+
 				var total = master.Count();
 				var pagedProducts = master.Paginate(request);
 				var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
@@ -3516,40 +3529,55 @@ namespace Colsp.Api.Controllers
 				{
 					product.ParentPid = null;
 				}
-				product.ProductId = group.ProductId;
-				product.ShippingId = group.ShippingId;
 				product.AttributeSetId = group.AttributeSetId;
-				product.GlobalCatId = group.GlobalCatId;
-				product.LocalCatId = group.LocalCatId;
+				product.BoostWeight = stage.BoostWeight;
 				product.BrandId = group.BrandId;
-				product.Sku = stage.Sku;
-				product.ProductNameEn = stage.ProductNameEn;
-				product.ProductNameTh = stage.ProductNameTh;
+				product.Bu = stage.Bu;
+				product.CreateBy = stage.CreateBy;
+				product.CreateOn = stage.CreateOn;
+				product.DefaultVariant = stage.DefaultVariant;
+				product.DeliveryFee = stage.DeliveryFee;
 				product.DescriptionFullEn = stage.DescriptionFullEn;
 				product.DescriptionFullTh = stage.DescriptionFullTh;
 				product.DescriptionShortEn = stage.DescriptionShortEn;
 				product.DescriptionShortTh = stage.DescriptionShortTh;
-				product.Length = stage.Length;
-				product.Height = stage.Height;
-				product.Weight = stage.Weight;
 				product.DimensionUnit = stage.DimensionUnit;
-				product.Width = stage.Width;
-				product.WeightUnit = stage.WeightUnit;
-				product.BoostWeight = stage.BoostWeight;
-				product.DefaultVariant = stage.DefaultVariant;
 				product.Display = stage.Display;
+				product.EffectiveDate = group.EffectiveDate;
+				product.EffectiveDatePromotion = stage.EffectiveDatePromotion;
+				product.EstimateGoodsReceiveDate = stage.EstimateGoodsReceiveDate;
+				product.ExpireDate = group.ExpireDate;
+				product.ExpireDatePromotion = stage.ExpireDatePromotion;
+				product.ExpressDelivery = stage.ExpressDelivery;
 				product.FeatureImgUrl = stage.FeatureImgUrl;
+				product.GiftWrap = group.GiftWrap;
 				product.GlobalBoostWeight = stage.GlobalBoostWeight;
+				product.GlobalCatId = group.GlobalCatId;
+				product.Height = stage.Height;
 				product.ImageCount = stage.ImageCount;
 				product.Installment = stage.Installment;
+				product.IsBestSeller = group.IsBestSeller;
+				product.IsClearance = group.IsClearance;
+				product.IsHasExpiryDate = stage.IsHasExpiryDate;
 				product.IsMaster = stage.IsMaster;
+				product.IsNew = group.IsNew;
+				product.IsOnlineExclusive = group.IsOnlineExclusive;
+				product.IsOnlyAt = group.IsOnlyAt;
+				product.IsSell = stage.IsSell;
+				product.IsVariant = stage.IsVariant;
+				product.IsVat = stage.IsVat;
+				product.JDADept = stage.JDADept;
+				product.JDASubDept = stage.JDASubDept;
 				product.KillerPoint1En = stage.KillerPoint1En;
 				product.KillerPoint1Th = stage.KillerPoint1Th;
 				product.KillerPoint2En = stage.KillerPoint2En;
 				product.KillerPoint2Th = stage.KillerPoint2Th;
 				product.KillerPoint3En = stage.KillerPoint3En;
 				product.KillerPoint3Th = stage.KillerPoint3Th;
+				product.Length = stage.Length;
 				product.LimitIndividualDay = stage.LimitIndividualDay;
+				product.LocalCatId = group.LocalCatId;
+				product.MasterPid = null;
 				product.MaxiQtyAllowed = stage.MaxiQtyAllowed;
 				product.MetaDescriptionEn = stage.MetaDescriptionEn;
 				product.MetaDescriptionTh = stage.MetaDescriptionTh;
@@ -3557,10 +3585,13 @@ namespace Colsp.Api.Controllers
 				product.MetaKeyTh = stage.MetaKeyTh;
 				product.MetaTitleEn = stage.MetaTitleEn;
 				product.MetaTitleTh = stage.MetaTitleTh;
-				product.SeoEn = stage.SeoEn;
-				product.SeoTh = stage.SeoTh;
 				product.MiniQtyAllowed = stage.MiniQtyAllowed;
+				product.MobileDescriptionEn = stage.MobileDescriptionEn;
+				product.MobileDescriptionTh = stage.MobileDescriptionTh;
+				product.NewArrivalDate = stage.NewArrivalDate;
+				product.OldPid = stage.OldPid;
 				product.OriginalPrice = stage.OriginalPrice;
+				product.Pid = stage.Pid;
 				product.PrepareDay = stage.PrepareDay;
 				product.PrepareFri = stage.PrepareFri;
 				product.PrepareMon = stage.PrepareMon;
@@ -3569,44 +3600,35 @@ namespace Colsp.Api.Controllers
 				product.PrepareThu = stage.PrepareThu;
 				product.PrepareTue = stage.PrepareTue;
 				product.PrepareWed = stage.PrepareWed;
+				product.ProdTDNameEn = stage.ProdTDNameEn;
+				product.ProdTDNameTh = stage.ProdTDNameTh;
+				product.ProductId = stage.ProductId;
+				product.ProductNameEn = stage.ProductNameEn;
+				product.ProductNameTh = stage.ProductNameTh;
+				//product.ProductRating = group.ProductRating;
+				product.PromotionPrice = stage.PromotionPrice;
 				product.PurchasePrice = stage.PurchasePrice;
+				product.Remark = group.Remark;
 				product.SalePrice = stage.SalePrice;
+				product.SaleUnitEn = stage.SaleUnitEn;
+				product.SaleUnitTh = stage.SaleUnitTh;
+				product.SeoEn = stage.SeoEn;
+				product.SeoTh = stage.SeoTh;
+				product.ShippingId = group.ShippingId;
 				product.ShopId = stage.ShopId;
+				product.Sku = stage.Sku;
+				product.Status = stage.Status;
+				product.TheOneCardEarn = group.TheOneCardEarn;
 				product.UnitPrice = stage.UnitPrice;
 				product.Upc = stage.Upc;
+				product.UpdateBy = stage.UpdateBy;
+				product.UpdateOn = stage.UpdateOn;
 				product.UrlKey = stage.UrlKey;
 				product.VariantCount = stage.VariantCount;
 				product.Visibility = stage.Visibility;
-				product.DeliveryFee = stage.DeliveryFee;
-				product.EffectiveDatePromotion = stage.EffectiveDatePromotion;
-				product.ExpireDatePromotion = stage.ExpireDatePromotion;
-				product.ExpressDelivery = stage.ExpressDelivery;
-				product.IsHasExpiryDate = stage.IsHasExpiryDate;
-				product.IsSell = stage.IsSell;
-				product.IsVat = stage.IsVat;
-				product.IsVariant = stage.IsVariant;
-				product.JDADept = stage.JDADept;
-				product.JDASubDept = stage.JDASubDept;
-				product.MobileDescriptionEn = stage.MobileDescriptionEn;
-				product.MobileDescriptionTh = stage.MobileDescriptionTh;
-				product.NewArrivalDate = stage.NewArrivalDate;
-				product.ProdTDNameEn = stage.ProdTDNameEn;
-				product.ProdTDNameTh = stage.ProdTDNameTh;
-				product.PromotionPrice = stage.PromotionPrice;
-				product.SaleUnitEn = stage.SaleUnitEn;
-				product.SaleUnitTh = stage.SaleUnitTh;
-				product.UrlKey = stage.UrlKey;
-				product.EffectiveDate = group.EffectiveDate;
-				product.ExpireDate = group.ExpireDate;
-				product.Remark = group.Remark;
-				product.TheOneCardEarn = group.TheOneCardEarn;
-				product.GiftWrap = group.GiftWrap;
-				product.Status = stage.Status;
-				product.CreateBy = stage.CreateBy;
-				product.CreateOn = stage.CreateOn;
-				product.UpdateBy = stage.UpdateBy;
-				product.UpdateOn = stage.UpdateOn;
-
+				product.Weight = stage.Weight;
+				product.WeightUnit = stage.WeightUnit;
+				product.Width = stage.Width;
 				#endregion
 				#region Attribute
 				foreach (var attribute in stage.ProductStageAttributes)
@@ -5771,7 +5793,7 @@ namespace Colsp.Api.Controllers
 						string headers = string.Empty;
 						foreach (KeyValuePair<string, Tuple<string, int>> entry in headDicTmp)
 						{
-							csv.WriteField(entry.Value.Item1);
+							csv.WriteField<string>(entry.Value.Item1);
 						}
 						csv.NextRecord();
 						#region Write body
@@ -5779,7 +5801,7 @@ namespace Colsp.Api.Controllers
 						{
 							foreach (string field in r)
 							{
-								csv.WriteField(field);
+								csv.WriteField<string>(string.Concat(@"""",field,@""""));
 							}
 							csv.NextRecord();
 						}
