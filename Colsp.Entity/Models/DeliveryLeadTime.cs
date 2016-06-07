@@ -12,17 +12,12 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CartHead
+    public partial class DeliveryLeadTime
     {
-        public int CartId { get; set; }
-        public string CustomerId { get; set; }
-        public string GuestId { get; set; }
-        public string PostCode { get; set; }
-        public string GiftWrapRemark { get; set; }
-        public string GiftMessage { get; set; }
-        public System.DateTime CreateOn { get; set; }
-        public string CreateBy { get; set; }
-        public Nullable<System.DateTime> UpdateOn { get; set; }
-        public string UpdateBy { get; set; }
+        public string ShipDistrict { get; set; }
+        public string ShipAmphur { get; set; }
+        public string ShipProvince { get; set; }
+        public string ShipZipCode { get; set; }
+        public int DeliveryLeadTime1 { get; set; }
     }
 }

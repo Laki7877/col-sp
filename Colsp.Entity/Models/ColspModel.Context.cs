@@ -20,7 +20,6 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-            Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -74,6 +73,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<CustomerAddress_Staging> CustomerAddress_Staging { get; set; }
         public virtual DbSet<CustomerNewsLetter> CustomerNewsLetters { get; set; }
         public virtual DbSet<CustomerProductHistory> CustomerProductHistories { get; set; }
+        public virtual DbSet<CustomerSearchList> CustomerSearchLists { get; set; }
         public virtual DbSet<CustomerToken> CustomerTokens { get; set; }
         public virtual DbSet<CustomerTokenCreditCard> CustomerTokenCreditCards { get; set; }
         public virtual DbSet<CustomerWishList> CustomerWishLists { get; set; }
@@ -133,6 +133,7 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductTag> ProductTags { get; set; }
         public virtual DbSet<ProductTmp> ProductTmps { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
+        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
         public virtual DbSet<PromotionOnTopCreditCard> PromotionOnTopCreditCards { get; set; }
         public virtual DbSet<PromotionOnTopCreditNumber> PromotionOnTopCreditNumbers { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
@@ -163,6 +164,8 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
         public virtual DbSet<VendorTaxRate> VendorTaxRates { get; set; }
         public virtual DbSet<WithholdingTax> WithholdingTaxes { get; set; }
+        public virtual DbSet<CartPremium> CartPremiums { get; set; }
+        public virtual DbSet<DeliveryLeadTime> DeliveryLeadTimes { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
         public virtual DbSet<Migrate_TBDepartment> Migrate_TBDepartment { get; set; }
         public virtual DbSet<Migrate_TBProduct> Migrate_TBProduct { get; set; }
@@ -193,7 +196,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBSetting> TBSettings { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
-        public virtual DbSet<PromotionBuy1Get1Item> PromotionBuy1Get1Item { get; set; }
     
         public virtual ObjectResult<Nullable<long>> GetNextAppLogId()
         {
@@ -303,6 +305,152 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<StockStatusReport_Result1> StockStatusReport()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result1>("StockStatusReport");
+        }
+    
+        public virtual ObjectResult<GetCategoryHierarchy_Result> GetCategoryHierarchy()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetCategoryHierarchy_Result>("GetCategoryHierarchy");
+        }
+    
+        public virtual ObjectResult<Nullable<long>> GetNextProductStageVideoId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageVideoId");
+        }
+    
+        public virtual ObjectResult<My_test_Result> My_test()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<My_test_Result>("My_test");
+        }
+    
+        public virtual ObjectResult<ProductMapRIS_Result> ProductMapRIS()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProductMapRIS_Result>("ProductMapRIS");
+        }
+    
+        public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_alterdiagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_creatediagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_creatediagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_dropdiagram(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_dropdiagram", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagramdefinition_Result> sp_helpdiagramdefinition(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagramdefinition_Result>("sp_helpdiagramdefinition", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagrams_Result> sp_helpdiagrams(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagrams_Result>("sp_helpdiagrams", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual int sp_renamediagram(string diagramname, Nullable<int> owner_id, string new_diagramname)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var new_diagramnameParameter = new_diagramname != null ?
+                new ObjectParameter("new_diagramname", new_diagramname) :
+                new ObjectParameter("new_diagramname", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_renamediagram", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
+        }
+    
+        public virtual int sp_upgraddiagrams()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
+        }
+    
+        public virtual ObjectResult<spc_tableDescription_Result> spc_tableDescription(string tablename)
+        {
+            var tablenameParameter = tablename != null ?
+                new ObjectParameter("tablename", tablename) :
+                new ObjectParameter("tablename", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spc_tableDescription_Result>("spc_tableDescription", tablenameParameter);
+        }
+    
+        [DbFunction("ColspEntities", "SplitString")]
+        public virtual IQueryable<string> SplitString(string input, string character)
+        {
+            var inputParameter = input != null ?
+                new ObjectParameter("Input", input) :
+                new ObjectParameter("Input", typeof(string));
+    
+            var characterParameter = character != null ?
+                new ObjectParameter("Character", character) :
+                new ObjectParameter("Character", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<string>("[ColspEntities].[SplitString](@Input, @Character)", inputParameter, characterParameter);
         }
     }
 }

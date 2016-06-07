@@ -28,6 +28,7 @@ namespace Colsp.Entity.Models
         }
     
         public int CouponId { get; set; }
+        public string EVoucherId { get; set; }
         public string CouponCode { get; set; }
         public string CouponName { get; set; }
         public Nullable<int> ShopId { get; set; }

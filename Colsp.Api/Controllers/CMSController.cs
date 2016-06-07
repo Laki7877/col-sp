@@ -17,6 +17,7 @@ using Colsp.Logic;
 using Colsp.Model;
 using System.Dynamic;
 using System.IO;
+using System.Web;
 
 namespace Colsp.Api.Controllers
 {
@@ -671,6 +672,8 @@ namespace Colsp.Api.Controllers
             try
             {
 
+                var sortByList = from sortBy in db.SortBies select sortBy;
+
                 var query = from master in db.CMSMasters
                             join masterScheduleMap in db.CMSMasterSchedulerMaps
                             on master.CMSMasterId equals masterScheduleMap.CMSMasterId
@@ -697,6 +700,15 @@ namespace Colsp.Api.Controllers
                                 ISCampaign = master.IsCampaign,
                                 FeatureTitle = master.FeatureTitle,
                                 TitleShowcase = master.TitleShowcase,
+
+                                SortBy = (from sortBy in sortByList
+                                          where sortBy.SortById == master.SortById.Value
+                                          select new SortByRequest {
+                                              SortById = sortBy.SortById,
+                                              NameEn = sortBy.NameEn,
+                                              NameTh = sortBy.NameTh,
+                                              SortByName = sortBy.SortByName
+                                          }).FirstOrDefault(),
 
                                 FeatureProductList = (from feature in db.CMSFeatureProducts
                                                               where feature.CMSMasterId == cmsMasterId
@@ -829,12 +841,14 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var ShopId = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
-                var Email = this.User.UserRequest().Email;
+                var ShopId          = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
+                var Email           = this.User.UserRequest().Email;
 
-                request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
-                request.CreateBy = Email;
-                
+                request.Status      = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy    = Email;
+                request.CreateIP    = "";
+                request.UpdateIP    = "";
+
                 var success = cmsLogic.AddCMSMaster(request);
 
                 if (!success)
@@ -857,8 +871,11 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var ShopId = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
-                var Email = this.User.UserRequest().Email;
+                var ShopId  = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
+                var Email   = this.User.UserRequest().Email;
+                
+                request.CreateIP = "";
+                request.UpdateIP = "";
 
                 var success = cmsLogic.EditCMSMaster(request, ShopId, Email);
                 if (!success)
