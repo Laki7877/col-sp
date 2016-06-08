@@ -171,7 +171,6 @@ namespace Colsp.Api.Controllers
 				});
 				foreach (ProductStageRequest proRq in request)
 				{
-
 					var current = productList.Where(w => w.ProductId.Equals(proRq.ProductId)).SingleOrDefault();
 					if (current == null)
 					{
@@ -184,7 +183,6 @@ namespace Colsp.Api.Controllers
 					{
 						ProductId = current.ProductId
 					};
-
 					var currentReal = realProduct.Where(w => w.Pid.Equals(current.Pid)).SingleOrDefault();
 					if (currentReal != null)
 					{
@@ -213,7 +211,6 @@ namespace Colsp.Api.Controllers
 						{
 							group.OnlineFlag = true;
 						}
-
 					}
 				}
 				db.Configuration.ValidateOnSaveEnabled = false;
@@ -239,6 +236,7 @@ namespace Colsp.Api.Controllers
 				}
 				var productTemp = db.ProductStages.Where(w => w.IsSell == true
 					&& !Constant.STATUS_REMOVE.Equals(w.Status)
+					&& !Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(w.Status)
 					&& w.IsVariant == false
 					&& (w.ProductStageGroup.AttributeSetId == null
 					|| w.ProductStageGroup.AttributeSetId == request.AttributeSetId))
@@ -303,6 +301,10 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("No pid selected");
 				}
+				if (pids.GroupBy(n => n).Any(c => c.Count() > 1))
+				{
+					throw new Exception("Unable to group products. Please choose different products for each variant.");
+				};
 				#endregion
 				#region Shop and User
 				int shopId = -1;
@@ -335,6 +337,8 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				defaultVariant.ProductStageGroup.AttributeSetId = request.AttributeSet.AttributeSetId;
+				defaultVariant.ProductStageGroup.GlobalCatId = request.Category.CategoryId;
+				defaultVariant.Status = Constant.PRODUCT_STATUS_DRAFT;
 				var parentVariant = new ProductStage()
 				{
 					ProductId = defaultVariant.ProductId,
@@ -436,8 +440,6 @@ namespace Colsp.Api.Controllers
 						UseDecimal = defaultVariant.Inventory.UseDecimal
 					}
 				};
-
-
 				foreach (var attribute in defaultVariant.ProductStageAttributes)
 				{
 					parentVariant.ProductStageAttributes.Add(new ProductStageAttribute()
@@ -456,7 +458,6 @@ namespace Colsp.Api.Controllers
 						HtmlBoxValue = attribute.HtmlBoxValue,
 					});
 				}
-
 				parentVariant.VariantCount = request.Variants.Count;
 				List<long> groupIds = new List<long>();
 				foreach (var variantRq in request.Variants)
@@ -470,13 +471,13 @@ namespace Colsp.Api.Controllers
 					{
 						groupIds.Add(variant.ProductId);
 					}
+					variant.DefaultVariant = variantRq.DefaultVariant;
 					variant.ProductId = parentVariant.ProductId;
 					variant.IsVariant = true;
 					variant.IsSell = true;
 					variant.IsMaster = false;
 					variant.Status = Constant.PRODUCT_STATUS_DRAFT;
 					db.ProductStageAttributes.RemoveRange(db.ProductStageAttributes.Where(w => w.Pid.Equals(variant.Pid)));
-
 					if (variantRq.FirstAttribute != null && variantRq.FirstAttribute.AttributeId != 0)
 					{
 						variant.ProductStageAttributes.Add(new ProductStageAttribute()
@@ -513,8 +514,8 @@ namespace Colsp.Api.Controllers
 							HtmlBoxValue = string.Empty,
 						});
 					}
-
 				}
+				db.ProductStageRelateds.RemoveRange(db.ProductStageRelateds.Where(w => groupIds.Contains(w.Child)));
 				db.ProductStageGroups.RemoveRange(db.ProductStageGroups.Where(w => groupIds.Contains(w.ProductId)));
 				AutoGenerate.GeneratePid(db, new List<ProductStage>() { parentVariant });
 				db.ProductStages.Add(parentVariant);
@@ -923,8 +924,16 @@ namespace Colsp.Api.Controllers
 					}),
 					UpdatedDt = s.UpdateOn,
 				});
-
 				request.DefaultOnNull();
+
+				if (!string.IsNullOrEmpty(request.SearchText))
+				{
+					master = master.Where(p => p.ProductId.ToString().Equals(request.SearchText)
+					|| p.ProductNameEn.Contains(request.SearchText)
+					|| p.Pid.Contains(request.SearchText)
+					|| p.ChildPids.Any(a => a.Pid.Contains(request.SearchText)));
+				}
+
 				var total = master.Count();
 				var pagedProducts = master.Paginate(request);
 				var response = PaginatedResponse.CreateResponse(pagedProducts, request, total);
@@ -1656,6 +1665,7 @@ namespace Colsp.Api.Controllers
 					s.ProductStageGroup.AttributeSetId,
 					s.ProductStageAttributes,
 					UpdatedDt = s.ProductStageGroup.UpdateOn,
+					CreatedDt = s.ProductStageGroup.CreateOn,
 					s.ShopId,
 					s.ProductStageGroup.InformationTabStatus,
 					s.ProductStageGroup.ImageTabStatus,
@@ -1898,10 +1908,12 @@ namespace Colsp.Api.Controllers
 				SetupProductStageGroup(group, request, attributeList, inventoryList, group.ShopId, isAdmin, false, email, currentDt, db);
 				AutoGenerate.GeneratePid(db, group.ProductStages);
 				SetupGroupAfterSave(group, db, false);
+				
 				if (Constant.RETURN_STATUS_APPROVE.Equals(group.Status))
 				{
 					SetupApprovedProduct(group, db);
 				}
+				
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
 				#endregion
 				Task.Run(() =>
@@ -2006,11 +2018,24 @@ namespace Colsp.Api.Controllers
 			{
 				foreach (var tag in request.Tags)
 				{
+					var tmpTag = tag.Trim();
+					if(tmpTag.Length > 30)
+					{
+						throw new Exception("Tag field must be no longer than 30 characters.");
+					}
+					if(group.ProductStageTags.Any(a=>string.Equals(a.Tag, tmpTag, StringComparison.OrdinalIgnoreCase)))
+					{
+						continue;
+					}
+					if(group.ProductStageTags.Count >= 30)
+					{
+						throw new Exception("A product can have only 30 tags.");
+					}
 					group.ProductStageTags.Add(new ProductStageTag()
 					{
 						CreateBy = email,
 						CreateOn = currentDt,
-						Tag = tag,
+						Tag = tmpTag,
 						UpdateBy = email,
 						UpdateOn = currentDt
 					});
@@ -2126,9 +2151,7 @@ namespace Colsp.Api.Controllers
 			#region setup variant
 			if (request.Variants != null)
 			{
-
 				var varaintList = group.ProductStages.Where(w => !Constant.STATUS_REMOVE.Equals(group.Status)).ToList();
-
 				foreach (var variantRequest in request.Variants)
 				{
 
@@ -2299,7 +2322,8 @@ namespace Colsp.Api.Controllers
 						Status = Constant.STATUS_ACTIVE,
 						VideoUrlEn = video.Url,
 						UpdateBy = email,
-						UpdateOn = currentDt
+						UpdateOn = currentDt,
+						VideoId = video.VideoId
 					});
 				}
 			}
@@ -2368,7 +2392,7 @@ namespace Colsp.Api.Controllers
 			stage.PromotionPrice = request.PromotionPrice;
 			stage.EffectiveDatePromotion = request.EffectiveDatePromotion;
 			stage.ExpireDatePromotion = request.ExpireDatePromotion;
-			stage.NewArrivalDate = request.NewArrivalDate;
+			stage.NewArrivalDate = request.NewArrivalDate.HasValue ? request.NewArrivalDate.Value : currentDt;
 			stage.DefaultVariant = request.DefaultVariant;
 			stage.Display = request.Display;
 			stage.MiniQtyAllowed = request.MiniQtyAllowed;
@@ -2822,7 +2846,8 @@ namespace Colsp.Api.Controllers
 						}),
 						Videos = st.ProductStageVideos.OrderBy(o => o.Position).Select(sv => new
 						{
-							sv.VideoUrlEn
+							sv.VideoUrlEn,
+							sv.VideoId
 						}),
 						Inventory = st.Inventory == null ? null : new
 						{
@@ -3063,6 +3088,7 @@ namespace Colsp.Api.Controllers
 				{
 					response.MasterVariant.VideoLinks.Add(new VideoLinkRequest()
 					{
+						VideoId = video.VideoId,
 						Url = video.VideoUrlEn,
 					});
 				}
@@ -3211,6 +3237,7 @@ namespace Colsp.Api.Controllers
 					{
 						tmpVariant.VideoLinks.Add(new VideoLinkRequest()
 						{
+							VideoId = video.VideoId,
 							Url = video.VideoUrlEn,
 						});
 					}
@@ -3502,40 +3529,55 @@ namespace Colsp.Api.Controllers
 				{
 					product.ParentPid = null;
 				}
-				product.ProductId = group.ProductId;
-				product.ShippingId = group.ShippingId;
 				product.AttributeSetId = group.AttributeSetId;
-				product.GlobalCatId = group.GlobalCatId;
-				product.LocalCatId = group.LocalCatId;
+				product.BoostWeight = stage.BoostWeight;
 				product.BrandId = group.BrandId;
-				product.Sku = stage.Sku;
-				product.ProductNameEn = stage.ProductNameEn;
-				product.ProductNameTh = stage.ProductNameTh;
+				product.Bu = stage.Bu;
+				product.CreateBy = stage.CreateBy;
+				product.CreateOn = stage.CreateOn;
+				product.DefaultVariant = stage.DefaultVariant;
+				product.DeliveryFee = stage.DeliveryFee;
 				product.DescriptionFullEn = stage.DescriptionFullEn;
 				product.DescriptionFullTh = stage.DescriptionFullTh;
 				product.DescriptionShortEn = stage.DescriptionShortEn;
 				product.DescriptionShortTh = stage.DescriptionShortTh;
-				product.Length = stage.Length;
-				product.Height = stage.Height;
-				product.Weight = stage.Weight;
 				product.DimensionUnit = stage.DimensionUnit;
-				product.Width = stage.Width;
-				product.WeightUnit = stage.WeightUnit;
-				product.BoostWeight = stage.BoostWeight;
-				product.DefaultVariant = stage.DefaultVariant;
 				product.Display = stage.Display;
+				product.EffectiveDate = group.EffectiveDate;
+				product.EffectiveDatePromotion = stage.EffectiveDatePromotion;
+				product.EstimateGoodsReceiveDate = stage.EstimateGoodsReceiveDate;
+				product.ExpireDate = group.ExpireDate;
+				product.ExpireDatePromotion = stage.ExpireDatePromotion;
+				product.ExpressDelivery = stage.ExpressDelivery;
 				product.FeatureImgUrl = stage.FeatureImgUrl;
+				product.GiftWrap = group.GiftWrap;
 				product.GlobalBoostWeight = stage.GlobalBoostWeight;
+				product.GlobalCatId = group.GlobalCatId;
+				product.Height = stage.Height;
 				product.ImageCount = stage.ImageCount;
 				product.Installment = stage.Installment;
+				product.IsBestSeller = group.IsBestSeller;
+				product.IsClearance = group.IsClearance;
+				product.IsHasExpiryDate = stage.IsHasExpiryDate;
 				product.IsMaster = stage.IsMaster;
+				product.IsNew = group.IsNew;
+				product.IsOnlineExclusive = group.IsOnlineExclusive;
+				product.IsOnlyAt = group.IsOnlyAt;
+				product.IsSell = stage.IsSell;
+				product.IsVariant = stage.IsVariant;
+				product.IsVat = stage.IsVat;
+				product.JDADept = stage.JDADept;
+				product.JDASubDept = stage.JDASubDept;
 				product.KillerPoint1En = stage.KillerPoint1En;
 				product.KillerPoint1Th = stage.KillerPoint1Th;
 				product.KillerPoint2En = stage.KillerPoint2En;
 				product.KillerPoint2Th = stage.KillerPoint2Th;
 				product.KillerPoint3En = stage.KillerPoint3En;
 				product.KillerPoint3Th = stage.KillerPoint3Th;
+				product.Length = stage.Length;
 				product.LimitIndividualDay = stage.LimitIndividualDay;
+				product.LocalCatId = group.LocalCatId;
+				product.MasterPid = null;
 				product.MaxiQtyAllowed = stage.MaxiQtyAllowed;
 				product.MetaDescriptionEn = stage.MetaDescriptionEn;
 				product.MetaDescriptionTh = stage.MetaDescriptionTh;
@@ -3543,10 +3585,13 @@ namespace Colsp.Api.Controllers
 				product.MetaKeyTh = stage.MetaKeyTh;
 				product.MetaTitleEn = stage.MetaTitleEn;
 				product.MetaTitleTh = stage.MetaTitleTh;
-				product.SeoEn = stage.SeoEn;
-				product.SeoTh = stage.SeoTh;
 				product.MiniQtyAllowed = stage.MiniQtyAllowed;
+				product.MobileDescriptionEn = stage.MobileDescriptionEn;
+				product.MobileDescriptionTh = stage.MobileDescriptionTh;
+				product.NewArrivalDate = stage.NewArrivalDate;
+				product.OldPid = stage.OldPid;
 				product.OriginalPrice = stage.OriginalPrice;
+				product.Pid = stage.Pid;
 				product.PrepareDay = stage.PrepareDay;
 				product.PrepareFri = stage.PrepareFri;
 				product.PrepareMon = stage.PrepareMon;
@@ -3555,44 +3600,35 @@ namespace Colsp.Api.Controllers
 				product.PrepareThu = stage.PrepareThu;
 				product.PrepareTue = stage.PrepareTue;
 				product.PrepareWed = stage.PrepareWed;
+				product.ProdTDNameEn = stage.ProdTDNameEn;
+				product.ProdTDNameTh = stage.ProdTDNameTh;
+				product.ProductId = stage.ProductId;
+				product.ProductNameEn = stage.ProductNameEn;
+				product.ProductNameTh = stage.ProductNameTh;
+				//product.ProductRating = group.ProductRating;
+				product.PromotionPrice = stage.PromotionPrice;
 				product.PurchasePrice = stage.PurchasePrice;
+				product.Remark = group.Remark;
 				product.SalePrice = stage.SalePrice;
+				product.SaleUnitEn = stage.SaleUnitEn;
+				product.SaleUnitTh = stage.SaleUnitTh;
+				product.SeoEn = stage.SeoEn;
+				product.SeoTh = stage.SeoTh;
+				product.ShippingId = group.ShippingId;
 				product.ShopId = stage.ShopId;
+				product.Sku = stage.Sku;
+				product.Status = stage.Status;
+				product.TheOneCardEarn = group.TheOneCardEarn;
 				product.UnitPrice = stage.UnitPrice;
 				product.Upc = stage.Upc;
+				product.UpdateBy = stage.UpdateBy;
+				product.UpdateOn = stage.UpdateOn;
 				product.UrlKey = stage.UrlKey;
 				product.VariantCount = stage.VariantCount;
 				product.Visibility = stage.Visibility;
-				product.DeliveryFee = stage.DeliveryFee;
-				product.EffectiveDatePromotion = stage.EffectiveDatePromotion;
-				product.ExpireDatePromotion = stage.ExpireDatePromotion;
-				product.ExpressDelivery = stage.ExpressDelivery;
-				product.IsHasExpiryDate = stage.IsHasExpiryDate;
-				product.IsSell = stage.IsSell;
-				product.IsVat = stage.IsVat;
-				product.IsVariant = stage.IsVariant;
-				product.JDADept = stage.JDADept;
-				product.JDASubDept = stage.JDASubDept;
-				product.MobileDescriptionEn = stage.MobileDescriptionEn;
-				product.MobileDescriptionTh = stage.MobileDescriptionTh;
-				product.NewArrivalDate = stage.NewArrivalDate;
-				product.ProdTDNameEn = stage.ProdTDNameEn;
-				product.ProdTDNameTh = stage.ProdTDNameTh;
-				product.PromotionPrice = stage.PromotionPrice;
-				product.SaleUnitEn = stage.SaleUnitEn;
-				product.SaleUnitTh = stage.SaleUnitTh;
-				product.UrlKey = stage.UrlKey;
-				product.EffectiveDate = group.EffectiveDate;
-				product.ExpireDate = group.ExpireDate;
-				product.Remark = group.Remark;
-				product.TheOneCardEarn = group.TheOneCardEarn;
-				product.GiftWrap = group.GiftWrap;
-				product.Status = stage.Status;
-				product.CreateBy = stage.CreateBy;
-				product.CreateOn = stage.CreateOn;
-				product.UpdateBy = stage.UpdateBy;
-				product.UpdateOn = stage.UpdateOn;
-
+				product.Weight = stage.Weight;
+				product.WeightUnit = stage.WeightUnit;
+				product.Width = stage.Width;
 				#endregion
 				#region Attribute
 				foreach (var attribute in stage.ProductStageAttributes)
@@ -3734,10 +3770,9 @@ namespace Colsp.Api.Controllers
 				var videoList = product.ProductVideos.ToList();
 				foreach (var video in stage.ProductStageVideos)
 				{
-
 					product.ProductVideos.Add(new ProductVideo()
 					{
-						VideoId = 0,
+						VideoId = video.VideoId,
 						VideoUrlEn = video.VideoUrlEn,
 						Position = video.Position,
 						Status = video.Status,
@@ -3749,6 +3784,7 @@ namespace Colsp.Api.Controllers
 
 					history.ProductHistoryVideos.Add(new ProductHistoryVideo()
 					{
+						VideoId = video.VideoId,
 						VideoUrlEn = video.VideoUrlEn,
 						Position = video.Position,
 						Status = video.Status,
@@ -3909,9 +3945,7 @@ namespace Colsp.Api.Controllers
 
 		private void SetupGroupAfterSave(ProductStageGroup groupProduct, ColspEntities db, bool isNew = false)
 		{
-			//var schema = Request.GetRequestContext().Url.Request.RequestUri.Scheme;
-			//var imageUrl = Request.GetRequestContext().Url.Request.RequestUri.Authority;
-
+			#region Image
 			HashSet<string> tmpImageHash = new HashSet<string>();
 			foreach (var stage in groupProduct.ProductStages)
 			{
@@ -3954,6 +3988,31 @@ namespace Colsp.Api.Controllers
 								newFileName));
 							image.ImageId = 0;
 							++index;
+						}else
+						{
+							
+							var myStringWebResource = string.Concat(Constant.PRODUCT_IMAGE_URL, lastPart);
+							string newFileName = string.Concat(stage.Pid, "-", index, Path.GetExtension(lastPart));
+							string newFile = Path.Combine(
+									AppSettingKey.IMAGE_ROOT_PATH,
+									AppSettingKey.PRODUCT_FOLDER,
+									AppSettingKey.IMAGE_TMP_FOLDER,
+									newFileName);
+							using (WebClient myWebClient = new WebClient())
+							{
+								try
+								{
+									myWebClient.DownloadFile(myStringWebResource, newFile);
+								}
+								catch (Exception e)
+								{
+									throw e.GetBaseException();
+								}
+								
+							}
+							image.ImageName = newFileName;
+							image.ImageId = 0;
+							++index;
 						}
 					}
 					else
@@ -3966,6 +4025,16 @@ namespace Colsp.Api.Controllers
 			{
 				SetupStageAfterSave(stage, db, isNew);
 			}
+			#endregion
+			#region Video
+			foreach (var video in groupProduct.ProductStages.SelectMany(s => s.ProductStageVideos))
+			{
+				if (video.VideoId == 0)
+				{
+					video.VideoId = db.GetNextProductStageVideoId().SingleOrDefault().Value;
+				}
+			}
+			#endregion
 		}
 
 		private void SetupStageAfterSave(ProductStage stage, ColspEntities db = null, bool isNew = false)
@@ -4167,79 +4236,10 @@ namespace Colsp.Api.Controllers
 			foreach (var req in requests)
 			{
 				var json = new JavaScriptSerializer().Serialize(req);
-				SendRequest(url, method, headers, json, email, currentDt, "SP", "CMOS", db);
+				SystemHelper.SendRequest(url, method, headers, json, email, currentDt, "SP", "CMOS", db);
 			}
 		}
 
-		private void SendRequest(string url, string method, Dictionary<string, string> headers, string jsonString
-			, string email, DateTime currentDt, string source, string destination, ColspEntities db)
-		{
-			string responseFromServer = string.Empty;
-			int statusCodeValue = 200;
-			try
-			{
-				WebRequest request = WebRequest.Create(url);
-				if (headers != null)
-				{
-					foreach (var header in headers)
-					{
-						request.Headers.Add(header.Key, header.Value);
-					}
-				}
-				request.Method = method;
-				byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
-				request.ContentType = ContentType.ApplicationJson;
-				request.ContentLength = byteArray.Length;
-				using (Stream dataStream = request.GetRequestStream())
-				{
-					dataStream.Write(byteArray, 0, byteArray.Length);
-					using (var response = request.GetResponse())
-					{
-						using (Stream responseDataStream = response.GetResponseStream())
-						{
-							using (StreamReader reader = new StreamReader(responseDataStream))
-							{
-								responseFromServer = reader.ReadToEnd();
-								var statusCode = ((HttpWebResponse)response).StatusCode;
-								statusCodeValue = (int)statusCode;
-							}
-						}
-					}
-				}
-			}
-			catch (WebException ex)
-			{
-				using (var response = ex.Response)
-				{
-					using (var stream = response.GetResponseStream())
-					{
-						using (var reader = new StreamReader(stream))
-						{
-							responseFromServer = reader.ReadToEnd();
-							var statusCode = ((HttpWebResponse)response).StatusCode;
-							statusCodeValue = (int)statusCode;
-						}
-					}
-				}
-			}
-			finally
-			{
-				db.ApiLogs.Add(new ApiLog()
-				{
-					LogId = db.GetNextAppLogId().SingleOrDefault().Value,
-					CreateBy = email,
-					CreateOn = currentDt,
-					DestinationApp = destination,
-					SourceApp = source,
-					Method = method,
-					RequestData = jsonString,
-					RequestUrl = url,
-					ResponseData = responseFromServer,
-					ResponseCode = statusCodeValue,
-				});
-			}
-
-		}
 
 		private void SendToElastic(ProductStageGroup productGroup, string url, string method
 			, string email, DateTime currentDt, ColspEntities db)
@@ -4475,7 +4475,7 @@ namespace Colsp.Api.Controllers
 					data = req
 				};
 				var json = new JavaScriptSerializer().Serialize(tmpJson);
-				SendRequest(url, method, null, json, email, currentDt, "SP", "ELAS", db);
+				SystemHelper.SendRequest(url, method, null, json, email, currentDt, "SP", "ELAS", db);
 			}
 		}
 
@@ -5793,7 +5793,7 @@ namespace Colsp.Api.Controllers
 						string headers = string.Empty;
 						foreach (KeyValuePair<string, Tuple<string, int>> entry in headDicTmp)
 						{
-							csv.WriteField(entry.Value.Item1);
+							csv.WriteField<string>(entry.Value.Item1);
 						}
 						csv.NextRecord();
 						#region Write body
@@ -5801,7 +5801,7 @@ namespace Colsp.Api.Controllers
 						{
 							foreach (string field in r)
 							{
-								csv.WriteField(field);
+								csv.WriteField<string>(string.Concat(@"""",field,@""""));
 							}
 							csv.NextRecord();
 						}
@@ -5948,20 +5948,48 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				#region Setup Product for database
+				var requireDefaultAttr = db.Attributes.Where(w => w.Required && !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) && w.DefaultAttribute).Select(s => s.AttributeId);
 				foreach (var product in groupList)
 				{
+					
 					var masterVariant = product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+					#region Validate flag
 					if (!string.IsNullOrWhiteSpace(masterVariant.ProductNameEn)
 					   && !string.IsNullOrWhiteSpace(masterVariant.ProductNameTh)
 					   && product.Value.BrandId != null)
 					{
 						product.Value.InfoFlag = true;
+						var attrIds = masterVariant.ProductStageAttributes.Where(w => !string.IsNullOrWhiteSpace(w.ValueEn)).Select(s => s.AttributeId);
+						foreach (var id in requireDefaultAttr)
+						{
+							if (!attrIds.Contains(id))
+							{
+								product.Value.InfoFlag = false;
+								break;
+							}
+						}
+						if (product.Value.AttributeSetId.HasValue && product.Value.InfoFlag)
+						{
+							var masterAttr = db.Attributes
+								.Where(w => w.Required 
+									&& !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) 
+									&& w.AttributeSetMaps.Any(a => a.AttributeSetId == product.Value.AttributeSetId.Value))
+								.Select(s => s.AttributeId);
+							foreach (var id in masterAttr)
+							{
+								if (!masterAttr.Contains(id))
+								{
+									product.Value.InfoFlag = false;
+									break;
+								}
+							}
+						}
 					}
 					else
 					{
 						product.Value.InfoFlag = false;
 					}
-
+					#endregion
 					masterVariant.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
 					if (masterVariant.VariantCount == 0)
 					{
@@ -7035,15 +7063,52 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				#region Setup Product for database
+				var requireDefaultAttr = db.Attributes.Where(w => w.Required && !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType) && w.DefaultAttribute).Select(s => s.AttributeId);
 				foreach (var product in groupList)
 				{
 					var masterProduct = product.Value.ProductStages.Where(w => w.IsVariant == false).SingleOrDefault();
+					#region Validate Flag
+					if (!string.IsNullOrWhiteSpace(masterProduct.ProductNameEn)
+					   && !string.IsNullOrWhiteSpace(masterProduct.ProductNameTh)
+					   && product.Value.BrandId != null)
+					{
+						product.Value.InfoFlag = true;
+						var attrIds = masterProduct.ProductStageAttributes.Where(w => !string.IsNullOrWhiteSpace(w.ValueEn)).Select(s => s.AttributeId);
+						foreach (var id in requireDefaultAttr)
+						{
+							if (!attrIds.Contains(id))
+							{
+								product.Value.InfoFlag = false;
+								break;
+							}
+						}
+						if (product.Value.AttributeSetId.HasValue && product.Value.InfoFlag)
+						{
+							var masterAttr = db.Attributes
+								.Where(w => w.Required
+									&& !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType)
+									&& w.AttributeSetMaps.Any(a => a.AttributeSetId == product.Value.AttributeSetId.Value))
+								.Select(s => s.AttributeId);
+							foreach (var id in masterAttr)
+							{
+								if (!masterAttr.Contains(id))
+								{
+									product.Value.InfoFlag = false;
+									break;
+								}
+							}
+						}
+					}
+					else
+					{
+						product.Value.InfoFlag = false;
+					}
+					#endregion
 					masterProduct.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
 					if (masterProduct.VariantCount == 0)
 					{
 						masterProduct.IsSell = true;
 					}
-
 					AutoGenerate.GeneratePid(db, product.Value.ProductStages);
 				}
 				#endregion
@@ -7114,7 +7179,7 @@ namespace Colsp.Api.Controllers
 						{
 							throw new Exception(head + " is duplicate header");
 						}
-						var headerGuidance = guidance.Where(w => w.HeaderName.Equals(head)).Select(s => s.MapName).FirstOrDefault();
+						var headerGuidance = guidance.Where(w => w.HeaderName.Equals(head.Trim())).Select(s => s.MapName).FirstOrDefault();
 						if (string.IsNullOrEmpty(headerGuidance))
 						{
 							headDic.Add(head, i++);
@@ -7123,15 +7188,21 @@ namespace Colsp.Api.Controllers
 						{
 							headDic.Add(headerGuidance, i++);
 						}
-
 						firstRow.Add(csvResult.GetField<string>(head));
 						if (isUpdate)
 						{
 							updateHeader.Add(headerGuidance);
 						}
 					}
-					#endregion
 					csvRows = ReadExcel(csvResult, headers, firstRow);
+					foreach(var ignore in Constant.IMPORT_REQUIRE_FIELD)
+					{
+						if (!headDic.ContainsKey(ignore))
+						{
+							throw new Exception("The uploaded file has invalid format");
+						}
+					}
+					#endregion
 					List<ProductStage> products = new List<ProductStage>();
 					#region Default Query
 					int shopId = User.ShopRequest().ShopId;
@@ -7176,6 +7247,8 @@ namespace Colsp.Api.Controllers
 					groupList = new Dictionary<string, ProductStageGroup>();
 					int tmpGroupId = 0;
 					Regex rg = new Regex(@"/(\(\()\d+(\)\))/");
+					Regex rgNumOnly = new Regex(@"^[0-9]*$");
+					Regex rgAlphaNumeric = new Regex(@"^[a-zA-Z0-9-]*$");
 					List<string> body = null;
 					string groupId = null;
 					bool isNew = true;
@@ -7259,7 +7332,7 @@ namespace Colsp.Api.Controllers
 							CreateOn = DateTime.Now,
 							UpdateBy = User.UserRequest().Email,
 							UpdateOn = DateTime.Now,
-							Visibility = headDic.ContainsKey("ADL") && string.Equals(body[headDic["ADL"]], Constant.STATUS_NO, StringComparison.OrdinalIgnoreCase) ? false : true,
+							Visibility = headDic.ContainsKey("ADL") && string.Equals(body[headDic["ADL"]], "no", StringComparison.OrdinalIgnoreCase) ? false : true,
 							IsVariant = true,
 							IsMaster = false,
 							FeatureImgUrl = string.Empty,
@@ -7269,7 +7342,7 @@ namespace Colsp.Api.Controllers
 							UnitPrice = 0,
 							DimensionUnit = Constant.DIMENSTION_MM,
 							WeightUnit = Constant.WEIGHT_MEASURE_G,
-							GlobalBoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACX", guidance, false, int.MaxValue, errorMessage, row, 0),
+							GlobalBoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACX", guidance, false, 10000, errorMessage, row, Constant.DEFAULT_GLOBAL_BOOSTWEIGHT),
 							Display = Constant.VARIANT_DISPLAY_GROUP,
 							VariantCount = 0,
 							PurchasePrice = 0,
@@ -7286,39 +7359,38 @@ namespace Colsp.Api.Controllers
 							NewArrivalDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ADB", guidance, errorMessage, row),
 							PromotionPrice = 0,
 							OldPid = null,
-							ProductNameEn = Validation.ValidateCSVStringColumn(headDic, body, "AAE", guidance, true, 300, errorMessage, row),
-							ProductNameTh = Validation.ValidateCSVStringColumn(headDic, body, "AAF", guidance, true, 300, errorMessage, row),
+							ProductNameEn = Validation.ValidateCSVStringColumn(headDic, body, "AAE", guidance, !isUpdate, 255, errorMessage, row),
+							ProductNameTh = Validation.ValidateCSVStringColumn(headDic, body, "AAF", guidance, !isUpdate, 255, errorMessage, row),
 							ProdTDNameEn = Validation.ValidateCSVStringColumn(headDic, body, "AAG", guidance, false, 55, errorMessage, row, string.Empty),
 							ProdTDNameTh = Validation.ValidateCSVStringColumn(headDic, body, "AAH", guidance, false, 55, errorMessage, row, string.Empty),
-							Sku = Validation.ValidateCSVStringColumn(headDic, body, "AAI", guidance, false, 300, errorMessage, row, string.Empty),
-							Upc = Validation.ValidateCSVStringColumn(headDic, body, "AAJ", guidance, false, 300, errorMessage, row, string.Empty),
-							SaleUnitEn = Validation.ValidateCSVStringColumn(headDic, body, "AAT", guidance, false, 100, errorMessage, row, string.Empty),
-							SaleUnitTh = Validation.ValidateCSVStringColumn(headDic, body, "AAU", guidance, false, 100, errorMessage, row, string.Empty),
+							Sku = Validation.ValidateCSVStringColumn(headDic, body, "AAI", guidance, !isUpdate, 255, errorMessage, row),
+							Upc = Validation.ValidateCSVStringColumn(headDic, body, "AAJ", guidance, false, 13, errorMessage, row, string.Empty, rgNumOnly),
+							SaleUnitEn = Validation.ValidateCSVStringColumn(headDic, body, "AAT", guidance, false, 255, errorMessage, row, string.Empty),
+							SaleUnitTh = Validation.ValidateCSVStringColumn(headDic, body, "AAU", guidance, false, 255, errorMessage, row, string.Empty),
 							IsVat = headDic.ContainsKey("AAV") && string.Equals(body[headDic["AAV"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
-							DescriptionFullEn = Validation.ValidateCSVStringColumn(headDic, body, "AAW", guidance, false, int.MaxValue, errorMessage, row, string.Empty),
-							DescriptionFullTh = Validation.ValidateCSVStringColumn(headDic, body, "AAX", guidance, false, int.MaxValue, errorMessage, row, string.Empty),
-							MobileDescriptionEn = Validation.ValidateCSVStringColumn(headDic, body, "AAY", guidance, false, int.MaxValue, errorMessage, row, string.Empty),
-							MobileDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "AAZ", guidance, false, int.MaxValue, errorMessage, row, string.Empty),
+							DescriptionFullEn = Validation.ValidateCSVStringColumn(headDic, body, "AAW", guidance, false, 50000, errorMessage, row, string.Empty),
+							DescriptionFullTh = Validation.ValidateCSVStringColumn(headDic, body, "AAX", guidance, false, 50000, errorMessage, row, string.Empty),
+							MobileDescriptionEn = Validation.ValidateCSVStringColumn(headDic, body, "AAY", guidance, false, 50000, errorMessage, row, string.Empty),
+							MobileDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "AAZ", guidance, false, 50000, errorMessage, row, string.Empty),
 							DescriptionShortEn = Validation.ValidateCSVStringColumn(headDic, body, "ABA", guidance, false, 500, errorMessage, row, string.Empty),
 							DescriptionShortTh = Validation.ValidateCSVStringColumn(headDic, body, "ABB", guidance, false, 500, errorMessage, row, string.Empty),
-							KillerPoint1En = Validation.ValidateCSVStringColumn(headDic, body, "ABC", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint1Th = Validation.ValidateCSVStringColumn(headDic, body, "ABD", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint2En = Validation.ValidateCSVStringColumn(headDic, body, "ABE", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint2Th = Validation.ValidateCSVStringColumn(headDic, body, "ABF", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint3En = Validation.ValidateCSVStringColumn(headDic, body, "ABG", guidance, false, 200, errorMessage, row, string.Empty),
-							KillerPoint3Th = Validation.ValidateCSVStringColumn(headDic, body, "ABH", guidance, false, 200, errorMessage, row, string.Empty),
+							KillerPoint1En = Validation.ValidateCSVStringColumn(headDic, body, "ABC", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint1Th = Validation.ValidateCSVStringColumn(headDic, body, "ABD", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint2En = Validation.ValidateCSVStringColumn(headDic, body, "ABE", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint2Th = Validation.ValidateCSVStringColumn(headDic, body, "ABF", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint3En = Validation.ValidateCSVStringColumn(headDic, body, "ABG", guidance, false, 50, errorMessage, row, string.Empty),
+							KillerPoint3Th = Validation.ValidateCSVStringColumn(headDic, body, "ABH", guidance, false, 50, errorMessage, row, string.Empty),
 							IsHasExpiryDate = headDic.ContainsKey("ABQ") && string.Equals(body[headDic["ABQ"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
 							ExpressDelivery = headDic.ContainsKey("ABS") && string.Equals(body[headDic["ABS"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
-							SeoEn = Validation.ValidateCSVStringColumn(headDic, body, "ACN", guidance, false, 300, errorMessage, row, string.Empty),
-							SeoTh = Validation.ValidateCSVStringColumn(headDic, body, "ACO", guidance, false, 300, errorMessage, row, string.Empty),
-							MetaTitleEn = Validation.ValidateCSVStringColumn(headDic, body, "ACP", guidance, false, 300, errorMessage, row, string.Empty),
-							MetaTitleTh = Validation.ValidateCSVStringColumn(headDic, body, "ACQ", guidance, false, 300, errorMessage, row, string.Empty),
-							MetaDescriptionEn = Validation.ValidateCSVStringColumn(headDic, body, "ACR", guidance, false, 500, errorMessage, row, string.Empty),
-							MetaDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "ACS", guidance, false, 500, errorMessage, row, string.Empty),
-							MetaKeyEn = Validation.ValidateCSVStringColumn(headDic, body, "ACT", guidance, false, 300, errorMessage, row, string.Empty),
-							MetaKeyTh = Validation.ValidateCSVStringColumn(headDic, body, "ACU", guidance, false, 300, errorMessage, row, string.Empty),
-							UrlKey = Validation.ValidateCSVStringColumn(headDic, body, "ACV", guidance, false, 300, errorMessage, row),
-							//GiftWrap = string.Equals(body[headDic["Gift Wrap"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
+							SeoEn = Validation.ValidateCSVStringColumn(headDic, body, "ACN", guidance, false, 1000, errorMessage, row, string.Empty),
+							SeoTh = Validation.ValidateCSVStringColumn(headDic, body, "ACO", guidance, false, 1000, errorMessage, row, string.Empty),
+							MetaTitleEn = Validation.ValidateCSVStringColumn(headDic, body, "ACP", guidance, false, 60, errorMessage, row, string.Empty),
+							MetaTitleTh = Validation.ValidateCSVStringColumn(headDic, body, "ACQ", guidance, false, 60, errorMessage, row, string.Empty),
+							MetaDescriptionEn = Validation.ValidateCSVStringColumn(headDic, body, "ACR", guidance, false, 150, errorMessage, row, string.Empty),
+							MetaDescriptionTh = Validation.ValidateCSVStringColumn(headDic, body, "ACS", guidance, false, 150, errorMessage, row, string.Empty),
+							MetaKeyEn = Validation.ValidateCSVStringColumn(headDic, body, "ACT", guidance, false, 1000, errorMessage, row, string.Empty),
+							MetaKeyTh = Validation.ValidateCSVStringColumn(headDic, body, "ACU", guidance, false, 1000, errorMessage, row, string.Empty),
+							UrlKey = Validation.ValidateCSVStringColumn(headDic, body, "ACV", guidance, false, 100, errorMessage, row, string.Empty, rgAlphaNumeric),
 							Installment = headDic.ContainsKey("AAN") && string.Equals(body[headDic["AAN"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
 							PrepareDay = Validation.ValidateCSVIntegerColumn(headDic, body, "ABU", guidance, false, int.MaxValue, errorMessage, row, 0),
 							PrepareMon = Validation.ValidateCSVIntegerColumn(headDic, body, "ABV", guidance, false, int.MaxValue, errorMessage, row, 0),
@@ -7333,13 +7405,23 @@ namespace Colsp.Api.Controllers
 							Height = Validation.ValidateCSVIntegerColumn(headDic, body, "ACD", guidance, false, int.MaxValue, errorMessage, row, 0),
 							Width = Validation.ValidateCSVIntegerColumn(headDic, body, "ACE", guidance, false, int.MaxValue, errorMessage, row, 0),
 							Weight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACF", guidance, false, int.MaxValue, errorMessage, row, 0),
-							BoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACW", guidance, false, int.MaxValue, errorMessage, row, 0),
+							BoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACW", guidance, false, 10000, errorMessage, row, 0),
 						};
 						if (headDic.ContainsKey("AAC"))
 						{
-							string defaultVar = body[headDic["AAC"]];
-							variant.DefaultVariant = "Yes".Equals(defaultVar);
+							variant.DefaultVariant = string.Equals(body[headDic["AAC"]], "yes", StringComparison.OrdinalIgnoreCase);
 						}
+						#region Variant Validation
+						if (!string.IsNullOrWhiteSpace(variant.UrlKey))
+						{
+							variant.UrlKey = variant.UrlKey.ToLower();
+						}
+						if (!variant.NewArrivalDate.HasValue)
+						{
+							variant.NewArrivalDate = DateTime.Now;
+						}
+						#endregion
+						#region Price
 						if (headDic.ContainsKey("AAO"))
 						{
 							try
@@ -7388,6 +7470,8 @@ namespace Colsp.Api.Controllers
 								errorMessage.Add("Invalid Purchase Price at row " + row);
 							}
 						}
+						#endregion
+						#region Pid
 						if (isUpdate)
 						{
 							if (headDic.ContainsKey("AAD"))
@@ -7399,6 +7483,18 @@ namespace Colsp.Api.Controllers
 								throw new Exception("No PID column found");
 							}
 						}
+						#endregion
+						#region Validate Promotion
+						if (variant.EffectiveDatePromotion.HasValue
+							&& variant.ExpireDatePromotion.HasValue)
+						{
+							if (variant.EffectiveDatePromotion.Value.CompareTo(variant.ExpireDatePromotion.Value)
+								> 0)
+							{
+								errorMessage.Add(string.Concat("Promotion Effective Date must be earlier than Promotion Expire Date at row ", row));
+							}
+						}
+						#endregion
 						#endregion
 						#region Delivery Fee
 						if (headDic.ContainsKey("ABT"))
@@ -7442,16 +7538,20 @@ namespace Colsp.Api.Controllers
 							try
 							{
 								var salePriceSt = body[headDic["AAL"]];
-								if (!string.IsNullOrWhiteSpace(salePriceSt))
-								{
-									decimal salePrice = decimal.Parse(salePriceSt);
-									variant.SalePrice = salePrice;
-								}
+								decimal salePrice = decimal.Parse(salePriceSt);
+								variant.SalePrice = salePrice;
 							}
 							catch
 							{
-								errorMessage.Add("Invalid Sale Price at row " + row);
+								if (!isUpdate)
+								{
+									errorMessage.Add("Invalid Sale Price at row " + row);
+								}
 							}
+						}
+						else if (!isUpdate)
+						{
+							errorMessage.Add("Sale Price field is required");
 						}
 						#endregion
 						#region Validate Sale Price
@@ -7844,19 +7944,20 @@ namespace Colsp.Api.Controllers
 							#region Brand 
 							if (headDic.ContainsKey("AAK"))
 							{
-								if (!string.IsNullOrWhiteSpace(body[headDic["AAK"]]))
+								var name = body[headDic["AAK"]].Trim().ToLower().Replace(' ', '_');
+								var brandId = brands.Where(w => w.BrandNameEn.Equals(name)).Select(s => s.BrandId).FirstOrDefault();
+								if (brandId != 0)
 								{
-									var name = body[headDic["AAK"]].Trim().ToLower().Replace(' ', '_');
-									var brandId = brands.Where(w => w.BrandNameEn.Equals(name)).Select(s => s.BrandId).FirstOrDefault();
-									if (brandId != 0)
-									{
-										group.BrandId = brandId;
-									}
-									else
-									{
-										errorMessage.Add("Invalid Brand Name at row " + row);
-									}
+									group.BrandId = brandId;
 								}
+								else if(!isUpdate)
+								{
+									errorMessage.Add("Invalid Brand Name at row " + row);
+								}
+							}
+							else if (!isUpdate)
+							{
+								errorMessage.Add("Brand Name column is required");
 							}
 							#endregion
 							#region Global category
@@ -7880,17 +7981,17 @@ namespace Colsp.Api.Controllers
 									}
 									else if (!isUpdate)
 									{
-										errorMessage.Add("Global Category ID is required at row " + row);
+										errorMessage.Add(string.Concat(guidance.Where(w => w.MapName.Equals("ACG")).Select(s => s.HeaderName).Single(), " is required at row " + row));
 									}
 								}
 								catch (Exception)
 								{
-									errorMessage.Add("Invalid Global Category ID at row " + row);
+									errorMessage.Add(string.Concat("Invalid ",guidance.Where(w => w.MapName.Equals("ACG")).Select(s => s.HeaderName).Single(), " at row " + row));
 								}
 							}
 							else if (!isUpdate)
 							{
-								throw new Exception("Global Category field is required");
+								errorMessage.Add(string.Concat(guidance.Where(w => w.MapName.Equals("ACG")).Select(s => s.HeaderName).Single(), " column is required"));
 							}
 							if (headDic.ContainsKey("ACH"))
 							{
@@ -8199,11 +8300,22 @@ namespace Colsp.Api.Controllers
 									{
 										continue;
 									}
-									if (!group.ProductStageTags.Any(a => a.Tag.Equals(tag)))
+									var insertTag = tag.Trim();
+									if(insertTag.Length > 30)
 									{
+										errorMessage.Add(string.Concat("Each tag cannot be more than 30 characters"));
+										break;
+									}
+									if (!group.ProductStageTags.Any(a => a.Tag.Equals(insertTag)))
+									{
+										if (group.ProductStageTags.Count() >= 30)
+										{
+											errorMessage.Add(string.Concat("Can have only 30 tags for each product"));
+											break;
+										}
 										group.ProductStageTags.Add(new ProductStageTag()
 										{
-											Tag = tag,
+											Tag = insertTag,
 											CreateBy = User.UserRequest().Email,
 											CreateOn = DateTime.Now,
 											UpdateBy = User.UserRequest().Email,
@@ -8222,7 +8334,12 @@ namespace Colsp.Api.Controllers
 							group.EffectiveDate = tmpDate.HasValue ? tmpDate.Value : DateTime.Now;
 							tmpDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACZ", guidance, errorMessage, row);
 							group.ExpireDate = tmpDate.HasValue ? tmpDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
-							group.Remark = Validation.ValidateCSVStringColumn(headDic, body, "ADH", guidance, false, 500, errorMessage, row, string.Empty);
+							if (group.EffectiveDate.CompareTo(group.ExpireDate)
+																> 0)
+							{
+								errorMessage.Add(string.Concat("Effective Date must be earlier than Expire Date at row ", row));
+							}
+							group.Remark = Validation.ValidateCSVStringColumn(headDic, body, "ADH", guidance, false, 5000, errorMessage, row, string.Empty);
 							if (headDic.ContainsKey("ADC"))
 							{
 								group.IsNew = string.Equals(body[headDic["ADC"]], "yes", StringComparison.OrdinalIgnoreCase) ? true : false;
@@ -8366,10 +8483,10 @@ namespace Colsp.Api.Controllers
 								{
 									group.ShippingId = shippingId;
 								}
-								else
-								{
-									group.ShippingId = Constant.DEFAULT_SHIPPING_ID;
-								}
+							}
+							if(group.ShippingId == 0)
+							{
+								group.ShippingId = Constant.DEFAULT_SHIPPING_ID;
 							}
 							#endregion
 						}

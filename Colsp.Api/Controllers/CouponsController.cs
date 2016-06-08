@@ -12,6 +12,8 @@ using Colsp.Model.Responses;
 using System.Data.Entity.SqlServer;
 using System.Data.Entity;
 using Colsp.Api.Helpers;
+using System.Collections.Generic;
+using System.Web.Script.Serialization;
 
 namespace Colsp.Api.Controllers
 {
@@ -37,13 +39,13 @@ namespace Colsp.Api.Controllers
 								 c.Status,
 								 c.ShopId,
 								 c.MaximumUser,
-								 Shop = new { c.Shop.ShopNameEn },
+								 Shop = new { c.Shop.ShopNameEn, c.Shop.Status },
 								 c.CouponType
 							 };
 				if (User.ShopRequest() != null)
 				{
 					var shopId = User.ShopRequest().ShopId;
-					coupon = coupon.Where(w => w.ShopId == shopId && w.CouponType.Equals(Constant.USER_TYPE_SELLER));
+					coupon = coupon.Where(w => w.ShopId == shopId && !Constant.STATUS_REMOVE.Equals(w.Shop.Status) && Constant.USER_TYPE_SELLER.Equals(w.CouponType));
 				}
 				else
 				{
@@ -53,7 +55,7 @@ namespace Colsp.Api.Controllers
 					}
 					else
 					{
-						coupon = coupon.Where(w => w.CouponType.Equals(Constant.USER_TYPE_SELLER));
+						coupon = coupon.Where(w => w.CouponType.Equals(Constant.USER_TYPE_SELLER) && !Constant.STATUS_REMOVE.Equals(w.Shop.Status));
 					}
 				}
 				if (request == null)
@@ -84,8 +86,7 @@ namespace Colsp.Api.Controllers
 			try
 			{
 				var couponList = db.Coupons
-					.Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status)
-						|| !w.ShopId.HasValue || (w.ShopId.HasValue && !Constant.STATUS_REMOVE.Equals(w.Shop.Status)))
+					.Where(w => w.CouponId == couponId && !Constant.STATUS_REMOVE.Equals(w.Status))
 					.Select(s => new
 					{
 						s.CouponId,
@@ -98,6 +99,7 @@ namespace Colsp.Api.Controllers
 						Action = new { Type = s.Action, s.DiscountAmount, s.MaximumAmount },
 						s.UsagePerCustomer,
 						s.MaximumUser,
+						ShopStatus = s.Shop.Status,
 						Conditions = new
 						{
 							Order = s.CouponOrders.Select(se => new { Type = se.Criteria, Value = se.CriteriaPrice }),
@@ -134,7 +136,8 @@ namespace Colsp.Api.Controllers
 					couponList = couponList.Where(w => w.ShopId == shopId);
 				}
 				var coupon = couponList.SingleOrDefault();
-				if (coupon == null)
+
+				if (coupon == null || Constant.STATUS_REMOVE.Equals(coupon.ShopStatus))
 				{
 					throw new Exception("Cannot find coupon");
 				}
@@ -172,6 +175,7 @@ namespace Colsp.Api.Controllers
 				SetupCoupon(coupon, request, email, currentDt, db);
 				coupon.CreateBy = email;
 				coupon.CreateOn = currentDt;
+				SendToCore(coupon,Apis.EVoucherCreate,"POST",email,currentDt,db);
 				coupon.CouponId = db.GetNextCouponId().SingleOrDefault().Value;
 				db.Coupons.Add(coupon);
 				Util.DeadlockRetry(db.SaveChanges, "Coupon");
@@ -182,6 +186,59 @@ namespace Colsp.Api.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
 			}
 		}
+
+		private void SendToCore(Coupon coupon, string url, string method
+			, string email, DateTime currentDt, ColspEntities db)
+		{
+			var criteria = coupon.CouponOrders.FirstOrDefault();
+			EVoucherRequest request = new EVoucherRequest()
+			{
+				CouponCode = coupon.CouponCode,
+				CouponName = coupon.CouponName,
+				ExpiredDate = coupon.ExpireDate.Value,
+				StartDate = coupon.StartDate.Value,
+				Status = Constant.STATUS_ACTIVE.Equals(coupon.Status),
+				DiscountType = Constant.COUPON_ACTION_AMOUNT.Equals(coupon.Action) ? 0 : 1,
+				DiscountBaht = Constant.COUPON_ACTION_AMOUNT.Equals(coupon.Action) ? coupon.DiscountAmount : (decimal?)null,
+				DiscountPercent = Constant.COUPON_ACTION_PERCENT.Equals(coupon.Action) ? coupon.DiscountAmount : (decimal?)null,
+				MaximumDiscount = Constant.COUPON_ACTION_PERCENT.Equals(coupon.Action) ? coupon.MaximumAmount : (decimal?)null,
+				MaximumUses = coupon.MaximumUser,
+				UsesPerCustomer = coupon.UsagePerCustomer,
+				CartCriteria = criteria != null ? 0 : 0,
+				CriteriaPrice = criteria != null ? criteria.CriteriaPrice : 0,
+				IncludeProductCriteria = "LocalCategory".Equals(coupon.FilterBy) ? 3 : 
+										 "GlobalCategory".Equals(coupon.FilterBy) ? 1 : 
+										 "Shop".Equals(coupon.FilterBy) ? 2 :
+										 (int?)null,
+				IncludeGlobalCategories = coupon.CouponGlobalCatMaps.Select(s=>s.CategoryId).ToList(),
+				IncludeLocalCategories = coupon.CouponLocalCatMaps.Select(s=>s.CategoryId).ToList(),
+				IncludeShopIds = coupon.CouponShopMaps.Select(s=>s.ShopId).ToList(),
+				IncludeProductIds = coupon.CouponPidMaps
+										.Where(w=>Constant.COUPON_FILTER_INCLUDE.Equals(w.Filter))
+										.Select(s=>s.Pid).ToList(),
+				ExcludeProductCriteria = "LocalCategory".Equals(coupon.FilterBy) ? 3 :
+										 "GlobalCategory".Equals(coupon.FilterBy) ? 1 :
+										 "Shop".Equals(coupon.FilterBy) ? 2 :
+										 (int?)null,
+				ExcludeProductIds = coupon.CouponPidMaps
+										.Where(w => Constant.COUPON_FILTER_EXCLUDE.Equals(w.Filter))
+										.Select(s => s.Pid).ToList(),
+			};
+			Dictionary<string, string> headers = new Dictionary<string, string>();
+			headers.Add(Apis.EVoucherKeyAppIdKey, Apis.EVoucherKeyAppIdValue);
+			headers.Add(Apis.EVoucherKeyAppSecretKey, Apis.EVoucherKeyAppSecretValue);
+			headers.Add(Apis.EVoucherKeyVersionKey, Apis.EVoucherKeyVersionValue);
+			var json = new JavaScriptSerializer().Serialize(request);
+			string  responseJson = SystemHelper.SendRequest(url, method, headers,json, email, currentDt, "SP", "EVOUCHER", db);
+			EVoucherResponse response =  new JavaScriptSerializer().Deserialize<EVoucherResponse>(responseJson);
+			if (!"00".Equals(response.returncode))
+			{
+				throw new Exception(string.Join("<br>", response.message.Select(s=>s.Value)));
+			}
+			coupon.EVoucherId = response.evoucher.id;
+		}
+
+
 
 		[Route("api/Coupons/{couponid}")]
 		[HttpPut]
@@ -220,6 +277,7 @@ namespace Colsp.Api.Controllers
 				string email = User.UserRequest().Email;
 				DateTime currentDt = DateTime.Now;
 				SetupCoupon(coupon, request, email, currentDt, db);
+				SendToCore(coupon, string.Concat(Apis.EVoucherUpdate, coupon.EVoucherId), "PUT", email, currentDt, db);
 				Util.DeadlockRetry(db.SaveChanges, "Coupon");
 				return GetCoupon(coupon.CouponId);
 			}
@@ -239,12 +297,16 @@ namespace Colsp.Api.Controllers
 			coupon.StartDate = Validation.ValidateDateTime(request.StartDate, "Start Date", false);
 			coupon.Action = request.Action.Type;
 			coupon.DiscountAmount = request.Action.DiscountAmount;
+			if (Constant.COUPON_ACTION_PERCENT.Equals(coupon.Action)
+							&& coupon.DiscountAmount >= 100)
+			{
+				throw new Exception("Discount Percent cannot more than equal 100%.");
+			}
 			coupon.MaximumAmount = request.Action.MaximumAmount;
 			coupon.UsagePerCustomer = request.UsagePerCustomer;
 			coupon.MaximumUser = request.MaximumUser;
 			coupon.UpdateBy = email;
 			coupon.UpdateOn = currentDt;
-
 			var orderList = coupon.CouponOrders.ToList();
 			var brandList = coupon.CouponBrandMaps.ToList();
 			var customerList = coupon.CouponCustomerMaps.ToList();
@@ -255,7 +317,6 @@ namespace Colsp.Api.Controllers
 			var excludeList = coupon.CouponPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).ToList();
 			var localCatIncludeList = coupon.CouponLocalCatPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).ToList();
 			var localCatExcludeList = coupon.CouponLocalCatPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE)).ToList();
-
 			if (request.Conditions != null)
 			{
 				if (request.Conditions.Order != null && request.Conditions.Order.Count > 0)
@@ -263,6 +324,11 @@ namespace Colsp.Api.Controllers
 
 					foreach (OrderRequest o in request.Conditions.Order)
 					{
+						if(Constant.COUPON_ACTION_AMOUNT.Equals(coupon.Action) 
+							&& o.Value >= coupon.DiscountAmount)
+						{
+							throw new Exception("Criteria Price cannot be more than equal to Discount Amount.");
+						}
 						bool addNew = false;
 						if (orderList == null || orderList.Count == 0)
 						{
@@ -299,6 +365,10 @@ namespace Colsp.Api.Controllers
 							});
 						}
 					}
+				}
+				else
+				{
+					throw new Exception("Order Condition is required.");
 				}
 				if (request.Conditions.FilterBy != null)
 				{

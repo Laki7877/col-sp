@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web;
 
 namespace Colsp.Api.Helpers
@@ -22,7 +25,6 @@ namespace Colsp.Api.Helpers
                 }
             }
         }
-
 
         public static void DbSaveChange(ColspEntities db, string tableName)
         {
@@ -96,7 +98,6 @@ namespace Colsp.Api.Helpers
            }
         }
 
-
         public static void DeadlockRetry<T>(Func<T> repositoryMethod, string tableName)
         {
             int retryCount = 0;
@@ -162,7 +163,78 @@ namespace Colsp.Api.Helpers
             }
             throw new Exception("Wait sometime and try again");
         }
-    }
+
+
+		public static string SendRequest(string url, string method, Dictionary<string, string> headers, string jsonString
+			, string email, DateTime currentDt, string source, string destination, ColspEntities db)
+		{
+			string responseFromServer = string.Empty;
+			int statusCodeValue = 200;
+			try
+			{
+				WebRequest request = WebRequest.Create(url);
+				if (headers != null)
+				{
+					foreach (var header in headers)
+					{
+						request.Headers.Add(header.Key, header.Value);
+					}
+				}
+				request.Method = method;
+				byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
+				request.ContentType = ContentType.ApplicationJson;
+				request.ContentLength = byteArray.Length;
+				using (Stream dataStream = request.GetRequestStream())
+				{
+					dataStream.Write(byteArray, 0, byteArray.Length);
+					using (var response = request.GetResponse())
+					{
+						using (Stream responseDataStream = response.GetResponseStream())
+						{
+							using (StreamReader reader = new StreamReader(responseDataStream))
+							{
+								responseFromServer = reader.ReadToEnd();
+								var statusCode = ((HttpWebResponse)response).StatusCode;
+								statusCodeValue = (int)statusCode;
+							}
+						}
+					}
+				}
+			}
+			catch (WebException ex)
+			{
+				using (var response = ex.Response)
+				{
+					using (var stream = response.GetResponseStream())
+					{
+						using (var reader = new StreamReader(stream))
+						{
+							responseFromServer = reader.ReadToEnd();
+							var statusCode = ((HttpWebResponse)response).StatusCode;
+							statusCodeValue = (int)statusCode;
+						}
+					}
+				}
+			}
+			finally
+			{
+				db.ApiLogs.Add(new ApiLog()
+				{
+					LogId = db.GetNextAppLogId().SingleOrDefault().Value,
+					CreateBy = email,
+					CreateOn = currentDt,
+					DestinationApp = destination,
+					SourceApp = source,
+					Method = method,
+					RequestData = jsonString,
+					RequestUrl = url,
+					ResponseData = responseFromServer,
+					ResponseCode = statusCodeValue,
+				});
+			}
+			return responseFromServer;
+		}
+	}
 
     
 }

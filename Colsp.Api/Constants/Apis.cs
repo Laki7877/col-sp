@@ -9,12 +9,14 @@ namespace Colsp.Api.Constants
     {
         private const string CmosRootUrl = "https://devmkp-cmosapi.cenergy.co.th/";
         private const string ElasticRootUrl = "http://128.199.77.82/elasticsearch/api/v0.2.0/";
+		private const string EVoucherRootUrl = "https://devmkp-api.cenergy.co.th/";
 
 
-        public const string CmosKeyAppIdKey         = "X-Cmos-AppId";
+		public const string CmosKeyAppIdKey         = "X-Cmos-AppId";
         public const string CmosKeyAppIdValue       = "22778";
         public const string CmosKeyAppSecretKey     = "X-Cmos-AppSecret";
         public const string CmosKeyAppSecretValue   = "Ntr5GsyPe6RD73r5YE2PgG4bQfAAUfbP";
+
         public const string CmosCreateProduct       = CmosRootUrl + "api/cmos/product/create";
         public const string CmosUpdateProduct       = CmosRootUrl + "api/cmos/product/update";
         public const string CmosUpdateStatus        = CmosRootUrl + "api/cmos/product/updatestatus";
@@ -27,6 +29,18 @@ namespace Colsp.Api.Constants
         public const string ElasticCreateProduct    = ElasticRootUrl + "reindex/single/insert";
 
 
+		public const string EVoucherKeyAppIdKey = "X-Central-AppId";
+		public const string EVoucherKeyAppIdValue = "1441071018";
+		public const string EVoucherKeyAppSecretKey = "X-Central-SecretKey";
+		public const string EVoucherKeyAppSecretValue = "8e87cd231a9c2498dd56841cc66f7c78";
+		public const string EVoucherKeyVersionKey = "X-Central-Version";
+		public const string EVoucherKeyVersionValue = "1";
 
-    }
+		public const string EVoucherCreate = EVoucherRootUrl + "evoucher";
+		public const string EVoucherUpdate = EVoucherRootUrl + "evoucher?id=";
+
+
+
+
+	}
 }

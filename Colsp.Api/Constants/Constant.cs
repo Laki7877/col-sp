@@ -10,13 +10,20 @@ namespace Colsp.Api.Constants
         public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 10 };
         public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 10 };
 
+		public static readonly List<string> IMPORT_REQUIRE_FIELD = new List<string>() {
+			"AAA",
+			"AAB",
+			"AAC",
+			"AAD",
+		};
+
         public static readonly int DEFAULT_GLOBAL_CATEGORY = 1;
 
         public static readonly string PRODUCT_IMAGE_URL = string.Concat(AppSettingKey.IMAGE_STATIC_URL, "productimages/large/");
 
         public static readonly int DEFAULT_THE_ONE_CARD = 1;
 
-        public static readonly int DEFAULT_ADD_YEAR = 20;
+        public static readonly int DEFAULT_ADD_YEAR = 10;
 
         public static readonly int BULK_APPROVE_LIMIT = 100;
 
@@ -43,6 +50,7 @@ namespace Colsp.Api.Constants
         public static readonly int SHIPPING_FULFILLMENT = 2;
 
         public static readonly int DEFAULT_BOOSTWEIGHT = 5000;
+		public static readonly int DEFAULT_GLOBAL_BOOSTWEIGHT = 5000;
 
         public static List<char> IGNORE_PID = new List<char>() {
                     'D',
@@ -158,6 +166,12 @@ namespace Colsp.Api.Constants
 
         public static string STATUS_PROMOTION_INACTIVE = "IA";
         public static string STATUS_PROMOTION_ACTIVE = "AT";
+
+
+		public static string COUPON_ACTION_AMOUNT = "AMOUNT";
+		public static string COUPON_ACTION_PERCENT = "PERCENT";
+
+
         #region CMS
         public static readonly int CMS_SHOP_GOBAL = 0;
 
