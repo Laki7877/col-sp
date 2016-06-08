@@ -35,13 +35,10 @@ namespace Colsp.Model.Requests
         public bool FeatureProductStatus { get; set; }
         public SortByRequest SortBy { get; set; }
 
-		public List<string> Include { get; set; }
-		public List<string> Exclude { get; set; }
-
-
-		// Exclude in Local categories for Coupon
+        // Exclude product in Local categories for Coupon
+        public List<ProductRequest> Exclude { get; set; }
         public bool IsLandingPage { get; set; }
-
+       
         public CategoryRequest()
         {
             CategoryId = 0;
@@ -69,8 +66,7 @@ namespace Colsp.Model.Requests
             DescriptionMobileEn = string.Empty;
             DescriptionMobileTh = string.Empty;
             SortBy = new SortByRequest();
-			Include = new List<string>();
-			Exclude = new List<string>();
+			Exclude = new List<ProductRequest>();
 			IsLandingPage = false;
         }
     }
