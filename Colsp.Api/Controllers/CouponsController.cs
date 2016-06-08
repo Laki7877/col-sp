@@ -109,7 +109,17 @@ namespace Colsp.Api.Controllers
 								Brands = s.CouponBrandMaps.Select(se => new { se.Brand.BrandId, se.Brand.BrandNameEn }),
 								Emails = s.CouponCustomerMaps.Select(se => se.Email),
 								GlobalCategories = s.CouponGlobalCatMaps.Select(se => new { se.GlobalCategory.CategoryId, se.GlobalCategory.NameEn }),
-								LocalCategories = s.CouponLocalCatMaps.Select(se => new { se.LocalCategory.CategoryId, se.LocalCategory.NameEn }),
+								LocalCategories = s.CouponLocalCatMaps.Select(se => new
+                                {
+                                    se.LocalCategory.CategoryId,
+                                    se.LocalCategory.NameEn,
+                                    Exclude = s.CouponLocalCatPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE) && w.CouponId == s.CouponId && w.CategoryId == se.LocalCategory.CategoryId).Select(i => new {
+                                        Pid = i.Pid,
+                                        ProductNameEn = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.ProductNameEn).FirstOrDefault(),
+                                        ProductNameTh = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.ProductNameTh).FirstOrDefault(),
+                                        Sku = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.Sku).FirstOrDefault(),
+                                    })
+                                }),
 								Shops = s.CouponShopMaps.Select(se => new { se.Shop.ShopId, se.Shop.ShopNameEn })
 							},
 							//Include = s.CouponPidMaps.Where(w=>w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).Select(se=>se.Pid),

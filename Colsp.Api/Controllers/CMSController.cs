@@ -291,6 +291,10 @@ namespace Colsp.Api.Controllers
                 if (shopId != 0)
                     query = query.Where(x => x.ShopId == shopId);
 
+                if (string.IsNullOrEmpty(condition.SearchText))
+                    goto cateBrand;
+
+
                 if (condition.SearchBy == Logic.SearchOption.PID)
                     query = query.Where(x => x.Pid.Equals(condition.SearchText));
 
@@ -300,16 +304,19 @@ namespace Colsp.Api.Controllers
                 if (condition.SearchBy == Logic.SearchOption.ProductName)
                     query = query.Where(x => x.ProductNameEn.Contains(condition.SearchText) || x.ProductNameTh.Contains(condition.SearchText));
 
-                if (condition.CategoryId != null)
-                    if (shopId == 0)
-                        query = query.Where(x => x.GlobalCatId == condition.CategoryId);
+                // search by catetegory & brand
+                cateBrand: {
+                    if (condition.CategoryId != null)
+                        if (shopId == 0)
+                            query = query.Where(x => x.GlobalCatId == condition.CategoryId);
 
-                    else
-                        query = query.Where(x => x.LocalCatId == condition.CategoryId);
+                        else
+                            query = query.Where(x => x.LocalCatId == condition.CategoryId);
+
+                    if (condition.BrandId != null)
+                        query = query.Where(x => x.BrandId == condition.BrandId);
+                }
                 
-                if (condition.BrandId != null)
-                    query = query.Where(x => x.BrandId == condition.BrandId);
-
                 if (condition.Tag != null)
                     query = query.Include(t => t.ProductTags)
                             .Where(x => condition.Tags.Contains(x.ProductTags.Select(s => s.Tag).FirstOrDefault()));
@@ -469,7 +476,8 @@ namespace Colsp.Api.Controllers
                     }
 
                     current.Visibility = cateRq.Visibility;
-
+                    current.UpdateIP = cateRq.CreateIP;
+                    current.UpdateOn = DateTime.Now;
                 }
                 Util.DeadlockRetry(db.SaveChanges, "CMSCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -516,6 +524,7 @@ namespace Colsp.Api.Controllers
         {
             try
             {
+                request.CreateBy = this.User.UserRequest().Email;
                 request.UpdateBy = this.User.UserRequest().Email;
                 request.ShopId = this.User.ShopRequest() == null ? 0 : this.User.ShopRequest().ShopId;
 
@@ -631,6 +640,12 @@ namespace Colsp.Api.Controllers
                 var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
 
                 var query = from master in db.CMSMasters where !master.Status.Equals("RM") select master;
+
+                if (shopId != 0)
+                {
+                    var cmsMasterIdList = (from map in db.CMSMasterCategoryMaps where map.ShopId == shopId select map).Select(s => s.CMSMasterId).ToList();
+                    query = query.Where(x => cmsMasterIdList.Contains(x.CMSMasterId));
+                }
 
                 if (!string.IsNullOrEmpty(request.SearchText))
                     query = query.Where(x => x.CMSMasterNameEN.Contains(request.SearchText) || x.CMSMasterNameTH.Contains(request.SearchText));
