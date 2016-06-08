@@ -480,7 +480,6 @@ namespace Colsp.Api.Controllers
                         newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
                         newObj.LongDescriptionEN = Model.LongDescriptionEN;
                         newObj.EffectiveDate = Model.EffectiveDate;
-                        //newObj.EffectiveTime = Model.EffectiveTime;
                         newObj.ExpiryDate = Model.ExpiryDate;
                         newObj.ProductBoxBadge = "";
                         newObj.Sequence = 1;
@@ -493,12 +492,12 @@ namespace Colsp.Api.Controllers
                         newObj.UpdateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
                         newObj.UpdateOn = (DateTime)DateTime.Now;
                         if (!string.IsNullOrWhiteSpace(Model.CreateIP))
-                        newObj.CreateIP = Model.CreateIP;
+                            newObj.CreateIP = Model.CreateIP;
                         else
                             newObj.CreateIP = "";
                         newObj.UpdateIP = newObj.CreateIP;
                         if (Model.CMSStatusFlowId.HasValue)
-                        newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                            newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
                         else
                             newObj.CMSStatusFlowId = 1;
                         newObj.CampaignID = Model.CampaignID;
@@ -588,7 +587,7 @@ namespace Colsp.Api.Controllers
                             if (Model.ProductGetList != null && Model.ProductGetList.Count() > 0)
                             {
                                 foreach (var itemGet in Model.ProductGetList)
-                        {
+                                {
                                     if (IsCanSetProductBuy(itemGet.Pid) == true)
                                     {
                                         Premiumproduct getCall = new Premiumproduct();
@@ -711,9 +710,9 @@ namespace Colsp.Api.Controllers
                     result.ShortDescriptionEN = buy1get1.ShortDescriptionEN;
                     result.LongDescriptionEN = buy1get1.LongDescriptionEN;
                     result.EffectiveDate = buy1get1.EffectiveDate;
-                    //result.EffectiveTime = buy1get1.EffectiveTime;
+
                     result.ExpiryDate = buy1get1.ExpiryDate;
-                    //result.ExpiryTime = buy1get1.ExpiryTime;
+
                     result.ProductBoxBadge = buy1get1.ProductBoxBadge;
                     result.Sequence = buy1get1.Sequence;
                     result.Status = buy1get1.Status;
@@ -1035,7 +1034,7 @@ namespace Colsp.Api.Controllers
 
                 return Request.CreateResponse(HttpStatusCode.OK, tags);
 
-    }
+            }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message + " /api/CMS/GetAllTag");
