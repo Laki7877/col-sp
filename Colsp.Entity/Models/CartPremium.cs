@@ -12,20 +12,17 @@ namespace Colsp.Entity.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductHistoryVideo
+    public partial class CartPremium
     {
-        public long HistoryId { get; set; }
-        public long VideoId { get; set; }
-        public string Pid { get; set; }
-        public int ShopId { get; set; }
-        public string VideoUrlEn { get; set; }
-        public int Position { get; set; }
-        public string Status { get; set; }
+        public int CartId { get; set; }
+        public string PId { get; set; }
+        public string GetPId { get; set; }
+        public int GetQty { get; set; }
+        public string PromotionNo { get; set; }
+        public string PromotionDescription { get; set; }
+        public System.DateTime CreateOn { get; set; }
         public string CreateBy { get; set; }
-        public Nullable<System.DateTime> CreateOn { get; set; }
-        public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
-    
-        public virtual ProductHistory ProductHistory { get; set; }
+        public string UpdateBy { get; set; }
     }
 }
