@@ -18,6 +18,7 @@ using Colsp.Api.Filters;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Text;
+using Colsp.Logic;
 
 namespace Colsp.Api.Controllers
 {
@@ -86,6 +87,12 @@ namespace Colsp.Api.Controllers
             public string _message { get; set; }
         }
 
+        public class PaymentIdModel
+        {
+            public int PaymentID { get; set; }
+            public string PaymentName { get; set; }
+            public string PaymentNameEN { get; set; }
+        }
         #endregion
         #region API Mongo
         static async void CallMongoAPI(Buy1Get1CallModel data, string Id, string Method, string FunctionName, Buy1Get1ReturnModel mongoRetrun)
@@ -949,7 +956,294 @@ namespace Colsp.Api.Controllers
             }
             base.Dispose(disposing);
         }
+
+        #region Method Get Value
+        // Get Brand List
+        [HttpGet]
+        [Route("api/Promotion/GetBrand/{categoryId}")]
+        public HttpResponseMessage GetBrand(int categoryId)
+        {
+            try
+            {
+                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+
+                var query = shopId == 0
+                                ? (from product in db.Products
+                                   join brand in db.Brands on product.BrandId equals brand.BrandId
+                                   join category in db.GlobalCategories on product.GlobalCatId equals category.CategoryId
+                                   where category.CategoryId == categoryId
+                                   select new BrandRequest
+                                   {
+                                       BrandId = brand.BrandId,
+                                       BrandNameEn = brand.BrandNameEn,
+                                       BrandNameTh = brand.BrandNameTh
+                                   })
+
+                                : (from product in db.Products
+                                   join brand in db.Brands on product.BrandId equals brand.BrandId
+                                   join category in db.LocalCategories on product.LocalCatId equals category.CategoryId
+                                   where category.CategoryId == categoryId
+                                   select new BrandRequest
+                                   {
+                                       BrandId = brand.BrandId,
+                                       BrandNameEn = brand.BrandNameEn,
+                                       BrandNameTh = brand.BrandNameTh
+                                   });
+
+
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
+
+                var items = query.ToList().GroupBy(g => g.BrandId).Select(s => s.First()).ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, items);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/GetBrand");
+            }
+
+        }
+
+        // Get Tag List
+        [HttpGet]
+        [Route("api/Promotion/GetAllTag")]
+        public HttpResponseMessage GetAllTag()
+        {
+            try
+            {
+                int shopId = 0; //this.User.ShopRequest().ShopId;
+
+                var query = db.ProductTags
+                            .GroupBy(g => g.Tag)
+                            .Select(s => s.FirstOrDefault());
+
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Tag");
+
+                List<ProductTag> tags = new List<ProductTag>();
+
+                foreach (var item in query)
+                {
+                    tags.Add(new ProductTag
+                    {
+                        Pid = item.Pid,
+                        Tag = item.Tag
+                    });
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, tags);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/GetAllTag");
+            }
+
+        }
+
+        [HttpGet]
+        [Route("api/Promotion/GetAllPaymentId")]
+        public HttpResponseMessage GetAllPaymentId([FromUri] BaseCondition condition)
+        {
+            try
+            {
+                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+
+                var query = shopId == 0
+                                ? (from cate in db.Payments
+                                   select new PaymentIdModel
+                                   {
+                                       PaymentID = cate.PaymentID,
+                                       PaymentNameEN = cate.PaymentNameEN,
+                                       PaymentName = cate.PaymentName
+                                   })
+                                : (from cate in db.Payments
+                                   select new PaymentIdModel
+                                   {
+                                       PaymentID = cate.PaymentID,
+                                       PaymentNameEN = cate.PaymentNameEN,
+                                       PaymentName = cate.PaymentName
+                                   });
+
+                if (condition != null && condition.SearchText != null)
+                    query = query.Where(x => x.PaymentNameEN.Contains(condition.SearchText) || x.PaymentName.Contains(condition.SearchText));
+
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
+
+                var items = query.Take(10).ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, items);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/GetAllCategory");
+            }
+
+        }
+
+        // Get Category List
+        [HttpGet]
+        [Route("api/Promotion/GetAllCategory")]
+        public HttpResponseMessage GetAllCategory([FromUri] BaseCondition condition)
+        {
+            try
+            {
+                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+
+                var query = shopId == 0
+                                ? (from cate in db.GlobalCategories
+                                   select new CategoryRequest
+                                   {
+                                       CategoryId = cate.CategoryId,
+                                       NameEn = cate.NameEn,
+                                       NameTh = cate.NameTh
+                                   })
+                                : (from cate in db.LocalCategories
+                                   select new CategoryRequest
+                                   {
+                                       CategoryId = cate.CategoryId,
+                                       NameEn = cate.NameEn,
+                                       NameTh = cate.NameTh
+                                   });
+
+                if (condition != null && condition.SearchText != null)
+                    query = query.Where(x => x.NameEn.Contains(condition.SearchText) || x.NameTh.Contains(condition.SearchText));
+
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
+
+                var items = query.Take(10).ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, items);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/GetAllCategory");
+            }
+
+        }
+
+        // Search Product
+        [HttpGet]
+        [Route("api/Promotion/SearchProduct")]
+        public HttpResponseMessage SearchProduct([FromUri] ProductCondition condition)
+        {
+            try
+            {
+                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+
+                var query = from product in db.Products select product;
+
+                if (shopId != 0)
+                    query = query.Where(x => x.ShopId == shopId);
+
+                if (condition.SearchBy == Logic.SearchOption.PID)
+                    query = query.Where(x => x.Pid.Equals(condition.SearchText));
+
+                if (condition.SearchBy == Logic.SearchOption.SKU)
+                    query = query.Where(x => x.Sku.Equals(condition.SearchText));
+
+                if (condition.SearchBy == Logic.SearchOption.ProductName)
+                    query = query.Where(x => x.ProductNameEn.Contains(condition.SearchText) || x.ProductNameTh.Contains(condition.SearchText));
+
+                if (condition.CategoryId != null)
+                    if (shopId == 0)
+                        query = query.Where(x => x.GlobalCatId == condition.CategoryId);
+
+                    else
+                        query = query.Where(x => x.LocalCatId == condition.CategoryId);
+
+                if (condition.BrandId != null)
+                    query = query.Where(x => x.BrandId == condition.BrandId);
+
+                if (condition.Tag != null)
+                    query = query.Include(t => t.ProductTags)
+                            .Where(x => condition.Tags.Contains(x.ProductTags.Select(s => s.Tag).FirstOrDefault()));
+
+                query = query.Take(100);
+
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Product.");
+
+                List<Product> products = new List<Product>();
+
+                foreach (var p in query)
+                {
+                    Product item = new Product();
+                    item.Pid = p.Pid;
+                    item.ProductNameEn = p.ProductNameEn;
+                    item.ProductNameTh = p.ProductNameTh;
+                    item.FeatureImgUrl = p.FeatureImgUrl;
+                    item.EffectiveDate = p.EffectiveDate;
+                    item.ExpireDate = p.ExpireDate;
+                    item.OriginalPrice = p.OriginalPrice;
+                    item.Sku = p.Sku;
+                    products.Add(item);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, products);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/SearchProduct");
+            }
+
+        }
+
+        // Search Product by CMS Category
+        [HttpGet]
+        [Route("api/Promotion/SearchFeatureProduct")]
+        public HttpResponseMessage SearchFeatureProduct([FromUri] ProductCondition condition)
+        {
+            try
+            {
+                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
+
+                var query = from product in db.Products
+                            join cmsCatePro in db.CMSCategoryProductMaps
+                            on product.Pid equals cmsCatePro.Pid
+                            select new { product, cmsCatePro };
+
+                if (condition.CMSCategoryIds != null && condition.CMSCategoryIds.Count > 0)
+                    query = query.Where(x => condition.CMSCategoryIds.Contains(x.cmsCatePro.CMSCategoryId));
+
+                if (!string.IsNullOrEmpty(condition.SearchText))
+                    query = query.Where(x => x.product.ProductNameEn.Contains(condition.SearchText) || x.product.ProductNameTh.Contains(condition.SearchText));
+
+                if (condition.ProductIds != null && condition.ProductIds.Count > 0)
+                    query = query.Where(x => condition.ProductIds.Contains(x.product.Pid));
+
+                query = query.Take(10);
+
+                if (!query.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Product.");
+
+                List<Product> products = new List<Product>();
+
+                foreach (var p in query)
+                {
+                    Product item = new Product();
+                    item.Pid = p.product.Pid;
+                    item.ProductNameEn = p.product.ProductNameEn;
+                    item.ProductNameTh = p.product.ProductNameTh;
+                    products.Add(item);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, products);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " /api/CMS/SearchProduct");
+            }
+
+        }
+        #endregion
     }
+
 }
 
 public class IBMPromotionsList
