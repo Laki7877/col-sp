@@ -22,6 +22,7 @@ namespace Colsp.Entity.Models
         public string DiscountType { get; set; }
         public decimal DiscountRate { get; set; }
         public decimal DiscountAmt { get; set; }
+        public string AbsorbType { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }

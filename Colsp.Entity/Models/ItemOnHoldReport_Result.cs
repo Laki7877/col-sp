@@ -18,5 +18,6 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> OnHoldDate { get; set; }
         public string OnHoldRemark { get; set; }
         public string Orderid { get; set; }
+        public Nullable<int> ShopId { get; set; }
     }
 }

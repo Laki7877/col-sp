@@ -19,7 +19,6 @@ namespace Colsp.Entity.Models
         public string GuestId { get; set; }
         public string PostCode { get; set; }
         public string GiftWrapRemark { get; set; }
-        public string GiftMessage { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }

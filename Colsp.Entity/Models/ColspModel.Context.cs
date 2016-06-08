@@ -20,6 +20,7 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -197,6 +198,25 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
     
+        [DbFunction("Entities", "SplitString")]
+        public virtual IQueryable<SplitString_Result> SplitString(string input, string character)
+        {
+            var inputParameter = input != null ?
+                new ObjectParameter("Input", input) :
+                new ObjectParameter("Input", typeof(string));
+    
+            var characterParameter = character != null ?
+                new ObjectParameter("Character", character) :
+                new ObjectParameter("Character", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<SplitString_Result>("[Entities].[SplitString](@Input, @Character)", inputParameter, characterParameter);
+        }
+    
+        public virtual ObjectResult<GetCategoryHierarchy_Result> GetCategoryHierarchy()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetCategoryHierarchy_Result>("GetCategoryHierarchy");
+        }
+    
         public virtual ObjectResult<Nullable<long>> GetNextAppLogId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextAppLogId");
@@ -262,6 +282,11 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStagePid");
         }
     
+        public virtual ObjectResult<Nullable<long>> GetNextProductStageVideoId()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageVideoId");
+        }
+    
         public virtual ObjectResult<Nullable<long>> GetNextProductTempId()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductTempId");
@@ -282,39 +307,9 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetNextUserId");
         }
     
-        public virtual ObjectResult<ItemOnHoldReport_Result1> ItemOnHoldReport()
+        public virtual ObjectResult<ItemOnHoldReport_Result> ItemOnHoldReport()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ItemOnHoldReport_Result1>("ItemOnHoldReport");
-        }
-    
-        public virtual ObjectResult<ReportProductsCommissionForOrder_Result1> ReportProductsCommissionForOrder()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportProductsCommissionForOrder_Result1>("ReportProductsCommissionForOrder");
-        }
-    
-        public virtual ObjectResult<ReportReturnItemByOrderReport_Result1> ReportReturnItemByOrderReport()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportReturnItemByOrderReport_Result1>("ReportReturnItemByOrderReport");
-        }
-    
-        public virtual ObjectResult<SaleReportForSeller_Result1> SaleReportForSeller()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller_Result1>("SaleReportForSeller");
-        }
-    
-        public virtual ObjectResult<StockStatusReport_Result1> StockStatusReport()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result1>("StockStatusReport");
-        }
-    
-        public virtual ObjectResult<GetCategoryHierarchy_Result> GetCategoryHierarchy()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetCategoryHierarchy_Result>("GetCategoryHierarchy");
-        }
-    
-        public virtual ObjectResult<Nullable<long>> GetNextProductStageVideoId()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<long>>("GetNextProductStageVideoId");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ItemOnHoldReport_Result>("ItemOnHoldReport");
         }
     
         public virtual ObjectResult<My_test_Result> My_test()
@@ -325,6 +320,21 @@ namespace Colsp.Entity.Models
         public virtual ObjectResult<ProductMapRIS_Result> ProductMapRIS()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProductMapRIS_Result>("ProductMapRIS");
+        }
+    
+        public virtual ObjectResult<ReportProductsCommissionForOrder_Result> ReportProductsCommissionForOrder()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportProductsCommissionForOrder_Result>("ReportProductsCommissionForOrder");
+        }
+    
+        public virtual ObjectResult<ReportReturnItemByOrderReport_Result> ReportReturnItemByOrderReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportReturnItemByOrderReport_Result>("ReportReturnItemByOrderReport");
+        }
+    
+        public virtual ObjectResult<SaleReportForSeller_Result> SaleReportForSeller()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SaleReportForSeller_Result>("SaleReportForSeller");
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
@@ -439,18 +449,9 @@ namespace Colsp.Entity.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spc_tableDescription_Result>("spc_tableDescription", tablenameParameter);
         }
     
-        [DbFunction("ColspEntities", "SplitString")]
-        public virtual IQueryable<string> SplitString(string input, string character)
+        public virtual ObjectResult<StockStatusReport_Result> StockStatusReport()
         {
-            var inputParameter = input != null ?
-                new ObjectParameter("Input", input) :
-                new ObjectParameter("Input", typeof(string));
-    
-            var characterParameter = character != null ?
-                new ObjectParameter("Character", character) :
-                new ObjectParameter("Character", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<string>("[ColspEntities].[SplitString](@Input, @Character)", inputParameter, characterParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<StockStatusReport_Result>("StockStatusReport");
         }
     }
 }
