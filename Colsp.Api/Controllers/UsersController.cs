@@ -650,7 +650,7 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-				var email = User.UserRequest().Email;
+				var email = request.Email.Trim();
 				var currentDt = SystemHelper.GetCurrentDateTime();
 				#region Query
 				var user = db.Users.Where(w => w.Email.Equals(email)).Select(s => new
