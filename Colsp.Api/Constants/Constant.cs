@@ -8,7 +8,7 @@ namespace Colsp.Api.Constants
     {
 
         public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 10 };
-        public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 10 };
+        public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 3 };
 
 		public static readonly List<string> IMPORT_REQUIRE_FIELD = new List<string>() {
 			"AAA",

@@ -67,11 +67,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                //var tmpUser = db.Users
-                //    .Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type))
-                //    .Include(i => i.UserGroupMaps)
-                //    .Include(i => i.UserGroupMaps.Select(s => s.UserGroup))
-                //    .Include(i=>i.UserShopMaps.Select(s=>s.Shop));
                 var tmpUser = db.Users
                     .Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type))
                     .Select(s => new
@@ -121,9 +116,10 @@ namespace Colsp.Api.Controllers
                 request.DefaultOnNull();
                 if (!string.IsNullOrEmpty(request.SearchText))
                 {
-                    userList = userList.Where(a => a.NameEn.Contains(request.SearchText)
-                    || a.NameTh.Contains(request.SearchText)
-                    || a.Email.Contains(request.SearchText));
+                    userList = userList.Where(w => w.NameEn.Contains(request.SearchText)
+                    || w.NameTh.Contains(request.SearchText)
+                    || w.Email.Contains(request.SearchText)
+					|| w.Shops.Any(a=>a.Contains(request.SearchText)));
                 }
                 if (!string.IsNullOrEmpty(request._filter))
                 {

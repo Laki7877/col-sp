@@ -124,7 +124,7 @@ namespace Colsp.Api.Controllers
 					brands = brands.Where(b => b.BrandNameEn.Contains(request.SearchText)
 					|| b.BrandNameTh.Contains(request.SearchText)
 					|| b.DisplayNameEn.Contains(request.SearchText)
-					|| SqlFunctions.StringConvert((double)b.BrandId).Equals(request.SearchText));
+					|| b.BrandId.ToString().Contains(request.SearchText));
 				}
 				if (request.BrandId != 0)
 				{

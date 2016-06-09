@@ -301,10 +301,10 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("No pid selected");
 				}
-				if (pids.GroupBy(n => n).Any(c => c.Count() > 1))
+				if (pids.Where(w => !string.IsNullOrWhiteSpace(w)).GroupBy(n => n).Any(c => c.Count() > 1))
 				{
-					throw new Exception("Unable to group products. Please choose different products for each variant.");
-				};
+					throw new Exception("Please choose different products for each variant.");
+				}
 				#endregion
 				#region Shop and User
 				int shopId = -1;
@@ -325,7 +325,7 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Cannot find default variant");
 				}
-				var productStage = db.ProductStages.Where(w => pids.Contains(w.Pid));
+				var productStage = db.ProductStages.Where(w => pids.Contains(w.Pid)).Include(i=>i.Inventory);
 				var defaultVariant = productStage.Where(w => w.Pid.Equals(defaultVariantRq.Pid))
 					.Include(i => i.ProductStageAttributes)
 					.Include(i => i.ProductStageGroup)
@@ -338,7 +338,30 @@ namespace Colsp.Api.Controllers
 				#endregion
 				defaultVariant.ProductStageGroup.AttributeSetId = request.AttributeSet.AttributeSetId;
 				defaultVariant.ProductStageGroup.GlobalCatId = request.Category.CategoryId;
+				defaultVariant.ProductStageGroup.UpdateBy = email;
+				defaultVariant.ProductStageGroup.UpdateOn = currentDt;
 				defaultVariant.Status = Constant.PRODUCT_STATUS_DRAFT;
+				if(defaultVariant.Inventory == null)
+				{
+					defaultVariant.Inventory = new Inventory()
+					{
+						CreateBy = email,
+						CreateOn = currentDt,
+						Defect = 0,
+						MaxQtyAllowInCart = 0,
+						MaxQtyPreOrder = 0,
+						MinQtyAllowInCart = 0,
+						OnHold = 0,
+						Quantity = 0,
+						Reserve = 0,
+						SafetyStockAdmin = 0,
+						SafetyStockSeller = 0,
+						StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE],
+						UpdateBy = email,
+						UpdateOn = currentDt,
+						UseDecimal = false
+					};
+				}
 				var parentVariant = new ProductStage()
 				{
 					ProductId = defaultVariant.ProductId,
@@ -470,6 +493,27 @@ namespace Colsp.Api.Controllers
 					if (variant.ProductId != parentVariant.ProductId)
 					{
 						groupIds.Add(variant.ProductId);
+					}
+					if(variant.Inventory == null)
+					{
+						variant.Inventory = new Inventory()
+						{
+							CreateBy = email,
+							CreateOn = currentDt,
+							Defect = 0,
+							MaxQtyAllowInCart = 0,
+							MaxQtyPreOrder = 0,
+							MinQtyAllowInCart = 0,
+							OnHold = 0,
+							Quantity = 0,
+							Reserve = 0,
+							SafetyStockAdmin = 0,
+							SafetyStockSeller = 0,
+							StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE],
+							UpdateBy = email,
+							UpdateOn = currentDt,
+							UseDecimal = false
+						};
 					}
 					variant.DefaultVariant = variantRq.DefaultVariant;
 					variant.ProductId = parentVariant.ProductId;
@@ -1411,6 +1455,7 @@ namespace Colsp.Api.Controllers
 									p.CategoryTabStatus,
 								});
 				//check if its seller permission
+				bool isSeller = false;
 				if (User.ShopRequest() != null)
 				{
 					//add shopid criteria for seller request
@@ -1424,6 +1469,7 @@ namespace Colsp.Api.Controllers
 							products = products.Where(w => brands.Contains(w.Brand.BrandId));
 						}
 					}
+					isSeller = true;
 				}
 				//set request default value
 				request.DefaultOnNull();
@@ -1543,12 +1589,23 @@ namespace Colsp.Api.Controllers
 				}
 				if (!string.IsNullOrEmpty(request.SearchText))
 				{
-					products = products.Where(p => p.Sku.Contains(request.SearchText)
-					|| p.ProductNameEn.Contains(request.SearchText)
-					|| p.ProductNameTh.Contains(request.SearchText)
-					|| p.Pid.Contains(request.SearchText)
-					|| p.Upc.Contains(request.SearchText)
-					|| p.Tags.Any(a => a.Contains(request.SearchText)));
+					if (isSeller)
+					{
+						products = products.Where(p => p.Sku.Contains(request.SearchText)
+							|| p.ProductNameEn.Contains(request.SearchText)
+							|| p.ProductNameTh.Contains(request.SearchText)
+							|| p.Pid.Contains(request.SearchText)
+							|| p.Upc.Contains(request.SearchText)
+							|| p.Tags.Any(a => a.Contains(request.SearchText)));
+					}
+					else
+					{
+						products = products.Where(p => p.Sku.Contains(request.SearchText)
+							|| p.ProductNameEn.Contains(request.SearchText)
+							|| p.ProductNameTh.Contains(request.SearchText)
+							|| p.Pid.Contains(request.SearchText)
+							|| p.Upc.Contains(request.SearchText));
+					}
 				}
 				//add filter criteria
 				if (!string.IsNullOrEmpty(request._filter))
@@ -1642,7 +1699,9 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Invalid request");
 				}
 
-				var products = db.ProductStages.Where(w => w.IsVariant == false && !Constant.STATUS_REMOVE.Equals(w.Status)).Select(s => new
+				var products = db.ProductStages
+					.Where(w => w.IsVariant == false && !Constant.STATUS_REMOVE.Equals(w.Status))
+					.Select(s => new
 				{
 					s.Sku,
 					s.Pid,
@@ -1676,6 +1735,7 @@ namespace Colsp.Api.Controllers
 					Shop = new { s.Shop.ShopId, s.Shop.ShopNameEn },
 					Brand = s.ProductStageGroup.Brand != null ? new { s.ProductStageGroup.Brand.BrandId, s.ProductStageGroup.Brand.BrandNameEn } : null,
 				});
+				bool isSeller = false;
 				if (User.ShopRequest() != null)
 				{
 					int shopId = User.ShopRequest().ShopId;
@@ -1688,6 +1748,7 @@ namespace Colsp.Api.Controllers
 							products = products.Where(w => brands.Contains(w.Brand.BrandId));
 						}
 					}
+					isSeller = true;
 				}
 				request.DefaultOnNull();
 				if (request.GlobalCatId != 0)
@@ -1708,12 +1769,24 @@ namespace Colsp.Api.Controllers
 				}
 				if (!string.IsNullOrEmpty(request.SearchText))
 				{
-					products = products.Where(p => p.Sku.Contains(request.SearchText)
-					|| p.ProductNameEn.Contains(request.SearchText)
-					|| p.ProductNameTh.Contains(request.SearchText)
-					|| p.Pid.Contains(request.SearchText)
-					|| p.Upc.Contains(request.SearchText)
-					|| p.Tags.Any(a => a.Contains(request.SearchText)));
+					if (isSeller)
+					{
+						products = products.Where(p => p.Sku.Contains(request.SearchText)
+							|| p.ProductNameEn.Contains(request.SearchText)
+							|| p.ProductNameTh.Contains(request.SearchText)
+							|| p.Pid.Contains(request.SearchText)
+							|| p.Upc.Contains(request.SearchText)
+							|| p.Tags.Any(a => a.Contains(request.SearchText)));
+					}
+					else
+					{
+						products = products.Where(p => p.Sku.Contains(request.SearchText)
+							|| p.ProductNameEn.Contains(request.SearchText)
+							|| p.ProductNameTh.Contains(request.SearchText)
+							|| p.Pid.Contains(request.SearchText)
+							|| p.Upc.Contains(request.SearchText));
+					}
+					
 				}
 				if (!string.IsNullOrEmpty(request.Pid))
 				{
@@ -1820,31 +1893,35 @@ namespace Colsp.Api.Controllers
 				}).ToList();
 				#endregion
 				#region inventory
-				//List<string> pids = new List<string>();
-				//pids.Add(request.MasterVariant.Pid);
-				//pids.AddRange(request.Variants.Select(s => s.Pid));
-				//var inventoryList = db.Inventories.Where(w => pids.Contains(w.Pid)).ToList();
 				var inventoryList = new List<Inventory>();
 				#endregion
 				ProductStageGroup group = new ProductStageGroup();
 				var email = User.UserRequest().Email;
 				var currentDt = DateTime.Now;
 				SetupProductStageGroup(group, request, attributeList, inventoryList, shop.ShopId, false, true, email, currentDt, db);
+				#region validate url key
+				var urls = group.ProductStages.Select(s => s.UrlKey);
+				if(db.ProductStages.Where(w=> urls.Contains(w.UrlKey)).Count() > 0)
+				{
+					throw new Exception("Product URL Key has already been used.");
+				}
+				#endregion
 				AutoGenerate.GeneratePid(db, group.ProductStages);
 				group.ProductId = db.GetNextProductStageGroupId().Single().Value;
 				db.ProductStageGroups.Add(group);
 				SetupGroupAfterSave(group, db, true);
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+				#region send to cmos
 				Task.Run(() =>
 				{
 					Thread.Sleep(1000);
 					using (ColspEntities db = new ColspEntities())
 					{
 						SendToCmos(group, Apis.CmosCreateProduct, "POST", email, currentDt, db);
-						SendToElastic(group, Apis.ElasticCreateProduct, "POST", email, currentDt, db);
 						db.SaveChanges();
 					}
 				});
+				#endregion
 				return GetProductStage(group.ProductId);
 			}
 			catch (Exception e)
@@ -1906,26 +1983,64 @@ namespace Colsp.Api.Controllers
 				var email = User.UserRequest().Email;
 				var currentDt = DateTime.Now;
 				SetupProductStageGroup(group, request, attributeList, inventoryList, group.ShopId, isAdmin, false, email, currentDt, db);
+				#region validate url key
+				foreach (var stage in group.ProductStages)
+				{
+					if (!string.IsNullOrEmpty(stage.UrlKey))
+					{
+						if (!string.IsNullOrEmpty(stage.Pid))
+						{
+							if (db.ProductStages.Where(w => w.UrlKey.Equals(stage.UrlKey) 
+								&& !w.Pid.Equals(stage.Pid)).Count() > 0)
+							{
+								throw new Exception("Product URL Key has already been used.");
+							}
+						}
+						else
+						{
+							if (db.ProductStages.Where(w => w.UrlKey.Equals(stage.UrlKey)).Count() > 0)
+							{
+								throw new Exception("Product URL Key has already been used.");
+							}
+						}
+					}
+				}
+				#endregion
 				AutoGenerate.GeneratePid(db, group.ProductStages);
 				SetupGroupAfterSave(group, db, false);
-				
 				if (Constant.RETURN_STATUS_APPROVE.Equals(group.Status))
 				{
+					//setup approve product
 					SetupApprovedProduct(group, db);
+					//send to elastic search
+					#region send to cmos
+					//send to cmos
+					Task.Run(() =>
+					{
+						Thread.Sleep(1000);
+						using (ColspEntities db = new ColspEntities())
+						{
+							SendToElastic(group, Apis.ElasticCreateProduct, "POST", email, currentDt, db);
+							db.SaveChanges();
+						}
+					});
+					#endregion
 				}
-				
+				//save change database
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
 				#endregion
+				#region send to cmos
+				//send to cmos
 				Task.Run(() =>
 				{
 					Thread.Sleep(1000);
 					using (ColspEntities db = new ColspEntities())
 					{
 						SendToCmos(group, Apis.CmosUpdateProduct, "PUT", email, currentDt, db);
-						SendToElastic(group, Apis.ElasticCreateProduct, "POST", email, currentDt, db);
 						db.SaveChanges();
 					}
 				});
+				#endregion
 				return GetProductStage(group.ProductId);
 			}
 			catch (Exception e)
@@ -2245,27 +2360,34 @@ namespace Colsp.Api.Controllers
 		{
 			stage.Pid = request.Pid;
 			stage.ShopId = shopId;
-			stage.ProductNameEn = request.ProductNameEn;
-			stage.ProductNameTh = request.ProductNameTh;
-			stage.ProdTDNameTh = request.ProdTDNameTh;
-			stage.ProdTDNameEn = request.ProdTDNameEn;
+			stage.ProductNameEn = Validation.ValidateString(request.ProductNameEn, "Product Name (English)", true, 255, false);
+			stage.ProductNameTh = Validation.ValidateString(request.ProductNameTh, "Product Name (Thai)", true, 255, false);
+			stage.ProdTDNameTh = Validation.ValidateString(request.ProdTDNameTh, "Short Product Name (Thai)", true, 55, false, string.Empty); 
+			stage.ProdTDNameEn = Validation.ValidateString(request.ProdTDNameEn, "Short Product Name (English)", true, 55, false, string.Empty);
 			stage.JDADept = string.Empty;
 			stage.JDASubDept = string.Empty;
-			stage.SaleUnitTh = request.SaleUnitTh;
-			stage.SaleUnitEn = request.SaleUnitEn;
-			stage.Sku = request.Sku;
-			stage.Upc = request.Upc;
+			stage.SaleUnitTh = Validation.ValidateString(request.SaleUnitTh, "Sale Unit (Thai)", true, 255, false, string.Empty);
+			stage.SaleUnitEn = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (English)", true, 255, false, string.Empty);
+			stage.Sku = Validation.ValidateString(request.Sku, "SKU", true, 255, false,
+					Constant.PRODUCT_STATUS_DRAFT.Equals(request.Status) || request.Visibility ? string.Empty : null);
+			#region UPC
+			stage.Upc = Validation.ValidateString(request.Upc, "UPC", true, 13, false,string.Empty);
+			if (!string.IsNullOrEmpty(stage.Upc) && !Regex.IsMatch(stage.Upc, @"^[0-9]*$"))
+			{
+				throw new Exception("Invalid UPC");
+			}
+			#endregion
 			stage.OriginalPrice = request.OriginalPrice;
 			if (!Constant.IGNORE_PRICE_SHIPPING.Contains(shippingId))
 			{
 				stage.SalePrice = request.SalePrice;
 			}
-			stage.DescriptionFullEn = request.DescriptionFullEn;
-			stage.DescriptionShortEn = request.DescriptionShortEn;
-			stage.DescriptionFullTh = request.DescriptionFullTh;
-			stage.DescriptionShortTh = request.DescriptionShortTh;
-			stage.MobileDescriptionEn = request.MobileDescriptionEn;
-			stage.MobileDescriptionTh = request.MobileDescriptionTh;
+			stage.DescriptionFullEn = Validation.ValidateString(request.DescriptionFullEn, "Description (English)", true, 50000, false, string.Empty);
+			stage.DescriptionShortEn = Validation.ValidateString(request.DescriptionShortEn, "Short Description (English)", true, 500, false, string.Empty);
+			stage.DescriptionFullTh = Validation.ValidateString(request.DescriptionFullTh, "Description (Thai)", true, 50000, false, string.Empty);
+			stage.DescriptionShortTh = Validation.ValidateString(request.DescriptionShortTh, "Short Description (Thai)", true, 500, false, string.Empty);
+			stage.MobileDescriptionEn = Validation.ValidateString(request.MobileDescriptionEn, "Mobile Description (English)", true, 50000, false, string.Empty);
+			stage.MobileDescriptionTh = Validation.ValidateString(request.MobileDescriptionTh, "Mobile Description (Thai)", true, 50000, false, string.Empty);
 			stage.ImageCount = 0;
 			#region Images
 			if (request.Images != null)
@@ -2337,17 +2459,17 @@ namespace Colsp.Api.Controllers
 			stage.PrepareFri = request.PrepareFri;
 			stage.PrepareSat = request.PrepareSat;
 			stage.PrepareSun = request.PrepareSun;
-			stage.KillerPoint1En = request.KillerPoint1En;
-			stage.KillerPoint2En = request.KillerPoint2En;
-			stage.KillerPoint3En = request.KillerPoint3En;
-			stage.KillerPoint1Th = request.KillerPoint1Th;
-			stage.KillerPoint2Th = request.KillerPoint2Th;
-			stage.KillerPoint3Th = request.KillerPoint3Th;
-			stage.Installment = request.Installment;
+			stage.KillerPoint1En = Validation.ValidateString(request.KillerPoint1En, "Killer Point 1 (English)", true, 50, false, string.Empty);
+			stage.KillerPoint2En = Validation.ValidateString(request.KillerPoint2En, "Killer Point 2 (English)", true, 50, false, string.Empty);
+			stage.KillerPoint3En = Validation.ValidateString(request.KillerPoint3En, "Killer Point 3 (English)", true, 50, false, string.Empty);
+			stage.KillerPoint1Th = Validation.ValidateString(request.KillerPoint1Th, "Killer Point 1 (Thai)", true, 50, false, string.Empty);
+			stage.KillerPoint2Th = Validation.ValidateString(request.KillerPoint2Th, "Killer Point 2 (Thai)", true, 50, false, string.Empty);
+			stage.KillerPoint3Th = Validation.ValidateString(request.KillerPoint3Th, "Killer Point 3 (Thai)", true, 50, false, string.Empty);
+			stage.Installment = Validation.ValidateString(request.Installment, "Installment", true, 1, false, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
 			stage.Length = request.Length;
 			stage.Height = request.Height;
 			stage.Width = request.Width;
-			stage.DimensionUnit = request.DimensionUnit;
+			stage.DimensionUnit = Validation.ValidateString(request.DimensionUnit, "Dimension Unit", true, 2, false, Constant.DIMENSTION_MM, new List<string>() { Constant.DIMENSTION_MM, Constant.DIMENSTION_CM, Constant.DIMENSTION_M });
 			if (Constant.DIMENSTION_CM.Equals(stage.DimensionUnit))
 			{
 				stage.Length = stage.Length * 10;
@@ -2360,34 +2482,32 @@ namespace Colsp.Api.Controllers
 				stage.Height = stage.Height * 1000;
 				stage.Width = stage.Width * 1000;
 			}
-
 			stage.Weight = request.Weight;
-			stage.WeightUnit = request.WeightUnit;
-
+			stage.WeightUnit = Validation.ValidateString(request.WeightUnit, "Weight Unit", true, 2, false, Constant.WEIGHT_MEASURE_G, new List<string>() { Constant.WEIGHT_MEASURE_G, Constant.WEIGHT_MEASURE_KG });
 			if (Constant.WEIGHT_MEASURE_KG.Equals(request.WeightUnit))
 			{
 				stage.Weight = stage.Weight * 1000;
 			}
 			if (request.SEO != null)
 			{
-				stage.MetaTitleEn = request.SEO.MetaTitleEn;
-				stage.MetaTitleTh = request.SEO.MetaTitleTh;
-				stage.MetaDescriptionEn = request.SEO.MetaDescriptionEn;
-				stage.MetaDescriptionTh = request.SEO.MetaDescriptionTh;
-				stage.MetaKeyEn = request.SEO.MetaKeywordEn;
-				stage.MetaKeyTh = request.SEO.MetaKeywordTh;
-				stage.SeoEn = request.SEO.SeoEn;
-				stage.SeoTh = request.SEO.SeoTh;
-				stage.UrlKey = request.SEO.ProductUrlKeyEn;
+				stage.MetaTitleEn = Validation.ValidateString(request.SEO.MetaTitleEn, "Meta Title (English)", true, 60, false, string.Empty);
+				stage.MetaTitleTh = Validation.ValidateString(request.SEO.MetaTitleTh, "Meta Title (Thai)", true, 60, false, string.Empty);
+				stage.MetaDescriptionEn = Validation.ValidateString(request.SEO.MetaDescriptionEn, "Meta Description (English)", true, 150, false, string.Empty);
+				stage.MetaDescriptionTh = Validation.ValidateString(request.SEO.MetaDescriptionTh, "Meta Description (Thai)", true, 150, false, string.Empty);
+				stage.MetaKeyEn = Validation.ValidateString(request.SEO.MetaKeywordEn, "Meta Keywords (English)", true, 1000, false, string.Empty);
+				stage.MetaKeyTh = Validation.ValidateString(request.SEO.MetaKeywordTh, "Meta Keywords (Thai)", true, 1000, false, string.Empty);
+				stage.SeoEn = Validation.ValidateString(request.SEO.SeoEn, "SEO (English)", true, 1000, false, string.Empty);
+				stage.SeoTh = Validation.ValidateString(request.SEO.SeoTh, "SEO (Thai)", true, 1000, false, string.Empty);
+				stage.UrlKey = Validation.ValidateString(request.SEO.ProductUrlKeyEn, "Product URL Key", true, 100, false, string.Empty);
 				stage.BoostWeight = request.SEO.ProductBoostingWeight;
 				if (isAdmin)
 				{
 					stage.GlobalBoostWeight = request.SEO.GlobalProductBoostingWeight;
 				}
 			}
-			stage.IsHasExpiryDate = request.IsHasExpiryDate;
-			stage.IsVat = request.IsVat;
-			stage.ExpressDelivery = request.ExpressDelivery;
+			stage.IsHasExpiryDate = Validation.ValidateString(request.IsHasExpiryDate, "Has Expiry Date", true, 1, false, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
+			stage.IsVat = Validation.ValidateString(request.IsVat, "Is Vat", true, 1, false, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
+			stage.ExpressDelivery = Validation.ValidateString(request.ExpressDelivery, "Express Delivery", true, 1, false, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
 			stage.DeliveryFee = request.DeliveryFee;
 			stage.PromotionPrice = request.PromotionPrice;
 			stage.EffectiveDatePromotion = request.EffectiveDatePromotion;
@@ -3559,7 +3679,7 @@ namespace Colsp.Api.Controllers
 				product.IsBestSeller = group.IsBestSeller;
 				product.IsClearance = group.IsClearance;
 				product.IsHasExpiryDate = stage.IsHasExpiryDate;
-				product.IsMaster = stage.IsMaster;
+				//product.IsMaster = stage.IsMaster;
 				product.IsNew = group.IsNew;
 				product.IsOnlineExclusive = group.IsOnlineExclusive;
 				product.IsOnlyAt = group.IsOnlyAt;
@@ -3577,7 +3697,7 @@ namespace Colsp.Api.Controllers
 				product.Length = stage.Length;
 				product.LimitIndividualDay = stage.LimitIndividualDay;
 				product.LocalCatId = group.LocalCatId;
-				product.MasterPid = null;
+				//product.MasterPid = null;
 				product.MaxiQtyAllowed = stage.MaxiQtyAllowed;
 				product.MetaDescriptionEn = stage.MetaDescriptionEn;
 				product.MetaDescriptionTh = stage.MetaDescriptionTh;
@@ -4190,7 +4310,7 @@ namespace Colsp.Api.Controllers
 			, string email, DateTime currentDt, ColspEntities db)
 		{
 			List<CmosRequest> requests = new List<CmosRequest>();
-			foreach (var stage in group.ProductStages)
+			foreach (var stage in group.ProductStages.Where(w=>w.IsSell))
 			{
 				CmosRequest cms = new CmosRequest()
 				{
@@ -5793,7 +5913,7 @@ namespace Colsp.Api.Controllers
 						string headers = string.Empty;
 						foreach (KeyValuePair<string, Tuple<string, int>> entry in headDicTmp)
 						{
-							csv.WriteField<string>(entry.Value.Item1);
+							csv.WriteField(entry.Value.Item1);
 						}
 						csv.NextRecord();
 						#region Write body
@@ -5801,7 +5921,8 @@ namespace Colsp.Api.Controllers
 						{
 							foreach (string field in r)
 							{
-								csv.WriteField<string>(string.Concat(@"""",field,@""""));
+								//csv.WriteField<string>(string.Concat(@"""",field,@""""));
+								csv.WriteField(field);
 							}
 							csv.NextRecord();
 						}
@@ -8847,7 +8968,9 @@ namespace Colsp.Api.Controllers
 					#endregion
 					var rqSkus = req.Select(s => s.Sku);
 					var shopIds = req.Select(s => s.ShopId);
-					var products = db.ProductStages.Where(w => shopIds.Contains(w.ShopId) && rqSkus.Contains(w.Sku)).Select(s => new
+					var products = db.ProductStages
+						.Where(w => shopIds.Contains(w.ShopId) && rqSkus.Contains(w.Sku))
+						.Select(s => new
 					{
 						s.Sku,
 						s.ShopId,
@@ -9000,7 +9123,7 @@ namespace Colsp.Api.Controllers
 							MobileDescriptionTh = string.Empty,
 							NewArrivalDate = null,
 							OldPid = null,
-							OriginalPrice = jdaProduct.Price,
+							OriginalPrice = jdaProduct.Price.HasValue ? jdaProduct.Price.Value : 0,
 							PrepareDay = 0,
 							PrepareFri = 0,
 							PrepareMon = 0,
@@ -9011,11 +9134,19 @@ namespace Colsp.Api.Controllers
 							PrepareWed = 0,
 							ProdTDNameEn = string.Empty,
 							ProdTDNameTh = string.Empty,
-							ProductNameEn = jdaProduct.Sku,
-							ProductNameTh = string.Empty,
-							PromotionPrice = jdaProduct.PromotionPrice,
+							ProductNameEn = !string.IsNullOrEmpty(jdaProduct.ShortDescriptionEn) ?
+											jdaProduct.ShortDescriptionEn.Trim() :
+											!string.IsNullOrEmpty(jdaProduct.ShortDescriptionTh) ?
+											jdaProduct.ShortDescriptionTh.Trim() : 
+											jdaProduct.Sku,
+							ProductNameTh = !string.IsNullOrEmpty(jdaProduct.ShortDescriptionEn) ?
+											jdaProduct.ShortDescriptionEn.Trim() :
+											!string.IsNullOrEmpty(jdaProduct.ShortDescriptionTh) ?
+											jdaProduct.ShortDescriptionTh.Trim() :
+											jdaProduct.Sku,
+							PromotionPrice = jdaProduct.PromotionPrice.HasValue ? jdaProduct.PromotionPrice.Value : 0,
 							PurchasePrice = 0,
-							SalePrice = jdaProduct.Price,
+							SalePrice = jdaProduct.Price.HasValue ? jdaProduct.PromotionPrice.Value : 0,
 							SaleUnitEn = string.Empty,
 							SaleUnitTh = string.Empty,
 							SeoEn = string.Empty,
@@ -9127,18 +9258,26 @@ namespace Colsp.Api.Controllers
 		private void UpdateJda(ProductStage stage, JdaRequest jdaProduct, ColspEntities db)
 		{
 			db.ProductStages.Attach(stage);
-			db.Entry(stage).Property(p => p.SalePrice).IsModified = true;
-			db.Entry(stage).Property(p => p.DescriptionShortEn).IsModified = true;
-			db.Entry(stage).Property(p => p.DescriptionShortTh).IsModified = true;
-			db.Entry(stage).Property(p => p.PromotionPrice).IsModified = true;
-			db.Entry(stage).Property(p => p.EffectiveDatePromotion).IsModified = true;
-			db.Entry(stage).Property(p => p.ExpireDatePromotion).IsModified = true;
-			stage.DescriptionShortEn = jdaProduct.ShortDescriptionEn;
-			stage.DescriptionShortTh = jdaProduct.ShortDescriptionTh;
-			stage.SalePrice = jdaProduct.Price;
-			stage.PromotionPrice = jdaProduct.PromotionPrice;
-			stage.EffectiveDatePromotion = jdaProduct.EffectiveDatePromotion;
-			stage.ExpireDatePromotion = jdaProduct.ExpireDatePromotion;
+			if (jdaProduct.Price.HasValue)
+			{
+				db.Entry(stage).Property(p => p.SalePrice).IsModified = true;
+				stage.SalePrice = jdaProduct.Price.Value;
+			}
+			if (jdaProduct.PromotionPrice.HasValue)
+			{
+				db.Entry(stage).Property(p => p.PromotionPrice).IsModified = true;
+				stage.PromotionPrice = jdaProduct.PromotionPrice.Value;
+			}
+			if (jdaProduct.EffectiveDatePromotion.HasValue)
+			{
+				db.Entry(stage).Property(p => p.EffectiveDatePromotion).IsModified = true;
+				stage.EffectiveDatePromotion = jdaProduct.EffectiveDatePromotion;
+			}
+			if (jdaProduct.ExpireDatePromotion.HasValue)
+			{
+				db.Entry(stage).Property(p => p.ExpireDatePromotion).IsModified = true;
+				stage.ExpireDatePromotion = jdaProduct.ExpireDatePromotion;
+			}
 		}
 
 

@@ -21,7 +21,8 @@ namespace Colsp.Entity.Models
             : base("name=ColspEntities")
         {
 			Configuration.LazyLoadingEnabled = false;
-        }
+			Database.CommandTimeout = 300;
+		}
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

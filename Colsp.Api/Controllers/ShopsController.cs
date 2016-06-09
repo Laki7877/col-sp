@@ -366,16 +366,32 @@ namespace Colsp.Api.Controllers
                         s.GiftWrap,
                         s.TaxInvoice,
                         s.StockAlert,
-                        s.City,
-                        s.Province,
-                        s.District,
-                        s.Country,
-                        PostalCode = s.PostCode == null ? null : new
-                        {
-                            s.PostCodeId,
-                            PostCode = s.PostCode.PostCode1,
-                        },
-                        s.UrlKey,
+						City = s.City == null ? null : new
+						{
+							s.City.CityId,
+							s.City.CityName,
+						},
+						Province = s.Province == null ? null : new
+						{
+							s.Province.ProvinceId,
+							s.Province.ProvinceName
+						},
+						District = s.District == null ? null : new
+						{
+							s.District.DistrictId,
+							s.District.DistrictName
+						},
+						Country = s.Country == null ? null : new
+						{
+							s.Country.CountryCode,
+							s.Country.CountryName
+						},
+						PostalCode = s.PostCode == null ? null : new
+						{
+							s.PostCodeId,
+							PostCode = s.PostCode.PostCode1,
+						},
+						s.UrlKey,
                         s.DomainName,
                         Users = s.UserShopMaps.Select(u => u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
                         new
