@@ -125,10 +125,10 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var shopId = User.ShopRequest().ShopId;
-                var email = User.UserRequest().Email;
-                var currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 
-                UserGroup usrGrp  = new UserGroup();
+				UserGroup usrGrp  = new UserGroup();
                 usrGrp.GroupNameEn = Validation.ValidateString(request.GroupNameEn, "Role Name", true, 100, true);
                 var usrGroupEntity = db.UserGroups
                     .Where(w => w.GroupNameEn.Equals(usrGrp.GroupNameEn) 
@@ -191,10 +191,10 @@ namespace Colsp.Api.Controllers
             try
             {
                 var shopId = User.ShopRequest().ShopId;
-                var email = User.UserRequest().Email;
-                var currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 
-                var usrGrp = db.UserGroups.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && w.GroupId == usergroupid && w.ShopUserGroupMaps.Any(a => a.ShopId == shopId)).SingleOrDefault();
+				var usrGrp = db.UserGroups.Where(w => Constant.USER_TYPE_SELLER.Equals(w.Type) && w.GroupId == usergroupid && w.ShopUserGroupMaps.Any(a => a.ShopId == shopId)).SingleOrDefault();
                 if (usrGrp == null || usrGrp.Status.Equals(Constant.STATUS_REMOVE))
                 {
                     throw new Exception("User group not found");
@@ -324,13 +324,15 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("This role name has already been used. Please enter a different role name.");
                 }
-                //usrGrp.GroupNameTh = Validation.ValidateString(request.GroupNameTh, "Role Name (Thai)", false, 100, true);
-                usrGrp.Status = Constant.STATUS_ACTIVE;
+				//usrGrp.GroupNameTh = Validation.ValidateString(request.GroupNameTh, "Role Name (Thai)", false, 100, true);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				usrGrp.Status = Constant.STATUS_ACTIVE;
                 usrGrp.Type = Constant.USER_TYPE_ADMIN;
-                usrGrp.CreateBy = User.UserRequest().Email;
-                usrGrp.CreateOn = DateTime.Now;
-                usrGrp.UpdateBy = User.UserRequest().Email;
-                usrGrp.UpdateOn = DateTime.Now;
+                usrGrp.CreateBy = email;
+                usrGrp.CreateOn = currentDt;
+                usrGrp.UpdateBy = email;
+                usrGrp.UpdateOn = currentDt;
                 if (request.Permission != null)
                 {
                     foreach (PermissionRequest perm in request.Permission)
@@ -342,11 +344,11 @@ namespace Colsp.Api.Controllers
                         UserGroupPermissionMap map = new UserGroupPermissionMap();
                         map.PermissionId = perm.PermissionId.Value;
                         map.GroupId = usrGrp.GroupId;
-                        map.CreateBy = User.UserRequest().Email;
-                        map.CreateOn = DateTime.Now;
-                        map.UpdateBy = User.UserRequest().Email;
-                        map.UpdateOn = DateTime.Now;
-                        usrGrp.UserGroupPermissionMaps.Add(map);
+                        map.CreateBy = email;
+                        map.CreateOn = currentDt;
+                        map.UpdateBy = email;
+                        map.UpdateOn = currentDt;
+						usrGrp.UserGroupPermissionMaps.Add(map);
                     }
                 }
                 usrGrp.GroupId = db.GetNextUserGroupId().SingleOrDefault().Value;
@@ -389,9 +391,9 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var email = User.UserRequest().Email;
-                var currentDt = DateTime.Now;
-                var usrGrp = db.UserGroups.Find(usergroupid);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				var usrGrp = db.UserGroups.Find(usergroupid);
                 if (usrGrp == null || usrGrp.Status.Equals(Constant.STATUS_REMOVE))
                 {
                     throw new Exception("User group not found");

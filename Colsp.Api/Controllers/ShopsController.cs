@@ -429,8 +429,10 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find shop");
                 }
                 SetupShopProfile(shop, request);
-                shop.UpdateBy = User.UserRequest().Email;
-                shop.UpdateOn = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				shop.UpdateBy = email;
+                shop.UpdateOn = currentDt;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShopProfile();
             }
@@ -447,9 +449,9 @@ namespace Colsp.Api.Controllers
             Shop shop = null;
             try
             {
-                string email = User.UserRequest().Email;
-                DateTime currentDt = DateTime.Now;
-                shop = new Shop();
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				shop = new Shop();
                 SetupShopAdmin(shop, request,email, currentDt);
                 shop.CreateBy = email;
                 shop.CreateOn = currentDt;
@@ -554,10 +556,10 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Shop not found");
                 }
-                #endregion
-                string email = User.UserRequest().Email;
-                DateTime currentDt = DateTime.Now;
-                SetupShopAdmin(shop, request, email, currentDt);
+				#endregion
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupShopAdmin(shop, request, email, currentDt);
                 #region Shop Owner
                 if (shop.User != null)
                 {
@@ -596,24 +598,24 @@ namespace Colsp.Api.Controllers
                                 EmployeeId = request.ShopOwner.EmployeeId,
                                 Status = Constant.STATUS_ACTIVE,
                                 Type = Constant.USER_TYPE_SELLER,
-                                CreateBy = User.UserRequest().Email,
-                                CreateOn = DateTime.Now,
-                                UpdateBy = User.UserRequest().Email,
-                                UpdateOn = DateTime.Now,
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt,
                                 UserGroupMaps = new List<UserGroupMap>() { new UserGroupMap()
-                        {
-                            GroupId = Constant.SHOP_OWNER_GROUP_ID,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
-                        }}
+								{
+									GroupId = Constant.SHOP_OWNER_GROUP_ID,
+									CreateBy = email,
+									CreateOn = currentDt,
+									UpdateBy = email,
+									UpdateOn = currentDt,
+								}}
                             },
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
-                        });
+							CreateBy = email,
+							CreateOn = currentDt,
+							UpdateBy = email,
+							UpdateOn = currentDt,
+						});
                         shop.User = shop.UserShopMaps.ElementAt(0).User;
                         
                     }
@@ -759,7 +761,9 @@ namespace Colsp.Api.Controllers
                 {
                     ShopId = shopId,
                 };
-                db.Shops.Attach(shop);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				db.Shops.Attach(shop);
                 db.Entry(shop).Property(p => p.ThemeId).IsModified = true;
                 db.Entry(shop).Property(p => p.ShopAppearance).IsModified = true;
                 db.Entry(shop).Property(p => p.UpdateBy).IsModified = true;
@@ -767,8 +771,8 @@ namespace Colsp.Api.Controllers
 
                 shop.ThemeId = request.ThemeId;
                 shop.ShopAppearance = request.Data;
-                shop.UpdateBy = User.UserRequest().Email;
-                shop.UpdateOn = DateTime.Now;
+                shop.UpdateBy = email;
+				shop.UpdateOn = currentDt;
 
                 db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");

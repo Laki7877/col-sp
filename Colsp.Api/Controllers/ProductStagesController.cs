@@ -148,7 +148,6 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Invalid request");
 				}
-
 				IQueryable<ProductStage> productList = null;
 				var ids = request.Select(s => s.ProductId).ToList();
 				#region Permission
@@ -162,13 +161,14 @@ namespace Colsp.Api.Controllers
 					productList = db.ProductStages.Where(w => w.IsVariant == false);
 				}
 				#endregion
-
 				productList = productList.Where(w => ids.Contains(w.ProductId));
 				var pids = productList.Select(s => s.Pid);
 				var realProduct = db.Products.Where(w => pids.Contains(w.Pid)).Select(s => new
 				{
 					s.Pid
 				});
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				foreach (ProductStageRequest proRq in request)
 				{
 					var current = productList.Where(w => w.ProductId.Equals(proRq.ProductId)).SingleOrDefault();
@@ -177,8 +177,8 @@ namespace Colsp.Api.Controllers
 						throw new Exception("Cannot find product " + proRq.ProductId + " in shop " + proRq.ShopId);
 					}
 					current.Visibility = proRq.Visibility;
-					current.UpdateBy = User.UserRequest().Email;
-					current.UpdateOn = DateTime.Now;
+					current.UpdateBy = email;
+					current.UpdateOn = currentDt;
 					ProductStageGroup group = new ProductStageGroup()
 					{
 						ProductId = current.ProductId
@@ -316,8 +316,8 @@ namespace Colsp.Api.Controllers
 				{
 					shopId = request.Shop.ShopId;
 				}
-				string email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				#endregion
 				#region Default Variant
 				var defaultVariantRq = request.Variants.Where(w => w.DefaultVariant == true).FirstOrDefault();
@@ -667,7 +667,7 @@ namespace Colsp.Api.Controllers
 				}
 
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 
 				var masterProduct = new Product()
 				{
@@ -1165,8 +1165,8 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Invalid request");
 				}
 				int shopId = User.ShopRequest().ShopId;
-				string email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				var pids = request.Select(s => s.Pid).ToList();
 				var products = db.ProductStages.Where(w => w.ShopId == shopId && pids.Contains(w.Pid));
 				db.ProductStageImages.RemoveRange(db.ProductStageImages.Where(w => pids.Contains(w.Pid)));
@@ -1280,7 +1280,7 @@ namespace Colsp.Api.Controllers
 				}
 				foreach (var stage in products)
 				{
-					SetupStageAfterSave(stage, db, false);
+					SetupStageAfterSave(stage,email,currentDt,db, false);
 				}
 				db.Configuration.ValidateOnSaveEnabled = false;
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
@@ -1897,7 +1897,7 @@ namespace Colsp.Api.Controllers
 				#endregion
 				ProductStageGroup group = new ProductStageGroup();
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupProductStageGroup(group, request, attributeList, inventoryList, shop.ShopId, false, true, email, currentDt, db);
 				#region validate url key
 				var urls = group.ProductStages.Select(s => s.UrlKey);
@@ -1909,7 +1909,7 @@ namespace Colsp.Api.Controllers
 				AutoGenerate.GeneratePid(db, group.ProductStages);
 				group.ProductId = db.GetNextProductStageGroupId().Single().Value;
 				db.ProductStageGroups.Add(group);
-				SetupGroupAfterSave(group, db, true);
+				SetupGroupAfterSave(group,email,currentDt, db, true);
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
 				#region send to cmos
 				Task.Run(() =>
@@ -1981,7 +1981,7 @@ namespace Colsp.Api.Controllers
 				#region Setup
 				var inventoryList = db.Inventories.Where(w => pids.Contains(w.Pid)).ToList();
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupProductStageGroup(group, request, attributeList, inventoryList, group.ShopId, isAdmin, false, email, currentDt, db);
 				#region validate url key
 				foreach (var stage in group.ProductStages)
@@ -2007,7 +2007,7 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				AutoGenerate.GeneratePid(db, group.ProductStages);
-				SetupGroupAfterSave(group, db, false);
+				SetupGroupAfterSave(group,email,currentDt, db, false);
 				if (Constant.RETURN_STATUS_APPROVE.Equals(group.Status))
 				{
 					//setup approve product
@@ -2369,7 +2369,7 @@ namespace Colsp.Api.Controllers
 			stage.SaleUnitTh = Validation.ValidateString(request.SaleUnitTh, "Sale Unit (Thai)", true, 255, false, string.Empty);
 			stage.SaleUnitEn = Validation.ValidateString(request.SaleUnitEn, "Sale Unit (English)", true, 255, false, string.Empty);
 			stage.Sku = Validation.ValidateString(request.Sku, "SKU", true, 255, false,
-					Constant.PRODUCT_STATUS_DRAFT.Equals(request.Status) || request.Visibility ? string.Empty : null);
+					Constant.PRODUCT_STATUS_DRAFT.Equals(request.Status) || !request.Visibility ? string.Empty : null);
 			#region UPC
 			stage.Upc = Validation.ValidateString(request.Upc, "UPC", true, 13, false,string.Empty);
 			if (!string.IsNullOrEmpty(stage.Upc) && !Regex.IsMatch(stage.Upc, @"^[0-9]*$"))
@@ -3405,7 +3405,8 @@ namespace Colsp.Api.Controllers
 			#region History Group
 			ProductHistoryGroup historyGroup = new ProductHistoryGroup()
 			{
-				HistoryDt = DateTime.Now,
+
+				HistoryDt = SystemHelper.GetCurrentDateTime(),
 				ProductId = group.ProductId,
 				ShopId = group.ShopId,
 				GlobalCatId = group.GlobalCatId,
@@ -4063,7 +4064,7 @@ namespace Colsp.Api.Controllers
 			db.ProductHistoryGroups.Add(historyGroup);
 		}
 
-		private void SetupGroupAfterSave(ProductStageGroup groupProduct, ColspEntities db, bool isNew = false)
+		private void SetupGroupAfterSave(ProductStageGroup groupProduct,string email,DateTime currentDt, ColspEntities db, bool isNew = false)
 		{
 			#region Image
 			HashSet<string> tmpImageHash = new HashSet<string>();
@@ -4143,7 +4144,7 @@ namespace Colsp.Api.Controllers
 			}
 			foreach (var stage in groupProduct.ProductStages)
 			{
-				SetupStageAfterSave(stage, db, isNew);
+				SetupStageAfterSave(stage,email,currentDt, db, isNew);
 			}
 			#endregion
 			#region Video
@@ -4157,7 +4158,7 @@ namespace Colsp.Api.Controllers
 			#endregion
 		}
 
-		private void SetupStageAfterSave(ProductStage stage, ColspEntities db = null, bool isNew = false)
+		private void SetupStageAfterSave(ProductStage stage,string email,DateTime currentDt, ColspEntities db = null, bool isNew = false)
 		{
 			#region Image
 			using (SftpClient sft = new SftpClient("27.254.48.250", "mkp", "Mkp@123!"))
@@ -4277,10 +4278,10 @@ namespace Colsp.Api.Controllers
 					SafetyStockAdmin = stage.Inventory.SafetyStockAdmin,
 					SafetyStockSeller = stage.Inventory.SafetyStockSeller,
 					Status = Constant.INVENTORY_STATUS_ADD,
-					CreateBy = User.UserRequest().Email,
-					CreateOn = DateTime.Now,
-					UpdateBy = User.UserRequest().Email,
-					UpdateOn = DateTime.Now,
+					CreateBy = email,
+					CreateOn = currentDt,
+					UpdateBy = email,
+					UpdateOn = currentDt,
 				};
 				db.InventoryHistories.Add(history);
 			}
@@ -4622,7 +4623,7 @@ namespace Colsp.Api.Controllers
 					.Include(i => i.ProductStageGlobalCatMaps)
 					.Include(i => i.ProductStageLocalCatMaps);
 				var email = User.UserRequest().Email;
-				var currenDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				foreach (ProductStageRequest proRq in request)
 				{
 					var pro = groupList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
@@ -4634,11 +4635,11 @@ namespace Colsp.Api.Controllers
 					pro.ProductStages.ToList().ForEach(e => e.Status = Constant.PRODUCT_STATUS_APPROVE);
 					pro.OnlineFlag = true;
 					pro.ApproveBy = email;
-					pro.ApproveOn = currenDt;
+					pro.ApproveOn = currentDt;
 					if (string.IsNullOrEmpty(pro.FirstApproveBy))
 					{
 						pro.FirstApproveBy = email;
-						pro.FirstApproveOn = currenDt;
+						pro.FirstApproveOn = currentDt;
 					}
 					SetupApprovedProduct(pro, db);
 				}
@@ -4670,7 +4671,7 @@ namespace Colsp.Api.Controllers
 				var groupList = db.ProductStageGroups.Where(w => productIds.Contains(w.ProductId))
 					.Include(i => i.ProductStages);
 				var email = User.UserRequest().Email;
-				var currenDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				foreach (ProductStageRequest proRq in request)
 				{
 					var pro = groupList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
@@ -4680,7 +4681,7 @@ namespace Colsp.Api.Controllers
 					}
 					pro.Status = Constant.PRODUCT_STATUS_NOT_APPROVE;
 					pro.RejecteBy = email;
-					pro.RejectOn = currenDt;
+					pro.RejectOn = currentDt;
 					pro.ProductStages.ToList().ForEach(e => e.Status = Constant.PRODUCT_STATUS_NOT_APPROVE);
 				}
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
@@ -4739,8 +4740,8 @@ namespace Colsp.Api.Controllers
 			try
 			{
 				int shopId = User.ShopRequest().ShopId;
-				string email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				var ids = request.Select(s => s.ProductId).ToList();
 				var producGrouptList = db.ProductStageGroups.Where(w => w.ShopId == shopId && ids.Contains(w.ProductId)).Select(s => new
 				{
@@ -4811,10 +4812,10 @@ namespace Colsp.Api.Controllers
 							SafetyStockAdmin = inventory.SafetyStockAdmin,
 							SafetyStockSeller = inventory.SafetyStockSeller,
 							Status = Constant.INVENTORY_STATUS_DELETE,
-							CreateBy = User.UserRequest().Email,
-							CreateOn = DateTime.Now,
-							UpdateBy = User.UserRequest().Email,
-							UpdateOn = DateTime.Now,
+							CreateBy = email,
+							CreateOn = currentDt,
+							UpdateBy = email,
+							UpdateOn = currentDt,
 						});
 					}
 					ProductStageGroup group = new ProductStageGroup()
@@ -4859,7 +4860,7 @@ namespace Colsp.Api.Controllers
 				}
 				var tagList = request.Tags;
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				foreach (var product in productList)
 				{
 					if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(product.Status))
@@ -6055,7 +6056,9 @@ namespace Colsp.Api.Controllers
 				}
 				fileName = streamProvider.FileData[0].LocalFileName;
 				#endregion
-				Dictionary<string, ProductStageGroup> groupList = SetupImport(fileName, errorMessage, row, db);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				Dictionary<string, ProductStageGroup> groupList = SetupImport(fileName, errorMessage, row,email,currentDt, db);
 				#region Validate Error Message
 				var allUrl = groupList.SelectMany(s => s.Value.ProductStages.Select(su => su.UrlKey));
 				var urlCount = db.ProductStages.Where(w => allUrl.Contains(w.UrlKey)).Select(s => s.UrlKey).Distinct();
@@ -6171,7 +6174,9 @@ namespace Colsp.Api.Controllers
 				fileName = streamProvider.FileData[0].LocalFileName;
 				#endregion
 				HashSet<string> header = new HashSet<string>();
-				Dictionary<string, ProductStageGroup> groupList = SetupImport(fileName, errorMessage, row, db, true, header);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				Dictionary<string, ProductStageGroup> groupList = SetupImport(fileName, errorMessage, row,email,currentDt, db, true, header);
 				#region Validate Error Message
 				if (errorMessage.Count > 0)
 				{
@@ -6261,10 +6266,10 @@ namespace Colsp.Api.Controllers
 										groupEn.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
 										{
 											CategoryId = cat.CategoryId,
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt,
 										});
 									}
 								}
@@ -6304,10 +6309,10 @@ namespace Colsp.Api.Controllers
 										groupEn.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
 										{
 											CategoryId = cat.CategoryId,
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt,
 										});
 									}
 								}
@@ -6348,10 +6353,10 @@ namespace Colsp.Api.Controllers
 										groupEn.ProductStageTags.Add(new ProductStageTag()
 										{
 											Tag = t.Tag,
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt,
 										});
 									}
 								}
@@ -7171,8 +7176,8 @@ namespace Colsp.Api.Controllers
 						}
 						#endregion
 						masterVariant.VariantCount = groupEn.ProductStages.Where(w => w.IsVariant == true).ToList().Count;
-						groupEn.UpdateOn = DateTime.Now;
-						groupEn.UpdateBy = User.UserRequest().Email;
+						groupEn.UpdateOn = currentDt;
+						groupEn.UpdateBy = email;
 					}
 					multiply++;
 				}
@@ -7266,7 +7271,7 @@ namespace Colsp.Api.Controllers
 			return listRow;
 		}
 
-		private Dictionary<string, ProductStageGroup> SetupImport(string fileName, HashSet<string> errorMessage, int row, ColspEntities db, bool isUpdate = false, HashSet<string> updateHeader = null)
+		private Dictionary<string, ProductStageGroup> SetupImport(string fileName, HashSet<string> errorMessage, int row,string email,DateTime currentDt, ColspEntities db, bool isUpdate = false, HashSet<string> updateHeader = null)
 		{
 			using (var fileReader = File.OpenText(fileName))
 			{
@@ -7436,10 +7441,10 @@ namespace Colsp.Api.Controllers
 								OnlineFlag = false,
 								RejectReason = string.Empty,
 								TheOneCardEarn = Constant.DEFAULT_THE_ONE_CARD,
-								CreateBy = User.UserRequest().Email,
-								CreateOn = DateTime.Now,
-								UpdateBy = User.UserRequest().Email,
-								UpdateOn = DateTime.Now
+								CreateBy = email,
+								CreateOn = currentDt,
+								UpdateBy = email,
+								UpdateOn = currentDt
 							};
 						}
 						#endregion
@@ -7449,10 +7454,10 @@ namespace Colsp.Api.Controllers
 						{
 							ShopId = shopId,
 							Status = Constant.PRODUCT_STATUS_DRAFT,
-							CreateBy = User.UserRequest().Email,
-							CreateOn = DateTime.Now,
-							UpdateBy = User.UserRequest().Email,
-							UpdateOn = DateTime.Now,
+							CreateBy = email,
+							CreateOn = currentDt,
+							UpdateBy = email,
+							UpdateOn = currentDt,
 							Visibility = headDic.ContainsKey("ADL") && string.Equals(body[headDic["ADL"]], "no", StringComparison.OrdinalIgnoreCase) ? false : true,
 							IsVariant = true,
 							IsMaster = false,
@@ -7539,7 +7544,7 @@ namespace Colsp.Api.Controllers
 						}
 						if (!variant.NewArrivalDate.HasValue)
 						{
-							variant.NewArrivalDate = DateTime.Now;
+							variant.NewArrivalDate = currentDt;
 						}
 						#endregion
 						#region Price
@@ -7693,10 +7698,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt,
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -7729,10 +7734,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt,
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -7764,10 +7769,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt,
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -7799,10 +7804,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -7835,10 +7840,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -7871,10 +7876,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -7907,10 +7912,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -7943,10 +7948,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -7979,10 +7984,10 @@ namespace Colsp.Api.Controllers
 									{
 										variant.Inventory = new Inventory()
 										{
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt
 										};
 										variant.Inventory.StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE];
 										if (headDic.ContainsKey("ABO"))
@@ -8018,10 +8023,10 @@ namespace Colsp.Api.Controllers
 							variant.Inventory = new Inventory()
 							{
 								StockType = Constant.STOCK_TYPE[Constant.DEFAULT_STOCK_TYPE],
-								CreateBy = User.UserRequest().Email,
-								CreateOn = DateTime.Now,
-								UpdateBy = User.UserRequest().Email,
-								UpdateOn = DateTime.Now,
+								CreateBy = email,
+								CreateOn = currentDt,
+								UpdateBy = email,
+								UpdateOn = currentDt
 							};
 						}
 						#endregion
@@ -8047,10 +8052,10 @@ namespace Colsp.Api.Controllers
 											group.ProductStageRelateds1.Add(new ProductStageRelated()
 											{
 												Child = child,
-												CreateBy = User.UserRequest().Email,
-												CreateOn = DateTime.Now,
-												UpdateBy = User.UserRequest().Email,
-												UpdateOn = DateTime.Now,
+												CreateBy = email,
+												CreateOn = currentDt,
+												UpdateBy = email,
+												UpdateOn = currentDt,
 												ShopId = shopId,
 											});
 										}
@@ -8130,10 +8135,10 @@ namespace Colsp.Api.Controllers
 												group.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
 												{
 													CategoryId = cat,
-													CreateBy = User.UserRequest().Email,
-													CreateOn = DateTime.Now,
-													UpdateBy = User.UserRequest().Email,
-													UpdateOn = DateTime.Now,
+													CreateBy = email,
+													CreateOn = currentDt,
+													UpdateBy = email,
+													UpdateOn = currentDt,
 												});
 											}
 										}
@@ -8164,10 +8169,10 @@ namespace Colsp.Api.Controllers
 												group.ProductStageGlobalCatMaps.Add(new ProductStageGlobalCatMap()
 												{
 													CategoryId = cat,
-													CreateBy = User.UserRequest().Email,
-													CreateOn = DateTime.Now,
-													UpdateBy = User.UserRequest().Email,
-													UpdateOn = DateTime.Now,
+													CreateBy = email,
+													CreateOn = currentDt,
+													UpdateBy = email,
+													UpdateOn = currentDt,
 												});
 											}
 										}
@@ -8225,10 +8230,10 @@ namespace Colsp.Api.Controllers
 												group.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
 												{
 													CategoryId = cat,
-													CreateBy = User.UserRequest().Email,
-													CreateOn = DateTime.Now,
-													UpdateBy = User.UserRequest().Email,
-													UpdateOn = DateTime.Now,
+													CreateBy = email,
+													CreateOn = currentDt,
+													UpdateBy = email,
+													UpdateOn = currentDt,
 												});
 											}
 										}
@@ -8259,10 +8264,10 @@ namespace Colsp.Api.Controllers
 												group.ProductStageLocalCatMaps.Add(new ProductStageLocalCatMap()
 												{
 													CategoryId = cat,
-													CreateBy = User.UserRequest().Email,
-													CreateOn = DateTime.Now,
-													UpdateBy = User.UserRequest().Email,
-													UpdateOn = DateTime.Now,
+													CreateBy = email,
+													CreateOn = currentDt,
+													UpdateBy = email,
+													UpdateOn = currentDt,
 												});
 											}
 										}
@@ -8286,7 +8291,7 @@ namespace Colsp.Api.Controllers
 								masterVariant = new ProductStage();
 								group.ProductStages.Add(masterVariant);
 							}
-
+							masterVariant.ProductStageAttributes.Clear();
 							masterVariant.ShopId = variant.ShopId;
 							masterVariant.Status = variant.Status;
 							masterVariant.CreateBy = variant.CreateBy;
@@ -8308,7 +8313,7 @@ namespace Colsp.Api.Controllers
 							masterVariant.PurchasePrice = variant.PurchasePrice;
 							masterVariant.SalePrice = variant.SalePrice;
 							masterVariant.OriginalPrice = variant.OriginalPrice;
-							masterVariant.DefaultVariant = variant.DefaultVariant;
+							masterVariant.DefaultVariant = false;
 							masterVariant.Bu = variant.Bu;
 							masterVariant.DeliveryFee = variant.DeliveryFee;
 							masterVariant.EffectiveDatePromotion = variant.EffectiveDatePromotion;
@@ -8437,10 +8442,10 @@ namespace Colsp.Api.Controllers
 										group.ProductStageTags.Add(new ProductStageTag()
 										{
 											Tag = insertTag,
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt,
 										});
 									}
 								}
@@ -8452,7 +8457,7 @@ namespace Colsp.Api.Controllers
 							//group.EffectiveDate = request.EffectiveDate.HasValue ? request.EffectiveDate.Value : currentDt;
 							//group.ExpireDate = request.ExpireDate.HasValue && request.ExpireDate.Value.CompareTo(group.EffectiveDate) >= 0 ? request.ExpireDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
 							var tmpDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACY", guidance, errorMessage, row);
-							group.EffectiveDate = tmpDate.HasValue ? tmpDate.Value : DateTime.Now;
+							group.EffectiveDate = tmpDate.HasValue ? tmpDate.Value : currentDt;
 							tmpDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACZ", guidance, errorMessage, row);
 							group.ExpireDate = tmpDate.HasValue ? tmpDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
 							if (group.EffectiveDate.CompareTo(group.ExpireDate)
@@ -8549,10 +8554,10 @@ namespace Colsp.Api.Controllers
 													CheckboxValue = true,
 													AttributeValueId = valueId,
 													IsAttributeValue = true,
-													CreateBy = User.UserRequest().Email,
-													CreateOn = DateTime.Now,
-													UpdateBy = User.UserRequest().Email,
-													UpdateOn = DateTime.Now,
+													CreateBy = email,
+													CreateOn = currentDt,
+													UpdateBy = email,
+													UpdateOn = currentDt,
 													HtmlBoxValue = htmlValue,
 												});
 											}
@@ -8587,10 +8592,10 @@ namespace Colsp.Api.Controllers
 											CheckboxValue = false,
 											IsAttributeValue = isValue,
 											AttributeValueId = valueId,
-											CreateBy = User.UserRequest().Email,
-											CreateOn = DateTime.Now,
-											UpdateBy = User.UserRequest().Email,
-											UpdateOn = DateTime.Now,
+											CreateBy = email,
+											CreateOn = currentDt,
+											UpdateBy = email,
+											UpdateOn = currentDt,
 										});
 									}
 								}
@@ -8725,10 +8730,10 @@ namespace Colsp.Api.Controllers
 																CheckboxValue = true,
 																IsAttributeValue = true,
 																AttributeValueId = valueId,
-																CreateBy = User.UserRequest().Email,
-																CreateOn = DateTime.Now,
-																UpdateBy = User.UserRequest().Email,
-																UpdateOn = DateTime.Now,
+																CreateBy = email,
+																CreateOn = currentDt,
+																UpdateBy = email,
+																UpdateOn = currentDt,
 																HtmlBoxValue = htmlValue,
 															});
 														}
@@ -8763,10 +8768,10 @@ namespace Colsp.Api.Controllers
 														CheckboxValue = false,
 														AttributeValueId = valueId,
 														IsAttributeValue = isValue,
-														CreateBy = User.UserRequest().Email,
-														CreateOn = DateTime.Now,
-														UpdateBy = User.UserRequest().Email,
-														UpdateOn = DateTime.Now,
+														CreateBy = email,
+														CreateOn = currentDt,
+														UpdateBy = email,
+														UpdateOn = currentDt,
 														HtmlBoxValue = htmlValue,
 													});
 												}
@@ -8788,37 +8793,41 @@ namespace Colsp.Api.Controllers
 														CheckboxValue = false,
 														AttributeValueId = valueId,
 														IsAttributeValue = isValue,
-														CreateBy = User.UserRequest().Email,
-														CreateOn = DateTime.Now,
-														UpdateBy = User.UserRequest().Email,
-														UpdateOn = DateTime.Now,
+														CreateBy = email,
+														CreateOn = currentDt,
+														UpdateBy = email,
+														UpdateOn = currentDt,
 														HtmlBoxValue = htmlValue,
 													});
 												}
 											}
 											else
 											{
-												var tmpMasterVariant = group.ProductStages
+												if (variant.DefaultVariant || isNew)
+												{
+													var tmpMasterVariant = group.ProductStages
 															.Where(w => w.IsVariant == false
 															&& !w.ProductStageAttributes.Any(a => a.AttributeId == attr.AttributeId && a.ValueEn.Equals(valueEn)))
 															.SingleOrDefault();
-												if (tmpMasterVariant != null)
-												{
-													tmpMasterVariant.ProductStageAttributes.Add(new ProductStageAttribute()
+													if (tmpMasterVariant != null)
 													{
-														AttributeId = attr.AttributeId,
-														ValueEn = valueEn,
-														ValueTh = valueTh,
-														AttributeValueId = valueId,
-														CheckboxValue = false,
-														IsAttributeValue = isValue,
-														CreateBy = User.UserRequest().Email,
-														CreateOn = DateTime.Now,
-														UpdateBy = User.UserRequest().Email,
-														UpdateOn = DateTime.Now,
-														HtmlBoxValue = htmlValue,
-													});
+														tmpMasterVariant.ProductStageAttributes.Add(new ProductStageAttribute()
+														{
+															AttributeId = attr.AttributeId,
+															ValueEn = valueEn,
+															ValueTh = valueTh,
+															AttributeValueId = valueId,
+															CheckboxValue = false,
+															IsAttributeValue = isValue,
+															CreateBy = email,
+															CreateOn = currentDt,
+															UpdateBy = email,
+															UpdateOn = currentDt,
+															HtmlBoxValue = htmlValue,
+														});
+													}
 												}
+												
 											}
 										}
 									}
@@ -8870,8 +8879,8 @@ namespace Colsp.Api.Controllers
 				}
 				int take = 100;
 				int multiply = 0;
-				string email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				var defaultAttr = db.Attributes.Where(w => w.Required && w.DefaultAttribute && !Constant.DATA_TYPE_CHECKBOX.Equals(w.DataType)).Select(s => s.AttributeId);
 				while (true)
 				{
@@ -8952,16 +8961,22 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Invalid request");
 				}
 				var email = "jda@col.co.th";
-				var currentDt = DateTime.Now;
-				int take = 100;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+
+				int take = 1000;
 				int multiply = 0;
 				List<ProductStageGroup> groupList = new List<ProductStageGroup>();
 				var response = new List<JdaRequest>();
+				if (request.GroupBy(n => n.Sku).Any(c => c.Count() > 1))
+				{
+					throw new Exception("Request Sku cannot be duplicate");
+				}
 				while (true)
 				{
-					var req = request.Select(s => new { s.Sku, s.ShopId }).Skip(take * multiply).Take(take);
+					var tmpRequest = request.Skip(take * multiply).Take(take);
+					var req = tmpRequest.Select(s => new { s.Sku, s.ShopId });
 					#region validation
-					if (req.Count() == 0)
+					if (tmpRequest.Count() == 0)
 					{
 						break;
 					}
@@ -8976,7 +8991,7 @@ namespace Colsp.Api.Controllers
 						s.ShopId,
 						s.Pid
 					});
-					foreach (var jdaProduct in request)
+					foreach (var jdaProduct in tmpRequest)
 					{
 						#region validation
 						if (jdaProduct.ShopId == 0
@@ -8996,14 +9011,14 @@ namespace Colsp.Api.Controllers
 						{
 							throw new Exception("JDASubDept cannot be more than 3 characters.");
 						}
-						var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Sku.Equals(jdaProduct.Sku)).Select(s => s.Pid).SingleOrDefault();
+						var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Sku.Equals(jdaProduct.Sku)).Select(s => s.Pid).FirstOrDefault();
 						if (!string.IsNullOrWhiteSpace(tmpProduct))
 						{
 							ProductStage stage = new ProductStage()
 							{
 								Pid = tmpProduct,
 							};
-							UpdateJda(stage, jdaProduct, db);
+							UpdateJda(stage,email,currentDt, jdaProduct, db);
 							jdaProduct.Pid = tmpProduct;
 							response.Add(jdaProduct);
 							continue;
@@ -9210,23 +9225,30 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Invalid request");
 				}
-				int take = 100;
+				if (request.GroupBy(n => n.Pid).Any(c => c.Count() > 1))
+				{
+					throw new Exception("Request Pid cannot be duplicate");
+				}
+				int take = 1000;
 				int multiply = 0;
+				var email = "jda@col.co.th";
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				while (true)
 				{
-					var rqPids = request.Select(s => s.Pid).Skip(take * multiply).Take(take);
+					var tmpRequest = request.Skip(take * multiply).Take(take);
+					var rqPids = tmpRequest.Select(s => s.Pid);
 					var products = db.ProductStages.Where(w => rqPids.Contains(w.Pid)).Select(s => new
 					{
 						s.Pid,
 						s.ShopId
 					});
 					#region validation
-					if (rqPids.Count() == 0)
+					if (tmpRequest.Count() == 0)
 					{
 						break;
 					}
 					#endregion
-					foreach (var jdaProduct in request)
+					foreach (var jdaProduct in tmpRequest)
 					{
 						if (string.IsNullOrWhiteSpace(jdaProduct.Pid))
 						{
@@ -9241,7 +9263,7 @@ namespace Colsp.Api.Controllers
 						{
 							Pid = jdaProduct.Pid
 						};
-						UpdateJda(stage, jdaProduct, db);
+						UpdateJda(stage,email,currentDt, jdaProduct, db);
 					}
 					multiply++;
 				}
@@ -9255,9 +9277,13 @@ namespace Colsp.Api.Controllers
 			}
 		}
 
-		private void UpdateJda(ProductStage stage, JdaRequest jdaProduct, ColspEntities db)
+		private void UpdateJda(ProductStage stage,string email,DateTime currentDt, JdaRequest jdaProduct, ColspEntities db)
 		{
 			db.ProductStages.Attach(stage);
+			db.Entry(stage).Property(p => p.UpdateBy).IsModified = true;
+			db.Entry(stage).Property(p => p.UpdateOn).IsModified = true;
+			stage.UpdateBy = email;
+			stage.UpdateOn = currentDt;
 			if (jdaProduct.Price.HasValue)
 			{
 				db.Entry(stage).Property(p => p.SalePrice).IsModified = true;
@@ -9278,6 +9304,7 @@ namespace Colsp.Api.Controllers
 				db.Entry(stage).Property(p => p.ExpireDatePromotion).IsModified = true;
 				stage.ExpireDatePromotion = jdaProduct.ExpireDatePromotion;
 			}
+
 		}
 
 

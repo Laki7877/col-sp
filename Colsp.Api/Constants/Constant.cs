@@ -7,7 +7,9 @@ namespace Colsp.Api.Constants
     public static class Constant
     {
 
-        public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 10 };
+		public static readonly string SE_Asia_Standard_Time = "SE Asia Standard Time";
+
+		public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 10 };
         public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 3 };
 
 		public static readonly List<string> IMPORT_REQUIRE_FIELD = new List<string>() {

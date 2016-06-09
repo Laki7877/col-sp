@@ -180,8 +180,8 @@ namespace Colsp.Api.Controllers
 				{
 					coupon.CouponType = Constant.USER_TYPE_ADMIN;
 				}
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupCoupon(coupon, request, email, currentDt, db);
 				coupon.CreateBy = email;
 				coupon.CreateOn = currentDt;
@@ -284,8 +284,8 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Cannot find coupon");
 				}
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupCoupon(coupon, request, email, currentDt, db);
 				SendToCore(coupon, string.Concat(Apis.EVoucherUpdate, coupon.EVoucherId), "PUT", email, currentDt, db);
 				Util.DeadlockRetry(db.SaveChanges, "Coupon");

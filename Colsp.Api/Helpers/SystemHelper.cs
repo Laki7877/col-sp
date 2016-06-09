@@ -181,12 +181,11 @@ namespace Colsp.Api.Helpers
 					}
 				}
 				request.Method = method;
-				byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
 				request.ContentType = ContentType.ApplicationJson;
+				byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
 				request.ContentLength = byteArray.Length;
-				using (Stream dataStream = request.GetRequestStream())
+				if ("GET".Equals(request.Method))
 				{
-					dataStream.Write(byteArray, 0, byteArray.Length);
 					using (var response = request.GetResponse())
 					{
 						using (Stream responseDataStream = response.GetResponseStream())
@@ -200,6 +199,26 @@ namespace Colsp.Api.Helpers
 						}
 					}
 				}
+				else
+				{
+					using (Stream dataStream = request.GetRequestStream())
+					{
+						dataStream.Write(byteArray, 0, byteArray.Length);
+						using (var response = request.GetResponse())
+						{
+							using (Stream responseDataStream = response.GetResponseStream())
+							{
+								using (StreamReader reader = new StreamReader(responseDataStream))
+								{
+									responseFromServer = reader.ReadToEnd();
+									var statusCode = ((HttpWebResponse)response).StatusCode;
+									statusCodeValue = (int)statusCode;
+								}
+							}
+						}
+					}
+				}
+				
 			}
 			catch (WebException ex)
 			{
@@ -234,6 +253,16 @@ namespace Colsp.Api.Helpers
 			}
 			return responseFromServer;
 		}
+
+		public static DateTime GetCurrentDateTime()
+		{
+			DateTime serverTime = DateTime.Now; // gives you current Time in server timeZone
+			DateTime utcTime = serverTime.ToUniversalTime(); // convert it to Utc using timezone setting of server computer
+			TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById(Constant.SE_Asia_Standard_Time);
+			DateTime currentDt = TimeZoneInfo.ConvertTimeFromUtc(utcTime, tzi); // convert from utc to local
+			return currentDt;
+		}
+
 	}
 
     

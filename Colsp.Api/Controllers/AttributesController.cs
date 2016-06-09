@@ -172,11 +172,11 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Invalid request");
 				}
 				attribute = new Entity.Models.Attribute();
-				string email = User.UserRequest().Email;
-				DateTime cuurentDt = DateTime.Now;
-				SetupAttribute(attribute, request, email, cuurentDt, db);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupAttribute(attribute, request, email, currentDt, db);
 				attribute.CreateBy = email;
-				attribute.CreateOn = cuurentDt;
+				attribute.CreateOn = currentDt;
 				attribute.AttributeId = db.GetNextAttributeId().SingleOrDefault().Value;
 				attribute = db.Attributes.Add(attribute);
 				Util.DeadlockRetry(db.SaveChanges, "Attribute");
@@ -208,9 +208,9 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Cannot find attribute " + attributeId);
 				}
-				string email = User.UserRequest().Email;
-				DateTime cuurentDt = DateTime.Now;
-				SetupAttribute(attribute, request, email, cuurentDt, db);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupAttribute(attribute, request, email, currentDt, db);
 				Util.DeadlockRetry(db.SaveChanges, "Attribute");
 				return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attribute));
 				//return GetAttribute(attribute.AttributeId);

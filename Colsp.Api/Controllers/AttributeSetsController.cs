@@ -136,8 +136,8 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Invalid request");
 				}
 				AttributeSet attributeSet = attributeSet = new AttributeSet();
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupAttributeSet(attributeSet, request, email, currentDt, db);
 				attributeSet.CreateBy = email;
 				attributeSet.CreateOn = currentDt;
@@ -174,8 +174,8 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Cannot find attribute set " + attributeSetId);
 				}
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupAttributeSet(attrSet, request, email, currentDt, db);
 				Util.DeadlockRetry(db.SaveChanges, "AttributeSet");
 				return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attrSet));

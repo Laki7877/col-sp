@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Script.Serialization;
 
 namespace Colsp.Api.Controllers
 {
@@ -141,6 +142,18 @@ namespace Colsp.Api.Controllers
 			try
 			{
 				var shopId = User.ShopRequest().ShopId;
+				var email = User.UserRequest().Email;
+				var currentDt = DateTime.Now;
+				Dictionary<string, string> headers = new Dictionary<string, string>();
+				headers.Add(Apis.EVoucherKeyAppIdKey, Apis.EVoucherKeyAppIdValue);
+				headers.Add(Apis.EVoucherKeyAppSecretKey, Apis.EVoucherKeyAppSecretValue);
+				headers.Add(Apis.EVoucherKeyVersionKey, Apis.EVoucherKeyVersionValue);
+				string url = string.Concat(Apis.SubOrderGetAll,shopId, "&Page=", request._offset, "&PageSize=",request._limit);
+				string responseJson = SystemHelper.SendRequest(url, "GET", headers, string.Empty, email, currentDt, "SP", "SUBORDER", db);
+				OrderResponse responses = new JavaScriptSerializer().Deserialize<OrderResponse>(responseJson);
+
+
+
 				var list = (from or in OrderMockup.OrderList
 							where or.ShopId == shopId
 							select new

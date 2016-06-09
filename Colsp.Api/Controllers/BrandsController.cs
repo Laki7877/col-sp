@@ -374,9 +374,9 @@ namespace Colsp.Api.Controllers
 			try
 			{
 				Brand brand = new Brand();
-				string email = User.UserRequest().Email;
-				DateTime cuurentDt = DateTime.Now;
-				SetupBrand(brand, request, email, cuurentDt, db, true);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupBrand(brand, request, email, currentDt, db, true);
 				brand.BrandId = db.GetNextBrandId().SingleOrDefault().Value;
 				db.Brands.Add(brand);
 				Util.DeadlockRetry(db.SaveChanges, "Brand");
@@ -406,9 +406,9 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception(string.Concat("Cannot find brand id ", brandId));
 				}
-				string email = User.UserRequest().Email;
-				DateTime cuurentDt = DateTime.Now;
-				SetupBrand(brand, request, email, cuurentDt, db, false);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupBrand(brand, request, email, currentDt, db, false);
 				Util.DeadlockRetry(db.SaveChanges, "Brand");
 				return GetBrand(brand.BrandId);
 			}

@@ -145,6 +145,7 @@
     <Compile Include="Responses\OnTopCreditCardListResponse.cs" />
     <Compile Include="Responses\OnTopCreditCardResponse.cs" />
     <Compile Include="Responses\PaginatedResponse.cs" />
+    <Compile Include="Responses\SubOrderResponse.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

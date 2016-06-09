@@ -154,12 +154,14 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Cannot find review");
 				}
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				review.ProductContent = request.ProductContent;
 				review.ProductValidity = request.ProductValidity;
 				review.DeliverySpeed = request.DeliverySpeed;
 				review.Packaging = request.Packaging;
-				review.UpdateBy = User.UserRequest().Email;
-				review.UpdateOn = DateTime.Now;
+				review.UpdateBy = email;
+				review.UpdateOn = currentDt;
 				Util.DeadlockRetry(db.SaveChanges, "ProductReview");
 				return Request.CreateResponse(HttpStatusCode.OK);
 			}

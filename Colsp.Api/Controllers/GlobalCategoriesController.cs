@@ -170,7 +170,7 @@ namespace Colsp.Api.Controllers
 			try
 			{
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				category = new GlobalCategory();
 				SetupCategory(category, request, email, currentDt, true);
 				#region lft-rgt
@@ -225,7 +225,7 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Cannot find selected category");
 				}
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupCategory(category, request, email, currentDt, false);
 				#region url
 				if (string.IsNullOrWhiteSpace(request.UrlKey))
@@ -371,7 +371,7 @@ namespace Colsp.Api.Controllers
 				var ids = request.Select(s => s.CategoryId);
 				var catList = db.GlobalCategories.Where(w => ids.Contains(w.CategoryId));
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				foreach (CategoryRequest catRq in request)
 				{
 					var current = catList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
@@ -490,8 +490,8 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Invalid request");
 				}
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				StringBuilder sb = new StringBuilder();
 				string update = "UPDATE GlobalCategory SET Lft = @1 , Rgt = @2 , UpdateBy = '@4' , UpdateOn = '@5' WHERE CategoryId = @3 ;";
 				foreach (var catRq in request)
@@ -668,8 +668,8 @@ namespace Colsp.Api.Controllers
 							current.EnTh = Constant.LANG_EN;
 							current.Type = Constant.MEDIUM;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldEn.Remove(current);
 						}
 						else
@@ -721,8 +721,8 @@ namespace Colsp.Api.Controllers
 							current.EnTh = Constant.LANG_TH;
 							current.Type = Constant.MEDIUM;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldTh.Remove(current);
 						}
 						else
@@ -774,8 +774,8 @@ namespace Colsp.Api.Controllers
 							current.EnTh = Constant.LANG_EN;
 							current.Type = Constant.SMALL;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldEn.Remove(current);
 						}
 						else
@@ -827,8 +827,8 @@ namespace Colsp.Api.Controllers
 							current.EnTh = Constant.LANG_TH;
 							current.Type = Constant.SMALL;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldSmallTh.Remove(current);
 						}
 						else

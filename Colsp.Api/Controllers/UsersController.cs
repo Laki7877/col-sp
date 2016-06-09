@@ -205,17 +205,20 @@ namespace Colsp.Api.Controllers
             try
             {
                 user = new User();
-                SetupUser(user, request, db);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupUser(user, request,email,currentDt, db);
                 #region Password
                 user.Password = salt.HashPassword(Validation.ValidateString(request.Password, "Password", true, 100, false));
                 user.PasswordLastChg = string.Empty;
-                #endregion
-                user.Status = Constant.STATUS_ACTIVE;
+				#endregion
+				
+				user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_SELLER;
-                user.CreateBy = User.UserRequest().Email;
-                user.CreateOn = DateTime.Now;
-                user.UpdateBy = User.UserRequest().Email;
-                user.UpdateOn = DateTime.Now;
+                user.CreateBy = email;
+                user.CreateOn = currentDt;
+                user.UpdateBy = email;
+                user.UpdateOn = currentDt;
                 #region User Group
                 if (request.UserGroup != null)
                 {
@@ -228,22 +231,22 @@ namespace Colsp.Api.Controllers
                         user.UserGroupMaps.Add(new UserGroupMap()
                         {
                             GroupId = usrGrp.GroupId,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
-                        });
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+							UpdateOn = currentDt,
+						});
                     }
                 }
                 user.UserShopMaps.Add(new UserShopMap()
                 {
                     ShopId = User.ShopRequest().ShopId,
                     UserId = user.UserId,
-                    CreateBy = User.UserRequest().Email,
-                    CreateOn = DateTime.Now,
-                    UpdateBy = User.UserRequest().Email,
-                    UpdateOn = DateTime.Now,
-                });
+					CreateBy = email,
+					CreateOn = currentDt,
+					UpdateBy = email,
+					UpdateOn = currentDt,
+				});
                 #endregion
                 user.UserId = db.GetNextUserId().SingleOrDefault().Value;
                 db.Users.Add(user);
@@ -278,19 +281,22 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("User not found");
                 }
-                #endregion
-                SetupUser(user, request, db);
+				#endregion
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupUser(user, request,email,currentDt, db);
                 #region Password
                 if (!string.IsNullOrEmpty(request.Password))
                 {
                     user.PasswordLastChg = user.Password;
                     user.Password = salt.HashPassword(request.Password);
                 }
-                #endregion
-                user.Status = Constant.STATUS_ACTIVE;
+				#endregion
+				
+				user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_SELLER;
-                user.UpdateBy = User.UserRequest().Email;
-                user.UpdateOn = DateTime.Now;
+                user.UpdateBy = email;
+                user.UpdateOn = currentDt;
                 #region User Group
                 var usrGrpList = db.UserGroupMaps.Where(w => w.UserId == user.UserId).ToList();
                 if (request.UserGroup != null && request.UserGroup.Count > 0)
@@ -307,8 +313,8 @@ namespace Colsp.Api.Controllers
                             UserGroupMap current = usrGrpList.Where(w => w.GroupId == grp.GroupId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdateBy = User.UserRequest().Email;
-                                current.UpdateOn = DateTime.Now;
+                                current.UpdateBy = email;
+                                current.UpdateOn = currentDt;
                                 usrGrpList.Remove(current);
                             }
                             else
@@ -321,10 +327,10 @@ namespace Colsp.Api.Controllers
                             UserGroupMap map = new UserGroupMap();
                             map.UserId = user.UserId;
                             map.GroupId = grp.GroupId;
-                            map.CreateBy = User.UserRequest().Email;
-                            map.CreateOn = DateTime.Now;
-                            map.UpdateBy = User.UserRequest().Email;
-                            map.UpdateOn = DateTime.Now;
+                            map.CreateBy = email;
+                            map.CreateOn = currentDt;
+                            map.UpdateBy = email;
+                            map.UpdateOn = currentDt;
                             db.UserGroupMaps.Add(map);
                         }
                     }
@@ -435,17 +441,19 @@ namespace Colsp.Api.Controllers
             try
             {
                 user = new User();
-                SetupUser(user, request, db);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupUser(user, request,email,currentDt, db);
                 #region Password
                 user.Password = salt.HashPassword(Validation.ValidateString(request.Password, "Password", true, 100, false));
                 user.PasswordLastChg = string.Empty;
-                #endregion
-                user.Status = Constant.STATUS_ACTIVE;
+				#endregion
+				user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_ADMIN;
-                user.CreateBy = User.UserRequest().Email;
-                user.CreateOn = DateTime.Now;
-                user.UpdateBy = User.UserRequest().Email;
-                user.UpdateOn = DateTime.Now;
+                user.CreateBy = email;
+                user.CreateOn = currentDt;
+                user.UpdateBy = email;
+                user.UpdateOn = currentDt;
                 #region User Group
                 if (request.UserGroup != null)
                 {
@@ -458,10 +466,10 @@ namespace Colsp.Api.Controllers
                         user.UserGroupMaps.Add(new UserGroupMap()
                         {
                             GroupId = usrGrp.GroupId,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         });
                     }
                 }
@@ -500,19 +508,21 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("This user is not admin");
                 }
-                #endregion
-                SetupUser(user, request, db);
+				#endregion
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupUser(user, request,email,currentDt, db);
                 #region Password
                 if (!string.IsNullOrEmpty(request.Password))
                 {
                     user.PasswordLastChg = user.Password;
                     user.Password = salt.HashPassword(request.Password);
                 }
-                #endregion
-                user.Status = Constant.STATUS_ACTIVE;
+				#endregion
+				user.Status = Constant.STATUS_ACTIVE;
                 user.Type = Constant.USER_TYPE_ADMIN;
-                user.UpdateBy = User.UserRequest().Email;
-                user.UpdateOn = DateTime.Now;
+                user.UpdateBy = email;
+                user.UpdateOn = currentDt;
                 #region User Group
                 var usrGrpList = db.UserGroupMaps.Where(w => w.UserId == user.UserId).ToList();
                 if (request.UserGroup != null && request.UserGroup.Count > 0)
@@ -529,8 +539,8 @@ namespace Colsp.Api.Controllers
                             UserGroupMap current = usrGrpList.Where(w => w.GroupId == grp.GroupId).SingleOrDefault();
                             if (current != null)
                             {
-                                current.UpdateBy = User.UserRequest().Email;
-                                current.UpdateOn = DateTime.Now;
+                                current.UpdateBy = email;
+                                current.UpdateOn = currentDt;
                                 usrGrpList.Remove(current);
                             }
                             else
@@ -543,10 +553,10 @@ namespace Colsp.Api.Controllers
                             UserGroupMap map = new UserGroupMap();
                             map.UserId = user.UserId;
                             map.GroupId = grp.GroupId;
-                            map.CreateBy = User.UserRequest().Email;
-                            map.CreateOn = DateTime.Now;
-                            map.UpdateBy = User.UserRequest().Email;
-                            map.UpdateOn = DateTime.Now;
+                            map.CreateBy = email;
+                            map.CreateOn = currentDt;
+                            map.UpdateBy = email;
+                            map.UpdateOn = currentDt;
                             db.UserGroupMaps.Add(map);
                         }
                     }
@@ -640,10 +650,10 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Invalid request");
                 }
-                string email = request.Email;
-                var currentDt = DateTime.Now;
-                #region Query
-                var user = db.Users.Where(w => w.Email.Equals(email)).Select(s => new
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				#region Query
+				var user = db.Users.Where(w => w.Email.Equals(email)).Select(s => new
                 {
                     s.Email,
                     s.Password,
@@ -908,10 +918,11 @@ namespace Colsp.Api.Controllers
                         }
                     }
                 }
-                #endregion
-                #region Claims
-                var identity = new ClaimsIdentity(claims, Constant.AUTHEN_SCHEMA);
-                var token = salt.HashPassword(string.Concat(user.UserId + DateTime.Now.ToString("ddMMyyHHmmss")));
+				#endregion
+				#region Claims
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				var identity = new ClaimsIdentity(claims, Constant.AUTHEN_SCHEMA);
+                var token = salt.HashPassword(string.Concat(user.UserId + currentDt.ToString("ddMMyyHHmmss")));
                 var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(token);
                 token = Convert.ToBase64String(plainTextBytes);
                 var principal = new UsersPrincipal(identity,
@@ -930,7 +941,7 @@ namespace Colsp.Api.Controllers
                     {
                         BrandId = s.BrandId,
                     }).ToList(),
-                    User.UserRequest(), DateTime.Now);
+                    User.UserRequest(), currentDt);
                 ClaimRequest claimRq = new ClaimRequest();
                 var claimsIdentity = identity;
                 claimRq.Permission = claims.Where(w => w.Type.Equals("Permission"))
@@ -1147,7 +1158,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        private void SetupUser(User user, UserRequest request, ColspEntities db)
+        private void SetupUser(User user, UserRequest request,string email,DateTime currentDt, ColspEntities db)
         {
             user.Email = Validation.ValidateString(request.Email, "Email", true, 100, false);
             user.NameEn = Validation.ValidateString(request.NameEn, "Name", true, 100, false);
@@ -1186,10 +1197,10 @@ namespace Colsp.Api.Controllers
                         user.UserBrandMaps.Add(new UserBrandMap()
                         {
                             BrandId = brand.BrandId,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
                         });
                     }
                 }
