@@ -109,7 +109,17 @@ namespace Colsp.Api.Controllers
 								Brands = s.CouponBrandMaps.Select(se => new { se.Brand.BrandId, se.Brand.BrandNameEn }),
 								Emails = s.CouponCustomerMaps.Select(se => se.Email),
 								GlobalCategories = s.CouponGlobalCatMaps.Select(se => new { se.GlobalCategory.CategoryId, se.GlobalCategory.NameEn }),
-								LocalCategories = s.CouponLocalCatMaps.Select(se => new { se.LocalCategory.CategoryId, se.LocalCategory.NameEn }),
+								LocalCategories = s.CouponLocalCatMaps.Select(se => new
+                                {
+                                    se.LocalCategory.CategoryId,
+                                    se.LocalCategory.NameEn,
+                                    Exclude = s.CouponLocalCatPidMaps.Where(w => w.Filter.Equals(Constant.COUPON_FILTER_EXCLUDE) && w.CouponId == s.CouponId && w.CategoryId == se.LocalCategory.CategoryId).Select(i => new {
+                                        Pid = i.Pid,
+                                        ProductNameEn = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.ProductNameEn).FirstOrDefault(),
+                                        ProductNameTh = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.ProductNameTh).FirstOrDefault(),
+                                        Sku = db.ProductStages.Where(w => w.Pid == i.Pid).Select(p => p.Sku).FirstOrDefault(),
+                                    })
+                                }),
 								Shops = s.CouponShopMaps.Select(se => new { se.Shop.ShopId, se.Shop.ShopNameEn })
 							},
 							//Include = s.CouponPidMaps.Where(w=>w.Filter.Equals(Constant.COUPON_FILTER_INCLUDE)).Select(se=>se.Pid),
@@ -527,50 +537,11 @@ namespace Colsp.Api.Controllers
 									});
 								}
 
-								// Include Product in Local Categories
-								if (c.Include != null && c.Include.Count > 0)
-								{
-
-									foreach (string pid in c.Include)
-									{
-										bool _addNew = false;
-										if (localCatIncludeList == null || localCatIncludeList.Count == 0)
-										{
-											_addNew = true;
-										}
-										if (!_addNew)
-										{
-											CouponLocalCatPidMap current = localCatIncludeList.Where(w => w.Pid == pid).SingleOrDefault();
-											if (current != null)
-											{
-												localCatIncludeList.Remove(current);
-											}
-											else
-											{
-												_addNew = true;
-											}
-										}
-										if (_addNew)
-										{
-											coupon.CouponLocalCatPidMaps.Add(new CouponLocalCatPidMap()
-											{
-												Pid = pid,
-												CategoryId = c.CategoryId,
-												Filter = Constant.COUPON_FILTER_INCLUDE,
-												CreateBy = email,
-												CreateOn = currentDt,
-												UpdateBy = email,
-												UpdateOn = currentDt,
-											});
-										}
-									}
-								}
-
 								// Exclude Product in Local Categories
 								if (c.Exclude != null && c.Exclude.Count > 0)
 								{
 
-									foreach (string pid in c.Exclude)
+									foreach (var p in c.Exclude)
 									{
 										bool _addNew = false;
 										if (localCatExcludeList == null || localCatExcludeList.Count == 0)
@@ -579,7 +550,7 @@ namespace Colsp.Api.Controllers
 										}
 										if (!_addNew)
 										{
-											CouponLocalCatPidMap current = localCatExcludeList.Where(w => w.Pid == pid).SingleOrDefault();
+											CouponLocalCatPidMap current = localCatExcludeList.Where(w => w.Pid == p.Pid).SingleOrDefault();
 											if (current != null)
 											{
 												localCatExcludeList.Remove(current);
@@ -593,7 +564,7 @@ namespace Colsp.Api.Controllers
 										{
 											coupon.CouponLocalCatPidMaps.Add(new CouponLocalCatPidMap()
 											{
-												Pid = pid,
+												Pid = p.Pid,
 												CategoryId = c.CategoryId,
 												Filter = Constant.COUPON_FILTER_EXCLUDE,
 												CreateBy = email,
@@ -649,7 +620,7 @@ namespace Colsp.Api.Controllers
 					if (request.Conditions.Include != null && request.Conditions.Include.Count > 0)
 					{
 
-						foreach (string pid in request.Conditions.Include)
+						foreach (var p in request.Conditions.Include)
 						{
 							bool addNew = false;
 							if (includeList == null || includeList.Count == 0)
@@ -658,7 +629,7 @@ namespace Colsp.Api.Controllers
 							}
 							if (!addNew)
 							{
-								CouponPidMap current = includeList.Where(w => w.Pid == pid).SingleOrDefault();
+								CouponPidMap current = includeList.Where(w => w.Pid == p.Pid).SingleOrDefault();
 								if (current != null)
 								{
 									includeList.Remove(current);
@@ -672,7 +643,7 @@ namespace Colsp.Api.Controllers
 							{
 								coupon.CouponPidMaps.Add(new CouponPidMap()
 								{
-									Pid = pid,
+									Pid = p.Pid,
 									Filter = Constant.COUPON_FILTER_INCLUDE,
 									CreateBy = email,
 									CreateOn = currentDt,
@@ -685,7 +656,7 @@ namespace Colsp.Api.Controllers
 					if (request.Conditions.Exclude != null && request.Conditions.Exclude.Count > 0)
 					{
 
-						foreach (string pid in request.Conditions.Exclude)
+						foreach (var p in request.Conditions.Exclude)
 						{
 							bool addNew = false;
 							if (excludeList == null || excludeList.Count == 0)
@@ -694,7 +665,7 @@ namespace Colsp.Api.Controllers
 							}
 							if (!addNew)
 							{
-								CouponPidMap current = excludeList.Where(w => w.Pid == pid).SingleOrDefault();
+								CouponPidMap current = excludeList.Where(w => w.Pid == p.Pid).SingleOrDefault();
 								if (current != null)
 								{
 									excludeList.Remove(current);
@@ -709,7 +680,7 @@ namespace Colsp.Api.Controllers
 
 								coupon.CouponPidMaps.Add(new CouponPidMap()
 								{
-									Pid = pid,
+									Pid = p.Pid,
 									Filter = Constant.COUPON_FILTER_EXCLUDE,
 									CreateBy = email,
 									CreateOn = currentDt,
