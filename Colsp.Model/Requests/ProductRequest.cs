@@ -74,7 +74,7 @@ namespace Colsp.Model.Requests
             AttributeId = GetValueOrDefault(AttributeId, 0);
             SearchText = GetValueOrDefault(SearchText, string.Empty);
             Pid = GetValueOrDefault(Pid, null);
-			_order = GetValueOrDefault(_order, "CreatedDt");
+			_order = GetValueOrDefault(_order, "CreateOn");
 			base.DefaultOnNull();
 		}
 

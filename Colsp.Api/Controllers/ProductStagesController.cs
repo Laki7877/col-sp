@@ -42,18 +42,31 @@ namespace Colsp.Api.Controllers
 		{
 			try
 			{
-				var products = db.Products.Where(w => w.IsSell == true && w.IsMaster == false && !Constant.STATUS_REMOVE.Equals(w.Status))
+                int shopId = User.ShopRequest().ShopId;
+
+                var products = db.Products.Where(w => w.IsSell == true && w.IsMaster == false && !Constant.STATUS_REMOVE.Equals(w.Status))
 					.Select(s => new
 					{
 						s.ProductNameEn,
 						s.Pid,
 						s.ProductId,
-						s.Sku
+						s.Sku,
+                        s.ShopId,
+                        s.LocalCatId,
+                        s.GlobalCatId,
+                        s.CreateOn,
+                        s.UpdateOn
 					});
+
 				if (request == null)
 				{
 					return Request.CreateResponse(HttpStatusCode.OK, products);
 				}
+
+                if (shopId != 0)
+                {
+                    products = products.Where(w => w.ShopId == shopId);
+                }
 
 				request.DefaultOnNull();
 				if (!string.IsNullOrEmpty(request.SearchText))
@@ -63,8 +76,18 @@ namespace Colsp.Api.Controllers
 					|| w.Sku.Contains(request.SearchText));
 				}
 
-				//count number of products
-				var total = products.Count();
+                if (request.CategoryId > 0)
+                {
+                    if (shopId != 0)
+                        products = products.Where(w => w.LocalCatId == request.CategoryId);
+
+                    else
+                        products = products.Where(w => w.GlobalCatId == request.GlobalCatId);
+                }
+                
+
+                //count number of products
+                var total = products.Count();
 				//make paginate query from database
 				var pagedProducts = products.Paginate(request);
 				//create response
