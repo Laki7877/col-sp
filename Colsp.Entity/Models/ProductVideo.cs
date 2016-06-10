@@ -14,8 +14,9 @@ namespace Colsp.Entity.Models
     
     public partial class ProductVideo
     {
-        public int VideoId { get; set; }
+        public long VideoId { get; set; }
         public string Pid { get; set; }
+        public int ShopId { get; set; }
         public string VideoUrlEn { get; set; }
         public int Position { get; set; }
         public string Status { get; set; }
@@ -25,5 +26,6 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
         public virtual Product Product { get; set; }
+        public virtual Shop Shop { get; set; }
     }
 }

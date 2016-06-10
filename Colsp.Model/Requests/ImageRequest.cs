@@ -6,7 +6,7 @@
         public string Url { get; set; }
         public int Position { get; set; }
         //public string ImageName { get; set; }
-        public int ImageId;
+        public long ImageId;
         //public string EnTh { get; set; }
         public decimal SlideDuration { get; set; }
         public string Link { get; set; }

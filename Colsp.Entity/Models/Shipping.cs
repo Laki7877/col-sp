@@ -19,6 +19,7 @@ namespace Colsp.Entity.Models
         {
             this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
             this.ProductStageGroups = new HashSet<ProductStageGroup>();
+            this.ShopTypeShippingMaps = new HashSet<ShopTypeShippingMap>();
             this.ShopGroups = new HashSet<ShopGroup>();
         }
     
@@ -31,11 +32,20 @@ namespace Colsp.Entity.Models
         public Nullable<System.DateTime> CreateOn { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
+        public string ShippingType { get; set; }
+        public string OldShippingTypeName { get; set; }
+        public string ShopGroup { get; set; }
+        public string StockLocationBy { get; set; }
+        public string PickPackBy { get; set; }
+        public string ShipBy { get; set; }
+        public string InvoiceBy { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductHistoryGroup> ProductHistoryGroups { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageGroup> ProductStageGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopTypeShippingMap> ShopTypeShippingMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopGroup> ShopGroups { get; set; }
     }

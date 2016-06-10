@@ -1,13 +1,31 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 
 namespace Colsp.Api.Constants
 {
     public static class Constant
     {
+
+		public static readonly string SE_Asia_Standard_Time = "SE Asia Standard Time";
+
+		public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 10 };
+        public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 3 };
+
+		public static readonly List<string> IMPORT_REQUIRE_FIELD = new List<string>() {
+			"AAA",
+			"AAB",
+			"AAC",
+			"AAD",
+		};
+
+        public static readonly int DEFAULT_GLOBAL_CATEGORY = 1;
+
+        public static readonly string PRODUCT_IMAGE_URL = string.Concat(AppSettingKey.IMAGE_STATIC_URL, "productimages/large/");
+
         public static readonly int DEFAULT_THE_ONE_CARD = 1;
 
-        public static readonly int DEFAULT_ADD_YEAR = 20;
+        public static readonly int DEFAULT_ADD_YEAR = 10;
 
         public static readonly int BULK_APPROVE_LIMIT = 100;
 
@@ -34,9 +52,9 @@ namespace Colsp.Api.Constants
         public static readonly int SHIPPING_FULFILLMENT = 2;
 
         public static readonly int DEFAULT_BOOSTWEIGHT = 5000;
+		public static readonly int DEFAULT_GLOBAL_BOOSTWEIGHT = 5000;
 
-        public static List<char> IGNORE_PID = new List<char>() {
-                   //'0',
+		public static List<char> IGNORE_PID = new List<char>() {
                     'D',
                     'E',
                     'F',
@@ -69,7 +87,7 @@ namespace Colsp.Api.Constants
 
         public static readonly string STATUS_ACTIVE = "AT";
         public static readonly string STATUS_NOT_ACTIVE = "NA";
-        public static readonly string STATUS_REMOVE = "RM";
+        
         public static readonly string STATUS_VISIBLE = "VI";
         public static readonly string STATUS_NOT_VISIBLE = "NV";
         public static readonly string STATUS_YES = "Y";
@@ -80,11 +98,12 @@ namespace Colsp.Api.Constants
         public static readonly string DATA_TYPE_CHECKBOX = "CB";
         public static readonly string DATA_TYPE_HTML = "HB";
 
-        public static readonly string PRODUCT_STATUS_DRAFT = "DF";
-        public static readonly string PRODUCT_STATUS_WAIT_FOR_APPROVAL = "WA";
-        public static readonly string PRODUCT_STATUS_JUNK = "JU";
-        public static readonly string PRODUCT_STATUS_APPROVE = "AP";
-        public static readonly string PRODUCT_STATUS_NOT_APPROVE = "RJ";
+        public static readonly string PRODUCT_STATUS_DRAFT              = "DF";
+        public static readonly string PRODUCT_STATUS_WAIT_FOR_APPROVAL  = "WA";
+        public static readonly string PRODUCT_STATUS_JUNK               = "JU";
+        public static readonly string PRODUCT_STATUS_APPROVE            = "AP";
+        public static readonly string PRODUCT_STATUS_NOT_APPROVE        = "RJ";
+        public static readonly string STATUS_REMOVE                     = "RM";
 
 
         public static readonly string USER_TYPE_ADMIN = "A";
@@ -149,15 +168,23 @@ namespace Colsp.Api.Constants
 
         public static string STATUS_PROMOTION_INACTIVE = "IA";
         public static string STATUS_PROMOTION_ACTIVE = "AT";
-        #region CMS
-        public static readonly int CMS_SHOP_GOBAL = 0;
+
+
+		public static string COUPON_ACTION_AMOUNT = "AMOUNT";
+		public static string COUPON_ACTION_PERCENT = "PERCENT";
+
+
+		#region CMS
+		public static readonly int CMS_SHOP_GOBAL = 0;
 
         public static readonly string CMS_STATUS_DRAFT              = "DF";
         public static readonly string CMS_STATUS_WAIT_FOR_APPROVAL  = "WA";
         public static readonly string CMS_STATUS_JUNK               = "JU";
         public static readonly string CMS_STATUS_APPROVE            = "AP";
         public static readonly string CMS_STATUS_NOT_APPROVE        = "RJ";
-        public static readonly string CMS_STATUS_REMOVE             = "RJ";
+        public static readonly string CMS_STATUS_REMOVE             = "RM";
+
+
 
         public static readonly string CMS_MASTER_TYPE_STATIC        = "ST";
         public static readonly string CMS_MASTER_TYPE_COLLECTION    = "CL";

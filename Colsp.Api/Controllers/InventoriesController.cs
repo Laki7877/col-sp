@@ -34,7 +34,7 @@ namespace Colsp.Api.Controllers
                 var products = (
                            from inv in db.Inventories
                            join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
-                           where !stage.Shop.Status.Equals(Constant.STATUS_REMOVE) && 
+                           where !Constant.STATUS_REMOVE.Equals(stage.Status) && 
                                  (
                                     stage.IsVariant == true 
                                     || (stage.IsVariant == false && stage.ImageCount == 0)
@@ -209,13 +209,17 @@ namespace Colsp.Api.Controllers
                 var invenentory = (from inv in db.Inventories
                                 join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
                                 where
-                                !stage.Shop.Status.Equals(Constant.STATUS_REMOVE) &&
-                                (
-                                    stage.IsVariant == true || (stage.IsVariant == false && stage.VariantCount == 0)
+                                !stage.Status.Equals(Constant.STATUS_REMOVE)
+                                && (
+                                    stage.IsVariant == true 
+                                    || (
+                                            stage.IsVariant == false 
+                                            && stage.VariantCount == 0
+                                        )
                                 )
                                 select new
                                 {
-                                    ImageUrl = stage.FeatureImgUrl,
+                                    ImageUrl = string.Empty.Equals(stage.FeatureImgUrl) ? string.Empty : string.Concat(Constant.PRODUCT_IMAGE_URL, stage.FeatureImgUrl),
                                     ProductId = stage.ProductId,
                                     Sku = stage.Sku,
                                     Upc = stage.Upc,
@@ -265,7 +269,7 @@ namespace Colsp.Api.Controllers
                     }
                     else if (string.Equals("OutOfStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        invenentory = invenentory.Where(w => w.Quantity == 0);
+                        invenentory = invenentory.Where(w => w.Quantity <= 0);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
                     else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))
@@ -291,18 +295,100 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var inv = db.Inventories.Where(w=> w.Pid.Equals(pid) && !w.ProductStage.Shop.Status.Equals(Constant.STATUS_REMOVE)).SingleOrDefault();
-                if(inv == null)
+                #region Query
+                var inv = db.Inventories.Where(w=> w.Pid.Equals(pid) 
+                    && !Constant.STATUS_REMOVE.Equals(w.ProductStage.Status))
+                    .Select(s => new
+                    {
+                        s.Pid,
+                        s.Quantity,
+                        s.ProductStage.ProductStageGroup.ShippingId
+                    })
+                    .SingleOrDefault();
+                #endregion
+                #region Validation
+                if (inv == null)
                 {
                     throw new Exception("Cannot find inventory");
                 }
-                inv.Quantity = Validation.ValidationInteger(inv.Quantity + request.UpdateQuantity,"Quantity",true, int.MaxValue,0).Value;
+                if(Constant.IGNORE_INVENTORY_SHIPPING.Contains(inv.ShippingId))
+                {
+                    throw new Exception("Cannot update inventory. Check you shipping type.");
+                }
+                #endregion
+                #region Setup
+                Inventory inventory = new Inventory()
+                {
+                    Pid = inv.Pid
+                };
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				db.Inventories.Attach(inventory);
+                db.Entry(inventory).Property(p => p.Quantity).IsModified = true;
+				db.Entry(inventory).Property(p => p.UpdateBy).IsModified = true;
+				db.Entry(inventory).Property(p => p.UpdateOn).IsModified = true;
+				inventory.Quantity = inv.Quantity + request.UpdateQuantity;
+				inventory.UpdateOn = currentDt;
+				inventory.UpdateBy = email;
+
+                db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Inventory");
+                #endregion
                 return Request.CreateResponse(HttpStatusCode.OK, inv.Quantity);
             }
             catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
+            }
+        }
+
+        [Route("api/Inventories/Cmos/{pid}")]
+        [HttpPut]
+        [OverrideAuthentication, OverrideAuthorization]
+        public HttpResponseMessage SaveChangeInventoriesCmos(string pid, InventoryRequest request)
+        {
+            try
+            {
+                #region Query
+                var inv = db.Inventories.Where(w => w.Pid.Equals(pid))
+                    .Select(s => new
+                    {
+                        s.Pid,
+                        s.Quantity,
+                        s.Defect,
+                        s.Reserve,
+                        s.OnHold,
+                    })
+                    .SingleOrDefault();
+                #endregion
+                #region Validation
+                if (inv == null)
+                {
+                    throw new Exception("Cannot find inventory");
+                }
+                #endregion
+                #region Setup
+                Inventory inventory = new Inventory()
+                {
+                    Pid = inv.Pid
+                };
+                db.Inventories.Attach(inventory);
+                db.Entry(inventory).Property(p => p.Quantity).IsModified = true;
+                db.Entry(inventory).Property(p => p.Defect).IsModified = true;
+                db.Entry(inventory).Property(p => p.Reserve).IsModified = true;
+                db.Entry(inventory).Property(p => p.OnHold).IsModified = true;
+                inventory.Quantity = inv.Quantity + request.StockAdjustQty;
+                inventory.Defect = inv.Defect + request.DefectAdjustQty;
+                inventory.Reserve = inv.Reserve + request.ReserveAdjustQty;
+                inventory.OnHold = inv.OnHold + request.HoldAdjustQty;
+                db.Configuration.ValidateOnSaveEnabled = false;
+                Util.DeadlockRetry(db.SaveChanges, "Inventory");
+                #endregion
+                return Request.CreateResponse(HttpStatusCode.OK,"Successful");
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
             }
         }
 
@@ -313,11 +399,6 @@ namespace Colsp.Api.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private bool InventoryExists(string id)
-        {
-            return db.Inventories.Count(e => e.Pid == id) > 0;
         }
     }
 }

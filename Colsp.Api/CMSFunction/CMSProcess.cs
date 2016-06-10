@@ -35,9 +35,9 @@ namespace Colsp.Api.CMSFunction
                         cms.CMSMasterNameEN         = Model.CMSMasterNameEN;
                         cms.CMSMasterNameTH         = Model.CMSMasterNameTH;
                         cms.CMSMasterEffectiveDate  = Model.EffectiveDate;
-                        cms.CMSMasterEffectiveTime  = Model.EffectiveTime;
-                        cms.CMSMasterExpiryDate     = Model.ExpiryDate;
-                        cms.CMSMasterExpiryTime     = Model.ExpiryTime;
+                        //cms.CMSMasterEffectiveTime  = Model.EffectiveTime;
+                        cms.CMSMasterExpireDate     = Model.ExpiryDate;
+                        //cms.CMSMasterExpiryTime     = Model.ExpiryTime;
                         cms.LongDescriptionEN       = Model.LongDescriptionEN;
                         cms.LongDescriptionTH       = Model.LongDescriptionTH;
                         cms.ShortDescriptionEN      = Model.ShortDescriptionEN;
@@ -58,9 +58,9 @@ namespace Colsp.Api.CMSFunction
                         var masterId = cms.CMSMasterId;
                         foreach (var schedule in Model.ScheduleList)
                         {
-                            CMSScheduler cmsScheduler = new CMSScheduler();
-                            cmsScheduler.EffectiveDate = schedule.EffectiveDate;
-                            cmsScheduler.ExpiryDate = schedule.ExpiryDate;
+                            CMSScheduler cmsScheduler   = new CMSScheduler();
+                            cmsScheduler.EffectiveDate  = schedule.EffectiveDate;
+                            cmsScheduler.ExpireDate     = schedule.ExpiryDate;
                             db.CMSSchedulers.Add(cmsScheduler);
 
                             if (db.SaveChanges() > 0)
@@ -190,9 +190,9 @@ namespace Colsp.Api.CMSFunction
                     //sc.CreateBy = UserId;
                     //sc.Createdate = DateTime.Now;
                     sc.EffectiveDate = Master.CMSMasterEffectiveDate;
-                    sc.EffectiveTime = Master.CMSMasterEffectiveTime;
-                    sc.ExpiryDate = Master.CMSMasterExpiryDate;
-                    sc.ExpiryTime = Master.CMSMasterExpiryTime;
+                    //sc.EffectiveTime = Master.CMSMasterEffectiveTime;
+                    //sc.ExpiryDate = Master.CMSMasterExpiryDate;
+                    //sc.ExpiryTime = Master.CMSMasterExpiryTime;
                     //sc.Visibility = Master.Visibility;
                     sc.CreateIP = Master.CreateIP;
                     //sc.Status = Master.Status;
@@ -234,9 +234,9 @@ namespace Colsp.Api.CMSFunction
                             cms.CMSMasterNameTH = Model.CMSNameTH;
                             //cms.CMSTypeId = Model.CMSTypeId;
                             cms.CMSMasterEffectiveDate = Model.EffectiveDate;
-                            cms.CMSMasterEffectiveTime = Model.EffectiveTime;
-                            cms.CMSMasterExpiryDate = Model.ExpiryDate;
-                            cms.CMSMasterExpiryTime = Model.ExpiryTime;
+                            //cms.CMSMasterEffectiveTime = Model.EffectiveTime;
+                            //cms.CMSMasterExpiryDate = Model.ExpiryDate;
+                            //cms.CMSMasterExpiryTime = Model.ExpiryTime;
                             cms.LongDescriptionEN = Model.LongDescriptionEN;
                             cms.LongDescriptionTH = Model.LongDescriptionTH;
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
@@ -283,9 +283,9 @@ namespace Colsp.Api.CMSFunction
                             cms.CMSMasterNameTH = Model.CMSNameTH;
                             //cms.CMSTypeId = Model.CMSTypeId;
                             cms.CMSMasterEffectiveDate = Model.EffectiveDate;
-                            cms.CMSMasterEffectiveTime = Model.EffectiveTime;
-                            cms.CMSMasterExpiryDate = Model.ExpiryDate;
-                            cms.CMSMasterExpiryTime = Model.ExpiryTime;
+                            //cms.CMSMasterEffectiveTime = Model.EffectiveTime;
+                            //cms.CMSMasterExpiryDate = Model.ExpiryDate;
+                            //cms.CMSMasterExpiryTime = Model.ExpiryTime;
                             cms.LongDescriptionEN = Model.LongDescriptionEN;
                             cms.LongDescriptionTH = Model.LongDescriptionTH;
                             cms.ShortDescriptionEN = Model.ShortDescriptionEN;
@@ -343,9 +343,9 @@ namespace Colsp.Api.CMSFunction
 
                             //cms.CMSTypeId = modelItem.CMSMasterTypeId ?? cms.CMSTypeId;
                             cms.CMSMasterEffectiveDate = modelItem.EffectiveDate ?? cms.CMSMasterEffectiveDate;
-                            cms.CMSMasterEffectiveTime = modelItem.EffectiveTime ?? cms.CMSMasterEffectiveTime;
-                            cms.CMSMasterExpiryDate = modelItem.ExpiryDate ?? cms.CMSMasterExpiryDate;
-                            cms.CMSMasterExpiryTime = modelItem.ExpiryTime ?? cms.CMSMasterExpiryTime;
+                            //cms.CMSMasterEffectiveTime = modelItem.EffectiveTime ?? cms.CMSMasterEffectiveTime;
+                            //cms.CMSMasterExpiryDate = modelItem.ExpiryDate ?? cms.CMSMasterExpiryDate;
+                            //cms.CMSMasterExpiryTime = modelItem.ExpiryTime ?? cms.CMSMasterExpiryTime;
                             cms.LongDescriptionEN = modelItem.LongDescriptionEN != default(string) ? modelItem.LongDescriptionEN : cms.LongDescriptionEN;
                             cms.LongDescriptionTH = modelItem.LongDescriptionTH != default(string) ? modelItem.LongDescriptionTH : cms.LongDescriptionTH;
                             cms.ShortDescriptionEN = modelItem.ShortDescriptionEN != default(string) ? modelItem.ShortDescriptionEN : cms.ShortDescriptionEN;
@@ -398,9 +398,9 @@ namespace Colsp.Api.CMSFunction
 
                             //cms.CMSTypeId = modelItem.CMSTypeId ?? cms.CMSTypeId;
                             cms.CMSMasterEffectiveDate = modelItem.EffectiveDate ?? cms.CMSMasterEffectiveDate;
-                            cms.CMSMasterEffectiveTime = modelItem.EffectiveTime ?? cms.CMSMasterEffectiveTime;
-                            cms.CMSMasterExpiryDate = modelItem.ExpiryDate ?? cms.CMSMasterExpiryDate;
-                            cms.CMSMasterExpiryTime = modelItem.ExpiryTime ?? cms.CMSMasterExpiryTime;
+                            //cms.CMSMasterEffectiveTime = modelItem.EffectiveTime ?? cms.CMSMasterEffectiveTime;
+                            //cms.CMSMasterExpiryDate = modelItem.ExpiryDate ?? cms.CMSMasterExpiryDate;
+                            //cms.CMSMasterExpiryTime = modelItem.ExpiryTime ?? cms.CMSMasterExpiryTime;
                             cms.LongDescriptionEN = modelItem.LongDescriptionEN != default(string) ? modelItem.LongDescriptionEN : cms.LongDescriptionEN;
                             cms.LongDescriptionTH = modelItem.LongDescriptionTH != default(string) ? modelItem.LongDescriptionTH : cms.LongDescriptionTH;
                             cms.ShortDescriptionEN = modelItem.ShortDescriptionEN != default(string) ? modelItem.ShortDescriptionEN : cms.ShortDescriptionEN;

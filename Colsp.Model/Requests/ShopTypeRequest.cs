@@ -9,6 +9,7 @@ namespace Colsp.Model.Requests
         public string SearchText { get; set; }
         public List<PermissionRequest> Permission { get; set; }
         public List<ThemeRequest> Themes { get; set; }
+        public List<ShippingRequest> Shippings { get; set; }
 
 
         public ShopTypeRequest()
@@ -18,6 +19,7 @@ namespace Colsp.Model.Requests
             SearchText = string.Empty;
             Permission = new List<PermissionRequest>();
             Themes = new List<ThemeRequest>();
+            Shippings = new List<ShippingRequest>();
         }
 
         public override void DefaultOnNull()
@@ -40,6 +42,17 @@ namespace Colsp.Model.Requests
             ThemeName = string.Empty;
             ThemeImage = string.Empty;
         }
+    }
 
+    public class ShippingRequest
+    {
+        public int ShippingId { get; set; }
+        public string ShippingMethodEn { get; set; }
+
+        public ShippingRequest()
+        {
+            ShippingId = 0;
+            ShippingMethodEn = string.Empty;
+        }
     }
 }

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d42ca0141573406a998a891fcc0c7d99" Name="Diagram1">
+        <EntityTypeShape EntityType="DBMKPOnlineModel.AppAuth" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Attribute" Width="1.5" PointX="29.75" PointY="62" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.AttributeFilterMap" Width="1.5" PointX="32" PointY="89.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.AttributePropertyMap" Width="1.5" PointX="32" PointY="91.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.AttributeSet" Width="1.5" PointX="13.25" PointY="65.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.AttributeSetMap" Width="1.5" PointX="32" PointY="64.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.AttributeSetTag" Width="1.5" PointX="15.5" PointY="57" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.AttributeValue" Width="1.5" PointX="29.75" PointY="89.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.AttributeValueMap" Width="1.5" PointX="35" PointY="71.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.BankDetail" Width="1.5" PointX="0.75" PointY="64" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Brand" Width="1.5" PointX="5.25" PointY="51.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.BrandFeatureProduct" Width="1.5" PointX="17.75" PointY="68.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.BrandImage" Width="1.5" PointX="7.5" PointY="51.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CartDetail" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CartDiscount" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CartHead" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.City" Width="1.5" PointX="0.75" PointY="66.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSCategory" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSCategoryProductMap" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSFeatureProduct" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSGroup" Width="1.5" PointX="6.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSImage" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSMaster" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSMasterCategoryMap" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSMasterGroupMap" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSMasterSchedulerMap" Width="1.5" PointX="4.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CMSScheduler" Width="1.5" PointX="6.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Country" Width="1.5" PointX="0.75" PointY="69.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Coupon" Width="1.5" PointX="5.25" PointY="66.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponBrandMap" Width="1.5" PointX="7.5" PointY="66.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponCondition" Width="1.5" PointX="8.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponCustomerMap" Width="1.5" PointX="7.5" PointY="70.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponGlobalCatMap" Width="1.5" PointX="10.5" PointY="68.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponLocalCatMap" Width="1.5" PointX="10.5" PointY="64.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponOrder" Width="1.5" PointX="7.5" PointY="81.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponPidMap" Width="1.5" PointX="10.5" PointY="72.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponShopMap" Width="1.5" PointX="8.5" PointY="76.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Customer" Width="1.5" PointX="10.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Customer_Staging" Width="1.5" PointX="10.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CustomerAddress" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CustomerAddress_Staging" Width="1.5" PointX="12.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CustomerToken" Width="1.5" PointX="12.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CustomerTokenCreditCard" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CustomerWishList" Width="1.5" PointX="2.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Deal" Width="1.5" PointX="14.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.District" Width="1.5" PointX="0.75" PointY="71.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.GlobalCatAttributeSetMap" Width="1.5" PointX="18.5" PointY="60.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.GlobalCategory" Width="1.5" PointX="8.25" PointY="56.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.GlobalCatFeatureProduct" Width="1.5" PointX="20.75" PointY="68.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.GlobalCatImage" Width="1.5" PointX="10.5" PointY="55.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ImportHeader" Width="1.5" PointX="13.25" PointY="57.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Inventory" Width="1.5" PointX="26" PointY="68.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.InventoryHistory" Width="1.5" PointX="4.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.LocalCategory" Width="1.5" PointX="11.25" PointY="75.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.LocalCatFeatureProduct" Width="1.5" PointX="13.5" PointY="77.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.LocalCatImage" Width="1.5" PointX="16.5" PointY="76.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Newsletter" Width="1.5" PointX="3" PointY="89" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.NewsletterShopMap" Width="1.5" PointX="5.25" PointY="81.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ODMPermission" Width="1.5" PointX="6.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ODMProcessLog" Width="1.5" PointX="14.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ODMRole" Width="1.5" PointX="14.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ODMRolePermission" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ODMUser" Width="1.5" PointX="16.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ODMUserMenuItem" Width="1.5" PointX="16.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ODMUserToken" Width="1.5" PointX="16.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Payment" Width="1.5" PointX="16.75" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Permission" Width="1.5" PointX="3.75" PointY="47.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Pid" Width="1.5" PointX="0.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.PostCode" Width="1.5" PointX="0.75" PointY="83.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Product" Width="1.5" PointX="11.25" PointY="89.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductAttribute" Width="1.5" PointX="13.5" PointY="94.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductGlobalCatMap" Width="1.5" PointX="13.5" PointY="85.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductHistory" Width="1.5" PointX="29.75" PointY="69.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductHistoryAttribute" Width="1.5" PointX="35" PointY="79.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductHistoryGlobalCatMap" Width="1.5" PointX="26.75" PointY="78.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductHistoryGroup" Width="1.5" PointX="19.5" PointY="73.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductHistoryImage" Width="1.5" PointX="32" PointY="79.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductHistoryLocalCatMap" Width="1.5" PointX="26.75" PointY="82.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductHistoryTag" Width="1.5" PointX="21.75" PointY="103.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductHistoryVideo" Width="1.5" PointX="32" PointY="84.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductLocalCatMap" Width="1.5" PointX="13.5" PointY="81.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductNotify" Width="1.5" PointX="12.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductRelated" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductReview" Width="1.5" PointX="8.25" PointY="84.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStage" Width="1.5" PointX="23.75" PointY="66.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageAttribute" Width="1.5" PointX="32" PointY="73.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageComment" Width="1.5" PointX="26" PointY="85.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageGlobalCatMap" Width="1.5" PointX="17.75" PointY="64.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageGroup" Width="1.5" PointX="15.5" PointY="64" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageImage" Width="1.5" PointX="32" PointY="69" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageLocalCatMap" Width="1.5" PointX="20.75" PointY="64.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageMaster" Width="1.5" PointX="26" PointY="89.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageRelated" Width="1.5" PointX="26.75" PointY="74.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageTag" Width="1.5" PointX="17.75" PointY="105" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductStageVideo" Width="1.5" PointX="35" PointY="75.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductTag" Width="1.5" PointX="13.5" PointY="102.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductTmp" Width="1.5" PointX="5.25" PointY="95.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ProductVideo" Width="1.5" PointX="13.5" PointY="105.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.PromotionBuy1Get1Item" Width="1.5" PointX="18.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.PromotionOnTopCreditCard" Width="1.5" PointX="6.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.PromotionOnTopCreditNumber" Width="1.5" PointX="8.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Province" Width="1.5" PointX="0.75" PointY="85.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Shipping" Width="1.5" PointX="13.25" PointY="61.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Shop" Width="1.5" PointX="3" PointY="70.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ShopCommission" Width="1.5" PointX="5.25" PointY="85.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ShopGroup" Width="1.5" PointX="15.5" PointY="61" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ShopImage" Width="1.5" PointX="5.25" PointY="104.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ShopType" Width="1.5" PointX="0.75" PointY="88.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ShopTypePermissionMap" Width="1.5" PointX="11" PointY="60.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ShopTypeThemeMap" Width="1.5" PointX="3" PointY="93.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ShopUserGroupMap" Width="1.5" PointX="11.25" PointY="85.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.SortBy" Width="1.5" PointX="9" PointY="90.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.StoreBranch" Width="1.5" PointX="18.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.StoreReceive" Width="1.5" PointX="18.75" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.StoreReceiveCode" Width="1.5" PointX="20.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.StoreReturn" Width="1.5" PointX="0.75" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Subscribe" Width="1.5" PointX="2.75" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.sysdiagram" Width="1.5" PointX="20.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TermPayment" Width="1.5" PointX="0.75" PointY="92.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Theme" Width="1.5" PointX="0.75" PointY="94.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.User" Width="1.5" PointX="0.75" PointY="76" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.UserBrandMap" Width="1.5" PointX="6" PointY="77.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.UserGroup" Width="1.5" PointX="3.75" PointY="62.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.UserGroupMap" Width="1.5" PointX="6" PointY="73.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.UserGroupPermissionMap" Width="1.5" PointX="6" PointY="62.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.UserShopMap" Width="1.5" PointX="13.25" PointY="71.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.VendorTaxRate" Width="1.5" PointX="0.75" PointY="98.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.WithholdingTax" Width="1.5" PointX="0.75" PointY="100.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Guest" Width="1.5" PointX="20.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBDepartment" Width="1.5" PointX="20.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProduct" Width="1.5" PointX="20.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProductApproved" Width="1.5" PointX="10.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProductBundle" Width="1.5" PointX="12.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProductGroup" Width="1.5" PointX="14.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProductMaster" Width="1.5" PointX="22.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProductPicture" Width="1.5" PointX="22.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProductRelateLink" Width="1.5" PointX="22.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProductVideoLink" Width="1.5" PointX="22.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBProperty" Width="1.5" PointX="22.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBPropertyCategory" Width="1.5" PointX="2.75" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBPropertyFilter" Width="1.5" PointX="16.75" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBPropertyGroup" Width="1.5" PointX="24.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.Migrate_TBPropertyProduct" Width="1.5" PointX="24.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.ODMRoleUser" Width="1.5" PointX="24.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.PostCodeMap" Width="1.5" PointX="24.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.PromotionT1C" Width="1.5" PointX="24.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.StoreReturnReason" Width="1.5" PointX="24.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBAdminMenuItemTmp" Width="1.5" PointX="24.75" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBCDSBranch" Width="1.5" PointX="12.75" PointY="25.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBCMCity" Width="1.5" PointX="26.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBDvMapZone" Width="1.5" PointX="0.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBPermissionTmp" Width="1.5" PointX="2.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBRolePermissionTmp" Width="1.5" PointX="26.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBRoleTmp" Width="1.5" PointX="4.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBRoleUserTmp" Width="1.5" PointX="6.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBSetting" Width="1.5" PointX="26.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBUserAdminTmp" Width="1.5" PointX="8.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.TBUserAdminWebTokenTmp" Width="1.5" PointX="26.75" PointY="10.75" IsExpanded="true" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryAttribute_Attribute" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageAttribute_Attribute" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKAttributeSetMapAttribute" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKAttributeValueMapAttribute" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_AttributeFilterMap_AttributeValue" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_AttributePropertyMap_AttributeValue" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_AttributeSetTagMap_AttributeSet" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryGroup_AttributeSet" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageGroup_AttributeSet" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKAttributeSetMapAttributeSet" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKCategoryAttributeSetMapAttributeSet" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryAttribute_AttributeValue" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageAttribute_AttributeValue" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKAttributeValueMapAttributeValue" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_BankDetail" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Brand_SortBy" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_BrandFeatureProduct_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_BrandImage_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponBrandMap_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryGroup_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageGroup_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_UserBrandMap_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_BrandFeatureProduct_ProductStageGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_City" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_Country" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Coupon_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponBrandMap_Coupon" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponCustomerMap_Coupon" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponGlobalCatMap_Coupon" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponLocalCatMap_Coupon" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponOrder_Coupon" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponPidMap_Coupon" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponShopMap_Coupon" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponGlobalCatMap_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponLocalCatMap_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponPidMap_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponShopMap_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_District" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKCategoryAttributeSetMapCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_GlobalCategory_SortBy" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_GlobalCatFeatureProduct_GlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_GlobalCatImage_GlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryGroup_GlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageGroup_GlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopCommission_GlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductGlobalCatMapGlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductHistoryGlobalCatMapGlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductStageGlobalCatMapGlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_GlobalCatFeatureProduct_ProductStageGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Inventory_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_LocalCategory_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_LocalCategory_SortBy" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_LocalCatFeatureProduct_LocalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_LocalCatImage_GlobalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryGroup_LocalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageGroup_LocalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductHistoryLocalCatMapLocalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductLocalCatMapLocalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductStageLocalCatMapLocalCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_LocalCatFeatureProduct_ProductStageGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_LocalCatFeatureProduct_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_LocalCatImage_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_NewsletterShopMap_Newsletter" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_NewsletterShopMap_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopTypePermissionMap_Permission" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKUserGroupPermissionMapUserPermission" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_PostalCode" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductAttribute_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductReview_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductTag_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductVideo_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductGlobalCatMapProduct" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductLocalCatMapProduct" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistory_ProductHistoryGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistory_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryAttribute_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryImage_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryVideo_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryGlobalCatMap_ProductHistoryGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryGroup_Shipping" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryGroup_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryLocalCatMap_ProductHistoryGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductHistoryTag_ProductHistoryGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductReview_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStage_ProductStageGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStage_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageAttribute_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageComment_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageImage_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageMaster_ChildGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageMaster_ParentGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageVideo_ProductStage" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductStageGlobalCatMapProduct" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageGroup_Shipping" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageGroup_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageRelated_GroupChild" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageRelated_GroupParent" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageTag_ProductStageGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKProductStageLocalCatMapProduct" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageImage_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageRelated_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductStageVideo_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ProductTmp_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_Province" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_ShopType" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_TermPayment" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_Theme" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_User" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_VendorTaxRate" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_Shop_WithholdingTax" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopCommission_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopImage_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopUerGroupMap_Shop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKUserShopShop" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopTypePermissionMap_ShopType" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopTypeThemeMap_ShopType" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopTypeThemeMap_Theme" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_ShopUerGroupMap_UserGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_UserBrandMap_User" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKUserGroupMapUser" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKUserShopUser" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKUserGroupMapUserGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.FKUserGroupPermissionMapUserGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.ImportHeaderShopGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="DBMKPOnlineModel.ShippingShopGroupMap" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DBMKPOnlineModel.CouponLocalCatPidMap" Width="1.5" PointX="35" PointY="67.25" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponLocalCatPidMap_Coupon" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponLocalCatPidMap_LocalCategory" />
+        <AssociationConnector Association="DBMKPOnlineModel.FK_CouponLocalCatPidMap_ProductStage" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

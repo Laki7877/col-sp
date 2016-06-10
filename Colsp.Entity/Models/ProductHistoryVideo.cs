@@ -15,6 +15,7 @@ namespace Colsp.Entity.Models
     public partial class ProductHistoryVideo
     {
         public long HistoryId { get; set; }
+        public long VideoId { get; set; }
         public string Pid { get; set; }
         public int ShopId { get; set; }
         public string VideoUrlEn { get; set; }

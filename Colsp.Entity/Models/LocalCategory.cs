@@ -18,6 +18,7 @@ namespace Colsp.Entity.Models
         public LocalCategory()
         {
             this.CouponLocalCatMaps = new HashSet<CouponLocalCatMap>();
+            this.CouponLocalCatPidMaps = new HashSet<CouponLocalCatPidMap>();
             this.LocalCatFeatureProducts = new HashSet<LocalCatFeatureProduct>();
             this.LocalCatImages = new HashSet<LocalCatImage>();
             this.ProductHistoryGroups = new HashSet<ProductHistoryGroup>();
@@ -48,6 +49,7 @@ namespace Colsp.Entity.Models
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
         public bool Visibility { get; set; }
+        public bool IsLandingPage { get; set; }
         public Nullable<int> SortById { get; set; }
         public string Status { get; set; }
         public string CreateBy { get; set; }
@@ -57,6 +59,8 @@ namespace Colsp.Entity.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponLocalCatMap> CouponLocalCatMaps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
         public virtual Shop Shop { get; set; }
         public virtual SortBy SortBy { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

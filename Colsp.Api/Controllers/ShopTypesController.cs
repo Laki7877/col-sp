@@ -78,6 +78,11 @@ namespace Colsp.Api.Controllers
                             t.Theme.ThemeName,
                             t.Theme.ThemeImage,
                         }),
+                        Shippings = s.ShopTypeShippingMaps.Select(sh => new
+                        {
+                            sh.Shipping.ShippingId,
+                            sh.Shipping.ShippingMethodEn,
+                        })
                     }).ToList();
                 if(shopTypeList == null || shopTypeList.Count == 0)
                 {
@@ -98,9 +103,9 @@ namespace Colsp.Api.Controllers
             ShopType shopType = null;
             try
             {
-                var email = User.UserRequest().Email;
-                var currentDt = DateTime.Now;
-                shopType = new ShopType();
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				shopType = new ShopType();
                 shopType.ShopTypeNameEn = request.ShopTypeNameEn;
                 shopType.Status = Constant.STATUS_ACTIVE;
                 shopType.CreateBy = email;
@@ -130,13 +135,31 @@ namespace Colsp.Api.Controllers
                 {
                     foreach(var theme in request.Themes)
                     {
-                        if(theme.ThemeId != 0)
+                        if(theme.ThemeId == 0)
                         {
                             throw new Exception("Theme Id is null");
                         }
                         shopType.ShopTypeThemeMaps.Add(new ShopTypeThemeMap()
                         {
                             ThemeId = theme.ThemeId,
+                            CreateBy = email,
+                            CreateOn = currentDt,
+                            UpdateBy = email,
+                            UpdateOn = currentDt,
+                        });
+                    }
+                }
+                if(request.Shippings != null)
+                {
+                    foreach (var shipping in request.Shippings)
+                    {
+                        if (shipping.ShippingId == 0)
+                        {
+                            throw new Exception("Shop Id is null");
+                        }
+                        shopType.ShopTypeShippingMaps.Add(new ShopTypeShippingMap()
+                        {
+                            ShippingId = shipping.ShippingId,
                             CreateBy = email,
                             CreateOn = currentDt,
                             UpdateBy = email,
@@ -169,9 +192,9 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("User group not found");
                 }
-                var email = User.UserRequest().Email;
-                var currentDt = DateTime.Now;
-                shopType.ShopTypeNameEn = request.ShopTypeNameEn;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				shopType.ShopTypeNameEn = request.ShopTypeNameEn;
                 #region Permission
                 var mapPermissionList = db.ShopTypePermissionMaps.Where(w => w.ShopTypeId == shopType.ShopTypeId).ToList();
                 if (request.Permission != null && request.Permission.Count > 0)
@@ -252,6 +275,47 @@ namespace Colsp.Api.Controllers
                 if (mapThemeList != null && mapThemeList.Count > 0)
                 {
                     db.ShopTypeThemeMaps.RemoveRange(mapThemeList);
+                }
+                #endregion
+                #region Shipping
+                var mapShipList = db.ShopTypeShippingMaps.Where(w => w.ShopTypeId == shopType.ShopTypeId).ToList();
+                if (request.Shippings != null && request.Shippings.Count > 0)
+                {
+                    bool addNew = false;
+                    foreach (var ship in request.Shippings)
+                    {
+                        if (mapShipList == null || mapShipList.Count == 0)
+                        {
+                            addNew = true;
+                        }
+                        if (!addNew)
+                        {
+                            var current = mapShipList.Where(w => w.ShippingId == ship.ShippingId).SingleOrDefault();
+                            if (current != null)
+                            {
+                                mapShipList.Remove(current);
+                            }
+                            else
+                            {
+                                addNew = true;
+                            }
+                        }
+                        if (addNew)
+                        {
+                            shopType.ShopTypeShippingMaps.Add(new ShopTypeShippingMap()
+                            {
+                                ShippingId = ship.ShippingId,
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt,
+                            });
+                        }
+                    }
+                }
+                if (mapShipList != null && mapShipList.Count > 0)
+                {
+                    db.ShopTypeShippingMaps.RemoveRange(mapShipList);
                 }
                 #endregion
                 Util.DeadlockRetry(db.SaveChanges, "ShopType");

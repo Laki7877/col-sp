@@ -28,6 +28,7 @@ namespace Colsp.Model.Requests
         public List<CMSMasterGroupMapRequest> GroupMasterList { get; set; }
 
         public string SearchText { get; set; }
+        public int ShopId { get; set; }
 
         public override void DefaultOnNull()
         {

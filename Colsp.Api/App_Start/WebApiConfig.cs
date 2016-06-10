@@ -1,5 +1,6 @@
 ﻿using Colsp.Api.Constants;
 using Colsp.Api.Filters;
+using System;
 using System.IO;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -21,11 +22,7 @@ namespace Colsp.Api
             #endregion
 
             // Enable CORs
-            //var tmp = new EnableCorsAttribute(;
-            config.EnableCors(new EnableCorsAttribute("*","*","GET, POST, PUT, DELETE"));
-            //config.EnableCors();
-            //config.EnableCors();
-            //config.cor
+            config.EnableCors(new EnableCorsAttribute("*", "*","*"));
             #region Filter
             // Setup authorization and authentication filters
             config.Filters.Add(new BasicAuthenticateAttribute());
@@ -47,21 +44,43 @@ namespace Colsp.Api
             //crearte folder for image
             // ~/Images
             string imgageRootPath = AppSettingKey.IMAGE_ROOT_PATH;
-            // Product Image Tmp folder
-            string imageTmpFolder = AppSettingKey.TMP_FOLDER;
-            string rootImagePath = Path.Combine(imgageRootPath, imageTmpFolder);
-            if (!Directory.Exists(rootImagePath))
-            {
-                Directory.CreateDirectory(rootImagePath);
-            }
 
-            //Product folder
-            string rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.TMP_FOLDER);
+            //Product Zoom folder
+            string rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.ZOOM_FOLDER);
             if (!Directory.Exists(rootProductPath))
             {
                 Directory.CreateDirectory(rootProductPath);
             }
-            foreach (var file in Directory.GetFiles(Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER)))
+            //Product Large folder
+            rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.LARGE_FOLDER);
+            if (!Directory.Exists(rootProductPath))
+            {
+                Directory.CreateDirectory(rootProductPath);
+            }
+            //Product Normal folder
+            rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.NORMAL_FOLDER);
+            if (!Directory.Exists(rootProductPath))
+            {
+                Directory.CreateDirectory(rootProductPath);
+            }
+            //Product Thumbnail folder
+            rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.THUMBNAIL_FOLDER);
+            if (!Directory.Exists(rootProductPath))
+            {
+                Directory.CreateDirectory(rootProductPath);
+            }
+            rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.ORIGINAL_FOLDER);
+            if (!Directory.Exists(rootProductPath))
+            {
+                Directory.CreateDirectory(rootProductPath);
+            }
+            rootProductPath = Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.IMAGE_TMP_FOLDER);
+            if (!Directory.Exists(rootProductPath))
+            {
+                Directory.CreateDirectory(rootProductPath);
+            }
+
+            foreach (var file in Directory.GetFiles(Path.Combine(imgageRootPath, AppSettingKey.PRODUCT_FOLDER, AppSettingKey.IMAGE_TMP_FOLDER)))
             {
                 if (Path.GetFileName(file).StartsWith("BodyPart", true, null))
                 {
@@ -70,41 +89,41 @@ namespace Colsp.Api
             }
 
             //Brand folder
-            string rootBrandPath = Path.Combine(imgageRootPath, AppSettingKey.BRAND_FOLDER, AppSettingKey.TMP_FOLDER);
+            string rootBrandPath = Path.Combine(imgageRootPath, AppSettingKey.BRAND_FOLDER);
             if (!Directory.Exists(rootBrandPath))
             {
                 Directory.CreateDirectory(rootBrandPath);
             }
 
             //Shop folder
-            string rootShopPath = Path.Combine(imgageRootPath, AppSettingKey.SHOP_FOLDER, AppSettingKey.TMP_FOLDER);
+            string rootShopPath = Path.Combine(imgageRootPath, AppSettingKey.SHOP_FOLDER);
             if (!Directory.Exists(rootShopPath))
             {
                 Directory.CreateDirectory(rootShopPath);
             }
 
             //Attribute Value Folder
-            string rootAttributeValPath = Path.Combine(imgageRootPath, AppSettingKey.ATTRIBUTE_VALUE_FOLDER, AppSettingKey.TMP_FOLDER);
+            string rootAttributeValPath = Path.Combine(imgageRootPath, AppSettingKey.ATTRIBUTE_VALUE_FOLDER);
             if (!Directory.Exists(rootAttributeValPath))
             {
                 Directory.CreateDirectory(rootAttributeValPath);
             }
 
             //Global Category Folder
-            string rootGlobalPath = Path.Combine(imgageRootPath, AppSettingKey.GLOBAL_CAT_FOLDER, AppSettingKey.TMP_FOLDER);
+            string rootGlobalPath = Path.Combine(imgageRootPath, AppSettingKey.GLOBAL_CAT_FOLDER);
             if (!Directory.Exists(rootGlobalPath))
             {
                 Directory.CreateDirectory(rootGlobalPath);
             }
 
             //Local Category Folder
-            string rootLocalPath = Path.Combine(imgageRootPath, AppSettingKey.LOCAL_CAT_FOLDER, AppSettingKey.TMP_FOLDER);
+            string rootLocalPath = Path.Combine(imgageRootPath, AppSettingKey.LOCAL_CAT_FOLDER);
             if (!Directory.Exists(rootLocalPath))
             {
                 Directory.CreateDirectory(rootLocalPath);
             }
             //Local Category Folder
-            string rootNewsletterPath = Path.Combine(imgageRootPath, AppSettingKey.NEWSLETTER_FOLDER, AppSettingKey.TMP_FOLDER);
+            string rootNewsletterPath = Path.Combine(imgageRootPath, AppSettingKey.NEWSLETTER_FOLDER);
             if (!Directory.Exists(rootNewsletterPath))
             {
                 Directory.CreateDirectory(rootNewsletterPath);
@@ -117,11 +136,22 @@ namespace Colsp.Api
                 Directory.CreateDirectory(rootExcelPath);
             }
 
-            string rootThemePath = Path.Combine(imgageRootPath, "Theme");
+            //Theme Folder
+            string rootThemePath = Path.Combine(imgageRootPath, AppSettingKey.THEME_FOLDER);
             if (!Directory.Exists(rootThemePath))
             {
                 Directory.CreateDirectory(rootThemePath);
             }
+
+
+            //Export Folder
+            string rootExportPath = AppSettingKey.EXPORT_ROOT_PATH;
+            if (!Directory.Exists(rootExportPath))
+            {
+                Directory.CreateDirectory(rootExportPath);
+            }
+
+
             #endregion
 
         }

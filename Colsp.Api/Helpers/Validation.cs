@@ -14,26 +14,103 @@ namespace Colsp.Api.Helpers
 
         private static Regex regex = new Regex("^[a-z0-9_-]+$");
 
-        public static string ValidateUniqueName(string val, string fieldName)
+        public static string ValidateUniqueName(string val, string fieldName,int maxLength)
         {
             if (string.IsNullOrWhiteSpace(val))
             {
-                throw new Exception(string.Concat(fieldName + " is required"));
+                throw new Exception(string.Concat(fieldName + " is required field"));
             }
             val = val.ToLower().Trim();
             if (!regex.IsMatch(val))
             {
-                throw new Exception(string.Concat(fieldName + " can only be a-z 0-9 _ -"));
+                throw new Exception(string.Concat(fieldName + " only 0-9 a-z - _ are allowed (no spaces)"));
             }
+			if(val.Length > maxLength)
+			{
+				throw new Exception(string.Concat(fieldName + " field must be no longer than ", maxLength," characters"));
+			}
             return val;
         }
 
+		public static string ValidateString(string val, string fieldName, bool required, int maxLenght, bool isAlphanumeric, string defaultVal = null, List<string> valueOnly = null)
+		{
+
+			if (string.IsNullOrWhiteSpace(val))
+			{
+				if (required)
+				{
+					if (defaultVal != null)
+					{
+						return defaultVal;
+					}
+					throw new Exception(string.Concat(fieldName, " is a required field"));
+				}
+				return defaultVal;
+			}
+			val = val.Trim();
+			if (isAlphanumeric)
+			{
+				Regex rg = new Regex(@"^[^<>]+$");
+				if (!rg.IsMatch(val))
+				{
+					throw new Exception(string.Concat(fieldName, " only letters and numbers allowed"));
+				}
+			}
+			if (val.Length > maxLenght)
+			{
+				throw new Exception(string.Concat(fieldName, " field must be no longer than " + maxLenght + " characters"));
+			}
+			if (valueOnly != null)
+			{
+				if (!valueOnly.Contains(val))
+				{
+					throw new Exception(string.Concat(fieldName, " must be ", string.Join(",", valueOnly), " only"));
+				}
+			}
+			return val;
+		}
+
+		public static string ValidateCSVStringColumn(Dictionary<string, int> headDic, List<string> body
+		   , string key, List<ImportHeaderRequest> guidance, bool require, int maxLenght
+		   , HashSet<string> errormessage, int row, string defaultValue = null
+		   , Regex validation = null)
+		{
+			string headerName = guidance.Where(w => w.MapName.Equals(key)).Select(s => s.HeaderName).FirstOrDefault();
+			if (string.IsNullOrEmpty(headerName))
+			{
+				headerName = key;
+			}
+			if (headDic.ContainsKey(key))
+			{
+				string val = body[headDic[key]];
+				val = val.Trim();
+				if (require && string.IsNullOrEmpty(val) && defaultValue == null)
+				{
+					errormessage.Add(string.Concat(headerName, " is required at row ", row));
+					return null;
+				}
+				if (val.Length > maxLenght)
+				{
+					errormessage.Add(string.Concat(headerName, " field must be no longer than ", maxLenght, " characters at row ", row));
+					return null;
+				}
+				if (validation != null && !validation.IsMatch(val))
+				{
+					errormessage.Add(string.Concat(headerName, " must be ", validation.ToString(), " only at row ", row));
+					return null;
+				}
+				return val;
+			}
+			else if (require)
+			{
+				errormessage.Add(string.Concat(headerName, " column is required"));
+			}
+			return defaultValue;
+		}
 
 
 
-
-
-        public static DateTime? ValidateDateTime(string val,string fieldName,bool required,DateTime? defaultVal = null)
+		public static DateTime? ValidateDateTime(string val,string fieldName,bool required,DateTime? defaultVal = null)
         {
             if (required && string.IsNullOrWhiteSpace(val))
             {
@@ -62,44 +139,7 @@ namespace Colsp.Api.Helpers
             }
         }
 
-        public static string ValidateString(string val,string fieldName, bool required, int maxLenght, bool isAlphanumeric, string defaultVal = null,List<string> valueOnly = null)
-        {
-            
-            if(required && string.IsNullOrWhiteSpace(val))
-            {
-                if (defaultVal != null)
-                {
-                    return defaultVal;
-                }
-                throw new Exception(string.Concat(fieldName , " is a required field"));
-            }
-            if (string.IsNullOrEmpty(val))
-            {
-                return defaultVal;
-            }
-            val = val.Trim();
-            if (isAlphanumeric)
-            {
-                Regex rg = new Regex(@"^[^<>]+$");
-                //Regex rg = new Regex(@"^[ก-๙A-Za-z0-9\s]*$");
-                if (!rg.IsMatch(val))
-                {
-                    throw new Exception(string.Concat(fieldName , " only letters and numbers allowed"));
-                }
-            }
-            if (val.Length > maxLenght)
-            {
-                throw new Exception(string.Concat(fieldName , " field must be no longer than " + maxLenght + " characters"));
-            }
-            if (valueOnly != null)
-            {
-                if (!valueOnly.Contains(val))
-                {
-                    throw new Exception(string.Concat(fieldName, " ", string.Join(",", valueOnly), " only"));
-                }
-            }
-            return val;
-        }
+        
 
         public static decimal? ValidateDecimal(decimal? val, string fieldName, bool required, int maxLenght, int decimalPlace,bool isPositive, decimal? defaultVal = null)
         {
@@ -226,39 +266,7 @@ namespace Colsp.Api.Helpers
             return val.Value.ToString(@"hh\:mm");
         }
 
-        public static string ValidateCSVStringColumn(Dictionary<string, int> dic, List<string> list, string key,List<ImportHeaderRequest> header,bool require,int maxLenght,HashSet<string> errormessage,int row, string defaultValue = null)
-        {
-            string headerName = header.Where(w => w.MapName.Equals(key)).Select(s => s.HeaderName).FirstOrDefault();
-            if (string.IsNullOrEmpty(headerName))
-            {
-                headerName = key;
-            }
-            if (dic.ContainsKey(key))
-            {
-                string val = list[dic[key]];
-                if(!string.IsNullOrWhiteSpace(val))
-                {
-                    val = val.Trim();
-                    if(require && string.IsNullOrEmpty(val) && defaultValue == null)
-                    {
-                        
-                        errormessage.Add(string.Concat(headerName , " is required at row " , row));
-                        return null;
-                    }
-                    if(val.Length > maxLenght)
-                    {
-                        errormessage.Add(string.Concat(headerName , " field must be no longer than " , maxLenght , " characters at row " , row));
-                        return null;
-                    }
-                    return val;
-                }
-            }
-            if (require)
-            {
-                errormessage.Add(string.Concat(headerName , " is required at row " , row));
-            }
-            return defaultValue;
-        }
+       
 
         public static int ValidateCSVIntegerColumn(Dictionary<string, int> dic, List<string> list, string key, List<ImportHeaderRequest> header, bool require, int maxLenght, HashSet<string> errormessage, int row, int defaultValue = -1)
         {

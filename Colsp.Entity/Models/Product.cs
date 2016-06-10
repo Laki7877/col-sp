@@ -18,6 +18,7 @@ namespace Colsp.Entity.Models
         public Product()
         {
             this.ProductAttributes = new HashSet<ProductAttribute>();
+            this.ProductImages = new HashSet<ProductImage>();
             this.ProductReviews = new HashSet<ProductReview>();
             this.ProductTags = new HashSet<ProductTag>();
             this.ProductVideos = new HashSet<ProductVideo>();
@@ -92,6 +93,7 @@ namespace Colsp.Entity.Models
         public int GlobalBoostWeight { get; set; }
         public string ExpressDelivery { get; set; }
         public decimal DeliveryFee { get; set; }
+        public Nullable<System.DateTime> EstimateGoodsReceiveDate { get; set; }
         public decimal PromotionPrice { get; set; }
         public Nullable<System.DateTime> EffectiveDatePromotion { get; set; }
         public Nullable<System.DateTime> ExpireDatePromotion { get; set; }
@@ -118,9 +120,9 @@ namespace Colsp.Entity.Models
         public int VariantCount { get; set; }
         public bool Visibility { get; set; }
         public string OldPid { get; set; }
+        public decimal ProductRating { get; set; }
         public string Bu { get; set; }
         public string Status { get; set; }
-        public decimal ProductRating { get; set; }
         public string CreateBy { get; set; }
         public System.DateTime CreateOn { get; set; }
         public string UpdateBy { get; set; }
@@ -128,6 +130,8 @@ namespace Colsp.Entity.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductReview> ProductReviews { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
