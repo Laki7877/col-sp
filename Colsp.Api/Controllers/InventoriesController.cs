@@ -269,7 +269,7 @@ namespace Colsp.Api.Controllers
                     }
                     else if (string.Equals("OutOfStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        invenentory = invenentory.Where(w => w.Quantity == 0);
+                        invenentory = invenentory.Where(w => w.Quantity <= 0);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
                     else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))

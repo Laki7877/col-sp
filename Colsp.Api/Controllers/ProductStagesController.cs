@@ -290,11 +290,15 @@ namespace Colsp.Api.Controllers
 				#region Validation
 				if (request == null)
 				{
-					throw new Exception("Invalid request");
+					throw new Exception("Invalid request.");
 				}
 				if (request.AttributeSet == null || request.AttributeSet.AttributeSetId == 0)
 				{
-					throw new Exception("Invalid attribute set");
+					throw new Exception("Invalid attribute set.");
+				}
+				if(request.Variants.Count > 100)
+				{
+					throw new Exception("Cannot group more than 100 products.");
 				}
 				var pids = request.Variants.Select(s => s.Pid).ToList();
 				if (pids == null || pids.Count == 0)
@@ -1643,23 +1647,23 @@ namespace Colsp.Api.Controllers
 				{
 					if (string.Equals("Information", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("Image", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("Category", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.CategoryTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.CategoryTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("Variation", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("More", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("ReadyForAction", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
@@ -1828,19 +1832,23 @@ namespace Colsp.Api.Controllers
 				{
 					if (string.Equals("Information", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.InformationTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("Image", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.ImageTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
+					}
+					else if (string.Equals("Category", request._filter2, StringComparison.OrdinalIgnoreCase))
+					{
+						products = products.Where(p => p.CategoryTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("Variation", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.VariantTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("More", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
-						products = products.Where(p => !p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_APPROVE));
+						products = products.Where(p => p.MoreOptionTabStatus.Equals(Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL));
 					}
 					else if (string.Equals("ReadyForAction", request._filter2, StringComparison.OrdinalIgnoreCase))
 					{
@@ -2176,6 +2184,10 @@ namespace Colsp.Api.Controllers
 			group.EffectiveDate = request.EffectiveDate.HasValue ? request.EffectiveDate.Value : currentDt;
 			group.ExpireDate = request.ExpireDate.HasValue && request.ExpireDate.Value.CompareTo(group.EffectiveDate) >= 0 ? request.ExpireDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
 			group.NewArrivalDate = request.NewArrivalDate;
+			if(group.NewArrivalDate == null)
+			{
+				group.NewArrivalDate = currentDt;
+			}
 			group.TheOneCardEarn = request.TheOneCardEarn;
 			group.GiftWrap = request.GiftWrap;
 			group.Status = request.Status;
@@ -4952,7 +4964,6 @@ namespace Colsp.Api.Controllers
 				#endregion
 				using (ColspEntities db = new ColspEntities())
 				{
-					//((IObjectContextAdapter)db).ObjectContext.CommandTimeout = 180;
 					#region Setup Header
 					Dictionary<string, Tuple<string, int>> headDicTmp = new Dictionary<string, Tuple<string, int>>();
 					var tmpGuidance = db.ImportHeaders.Where(w => true);
@@ -5922,7 +5933,6 @@ namespace Colsp.Api.Controllers
 						{
 							foreach (string field in r)
 							{
-								//csv.WriteField<string>(string.Concat(@"""",field,@""""));
 								csv.WriteField(field);
 							}
 							csv.NextRecord();
@@ -6011,6 +6021,7 @@ namespace Colsp.Api.Controllers
 			try
 			{
 				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				int userId = User.UserRequest().UserId;
 				var stream = new FileStream(Path.Combine(AppSettingKey.EXPORT_ROOT_PATH, string.Concat(userId)), FileMode.Open);
 				result.Content = new StreamContent(stream);
@@ -6020,7 +6031,7 @@ namespace Colsp.Api.Controllers
 				};
 				result.Headers.Add("Cache-Control", "no-cache");
 				result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-				result.Content.Headers.ContentDisposition.FileName = "file.csv";
+				result.Content.Headers.ContentDisposition.FileName = string.Concat("ProductExport",currentDt.ToString("yyyy-MM-dd"),".csv");
 				return result;
 			}
 			catch (Exception e)
@@ -7518,14 +7529,14 @@ namespace Colsp.Api.Controllers
 							MetaKeyTh = Validation.ValidateCSVStringColumn(headDic, body, "ACU", guidance, false, 1000, errorMessage, row, string.Empty),
 							UrlKey = Validation.ValidateCSVStringColumn(headDic, body, "ACV", guidance, false, 100, errorMessage, row, string.Empty, rgAlphaNumeric),
 							Installment = headDic.ContainsKey("AAN") && string.Equals(body[headDic["AAN"]], "yes", StringComparison.OrdinalIgnoreCase) ? Constant.STATUS_YES : Constant.STATUS_NO,
-							PrepareDay = Validation.ValidateCSVIntegerColumn(headDic, body, "ABU", guidance, false, int.MaxValue, errorMessage, row, 0),
-							PrepareMon = Validation.ValidateCSVIntegerColumn(headDic, body, "ABV", guidance, false, int.MaxValue, errorMessage, row, 0),
-							PrepareTue = Validation.ValidateCSVIntegerColumn(headDic, body, "ABW", guidance, false, int.MaxValue, errorMessage, row, 0),
-							PrepareWed = Validation.ValidateCSVIntegerColumn(headDic, body, "ABX", guidance, false, int.MaxValue, errorMessage, row, 0),
-							PrepareThu = Validation.ValidateCSVIntegerColumn(headDic, body, "ABY", guidance, false, int.MaxValue, errorMessage, row, 0),
-							PrepareFri = Validation.ValidateCSVIntegerColumn(headDic, body, "ABZ", guidance, false, int.MaxValue, errorMessage, row, 0),
-							PrepareSat = Validation.ValidateCSVIntegerColumn(headDic, body, "ACA", guidance, false, int.MaxValue, errorMessage, row, 0),
-							PrepareSun = Validation.ValidateCSVIntegerColumn(headDic, body, "ACB", guidance, false, int.MaxValue, errorMessage, row, 0),
+							PrepareDay = Validation.ValidateCSVIntegerColumn(headDic, body, "ABU", guidance, false, 999, errorMessage, row, 0),
+							PrepareMon = Validation.ValidateCSVIntegerColumn(headDic, body, "ABV", guidance, false, 999, errorMessage, row, 0),
+							PrepareTue = Validation.ValidateCSVIntegerColumn(headDic, body, "ABW", guidance, false, 999, errorMessage, row, 0),
+							PrepareWed = Validation.ValidateCSVIntegerColumn(headDic, body, "ABX", guidance, false, 999, errorMessage, row, 0),
+							PrepareThu = Validation.ValidateCSVIntegerColumn(headDic, body, "ABY", guidance, false, 999, errorMessage, row, 0),
+							PrepareFri = Validation.ValidateCSVIntegerColumn(headDic, body, "ABZ", guidance, false, 999, errorMessage, row, 0),
+							PrepareSat = Validation.ValidateCSVIntegerColumn(headDic, body, "ACA", guidance, false, 999, errorMessage, row, 0),
+							PrepareSun = Validation.ValidateCSVIntegerColumn(headDic, body, "ACB", guidance, false, 999, errorMessage, row, 0),
 							LimitIndividualDay = true,
 							Length = Validation.ValidateCSVIntegerColumn(headDic, body, "ACC", guidance, false, int.MaxValue, errorMessage, row, 0),
 							Height = Validation.ValidateCSVIntegerColumn(headDic, body, "ACD", guidance, false, int.MaxValue, errorMessage, row, 0),
@@ -8454,14 +8465,17 @@ namespace Colsp.Api.Controllers
 							{
 								group.NewArrivalDate = variant.NewArrivalDate;
 							}
+							if(group.NewArrivalDate == null)
+							{
+								group.NewArrivalDate = currentDt;
+							}
 							//group.EffectiveDate = request.EffectiveDate.HasValue ? request.EffectiveDate.Value : currentDt;
 							//group.ExpireDate = request.ExpireDate.HasValue && request.ExpireDate.Value.CompareTo(group.EffectiveDate) >= 0 ? request.ExpireDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
 							var tmpDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACY", guidance, errorMessage, row);
 							group.EffectiveDate = tmpDate.HasValue ? tmpDate.Value : currentDt;
 							tmpDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ACZ", guidance, errorMessage, row);
 							group.ExpireDate = tmpDate.HasValue ? tmpDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
-							if (group.EffectiveDate.CompareTo(group.ExpireDate)
-																> 0)
+							if (group.EffectiveDate.CompareTo(group.ExpireDate) > 0)
 							{
 								errorMessage.Add(string.Concat("Effective Date must be earlier than Expire Date at row ", row));
 							}
@@ -8494,7 +8508,8 @@ namespace Colsp.Api.Controllers
 							{
 								if (headDic.ContainsKey(attr.AttributeNameEn))
 								{
-									var valueEn = Validation.ValidateCSVStringColumn(headDic, body, attr.AttributeNameEn, guidance, false, 300, errorMessage, row);
+									var valueEn = Validation.ValidateCSVStringColumn(headDic, body, attr.AttributeNameEn, guidance, false
+												, Constant.DATA_TYPE_HTML.Equals(attr.DataType) ? 50000 : 255, errorMessage, row);
 									if (string.IsNullOrWhiteSpace(valueEn))
 									{
 										continue;
@@ -8631,8 +8646,8 @@ namespace Colsp.Api.Controllers
 										throw new Exception("Attribute set " + val + " not found in database at row " + row);
 									}
 									group.AttributeSetId = attrSet.AttributeSetId;
-									var variant1 = Validation.ValidateCSVStringColumn(headDic, body, "ADJ", guidance, false, 300, errorMessage, row);
-									var variant2 = Validation.ValidateCSVStringColumn(headDic, body, "ADK", guidance, false, 300, errorMessage, row);
+									var variant1 = Validation.ValidateCSVStringColumn(headDic, body, "ADJ", guidance, false, 255, errorMessage, row);
+									var variant2 = Validation.ValidateCSVStringColumn(headDic, body, "ADK", guidance, false, 255, errorMessage, row);
 									bool isInvalid = false;
 									if (!string.IsNullOrWhiteSpace(variant1) && !attrSet.Attribute.Any(a => a.AttributeNameEn.Equals(variant1)))
 									{
@@ -8657,7 +8672,8 @@ namespace Colsp.Api.Controllers
 									{
 										if (headDic.ContainsKey(attr.AttributeNameEn))
 										{
-											var valueEn = Validation.ValidateCSVStringColumn(headDic, body, attr.AttributeNameEn, guidance, false, 300, errorMessage, row);
+											var valueEn = Validation.ValidateCSVStringColumn(headDic, body, attr.AttributeNameEn, guidance, false
+												, Constant.DATA_TYPE_HTML.Equals(attr.DataType) ? 50000 : 255, errorMessage, row);
 											if (string.IsNullOrWhiteSpace(valueEn))
 											{
 												continue;

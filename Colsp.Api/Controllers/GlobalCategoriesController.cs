@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Colsp.Api.Helpers;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Colsp.Api.Controllers
 {
@@ -173,7 +174,7 @@ namespace Colsp.Api.Controllers
 				var currentDt = SystemHelper.GetCurrentDateTime();
 				category = new GlobalCategory();
 				SetupCategory(category, request, email, currentDt, true);
-				#region lft-rgt
+				#region Lft-Rgt
 				int max = db.GlobalCategories.Select(s => s.Rgt).DefaultIfEmpty(0).Max();
 				if (max == 0)
 				{
@@ -186,15 +187,32 @@ namespace Colsp.Api.Controllers
 					category.Rgt = max + 2;
 				}
 				#endregion
-				#region url
 				category.CategoryId = db.GetNextGlobalCategoryId().SingleOrDefault().Value;
+				#region Url Key
+				Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
 				if (string.IsNullOrWhiteSpace(request.UrlKey))
 				{
-					category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
+					request.UrlKey = category.NameEn
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > (99 - string.Concat(category.CategoryId).Length))
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 99 - string.Concat(category.CategoryId).Length);
+					}
+					category.UrlKey = string.Concat(request.UrlKey, "-", category.CategoryId);
 				}
 				else
 				{
-					category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
+					request.UrlKey = request.UrlKey
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > 100)
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 100);
+					}
+					category.UrlKey = request.UrlKey;
 				}
 				#endregion
 				db.GlobalCategories.Add(category);
@@ -227,14 +245,31 @@ namespace Colsp.Api.Controllers
 				var email = User.UserRequest().Email;
 				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupCategory(category, request, email, currentDt, false);
-				#region url
+				#region Url Key
+				Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
 				if (string.IsNullOrWhiteSpace(request.UrlKey))
 				{
-					category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
+					request.UrlKey = category.NameEn
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > (99 - string.Concat(category.CategoryId).Length))
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 99 - string.Concat(category.CategoryId).Length);
+					}
+					category.UrlKey = string.Concat(request.UrlKey, "-", category.CategoryId);
 				}
 				else
 				{
-					category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
+					request.UrlKey = request.UrlKey
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > 100)
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 100);
+					}
+					category.UrlKey = request.UrlKey;
 				}
 				#endregion
 				#region Global Category Feature Product
@@ -289,7 +324,6 @@ namespace Colsp.Api.Controllers
 					db.GlobalCatFeatureProducts.RemoveRange(pidList);
 				}
 				#endregion
-
 				Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
 				return GetGlobalCategory(category.CategoryId);
 			}
@@ -390,8 +424,6 @@ namespace Colsp.Api.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
 			}
 		}
-
-
 
 		[Route("api/GlobalCategories/{catId}/Attributes")]
 		[HttpGet]

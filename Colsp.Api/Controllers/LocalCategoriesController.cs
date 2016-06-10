@@ -17,6 +17,7 @@ using Colsp.Api.Helpers;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Colsp.Api.Controllers
 {
@@ -226,14 +227,15 @@ namespace Colsp.Api.Controllers
 				var maxLocalCategory = db.Shops.Where(w => w.ShopId == shopId).Select(s => s.MaxLocalCategory).SingleOrDefault();
 				if (shopCount >= maxLocalCategory)
 				{
-					throw new Exception("This shop has reached the maximum local category");
+					throw new Exception("This shop has reached the maximum local category.");
 				}
 				category = new LocalCategory();
 				category.ShopId = shopId;
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupCategory(category, request, shopId, email, currentDt, true);
 				int max = db.LocalCategories.Where(w => w.ShopId == shopId).Select(s => s.Rgt).DefaultIfEmpty(0).Max();
+				#region Lft-Rgt
 				if (max == 0)
 				{
 					category.Lft = 1;
@@ -244,15 +246,33 @@ namespace Colsp.Api.Controllers
 					category.Lft = max + 1;
 					category.Rgt = max + 2;
 				}
+				#endregion
 				category.CategoryId = db.GetNextLocalCategoryId().SingleOrDefault().Value;
 				#region Url Key
+				Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
 				if (string.IsNullOrWhiteSpace(request.UrlKey))
 				{
-					category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
+					request.UrlKey = category.NameEn
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > (99 - string.Concat(category.CategoryId).Length))
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 99 - string.Concat(category.CategoryId).Length);
+					}
+					category.UrlKey = string.Concat(request.UrlKey, "-", category.CategoryId);
 				}
 				else
 				{
-					category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
+					request.UrlKey = request.UrlKey
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > 100)
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 100);
+					}
+					category.UrlKey = request.UrlKey;
 				}
 				#endregion
 				db.LocalCategories.Add(category);
@@ -281,16 +301,33 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Cannot find selected category");
 				}
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupCategory(category, request, shopId, email, currentDt, false);
 				#region Url Key
+				Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
 				if (string.IsNullOrWhiteSpace(request.UrlKey))
 				{
-					category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
+					request.UrlKey = category.NameEn
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > (99 - string.Concat(category.CategoryId).Length))
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 99 - string.Concat(category.CategoryId).Length);
+					}
+					category.UrlKey = string.Concat(request.UrlKey, "-", category.CategoryId);
 				}
 				else
 				{
-					category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
+					request.UrlKey = request.UrlKey
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > 100)
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 100);
+					}
+					category.UrlKey = request.UrlKey;
 				}
 				#endregion
 				#region Local Category Feature Product
@@ -378,8 +415,8 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Invalid request");
 				}
 				var shopId = User.ShopRequest().ShopId;
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				StringBuilder sb = new StringBuilder();
 				string update = "UPDATE LocalCategory SET Lft = @1 , Rgt = @2 , UpdateBy = '@4' , UpdateOn = '@5' WHERE CategoryId = @3 AND ShopId = @6 ;";
 				foreach (var catRq in request)
@@ -443,7 +480,7 @@ namespace Colsp.Api.Controllers
 				var ids = request.Select(s => s.CategoryId);
 				var catList = db.LocalCategories.Where(w => w.ShopId == shopId && ids.Contains(w.CategoryId));
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				foreach (CategoryRequest catRq in request)
 				{
 					var current = catList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
@@ -621,8 +658,8 @@ namespace Colsp.Api.Controllers
 							current.Type = Constant.LANG_EN;
 							current.Type = Constant.MEDIUM;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldEn.Remove(current);
 						}
 						else
@@ -676,8 +713,8 @@ namespace Colsp.Api.Controllers
 							current.Type = Constant.LANG_TH;
 							current.Type = Constant.MEDIUM;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldTh.Remove(current);
 						}
 						else
@@ -731,8 +768,8 @@ namespace Colsp.Api.Controllers
 							current.Type = Constant.LANG_EN;
 							current.Type = Constant.SMALL;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldEn.Remove(current);
 						}
 						else
@@ -786,8 +823,8 @@ namespace Colsp.Api.Controllers
 							current.Type = Constant.LANG_TH;
 							current.Type = Constant.SMALL;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldSmallTh.Remove(current);
 						}
 						else

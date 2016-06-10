@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Colsp.Api.Helpers;
 using System.IO;
 using System.Data.Entity.SqlServer;
+using System.Text.RegularExpressions;
 
 namespace Colsp.Api.Controllers
 {
@@ -377,6 +378,10 @@ namespace Colsp.Api.Controllers
 				var email = User.UserRequest().Email;
 				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupBrand(brand, request, email, currentDt, db, true);
+				if(db.Brands.Where(w=>w.UrlKey.Equals(brand.UrlKey)).Count() > 0)
+				{
+					throw new Exception(string.Concat(brand.UrlKey, " has already been used."));
+				}
 				brand.BrandId = db.GetNextBrandId().SingleOrDefault().Value;
 				db.Brands.Add(brand);
 				Util.DeadlockRetry(db.SaveChanges, "Brand");
@@ -455,14 +460,30 @@ namespace Colsp.Api.Controllers
 			}
 			brand.Status = request.Status;
 			brand.PicUrl = Validation.ValidateString(request.BrandImage.Url, "Logo", false, 500, false, string.Empty);
+			#region Url Key
+			Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
 			if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
 			{
-				brand.UrlKey = brand.BrandNameEn.Trim().ToLower().Replace(" ", "-");
+				request.SEO.ProductUrlKeyEn = brand.BrandNameEn
+					.Trim()
+					.ToLower()
+					.Replace(" ", "-").Replace("_", "-");
+				request.SEO.ProductUrlKeyEn = rgAlphaNumeric.Replace(request.SEO.ProductUrlKeyEn, "");
 			}
 			else
 			{
-				brand.UrlKey = request.SEO.ProductUrlKeyEn.Trim().ToLower().Replace(" ", "-");
+				request.SEO.ProductUrlKeyEn = request.SEO.ProductUrlKeyEn
+					.Trim()
+					.ToLower()
+					.Replace(" ", "-").Replace("_", "-");
+				request.SEO.ProductUrlKeyEn = rgAlphaNumeric.Replace(request.SEO.ProductUrlKeyEn, "");
 			}
+			if (request.SEO.ProductUrlKeyEn.Length > 100)
+			{
+				request.SEO.ProductUrlKeyEn = request.SEO.ProductUrlKeyEn.Substring(0, 100);
+			}
+			brand.UrlKey = request.SEO.ProductUrlKeyEn;
+			#endregion
 			#region BranImage En
 			var imageOldEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).ToList();
 			if (request.BrandBannerEn != null && request.BrandBannerEn.Count > 0)

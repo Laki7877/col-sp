@@ -305,6 +305,12 @@ namespace Colsp.Api.Controllers
 			coupon.Status = Validation.ValidateString(request.Status, "Status", true, 2, true);
 			coupon.ExpireDate = Validation.ValidateDateTime(request.ExpireDate, "Expire Date", false);
 			coupon.StartDate = Validation.ValidateDateTime(request.StartDate, "Start Date", false);
+			if(coupon.StartDate.HasValue 
+				&& coupon.ExpireDate.HasValue
+				&& coupon.StartDate.Value.CompareTo(coupon.ExpireDate.Value) > 0)
+			{
+				throw new Exception("Start Date cannot be more than Expire Date");
+			}
 			coupon.Action = request.Action.Type;
 			coupon.DiscountAmount = request.Action.DiscountAmount;
 			if (Constant.COUPON_ACTION_PERCENT.Equals(coupon.Action)
@@ -313,8 +319,17 @@ namespace Colsp.Api.Controllers
 				throw new Exception("Discount Percent cannot more than equal 100%.");
 			}
 			coupon.MaximumAmount = request.Action.MaximumAmount;
+			if(coupon.MaximumAmount <= 0)
+			{
+				coupon.MaximumAmount = 9999999;
+			}
 			coupon.UsagePerCustomer = request.UsagePerCustomer;
+			if (coupon.UsagePerCustomer <= 0)
+			{
+				coupon.UsagePerCustomer = 1;
+			}
 			coupon.MaximumUser = request.MaximumUser;
+			
 			coupon.UpdateBy = email;
 			coupon.UpdateOn = currentDt;
 			var orderList = coupon.CouponOrders.ToList();

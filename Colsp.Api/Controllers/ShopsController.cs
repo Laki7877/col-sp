@@ -17,6 +17,7 @@ using Cenergy.Dazzle.Admin.Security.Cryptography;
 using System.Web.Script.Serialization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Colsp.Api.Controllers
 {
@@ -485,9 +486,9 @@ namespace Colsp.Api.Controllers
                     UpdateOn = currentDt,
                 });
                 shop.User = shop.UserShopMaps.ElementAt(0).User;
-                #endregion
-
-                if (request.CloneGlobalCategory)
+				#endregion
+				#region Clone Category
+				if (request.CloneGlobalCategory)
                 {
                     var globalCategory = db.GlobalCategories.Where(w => w.Visibility && Constant.STATUS_ACTIVE.Equals(w.Status));
                     foreach (var cat in globalCategory)
@@ -523,8 +524,12 @@ namespace Colsp.Api.Controllers
                         });
                     }
                 }
-
-                shop.User.UserId = db.GetNextUserId().SingleOrDefault().Value;
+				#endregion
+				if(db.Shops.Where(w=>w.UrlKey.Equals(shop.UrlKey)).Count() > 0)
+				{
+					throw new Exception(string.Concat(shop.UrlKey, " has already been used."));
+				}
+				shop.User.UserId = db.GetNextUserId().SingleOrDefault().Value;
                 shop.ShopId = db.GetNextShopId().SingleOrDefault().Value;
                 shop.VendorId = string.Concat(shop.ShopId);
                 shop.VendorId = shop.VendorId.PadLeft(5, '0');
@@ -1062,7 +1067,6 @@ namespace Colsp.Api.Controllers
                 db.ShopCommissions.RemoveRange(commissions);
             }
             #endregion
-            shop.UrlKey = Validation.ValidateString(request.UrlKey, "Url Key (English)", true, 100, false, shop.ShopNameEn.Trim().ToLower().Replace(" ","-"));
             shop.TaxPayerId = Validation.ValidateString(request.TaxPayerId, "Tax Payer Id", true, 35, false, string.Empty);
             if(request.TermPayment != null && !string.IsNullOrEmpty(request.TermPayment.TermPaymentCode))
             {
@@ -1141,6 +1145,10 @@ namespace Colsp.Api.Controllers
             shop.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.TaxInvoice = Validation.ValidateString(request.TaxInvoice, "Tax Invoice", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, int.MaxValue, 0).Value;
+			if(shop.StockAlert == 0)
+			{
+				shop.StockAlert = 3;
+			}
             shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.STATUS_NOT_ACTIVE, new List<string>() { Constant.STATUS_NOT_ACTIVE, Constant.STATUS_ACTIVE});
             shop.VendorAddressLine1 = Validation.ValidateString(request.VendorAddressLine1, "Vendor Address Line1", true, 35, false, string.Empty);
             shop.VendorAddressLine2 = Validation.ValidateString(request.VendorAddressLine2, "Vendor Address Line2", true, 35, false, string.Empty);
@@ -1150,7 +1158,6 @@ namespace Colsp.Api.Controllers
             shop.Email = Validation.ValidateString(request.Email, "Email", true, 100, false, string.Empty);
             shop.ContactPersonFirstName = Validation.ValidateString(request.ContactPersonFirstName, "Contact Person First Name", true, 100, false, string.Empty);
             shop.ContactPersonLastName = Validation.ValidateString(request.ContactPersonLastName, "Contact Person Last Name", true, 100, false, string.Empty);
-
             if (request.Country != null && !string.IsNullOrEmpty(request.Country.CountryCode))
             {
                 var id = db.Countries.Where(w => w.CountryCode.Equals(request.Country.CountryCode)).Select(s => s.CountryCode).SingleOrDefault();
@@ -1160,8 +1167,6 @@ namespace Colsp.Api.Controllers
                 }
                 shop.CountryCode = id;
             }
-
-
             if (request.Province != null && request.Province.ProvinceId != 0)
             {
                 var provinceId = db.Provinces.Where(w => w.ProvinceId == request.Province.ProvinceId).Select(s => s.ProvinceId).SingleOrDefault();
@@ -1200,7 +1205,31 @@ namespace Colsp.Api.Controllers
                     }
                 }
             }
-            shop.PhoneNumber = Validation.ValidateString(request.PhoneNumber, "Phone Number", true, 15, false, string.Empty);
+			#region Url Key
+			Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
+			if (string.IsNullOrWhiteSpace(request.UrlKey))
+			{
+				request.UrlKey = shop.ShopNameEn
+					.Trim()
+					.ToLower()
+					.Replace(" ", "-").Replace("_", "-");
+				request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+			}
+			else
+			{
+				request.UrlKey = request.UrlKey
+					.Trim()
+					.ToLower()
+					.Replace(" ", "-").Replace("_", "-");
+				request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+			}
+			if (request.UrlKey.Length > 100)
+			{
+				request.UrlKey = request.UrlKey.Substring(0, 100);
+			}
+			shop.UrlKey = request.UrlKey;
+			#endregion
+			shop.PhoneNumber = Validation.ValidateString(request.PhoneNumber, "Phone Number", true, 15, false, string.Empty);
             shop.FaxNumber = Validation.ValidateString(request.FaxNumber, "Fax Number", true, 15, false, string.Empty);
             shop.Telex = Validation.ValidateString(request.Telex, "Telex", true, 15, false, string.Empty);
             shop.OverseasVendorIndicator = Validation.ValidateString(request.OverseasVendorIndicator, "Overseas Vendor Indicator", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
