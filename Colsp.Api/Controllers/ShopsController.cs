@@ -18,6 +18,7 @@ using System.Web.Script.Serialization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -29,7 +30,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/{shopId}/LocalCategories")]
         [HttpGet]
-        public HttpResponseMessage GetLocalCategories(int shopId)
+		[ClaimsAuthorize(Permission = new string[] { "2", "3" })]
+		public HttpResponseMessage GetLocalCategories(int shopId)
         {
             try
             {
@@ -150,7 +152,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops")]
         [HttpGet]
-        public HttpResponseMessage GetShop([FromUri] ShopRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "10", "21" })]
+		public HttpResponseMessage GetShop([FromUri] ShopRequest request)
         {
             try
             {
@@ -191,7 +194,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/{shopId}/ShopTypes")]
         [HttpGet]
-        public HttpResponseMessage GetShopType(int shopId)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage GetShopType(int shopId)
         {
             try
             {
@@ -207,7 +211,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/{shopId}")]
         [HttpGet]
-        public HttpResponseMessage GetShop(int shopId)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage GetShop(int shopId)
         {
             try
             {
@@ -318,7 +323,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/Profile")]
         [HttpGet]
-        public HttpResponseMessage GetShopProfile()
+		[ClaimsAuthorize(Permission = new string[] { "55" })]
+		public HttpResponseMessage GetShopProfile()
         {
             try
             {
@@ -419,7 +425,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/Profile")]
         [HttpPut]
-        public HttpResponseMessage SaveShopProfile(ShopRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "55" })]
+		public HttpResponseMessage SaveShopProfile(ShopRequest request)
         {
             try
             {
@@ -445,7 +452,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops")]
         [HttpPost]
-        public HttpResponseMessage AddShop(ShopRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage AddShop(ShopRequest request)
         {
             Shop shop = null;
             try
@@ -546,7 +554,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/{shopId}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeShop([FromUri]int shopId, ShopRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage SaveChangeShop([FromUri]int shopId, ShopRequest request)
         {
             Shop shop = null;
             try
@@ -637,7 +646,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops")]
         [HttpDelete]
-        public HttpResponseMessage DeleteShop(List<ShopRequest> request)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage DeleteShop(List<ShopRequest> request)
         {
             try
             {
@@ -709,7 +719,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/ShopAppearance")]
         [HttpGet]
-        public HttpResponseMessage GetShopAppearance()
+		[ClaimsAuthorize(Permission = new string[] { "56" })]
+		public HttpResponseMessage GetShopAppearance()
         {
             try
             {
@@ -753,7 +764,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/ShopAppearance")]
         [HttpPut]
-        public HttpResponseMessage SaveShopAppearance(ShopAppearanceRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "56" })]
+		public HttpResponseMessage SaveShopAppearance(ShopAppearanceRequest request)
         {
             try
             {
@@ -791,7 +803,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/TermPayments")]
         [HttpGet]
-        public HttpResponseMessage GetTermPayment()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetTermPayment()
         {
             try
             {
@@ -806,7 +819,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/VendorTaxRates")]
         [HttpGet]
-        public HttpResponseMessage GetVendorTaxRate()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetVendorTaxRate()
         {
             try
             {
@@ -826,7 +840,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/WithholdingTaxes")]
         [HttpGet]
-        public HttpResponseMessage GetWithholdingTax()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetWithholdingTax()
         {
             try
             {
@@ -845,7 +860,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/BankNames")]
         [HttpGet]
-        public HttpResponseMessage GetBankName()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetBankName()
         {
             try
             {
@@ -865,7 +881,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Overseas")]
         [HttpGet]
-        public HttpResponseMessage GetOverseas()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetOverseas()
         {
             try
             {
@@ -888,7 +905,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Countries")]
         [HttpGet]
-        public HttpResponseMessage GetCountries()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetCountries()
         {
             try
             {
@@ -908,7 +926,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Provinces")]
         [HttpGet]
-        public HttpResponseMessage GetProvinces()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetProvinces()
         {
             try
             {
@@ -927,8 +946,8 @@ namespace Colsp.Api.Controllers
         }
 
         [Route("api/Cities/{provinceId}")]
-        [HttpGet]
-        public HttpResponseMessage GetCities([FromUri] int provinceId)
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetCities([FromUri] int provinceId)
         {
             try
             {
@@ -949,7 +968,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Districts/{cityId}")]
         [HttpGet]
-        public HttpResponseMessage GetDistricts([FromUri] int cityId)
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetDistricts([FromUri] int cityId)
         {
             try
             {
@@ -969,7 +989,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/PostCodes/{districtId}")]
         [HttpGet]
-        public HttpResponseMessage GetPostCodes([FromUri] int districtId)
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetPostCodes([FromUri] int districtId)
         {
             try
             {

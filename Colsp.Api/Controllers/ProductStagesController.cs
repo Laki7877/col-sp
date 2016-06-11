@@ -2183,16 +2183,10 @@ namespace Colsp.Api.Controllers
 			#region setup other field
 			group.EffectiveDate = request.EffectiveDate.HasValue ? request.EffectiveDate.Value : currentDt;
 			group.ExpireDate = request.ExpireDate.HasValue && request.ExpireDate.Value.CompareTo(group.EffectiveDate) >= 0 ? request.ExpireDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
-			group.NewArrivalDate = request.NewArrivalDate;
-			if(group.NewArrivalDate == null)
-			{
-				group.NewArrivalDate = currentDt;
-			}
 			group.TheOneCardEarn = request.TheOneCardEarn;
 			group.GiftWrap = request.GiftWrap;
 			group.Status = request.Status;
 			group.Remark = request.Remark;
-
 			if (request.ControlFlags != null)
 			{
 				group.IsNew = request.ControlFlags.IsNew;
@@ -2248,6 +2242,11 @@ namespace Colsp.Api.Controllers
 			{
 				group.RejecteBy = email;
 				group.RejectOn = currentDt;
+			}
+			group.NewArrivalDate = request.NewArrivalDate;
+			if (group.NewArrivalDate == null)
+			{
+				group.NewArrivalDate = group.CreateOn;
 			}
 			group.UpdateBy = email;
 			group.UpdateOn = currentDt;

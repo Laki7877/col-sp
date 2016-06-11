@@ -26,7 +26,17 @@ namespace Colsp.Api.Filters
 
 			// Match with the user's permission list
 			var claimsIdentity = HttpContext.Current.User.Identity as ClaimsIdentity;
-			var exist = claimsIdentity.HasClaim((c) => {
+			//bool exist = true;
+			//foreach (var permission in permissions)
+			//{
+			//	if(!claimsIdentity.Claims.Any(a=>a.Type.Equals("Permission") && a.Value.Equals(permission)))
+			//	{
+			//		exist = false;
+			//		break;
+			//	}
+			//}
+			var exist = claimsIdentity.HasClaim((c) =>
+			{
 				return c.Type.Equals("Permission") &&
 					   permissions.Contains(c.Value);
 			});

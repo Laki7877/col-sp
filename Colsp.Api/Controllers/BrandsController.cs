@@ -16,6 +16,7 @@ using Colsp.Api.Helpers;
 using System.IO;
 using System.Data.Entity.SqlServer;
 using System.Text.RegularExpressions;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -25,6 +26,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/BrandImages")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public async Task<HttpResponseMessage> UploadFile()
 		{
 			try
@@ -102,6 +104,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "6", "2", "3", "35", "34" })]
 		public HttpResponseMessage GetBrand([FromUri] BrandRequest request)
 		{
 			try
@@ -152,6 +155,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands/{brandId}")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public HttpResponseMessage GetBrand([FromUri]int brandId)
 		{
 			try
@@ -334,6 +338,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands")]
 		[HttpDelete]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public HttpResponseMessage DeleteBrand(List<BrandRequest> request)
 		{
 			try
@@ -370,6 +375,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public HttpResponseMessage AddBrand(BrandRequest request)
 		{
 			try
@@ -395,6 +401,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands/{brandId}")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public HttpResponseMessage SaveChangeBrand([FromUri]int brandId, BrandRequest request)
 		{
 			try

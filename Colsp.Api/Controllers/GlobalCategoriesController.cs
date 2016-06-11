@@ -17,6 +17,7 @@ using Colsp.Api.Helpers;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -26,6 +27,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "8", "2", "3", "35", "34" })]
 		public HttpResponseMessage GetGlobalCategory()
 		{
 			try
@@ -68,6 +70,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/{categoryId}")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage GetGlobalCategory(int categoryId)
 		{
 			try
@@ -165,6 +168,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage AddGlobalCategory(CategoryRequest request)
 		{
 			GlobalCategory category = null;
@@ -227,6 +231,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/{categoryId}")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage SaveChange(int categoryId, CategoryRequest request)
 		{
 			try
@@ -394,6 +399,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/Visibility")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage VisibilityCategory(List<CategoryRequest> request)
 		{
 			try
@@ -427,6 +433,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/{catId}/Attributes")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "2", "3", "35", "34" })]
 		public HttpResponseMessage GetVarientAttribute(int catId)
 		{
 			try
@@ -457,6 +464,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/{catId}/AttributeSets")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "2", "3", "35", "34" })]
 		public HttpResponseMessage GetAttributeSetFromCat(int catId)
 		{
 			try
@@ -513,6 +521,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage SaveChangeGlobalCategory(List<CategoryRequest> request)
 		{
 			try
@@ -578,6 +587,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategoryImages")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public async Task<HttpResponseMessage> UploadFile()
 		{
 			try

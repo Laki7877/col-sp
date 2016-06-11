@@ -13,6 +13,7 @@ using Colsp.Api.Helpers;
 using Colsp.Api.Extensions;
 using System.Collections.Generic;
 using System.Data.Entity;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -106,7 +107,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Newsletters/{newsletterId}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeNewsletter([FromUri]int newsletterId, NewsletterRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "21" })]
+		public HttpResponseMessage SaveChangeNewsletter([FromUri]int newsletterId, NewsletterRequest request)
         {
             try
             {
@@ -134,7 +136,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Newsletters")]
         [HttpPost]
-        public HttpResponseMessage AddNewsletter(NewsletterRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "21" })]
+		public HttpResponseMessage AddNewsletter(NewsletterRequest request)
         {
             try
             {
@@ -157,7 +160,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Newsletters")]
         [HttpDelete]
-        public HttpResponseMessage DeleteNewsletter(List<NewsletterRequest> request)
+		[ClaimsAuthorize(Permission = new string[] { "21" })]
+		public HttpResponseMessage DeleteNewsletter(List<NewsletterRequest> request)
         {
             try
             {

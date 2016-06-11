@@ -14,6 +14,7 @@ using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
 using System.Threading.Tasks;
 using System.IO;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -23,6 +24,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Attributes/DefaultAttribute")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "2", "3", "35", "34" })]
 		public HttpResponseMessage GetDefaultAttribute()
 		{
 			try
@@ -65,6 +67,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Attributes")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage GetAttributes([FromUri] AttributeRequest request)
 		{
 			try
@@ -143,6 +146,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Attributes/{attributeId}")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage GetAttribute(int attributeId)
 		{
 			try
@@ -162,6 +166,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Attributes")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage AddAttribute(AttributeRequest request)
 		{
 			Entity.Models.Attribute attribute = null;
@@ -190,6 +195,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Attributes/{attributeId}")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage SaveChangeAttribute([FromUri] int attributeId, AttributeRequest request)
 		{
 			Entity.Models.Attribute attribute = null;
@@ -223,6 +229,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Attributes")]
 		[HttpDelete]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage DeleteAttribute(List<AttributeRequest> request)
 		{
 			try
@@ -266,6 +273,7 @@ namespace Colsp.Api.Controllers
 		//duplicate
 		[Route("api/Attributes/{attributeId}")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage DuplicateAttribute(int attributeId)
 		{
 			try
@@ -285,6 +293,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Attributes/Visibility")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage VisibilityAttribute(List<AttributeRequest> request)
 		{
 			try
@@ -316,6 +325,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/AttributeValueImages")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public async Task<HttpResponseMessage> UploadFileImage()
 		{
 			try
