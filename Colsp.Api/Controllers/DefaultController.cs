@@ -457,8 +457,6 @@ namespace Colsp.Api.Controllers
                         db.SaveChanges();
                     }
                 }
-
-
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)

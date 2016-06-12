@@ -17,6 +17,7 @@ using Colsp.Api.Security;
 using System.Data.Entity.SqlServer;
 using Cenergy.Dazzle.Admin.Security.Cryptography;
 using System.Web.Http.Cors;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -27,7 +28,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Seller")]
         [HttpDelete]
-        public HttpResponseMessage DeleteUserSeller(List<UserRequest> request)
+		[ClaimsAuthorize(Permission = new string[] { "9", "57" })]
+		public HttpResponseMessage DeleteUserSeller(List<UserRequest> request)
         {
             try
             {
@@ -63,7 +65,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Seller")]
         [HttpGet]
-        public HttpResponseMessage GetUserSeller([FromUri] UserRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "9", "57" })]
+		public HttpResponseMessage GetUserSeller([FromUri] UserRequest request)
         {
             try
             {
@@ -149,7 +152,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Seller/{userId}")]
         [HttpGet]
-        public HttpResponseMessage GetUserSeller(int userId)
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
+		public HttpResponseMessage GetUserSeller(int userId)
         {
             try
             {
@@ -199,7 +203,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Seller")]
         [HttpPost]
-        public HttpResponseMessage AddUserSeller(UserRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
+		public HttpResponseMessage AddUserSeller(UserRequest request)
         {
             User user = null;
             try
@@ -268,7 +273,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Seller/{userId}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeUserSeller([FromUri]int userId, UserRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
+		public HttpResponseMessage SaveChangeUserSeller([FromUri]int userId, UserRequest request)
         {
             try
             {
@@ -351,7 +357,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Admin")]
         [HttpGet]
-        public HttpResponseMessage GetUserAdmin([FromUri] UserRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage GetUserAdmin([FromUri] UserRequest request)
         {
             try
             {
@@ -394,7 +401,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Admin/{userId}")]
         [HttpGet]
-        public HttpResponseMessage GetUserAdmin(int userId)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage GetUserAdmin(int userId)
         {
             try
             {
@@ -435,7 +443,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Admin")]
         [HttpPost]
-        public HttpResponseMessage AddUserAdmin(UserRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage AddUserAdmin(UserRequest request)
         {
             User user = null;
             try
@@ -494,7 +503,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Admin/{userId}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeUserAdmin([FromUri]int userId, UserRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage SaveChangeUserAdmin([FromUri]int userId, UserRequest request)
         {
             try
             {
@@ -577,7 +587,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Admin")]
         [HttpDelete]
-        public HttpResponseMessage DeleteUserAdmin(List<UserRequest> request)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage DeleteUserAdmin(List<UserRequest> request)
         {
             try
             {
@@ -602,7 +613,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/ClearCache")]
         [HttpGet]
-        public HttpResponseMessage ClearCache()
+		[ClaimsAuthorize(Permission = new string[] { "-1" })]
+		public HttpResponseMessage ClearCache()
         {
             Cache.Clear();
             return Request.CreateResponse(HttpStatusCode.OK);
@@ -818,7 +830,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Admin/Login/{userId}")]
         [HttpGet]
-        public HttpResponseMessage LoginAs(int userId)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage LoginAs(int userId)
         {
             try
             {
@@ -966,7 +979,7 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Users/Admin/LogoutAs")]
         [HttpGet]
-        public HttpResponseMessage LogoutAs()
+		public HttpResponseMessage LogoutAs()
         {
             try
             {

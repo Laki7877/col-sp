@@ -12,6 +12,7 @@ using Colsp.Api.Constants;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
 using Colsp.Api.Helpers;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -21,7 +22,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Seller")]
         [HttpDelete]
-        public HttpResponseMessage DeleteUserGroupSeller(List<UserGroupRequest> request)
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
+		public HttpResponseMessage DeleteUserGroupSeller(List<UserGroupRequest> request)
         {
 
             try
@@ -48,7 +50,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Seller")]
         [HttpGet]
-        public HttpResponseMessage GetUserGroupSeller([FromUri] UserGroupRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
+		public HttpResponseMessage GetUserGroupSeller([FromUri] UserGroupRequest request)
         {
             try
             {
@@ -87,7 +90,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Seller/{usergroupid}")]
         [HttpGet]
-        public HttpResponseMessage GetUserGroupSeller(int usergroupid)
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
+		public HttpResponseMessage GetUserGroupSeller(int usergroupid)
         {
             try
             {
@@ -116,7 +120,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Seller")]
         [HttpPost]
-        public HttpResponseMessage AddUserGroupSeller(UserGroupRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
+		public HttpResponseMessage AddUserGroupSeller(UserGroupRequest request)
         {
             try
             {
@@ -186,7 +191,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Seller/{usergroupid}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeUserSeller([FromUri]int usergroupid, UserGroupRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
+		public HttpResponseMessage SaveChangeUserSeller([FromUri]int usergroupid, UserGroupRequest request)
         {
             try
             {
@@ -252,7 +258,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Admin")]
         [HttpGet]
-        public HttpResponseMessage GetUserGroupAdmin([FromUri] UserGroupRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage GetUserGroupAdmin([FromUri] UserGroupRequest request)
         {
             try
             {
@@ -286,7 +293,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Admin/{usergroupid}")]
         [HttpGet]
-        public HttpResponseMessage GetUserGroupAdmin(int usergroupid)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage GetUserGroupAdmin(int usergroupid)
         {
             try
             {
@@ -312,7 +320,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Admin")]
         [HttpPost]
-        public HttpResponseMessage AddUserAdmin(UserGroupRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage AddUserAdmin(UserGroupRequest request)
         {
             UserGroup usrGrp = null;
             try
@@ -364,7 +373,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Admin")]
         [HttpDelete]
-        public HttpResponseMessage DeleteUserGroupAdmin(List<UserGroupRequest> request)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage DeleteUserGroupAdmin(List<UserGroupRequest> request)
         {
 
             try
@@ -387,7 +397,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/UserGroups/Admin/{usergroupid}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeUserAdmin([FromUri]int usergroupid, UserGroupRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
+		public HttpResponseMessage SaveChangeUserAdmin([FromUri]int usergroupid, UserGroupRequest request)
         {
             try
             {
