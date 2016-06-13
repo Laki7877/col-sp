@@ -38,7 +38,7 @@ namespace Colsp.Model.Requests
         public bool ISCampaign { get; set; }
         public string FeatureTitle { get; set; }
         public bool TitleShowcase { get; set; }
-        public SortByRequest SortBy { get; set; }
+
         public List<CMSSchedulerRequest> ScheduleList { get; set; }
         public List<CMSFeatureProductRequest> FeatureProductList { get; set; }
         public List<CMSCategoryRequest> CategoryList{ get; set; }

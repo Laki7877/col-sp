@@ -10,6 +10,7 @@ namespace Colsp.Api.Constants
         private const string CmosRootUrl = "https://devmkp-cmosapi.cenergy.co.th/";
         private const string ElasticRootUrl = "http://128.199.77.82/elasticsearch/api/v0.2.0/";
 		private const string EVoucherRootUrl = "https://devmkp-api.cenergy.co.th/";
+		private const string OrderRootUrl = "https://devmkp-api.cenergy.co.th/";
 
 
 		public const string CmosKeyAppIdKey         = "X-Cmos-AppId";
@@ -40,6 +41,16 @@ namespace Colsp.Api.Constants
 		public const string EVoucherUpdate = EVoucherRootUrl + "evoucher?id=";
 
 
+
+		public const string OrderKeyAppIdKey = "X-Central-AppId";
+		public const string OrderKeyAppIdValue = "1441071018";
+		public const string OrderKeyAppSecretKey = "X-Central-SecretKey";
+		public const string OrderKeyAppSecretValue = "8e87cd231a9c2498dd56841cc66f7c78";
+		public const string OrderKeyVersionKey = "X-Central-Version";
+		public const string OrderKeyVersionValue = "1";
+
+		public const string SubOrderGetAll = OrderRootUrl + "suborder/list?ShopId=";
+		public const string SubOrderGetOne = OrderRootUrl + "suborder/detail?subOrderId=";
 
 
 	}

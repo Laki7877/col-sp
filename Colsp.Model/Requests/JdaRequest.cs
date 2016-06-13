@@ -10,7 +10,7 @@ namespace Colsp.Model.Requests
     public class JdaRequest
     {
         public string Sku { get; set; }
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         public string Barcode { get; set; }
         public string BrandName { get; set; }
         public string ShortDescriptionTh { get; set; }
@@ -20,7 +20,7 @@ namespace Colsp.Model.Requests
         public int Quantity { get; set; }
         public string JDADept { get; set; }
         public string JDASubDept { get; set; }
-        public decimal PromotionPrice { get; set; }
+        public decimal? PromotionPrice { get; set; }
         public DateTime? EffectiveDatePromotion { get; set; }
         public DateTime? ExpireDatePromotion { get; set; }
 

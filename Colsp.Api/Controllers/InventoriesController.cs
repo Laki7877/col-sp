@@ -269,7 +269,7 @@ namespace Colsp.Api.Controllers
                     }
                     else if (string.Equals("OutOfStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
-                        invenentory = invenentory.Where(w => w.Quantity == 0);
+                        invenentory = invenentory.Where(w => w.Quantity <= 0);
                         //products = products.Where(p => p.Status.Equals(Constant.PRODUCT_STATUS_APPROVE));
                     }
                     else if (string.Equals("LowStock", request._filter, StringComparison.OrdinalIgnoreCase))
@@ -321,9 +321,16 @@ namespace Colsp.Api.Controllers
                 {
                     Pid = inv.Pid
                 };
-                db.Inventories.Attach(inventory);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				db.Inventories.Attach(inventory);
                 db.Entry(inventory).Property(p => p.Quantity).IsModified = true;
-                inventory.Quantity = inv.Quantity + request.UpdateQuantity;
+				db.Entry(inventory).Property(p => p.UpdateBy).IsModified = true;
+				db.Entry(inventory).Property(p => p.UpdateOn).IsModified = true;
+				inventory.Quantity = inv.Quantity + request.UpdateQuantity;
+				inventory.UpdateOn = currentDt;
+				inventory.UpdateBy = email;
+
                 db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Inventory");
                 #endregion

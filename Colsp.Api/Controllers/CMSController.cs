@@ -17,7 +17,6 @@ using Colsp.Logic;
 using Colsp.Model;
 using System.Dynamic;
 using System.IO;
-using System.Web;
 
 namespace Colsp.Api.Controllers
 {
@@ -291,10 +290,6 @@ namespace Colsp.Api.Controllers
                 if (shopId != 0)
                     query = query.Where(x => x.ShopId == shopId);
 
-                if (string.IsNullOrEmpty(condition.SearchText))
-                    goto cateBrand;
-
-
                 if (condition.SearchBy == Logic.SearchOption.PID)
                     query = query.Where(x => x.Pid.Equals(condition.SearchText));
 
@@ -304,19 +299,16 @@ namespace Colsp.Api.Controllers
                 if (condition.SearchBy == Logic.SearchOption.ProductName)
                     query = query.Where(x => x.ProductNameEn.Contains(condition.SearchText) || x.ProductNameTh.Contains(condition.SearchText));
 
-                // search by catetegory & brand
-                cateBrand: {
-                    if (condition.CategoryId != null)
-                        if (shopId == 0)
-                            query = query.Where(x => x.GlobalCatId == condition.CategoryId);
+                if (condition.CategoryId != null)
+                    if (shopId == 0)
+                        query = query.Where(x => x.GlobalCatId == condition.CategoryId);
 
-                        else
-                            query = query.Where(x => x.LocalCatId == condition.CategoryId);
-
-                    if (condition.BrandId != null)
-                        query = query.Where(x => x.BrandId == condition.BrandId);
-                }
+                    else
+                        query = query.Where(x => x.LocalCatId == condition.CategoryId);
                 
+                if (condition.BrandId != null)
+                    query = query.Where(x => x.BrandId == condition.BrandId);
+
                 if (condition.Tag != null)
                     query = query.Include(t => t.ProductTags)
                             .Where(x => condition.Tags.Contains(x.ProductTags.Select(s => s.Tag).FirstOrDefault()));
@@ -476,8 +468,7 @@ namespace Colsp.Api.Controllers
                     }
 
                     current.Visibility = cateRq.Visibility;
-                    current.UpdateIP = cateRq.CreateIP;
-                    current.UpdateOn = DateTime.Now;
+
                 }
                 Util.DeadlockRetry(db.SaveChanges, "CMSCategory");
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -524,7 +515,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                request.CreateBy = this.User.UserRequest().Email;
                 request.UpdateBy = this.User.UserRequest().Email;
                 request.ShopId = this.User.ShopRequest() == null ? 0 : this.User.ShopRequest().ShopId;
 
@@ -641,12 +631,6 @@ namespace Colsp.Api.Controllers
 
                 var query = from master in db.CMSMasters where !master.Status.Equals("RM") select master;
 
-                if (shopId != 0)
-                {
-                    var cmsMasterIdList = (from map in db.CMSMasterCategoryMaps where map.ShopId == shopId select map).Select(s => s.CMSMasterId).ToList();
-                    query = query.Where(x => cmsMasterIdList.Contains(x.CMSMasterId));
-                }
-
                 if (!string.IsNullOrEmpty(request.SearchText))
                     query = query.Where(x => x.CMSMasterNameEN.Contains(request.SearchText) || x.CMSMasterNameTH.Contains(request.SearchText));
 
@@ -687,8 +671,6 @@ namespace Colsp.Api.Controllers
             try
             {
 
-                var sortByList = from sortBy in db.SortBies select sortBy;
-
                 var query = from master in db.CMSMasters
                             join masterScheduleMap in db.CMSMasterSchedulerMaps
                             on master.CMSMasterId equals masterScheduleMap.CMSMasterId
@@ -715,15 +697,6 @@ namespace Colsp.Api.Controllers
                                 ISCampaign = master.IsCampaign,
                                 FeatureTitle = master.FeatureTitle,
                                 TitleShowcase = master.TitleShowcase,
-
-                                SortBy = (from sortBy in sortByList
-                                          where sortBy.SortById == master.SortById.Value
-                                          select new SortByRequest {
-                                              SortById = sortBy.SortById,
-                                              NameEn = sortBy.NameEn,
-                                              NameTh = sortBy.NameTh,
-                                              SortByName = sortBy.SortByName
-                                          }).FirstOrDefault(),
 
                                 FeatureProductList = (from feature in db.CMSFeatureProducts
                                                               where feature.CMSMasterId == cmsMasterId
@@ -856,14 +829,12 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var ShopId          = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
-                var Email           = this.User.UserRequest().Email;
+                var ShopId = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
+                var Email = this.User.UserRequest().Email;
 
-                request.Status      = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
-                request.CreateBy    = Email;
-                request.CreateIP    = "";
-                request.UpdateIP    = "";
-
+                request.Status = Constant.CMS_STATUS_WAIT_FOR_APPROVAL;
+                request.CreateBy = Email;
+                
                 var success = cmsLogic.AddCMSMaster(request);
 
                 if (!success)
@@ -886,11 +857,8 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                var ShopId  = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
-                var Email   = this.User.UserRequest().Email;
-                
-                request.CreateIP = "";
-                request.UpdateIP = "";
+                var ShopId = this.User.UserRequest().IsAdmin ? 0 : this.User.ShopRequest().ShopId;
+                var Email = this.User.UserRequest().Email;
 
                 var success = cmsLogic.EditCMSMaster(request, ShopId, Email);
                 if (!success)

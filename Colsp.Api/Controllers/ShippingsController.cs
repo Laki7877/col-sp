@@ -7,6 +7,7 @@ using System.Web.Http;
 using Colsp.Entity.Models;
 using Colsp.Api.Constants;
 using Colsp.Api.Extensions;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -16,7 +17,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shippings")]
         [HttpGet]
-        public HttpResponseMessage GetShippings()
+		[ClaimsAuthorize(Permission = new string[] { "2", "3", "35", "34" })]
+		public HttpResponseMessage GetShippings()
         {
             try
             {

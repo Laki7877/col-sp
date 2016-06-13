@@ -17,9 +17,6 @@ using System.Data.SqlClient;
 using Colsp.Api.Filters;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Text;
-using Colsp.Logic;
-
 namespace Colsp.Api.Controllers
 {
     public class PromotionController : ApiController
@@ -52,50 +49,9 @@ namespace Colsp.Api.Controllers
             public int quantity { get; set; }
         }
 
-
-
-        public class Buy1Get1ReturnModel
-        {
-            public Premium premium { get; set; }
-            public string returncode { get; set; }
-            public string message { get; set; }
-        }
-
-        public class Premium
-        {
-            public string id { get; set; }
-            public string promotioncode { get; set; }
-            public DateTime effectivedate { get; set; }
-            public DateTime expireddate { get; set; }
-            public bool status { get; set; }
-            public List<Buyproduct> buyproduct { get; set; }
-            public List<Premiumproduct> premiumproduct { get; set; }
-            public int limitperuser { get; set; }
-            public int limit { get; set; }
-        }
-
-
-        public class SearchBuy1Get1ItemRequest : PaginatedRequest
-        {
-            public string SearchText { get; set; }
-        }
-
-        public class Buy1Get1ReturnMongo
-        {
-            public string _status { get; set; }
-            public string _Id { get; set; }
-            public string _message { get; set; }
-        }
-
-        public class PaymentIdModel
-        {
-            public int PaymentID { get; set; }
-            public string PaymentName { get; set; }
-            public string PaymentNameEN { get; set; }
-        }
         #endregion
         #region API Mongo
-        static async void CallMongoAPI(Buy1Get1CallModel data, string Id, string Method, string FunctionName, Buy1Get1ReturnModel mongoRetrun)
+        public async void CallMongoAPI(IQueryable data, string Method, string FunctionName)
         {
             /*
             Test call api    
@@ -103,12 +59,10 @@ namespace Colsp.Api.Controllers
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://devmkp-api.cenergy.co.th/");
-                byte[] cred = UTF8Encoding.UTF8.GetBytes("mkp:mkp@shopping");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage response = new HttpResponseMessage();
-                dynamic result;
+                Uri Result;
                 switch (Method)
                 {
                     case "GET":
@@ -116,39 +70,29 @@ namespace Colsp.Api.Controllers
                         response = await client.GetAsync(FunctionName);
                         if (response.IsSuccessStatusCode)
                         {
-                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
-                        }
-                        break;
-                    case "GETID":
-                        // HTTP GET By Id
-                        response = await client.GetAsync(FunctionName + "?id=" + Id);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
+                            var result = await response.Content.ReadAsAsync<IBMPromotionsList>();
+
                         }
                         break;
                     case "POST":
                         response = await client.PostAsJsonAsync(FunctionName, data);
                         if (response.IsSuccessStatusCode)
                         {
-                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
-                            mongoRetrun = result;
+                            Result = response.Headers.Location;
                         }
                         break;
                     case "PUT":
-                        response = await client.PutAsJsonAsync(FunctionName + "?id=" + Id, data);
+                        response = await client.PutAsJsonAsync(FunctionName, data);
                         if (response.IsSuccessStatusCode)
                         {
-                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
-                            mongoRetrun = result;
+                            Result = response.Headers.Location;
                         }
                         break;
                     case "DELETE":
                         response = await client.DeleteAsync(FunctionName);
                         if (response.IsSuccessStatusCode)
                         {
-                            result = await response.Content.ReadAsAsync<Buy1Get1ReturnModel>();
-                            mongoRetrun = result;
+                            Result = response.Headers.Location;
                         }
                         break;
                     default:
@@ -157,8 +101,6 @@ namespace Colsp.Api.Controllers
             }
         }
         #endregion
-
-        #region On Top Create
 
         [Route("api/Promotion/OntopCreate")]
         [HttpPost]
@@ -398,15 +340,14 @@ namespace Colsp.Api.Controllers
         }
 
 
-        #endregion
         [HttpGet]
         [Route("api/Promotion/Buy1Get1")]
-        public HttpResponseMessage GetAllBuy1Get1([FromUri] SearchBuy1Get1ItemRequest request)
+        public HttpResponseMessage GetAllBuy1Get1([FromUri] CMSMasterRequest request)
         {
             try
             {
-                int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-                var query = from pro in db.PromotionBuy1Get1Item where pro.ShopId == ShopId select pro;
+
+                var query = from pro in db.PromotionBuy1Get1Item select pro;
 
                 if (!string.IsNullOrEmpty(request.SearchText))
                     query = query.Where(x => x.NameEN.Contains(request.SearchText) || x.NameTH.Contains(request.SearchText));
@@ -429,7 +370,6 @@ namespace Colsp.Api.Controllers
         public HttpResponseMessage CreateBuy1Get1Item(Buy1Get1ItemRequest Model)
         {
             PromotionBuy1Get1Item newObj = null;
-            Buy1Get1ReturnModel mongoReturn = new Buy1Get1ReturnModel();
             int result = 0;
             using (ColspEntities db = new ColspEntities())
             {
@@ -446,7 +386,7 @@ namespace Colsp.Api.Controllers
                         newObj.NameTH = Model.NameTH;
                         newObj.URLKey = Model.URLKey;
                         //Check Pid
-                        if (Model.ProductBuyList != null && Model.ProductBuyList.Count() > 0)
+                        if (Model.ProductBuyList.Count() > 0)
                         {
                             foreach (var itemBuy in Model.ProductBuyList)
                             {
@@ -460,7 +400,7 @@ namespace Colsp.Api.Controllers
                                 }
                             }
                         }
-                        if (Model.ProductGetList != null && Model.ProductGetList.Count() > 0)
+                        if (Model.ProductGetList.Count() > 0)
                         {
                             foreach (var itemGet in Model.ProductGetList)
                             {
@@ -475,31 +415,25 @@ namespace Colsp.Api.Controllers
                             }
                         }
 
+                        newObj.PIDGet = Model.PIDGet;
                         newObj.ShortDescriptionTH = Model.ShortDescriptionTH;
                         newObj.LongDescriptionTH = Model.LongDescriptionTH;
                         newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
                         newObj.LongDescriptionEN = Model.LongDescriptionEN;
                         newObj.EffectiveDate = Model.EffectiveDate;
+                        //newObj.EffectiveTime = Model.EffectiveTime;
                         newObj.ExpiryDate = Model.ExpiryDate;
-                        newObj.ProductBoxBadge = "";
-                        newObj.Sequence = 1;
-                        if (Model.Status == 1)
-                            newObj.Status = true;
-                        else
-                            newObj.Status = false;
-                        newObj.CreateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
+                        //newObj.ExpiryTime = Model.ExpiryTime;
+                        newObj.ProductBoxBadge = Model.ProductBoxBadge;
+                        newObj.Sequence = Model.Sequence;
+                        newObj.Status = Model.Status;
+                        newObj.CreateBy = Model.CreateBy;
                         newObj.CreateOn = (DateTime)DateTime.Now;
-                        newObj.UpdateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
+                        newObj.UpdateBy = Model.UpdateBy;
                         newObj.UpdateOn = (DateTime)DateTime.Now;
-                        if (!string.IsNullOrWhiteSpace(Model.CreateIP))
-                            newObj.CreateIP = Model.CreateIP;
-                        else
-                            newObj.CreateIP = "";
-                        newObj.UpdateIP = newObj.CreateIP;
-                        if (Model.CMSStatusFlowId.HasValue)
-                            newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
-                        else
-                            newObj.CMSStatusFlowId = 1;
+                        newObj.CreateIP = Model.CreateIP;
+                        newObj.UpdateIP = Model.UpdateIP;
+                        newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
                         newObj.CampaignID = Model.CampaignID;
                         newObj.CampaignName = Model.CampaignName;
                         newObj.PromotionCode = Model.PromotionCode;
@@ -507,9 +441,6 @@ namespace Colsp.Api.Controllers
                         newObj.MarketingAbsorb = Model.MarketingAbsorb;
                         newObj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
                         newObj.VendorAbsorb = Model.VendorAbsorb;
-                        newObj.Limit = Model.Limit;
-                        newObj.LimitPerUser = Model.LimitPerUser;
-                        newObj.ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
                         db.PromotionBuy1Get1Item.Add(newObj);
 
                         if (db.SaveChanges() > 0) //Saved return row save successfully.
@@ -520,15 +451,7 @@ namespace Colsp.Api.Controllers
                             callMongoModel.buyproducts = buypro;
                             callMongoModel.effectivedate = (DateTime)Model.EffectiveDate;
                             callMongoModel.expireddate = (DateTime)Model.ExpiryDate;
-                            callMongoModel.limit = (int)newObj.Limit;
-                            callMongoModel.limitperuser = (int)newObj.LimitPerUser;
-                            callMongoModel.premiumproducts = getpro;
-                            callMongoModel.status = (bool)newObj.Status;
-                            callMongoModel.id = "";
-                            callMongoModel.promotioncode = newObj.PromotionCode;
-                            CallMongoAPI(callMongoModel, "", "POST", "premium", mongoReturn);
-                            var rex = mongoReturn;
-                            UpdatePremiumId(newObj.PromotionBuy1Get1ItemId, rex.premium.id);
+                            
                         }
                         else
                         {
@@ -549,119 +472,60 @@ namespace Colsp.Api.Controllers
         [HttpPost]
         public HttpResponseMessage EditBuy1Get1Item(Buy1Get1ItemRequest Model)
         {
-            PromotionBuy1Get1Item newObj = null;
-            Buy1Get1ReturnModel mongoReturn = new Buy1Get1ReturnModel();
+            PromotionBuy1Get1Item Obj = null;
             int result = 0;
             using (ColspEntities db = new ColspEntities())
             {
                 using (var dbcxtransaction = db.Database.BeginTransaction())
                 {
-                    Buy1Get1CallModel callMongoModel = new Buy1Get1CallModel();
-                    List<Buyproduct> buypro = new List<Buyproduct>();
-                    List<Premiumproduct> getpro = new List<Premiumproduct>();
                     try
                     {
-                        int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-                        newObj = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == Model.PromotionBuy1Get1ItemId && c.ShopId == ShopId).FirstOrDefault();
-                        if (newObj != null)
+                        Obj = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == Model.PromotionBuy1Get1ItemId).FirstOrDefault();
+                        if (Obj != null)
                         {
-
-                            newObj.NameEN = Model.NameEN;
-                            newObj.NameTH = Model.NameTH;
-                            newObj.URLKey = Model.URLKey;
-                            //Check Pid
-                            if (Model.ProductBuyList != null && Model.ProductBuyList.Count() > 0)
-                            {
-                                foreach (var itemBuy in Model.ProductBuyList)
-                                {
-                                    if (IsCanSetProductBuy(itemBuy.Pid) == true)
-                                    {
-                                        Buyproduct proCall = new Buyproduct();
-                                        newObj.PIDBuy = itemBuy.Pid;
-                                        proCall.productid = itemBuy.Pid.ToString();
-                                        proCall.quantity = 1;
-                                        buypro.Add(proCall);
-                                    }
-                                }
-                            }
-                            if (Model.ProductGetList != null && Model.ProductGetList.Count() > 0)
-                            {
-                                foreach (var itemGet in Model.ProductGetList)
-                                {
-                                    if (IsCanSetProductBuy(itemGet.Pid) == true)
-                                    {
-                                        Premiumproduct getCall = new Premiumproduct();
-                                        newObj.PIDGet = itemGet.Pid;
-                                        getCall.productid = itemGet.Pid.ToString();
-                                        getCall.quantity = 1;
-                                        getpro.Add(getCall);
-                                    }
-                                }
-                            }
-
-                            newObj.ShortDescriptionTH = Model.ShortDescriptionTH;
-                            newObj.LongDescriptionTH = Model.LongDescriptionTH;
-                            newObj.ShortDescriptionEN = Model.ShortDescriptionEN;
-                            newObj.LongDescriptionEN = Model.LongDescriptionEN;
-                            newObj.EffectiveDate = Model.EffectiveDate;
-                            newObj.ExpiryDate = Model.ExpiryDate;
-                            newObj.ProductBoxBadge = "";
-                            newObj.Sequence = 1;
-                            if (Model.Status == 1)
-                                newObj.Status = true;
-                            else
-                                newObj.Status = false;
-                            newObj.CreateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
-                            newObj.CreateOn = (DateTime)DateTime.Now;
-                            newObj.UpdateBy = User.UserRequest() == null ? "" : User.UserRequest().Email;
-                            newObj.UpdateOn = (DateTime)DateTime.Now;
-                            if (!string.IsNullOrWhiteSpace(Model.CreateIP))
-                                newObj.CreateIP = Model.CreateIP;
-                            else
-                                newObj.CreateIP = "";
-                            newObj.UpdateIP = newObj.CreateIP;
-                            if (Model.CMSStatusFlowId.HasValue)
-                                newObj.CMSStatusFlowId = Model.CMSStatusFlowId;
-                            else
-                                newObj.CMSStatusFlowId = 1;
-                            newObj.CampaignID = Model.CampaignID;
-                            newObj.CampaignName = Model.CampaignName;
-                            newObj.PromotionCode = Model.PromotionCode;
-                            newObj.PromotionCodeRef = Model.PromotionCodeRef;
-                            newObj.MarketingAbsorb = Model.MarketingAbsorb;
-                            newObj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
-                            newObj.VendorAbsorb = Model.VendorAbsorb;
-                            newObj.Limit = Model.Limit;
-                            newObj.LimitPerUser = Model.LimitPerUser;
-                            newObj.ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-                            db.Entry(newObj).State = EntityState.Modified;
+                            Obj.NameEN = Model.NameEN;
+                            Obj.NameTH = Model.NameTH;
+                            Obj.URLKey = Model.URLKey;
+                            Obj.PIDBuy = Model.PIDBuy;
+                            Obj.PIDGet = Model.PIDGet;
+                            Obj.ShortDescriptionTH = Model.ShortDescriptionTH;
+                            Obj.LongDescriptionTH = Model.LongDescriptionTH;
+                            Obj.ShortDescriptionEN = Model.ShortDescriptionEN;
+                            Obj.LongDescriptionEN = Model.LongDescriptionEN;
+                            Obj.EffectiveDate = Model.EffectiveDate;
+                            //Obj.EffectiveTime = Model.EffectiveTime;
+                            Obj.ExpiryDate = Model.ExpiryDate;
+                            //Obj.ExpiryTime = Model.ExpiryTime;
+                            Obj.ProductBoxBadge = Model.ProductBoxBadge;
+                            Obj.Sequence = Model.Sequence;
+                            Obj.Status = Model.Status;
+                            Obj.CreateBy = Model.CreateBy;
+                            Obj.CreateOn = (DateTime)DateTime.Now;
+                            Obj.UpdateBy = Model.UpdateBy;
+                            Obj.UpdateOn = (DateTime)DateTime.Now;
+                            Obj.CreateIP = Model.CreateIP;
+                            Obj.UpdateIP = Model.UpdateIP;
+                            Obj.CMSStatusFlowId = Model.CMSStatusFlowId;
+                            Obj.CampaignID = Model.CampaignID;
+                            Obj.CampaignName = Model.CampaignName;
+                            Obj.PromotionCode = Model.PromotionCode;
+                            Obj.PromotionCodeRef = Model.PromotionCodeRef;
+                            Obj.MarketingAbsorb = Model.MarketingAbsorb;
+                            Obj.MerchandiseAbsorb = Model.MerchandiseAbsorb;
+                            Obj.VendorAbsorb = Model.VendorAbsorb;
+                            db.Entry(Obj).State = EntityState.Modified;
 
                             if (db.SaveChanges() > 0) //Saved return row save successfully.
                             {
                                 dbcxtransaction.Commit();
-                                result = newObj.PromotionBuy1Get1ItemId;
-
-                                callMongoModel.buyproducts = buypro;
-                                callMongoModel.effectivedate = (DateTime)Model.EffectiveDate;
-                                callMongoModel.expireddate = (DateTime)Model.ExpiryDate;
-                                callMongoModel.limit = (int)newObj.Limit;
-                                callMongoModel.limitperuser = (int)newObj.LimitPerUser;
-                                callMongoModel.premiumproducts = getpro;
-                                callMongoModel.status = (bool)newObj.Status;
-                                callMongoModel.id = newObj.MongoId;
-                                callMongoModel.promotioncode = newObj.PromotionCode;
-                                //Update Call MongoDB
-                                CallMongoAPI(callMongoModel, newObj.MongoId, "PUT", "premium", mongoReturn);
-
-                                var rex = mongoReturn;
-                                UpdatePremiumId(newObj.PromotionBuy1Get1ItemId, newObj.MongoId);
+                                result = Obj.PromotionBuy1Get1ItemId;
                             }
                             else
                             {
                                 dbcxtransaction.Rollback();
                             }
                         }
-                        return GetBuy1Get1(newObj.PromotionBuy1Get1ItemId);
+                        return GetBuy1Get1(Obj.PromotionBuy1Get1ItemId);
                     }
                     catch (DbUpdateException e)
                     {
@@ -695,8 +559,7 @@ namespace Colsp.Api.Controllers
         {
             using (ColspEntities db = new ColspEntities())
             {
-                int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-                var buy1get1 = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == promotionBuy1Get1ItemId && c.ShopId == ShopId).FirstOrDefault();
+                var buy1get1 = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == promotionBuy1Get1ItemId).FirstOrDefault();
                 if (buy1get1 != null)
                 {
                     Buy1Get1ItemResponse result = new Buy1Get1ItemResponse();
@@ -710,9 +573,9 @@ namespace Colsp.Api.Controllers
                     result.ShortDescriptionEN = buy1get1.ShortDescriptionEN;
                     result.LongDescriptionEN = buy1get1.LongDescriptionEN;
                     result.EffectiveDate = buy1get1.EffectiveDate;
-
+                    //result.EffectiveTime = buy1get1.EffectiveTime;
                     result.ExpiryDate = buy1get1.ExpiryDate;
-
+                    //result.ExpiryTime = buy1get1.ExpiryTime;
                     result.ProductBoxBadge = buy1get1.ProductBoxBadge;
                     result.Sequence = buy1get1.Sequence;
                     result.Status = buy1get1.Status;
@@ -730,7 +593,6 @@ namespace Colsp.Api.Controllers
                     result.MarketingAbsorb = buy1get1.MarketingAbsorb;
                     result.MerchandiseAbsorb = buy1get1.MerchandiseAbsorb;
                     result.VendorAbsorb = buy1get1.VendorAbsorb;
-                    result.MongoId = buy1get1.MongoId;
                     return result;
                 }
                 else
@@ -740,7 +602,7 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        #region Ontop List
+        #region List
         [Route("api/Promotion/Ontopcredit")]
         [HttpGet]
         public HttpResponseMessage GetOntopcredit([FromUri] OnTopCreditCardListRequest request)
@@ -864,8 +726,7 @@ namespace Colsp.Api.Controllers
             {
                 using (ColspEntities db = new ColspEntities())
                 {
-                    int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-                    var findPidBuy = db.PromotionBuy1Get1Item.Where(c => c.PIDBuy == Pid && c.ShopId == ShopId).ToList();
+                    var findPidBuy = db.PromotionBuy1Get1Item.Where(c => c.PIDBuy == Pid).ToList();
                     if (findPidBuy.Count() > 0)
                     {
                         foreach (var item in findPidBuy)
@@ -898,8 +759,7 @@ namespace Colsp.Api.Controllers
             {
                 using (ColspEntities db = new ColspEntities())
                 {
-                    int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-                    var findPidGet = db.PromotionBuy1Get1Item.Where(c => c.PIDGet == Pid && c.ShopId == ShopId).ToList();
+                    var findPidGet = db.PromotionBuy1Get1Item.Where(c => c.PIDGet == Pid).ToList();
                     if (findPidGet.Count() > 0)
                     {
                         foreach (var item in findPidGet)
@@ -922,32 +782,6 @@ namespace Colsp.Api.Controllers
             }
         }
         #endregion
-
-        #region Update Data From MongoDB Function
-        public bool UpdatePremiumId(int Buy1GetId, string MongoId)
-        {
-            bool result = false;
-            try
-            {
-                int ShopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-                var newObj = db.PromotionBuy1Get1Item.Where(c => c.PromotionBuy1Get1ItemId == Buy1GetId && c.ShopId == ShopId).FirstOrDefault();
-                if (newObj != null)
-                {
-                    newObj.MongoId = MongoId;
-                    db.Entry(newObj).State = EntityState.Modified;
-                    db.SaveChanges();
-                    result = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                result = false;
-                //throw;
-            }
-            return result;
-
-        }
-        #endregion
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -956,294 +790,7 @@ namespace Colsp.Api.Controllers
             }
             base.Dispose(disposing);
         }
-
-        #region Method Get Value
-        // Get Brand List
-        [HttpGet]
-        [Route("api/Promotion/GetBrand/{categoryId}")]
-        public HttpResponseMessage GetBrand(int categoryId)
-        {
-            try
-            {
-                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-
-                var query = shopId == 0
-                                ? (from product in db.Products
-                                   join brand in db.Brands on product.BrandId equals brand.BrandId
-                                   join category in db.GlobalCategories on product.GlobalCatId equals category.CategoryId
-                                   where category.CategoryId == categoryId
-                                   select new BrandRequest
-                                   {
-                                       BrandId = brand.BrandId,
-                                       BrandNameEn = brand.BrandNameEn,
-                                       BrandNameTh = brand.BrandNameTh
-                                   })
-
-                                : (from product in db.Products
-                                   join brand in db.Brands on product.BrandId equals brand.BrandId
-                                   join category in db.LocalCategories on product.LocalCatId equals category.CategoryId
-                                   where category.CategoryId == categoryId
-                                   select new BrandRequest
-                                   {
-                                       BrandId = brand.BrandId,
-                                       BrandNameEn = brand.BrandNameEn,
-                                       BrandNameTh = brand.BrandNameTh
-                                   });
-
-
-                if (!query.Any())
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
-
-                var items = query.ToList().GroupBy(g => g.BrandId).Select(s => s.First()).ToList();
-                return Request.CreateResponse(HttpStatusCode.OK, items);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message + " /api/CMS/GetBrand");
-            }
-
-        }
-
-        // Get Tag List
-        [HttpGet]
-        [Route("api/Promotion/GetAllTag")]
-        public HttpResponseMessage GetAllTag()
-        {
-            try
-            {
-                int shopId = 0; //this.User.ShopRequest().ShopId;
-
-                var query = db.ProductTags
-                            .GroupBy(g => g.Tag)
-                            .Select(s => s.FirstOrDefault());
-
-                if (!query.Any())
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Tag");
-
-                List<ProductTag> tags = new List<ProductTag>();
-
-                foreach (var item in query)
-                {
-                    tags.Add(new ProductTag
-                    {
-                        Pid = item.Pid,
-                        Tag = item.Tag
-                    });
-                }
-
-                return Request.CreateResponse(HttpStatusCode.OK, tags);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message + " /api/CMS/GetAllTag");
-            }
-
-        }
-
-        [HttpGet]
-        [Route("api/Promotion/GetAllPaymentId")]
-        public HttpResponseMessage GetAllPaymentId([FromUri] BaseCondition condition)
-        {
-            try
-            {
-                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-
-                var query = shopId == 0
-                                ? (from cate in db.Payments
-                                   select new PaymentIdModel
-                                   {
-                                       PaymentID = cate.PaymentID,
-                                       PaymentNameEN = cate.PaymentNameEN,
-                                       PaymentName = cate.PaymentName
-                                   })
-                                : (from cate in db.Payments
-                                   select new PaymentIdModel
-                                   {
-                                       PaymentID = cate.PaymentID,
-                                       PaymentNameEN = cate.PaymentNameEN,
-                                       PaymentName = cate.PaymentName
-                                   });
-
-                if (condition != null && condition.SearchText != null)
-                    query = query.Where(x => x.PaymentNameEN.Contains(condition.SearchText) || x.PaymentName.Contains(condition.SearchText));
-
-                if (!query.Any())
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
-
-                var items = query.Take(10).ToList();
-                return Request.CreateResponse(HttpStatusCode.OK, items);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message + " /api/CMS/GetAllCategory");
-            }
-
-        }
-
-        // Get Category List
-        [HttpGet]
-        [Route("api/Promotion/GetAllCategory")]
-        public HttpResponseMessage GetAllCategory([FromUri] BaseCondition condition)
-        {
-            try
-            {
-                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-
-                var query = shopId == 0
-                                ? (from cate in db.GlobalCategories
-                                   select new CategoryRequest
-                                   {
-                                       CategoryId = cate.CategoryId,
-                                       NameEn = cate.NameEn,
-                                       NameTh = cate.NameTh
-                                   })
-                                : (from cate in db.LocalCategories
-                                   select new CategoryRequest
-                                   {
-                                       CategoryId = cate.CategoryId,
-                                       NameEn = cate.NameEn,
-                                       NameTh = cate.NameTh
-                                   });
-
-                if (condition != null && condition.SearchText != null)
-                    query = query.Where(x => x.NameEn.Contains(condition.SearchText) || x.NameTh.Contains(condition.SearchText));
-
-                if (!query.Any())
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Brand");
-
-                var items = query.Take(10).ToList();
-                return Request.CreateResponse(HttpStatusCode.OK, items);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message + " /api/CMS/GetAllCategory");
-            }
-
-        }
-
-        // Search Product
-        [HttpGet]
-        [Route("api/Promotion/SearchProduct")]
-        public HttpResponseMessage SearchProduct([FromUri] ProductCondition condition)
-        {
-            try
-            {
-                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-
-                var query = from product in db.Products select product;
-
-                if (shopId != 0)
-                    query = query.Where(x => x.ShopId == shopId);
-
-                if (condition.SearchBy == Logic.SearchOption.PID)
-                    query = query.Where(x => x.Pid.Equals(condition.SearchText));
-
-                if (condition.SearchBy == Logic.SearchOption.SKU)
-                    query = query.Where(x => x.Sku.Equals(condition.SearchText));
-
-                if (condition.SearchBy == Logic.SearchOption.ProductName)
-                    query = query.Where(x => x.ProductNameEn.Contains(condition.SearchText) || x.ProductNameTh.Contains(condition.SearchText));
-
-                if (condition.CategoryId != null)
-                    if (shopId == 0)
-                        query = query.Where(x => x.GlobalCatId == condition.CategoryId);
-
-                    else
-                        query = query.Where(x => x.LocalCatId == condition.CategoryId);
-
-                if (condition.BrandId != null)
-                    query = query.Where(x => x.BrandId == condition.BrandId);
-
-                if (condition.Tag != null)
-                    query = query.Include(t => t.ProductTags)
-                            .Where(x => condition.Tags.Contains(x.ProductTags.Select(s => s.Tag).FirstOrDefault()));
-
-                query = query.Take(100);
-
-                if (!query.Any())
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Product.");
-
-                List<Product> products = new List<Product>();
-
-                foreach (var p in query)
-                {
-                    Product item = new Product();
-                    item.Pid = p.Pid;
-                    item.ProductNameEn = p.ProductNameEn;
-                    item.ProductNameTh = p.ProductNameTh;
-                    item.FeatureImgUrl = p.FeatureImgUrl;
-                    item.EffectiveDate = p.EffectiveDate;
-                    item.ExpireDate = p.ExpireDate;
-                    item.OriginalPrice = p.OriginalPrice;
-                    item.Sku = p.Sku;
-                    products.Add(item);
-                }
-
-                return Request.CreateResponse(HttpStatusCode.OK, products);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message + " /api/CMS/SearchProduct");
-            }
-
-        }
-
-        // Search Product by CMS Category
-        [HttpGet]
-        [Route("api/Promotion/SearchFeatureProduct")]
-        public HttpResponseMessage SearchFeatureProduct([FromUri] ProductCondition condition)
-        {
-            try
-            {
-                var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
-
-                var query = from product in db.Products
-                            join cmsCatePro in db.CMSCategoryProductMaps
-                            on product.Pid equals cmsCatePro.Pid
-                            select new { product, cmsCatePro };
-
-                if (condition.CMSCategoryIds != null && condition.CMSCategoryIds.Count > 0)
-                    query = query.Where(x => condition.CMSCategoryIds.Contains(x.cmsCatePro.CMSCategoryId));
-
-                if (!string.IsNullOrEmpty(condition.SearchText))
-                    query = query.Where(x => x.product.ProductNameEn.Contains(condition.SearchText) || x.product.ProductNameTh.Contains(condition.SearchText));
-
-                if (condition.ProductIds != null && condition.ProductIds.Count > 0)
-                    query = query.Where(x => condition.ProductIds.Contains(x.product.Pid));
-
-                query = query.Take(10);
-
-                if (!query.Any())
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Not Found Product.");
-
-                List<Product> products = new List<Product>();
-
-                foreach (var p in query)
-                {
-                    Product item = new Product();
-                    item.Pid = p.product.Pid;
-                    item.ProductNameEn = p.product.ProductNameEn;
-                    item.ProductNameTh = p.product.ProductNameTh;
-                    products.Add(item);
-                }
-
-                return Request.CreateResponse(HttpStatusCode.OK, products);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message + " /api/CMS/SearchProduct");
-            }
-
-        }
-        #endregion
     }
-
 }
 
 public class IBMPromotionsList

@@ -13,6 +13,7 @@ using Colsp.Api.Helpers;
 using Colsp.Api.Extensions;
 using System.Collections.Generic;
 using System.Data.Entity;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -106,7 +107,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Newsletters/{newsletterId}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeNewsletter([FromUri]int newsletterId, NewsletterRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "21" })]
+		public HttpResponseMessage SaveChangeNewsletter([FromUri]int newsletterId, NewsletterRequest request)
         {
             try
             {
@@ -120,8 +122,9 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Cannot find Newsletter");
                 }
-                string email = User.UserRequest().Email;
-                SetupnewsLetter(newsLetter,request,email);
+				string email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupnewsLetter(newsLetter,request,email,currentDt);
                 Util.DeadlockRetry(db.SaveChanges, "Newsletter");
                 return GetNewsletter(newsLetter.NewsletterId);
             }
@@ -133,15 +136,17 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Newsletters")]
         [HttpPost]
-        public HttpResponseMessage AddNewsletter(NewsletterRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "21" })]
+		public HttpResponseMessage AddNewsletter(NewsletterRequest request)
         {
             try
             {
                 Newsletter newsLetter = new Newsletter();
                 string email = User.UserRequest().Email;
-                SetupnewsLetter(newsLetter, request,email);
+				var currentDt = SystemHelper.GetCurrentDateTime();
+                SetupnewsLetter(newsLetter, request,email, currentDt);
                 newsLetter.CreateBy = email;
-                newsLetter.CreateOn = DateTime.Now;
+                newsLetter.CreateOn = currentDt;
                 newsLetter.NewsletterId = db.GetNextNewsletterId().SingleOrDefault().Value;
                 db.Newsletters.Add(newsLetter);
                 Util.DeadlockRetry(db.SaveChanges, "Newsletter");
@@ -155,7 +160,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Newsletters")]
         [HttpDelete]
-        public HttpResponseMessage DeleteNewsletter(List<NewsletterRequest> request)
+		[ClaimsAuthorize(Permission = new string[] { "21" })]
+		public HttpResponseMessage DeleteNewsletter(List<NewsletterRequest> request)
         {
             try
             {
@@ -175,7 +181,7 @@ namespace Colsp.Api.Controllers
 
         }
 
-        private void SetupnewsLetter(Newsletter newsLetter, NewsletterRequest request, string email)
+        private void SetupnewsLetter(Newsletter newsLetter, NewsletterRequest request, string email,DateTime currentDt)
         {
             newsLetter.Subject = request.Subject;
             newsLetter.Description = request.Description;
@@ -192,7 +198,7 @@ namespace Colsp.Api.Controllers
             }
             newsLetter.Status = Constant.STATUS_ACTIVE;
             newsLetter.UpdateBy = email;
-            newsLetter.UpdateOn = DateTime.Now;
+            newsLetter.UpdateOn = currentDt;
             var shopMap = newsLetter.NewsletterShopMaps.ToList();
             #region Include shop
             var includeShop = shopMap.Where(w => w.Filter.Equals(Constant.NEWSLETTER_FILTER_INCLUDE)).ToList();
@@ -225,10 +231,10 @@ namespace Colsp.Api.Controllers
                             ShopId = shop.ShopId,
                             Filter = Constant.NEWSLETTER_FILTER_INCLUDE,
                             CreateBy = email,
-                            CreateOn = DateTime.Now,
+                            CreateOn = currentDt,
                             UpdateBy = email,
-                            UpdateOn = DateTime.Now
-                        });
+                            UpdateOn = currentDt
+						});
                     }
                 }
             }
@@ -268,10 +274,10 @@ namespace Colsp.Api.Controllers
                             ShopId = shop.ShopId,
                             Filter = Constant.NEWSLETTER_FILTER_EXCLUDE,
                             CreateBy = email,
-                            CreateOn = DateTime.Now,
+                            CreateOn = currentDt,
                             UpdateBy = email,
-                            UpdateOn = DateTime.Now
-                        });
+                            UpdateOn = currentDt
+						});
                     }
                 }
             }

@@ -11,8 +11,16 @@ namespace Colsp.Entity.Models
 {
     using System;
     
-    public partial class SplitString_Result
+    public partial class ReportProductsCommissionForOrder_Result1
     {
-        public string Item { get; set; }
+        public Nullable<System.DateTime> OrderDate { get; set; }
+        public string OrderId { get; set; }
+        public string PID { get; set; }
+        public string ProductName { get; set; }
+        public int QTY { get; set; }
+        public Nullable<decimal> SalePrice { get; set; }
+        public int CommissionRate { get; set; }
+        public int CommissionFee { get; set; }
+        public int ShopId { get; set; }
     }
 }

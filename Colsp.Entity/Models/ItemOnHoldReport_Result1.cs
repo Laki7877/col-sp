@@ -11,15 +11,13 @@ namespace Colsp.Entity.Models
 {
     using System;
     
-    public partial class spc_tableDescription_Result
+    public partial class ItemOnHoldReport_Result1
     {
-        public string TABLE_NAME { get; set; }
-        public string COLUMN_NAME { get; set; }
-        public string DATA_TYPE { get; set; }
-        public short CHARACTER_MAXIMUM_LENGTH { get; set; }
-        public byte precision { get; set; }
-        public byte scale { get; set; }
-        public string COLUMN_DEFAULT { get; set; }
-        public Nullable<bool> IS_NULLABLE { get; set; }
+        public string PID { get; set; }
+        public string Itemname { get; set; }
+        public Nullable<System.DateTime> OnHoldDate { get; set; }
+        public string OnHoldRemark { get; set; }
+        public string Orderid { get; set; }
+        public Nullable<int> ShopId { get; set; }
     }
 }

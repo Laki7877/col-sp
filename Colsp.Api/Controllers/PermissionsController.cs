@@ -9,6 +9,7 @@ using Colsp.Model.Requests;
 using Colsp.Api.Constants;
 using Colsp.Api.Extensions;
 using Colsp.Model.Responses;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -18,6 +19,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Permissions/Shop")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
 		public HttpResponseMessage GetShopPermission([FromUri] PermissionRequest request)
 		{
 			try
@@ -49,6 +51,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Permissions/Admin")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "11" })]
 		public HttpResponseMessage GetUserPermissions([FromUri] PermissionRequest request)
 		{
 			try
@@ -81,6 +84,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Permissions/Seller")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "57" })]
 		public HttpResponseMessage GetSellerPermissions([FromUri] PermissionRequest request)
 		{
 			try

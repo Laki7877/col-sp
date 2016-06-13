@@ -42,6 +42,5 @@ namespace Colsp.Model.Responses
         public int? VendorAbsorb { get; set; }
         public string PNameBuy { get; set; }
         public string PNameGet { get; set; }
-        public string MongoId { get; set; }
     }
 }

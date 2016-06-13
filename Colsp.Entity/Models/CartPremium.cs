@@ -21,8 +21,8 @@ namespace Colsp.Entity.Models
         public string PromotionNo { get; set; }
         public string PromotionDescription { get; set; }
         public System.DateTime CreateOn { get; set; }
-        public string CreateBy { get; set; }
+        public System.DateTime CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
-        public string UpdateBy { get; set; }
+        public Nullable<System.DateTime> UpdateBy { get; set; }
     }
 }

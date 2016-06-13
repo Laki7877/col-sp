@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using Colsp.Api.Helpers;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -25,6 +27,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "8", "2", "3", "35", "34" })]
 		public HttpResponseMessage GetGlobalCategory()
 		{
 			try
@@ -67,6 +70,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/{categoryId}")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage GetGlobalCategory(int categoryId)
 		{
 			try
@@ -164,16 +168,17 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage AddGlobalCategory(CategoryRequest request)
 		{
 			GlobalCategory category = null;
 			try
 			{
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				category = new GlobalCategory();
 				SetupCategory(category, request, email, currentDt, true);
-				#region lft-rgt
+				#region Lft-Rgt
 				int max = db.GlobalCategories.Select(s => s.Rgt).DefaultIfEmpty(0).Max();
 				if (max == 0)
 				{
@@ -186,15 +191,32 @@ namespace Colsp.Api.Controllers
 					category.Rgt = max + 2;
 				}
 				#endregion
-				#region url
 				category.CategoryId = db.GetNextGlobalCategoryId().SingleOrDefault().Value;
+				#region Url Key
+				Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
 				if (string.IsNullOrWhiteSpace(request.UrlKey))
 				{
-					category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
+					request.UrlKey = category.NameEn
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > (99 - string.Concat(category.CategoryId).Length))
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 99 - string.Concat(category.CategoryId).Length);
+					}
+					category.UrlKey = string.Concat(request.UrlKey, "-", category.CategoryId);
 				}
 				else
 				{
-					category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
+					request.UrlKey = request.UrlKey
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > 100)
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 100);
+					}
+					category.UrlKey = request.UrlKey;
 				}
 				#endregion
 				db.GlobalCategories.Add(category);
@@ -209,6 +231,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/{categoryId}")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage SaveChange(int categoryId, CategoryRequest request)
 		{
 			try
@@ -225,16 +248,33 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Cannot find selected category");
 				}
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupCategory(category, request, email, currentDt, false);
-				#region url
+				#region Url Key
+				Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
 				if (string.IsNullOrWhiteSpace(request.UrlKey))
 				{
-					category.UrlKey = string.Concat(category.NameEn.ToLower().Replace(" ", "-"), "-", category.CategoryId);
+					request.UrlKey = category.NameEn
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > (99 - string.Concat(category.CategoryId).Length))
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 99 - string.Concat(category.CategoryId).Length);
+					}
+					category.UrlKey = string.Concat(request.UrlKey, "-", category.CategoryId);
 				}
 				else
 				{
-					category.UrlKey = request.UrlKey.Trim().ToLower().Replace(" ", "-");
+					request.UrlKey = request.UrlKey
+						.ToLower()
+						.Replace(" ", "-").Replace("_", "-");
+					request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+					if (request.UrlKey.Length > 100)
+					{
+						request.UrlKey = request.UrlKey.Substring(0, 100);
+					}
+					category.UrlKey = request.UrlKey;
 				}
 				#endregion
 				#region Global Category Feature Product
@@ -289,7 +329,6 @@ namespace Colsp.Api.Controllers
 					db.GlobalCatFeatureProducts.RemoveRange(pidList);
 				}
 				#endregion
-
 				Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
 				return GetGlobalCategory(category.CategoryId);
 			}
@@ -360,6 +399,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/Visibility")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage VisibilityCategory(List<CategoryRequest> request)
 		{
 			try
@@ -371,7 +411,7 @@ namespace Colsp.Api.Controllers
 				var ids = request.Select(s => s.CategoryId);
 				var catList = db.GlobalCategories.Where(w => ids.Contains(w.CategoryId));
 				var email = User.UserRequest().Email;
-				var currentDt = DateTime.Now;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				foreach (CategoryRequest catRq in request)
 				{
 					var current = catList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
@@ -391,10 +431,9 @@ namespace Colsp.Api.Controllers
 			}
 		}
 
-
-
 		[Route("api/GlobalCategories/{catId}/Attributes")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "2", "3", "35", "34" })]
 		public HttpResponseMessage GetVarientAttribute(int catId)
 		{
 			try
@@ -425,6 +464,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories/{catId}/AttributeSets")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "2", "3", "35", "34" })]
 		public HttpResponseMessage GetAttributeSetFromCat(int catId)
 		{
 			try
@@ -481,6 +521,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public HttpResponseMessage SaveChangeGlobalCategory(List<CategoryRequest> request)
 		{
 			try
@@ -490,8 +531,8 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Invalid request");
 				}
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				StringBuilder sb = new StringBuilder();
 				string update = "UPDATE GlobalCategory SET Lft = @1 , Rgt = @2 , UpdateBy = '@4' , UpdateOn = '@5' WHERE CategoryId = @3 ;";
 				foreach (var catRq in request)
@@ -546,6 +587,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategoryImages")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "8" })]
 		public async Task<HttpResponseMessage> UploadFile()
 		{
 			try
@@ -668,8 +710,8 @@ namespace Colsp.Api.Controllers
 							current.EnTh = Constant.LANG_EN;
 							current.Type = Constant.MEDIUM;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldEn.Remove(current);
 						}
 						else
@@ -721,8 +763,8 @@ namespace Colsp.Api.Controllers
 							current.EnTh = Constant.LANG_TH;
 							current.Type = Constant.MEDIUM;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldTh.Remove(current);
 						}
 						else
@@ -774,8 +816,8 @@ namespace Colsp.Api.Controllers
 							current.EnTh = Constant.LANG_EN;
 							current.Type = Constant.SMALL;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldEn.Remove(current);
 						}
 						else
@@ -827,8 +869,8 @@ namespace Colsp.Api.Controllers
 							current.EnTh = Constant.LANG_TH;
 							current.Type = Constant.SMALL;
 							current.Position = position++;
-							current.UpdateBy = User.UserRequest().Email;
-							current.UpdateOn = DateTime.Now;
+							current.UpdateBy = email;
+							current.UpdateOn = currentDt;
 							imageOldSmallTh.Remove(current);
 						}
 						else

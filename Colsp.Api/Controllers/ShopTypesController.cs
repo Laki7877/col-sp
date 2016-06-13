@@ -103,9 +103,9 @@ namespace Colsp.Api.Controllers
             ShopType shopType = null;
             try
             {
-                var email = User.UserRequest().Email;
-                var currentDt = DateTime.Now;
-                shopType = new ShopType();
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				shopType = new ShopType();
                 shopType.ShopTypeNameEn = request.ShopTypeNameEn;
                 shopType.Status = Constant.STATUS_ACTIVE;
                 shopType.CreateBy = email;
@@ -192,9 +192,9 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("User group not found");
                 }
-                var email = User.UserRequest().Email;
-                var currentDt = DateTime.Now;
-                shopType.ShopTypeNameEn = request.ShopTypeNameEn;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				shopType.ShopTypeNameEn = request.ShopTypeNameEn;
                 #region Permission
                 var mapPermissionList = db.ShopTypePermissionMaps.Where(w => w.ShopTypeId == shopType.ShopTypeId).ToList();
                 if (request.Permission != null && request.Permission.Count > 0)

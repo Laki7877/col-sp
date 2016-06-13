@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using Colsp.Api.Helpers;
 using System.IO;
 using System.Data.Entity.SqlServer;
+using System.Text.RegularExpressions;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -24,6 +26,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/BrandImages")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public async Task<HttpResponseMessage> UploadFile()
 		{
 			try
@@ -101,6 +104,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "6", "2", "3", "35", "34" })]
 		public HttpResponseMessage GetBrand([FromUri] BrandRequest request)
 		{
 			try
@@ -124,7 +128,7 @@ namespace Colsp.Api.Controllers
 					brands = brands.Where(b => b.BrandNameEn.Contains(request.SearchText)
 					|| b.BrandNameTh.Contains(request.SearchText)
 					|| b.DisplayNameEn.Contains(request.SearchText)
-					|| SqlFunctions.StringConvert((double)b.BrandId).Equals(request.SearchText));
+					|| b.BrandId.ToString().Contains(request.SearchText));
 				}
 				if (request.BrandId != 0)
 				{
@@ -151,6 +155,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands/{brandId}")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public HttpResponseMessage GetBrand([FromUri]int brandId)
 		{
 			try
@@ -333,6 +338,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands")]
 		[HttpDelete]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public HttpResponseMessage DeleteBrand(List<BrandRequest> request)
 		{
 			try
@@ -369,14 +375,19 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public HttpResponseMessage AddBrand(BrandRequest request)
 		{
 			try
 			{
 				Brand brand = new Brand();
-				string email = User.UserRequest().Email;
-				DateTime cuurentDt = DateTime.Now;
-				SetupBrand(brand, request, email, cuurentDt, db, true);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupBrand(brand, request, email, currentDt, db, true);
+				if(db.Brands.Where(w=>w.UrlKey.Equals(brand.UrlKey)).Count() > 0)
+				{
+					throw new Exception(string.Concat(brand.UrlKey, " has already been used."));
+				}
 				brand.BrandId = db.GetNextBrandId().SingleOrDefault().Value;
 				db.Brands.Add(brand);
 				Util.DeadlockRetry(db.SaveChanges, "Brand");
@@ -390,6 +401,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Brands/{brandId}")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "6" })]
 		public HttpResponseMessage SaveChangeBrand([FromUri]int brandId, BrandRequest request)
 		{
 			try
@@ -406,9 +418,9 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception(string.Concat("Cannot find brand id ", brandId));
 				}
-				string email = User.UserRequest().Email;
-				DateTime cuurentDt = DateTime.Now;
-				SetupBrand(brand, request, email, cuurentDt, db, false);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupBrand(brand, request, email, currentDt, db, false);
 				Util.DeadlockRetry(db.SaveChanges, "Brand");
 				return GetBrand(brand.BrandId);
 			}
@@ -455,14 +467,30 @@ namespace Colsp.Api.Controllers
 			}
 			brand.Status = request.Status;
 			brand.PicUrl = Validation.ValidateString(request.BrandImage.Url, "Logo", false, 500, false, string.Empty);
+			#region Url Key
+			Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
 			if (request.SEO == null || string.IsNullOrWhiteSpace(request.SEO.ProductUrlKeyEn))
 			{
-				brand.UrlKey = brand.BrandNameEn.Trim().ToLower().Replace(" ", "-");
+				request.SEO.ProductUrlKeyEn = brand.BrandNameEn
+					.Trim()
+					.ToLower()
+					.Replace(" ", "-").Replace("_", "-");
+				request.SEO.ProductUrlKeyEn = rgAlphaNumeric.Replace(request.SEO.ProductUrlKeyEn, "");
 			}
 			else
 			{
-				brand.UrlKey = request.SEO.ProductUrlKeyEn.Trim().ToLower().Replace(" ", "-");
+				request.SEO.ProductUrlKeyEn = request.SEO.ProductUrlKeyEn
+					.Trim()
+					.ToLower()
+					.Replace(" ", "-").Replace("_", "-");
+				request.SEO.ProductUrlKeyEn = rgAlphaNumeric.Replace(request.SEO.ProductUrlKeyEn, "");
 			}
+			if (request.SEO.ProductUrlKeyEn.Length > 100)
+			{
+				request.SEO.ProductUrlKeyEn = request.SEO.ProductUrlKeyEn.Substring(0, 100);
+			}
+			brand.UrlKey = request.SEO.ProductUrlKeyEn;
+			#endregion
 			#region BranImage En
 			var imageOldEn = brand.BrandImages.Where(w => Constant.LANG_EN.Equals(w.EnTh) && Constant.MEDIUM.Equals(w.Type)).ToList();
 			if (request.BrandBannerEn != null && request.BrandBannerEn.Count > 0)

@@ -7,8 +7,10 @@ namespace Colsp.Api.Constants
     public static class Constant
     {
 
-        public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 10 };
-        public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 10 };
+		public static readonly string SE_Asia_Standard_Time = "SE Asia Standard Time";
+
+		public static readonly List<int> IGNORE_INVENTORY_SHIPPING = new List<int>() { 3, 10 };
+        public static readonly List<int> IGNORE_PRICE_SHIPPING = new List<int>() { 3 };
 
 		public static readonly List<string> IMPORT_REQUIRE_FIELD = new List<string>() {
 			"AAA",
@@ -52,7 +54,7 @@ namespace Colsp.Api.Constants
         public static readonly int DEFAULT_BOOSTWEIGHT = 5000;
 		public static readonly int DEFAULT_GLOBAL_BOOSTWEIGHT = 5000;
 
-        public static List<char> IGNORE_PID = new List<char>() {
+		public static List<char> IGNORE_PID = new List<char>() {
                     'D',
                     'E',
                     'F',
@@ -70,7 +72,7 @@ namespace Colsp.Api.Constants
         public static readonly Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() { { "Stock", 1 }, { "Pre-Order", 2 } };
         public static readonly string DEFAULT_STOCK_TYPE = "Stock";
 
-        public static readonly int MAX_LOCAL_CATEGORY = 8;
+        public static readonly int MAX_LOCAL_CATEGORY = 50;
 
         public static readonly string INVENTORY_STATUS_ADD = "AD";
         public static readonly string INVENTORY_STATUS_UPDATE = "UD";
@@ -172,8 +174,8 @@ namespace Colsp.Api.Constants
 		public static string COUPON_ACTION_PERCENT = "PERCENT";
 
 
-        #region CMS
-        public static readonly int CMS_SHOP_GOBAL = 0;
+		#region CMS
+		public static readonly int CMS_SHOP_GOBAL = 0;
 
         public static readonly string CMS_STATUS_DRAFT              = "DF";
         public static readonly string CMS_STATUS_WAIT_FOR_APPROVAL  = "WA";

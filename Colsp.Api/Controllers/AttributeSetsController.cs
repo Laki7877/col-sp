@@ -13,6 +13,7 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using Colsp.Api.Helpers;
 using System.Linq.Dynamic;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -22,6 +23,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/AttributeSets")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "7","8", "2", "3", "35", "34" })]
 		public HttpResponseMessage GetAttributeSets([FromUri] AttributeSetRequest request)
 		{
 			try
@@ -108,6 +110,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/AttributeSets/{attributeSetId}")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage GetAttributeSets([FromUri]int attributeSetId)
 		{
 			try
@@ -127,6 +130,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/AttributeSets")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage AddAttributeSet(AttributeSetRequest request)
 		{
 			try
@@ -136,8 +140,8 @@ namespace Colsp.Api.Controllers
 					throw new Exception("Invalid request");
 				}
 				AttributeSet attributeSet = attributeSet = new AttributeSet();
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupAttributeSet(attributeSet, request, email, currentDt, db);
 				attributeSet.CreateBy = email;
 				attributeSet.CreateOn = currentDt;
@@ -155,6 +159,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/AttributeSets/{attributeSetId}")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage SaveAttributeSet([FromUri]int attributeSetId, AttributeSetRequest request)
 		{
 			try
@@ -174,8 +179,8 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Cannot find attribute set " + attributeSetId);
 				}
-				string email = User.UserRequest().Email;
-				DateTime currentDt = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				SetupAttributeSet(attrSet, request, email, currentDt, db);
 				Util.DeadlockRetry(db.SaveChanges, "AttributeSet");
 				return Request.CreateResponse(HttpStatusCode.OK, SetupResponse(attrSet));
@@ -190,6 +195,7 @@ namespace Colsp.Api.Controllers
 		//duplicate
 		[Route("api/AttributeSets/{attributeSetId}")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage DuplicateAttributeSet([FromUri]int attributeSetId)
 		{
 			try
@@ -210,6 +216,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/AttributeSets/Visibility")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage VisibilityAttributeSet(List<AttributeSetRequest> request)
 		{
 			try
@@ -239,6 +246,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/AttributeSets")]
 		[HttpDelete]
+		[ClaimsAuthorize(Permission = new string[] { "7" })]
 		public HttpResponseMessage DeleteAttributeSet(List<AttributeSetRequest> request)
 		{
 			try

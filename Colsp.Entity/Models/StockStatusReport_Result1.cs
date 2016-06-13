@@ -11,7 +11,7 @@ namespace Colsp.Entity.Models
 {
     using System;
     
-    public partial class StockStatusReport_Result
+    public partial class StockStatusReport_Result1
     {
         public string Pid { get; set; }
         public string ProductNameEn { get; set; }
@@ -30,5 +30,6 @@ namespace Colsp.Entity.Models
         public string LastSoldDate { get; set; }
         public decimal SalePrice { get; set; }
         public Nullable<int> AgingDay { get; set; }
+        public int ShopId { get; set; }
     }
 }

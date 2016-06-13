@@ -17,6 +17,8 @@ using Cenergy.Dazzle.Admin.Security.Cryptography;
 using System.Web.Script.Serialization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -28,7 +30,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/{shopId}/LocalCategories")]
         [HttpGet]
-        public HttpResponseMessage GetLocalCategories(int shopId)
+		[ClaimsAuthorize(Permission = new string[] { "2", "3" })]
+		public HttpResponseMessage GetLocalCategories(int shopId)
         {
             try
             {
@@ -149,7 +152,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops")]
         [HttpGet]
-        public HttpResponseMessage GetShop([FromUri] ShopRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "10", "21" })]
+		public HttpResponseMessage GetShop([FromUri] ShopRequest request)
         {
             try
             {
@@ -190,7 +194,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/{shopId}/ShopTypes")]
         [HttpGet]
-        public HttpResponseMessage GetShopType(int shopId)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage GetShopType(int shopId)
         {
             try
             {
@@ -206,7 +211,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/{shopId}")]
         [HttpGet]
-        public HttpResponseMessage GetShop(int shopId)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage GetShop(int shopId)
         {
             try
             {
@@ -317,7 +323,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/Profile")]
         [HttpGet]
-        public HttpResponseMessage GetShopProfile()
+		[ClaimsAuthorize(Permission = new string[] { "55" })]
+		public HttpResponseMessage GetShopProfile()
         {
             try
             {
@@ -366,16 +373,32 @@ namespace Colsp.Api.Controllers
                         s.GiftWrap,
                         s.TaxInvoice,
                         s.StockAlert,
-                        s.City,
-                        s.Province,
-                        s.District,
-                        s.Country,
-                        PostalCode = s.PostCode == null ? null : new
-                        {
-                            s.PostCodeId,
-                            PostCode = s.PostCode.PostCode1,
-                        },
-                        s.UrlKey,
+						City = s.City == null ? null : new
+						{
+							s.City.CityId,
+							s.City.CityName,
+						},
+						Province = s.Province == null ? null : new
+						{
+							s.Province.ProvinceId,
+							s.Province.ProvinceName
+						},
+						District = s.District == null ? null : new
+						{
+							s.District.DistrictId,
+							s.District.DistrictName
+						},
+						Country = s.Country == null ? null : new
+						{
+							s.Country.CountryCode,
+							s.Country.CountryName
+						},
+						PostalCode = s.PostCode == null ? null : new
+						{
+							s.PostCodeId,
+							PostCode = s.PostCode.PostCode1,
+						},
+						s.UrlKey,
                         s.DomainName,
                         Users = s.UserShopMaps.Select(u => u.User.Status.Equals(Constant.STATUS_REMOVE) ? null :
                         new
@@ -402,7 +425,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/Profile")]
         [HttpPut]
-        public HttpResponseMessage SaveShopProfile(ShopRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "55" })]
+		public HttpResponseMessage SaveShopProfile(ShopRequest request)
         {
             try
             {
@@ -413,8 +437,10 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Cannot find shop");
                 }
                 SetupShopProfile(shop, request);
-                shop.UpdateBy = User.UserRequest().Email;
-                shop.UpdateOn = DateTime.Now;
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				shop.UpdateBy = email;
+                shop.UpdateOn = currentDt;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShopProfile();
             }
@@ -426,14 +452,15 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops")]
         [HttpPost]
-        public HttpResponseMessage AddShop(ShopRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage AddShop(ShopRequest request)
         {
             Shop shop = null;
             try
             {
-                string email = User.UserRequest().Email;
-                DateTime currentDt = DateTime.Now;
-                shop = new Shop();
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				shop = new Shop();
                 SetupShopAdmin(shop, request,email, currentDt);
                 shop.CreateBy = email;
                 shop.CreateOn = currentDt;
@@ -467,9 +494,9 @@ namespace Colsp.Api.Controllers
                     UpdateOn = currentDt,
                 });
                 shop.User = shop.UserShopMaps.ElementAt(0).User;
-                #endregion
-
-                if (request.CloneGlobalCategory)
+				#endregion
+				#region Clone Category
+				if (request.CloneGlobalCategory)
                 {
                     var globalCategory = db.GlobalCategories.Where(w => w.Visibility && Constant.STATUS_ACTIVE.Equals(w.Status));
                     foreach (var cat in globalCategory)
@@ -505,8 +532,12 @@ namespace Colsp.Api.Controllers
                         });
                     }
                 }
-
-                shop.User.UserId = db.GetNextUserId().SingleOrDefault().Value;
+				#endregion
+				if(db.Shops.Where(w=>w.UrlKey.Equals(shop.UrlKey)).Count() > 0)
+				{
+					throw new Exception(string.Concat(shop.UrlKey, " has already been used."));
+				}
+				shop.User.UserId = db.GetNextUserId().SingleOrDefault().Value;
                 shop.ShopId = db.GetNextShopId().SingleOrDefault().Value;
                 shop.VendorId = string.Concat(shop.ShopId);
                 shop.VendorId = shop.VendorId.PadLeft(5, '0');
@@ -523,7 +554,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/{shopId}")]
         [HttpPut]
-        public HttpResponseMessage SaveChangeShop([FromUri]int shopId, ShopRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage SaveChangeShop([FromUri]int shopId, ShopRequest request)
         {
             Shop shop = null;
             try
@@ -538,10 +570,10 @@ namespace Colsp.Api.Controllers
                 {
                     throw new Exception("Shop not found");
                 }
-                #endregion
-                string email = User.UserRequest().Email;
-                DateTime currentDt = DateTime.Now;
-                SetupShopAdmin(shop, request, email, currentDt);
+				#endregion
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				SetupShopAdmin(shop, request, email, currentDt);
                 #region Shop Owner
                 if (shop.User != null)
                 {
@@ -580,24 +612,24 @@ namespace Colsp.Api.Controllers
                                 EmployeeId = request.ShopOwner.EmployeeId,
                                 Status = Constant.STATUS_ACTIVE,
                                 Type = Constant.USER_TYPE_SELLER,
-                                CreateBy = User.UserRequest().Email,
-                                CreateOn = DateTime.Now,
-                                UpdateBy = User.UserRequest().Email,
-                                UpdateOn = DateTime.Now,
+                                CreateBy = email,
+                                CreateOn = currentDt,
+                                UpdateBy = email,
+                                UpdateOn = currentDt,
                                 UserGroupMaps = new List<UserGroupMap>() { new UserGroupMap()
-                        {
-                            GroupId = Constant.SHOP_OWNER_GROUP_ID,
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
-                        }}
+								{
+									GroupId = Constant.SHOP_OWNER_GROUP_ID,
+									CreateBy = email,
+									CreateOn = currentDt,
+									UpdateBy = email,
+									UpdateOn = currentDt,
+								}}
                             },
-                            CreateBy = User.UserRequest().Email,
-                            CreateOn = DateTime.Now,
-                            UpdateBy = User.UserRequest().Email,
-                            UpdateOn = DateTime.Now,
-                        });
+							CreateBy = email,
+							CreateOn = currentDt,
+							UpdateBy = email,
+							UpdateOn = currentDt,
+						});
                         shop.User = shop.UserShopMaps.ElementAt(0).User;
                         
                     }
@@ -614,7 +646,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops")]
         [HttpDelete]
-        public HttpResponseMessage DeleteShop(List<ShopRequest> request)
+		[ClaimsAuthorize(Permission = new string[] { "10" })]
+		public HttpResponseMessage DeleteShop(List<ShopRequest> request)
         {
             try
             {
@@ -686,7 +719,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/ShopAppearance")]
         [HttpGet]
-        public HttpResponseMessage GetShopAppearance()
+		[ClaimsAuthorize(Permission = new string[] { "56" })]
+		public HttpResponseMessage GetShopAppearance()
         {
             try
             {
@@ -730,7 +764,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops/ShopAppearance")]
         [HttpPut]
-        public HttpResponseMessage SaveShopAppearance(ShopAppearanceRequest request)
+		[ClaimsAuthorize(Permission = new string[] { "56" })]
+		public HttpResponseMessage SaveShopAppearance(ShopAppearanceRequest request)
         {
             try
             {
@@ -743,7 +778,9 @@ namespace Colsp.Api.Controllers
                 {
                     ShopId = shopId,
                 };
-                db.Shops.Attach(shop);
+				var email = User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
+				db.Shops.Attach(shop);
                 db.Entry(shop).Property(p => p.ThemeId).IsModified = true;
                 db.Entry(shop).Property(p => p.ShopAppearance).IsModified = true;
                 db.Entry(shop).Property(p => p.UpdateBy).IsModified = true;
@@ -751,8 +788,8 @@ namespace Colsp.Api.Controllers
 
                 shop.ThemeId = request.ThemeId;
                 shop.ShopAppearance = request.Data;
-                shop.UpdateBy = User.UserRequest().Email;
-                shop.UpdateOn = DateTime.Now;
+                shop.UpdateBy = email;
+				shop.UpdateOn = currentDt;
 
                 db.Configuration.ValidateOnSaveEnabled = false;
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
@@ -766,7 +803,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/TermPayments")]
         [HttpGet]
-        public HttpResponseMessage GetTermPayment()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetTermPayment()
         {
             try
             {
@@ -781,7 +819,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/VendorTaxRates")]
         [HttpGet]
-        public HttpResponseMessage GetVendorTaxRate()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetVendorTaxRate()
         {
             try
             {
@@ -801,7 +840,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/WithholdingTaxes")]
         [HttpGet]
-        public HttpResponseMessage GetWithholdingTax()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetWithholdingTax()
         {
             try
             {
@@ -820,7 +860,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/BankNames")]
         [HttpGet]
-        public HttpResponseMessage GetBankName()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetBankName()
         {
             try
             {
@@ -840,7 +881,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Overseas")]
         [HttpGet]
-        public HttpResponseMessage GetOverseas()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetOverseas()
         {
             try
             {
@@ -863,7 +905,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Countries")]
         [HttpGet]
-        public HttpResponseMessage GetCountries()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetCountries()
         {
             try
             {
@@ -883,7 +926,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Provinces")]
         [HttpGet]
-        public HttpResponseMessage GetProvinces()
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetProvinces()
         {
             try
             {
@@ -902,8 +946,8 @@ namespace Colsp.Api.Controllers
         }
 
         [Route("api/Cities/{provinceId}")]
-        [HttpGet]
-        public HttpResponseMessage GetCities([FromUri] int provinceId)
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetCities([FromUri] int provinceId)
         {
             try
             {
@@ -924,7 +968,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Districts/{cityId}")]
         [HttpGet]
-        public HttpResponseMessage GetDistricts([FromUri] int cityId)
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetDistricts([FromUri] int cityId)
         {
             try
             {
@@ -944,7 +989,8 @@ namespace Colsp.Api.Controllers
 
         [Route("api/PostCodes/{districtId}")]
         [HttpGet]
-        public HttpResponseMessage GetPostCodes([FromUri] int districtId)
+		[ClaimsAuthorize(Permission = new string[] { "10", "55" })]
+		public HttpResponseMessage GetPostCodes([FromUri] int districtId)
         {
             try
             {
@@ -1042,7 +1088,6 @@ namespace Colsp.Api.Controllers
                 db.ShopCommissions.RemoveRange(commissions);
             }
             #endregion
-            shop.UrlKey = Validation.ValidateString(request.UrlKey, "Url Key (English)", true, 100, false, shop.ShopNameEn.Trim().ToLower().Replace(" ","-"));
             shop.TaxPayerId = Validation.ValidateString(request.TaxPayerId, "Tax Payer Id", true, 35, false, string.Empty);
             if(request.TermPayment != null && !string.IsNullOrEmpty(request.TermPayment.TermPaymentCode))
             {
@@ -1121,6 +1166,10 @@ namespace Colsp.Api.Controllers
             shop.GiftWrap = Validation.ValidateString(request.GiftWrap, "Gift Wrap", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.TaxInvoice = Validation.ValidateString(request.TaxInvoice, "Tax Invoice", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_YES, Constant.STATUS_NO });
             shop.StockAlert = Validation.ValidationInteger(request.StockAlert, "Stock Alert", true, int.MaxValue, 0).Value;
+			if(shop.StockAlert == 0)
+			{
+				shop.StockAlert = 3;
+			}
             shop.Status = Validation.ValidateString(request.Status, "Status", true, 2, true, Constant.STATUS_NOT_ACTIVE, new List<string>() { Constant.STATUS_NOT_ACTIVE, Constant.STATUS_ACTIVE});
             shop.VendorAddressLine1 = Validation.ValidateString(request.VendorAddressLine1, "Vendor Address Line1", true, 35, false, string.Empty);
             shop.VendorAddressLine2 = Validation.ValidateString(request.VendorAddressLine2, "Vendor Address Line2", true, 35, false, string.Empty);
@@ -1130,7 +1179,6 @@ namespace Colsp.Api.Controllers
             shop.Email = Validation.ValidateString(request.Email, "Email", true, 100, false, string.Empty);
             shop.ContactPersonFirstName = Validation.ValidateString(request.ContactPersonFirstName, "Contact Person First Name", true, 100, false, string.Empty);
             shop.ContactPersonLastName = Validation.ValidateString(request.ContactPersonLastName, "Contact Person Last Name", true, 100, false, string.Empty);
-
             if (request.Country != null && !string.IsNullOrEmpty(request.Country.CountryCode))
             {
                 var id = db.Countries.Where(w => w.CountryCode.Equals(request.Country.CountryCode)).Select(s => s.CountryCode).SingleOrDefault();
@@ -1140,8 +1188,6 @@ namespace Colsp.Api.Controllers
                 }
                 shop.CountryCode = id;
             }
-
-
             if (request.Province != null && request.Province.ProvinceId != 0)
             {
                 var provinceId = db.Provinces.Where(w => w.ProvinceId == request.Province.ProvinceId).Select(s => s.ProvinceId).SingleOrDefault();
@@ -1180,7 +1226,31 @@ namespace Colsp.Api.Controllers
                     }
                 }
             }
-            shop.PhoneNumber = Validation.ValidateString(request.PhoneNumber, "Phone Number", true, 15, false, string.Empty);
+			#region Url Key
+			Regex rgAlphaNumeric = new Regex(@"[^a-zA-Z0-9_-]");
+			if (string.IsNullOrWhiteSpace(request.UrlKey))
+			{
+				request.UrlKey = shop.ShopNameEn
+					.Trim()
+					.ToLower()
+					.Replace(" ", "-").Replace("_", "-");
+				request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+			}
+			else
+			{
+				request.UrlKey = request.UrlKey
+					.Trim()
+					.ToLower()
+					.Replace(" ", "-").Replace("_", "-");
+				request.UrlKey = rgAlphaNumeric.Replace(request.UrlKey, "");
+			}
+			if (request.UrlKey.Length > 100)
+			{
+				request.UrlKey = request.UrlKey.Substring(0, 100);
+			}
+			shop.UrlKey = request.UrlKey;
+			#endregion
+			shop.PhoneNumber = Validation.ValidateString(request.PhoneNumber, "Phone Number", true, 15, false, string.Empty);
             shop.FaxNumber = Validation.ValidateString(request.FaxNumber, "Fax Number", true, 15, false, string.Empty);
             shop.Telex = Validation.ValidateString(request.Telex, "Telex", true, 15, false, string.Empty);
             shop.OverseasVendorIndicator = Validation.ValidateString(request.OverseasVendorIndicator, "Overseas Vendor Indicator", true, 1, true, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
