@@ -2183,16 +2183,10 @@ namespace Colsp.Api.Controllers
 			#region setup other field
 			group.EffectiveDate = request.EffectiveDate.HasValue ? request.EffectiveDate.Value : currentDt;
 			group.ExpireDate = request.ExpireDate.HasValue && request.ExpireDate.Value.CompareTo(group.EffectiveDate) >= 0 ? request.ExpireDate.Value : group.EffectiveDate.AddYears(Constant.DEFAULT_ADD_YEAR);
-			group.NewArrivalDate = request.NewArrivalDate;
-			if(group.NewArrivalDate == null)
-			{
-				group.NewArrivalDate = currentDt;
-			}
 			group.TheOneCardEarn = request.TheOneCardEarn;
 			group.GiftWrap = request.GiftWrap;
 			group.Status = request.Status;
 			group.Remark = request.Remark;
-
 			if (request.ControlFlags != null)
 			{
 				group.IsNew = request.ControlFlags.IsNew;
@@ -2248,6 +2242,11 @@ namespace Colsp.Api.Controllers
 			{
 				group.RejecteBy = email;
 				group.RejectOn = currentDt;
+			}
+			group.NewArrivalDate = request.NewArrivalDate;
+			if (group.NewArrivalDate == null)
+			{
+				group.NewArrivalDate = group.CreateOn;
 			}
 			group.UpdateBy = email;
 			group.UpdateOn = currentDt;
@@ -4589,14 +4588,22 @@ namespace Colsp.Api.Controllers
 					IsSearch = stage.ProductStageAttributes.Any(a => a.AttributeValueId == 1 && a.CheckboxValue),
 					IsLocalSearch = stage.ProductStageAttributes.Any(a => a.AttributeValueId == 2 && a.CheckboxValue),
 					IsGlobalSearch = stage.ProductStageAttributes.Any(a => a.AttributeValueId == 3 && a.CheckboxValue),
-					//StockAvailable = stage,
+					StockAvailable = stage.Inventory != null ? 
+						(
+							stage.Inventory.Quantity 
+							- stage.Inventory.Reserve 
+							- stage.Inventory.OnHold 
+							- stage.Inventory.Defect
+						) : 0,
+					MaxQtyAllowInCart = stage.Inventory != null ? stage.Inventory.MaxQtyAllowInCart : 0,
+					MinQtyAllowInCart = stage.Inventory != null ? stage.Inventory.MinQtyAllowInCart : 0,
 					tag = productGroup.ProductStageTags.Select(s => s.Tag).ToList(),
 					DefaultProduct = defaultProduct != null && stage.IsVariant ? new DefaultProductRequest()
 					{
 						Pid = defaultProduct.Pid,
 						ShopUrlKey = shop.UrlKey
 					} : null,
-					Attributes = responseAttribute
+					Attributes = responseAttribute,
 				};
 				requests.Add(cms);
 			}
@@ -8970,23 +8977,24 @@ namespace Colsp.Api.Controllers
 		[OverrideAuthentication, OverrideAuthorization]
 		public HttpResponseMessage AddProductJda(List<JdaRequest> request)
 		{
+			var email = "jda@col.co.th";
+			var currentDt = SystemHelper.GetCurrentDateTime();
 			try
 			{
 				if (request == null)
 				{
 					throw new Exception("Invalid request");
 				}
-				var email = "jda@col.co.th";
-				var currentDt = SystemHelper.GetCurrentDateTime();
-
 				int take = 1000;
 				int multiply = 0;
 				List<ProductStageGroup> groupList = new List<ProductStageGroup>();
 				var response = new List<JdaRequest>();
+				#region Validate Sku Duplicate
 				if (request.GroupBy(n => n.Sku).Any(c => c.Count() > 1))
 				{
 					throw new Exception("Request Sku cannot be duplicate");
 				}
+				#endregion
 				while (true)
 				{
 					var tmpRequest = request.Skip(take * multiply).Take(take);
@@ -9226,72 +9234,108 @@ namespace Colsp.Api.Controllers
 			}
 			catch (Exception e)
 			{
+				#region Log Failed
+				var jsonRequest = new JavaScriptSerializer().Serialize(request);
+				var jsonResponse = new JavaScriptSerializer().Serialize(e.GetBaseException());
+				db.ApiLogs.Add(new ApiLog()
+				{
+					LogId = db.GetNextAppLogId().SingleOrDefault().Value,
+					CreateBy = email,
+					CreateOn = currentDt,
+					DestinationApp = "SP",
+					Method = "POST",
+					RequestData = jsonRequest,
+					RequestUrl = Request.RequestUri.AbsolutePath,
+					ResponseCode = 406,
+					ResponseData = jsonResponse,
+					SourceApp = "Zeus"
+				});
+				db.SaveChanges();
+				#endregion
 				return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
 			}
 		}
 
-		[Route("api/ProductStages/JdaProduct")]
-		[HttpPut]
-		[OverrideAuthentication, OverrideAuthorization]
-		public HttpResponseMessage SaveProductJda(List<JdaRequest> request)
-		{
-			try
-			{
-				if (request == null)
-				{
-					throw new Exception("Invalid request");
-				}
-				if (request.GroupBy(n => n.Pid).Any(c => c.Count() > 1))
-				{
-					throw new Exception("Request Pid cannot be duplicate");
-				}
-				int take = 1000;
-				int multiply = 0;
-				var email = "jda@col.co.th";
-				var currentDt = SystemHelper.GetCurrentDateTime();
-				while (true)
-				{
-					var tmpRequest = request.Skip(take * multiply).Take(take);
-					var rqPids = tmpRequest.Select(s => s.Pid);
-					var products = db.ProductStages.Where(w => rqPids.Contains(w.Pid)).Select(s => new
-					{
-						s.Pid,
-						s.ShopId
-					});
-					#region validation
-					if (tmpRequest.Count() == 0)
-					{
-						break;
-					}
-					#endregion
-					foreach (var jdaProduct in tmpRequest)
-					{
-						if (string.IsNullOrWhiteSpace(jdaProduct.Pid))
-						{
-							throw new Exception("Pid cannot be empty");
-						}
-						var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Pid.Equals(jdaProduct.Pid)).SingleOrDefault();
-						if (tmpProduct == null)
-						{
-							throw new Exception(string.Concat("Cannot find pid ", jdaProduct.Pid, " in shop id ", jdaProduct.ShopId));
-						}
-						ProductStage stage = new ProductStage()
-						{
-							Pid = jdaProduct.Pid
-						};
-						UpdateJda(stage,email,currentDt, jdaProduct, db);
-					}
-					multiply++;
-				}
-				db.Configuration.ValidateOnSaveEnabled = false;
-				db.SaveChanges();
-				return Request.CreateResponse(HttpStatusCode.OK, request);
-			}
-			catch (Exception e)
-			{
-				return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
-			}
-		}
+		//[Route("api/ProductStages/JdaProduct")]
+		//[HttpPut]
+		//[OverrideAuthentication, OverrideAuthorization]
+		//public HttpResponseMessage SaveProductJda(List<JdaRequest> request)
+		//{
+		//	var email = "jda@col.co.th";
+		//	var currentDt = SystemHelper.GetCurrentDateTime();
+		//	try
+		//	{
+		//		if (request == null)
+		//		{
+		//			throw new Exception("Invalid request");
+		//		}
+		//		if (request.GroupBy(n => n.Pid).Any(c => c.Count() > 1))
+		//		{
+		//			throw new Exception("Request Pid cannot be duplicate");
+		//		}
+		//		int take = 1000;
+		//		int multiply = 0;
+		//		while (true)
+		//		{
+		//			var tmpRequest = request.Skip(take * multiply).Take(take);
+		//			var rqPids = tmpRequest.Select(s => s.Pid);
+		//			var products = db.ProductStages.Where(w => rqPids.Contains(w.Pid)).Select(s => new
+		//			{
+		//				s.Pid,
+		//				s.ShopId
+		//			});
+		//			#region validation
+		//			if (tmpRequest.Count() == 0)
+		//			{
+		//				break;
+		//			}
+		//			#endregion
+		//			foreach (var jdaProduct in tmpRequest)
+		//			{
+		//				if (string.IsNullOrWhiteSpace(jdaProduct.Pid))
+		//				{
+		//					throw new Exception("Pid cannot be empty");
+		//				}
+		//				var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Pid.Equals(jdaProduct.Pid)).SingleOrDefault();
+		//				if (tmpProduct == null)
+		//				{
+		//					throw new Exception(string.Concat("Cannot find pid ", jdaProduct.Pid, " in shop id ", jdaProduct.ShopId));
+		//				}
+		//				ProductStage stage = new ProductStage()
+		//				{
+		//					Pid = jdaProduct.Pid
+		//				};
+		//				UpdateJda(stage,email,currentDt, jdaProduct, db);
+		//			}
+		//			multiply++;
+		//		}
+		//		db.Configuration.ValidateOnSaveEnabled = false;
+		//		db.SaveChanges();
+		//		return Request.CreateResponse(HttpStatusCode.OK, request);
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		#region Log Failed
+		//		var jsonRequest = new JavaScriptSerializer().Serialize(request);
+		//		var jsonResponse = new JavaScriptSerializer().Serialize(e.GetBaseException());
+		//		db.ApiLogs.Add(new ApiLog()
+		//		{
+		//			LogId = db.GetNextAppLogId().SingleOrDefault().Value,
+		//			CreateBy = email,
+		//			CreateOn = currentDt,
+		//			DestinationApp = "SP",
+		//			Method = "PUT",
+		//			RequestData = jsonRequest,
+		//			RequestUrl = Request.RequestUri.AbsolutePath,
+		//			ResponseCode = 406,
+		//			ResponseData = jsonResponse,
+		//			SourceApp = "Zeus"
+		//		});
+		//		db.SaveChanges();
+		//		#endregion
+		//		return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
+		//	}
+		//}
 
 		private void UpdateJda(ProductStage stage,string email,DateTime currentDt, JdaRequest jdaProduct, ColspEntities db)
 		{

@@ -72,7 +72,7 @@ namespace Colsp.Api.Constants
         public static readonly Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() { { "Stock", 1 }, { "Pre-Order", 2 } };
         public static readonly string DEFAULT_STOCK_TYPE = "Stock";
 
-        public static readonly int MAX_LOCAL_CATEGORY = 8;
+        public static readonly int MAX_LOCAL_CATEGORY = 50;
 
         public static readonly string INVENTORY_STATUS_ADD = "AD";
         public static readonly string INVENTORY_STATUS_UPDATE = "UD";
