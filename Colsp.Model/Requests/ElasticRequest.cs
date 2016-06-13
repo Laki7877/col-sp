@@ -17,6 +17,7 @@ namespace Colsp.Model.Requests
 		public string ShopNameEn { get; set; }
 		public string ShopNameTh { get; set; }
 		public string ShopUrlKey { get; set; }
+		public string ShopGroup { get; set; }
 		public string Bu { get; set; }
 		public int GlobalCatId { get; set; }
 		public string GlobalCatNameEn { get; set; }

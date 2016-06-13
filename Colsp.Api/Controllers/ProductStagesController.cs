@@ -4387,7 +4387,8 @@ namespace Colsp.Api.Controllers
 			{
 				s.ShopNameEn,
 				s.ShopNameTh,
-				s.UrlKey
+				s.UrlKey,
+				s.ShopGroup,
 			}).First();
 			#endregion
 			#region Brand
@@ -4529,6 +4530,7 @@ namespace Colsp.Api.Controllers
 					ShopNameEn = shop.ShopNameEn,
 					ShopNameTh = shop.ShopNameTh,
 					ShopUrlKey = shop.UrlKey,
+					ShopGroup = shop.ShopGroup,
 					Bu = stage.Bu,
 					GlobalCatId = productGroup.GlobalCatId,
 					GlobalCatNameEn = globalLeaf.NameEn,
