@@ -195,8 +195,10 @@ namespace Colsp.Api.Controllers
 				var email = User.UserRequest().Email;
 				var currentDt = SystemHelper.GetCurrentDateTime();
 				shopType.ShopTypeNameEn = request.ShopTypeNameEn;
-                #region Permission
-                var mapPermissionList = db.ShopTypePermissionMaps.Where(w => w.ShopTypeId == shopType.ShopTypeId).ToList();
+				shopType.UpdateBy = email;
+				shopType.UpdateOn = currentDt;
+				#region Permission
+				var mapPermissionList = db.ShopTypePermissionMaps.Where(w => w.ShopTypeId == shopType.ShopTypeId).ToList();
                 if (request.Permission != null && request.Permission.Count > 0)
                 {
                     bool addNew = false;

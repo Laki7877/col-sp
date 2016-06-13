@@ -206,7 +206,9 @@ namespace Colsp.Api.Controllers
                     throw new Exception("User group not found");
                 }
                 usrGrp.GroupNameEn = request.GroupNameEn;
-                var mapList = db.UserGroupPermissionMaps.Where(w => w.GroupId == usrGrp.GroupId).ToList();
+				usrGrp.UpdateBy = email;
+				usrGrp.UpdateOn = currentDt;
+				var mapList = db.UserGroupPermissionMaps.Where(w => w.GroupId == usrGrp.GroupId).ToList();
                 if (request.Permission != null && request.Permission.Count > 0)
                 {
                     bool addNew = false;
@@ -415,9 +417,11 @@ namespace Colsp.Api.Controllers
                 }
                 //usrGrp.GroupNameTh = request.GroupNameTh;
                 usrGrp.GroupNameEn = request.GroupNameEn;
+				usrGrp.UpdateBy = email;
+				usrGrp.UpdateOn = currentDt;
 
-                //Check duplication of role name ,Preen
-                var usrGroupEntity = db.UserGroups
+				//Check duplication of role name ,Preen
+				var usrGroupEntity = db.UserGroups
                     .Where(w => w.GroupNameEn.Equals(usrGrp.GroupNameEn) 
                         && w.Type.Equals(Constant.USER_TYPE_ADMIN) 
                         && w.GroupId != usergroupid)
