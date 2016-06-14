@@ -1422,43 +1422,61 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Invalid request");
 				}
-				//Prepare Query to query table ProductStage
-				var products = (from p in db.ProductStageGroups
-								where !Constant.STATUS_REMOVE.Equals(p.Status)
-									&& p.ProductStages.Any(a => a.IsVariant == false)
-								select new
-								{
-									p.ProductStages.FirstOrDefault().Sku,
-									p.ProductStages.FirstOrDefault().Pid,
-									p.ProductStages.FirstOrDefault().Upc,
-									p.ProductStages.FirstOrDefault().ProductId,
-									p.ProductStages.FirstOrDefault().ProductNameEn,
-									p.ProductStages.FirstOrDefault().ProductNameTh,
-									p.ProductStages.FirstOrDefault().SalePrice,
-									p.ProductStages.FirstOrDefault().OriginalPrice,
-									p.ProductStages.FirstOrDefault().IsMaster,
-									p.Shop.ShopNameEn,
-									p.Status,
-									p.ImageFlag,
-									p.InfoFlag,
-									p.OnlineFlag,
-									p.ProductStages.FirstOrDefault().Visibility,
-									p.ProductStages.FirstOrDefault().VariantCount,
-									ImageUrl = string.Empty.Equals(p.ProductStages.FirstOrDefault().FeatureImgUrl) ? string.Empty : string.Concat(Constant.PRODUCT_IMAGE_URL, p.ProductStages.FirstOrDefault().FeatureImgUrl),
-									GlobalCategory = p.GlobalCategory != null ? new { p.GlobalCategory.CategoryId, p.GlobalCategory.NameEn, p.GlobalCategory.Lft, p.GlobalCategory.Rgt } : null,
-									LocalCategory = p.LocalCategory != null ? new { p.LocalCategory.CategoryId, p.LocalCategory.NameEn, p.LocalCategory.Lft, p.LocalCategory.Rgt } : null,
-									Brand = p.Brand != null ? new { p.Brand.BrandId, p.Brand.BrandNameEn } : null,
-									Tags = p.ProductStageTags.Select(s => s.Tag),
-									CreatedDt = p.CreateOn,
-									UpdatedDt = p.UpdateOn,
-									Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn },
-									p.InformationTabStatus,
-									p.ImageTabStatus,
-									p.MoreOptionTabStatus,
-									p.VariantTabStatus,
-									p.CategoryTabStatus,
-								});
-				//check if its seller permission
+				var products = db.ProductStages
+					.Where(w => w.IsVariant == false && !Constant.STATUS_REMOVE.Equals(w.Status))
+					.Select(s => new
+					{
+						s.Sku,
+						s.Pid,
+						s.Upc,
+						s.ProductId,
+						s.ProductNameEn,
+						s.ProductNameTh,
+						s.OriginalPrice,
+						s.SalePrice,
+						s.ProductStageGroup.Status,
+						s.ProductStageGroup.ImageFlag,
+						s.ProductStageGroup.InfoFlag,
+						s.ProductStageGroup.OnlineFlag,
+						s.Visibility,
+						s.VariantCount,
+						s.IsMaster,
+						GlobalCategory = s.ProductStageGroup.GlobalCategory != null ? new
+						{
+							s.ProductStageGroup.GlobalCategory.CategoryId,
+							s.ProductStageGroup.GlobalCategory.NameEn,
+							s.ProductStageGroup.GlobalCategory.Lft,
+							s.ProductStageGroup.GlobalCategory.Rgt
+						} : null,
+						LocalCategory = s.ProductStageGroup.LocalCategory != null ? new
+						{
+							s.ProductStageGroup.LocalCategory.CategoryId,
+							s.ProductStageGroup.LocalCategory.NameEn,
+							s.ProductStageGroup.LocalCategory.Lft,
+							s.ProductStageGroup.LocalCategory.Rgt
+						} : null,
+						ImageUrl = string.Empty.Equals(s.FeatureImgUrl) ? string.Empty : string.Concat(Constant.PRODUCT_IMAGE_URL, s.FeatureImgUrl),
+						s.ProductStageGroup.GlobalCatId,
+						s.ProductStageGroup.LocalCatId,
+						s.ProductStageGroup.AttributeSetId,
+						s.ProductStageAttributes,
+						UpdatedDt = s.ProductStageGroup.UpdateOn,
+						CreatedDt = s.ProductStageGroup.CreateOn,
+						s.ShopId,
+						s.ProductStageGroup.InformationTabStatus,
+						s.ProductStageGroup.ImageTabStatus,
+						s.ProductStageGroup.CategoryTabStatus,
+						s.ProductStageGroup.VariantTabStatus,
+						s.ProductStageGroup.MoreOptionTabStatus,
+						Tags = s.ProductStageGroup.ProductStageTags.Select(t => t.Tag),
+						Shop = new { s.Shop.ShopId, s.Shop.ShopNameEn },
+						Brand = s.ProductStageGroup.Brand != null ? new
+						{
+							s.ProductStageGroup.Brand.BrandId,
+							s.ProductStageGroup.Brand.BrandNameEn
+						} : null,
+						Pids = db.ProductStages.Where(w=>w.ProductId==s.ProductId).Select(p=>p.Pid)
+					});
 				bool isSeller = false;
 				if (User.ShopRequest() != null)
 				{
@@ -1486,7 +1504,7 @@ namespace Colsp.Api.Controllers
 				//add Pid criteria
 				if (request.Pids != null && request.Pids.Count > 0)
 				{
-					products = products.Where(w => request.Pids.Any(a => w.Pid.Contains(a)));
+					products = products.Where(w => w.Pids.Any(a=> request.Pids.Contains(a)));
 				}
 				//add Sku criteria
 				if (request.Skus != null && request.Skus.Count > 0)
