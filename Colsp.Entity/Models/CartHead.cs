@@ -21,5 +21,7 @@ namespace Colsp.Entity.Models
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
+        public string PostCode { get; set; }
+        public string GiftWrapRemark { get; set; }
     }
 }

@@ -26,5 +26,6 @@ namespace Colsp.Entity.Models
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
+        public string AbsorbType { get; set; }
     }
 }

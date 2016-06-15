@@ -2540,7 +2540,8 @@ namespace Colsp.Api.Controllers
 				}
 			}
 			stage.IsHasExpiryDate = Validation.ValidateString(request.IsHasExpiryDate, "Has Expiry Date", true, 1, false, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
-			stage.IsVat = Validation.ValidateString(request.IsVat, "Is Vat", true, 1, false, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
+            stage.EstimateGoodsReceiveDate = request.EstimateGoodsReceiveDate;
+            stage.IsVat = Validation.ValidateString(request.IsVat, "Is Vat", true, 1, false, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
 			stage.ExpressDelivery = Validation.ValidateString(request.ExpressDelivery, "Express Delivery", true, 1, false, Constant.STATUS_NO, new List<string>() { Constant.STATUS_NO, Constant.STATUS_YES });
 			stage.DeliveryFee = request.DeliveryFee;
 			stage.PromotionPrice = request.PromotionPrice;
@@ -2623,7 +2624,7 @@ namespace Colsp.Api.Controllers
 						Defect = inventory.Defect,
 						MaxQtyAllowInCart = inventory.MaxQtyAllowInCart,
 						MaxQtyPreOrder = inventory.MaxQtyPreOrder,
-						MinQtyAllowInCart = inventory.MinQtyAllowInCart,
+                        MinQtyAllowInCart = inventory.MinQtyAllowInCart,
 						OnHold = inventory.OnHold,
 						Pid = inventory.Pid,
 						Quantity = inventory.Quantity,
@@ -5106,6 +5107,7 @@ namespace Colsp.Api.Controllers
 							s.KillerPoint3En,
 							s.KillerPoint3Th,
 							s.IsHasExpiryDate,
+                            s.EstimateGoodsReceiveDate,
 							Inventory = s.Inventory == null ? null : new
 							{
 								s.Inventory.Quantity,
@@ -5535,8 +5537,15 @@ namespace Colsp.Api.Controllers
 								if (p.Inventory != null)
 								{
 									bodyList[headDicTmp["ABP"].Item2] = string.Concat(p.Inventory.MaxQtyPreOrder);
-								}
+                                }
 							}
+                            if (headDicTmp.ContainsKey("ADQ"))
+                            {
+                                if (p.Inventory != null)
+                                {
+                                    bodyList[headDicTmp["ADQ"].Item2] = string.Concat(p.EstimateGoodsReceiveDate);
+                                }
+                            }
 							if (headDicTmp.ContainsKey("ABQ"))
 							{
 								bodyList[headDicTmp["ABQ"].Item2] = Constant.STATUS_YES.Equals(p.IsHasExpiryDate) ? "Yes" : "No";
@@ -7565,7 +7574,8 @@ namespace Colsp.Api.Controllers
 							Width = Validation.ValidateCSVIntegerColumn(headDic, body, "ACE", guidance, false, int.MaxValue, errorMessage, row, 0),
 							Weight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACF", guidance, false, int.MaxValue, errorMessage, row, 0),
 							BoostWeight = Validation.ValidateCSVIntegerColumn(headDic, body, "ACW", guidance, false, 10000, errorMessage, row, 0),
-						};
+                            EstimateGoodsReceiveDate = Validation.ValidateCSVDatetimeColumn(headDic, body, "ADQ", guidance, errorMessage, row),
+                    };
 						if (headDic.ContainsKey("AAC"))
 						{
 							variant.DefaultVariant = string.Equals(body[headDic["AAC"]], "yes", StringComparison.OrdinalIgnoreCase);
@@ -7932,9 +7942,9 @@ namespace Colsp.Api.Controllers
 								errorMessage.Add("Invalid Maximum Quantity Allow for Preorder at row " + row);
 							}
 						}
-						#endregion
-						#region  On Hold
-						if (headDic.ContainsKey("ADN"))
+                        #endregion
+                        #region  On Hold
+                        if (headDic.ContainsKey("ADN"))
 						{
 							try
 							{
@@ -8404,6 +8414,7 @@ namespace Colsp.Api.Controllers
 							masterVariant.Width = variant.Width;
 							masterVariant.Weight = variant.Weight;
 							masterVariant.BoostWeight = variant.BoostWeight;
+                            masterVariant.EstimateGoodsReceiveDate = variant.EstimateGoodsReceiveDate;
 
 							if (variant.Inventory != null)
 							{
