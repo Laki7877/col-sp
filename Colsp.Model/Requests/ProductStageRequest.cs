@@ -26,6 +26,7 @@ namespace Colsp.Model.Requests
         public List<VariantRequest> RelatedProducts { get; set; }
         public DateTime? EffectiveDate { get; set; }
         public DateTime? ExpireDate { get; set; }
+        public DateTime? EstimateGoodsReceiveDate { get; set; }
         public string Remark { get; set; }
         public bool ImageFlag { get; set; }
         public bool InfoFlag { get; set; }
@@ -61,6 +62,7 @@ namespace Colsp.Model.Requests
             ShippingMethod = 1;
             EffectiveDate = null;
             ExpireDate = null;
+            EstimateGoodsReceiveDate = null;
             Remark = string.Empty;
             SellerId = 0;
             ProductId = 0;

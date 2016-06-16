@@ -2969,6 +2969,7 @@ namespace Colsp.Api.Controllers
 						st.IsMaster,
 						st.VariantCount,
 						st.Visibility,
+                        st.EstimateGoodsReceiveDate,
 						ProductStageAttributes = st.ProductStageAttributes.Select(sa => new
 						{
 							sa.Pid,
@@ -3172,7 +3173,8 @@ namespace Colsp.Api.Controllers
 					SeoTh = masterVariant.SeoTh,
 				},
 				IsHasExpiryDate = masterVariant.IsHasExpiryDate,
-				IsVat = masterVariant.IsVat,
+                EstimateGoodsReceiveDate = masterVariant.EstimateGoodsReceiveDate,
+                IsVat = masterVariant.IsVat,
 				ExpressDelivery = masterVariant.ExpressDelivery,
 				DeliveryFee = masterVariant.DeliveryFee,
 				PromotionPrice = masterVariant.PromotionPrice,
