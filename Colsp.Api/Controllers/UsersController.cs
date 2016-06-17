@@ -16,12 +16,11 @@ using System.Security.Claims;
 using Colsp.Api.Security;
 using System.Data.Entity.SqlServer;
 using Cenergy.Dazzle.Admin.Security.Cryptography;
-using System.Web.Http.Cors;
 using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
-    public class UsersController : ApiController
+	public class UsersController : ApiController
     {
         private ColspEntities db = new ColspEntities();
         private SaltedSha256PasswordHasher salt = new SaltedSha256PasswordHasher();

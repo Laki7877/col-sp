@@ -10,8 +10,6 @@ using Colsp.Api.Constants;
 using Colsp.Model.Requests;
 using Colsp.Api.Extensions;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Colsp.Api.Helpers;
 using System.IO;
@@ -962,55 +960,5 @@ namespace Colsp.Api.Controllers
 			base.Dispose(disposing);
 		}
 
-		private bool GlobalCategoryExists(int id)
-		{
-			return db.GlobalCategories.Count(e => e.CategoryId == id) > 0;
-		}
-
-
-		//[Route("api/GlobalCategories")]
-		//[HttpDelete]
-		//public HttpResponseMessage DeteleCategory(List<CategoryRequest> request)
-		//{
-		//    try
-		//    {
-		//        var ids = request.Select(s => s.CategoryId);
-
-		//        var productMap = db.ProductStageGroups.Where(w => ids.Contains(w.GlobalCatId)).Select(s => s.GlobalCategory.NameEn);
-		//        if (productMap != null && productMap.Count() > 0)
-		//        {
-		//            throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", productMap), " with product associated"));
-		//        }
-		//        var attributesetMap = db.GlobalCatAttributeSetMaps.Where(w => ids.Contains(w.CategoryId)).Select(s => s.GlobalCategory.NameEn);
-		//        if (attributesetMap != null && attributesetMap.Count() > 0)
-		//        {
-		//            throw new Exception(string.Concat("Cannot delete global category ", string.Join(",", attributesetMap), " with attribute set associated"));
-		//        }
-
-		//        var catList = db.GlobalCategories.Where(w => w.CategoryId != 0 && ids.Contains(w.CategoryId));
-
-		//        foreach (CategoryRequest catRq in request)
-		//        {
-		//            var current = catList.Where(w => w.CategoryId == catRq.CategoryId).SingleOrDefault();
-		//            if (current == null)
-		//            {
-		//                throw new Exception("Cannot find category " + catRq.CategoryId);
-		//            }
-
-		//            int childSize = current.Rgt - current.Lft + 1;
-		//            //delete
-		//            db.GlobalCategories.Where(w => w.Rgt > current.Rgt).ToList()
-		//                .ForEach(e => { e.Lft = e.Lft > current.Rgt ? e.Lft - childSize : e.Lft; e.Rgt = e.Rgt - childSize; });
-		//            db.GlobalCategories.RemoveRange(db.GlobalCategories.Where(w => w.Lft >= current.Lft && w.Rgt <= current.Rgt));
-		//            break;
-		//        }
-		//        Util.DeadlockRetry(db.SaveChanges, "GlobalCategory");
-		//        return Request.CreateResponse(HttpStatusCode.OK);
-		//    }
-		//    catch (Exception e)
-		//    {
-		//        return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
-		//    }
-		//}
 	}
 }

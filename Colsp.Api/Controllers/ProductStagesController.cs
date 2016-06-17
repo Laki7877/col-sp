@@ -9522,6 +9522,28 @@ namespace Colsp.Api.Controllers
 		}
 
 
+		[Route("api/Products/ForceReject/{productId}")]
+		[HttpPut]
+		public HttpResponseMessage ForceReject([FromUri]long productId)
+		{
+			var email = "jda@col.co.th";
+			var currentDt = SystemHelper.GetCurrentDateTime();
+			try
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.Append(string.Concat("UPDATE ProductStageGroup SET [Status] = '", Constant.PRODUCT_STATUS_NOT_APPROVE, "', RejecteBy = '",email, "', RejectOn = '",currentDt.ToString("yyyy-MM-dd HH:mm:ss"),"' WHERE ProductId = ", productId, ";"));
+				sb.Append(string.Concat("UPDATE ProductStage SET [Status] = '", Constant.PRODUCT_STATUS_NOT_APPROVE, "' WHERE ProductId = ", productId,";"));
+				sb.Append(string.Concat("UPDATE Product SET [Status] = '",Constant.PRODUCT_STATUS_NOT_APPROVE,"' WHERE ProductId = ",productId,";"));
+				db.Database.ExecuteSqlCommand(sb.ToString());
+				return Request.CreateResponse(HttpStatusCode.OK);
+			}
+			catch(Exception e)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException().Message);
+			}
+		}
+
+
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
