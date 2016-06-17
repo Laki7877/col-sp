@@ -70,18 +70,18 @@ namespace Colsp.Api.Constants
 
         public static readonly int SHOP_OWNER_GROUP_ID = 2;
         public static readonly Dictionary<string, int> STOCK_TYPE = new Dictionary<string, int>() {
-              { "Stock", 1 },
-              { "Pre-Order", 2 },
-              { "By-Order"  ,3 },
-              {"Clearance" ,4},
-              {"Limited"   ,5},
-              {"Control"   ,6},
-              {"New"       ,7},
-              {"Special"   ,8},
-              {"Free"     , 9},
-              {"Vendor-Out-of-Stock", 10},
-              {"Hold", 11},
-              {"Delete", 12}
+            { "Stock", 1 },
+            { "Pre-Order", 2 },
+            { "By-Order", 3 },
+            { "Clearance", 4 },
+            { "Limited", 5 },
+            { "Control", 6 },
+            { "New", 7 },
+            { "Special", 8 },
+            { "Free", 9 },
+            { "Vendor-Out-of-Stock", 10 },
+            { "Hold", 11 },
+            { "Delete", 12 }
         };
         public static readonly string DEFAULT_STOCK_TYPE = "Stock";
 
