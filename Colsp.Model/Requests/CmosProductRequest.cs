@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Colsp.Model.Requests
 {
-    public class CmosRequest
+    public class CmosProductRequest
     {
         public string ProductID;
         public string NameThai;
@@ -42,7 +42,7 @@ namespace Colsp.Model.Requests
         public bool IsBestDeal;
         public int ShopId;
 
-        public CmosRequest()
+        public CmosProductRequest()
         {
             ProductID = string.Empty;
             NameThai = string.Empty;

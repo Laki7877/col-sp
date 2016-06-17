@@ -20,21 +20,20 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using CsvHelper;
-using System.Web.Http.Cors;
-using System.Data.Entity.Infrastructure;
 using System.Security.Principal;
 using System.Web.Script.Serialization;
-using System.Data.Entity.Validation;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using Renci.SshNet;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
 	public class ProductStagesController : ApiController
 	{
 		private ColspEntities db = new ColspEntities();
+		private static volatile Dictionary<int, double> userExportProducts = new Dictionary<int, double>();
 
 		[Route("api/Products")]
 		[HttpGet]
@@ -223,9 +222,9 @@ namespace Colsp.Api.Controllers
 			}
 		}
 
-
 		[Route("api/ProductStages/UnGroup")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "49", "4" })]
 		public HttpResponseMessage GetUnGroupProduct([FromUri] UnGroupProductRequest request)
 		{
 			try
@@ -283,6 +282,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/ProductStages/PendingProduct")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "49", "4" })]
 		public HttpResponseMessage GroupPendingProduct(PendingProduct request)
 		{
 			try
@@ -577,23 +577,28 @@ namespace Colsp.Api.Controllers
 			}
 		}
 
-
-
 		[Route("api/Products/Master/{productId}")]
 		[HttpPut]
+		[ClaimsAuthorize(Permission = new string[] { "5" })]
 		public HttpResponseMessage SaveMasterProduct([FromUri]long productId, MasterProductRequest request)
 		{
 			try
 			{
+				#region Validate Request
 				if (request == null)
 				{
 					throw new Exception("Invalid request");
 				}
+				#endregion
+				var email = this.User.UserRequest().Email;
+				var currentDt = SystemHelper.GetCurrentDateTime();
 				var masterProduct = db.Products.Where(w => w.ProductId == productId && w.IsMaster == true).SingleOrDefault();
+				#region Validate Master Product
 				if (masterProduct == null)
 				{
 					throw new Exception("Cannot find master product");
 				}
+				#endregion
 				var dbChild = db.Products.Where(w => w.MasterPid.Equals(masterProduct.Pid)).Select(s => s.Pid).ToList();
 				List<string> newChildPids = new List<string>();
 				foreach (var child in request.ChildProducts)
@@ -624,8 +629,11 @@ namespace Colsp.Api.Controllers
 						db.Products.Attach(product);
 						db.Entry(product).Property(p => p.MasterPid).IsModified = true;
 						product.MasterPid = masterProduct.Pid;
+						newChildPids.Add(product.Pid);
 					}
 				}
+				#region Delete Child Master
+				List<string> deleteChildPids = new List<string>();
 				if (dbChild != null && dbChild.Count > 0)
 				{
 					foreach (var id in dbChild)
@@ -637,10 +645,42 @@ namespace Colsp.Api.Controllers
 						db.Products.Attach(product);
 						db.Entry(product).Property(p => p.MasterPid).IsModified = true;
 						product.MasterPid = null;
+						deleteChildPids.Add(product.Pid);
 					}
 				}
+				#endregion
 				db.Configuration.ValidateOnSaveEnabled = false;
 				Util.DeadlockRetry(db.SaveChanges, "ProductStageMaster");
+				#region Elastic Delete
+				foreach (var pid in deleteChildPids)
+				{
+					var elasticRequest = new
+					{
+						Pid = pid,
+						data = new
+						{
+							MasterPid = (string)null,
+						}
+					};
+					var json = new JavaScriptSerializer().Serialize(elasticRequest);
+					SystemHelper.SendRequest(Apis.ElasticUpdateProduct, "PUT", null, json, email, currentDt, "SP", "ELAS", db);
+				}
+				#endregion
+				#region Elastic New
+				foreach (var pid in newChildPids)
+				{
+					var elasticRequest = new
+					{
+						Pid = pid,
+						data = new
+						{
+							MasterPid = masterProduct.Pid,
+						}
+					};
+					var json = new JavaScriptSerializer().Serialize(elasticRequest);
+					SystemHelper.SendRequest(Apis.ElasticUpdateProduct, "PUT", null, json, email, currentDt, "SP", "ELAS", db);
+				}
+				#endregion
 				return GetMasterProduct(productId);
 			}
 			catch (Exception e)
@@ -651,6 +691,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Products/Master")]
 		[HttpPost]
+		[ClaimsAuthorize(Permission = new string[] { "5" })]
 		public HttpResponseMessage AddMasterProduct(MasterProductRequest request)
 
 		{
@@ -660,19 +701,16 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Invaide request");
 				}
-
 				var parentProduct = db.Products
 					.Where(w => w.Pid.Equals(request.MasterProduct.Pid) && w.IsSell == true)
 					.SingleOrDefault();
-
 				if (parentProduct == null)
 				{
 					throw new Exception(string.Concat("Cannot find product ", request.MasterProduct.Pid));
 				}
-
 				var email = User.UserRequest().Email;
 				var currentDt = SystemHelper.GetCurrentDateTime();
-
+				#region Master Product
 				var masterProduct = new Product()
 				{
 					ShopId = Constant.ADMIN_SHOP_ID,
@@ -771,7 +809,8 @@ namespace Colsp.Api.Controllers
 					ParentPid = null,
 					Pid = parentProduct.Pid,
 				};
-
+				#endregion
+				#region Master Product Stage
 				ProductStageGroup stageGroup = new ProductStageGroup()
 				{
 					ProductId = masterProduct.ProductId,
@@ -902,7 +941,7 @@ namespace Colsp.Api.Controllers
 						}
 					}
 				};
-
+				#endregion
 				AutoGenerate.GeneratePid(db, stageGroup.ProductStages);
 				masterProduct.Pid = stageGroup.ProductStages.First().Pid;
 				masterProduct.UrlKey = stageGroup.ProductStages.First().UrlKey;
@@ -915,6 +954,20 @@ namespace Colsp.Api.Controllers
 				var childList = db.Products.Where(w => childPids.Contains(w.Pid)).ToList();
 				childList.ForEach(f => f.MasterPid = masterProduct.Pid);
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+				SendToElastic(stageGroup, Apis.ElasticCreateProduct, "POST", email, currentDt, db);
+				foreach(var child in childList)
+				{
+					var elasticRequest = new
+					{
+						Pid = child.Pid,
+						data = new
+						{
+							MasterPid = masterProduct.Pid,
+						}
+					};
+					var json = new JavaScriptSerializer().Serialize(elasticRequest);
+					SystemHelper.SendRequest(Apis.ElasticUpdateProduct, "PUT", null, json, email, currentDt, "SP", "ELAS", db);
+				}
 				return GetMasterProduct(masterProduct.ProductId);
 			}
 			catch (Exception e)
@@ -925,6 +978,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Products/Master/{productId}")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "5" })]
 		public HttpResponseMessage GetMasterProduct(long productId)
 		{
 			try
@@ -956,6 +1010,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/Products/Master")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "5" })]
 		public HttpResponseMessage GetMasterProduct([FromUri]ProductRequest request)
 		{
 			try
@@ -1475,7 +1530,11 @@ namespace Colsp.Api.Controllers
 							s.ProductStageGroup.Brand.BrandId,
 							s.ProductStageGroup.Brand.BrandNameEn
 						} : null,
-						Pids = db.ProductStages.Where(w=>w.ProductId==s.ProductId).Select(p=>p.Pid)
+						PidSku = db.ProductStages.Where(w=>w.ProductId==s.ProductId).Select(p=> new
+						{
+							p.Pid,
+							p.Sku,
+						}),
 					});
 				bool isSeller = false;
 				if (User.ShopRequest() != null)
@@ -1504,12 +1563,12 @@ namespace Colsp.Api.Controllers
 				//add Pid criteria
 				if (request.Pids != null && request.Pids.Count > 0)
 				{
-					products = products.Where(w => w.Pids.Any(a=> request.Pids.Contains(a)));
+					products = products.Where(w => w.PidSku.Any(a=> request.Pids.Contains(a.Pid)));
 				}
 				//add Sku criteria
 				if (request.Skus != null && request.Skus.Count > 0)
 				{
-					products = products.Where(w => request.Skus.Any(a => w.Sku.Contains(a)));
+					products = products.Where(w => w.PidSku.Any(a => request.Skus.Contains(a.Sku)));
 				}
 				//add Brand criteria
 				if (request.Brands != null && request.Brands.Count > 0)
@@ -2038,19 +2097,7 @@ namespace Colsp.Api.Controllers
 				{
 					//setup approve product
 					SetupApprovedProduct(group, db);
-					//send to elastic search
-					#region send to cmos
-					//send to cmos
-					Task.Run(() =>
-					{
-						Thread.Sleep(1000);
-						using (ColspEntities db = new ColspEntities())
-						{
-							SendToElastic(group, Apis.ElasticCreateProduct, "POST", email, currentDt, db);
-							db.SaveChanges();
-						}
-					});
-					#endregion
+					
 				}
 				//save change database
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
@@ -2286,6 +2333,7 @@ namespace Colsp.Api.Controllers
 			}
 			request.MasterVariant.Status = group.Status;
 			SetupProductStage(masterVariant, request.MasterVariant, attributeList, inventoryList.Where(w => w.Pid.Equals(masterVariant.Pid)).SingleOrDefault(), shopId, group.ShippingId, isAdmin, isNew, email, currentDt, db);
+			
 			if (request.MasterAttribute != null)
 			{
 				SetupAttribute(masterVariant, request.MasterAttribute, attributeList, email, currentDt);
@@ -2298,7 +2346,6 @@ namespace Colsp.Api.Controllers
 				var varaintList = group.ProductStages.Where(w => !Constant.STATUS_REMOVE.Equals(group.Status)).ToList();
 				foreach (var variantRequest in request.Variants)
 				{
-
 					bool isNewProduct = false;
 					ProductStage variant = null;
 					if (varaintList == null || varaintList.Count == 0)
@@ -2334,10 +2381,10 @@ namespace Colsp.Api.Controllers
 					variant.IsSell = true;
 				}
 				masterVariant.VariantCount = request.Variants.Where(w => w.Visibility == true).Count();
-				if (masterVariant.VariantCount == 0)
-				{
-					masterVariant.IsSell = true;
-				}
+			}
+			if (masterVariant.VariantCount == 0 && !masterVariant.IsMaster)
+			{
+				masterVariant.IsSell = true;
 			}
 			#endregion
 			#region Check Flag
@@ -4091,6 +4138,8 @@ namespace Colsp.Api.Controllers
 			}
 			historyGroup.HistoryId = db.GetNextProductHistoryId().SingleOrDefault().Value;
 			db.ProductHistoryGroups.Add(historyGroup);
+			//send to elastic search
+			SendToElastic(group, Apis.ElasticCreateProduct, "POST", group.UpdateBy, group.UpdateOn, db);
 		}
 
 		private void SetupGroupAfterSave(ProductStageGroup groupProduct,string email,DateTime currentDt, ColspEntities db, bool isNew = false)
@@ -4339,10 +4388,10 @@ namespace Colsp.Api.Controllers
 		private void SendToCmos(ProductStageGroup group, string url, string method
 			, string email, DateTime currentDt, ColspEntities db)
 		{
-			List<CmosRequest> requests = new List<CmosRequest>();
+			List<CmosProductRequest> requests = new List<CmosProductRequest>();
 			foreach (var stage in group.ProductStages.Where(w=>w.IsSell))
 			{
-				CmosRequest cms = new CmosRequest()
+				CmosProductRequest cms = new CmosProductRequest()
 				{
 					BrandId = group.BrandId.HasValue ? group.BrandId.Value : 0,
 					BrandNameEng = string.Empty,
@@ -4389,7 +4438,6 @@ namespace Colsp.Api.Controllers
 				SystemHelper.SendRequest(url, method, headers, json, email, currentDt, "SP", "CMOS", db);
 			}
 		}
-
 
 		private void SendToElastic(ProductStageGroup productGroup, string url, string method
 			, string email, DateTime currentDt, ColspEntities db)
@@ -4482,8 +4530,8 @@ namespace Colsp.Api.Controllers
 			#endregion
 			foreach (var stage in productGroup.ProductStages)
 			{
-
 				List<ElasticAttributeRequest> responseAttribute = new List<ElasticAttributeRequest>();
+				#region Attribute
 				foreach (var proAttr in stage.ProductStageAttributes)
 				{
 
@@ -4536,7 +4584,8 @@ namespace Colsp.Api.Controllers
 						IsAttributeValue = proAttr.IsAttributeValue,
 					});
 				}
-
+				#endregion
+				#region Elastic Object
 				ElasticRequest cms = new ElasticRequest()
 				{
 					Pid = stage.Pid,
@@ -4625,6 +4674,7 @@ namespace Colsp.Api.Controllers
 					} : null,
 					Attributes = responseAttribute,
 				};
+				#endregion
 				requests.Add(cms);
 			}
 			foreach (var req in requests)
@@ -4638,7 +4688,6 @@ namespace Colsp.Api.Controllers
 				SystemHelper.SendRequest(url, method, null, json, email, currentDt, "SP", "ELAS", db);
 			}
 		}
-
 
 		[Route("api/ProductStages/Approve")]
 		[HttpPut]
@@ -4691,7 +4740,6 @@ namespace Colsp.Api.Controllers
 			}
 		}
 
-
 		[Route("api/ProductStages/Reject")]
 		[HttpPut]
 		public HttpResponseMessage RejectProduct(List<ProductStageRequest> request)
@@ -4731,7 +4779,6 @@ namespace Colsp.Api.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
 			}
 		}
-
 
 		//duplicate
 		[Route("api/ProductStages/{productId}")]
@@ -4778,99 +4825,137 @@ namespace Colsp.Api.Controllers
 		{
 			try
 			{
-				int shopId = User.ShopRequest().ShopId;
 				var email = User.UserRequest().Email;
 				var currentDt = SystemHelper.GetCurrentDateTime();
-				var ids = request.Select(s => s.ProductId).ToList();
-				var producGrouptList = db.ProductStageGroups.Where(w => w.ShopId == shopId && ids.Contains(w.ProductId)).Select(s => new
+				int take = 1000;
+				int multiply = 0;
+				StringBuilder sb = new StringBuilder();
+				string updateMasterSql = "UPDATE Product SET MasterPid = null WHERE MasterPid = '@1' ;";
+				while (true)
 				{
-					s.ProductId,
-					ProductStages = s.ProductStages.Select(st => new
+					var ids = request.Select(s => s.ProductId).Skip(take * multiply).Take(take);
+					#region Validate Loop
+					if (ids.Count() == 0)
 					{
-						st.Pid,
-						st.Inventory,
-					}),
-				});
-				var stagePids = producGrouptList.SelectMany(s => s.ProductStages.Select(st => st.Pid));
-				var productProd = db.Products.Where(w => stagePids.Contains(w.Pid)).Select(s => s.Pid);
-				//var producGrouptList = db.ProductStageGroups.Where(w => w.ShopId == shopId && ids.Contains(w.ProductId)).Include(i=>i.ProductStages.Select(s=>s.Inventory));
-				foreach (ProductStageRequest proRq in request)
-				{
-					var productGroup = producGrouptList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
-					if (productGroup == null)
-					{
-						throw new Exception("Cannot find deleted product");
+						break;
 					}
-					var pids = productGroup.ProductStages.Select(s => s.Pid).ToList();
-					var inventories = productGroup.ProductStages.Select(s => s.Inventory).ToList();
-					foreach (var inventory in inventories)
+					#endregion
+					#region Query
+					var tmpGrouptList = db.ProductStageGroups.Where(w => true);
+					if (User.ShopRequest() != null)
 					{
-						ProductStage stage = new ProductStage()
+						int shopId = User.ShopRequest().ShopId;
+						tmpGrouptList = tmpGrouptList.Where(w => w.ShopId == shopId);
+					}
+					var producGrouptList = tmpGrouptList.Where(w => ids.Contains(w.ProductId)).Select(s => new
+					{
+						s.ProductId,
+						ProductStages = s.ProductStages.Select(st => new
 						{
-							Pid = inventory.Pid
-						};
-						db.ProductStages.Attach(stage);
-						db.Entry(stage).Property(p => p.Status).IsModified = true;
-						db.Entry(stage).Property(p => p.UrlKey).IsModified = true;
-						db.Entry(stage).Property(p => p.UpdateBy).IsModified = true;
-						db.Entry(stage).Property(p => p.UpdateOn).IsModified = true;
-						stage.Status = Constant.STATUS_REMOVE;
-						stage.UrlKey = string.Concat(stage.Pid, "_DELETE");
-						stage.UpdateBy = email;
-						stage.UpdateOn = currentDt;
-
-						if (productProd.Contains(inventory.Pid))
+							st.Pid,
+							st.Inventory,
+							st.IsMaster,
+						}),
+					});
+					var stagePids = producGrouptList.SelectMany(s => s.ProductStages.Select(st => st.Pid));
+					var productProd = db.Products.Where(w => stagePids.Contains(w.Pid)).Select(s => s.Pid);
+					#endregion
+					foreach (ProductStageRequest proRq in request)
+					{
+						var productGroup = producGrouptList.Where(w => w.ProductId == proRq.ProductId).SingleOrDefault();
+						#region Validate Product Group
+						if (productGroup == null)
 						{
-							Product product = new Product()
+							throw new Exception("Cannot find deleted product");
+						}
+						#endregion
+						var pids = productGroup.ProductStages.Select(s => s.Pid).ToList();
+						var inventories = productGroup.ProductStages.Select(s => s.Inventory).ToList();
+						foreach (var inventory in inventories)
+						{
+							#region Product Stage
+							ProductStage stage = new ProductStage()
 							{
 								Pid = inventory.Pid
 							};
-							db.Products.Attach(product);
-							db.Entry(product).Property(p => p.Status).IsModified = true;
-							db.Entry(product).Property(p => p.UrlKey).IsModified = true;
-							db.Entry(product).Property(p => p.UpdateBy).IsModified = true;
-							db.Entry(product).Property(p => p.UpdateOn).IsModified = true;
-							product.Status = Constant.STATUS_REMOVE;
-							product.UrlKey = string.Concat(product.Pid, "_DELETE");
-							product.UpdateBy = email;
-							product.UpdateOn = currentDt;
+							db.ProductStages.Attach(stage);
+							db.Entry(stage).Property(p => p.Status).IsModified = true;
+							db.Entry(stage).Property(p => p.UrlKey).IsModified = true;
+							db.Entry(stage).Property(p => p.UpdateBy).IsModified = true;
+							db.Entry(stage).Property(p => p.UpdateOn).IsModified = true;
+							stage.Status = Constant.STATUS_REMOVE;
+							stage.UrlKey = string.Concat(stage.Pid, "_DELETE");
+							stage.UpdateBy = email;
+							stage.UpdateOn = currentDt;
+							#endregion
+							#region Product
+							if (productProd.Contains(inventory.Pid))
+							{
+								Product product = new Product()
+								{
+									Pid = inventory.Pid
+								};
+								db.Products.Attach(product);
+								db.Entry(product).Property(p => p.Status).IsModified = true;
+								db.Entry(product).Property(p => p.UrlKey).IsModified = true;
+								db.Entry(product).Property(p => p.UpdateBy).IsModified = true;
+								db.Entry(product).Property(p => p.UpdateOn).IsModified = true;
+								product.Status = Constant.STATUS_REMOVE;
+								product.UrlKey = string.Concat(product.Pid, "_DELETE");
+								product.UpdateBy = email;
+								product.UpdateOn = currentDt;
+								#region Master Product
+								var masterPid = productGroup.ProductStages.Where(s => s.IsMaster == true).Select(s => s.Pid).SingleOrDefault();
+								if (!string.IsNullOrEmpty(masterPid))
+								{
+									sb.Append(updateMasterSql.Replace("@1", masterPid));
+								}
+								#endregion
+							}
+							#endregion
+							#region Inventory History
+							db.InventoryHistories.Add(new InventoryHistory()
+							{
+								Pid = inventory.Pid,
+								StockType = inventory.StockType,
+								MaxQtyAllowInCart = inventory.MaxQtyAllowInCart,
+								MinQtyAllowInCart = inventory.MinQtyAllowInCart,
+								UseDecimal = inventory.UseDecimal,
+								MaxQtyPreOrder = inventory.MaxQtyPreOrder,
+								Defect = inventory.Defect,
+								OnHold = inventory.OnHold,
+								Quantity = inventory.Quantity,
+								Reserve = inventory.Reserve,
+								SafetyStockAdmin = inventory.SafetyStockAdmin,
+								SafetyStockSeller = inventory.SafetyStockSeller,
+								Status = Constant.INVENTORY_STATUS_DELETE,
+								CreateBy = email,
+								CreateOn = currentDt,
+								UpdateBy = email,
+								UpdateOn = currentDt,
+							});
+							#endregion
 						}
-
-						db.InventoryHistories.Add(new InventoryHistory()
+						#region Product Stage Group
+						ProductStageGroup group = new ProductStageGroup()
 						{
-							Pid = inventory.Pid,
-							StockType = inventory.StockType,
-							MaxQtyAllowInCart = inventory.MaxQtyAllowInCart,
-							MinQtyAllowInCart = inventory.MinQtyAllowInCart,
-							UseDecimal = inventory.UseDecimal,
-							MaxQtyPreOrder = inventory.MaxQtyPreOrder,
-							Defect = inventory.Defect,
-							OnHold = inventory.OnHold,
-							Quantity = inventory.Quantity,
-							Reserve = inventory.Reserve,
-							SafetyStockAdmin = inventory.SafetyStockAdmin,
-							SafetyStockSeller = inventory.SafetyStockSeller,
-							Status = Constant.INVENTORY_STATUS_DELETE,
-							CreateBy = email,
-							CreateOn = currentDt,
-							UpdateBy = email,
-							UpdateOn = currentDt,
-						});
+							ProductId = productGroup.ProductId
+						};
+						db.ProductStageGroups.Attach(group);
+						db.Entry(group).Property(p => p.Status).IsModified = true;
+						db.Entry(group).Property(p => p.UpdateBy).IsModified = true;
+						db.Entry(group).Property(p => p.UpdateOn).IsModified = true;
+						group.Status = Constant.STATUS_REMOVE;
+						group.UpdateBy = email;
+						group.UpdateOn = currentDt;
+						#endregion
 					}
-					ProductStageGroup group = new ProductStageGroup()
-					{
-						ProductId = productGroup.ProductId
-					};
-					db.ProductStageGroups.Attach(group);
-					db.Entry(group).Property(p => p.Status).IsModified = true;
-					db.Entry(group).Property(p => p.UpdateBy).IsModified = true;
-					db.Entry(group).Property(p => p.UpdateOn).IsModified = true;
-					group.Status = Constant.STATUS_REMOVE;
-					group.UpdateBy = email;
-					group.UpdateOn = currentDt;
 				}
+				#region Save Change Database
 				db.Configuration.ValidateOnSaveEnabled = false;
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+				db.Database.ExecuteSqlCommand(sb.ToString());
+				#endregion
 				return Request.CreateResponse(HttpStatusCode.OK);
 			}
 			catch (Exception e)
@@ -4885,44 +4970,61 @@ namespace Colsp.Api.Controllers
 		{
 			try
 			{
+				#region Validate Request
 				if (request == null)
 				{
 					throw new Exception("Invalid request");
 				}
-				var productIds = request.Products.Select(s => s.ProductId).ToList();
-				var productList = db.ProductStageGroups.Where(w => true).Include(i => i.ProductStageTags);
-				productList = productList.Where(w => productIds.Any(a => a == w.ProductId));
-				if (User.ShopRequest() != null)
-				{
-					var shopId = User.ShopRequest().ShopId;
-					productList = productList.Where(w => w.ShopId == shopId);
-				}
-				var tagList = request.Tags;
+				#endregion
+				int take = 1000;
+				int multiply = 0;
 				var email = User.UserRequest().Email;
 				var currentDt = SystemHelper.GetCurrentDateTime();
-				foreach (var product in productList)
+				var tagList = request.Tags;
+				while (true)
 				{
-					if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(product.Status))
+					var productIds = request.Products.Select(s => s.ProductId).Skip(take * multiply).Take(take);
+					#region Validate Loop
+					if (productIds.Count() == 0)
 					{
-						throw new Exception("Cannot add tag to Wait for Approval products");
+						break;
 					}
-					foreach (var tag in tagList)
+					#endregion
+					var productList = db.ProductStageGroups.Where(w => true).Include(i => i.ProductStageTags);
+					productList = productList.Where(w => productIds.Any(a => a == w.ProductId));
+					if (User.ShopRequest() != null)
 					{
-						if (string.IsNullOrWhiteSpace(tag)
-							|| product.ProductStageTags.Any(a => string.Equals(a.Tag, tag.Trim(), StringComparison.OrdinalIgnoreCase)))
+						var shopId = User.ShopRequest().ShopId;
+						productList = productList.Where(w => w.ShopId == shopId);
+					}
+					foreach (var product in productList)
+					{
+						if (Constant.PRODUCT_STATUS_WAIT_FOR_APPROVAL.Equals(product.Status))
 						{
-							continue;
+							throw new Exception("Cannot add tag to Wait for Approval products");
 						}
-						product.ProductStageTags.Add(new ProductStageTag()
+						foreach (var tag in tagList)
 						{
-							Tag = tag.Trim(),
-							CreateBy = email,
-							CreateOn = currentDt,
-							UpdateBy = email,
-							UpdateOn = currentDt,
-						});
+							#region Validate Duplicate Tag
+							if (string.IsNullOrWhiteSpace(tag)
+								|| product.ProductStageTags.Any(a => string.Equals(a.Tag, tag.Trim(), StringComparison.OrdinalIgnoreCase)))
+							{
+								continue;
+							}
+							#endregion
+							#region Add Tag
+							product.ProductStageTags.Add(new ProductStageTag()
+							{
+								Tag = tag.Trim(),
+								CreateBy = email,
+								CreateOn = currentDt,
+								UpdateBy = email,
+								UpdateOn = currentDt,
+							});
+							#endregion
+						}
+						product.Status = Constant.PRODUCT_STATUS_DRAFT;
 					}
-					product.Status = Constant.PRODUCT_STATUS_DRAFT;
 				}
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
 				return Request.CreateResponse(HttpStatusCode.OK);
@@ -4973,9 +5075,6 @@ namespace Colsp.Api.Controllers
 			};
 			return Request.CreateResponse(HttpStatusCode.OK, ignoreList);
 		}
-
-
-		private static volatile Dictionary<int, double> userExportProducts = new Dictionary<int, double>();
 
 		private void Export(ExportRequest request, IPrincipal user)
 		{
@@ -6068,8 +6167,6 @@ namespace Colsp.Api.Controllers
 
 		}
 
-
-
 		[Route("api/ProductStages/Import")]
 		[HttpPost]
 		public async Task<HttpResponseMessage> ImportProduct()
@@ -6167,6 +6264,20 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+				#region send to cmos
+				await Task.Run(() =>
+				{
+					 Thread.Sleep(1000);
+					 using (ColspEntities db = new ColspEntities())
+					 {
+						 foreach (var group in groupList.Values)
+						 {
+							 SendToCmos(group, Apis.CmosCreateProduct, "POST", email, currentDt, db);
+						 }
+						db.SaveChanges();
+					}
+				 });
+				#endregion
 				return Request.CreateResponse(HttpStatusCode.OK, "Total " + groupList.Count + " products added");
 			}
 			catch (Exception e)
@@ -6223,8 +6334,10 @@ namespace Colsp.Api.Controllers
 				#endregion
 				#region Query
 				var shopId = User.ShopRequest().ShopId;
-				int take = 100;
+				int take = 500;
 				int multiply = 0;
+				StringBuilder sb = new StringBuilder();
+				string updateProductSql = "UPDATE Product SET Visibility = @1 WHERE Pid = '@2' ;";
 				while (true)
 				{
 					var tmpGroupList = groupList.Values.Skip(take * multiply).Take(take);
@@ -6233,6 +6346,7 @@ namespace Colsp.Api.Controllers
 					{
 						break;
 					}
+					#region Query
 					var gropEnList = db.ProductStageGroups
 					   .Where(w => w.ShopId == shopId && productIds.Contains(w.ProductId))
 					   .Include(i => i.ProductStages.Select(s => s.ProductStageAttributes))
@@ -6243,6 +6357,7 @@ namespace Colsp.Api.Controllers
 					   .Include(i => i.ProductStageRelateds)
 					   .Include(i => i.ProductStages.Select(s => s.ProductStageImages))
 					   .Include(i => i.ProductStages.Select(s => s.ProductStageVideos));
+					#endregion
 					foreach (var g in tmpGroupList)
 					{
 						#region Validation
@@ -6562,7 +6677,6 @@ namespace Colsp.Api.Controllers
 							{
 								masterVariantEn.MobileDescriptionTh = importVariantEn.MobileDescriptionTh;
 							}
-
 							if (header.Contains("ABA"))
 							{
 								masterVariantEn.DescriptionShortEn = importVariantEn.DescriptionShortEn;
@@ -6722,7 +6836,6 @@ namespace Colsp.Api.Controllers
 							{
 								masterVariantEn.Weight = importVariantEn.Weight;
 							}
-
 							if (header.Contains("ACN"))
 							{
 								masterVariantEn.SeoEn = importVariantEn.SeoEn;
@@ -6731,7 +6844,6 @@ namespace Colsp.Api.Controllers
 							{
 								masterVariantEn.SeoTh = importVariantEn.SeoTh;
 							}
-
 							if (header.Contains("ACP"))
 							{
 								masterVariantEn.MetaTitleEn = importVariantEn.MetaTitleEn;
@@ -6767,6 +6879,13 @@ namespace Colsp.Api.Controllers
 							if (header.Contains("ADL"))
 							{
 								masterVariantEn.Visibility = importVariantEn.Visibility;
+								if (!string.IsNullOrEmpty(groupEn.ApproveBy))
+								{
+									sb.Append(updateProductSql
+										.Replace("@1", masterVariantEn.Visibility ? "1" : "0")
+										.Replace("@2", masterVariantEn.Pid ));
+									groupEn.OnlineFlag = masterVariantEn.Visibility;
+								}
 							}
 							if (header.Contains("ACV") && g.ProductStages.Where(w => w.IsVariant == true).Count() == 0)
 							{
@@ -7269,7 +7388,7 @@ namespace Colsp.Api.Controllers
 					}
 					#endregion
 					masterProduct.VariantCount = product.Value.ProductStages.Where(w => w.IsVariant == true).Count();
-					if (masterProduct.VariantCount == 0)
+					if (masterProduct.VariantCount == 0 && !masterProduct.IsMaster)
 					{
 						masterProduct.IsSell = true;
 					}
@@ -7277,6 +7396,24 @@ namespace Colsp.Api.Controllers
 				}
 				#endregion
 				Util.DeadlockRetry(db.SaveChanges, "ProductStage");
+				if (!string.IsNullOrEmpty(sb.ToString()))
+				{
+					db.Database.ExecuteSqlCommand(sb.ToString());
+				}
+				#region send to cmos
+				await Task.Run(() =>
+				{
+					Thread.Sleep(1000);
+					using (ColspEntities db = new ColspEntities())
+					{
+						foreach (var group in groupList.Values)
+						{
+							SendToCmos(group, Apis.CmosUpdateProduct, "PUT", email, currentDt, db);
+						}
+						db.SaveChanges();
+					}
+				});
+				#endregion
 				return Request.CreateResponse(HttpStatusCode.OK, "Total " + groupList.Count + " products updated");
 			}
 			catch (Exception e)
@@ -7291,7 +7428,6 @@ namespace Colsp.Api.Controllers
 				}
 			}
 		}
-
 
 		private List<List<string>> ReadExcel(CsvReader csvResult, string[] header, List<string> firstRow)
 		{
@@ -8909,7 +9045,6 @@ namespace Colsp.Api.Controllers
 
 		}
 
-
 		[Route("api/ProductStages/Publish")]
 		[HttpPost]
 		public HttpResponseMessage PublishProduct(List<ProductStageRequest> request)
@@ -9356,7 +9491,6 @@ namespace Colsp.Api.Controllers
 		//		return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
 		//	}
 		//}
-
 		private void UpdateJda(ProductStage stage,string email,DateTime currentDt, JdaRequest jdaProduct, ColspEntities db)
 		{
 			db.ProductStages.Attach(stage);

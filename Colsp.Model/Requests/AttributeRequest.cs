@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Colsp.Model.Requests
 {
@@ -32,8 +33,12 @@ namespace Colsp.Model.Requests
         public int ProductCount { get; set; }
         public bool DefaultAttribute { get; set; }
         public string VisibleTo { get; set; }
+		public IEnumerable<AttributeValueMapRequest> AttributeValueMaps { get; set; }
+		public DateTime? UpdatedDt { get; set; }
+		public int AttributeSetCount { get; set; }
 
-        public AttributeRequest()
+
+		public AttributeRequest()
         {
             AttributeId = 0;
             AttributeNameEn = string.Empty;
@@ -72,4 +77,11 @@ namespace Colsp.Model.Requests
             base.DefaultOnNull();
         }
     }
+
+	public class AttributeValueMapRequest
+	{
+		public AttributeValueRequest AttributeValue { get; set; }
+		public int AttributeId { get; set; }
+		public int AttributeValueId { get; set; }
+	}
 }

@@ -1,15 +1,13 @@
 ﻿using System.Linq;
 using System.Web.Http;
 using Colsp.Entity.Models;
-//using System.Net.Http;
 using System;
 using System.Net;
 using System.Data.Entity;
-using Colsp.Api.Extensions;
 using Colsp.Model.Requests;
 using Colsp.Api.Constants;
-using System.Collections.Generic;
 using System.Net.Http;
+using Colsp.Api.Filters;
 
 namespace Colsp.Api.Controllers
 {
@@ -20,6 +18,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/ProductHistories/{historyId}")]
 		[HttpGet]
+		[ClaimsAuthorize(Permission = new string[] { "43", "2", "3" })]
 		public HttpResponseMessage RestoreProductHistory(long historyId)
 		{
 			try

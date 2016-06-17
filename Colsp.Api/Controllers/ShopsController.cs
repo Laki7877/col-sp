@@ -442,7 +442,8 @@ namespace Colsp.Api.Controllers
 				var currentDt = SystemHelper.GetCurrentDateTime();
 				shop.UpdateBy = email;
                 shop.UpdateOn = currentDt;
-                Util.DeadlockRetry(db.SaveChanges, "Shop");
+				SendToCmos(shop, Apis.ShopUpdate, "PUT", email, currentDt, db);
+				Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShopProfile();
             }
             catch (Exception e)
@@ -454,6 +455,7 @@ namespace Colsp.Api.Controllers
         [Route("api/Shops")]
         [HttpPost]
 		[ClaimsAuthorize(Permission = new string[] { "10" })]
+
 		public HttpResponseMessage AddShop(ShopRequest request)
         {
             Shop shop = null;
@@ -544,8 +546,9 @@ namespace Colsp.Api.Controllers
                 shop.VendorId = shop.VendorId.PadLeft(5, '0');
                 string.Concat("M", shop.VendorId);
                 db.Shops.Add(shop);
-                Util.DeadlockRetry(db.SaveChanges, "Shop");
-                return GetShop(shop.ShopId);
+				SendToCmos(shop, Apis.ShopCreate, "POST", email, currentDt, db);
+				Util.DeadlockRetry(db.SaveChanges, "Shop");
+				return GetShop(shop.ShopId);
             }
             catch (Exception e)
             {
@@ -553,7 +556,77 @@ namespace Colsp.Api.Controllers
             }
         }
 
-        [Route("api/Shops/{shopId}")]
+		private void SendToCmos(Shop shop, string url, string method
+			, string email, DateTime currentDt, ColspEntities db)
+		{
+			CmosShopRequest request = new CmosShopRequest()
+			{
+				BankNumber = shop.BankNumber,
+				BankAccountName = shop.BankAccountName,
+				BankAccountNumber = shop.BankAccountNumber,
+				City = shop.CityId.HasValue && shop.CityId.Value != 0 ? db.Cities.Find(shop.CityId).CityNameEn : string.Empty,
+				Commission = shop.Commission,
+				ContactPersonFirstName = shop.ContactPersonFirstName,
+				ContactPersonLastName = shop.ContactPersonLastName,
+				CountryCode = shop.CountryCode,
+				CreateBy = shop.CreateBy,
+				CreateDt = shop.CreateOn,
+				DistrictId = shop.DistrictId,
+				DomainName = shop.DomainName,
+				Email = shop.Email,
+				Facebook = shop.Facebook,
+				FaxNumber = shop.FaxNumber,
+				FloatMessageEn = shop.FloatMessageEn,
+				FloatMessageTh = shop.FloatMessageTh,
+				GiftWrap = shop.GiftWrap,
+				Instagram = shop.Instagram,
+				MaxLocalCategory = shop.MaxLocalCategory,
+				OverseasVendorIndicator = shop.OverseasVendorIndicator,
+				Payment = shop.Payment,
+				PhoneNumber =shop.PhoneNumber,
+				Pinterest = shop.Pinterest,
+				RemittanceFaxNumber = shop.RemittanceFaxNumber,
+				ShopAddress = shop.ShopAddress,
+				ShopAppearance = shop.ShopAppearance,
+				ShopDescriptionEn = shop.ShopDescriptionEn,
+				ShopDescriptionTh = shop.ShopDescriptionTh,
+				ShopGroup =shop.ShopGroup,
+				ShopId = shop.ShopId,
+				ShopImageUrl = shop.ShopImageUrl,
+				ShopNameEn = shop.ShopNameEn,
+				ShopNameTh = shop.ShopNameTh,
+				ShopOwner = shop.ShopOwner,
+				ShopTypeId = shop.ShopTypeId,
+				State = string.Empty,
+				Status = shop.Status,
+				StockAlert = shop.StockAlert,
+				TaxInvoice = shop.TaxInvoice,
+				TaxPayerId = shop.TaxPayerId,
+				Telex = shop.Telex,
+				TermPaymentCode = shop.TermPaymentCode,
+				ThemeId = shop.ThemeId.HasValue ? shop.ThemeId.Value : 0,
+				Twitter = shop.Twitter,
+				UpdateBy = shop.UpdateBy,
+				UpdateDt = shop.UpdateOn,
+				UrlKey = shop.UrlKey,
+				VendorAddressLine1 = shop.VendorAddressLine1,
+				VendorAddressLine2 = shop.VendorAddressLine2,
+				VendorAddressLine3 = shop.VendorAddressLine3,
+				VendorId = shop.VendorId,
+				VendorTaxRate = shop.VendorTaxRateCode,
+				WithholdingTaxCode = shop.WithholdingTaxCode,
+				YouTube = shop.YouTube,
+				ZipCode = shop.PostCodeId.HasValue ? db.PostCodes.Find(shop.PostCodeId).PostCode1 : string.Empty,
+			};
+			var json = new JavaScriptSerializer().Serialize(request);
+			Dictionary<string, string> headers = new Dictionary<string, string>();
+			headers.Add(Apis.CmosKeyAppIdKey, Apis.CmosKeyAppIdValue);
+			headers.Add(Apis.CmosKeyAppSecretKey, Apis.CmosKeyAppSecretValue);
+			SystemHelper.SendRequest(url, method, headers, json, email, currentDt, "SP", "CMOS", db);
+		}
+
+
+		[Route("api/Shops/{shopId}")]
         [HttpPut]
 		[ClaimsAuthorize(Permission = new string[] { "10" })]
 		public HttpResponseMessage SaveChangeShop([FromUri]int shopId, ShopRequest request)
@@ -635,8 +708,9 @@ namespace Colsp.Api.Controllers
                         
                     }
                 }
-                #endregion
-                Util.DeadlockRetry(db.SaveChanges, "Shop");
+				#endregion
+				SendToCmos(shop, Apis.ShopUpdate, "PUT", email, currentDt, db);
+				Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShop(shop.ShopId);
             }
             catch (Exception e)
@@ -657,7 +731,6 @@ namespace Colsp.Api.Controllers
                     throw new Exception("Invalid request");
                 }
                 var ids = request.Select(s => s.ShopId);
-
                 StringBuilder sb = new StringBuilder();
                 string updateShop = string.Concat(
                     "UPDATE [Shop] SET "
@@ -686,7 +759,7 @@ namespace Colsp.Api.Controllers
                     sb.Append(deleleShopOwner.Replace("@1", string.Concat(id)));
                 }
                 db.Database.ExecuteSqlCommand(sb.ToString());
-                return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
+				return Request.CreateResponse(HttpStatusCode.OK, "Delete successful");
             }
             catch (Exception e)
             {
@@ -770,29 +843,28 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                if (request == null)
+                if (request == null || User.ShopRequest() == null)
                 {
                     throw new Exception("Invalid request");
                 }
                 var shopId = User.ShopRequest().ShopId;
-                Shop shop = new Shop()
-                {
-                    ShopId = shopId,
-                };
 				var email = User.UserRequest().Email;
 				var currentDt = SystemHelper.GetCurrentDateTime();
-				db.Shops.Attach(shop);
-                db.Entry(shop).Property(p => p.ThemeId).IsModified = true;
-                db.Entry(shop).Property(p => p.ShopAppearance).IsModified = true;
-                db.Entry(shop).Property(p => p.UpdateBy).IsModified = true;
-                db.Entry(shop).Property(p => p.UpdateOn).IsModified = true;
-
+				Shop shop = db.Shops.Find(shopId);
+                //Shop shop = new Shop()
+                //{
+                //    ShopId = shopId,
+                //};
+				//db.Shops.Attach(shop);
+                //db.Entry(shop).Property(p => p.ThemeId).IsModified = true;
+                //db.Entry(shop).Property(p => p.ShopAppearance).IsModified = true;
+                //db.Entry(shop).Property(p => p.UpdateBy).IsModified = true;
+                //db.Entry(shop).Property(p => p.UpdateOn).IsModified = true;
                 shop.ThemeId = request.ThemeId;
                 shop.ShopAppearance = request.Data;
                 shop.UpdateBy = email;
 				shop.UpdateOn = currentDt;
-
-                db.Configuration.ValidateOnSaveEnabled = false;
+				SendToCmos(shop, Apis.ShopUpdate, "PUT", email, currentDt, db);
                 Util.DeadlockRetry(db.SaveChanges, "Shop");
                 return GetShopAppearance();
             }

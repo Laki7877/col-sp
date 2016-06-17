@@ -26,8 +26,11 @@ namespace Colsp.Api.Constants
         public const string SellerUpdateStock       = CmosRootUrl + "api/seller/product/updatestock";
         public const string SellerUpdateStatus      = CmosRootUrl + "api/seller/product/updatestatus";
         public const string SellerCreateShop        = CmosRootUrl + "api/seller/shop/info";
+		public const string ShopCreate				= CmosRootUrl + "api/cmos/shop/create";
+		public const string ShopUpdate				= CmosRootUrl + "api/cmos/shop/update";
 
-        public const string ElasticCreateProduct    = ElasticRootUrl + "reindex/single/insert";
+		public const string ElasticCreateProduct    = ElasticRootUrl + "reindex/single/insert";
+		public const string ElasticUpdateProduct	= ElasticRootUrl + "reindex/single/update";
 
 
 		public const string EVoucherKeyAppIdKey = "X-Central-AppId";

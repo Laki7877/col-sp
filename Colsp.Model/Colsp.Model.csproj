@@ -71,7 +71,8 @@
     <Compile Include="Requests\CategoryRequest.cs" />
     <Compile Include="Requests\CategoryShiftRequest.cs" />
     <Compile Include="Requests\ClaimRequest.cs" />
-    <Compile Include="Requests\CmosRequest.cs" />
+    <Compile Include="Requests\CmosProductRequest.cs" />
+    <Compile Include="Requests\CmosShopRequest.cs" />
     <Compile Include="Requests\CMSBrandInShopRequest.cs" />
     <Compile Include="Requests\CMSCategoryProductGetListRequest.cs" />
     <Compile Include="Requests\CMSCategoryRequest.cs" />

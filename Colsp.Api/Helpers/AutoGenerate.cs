@@ -57,7 +57,6 @@ namespace Colsp.Api.Helper
                         pro.UrlKey = pro.Pid;
                     }
                     continue;
-                    continue;
                 }
                 currentPid.CurrentPid = Generater(currentPid.CurrentPid);
                 while(currentPid.CurrentPid.Any(a=> Constant.IGNORE_PID.Contains(a)))

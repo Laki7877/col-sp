@@ -32,8 +32,8 @@ namespace Colsp.Api.Controllers
 
 
                 var products = (
-                           from inv in db.Inventories
-                           join stage in db.ProductStages on new { inv.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
+                           from s in db.Inventories
+                           join stage in db.ProductStages on new { s.Pid, ShopId = shopId } equals new { stage.Pid, stage.ShopId }
                            where !Constant.STATUS_REMOVE.Equals(stage.Status) && 
                                  (
                                     stage.IsVariant == true 
@@ -47,118 +47,214 @@ namespace Colsp.Api.Controllers
                                Pid = stage.Pid,
                                ProductNameEn = stage.ProductNameEn,
                                ProductNameTh = stage.ProductNameTh,
-                               inv.Quantity,
-                               inv.Defect,
-                               inv.OnHold,
-                               inv.Reserve,
-                               inv.SafetyStockSeller,
-                               UpdatedDt = inv.UpdateOn,
-                               Brand = stage.ProductStageGroup.Brand != null ? new { stage.ProductStageGroup.Brand.BrandId, stage.ProductStageGroup.Brand.BrandNameEn } : null,
-                               GlobalCategory = stage.ProductStageGroup.GlobalCategory != null ? new { stage.ProductStageGroup.GlobalCategory.Lft, stage.ProductStageGroup.GlobalCategory.Rgt, stage.ProductStageGroup.GlobalCategory.NameEn } : null,
-                               LocalCategory = stage.ProductStageGroup.LocalCategory != null ? new { stage.ProductStageGroup.LocalCategory.Lft, stage.ProductStageGroup.LocalCategory.Rgt, stage.ProductStageGroup.LocalCategory.NameEn } : null,
-                               Tag = stage.ProductStageGroup.ProductStageTags != null ? string.Join(",",stage.ProductStageGroup.ProductStageTags) :null,
+                               s.Quantity,
+                               s.Defect,
+                               s.OnHold,
+                               s.Reserve,
+                               s.SafetyStockSeller,
+                               UpdatedDt = s.UpdateOn,
+							   Brand = stage.ProductStageGroup.Brand != null ? new
+							   {
+								   stage.ProductStageGroup.Brand.BrandId,
+								   stage.ProductStageGroup.Brand.BrandNameEn
+							   } : null,
+							   GlobalCategory = stage.ProductStageGroup.GlobalCategory != null ? new
+							   {
+								   stage.ProductStageGroup.GlobalCategory.Lft,
+								   stage.ProductStageGroup.GlobalCategory.Rgt,
+								   stage.ProductStageGroup.GlobalCategory.NameEn
+							   } : null,
+                               LocalCategory = stage.ProductStageGroup.LocalCategory != null ? new
+							   {
+								   stage.ProductStageGroup.LocalCategory.Lft,
+								   stage.ProductStageGroup.LocalCategory.Rgt,
+								   stage.ProductStageGroup.LocalCategory.NameEn
+							   } : null,
+                               //Tag = stage.ProductStageGroup.ProductStageTags != null ? string.Join(",",stage.ProductStageGroup.ProductStageTags) :null,
                                SalePrice = stage.SalePrice,
                                CreateOn = stage.CreateOn,
                                Status = stage.Status,
-                           });
-                request.DefaultOnNull();
-                if (request.ProductNames != null && request.ProductNames.Count > 0)
-                {
-                    products = products.Where(w => request.ProductNames.Any(a => w.ProductNameEn.Contains(a))
-                    || request.ProductNames.Any(a => w.ProductNameTh.Contains(a)));
-                }
-                if (request.Pids != null && request.Pids.Count > 0)
-                {
-                    products = products.Where(w => request.Pids.Any(a => w.Pid.Contains(a)));
-                }
-                if (request.Skus != null && request.Skus.Count > 0)
-                {
-                    products = products.Where(w => request.Skus.Any(a => w.Sku.Contains(a)));
-                }
-                if (request.Brands != null && request.Brands.Count > 0)
-                {
-                    List<int> brandIds = request.Brands.Where(w => w.BrandId != 0).Select(s => s.BrandId).ToList();
-                    if (brandIds != null && brandIds.Count > 0)
-                    {
-                        products = products.Where(w => brandIds.Contains(w.Brand.BrandId));
-                    }
-                    List<string> brandNames = request.Brands.Where(w => w.BrandNameEn != null).Select(s => s.BrandNameEn).ToList();
-                    if (brandNames != null && brandNames.Count > 0)
-                    {
-                        products = products.Where(w => brandNames.Any(a => w.Brand.BrandNameEn.Contains(a)));
-                    }
-                }
-                if (request.GlobalCategories != null && request.GlobalCategories.Count > 0)
-                {
-                    var lft = request.GlobalCategories.Where(w => w.Lft != 0).Select(s => s.Lft).ToList();
-                    var rgt = request.GlobalCategories.Where(w => w.Rgt != 0).Select(s => s.Rgt).ToList();
-                    if (lft != null && lft.Count > 0 && rgt != null && rgt.Count > 0)
-                    {
-                        products = products.Where(w => lft.Any(a => a <= w.GlobalCategory.Lft) && rgt.Any(a => a >= w.GlobalCategory.Rgt));
-                    }
-                    List<string> catNames = request.GlobalCategories.Where(w => w.NameEn != null).Select(s => s.NameEn).ToList();
-                    if (catNames != null && catNames.Count > 0)
-                    {
-                        products = products.Where(w => catNames.Any(a => w.GlobalCategory.NameEn.Contains(a)));
-                    }
-                }
-                if (request.LocalCategories != null && request.LocalCategories.Count > 0)
-                {
-                    var lft = request.LocalCategories.Where(w => w.Lft != 0).Select(s => s.Lft).ToList();
-                    var rgt = request.LocalCategories.Where(w => w.Rgt != 0).Select(s => s.Rgt).ToList();
+							   stage.OriginalPrice,
+							   stage.ProductStageGroup.ImageFlag,
+							   stage.ProductStageGroup.InfoFlag,
+							   stage.ProductStageGroup.OnlineFlag,
+							   stage.Visibility,
+							   stage.VariantCount,
+							   //stage.IsMaster,
+							   ImageUrl = string.Empty.Equals(stage.FeatureImgUrl) ? string.Empty : string.Concat(Constant.PRODUCT_IMAGE_URL, stage.FeatureImgUrl),
+							   stage.ProductStageGroup.GlobalCatId,
+							   stage.ProductStageGroup.LocalCatId,
+							   stage.ProductStageGroup.AttributeSetId,
+							   stage.ProductStageAttributes,
+							   CreatedDt = stage.ProductStageGroup.CreateOn,
+							   stage.ShopId,
+							   Tags = stage.ProductStageGroup.ProductStageTags.Select(t => t.Tag),
+							   Shop = new { stage.Shop.ShopId, stage.Shop.ShopNameEn },
+							   stage.IsVariant,
+							   PidSku = db.ProductStages.Where(w => w.ProductId == stage.ProductId).Select(p => new
+							   {
+								   p.Pid,
+								   p.Sku,
+							   }),
+							   VariantAttribute = stage.ProductStageAttributes.Select(s => new
+							   {
+								   s.Attribute.AttributeNameEn,
+								   Value = s.IsAttributeValue ? (from tt in db.AttributeValues where tt.MapValue.Equals(s.ValueEn) select tt.AttributeValueEn).FirstOrDefault()
+											  : s.ValueEn,
+							   }),
+						   });
+				bool isSeller = false;
+				if (User.ShopRequest() != null)
+				{
+					//add shopid criteria for seller request
+					if (User.BrandRequest() != null)
+					{
+						var brands = User.BrandRequest().Select(s => s.BrandId).ToList();
+						if (brands != null && brands.Count > 0)
+						{
+							products = products.Where(w => brands.Contains(w.Brand.BrandId));
+						}
+					}
+					isSeller = true;
+				}
+				//set request default value
+				request.DefaultOnNull();
+				//add ProductName criteria
+				if (request.ProductNames != null && request.ProductNames.Count > 0)
+				{
+					products = products.Where(w => request.ProductNames.Any(a => w.ProductNameEn.Contains(a))
+					|| request.ProductNames.Any(a => w.ProductNameTh.Contains(a)));
+				}
+				//add Pid criteria
+				if (request.Pids != null && request.Pids.Count > 0)
+				{
+					products = products.Where(w => w.PidSku.Any(a => request.Pids.Contains(a.Pid)));
+				}
+				//add Sku criteria
+				if (request.Skus != null && request.Skus.Count > 0)
+				{
+					products = products.Where(w => w.PidSku.Any(a => request.Skus.Contains(a.Sku)));
+				}
+				//add Brand criteria
+				if (request.Brands != null && request.Brands.Count > 0)
+				{
+					//if request send brand id, add brand id criteria
+					List<int> brandIds = request.Brands.Where(w => w.BrandId != 0).Select(s => s.BrandId).ToList();
+					if (brandIds != null && brandIds.Count > 0)
+					{
+						products = products.Where(w => brandIds.Contains(w.Brand.BrandId));
+					}
+					//if request send brand name, add brand name criteria
+					List<string> brandNames = request.Brands.Where(w => w.BrandNameEn != null && !string.IsNullOrWhiteSpace(w.BrandNameEn)).Select(s => s.BrandNameEn).ToList();
+					if (brandNames != null && brandNames.Count > 0)
+					{
+						products = products.Where(w => brandNames.Any(a => w.Brand.BrandNameEn.Contains(a)));
+					}
+				}
+				if (request.Shops != null && request.Shops.Count > 0)
+				{
+					List<int> shopIds = request.Shops.Where(w => w.ShopId != 0).Select(s => s.ShopId).ToList();
+					if (shopIds != null && shopIds.Count > 0)
+					{
+						products = products.Where(w => shopIds.Contains(w.Shop.ShopId));
+					}
+				}
+				//add Global category criteria
+				if (request.GlobalCategories != null && request.GlobalCategories.Count > 0)
+				{
+					//if request send category parent left and right, add category parent left and right criteria
+					var lft = request.GlobalCategories.Where(w => w.Lft != 0).Select(s => s.Lft).ToList();
+					var rgt = request.GlobalCategories.Where(w => w.Rgt != 0).Select(s => s.Rgt).ToList();
+					if (lft != null && lft.Count > 0 && rgt != null && rgt.Count > 0)
+					{
+						products = products.Where(w => lft.Any(a => a <= w.GlobalCategory.Lft) && rgt.Any(a => a >= w.GlobalCategory.Rgt));
+					}
+					//if request send category name, add category category name criteria
+					List<string> catNames = request.GlobalCategories.Where(w => w.NameEn != null && !string.IsNullOrWhiteSpace(w.NameEn)).Select(s => s.NameEn).ToList();
+					if (catNames != null && catNames.Count > 0)
+					{
+						products = products.Where(w => catNames.Any(a => w.GlobalCategory.NameEn.Contains(a)));
+					}
+				}
+				//add Local category criteria
+				if (request.LocalCategories != null && request.LocalCategories.Count > 0)
+				{
+					//if request send category parent left and right, add category parent left and right criteria
+					var lft = request.LocalCategories.Where(w => w.Lft != 0).Select(s => s.Lft).ToList();
+					var rgt = request.LocalCategories.Where(w => w.Rgt != 0).Select(s => s.Rgt).ToList();
 
-                    if (lft != null && lft.Count > 0 && rgt != null && rgt.Count > 0)
-                    {
-                        products = products.Where(w => lft.Any(a => a <= w.LocalCategory.Lft) && rgt.Any(a => a >= w.LocalCategory.Rgt));
-                    }
-                    List<string> catNames = request.LocalCategories.Where(w => w.NameEn != null).Select(s => s.NameEn).ToList();
-                    if (catNames != null && catNames.Count > 0)
-                    {
-                        products = products.Where(w => catNames.Any(a => w.LocalCategory.NameEn.Contains(a)));
-                    }
-                }
-                if (request.Tags != null && request.Tags.Count > 0)
-                {
-                    products = products.Where(w => request.Tags.Any(a => w.Tag.Contains(a)));
-                }
-                if (request.PriceFrom != 0)
-                {
-                    products = products.Where(w => w.SalePrice >= request.PriceFrom);
-                }
-                if (request.PriceTo != 0)
-                {
-                    products = products.Where(w => w.SalePrice <= request.PriceTo);
-                }
-                if (!string.IsNullOrEmpty(request.CreatedDtFrom))
-                {
-                    DateTime from = Convert.ToDateTime(request.CreatedDtFrom);
-                    products = products.Where(w => w.CreateOn >= from);
-                }
-                if (!string.IsNullOrEmpty(request.CreatedDtTo))
-                {
-                    DateTime to = Convert.ToDateTime(request.CreatedDtTo);
-                    products = products.Where(w => w.CreateOn <= to);
-                }
+					if (lft != null && lft.Count > 0 && rgt != null && rgt.Count > 0)
+					{
+						products = products.Where(w => lft.Any(a => a <= w.LocalCategory.Lft) && rgt.Any(a => a >= w.LocalCategory.Rgt));
+					}
+					//if request send category name, add category category name criteria
+					List<string> catNames = request.LocalCategories.Where(w => w.NameEn != null && !string.IsNullOrWhiteSpace(w.NameEn)).Select(s => s.NameEn).ToList();
+					if (catNames != null && catNames.Count > 0)
+					{
+						products = products.Where(w => catNames.Any(a => w.LocalCategory.NameEn.Contains(a)));
+					}
+				}
+				//add Tag criteria
+				if (request.Tags != null && request.Tags.Count > 0)
+				{
+					products = products.Where(w => request.Tags.Any(a => w.Tags.Contains(a)));
+				}
+				//add sale price(from) criteria
+				if (request.PriceFrom != 0)
+				{
+					products = products.Where(w => w.SalePrice >= request.PriceFrom);
+				}
+				//add sale price(to) criteria
+				if (request.PriceTo != 0)
+				{
+					products = products.Where(w => w.SalePrice <= request.PriceTo);
+				}
+				//add create date(from) criteria
+				if (request.CreatedDtFrom != null)
+				{
+					DateTime from = Convert.ToDateTime(request.CreatedDtFrom);
+					products = products.Where(w => w.CreatedDt >= from);
+				}
+				//add create date(to) criteria
+				if (request.CreatedDtTo != null)
+				{
+					DateTime to = Convert.ToDateTime(request.CreatedDtTo);
+					products = products.Where(w => w.CreatedDt <= to);
+				}
+				//add modify date(from) criteria
+				if (request.ModifyDtFrom != null)
+				{
+					DateTime from = Convert.ToDateTime(request.ModifyDtFrom);
+					products = products.Where(w => w.UpdatedDt >= from);
+				}
+				//add modify date(to) criteria
+				if (request.ModifyDtTo != null)
+				{
+					DateTime to = Convert.ToDateTime(request.ModifyDtTo);
+					products = products.Where(w => w.UpdatedDt <= to);
+				}
+				if (!string.IsNullOrEmpty(request.SearchText))
+				{
+					if (isSeller)
+					{
+						products = products.Where(p => p.Sku.Contains(request.SearchText)
+							|| p.ProductNameEn.Contains(request.SearchText)
+							|| p.ProductNameTh.Contains(request.SearchText)
+							|| p.Pid.Contains(request.SearchText)
+							|| p.Upc.Contains(request.SearchText)
+							|| p.Tags.Any(a => a.Contains(request.SearchText)));
+					}
+					else
+					{
+						products = products.Where(p => p.Sku.Contains(request.SearchText)
+							|| p.ProductNameEn.Contains(request.SearchText)
+							|| p.ProductNameTh.Contains(request.SearchText)
+							|| p.Pid.Contains(request.SearchText)
+							|| p.Upc.Contains(request.SearchText));
+					}
+				}
 
-                if (!string.IsNullOrEmpty(request.ModifyDtFrom))
-                {
-                    DateTime from = Convert.ToDateTime(request.ModifyDtFrom);
-                    products = products.Where(w => w.UpdatedDt >= from);
-                }
-                if (!string.IsNullOrEmpty(request.ModifyDtTo))
-                {
-                    DateTime to = Convert.ToDateTime(request.ModifyDtTo);
-                    products = products.Where(w => w.UpdatedDt <= to);
-                }
-                if (!string.IsNullOrEmpty(request.SearchText))
-                {
-                    products = products.Where(p => p.Sku.Contains(request.SearchText)
-                    || p.ProductNameEn.Contains(request.SearchText)
-                    || p.ProductNameTh.Contains(request.SearchText)
-                    || p.Pid.Contains(request.SearchText)
-                    || p.Upc.Contains(request.SearchText));
-                }
-                if (!string.IsNullOrEmpty(request._filter))
+				if (!string.IsNullOrEmpty(request._filter))
                 {
                     if (string.Equals("NormalStock", request._filter, StringComparison.OrdinalIgnoreCase))
                     {
