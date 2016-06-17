@@ -152,12 +152,13 @@ namespace Colsp.Api.Controllers
 
         [Route("api/Shops")]
         [HttpGet]
-		[ClaimsAuthorize(Permission = new string[] { "10", "21" })]
+		[ClaimsAuthorize(Permission = new string[] { "10", "21", "2", "3", "35", "34", "12" })]
 		public HttpResponseMessage GetShop([FromUri] ShopRequest request)
         {
             try
             {
-                var shopList = db.Shops.Where(w => w.Status.Equals(Constant.STATUS_ACTIVE) || w.Status.Equals(Constant.STATUS_NOT_ACTIVE))
+                var shopList = db.Shops.Where(w => w.Status.Equals(Constant.STATUS_ACTIVE) 
+					|| w.Status.Equals(Constant.STATUS_NOT_ACTIVE))
                     .Select(s => new
                     {
                         s.ShopId,

@@ -17,6 +17,7 @@ namespace Colsp.Model.Requests
 		public string ShopNameEn { get; set; }
 		public string ShopNameTh { get; set; }
 		public string ShopUrlKey { get; set; }
+		public string ShopGroup { get; set; }
 		public string Bu { get; set; }
 		public int GlobalCatId { get; set; }
 		public string GlobalCatNameEn { get; set; }
@@ -76,7 +77,9 @@ namespace Colsp.Model.Requests
 		public bool IsLocalSearch { get; set; }
 		public bool IsGlobalSearch { get; set; }
 		public bool IsSearch { get; set; }
-		public string StockAvailable { get; set; }
+		public int StockAvailable { get; set; }
+		public int MinQtyAllowInCart { get; set; }
+		public int MaxQtyAllowInCart { get; set; }
 		public List<string> tag { get; set; }
 		public DefaultProductRequest DefaultProduct { get; set; }
 		public List<ElasticAttributeRequest> Attributes { get; set; }

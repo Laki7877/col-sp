@@ -1445,43 +1445,61 @@ namespace Colsp.Api.Controllers
 				{
 					throw new Exception("Invalid request");
 				}
-				//Prepare Query to query table ProductStage
-				var products = (from p in db.ProductStageGroups
-								where !Constant.STATUS_REMOVE.Equals(p.Status)
-									&& p.ProductStages.Any(a => a.IsVariant == false)
-								select new
-								{
-									p.ProductStages.FirstOrDefault().Sku,
-									p.ProductStages.FirstOrDefault().Pid,
-									p.ProductStages.FirstOrDefault().Upc,
-									p.ProductStages.FirstOrDefault().ProductId,
-									p.ProductStages.FirstOrDefault().ProductNameEn,
-									p.ProductStages.FirstOrDefault().ProductNameTh,
-									p.ProductStages.FirstOrDefault().SalePrice,
-									p.ProductStages.FirstOrDefault().OriginalPrice,
-									p.ProductStages.FirstOrDefault().IsMaster,
-									p.Shop.ShopNameEn,
-									p.Status,
-									p.ImageFlag,
-									p.InfoFlag,
-									p.OnlineFlag,
-									p.ProductStages.FirstOrDefault().Visibility,
-									p.ProductStages.FirstOrDefault().VariantCount,
-									ImageUrl = string.Empty.Equals(p.ProductStages.FirstOrDefault().FeatureImgUrl) ? string.Empty : string.Concat(Constant.PRODUCT_IMAGE_URL, p.ProductStages.FirstOrDefault().FeatureImgUrl),
-									GlobalCategory = p.GlobalCategory != null ? new { p.GlobalCategory.CategoryId, p.GlobalCategory.NameEn, p.GlobalCategory.Lft, p.GlobalCategory.Rgt } : null,
-									LocalCategory = p.LocalCategory != null ? new { p.LocalCategory.CategoryId, p.LocalCategory.NameEn, p.LocalCategory.Lft, p.LocalCategory.Rgt } : null,
-									Brand = p.Brand != null ? new { p.Brand.BrandId, p.Brand.BrandNameEn } : null,
-									Tags = p.ProductStageTags.Select(s => s.Tag),
-									CreatedDt = p.CreateOn,
-									UpdatedDt = p.UpdateOn,
-									Shop = new { p.Shop.ShopId, p.Shop.ShopNameEn },
-									p.InformationTabStatus,
-									p.ImageTabStatus,
-									p.MoreOptionTabStatus,
-									p.VariantTabStatus,
-									p.CategoryTabStatus,
-								});
-				//check if its seller permission
+				var products = db.ProductStages
+					.Where(w => w.IsVariant == false && !Constant.STATUS_REMOVE.Equals(w.Status))
+					.Select(s => new
+					{
+						s.Sku,
+						s.Pid,
+						s.Upc,
+						s.ProductId,
+						s.ProductNameEn,
+						s.ProductNameTh,
+						s.OriginalPrice,
+						s.SalePrice,
+						s.ProductStageGroup.Status,
+						s.ProductStageGroup.ImageFlag,
+						s.ProductStageGroup.InfoFlag,
+						s.ProductStageGroup.OnlineFlag,
+						s.Visibility,
+						s.VariantCount,
+						s.IsMaster,
+						GlobalCategory = s.ProductStageGroup.GlobalCategory != null ? new
+						{
+							s.ProductStageGroup.GlobalCategory.CategoryId,
+							s.ProductStageGroup.GlobalCategory.NameEn,
+							s.ProductStageGroup.GlobalCategory.Lft,
+							s.ProductStageGroup.GlobalCategory.Rgt
+						} : null,
+						LocalCategory = s.ProductStageGroup.LocalCategory != null ? new
+						{
+							s.ProductStageGroup.LocalCategory.CategoryId,
+							s.ProductStageGroup.LocalCategory.NameEn,
+							s.ProductStageGroup.LocalCategory.Lft,
+							s.ProductStageGroup.LocalCategory.Rgt
+						} : null,
+						ImageUrl = string.Empty.Equals(s.FeatureImgUrl) ? string.Empty : string.Concat(Constant.PRODUCT_IMAGE_URL, s.FeatureImgUrl),
+						s.ProductStageGroup.GlobalCatId,
+						s.ProductStageGroup.LocalCatId,
+						s.ProductStageGroup.AttributeSetId,
+						s.ProductStageAttributes,
+						UpdatedDt = s.ProductStageGroup.UpdateOn,
+						CreatedDt = s.ProductStageGroup.CreateOn,
+						s.ShopId,
+						s.ProductStageGroup.InformationTabStatus,
+						s.ProductStageGroup.ImageTabStatus,
+						s.ProductStageGroup.CategoryTabStatus,
+						s.ProductStageGroup.VariantTabStatus,
+						s.ProductStageGroup.MoreOptionTabStatus,
+						Tags = s.ProductStageGroup.ProductStageTags.Select(t => t.Tag),
+						Shop = new { s.Shop.ShopId, s.Shop.ShopNameEn },
+						Brand = s.ProductStageGroup.Brand != null ? new
+						{
+							s.ProductStageGroup.Brand.BrandId,
+							s.ProductStageGroup.Brand.BrandNameEn
+						} : null,
+						Pids = db.ProductStages.Where(w=>w.ProductId==s.ProductId).Select(p=>p.Pid)
+					});
 				bool isSeller = false;
 				if (User.ShopRequest() != null)
 				{
@@ -1509,7 +1527,7 @@ namespace Colsp.Api.Controllers
 				//add Pid criteria
 				if (request.Pids != null && request.Pids.Count > 0)
 				{
-					products = products.Where(w => request.Pids.Any(a => w.Pid.Contains(a)));
+					products = products.Where(w => w.Pids.Any(a=> request.Pids.Contains(a)));
 				}
 				//add Sku criteria
 				if (request.Skus != null && request.Skus.Count > 0)
@@ -4413,7 +4431,8 @@ namespace Colsp.Api.Controllers
 			{
 				s.ShopNameEn,
 				s.ShopNameTh,
-				s.UrlKey
+				s.UrlKey,
+				s.ShopGroup,
 			}).First();
 			#endregion
 			#region Brand
@@ -4555,6 +4574,7 @@ namespace Colsp.Api.Controllers
 					ShopNameEn = shop.ShopNameEn,
 					ShopNameTh = shop.ShopNameTh,
 					ShopUrlKey = shop.UrlKey,
+					ShopGroup = shop.ShopGroup,
 					Bu = stage.Bu,
 					GlobalCatId = productGroup.GlobalCatId,
 					GlobalCatNameEn = globalLeaf.NameEn,
@@ -4614,14 +4634,22 @@ namespace Colsp.Api.Controllers
 					IsSearch = stage.ProductStageAttributes.Any(a => a.AttributeValueId == 1 && a.CheckboxValue),
 					IsLocalSearch = stage.ProductStageAttributes.Any(a => a.AttributeValueId == 2 && a.CheckboxValue),
 					IsGlobalSearch = stage.ProductStageAttributes.Any(a => a.AttributeValueId == 3 && a.CheckboxValue),
-					//StockAvailable = stage,
+					StockAvailable = stage.Inventory != null ? 
+						(
+							stage.Inventory.Quantity 
+							- stage.Inventory.Reserve 
+							- stage.Inventory.OnHold 
+							- stage.Inventory.Defect
+						) : 0,
+					MaxQtyAllowInCart = stage.Inventory != null ? stage.Inventory.MaxQtyAllowInCart : 0,
+					MinQtyAllowInCart = stage.Inventory != null ? stage.Inventory.MinQtyAllowInCart : 0,
 					tag = productGroup.ProductStageTags.Select(s => s.Tag).ToList(),
 					DefaultProduct = defaultProduct != null && stage.IsVariant ? new DefaultProductRequest()
 					{
 						Pid = defaultProduct.Pid,
 						ShopUrlKey = shop.UrlKey
 					} : null,
-					Attributes = responseAttribute
+					Attributes = responseAttribute,
 				};
 				requests.Add(cms);
 			}
@@ -9005,23 +9033,24 @@ namespace Colsp.Api.Controllers
 		[OverrideAuthentication, OverrideAuthorization]
 		public HttpResponseMessage AddProductJda(List<JdaRequest> request)
 		{
+			var email = "jda@col.co.th";
+			var currentDt = SystemHelper.GetCurrentDateTime();
 			try
 			{
 				if (request == null)
 				{
 					throw new Exception("Invalid request");
 				}
-				var email = "jda@col.co.th";
-				var currentDt = SystemHelper.GetCurrentDateTime();
-
 				int take = 1000;
 				int multiply = 0;
 				List<ProductStageGroup> groupList = new List<ProductStageGroup>();
 				var response = new List<JdaRequest>();
+				#region Validate Sku Duplicate
 				if (request.GroupBy(n => n.Sku).Any(c => c.Count() > 1))
 				{
 					throw new Exception("Request Sku cannot be duplicate");
 				}
+				#endregion
 				while (true)
 				{
 					var tmpRequest = request.Skip(take * multiply).Take(take);
@@ -9261,72 +9290,108 @@ namespace Colsp.Api.Controllers
 			}
 			catch (Exception e)
 			{
+				#region Log Failed
+				var jsonRequest = new JavaScriptSerializer().Serialize(request);
+				var jsonResponse = new JavaScriptSerializer().Serialize(e.GetBaseException());
+				db.ApiLogs.Add(new ApiLog()
+				{
+					LogId = db.GetNextAppLogId().SingleOrDefault().Value,
+					CreateBy = email,
+					CreateOn = currentDt,
+					DestinationApp = "SP",
+					Method = "POST",
+					RequestData = jsonRequest,
+					RequestUrl = Request.RequestUri.AbsolutePath,
+					ResponseCode = 406,
+					ResponseData = jsonResponse,
+					SourceApp = "Zeus"
+				});
+				db.SaveChanges();
+				#endregion
 				return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.Message);
 			}
 		}
 
-		[Route("api/ProductStages/JdaProduct")]
-		[HttpPut]
-		[OverrideAuthentication, OverrideAuthorization]
-		public HttpResponseMessage SaveProductJda(List<JdaRequest> request)
-		{
-			try
-			{
-				if (request == null)
-				{
-					throw new Exception("Invalid request");
-				}
-				if (request.GroupBy(n => n.Pid).Any(c => c.Count() > 1))
-				{
-					throw new Exception("Request Pid cannot be duplicate");
-				}
-				int take = 1000;
-				int multiply = 0;
-				var email = "jda@col.co.th";
-				var currentDt = SystemHelper.GetCurrentDateTime();
-				while (true)
-				{
-					var tmpRequest = request.Skip(take * multiply).Take(take);
-					var rqPids = tmpRequest.Select(s => s.Pid);
-					var products = db.ProductStages.Where(w => rqPids.Contains(w.Pid)).Select(s => new
-					{
-						s.Pid,
-						s.ShopId
-					});
-					#region validation
-					if (tmpRequest.Count() == 0)
-					{
-						break;
-					}
-					#endregion
-					foreach (var jdaProduct in tmpRequest)
-					{
-						if (string.IsNullOrWhiteSpace(jdaProduct.Pid))
-						{
-							throw new Exception("Pid cannot be empty");
-						}
-						var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Pid.Equals(jdaProduct.Pid)).SingleOrDefault();
-						if (tmpProduct == null)
-						{
-							throw new Exception(string.Concat("Cannot find pid ", jdaProduct.Pid, " in shop id ", jdaProduct.ShopId));
-						}
-						ProductStage stage = new ProductStage()
-						{
-							Pid = jdaProduct.Pid
-						};
-						UpdateJda(stage,email,currentDt, jdaProduct, db);
-					}
-					multiply++;
-				}
-				db.Configuration.ValidateOnSaveEnabled = false;
-				db.SaveChanges();
-				return Request.CreateResponse(HttpStatusCode.OK, request);
-			}
-			catch (Exception e)
-			{
-				return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
-			}
-		}
+		//[Route("api/ProductStages/JdaProduct")]
+		//[HttpPut]
+		//[OverrideAuthentication, OverrideAuthorization]
+		//public HttpResponseMessage SaveProductJda(List<JdaRequest> request)
+		//{
+		//	var email = "jda@col.co.th";
+		//	var currentDt = SystemHelper.GetCurrentDateTime();
+		//	try
+		//	{
+		//		if (request == null)
+		//		{
+		//			throw new Exception("Invalid request");
+		//		}
+		//		if (request.GroupBy(n => n.Pid).Any(c => c.Count() > 1))
+		//		{
+		//			throw new Exception("Request Pid cannot be duplicate");
+		//		}
+		//		int take = 1000;
+		//		int multiply = 0;
+		//		while (true)
+		//		{
+		//			var tmpRequest = request.Skip(take * multiply).Take(take);
+		//			var rqPids = tmpRequest.Select(s => s.Pid);
+		//			var products = db.ProductStages.Where(w => rqPids.Contains(w.Pid)).Select(s => new
+		//			{
+		//				s.Pid,
+		//				s.ShopId
+		//			});
+		//			#region validation
+		//			if (tmpRequest.Count() == 0)
+		//			{
+		//				break;
+		//			}
+		//			#endregion
+		//			foreach (var jdaProduct in tmpRequest)
+		//			{
+		//				if (string.IsNullOrWhiteSpace(jdaProduct.Pid))
+		//				{
+		//					throw new Exception("Pid cannot be empty");
+		//				}
+		//				var tmpProduct = products.Where(w => w.ShopId == jdaProduct.ShopId && w.Pid.Equals(jdaProduct.Pid)).SingleOrDefault();
+		//				if (tmpProduct == null)
+		//				{
+		//					throw new Exception(string.Concat("Cannot find pid ", jdaProduct.Pid, " in shop id ", jdaProduct.ShopId));
+		//				}
+		//				ProductStage stage = new ProductStage()
+		//				{
+		//					Pid = jdaProduct.Pid
+		//				};
+		//				UpdateJda(stage,email,currentDt, jdaProduct, db);
+		//			}
+		//			multiply++;
+		//		}
+		//		db.Configuration.ValidateOnSaveEnabled = false;
+		//		db.SaveChanges();
+		//		return Request.CreateResponse(HttpStatusCode.OK, request);
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		#region Log Failed
+		//		var jsonRequest = new JavaScriptSerializer().Serialize(request);
+		//		var jsonResponse = new JavaScriptSerializer().Serialize(e.GetBaseException());
+		//		db.ApiLogs.Add(new ApiLog()
+		//		{
+		//			LogId = db.GetNextAppLogId().SingleOrDefault().Value,
+		//			CreateBy = email,
+		//			CreateOn = currentDt,
+		//			DestinationApp = "SP",
+		//			Method = "PUT",
+		//			RequestData = jsonRequest,
+		//			RequestUrl = Request.RequestUri.AbsolutePath,
+		//			ResponseCode = 406,
+		//			ResponseData = jsonResponse,
+		//			SourceApp = "Zeus"
+		//		});
+		//		db.SaveChanges();
+		//		#endregion
+		//		return Request.CreateErrorResponse(HttpStatusCode.NotAcceptable, e.GetBaseException());
+		//	}
+		//}
 
 		private void UpdateJda(ProductStage stage,string email,DateTime currentDt, JdaRequest jdaProduct, ColspEntities db)
 		{

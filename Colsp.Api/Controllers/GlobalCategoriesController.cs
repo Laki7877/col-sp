@@ -27,7 +27,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/GlobalCategories")]
 		[HttpGet]
-		[ClaimsAuthorize(Permission = new string[] { "8", "2", "3", "35", "34" })]
+		[ClaimsAuthorize(Permission = new string[] { "8", "12" , "2", "3", "35", "34" })]
 		public HttpResponseMessage GetGlobalCategory()
 		{
 			try

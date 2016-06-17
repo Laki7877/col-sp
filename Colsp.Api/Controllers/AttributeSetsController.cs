@@ -110,7 +110,7 @@ namespace Colsp.Api.Controllers
 
 		[Route("api/AttributeSets/{attributeSetId}")]
 		[HttpGet]
-		[ClaimsAuthorize(Permission = new string[] { "7" })]
+		[ClaimsAuthorize(Permission = new string[] { "7", "2", "3", "35", "34" })]
 		public HttpResponseMessage GetAttributeSets([FromUri]int attributeSetId)
 		{
 			try
