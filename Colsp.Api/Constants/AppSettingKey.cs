@@ -5,7 +5,6 @@ namespace Colsp.Api.Constants
 {
     public static class AppSettingKey
     {
-
         //Image Root & Folder 
         public static readonly string IMAGE_ROOT_FOLDER = ConfigurationManager.AppSettings["ImageRootPath"];
         public static readonly string IMAGE_ROOT_PATH = HttpContext.Current.Server.MapPath(string.Concat("~/" , IMAGE_ROOT_FOLDER));
@@ -24,17 +23,23 @@ namespace Colsp.Api.Constants
         public static readonly string NEWSLETTER_FOLDER = ConfigurationManager.AppSettings["NewsletterFolder"];
         public static readonly string THEME_FOLDER = ConfigurationManager.AppSettings["ThemeFolder"];
         public static readonly string IMAGE_TMP_FOLDER = ConfigurationManager.AppSettings["ImageTmpFolder"];
-
-
         //CSV Root
         public static readonly string IMPORT_ROOT_PATH = HttpContext.Current.Server.MapPath(string.Concat("~/", ConfigurationManager.AppSettings["ImportTmpFolder"]));
         public static readonly string EXPORT_ROOT_PATH = HttpContext.Current.Server.MapPath(string.Concat("~/", ConfigurationManager.AppSettings["ExportTmpFolder"]));
-
-
         //Pid Number Only
         public static readonly bool PID_NUMBER_ONLY = bool.Parse(ConfigurationManager.AppSettings["PidNumberOnly"]);
-
-
+		//Static server 
 		public static readonly string IMAGE_STATIC_URL = ConfigurationManager.AppSettings["ImageStaticUrl"];
+		//SFTP configuration
+		public static readonly string SFTP_HOST = ConfigurationManager.AppSettings["SftpHost"];
+		public static readonly string SFTP_USERNAME = ConfigurationManager.AppSettings["SftpUsername"];
+		public static readonly string SFTP_PASSWORD = ConfigurationManager.AppSettings["SftpPassword"];
+		//Integration root url
+		public static readonly string CMOS_ROOT_URL = ConfigurationManager.AppSettings["CmosRootUrl"];
+		public static readonly string ELASTIC_ROOT_URL = ConfigurationManager.AppSettings["ElasticRootUrl"];
+		public static readonly string EVOUCHER_ROOT_URL = ConfigurationManager.AppSettings["EVoucherRootUrl"];
+		public static readonly string ORDER_ROOT_URL = ConfigurationManager.AppSettings["OrderRootUrl"];
+
+
 	}
 }

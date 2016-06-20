@@ -272,8 +272,11 @@
     <Compile Include="Services\AttributeSetsService.cs" />
     <Compile Include="Services\BrandService.cs" />
     <Compile Include="Services\Cache.cs" />
+    <Compile Include="Services\CmosService.cs" />
     <Compile Include="Services\Config.cs" />
     <Compile Include="Extensions\IQueryableExtension.cs" />
+    <Compile Include="Services\ElasticService.cs" />
+    <Compile Include="Services\ProductStageService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colsp.Entity\Colsp.Entity.csproj">

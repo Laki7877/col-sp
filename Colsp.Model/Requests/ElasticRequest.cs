@@ -125,4 +125,16 @@ namespace Colsp.Model.Requests
 		public string ImageUrl { get; set; }
 	}
 
+
+	public class ElasticByPassRequest
+	{
+		public string Pid { get; set; }
+		public decimal SalePrice { get; set; }
+		public decimal PromotionPrice { get; set; }
+		public decimal PriceRangeMin { get; set; }
+		public decimal PriceRangeMax { get; set; }
+		public string EffectiveDatePromotion { get; set; }
+		public string ExpireDatePromotion { get; set; }
+	}
+
 }
