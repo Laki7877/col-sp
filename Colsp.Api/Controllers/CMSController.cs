@@ -174,7 +174,7 @@ namespace Colsp.Api.Controllers
                                 : (from product in db.Products
                                    join brand in db.Brands on product.BrandId equals brand.BrandId
                                    join category in db.LocalCategories on product.LocalCatId equals category.CategoryId
-                                   where category.CategoryId == categoryId
+                                   where category.CategoryId == categoryId && category.ShopId == shopId
                                    select new BrandRequest
                                    {
                                        BrandId = brand.BrandId,
@@ -204,8 +204,6 @@ namespace Colsp.Api.Controllers
         {
             try
             {
-                int shopId = 0; //this.User.ShopRequest().ShopId;
-
                 var query = db.ProductTags
                             .GroupBy(g => g.Tag)
                             .Select(s => s.FirstOrDefault());
@@ -244,14 +242,14 @@ namespace Colsp.Api.Controllers
                 var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
 
                 var query = shopId == 0
-                                ? (from cate in db.GlobalCategories
+                                ? (from cate in db.GlobalCategories where !cate.Status.Equals("RM")
                                    select new CategoryRequest
                                    {
                                        CategoryId = cate.CategoryId,
                                        NameEn = cate.NameEn,
                                        NameTh = cate.NameTh
                                    })
-                                : (from cate in db.LocalCategories
+                                : (from cate in db.LocalCategories where cate.ShopId == shopId && !cate.Status.Equals("RM")
                                    select new CategoryRequest
                                    {
                                        CategoryId = cate.CategoryId,
@@ -285,7 +283,7 @@ namespace Colsp.Api.Controllers
             {
                 var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
 
-                var query = from product in db.Products select product;
+                var query = from product in db.Products where !product.IsMaster && !product.Status.Equals("RM") select product;
 
                 if (shopId != 0)
                     query = query.Where(x => x.ShopId == shopId);
@@ -296,7 +294,7 @@ namespace Colsp.Api.Controllers
                 if (condition.SearchBy == Logic.SearchOption.SKU)
                     query = query.Where(x => x.Sku.Equals(condition.SearchText));
 
-                if (condition.SearchBy == Logic.SearchOption.ProductName)
+                if (condition.SearchBy == Logic.SearchOption.ProductName && !string.IsNullOrEmpty(condition.SearchText))
                     query = query.Where(x => x.ProductNameEn.Contains(condition.SearchText) || x.ProductNameTh.Contains(condition.SearchText));
 
                 if (condition.CategoryId != null)
@@ -324,12 +322,12 @@ namespace Colsp.Api.Controllers
                 {
                     Product item = new Product();
                     item.Pid = p.Pid;
-                    item.ProductNameEn = p.ProductNameEn;
-                    item.ProductNameTh = p.ProductNameTh;
-                    item.FeatureImgUrl = p.FeatureImgUrl;
-                    item.EffectiveDate = p.EffectiveDate;
-                    item.ExpireDate = p.ExpireDate;
-                    item.OriginalPrice = p.OriginalPrice;
+                    item.ProductNameEn  = p.ProductNameEn;
+                    item.ProductNameTh  = p.ProductNameTh;
+                    item.FeatureImgUrl  = p.FeatureImgUrl;
+                    item.EffectiveDate  = p.EffectiveDate;
+                    item.ExpireDate     = p.ExpireDate;
+                    item.OriginalPrice  = p.OriginalPrice;
                     item.Sku = p.Sku;
                     products.Add(item);
                 }
@@ -356,6 +354,7 @@ namespace Colsp.Api.Controllers
                 var query = from product in db.Products
                             join cmsCatePro in db.CMSCategoryProductMaps
                             on product.Pid equals cmsCatePro.Pid
+                            where !product.IsMaster && product.ShopId == shopId && !product.Status.Equals("RM")
                             select new { product, cmsCatePro };
 
                 if (condition.CMSCategoryIds != null && condition.CMSCategoryIds.Count > 0)
@@ -401,7 +400,7 @@ namespace Colsp.Api.Controllers
             {
                 var shopId = User.ShopRequest() == null ? 0 : User.ShopRequest().ShopId;
 
-                var query = from cate in db.CMSCategories select cate;
+                var query = from cate in db.CMSCategories where !cate.Status.Equals("RM") select cate;
 
                 if (shopId != 0)
                 {
@@ -631,6 +630,12 @@ namespace Colsp.Api.Controllers
 
                 var query = from master in db.CMSMasters where !master.Status.Equals("RM") select master;
 
+                if (shopId != 0)
+                {
+                    var cmsMasterIds = (from map in db.CMSMasterCategoryMaps where map.ShopId == shopId select map).Select(x => x.CMSMasterId).ToList();
+                    query = query.Where(x => cmsMasterIds.Contains(x.CMSMasterId));
+                }
+
                 if (!string.IsNullOrEmpty(request.SearchText))
                     query = query.Where(x => x.CMSMasterNameEN.Contains(request.SearchText) || x.CMSMasterNameTH.Contains(request.SearchText));
 
@@ -674,7 +679,7 @@ namespace Colsp.Api.Controllers
                 var query = from master in db.CMSMasters
                             join masterScheduleMap in db.CMSMasterSchedulerMaps
                             on master.CMSMasterId equals masterScheduleMap.CMSMasterId
-                            where master.CMSMasterId == cmsMasterId
+                            where master.CMSMasterId == cmsMasterId && !master.Status.Equals("RM")
                             select new CMSMasterRequest
                             {
                                 CMSMasterId = master.CMSMasterId,
