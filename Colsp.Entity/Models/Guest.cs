@@ -36,5 +36,19 @@ namespace Colsp.Entity.Models
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public string UpdateBy { get; set; }
+        public string BillFirstName { get; set; }
+        public string BillLastName { get; set; }
+        public string BillMobile { get; set; }
+        public string BillTelephoneNo { get; set; }
+        public Nullable<byte> BillGender { get; set; }
+        public string BillAddressLine1 { get; set; }
+        public string BillAddressLine2 { get; set; }
+        public Nullable<int> BillProvinceId { get; set; }
+        public Nullable<int> BillCityId { get; set; }
+        public Nullable<int> BillDistrictId { get; set; }
+        public Nullable<int> BillPostCodeId { get; set; }
+        public string BillEmail { get; set; }
+        public bool IsShipping { get; set; }
+        public bool IsBilling { get; set; }
     }
 }

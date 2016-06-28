@@ -26,5 +26,6 @@ namespace Colsp.Entity.Models
         public string DistrictName { get; set; }
         public string DistrictNameEn { get; set; }
         public string Remark { get; set; }
+        public int DeliveryLeadTime { get; set; }
     }
 }

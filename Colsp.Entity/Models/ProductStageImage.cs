@@ -30,7 +30,7 @@ namespace Colsp.Entity.Models
         public string UpdateBy { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
     
-        public virtual ProductStage ProductStage { get; set; }
         public virtual Shop Shop { get; set; }
+        public virtual ProductStage ProductStage { get; set; }
     }
 }

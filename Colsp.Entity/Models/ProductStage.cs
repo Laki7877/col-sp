@@ -115,7 +115,6 @@ namespace Colsp.Entity.Models
         public virtual ICollection<CouponLocalCatPidMap> CouponLocalCatPidMaps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CouponPidMap> CouponPidMaps { get; set; }
-        public virtual Inventory Inventory { get; set; }
         public virtual ProductStageGroup ProductStageGroup { get; set; }
         public virtual Shop Shop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -130,5 +129,6 @@ namespace Colsp.Entity.Models
         public virtual ICollection<ProductStageMaster> ProductStageMasters1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductStageVideo> ProductStageVideos { get; set; }
+        public virtual Inventory Inventory { get; set; }
     }
 }

@@ -20,9 +20,8 @@ namespace Colsp.Entity.Models
         public ColspEntities()
             : base("name=ColspEntities")
         {
-			Configuration.LazyLoadingEnabled = false;
-			Database.CommandTimeout = 300;
-		}
+            Configuration.LazyLoadingEnabled = false;
+        }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -86,8 +85,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<GlobalCatFeatureProduct> GlobalCatFeatureProducts { get; set; }
         public virtual DbSet<GlobalCatImage> GlobalCatImages { get; set; }
         public virtual DbSet<ImportHeader> ImportHeaders { get; set; }
-        public virtual DbSet<Inventory> Inventories { get; set; }
-        public virtual DbSet<InventoryHistory> InventoryHistories { get; set; }
         public virtual DbSet<LocalCategory> LocalCategories { get; set; }
         public virtual DbSet<LocalCatFeatureProduct> LocalCatFeatureProducts { get; set; }
         public virtual DbSet<LocalCatImage> LocalCatImages { get; set; }
@@ -104,7 +101,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Pid> Pids { get; set; }
         public virtual DbSet<PostCode> PostCodes { get; set; }
-        public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
         public virtual DbSet<ProductGlobalCatMap> ProductGlobalCatMaps { get; set; }
         public virtual DbSet<ProductHistory> ProductHistories { get; set; }
@@ -121,7 +117,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<ProductNotify> ProductNotifies { get; set; }
         public virtual DbSet<ProductRelated> ProductRelateds { get; set; }
         public virtual DbSet<ProductReview> ProductReviews { get; set; }
-        public virtual DbSet<ProductStage> ProductStages { get; set; }
         public virtual DbSet<ProductStageAttribute> ProductStageAttributes { get; set; }
         public virtual DbSet<ProductStageComment> ProductStageComments { get; set; }
         public virtual DbSet<ProductStageGlobalCatMap> ProductStageGlobalCatMaps { get; set; }
@@ -166,7 +161,6 @@ namespace Colsp.Entity.Models
         public virtual DbSet<UserShopMap> UserShopMaps { get; set; }
         public virtual DbSet<VendorTaxRate> VendorTaxRates { get; set; }
         public virtual DbSet<WithholdingTax> WithholdingTaxes { get; set; }
-        public virtual DbSet<CartPremium> CartPremiums { get; set; }
         public virtual DbSet<DeliveryLeadTime> DeliveryLeadTimes { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
         public virtual DbSet<Migrate_TBDepartment> Migrate_TBDepartment { get; set; }
@@ -198,6 +192,11 @@ namespace Colsp.Entity.Models
         public virtual DbSet<TBSetting> TBSettings { get; set; }
         public virtual DbSet<TBUserAdminTmp> TBUserAdminTmps { get; set; }
         public virtual DbSet<TBUserAdminWebTokenTmp> TBUserAdminWebTokenTmps { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductStage> ProductStages { get; set; }
+        public virtual DbSet<Inventory> Inventories { get; set; }
+        public virtual DbSet<InventoryHistory> InventoryHistories { get; set; }
+        public virtual DbSet<CartPremium> CartPremiums { get; set; }
     
         public virtual ObjectResult<Nullable<long>> GetNextAppLogId()
         {

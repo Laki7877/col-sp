@@ -37,6 +37,7 @@ namespace Colsp.Model.Requests
         public decimal PromotionPrice { get; set; }
         public DateTime? EffectiveDatePromotion { get; set; }
         public DateTime? ExpireDatePromotion { get; set; }
+        public DateTime? EstimateGoodsReceiveDate { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal PurchasePrice { get; set; }
         public string SaleUnitTh { get; set; }
@@ -118,6 +119,7 @@ namespace Colsp.Model.Requests
             PromotionPrice = 0;
             EffectiveDatePromotion = null;
             ExpireDatePromotion = null;
+            EstimateGoodsReceiveDate = null;
             UnitPrice = 0;
             PurchasePrice = 0; ;
             SaleUnitTh = string.Empty;
